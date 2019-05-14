@@ -7,7 +7,7 @@
   }
   .otp-authentication-card {
     width: 28em;
-    height: 15rem;
+    height: 17rem;
   }
   .forgot-password-title {
     font-family: sans-serif;
@@ -31,4 +31,10 @@
     border-radius: 0;
     padding-left: 25px;
     padding-right: 25px;
+  }
+  .resend-otp-title{
+    
+    color: rgb(173, 58, 58);
+    padding-top: 1em;
+
   }
