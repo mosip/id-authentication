@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { FacadeService } from '../../shared/services/facade.service';
+import { OtpSendModel } from '../../shared/models/otp-send-model';
+import { RequestModel } from '../../shared/models/request-model';
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,8 +14,11 @@ export class ForgotPasswordComponent implements OnInit {
   mobileNumber: number;
   errorMessage: string;
   userId: any;
+  otpSendModel = {} as OtpSendModel;
+  sendOTPStatus: string;
+  requestModel: any;
 
-  constructor( private facadeService: FacadeService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private facadeService: FacadeService, private router: Router, private formBuilder: FormBuilder) { }
 
   forgotPasswordForm = this.formBuilder.group({
     mobileNumber: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]+')]]
@@ -26,10 +31,23 @@ export class ForgotPasswordComponent implements OnInit {
     this.facadeService.setContact(this.mobileNumber);
     this.facadeService.getUserNameFromPhoneNumber(this.mobileNumber).subscribe(result => {
       this.userId = result['response']['userName'];
-      // Call SendOTP
-      this.router.navigate(['otpauthentication']);
+      this.otpSendModel.appId = 'admin';
+      this.otpSendModel.context = 'auth-otp';
+      this.otpSendModel.otpChannel = ['email', 'mobile'];
+      this.otpSendModel.templateVariables = null;
+      this.otpSendModel.userId = this.userId;
+      this.facadeService.setUserID(this.userId);
+      this.otpSendModel.useridtype = 'USERID';
+      this.requestModel = new RequestModel('id', 'v1', this.otpSendModel, null);
+      this.facadeService.sendOTP(this.requestModel).subscribe(sendOTPResponse => {
+        console.log(sendOTPResponse);
+        this.sendOTPStatus = sendOTPResponse['response']['status'];
+        if (this.sendOTPStatus === 'success') {
+          this.router.navigate(['otpauthentication']);
+        }
+      });
     },
-    error => this.errorMessage = error );
+      error => this.errorMessage = error);
   }
 }
 

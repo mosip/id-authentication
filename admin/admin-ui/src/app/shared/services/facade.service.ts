@@ -33,8 +33,27 @@ export class FacadeService {
     this.contactService.setContactNumber(contactNumber);
   }
 
+  getUserID() {
+    return this.contactService.getUserId();
+  }
+
+  setUserID(userID: string) {
+    this.contactService.setUserId(userID);
+  }
+
   getUserNameFromPhoneNumber(phoneNumber: number): Observable<any> {
     return this.accountManagementService.getUserNameFromPhoneNumber(phoneNumber);
   }
 
+  sendOTP(sendOTPRequest: any): Observable <any> {
+    return this.accountManagementService.sendOTP(sendOTPRequest);
+  }
+
+  validateOTP(validateOTPRequest: any): Observable <any> {
+    return this.accountManagementService.validateOTP(validateOTPRequest);
+  }
+
+  resetPassword(resetPasswordRequest: any): Observable <any> {
+    return this.accountManagementService.resetPassword(resetPasswordRequest);
+  }
 }

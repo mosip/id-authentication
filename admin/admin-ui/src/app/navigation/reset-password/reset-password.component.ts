@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, Validators, FormGroup, AbstractControl} from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { passwordValidator } from '../../shared/validators/password.validator';
+import { FacadeService } from '../../shared/services/facade.service';
+import { ResetPasswordModel } from '../../shared/models/reset-password-model';
+import { RequestModel } from '../../shared/models/request-model';
 
 @Component({
   selector: 'app-reset-password',
@@ -11,21 +14,35 @@ import { passwordValidator } from '../../shared/validators/password.validator';
 export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
   passwordPattern = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$';
+  resetPasswordModel = {} as ResetPasswordModel;
+  resetPasswordStatus: string;
+  requestModel: any;
 
-  constructor(private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private router: Router, private formBuilder: FormBuilder, private facadeService: FacadeService) { }
   ngOnInit() {
     this.resetPasswordForm = this.formBuilder.group({
       password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]],
       confirmPassword: ['', [Validators.required]]
-    }, {validator: [passwordValidator]});
+    }, { validator: [passwordValidator] });
   }
 
-   lengthValidator(control: AbstractControl): {[key: string]: boolean} | null {
+  lengthValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const password = control.get('password');
-      return password.value.length >= 8 ? { 'passWordLength': true } : null;
-    }
+    return password.value.length >= 8 ? { 'passWordLength': true } : null;
+  }
 
   onSave() {
-    this.router.navigate(['login']);
+    this.resetPasswordModel.newPassword = this.resetPasswordForm.get('password').value;
+    this.resetPasswordModel.userId = this.facadeService.getUserID();
+    this.requestModel = new RequestModel('id', 'v1', this.resetPasswordModel, null);
+    this.facadeService.resetPassword(this.requestModel).subscribe(resetPasswordResponse => {
+      this.resetPasswordStatus = resetPasswordResponse['response']['status'];
+      if (this.resetPasswordStatus === 'Success') {
+        alert('RESET_PASSWORD_SUCCESS');
+        this.router.navigate(['login']);
+      } else {
+        alert('RESET_PASSWORD_FAILED');
+      }
+    });
   }
 }

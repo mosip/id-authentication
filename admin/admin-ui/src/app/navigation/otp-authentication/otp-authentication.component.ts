@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { GetContactService } from '../../shared/services/get-contact.service';
 
 import { FacadeService } from '../../shared/services/facade.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
+
+import {OtpValidateModel} from '../../shared/models/otp-validate-model';
+import {RequestModel} from '../../shared/models/request-model';
 
 @Component({
   selector: 'app-otp-authentication',
@@ -17,11 +19,14 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   seconds: number;
   counter: number;
   interval: any;
+  otpValidationStatus: string;
+  otpValidateModel = {} as OtpValidateModel;
+  requestModel: any;
 
   constructor(private facadeService: FacadeService, private router: Router, private formBuilder: FormBuilder) { }
 
   otpAuthenticationForm = this.formBuilder.group({
-    otp: ['', [Validators.required, Validators.pattern('[0-9]+')] ]
+    otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern('[0-9]+')] ]
   });
 
   ngOnInit() {
@@ -35,7 +40,20 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   }
 
   onVerify() {
-    this.router.navigate(['resetpassword']);
+    this.otpValidateModel.appId = 'admin';
+    this.otpValidateModel.otp = this.otpAuthenticationForm.get('otp').value;
+    this.otpValidateModel.userId = this.facadeService.getUserID();
+    this.requestModel = new RequestModel('id', 'v1', this.otpValidateModel, null);
+    this.facadeService.validateOTP(this.requestModel).subscribe(otpValidateResponse => {
+      console.log(otpValidateResponse);
+      this.otpValidationStatus = otpValidateResponse['response']['status'];
+      if (this.otpValidationStatus === 'success') {
+        this.router.navigate(['resetpassword']);
+      }
+      if (this.otpValidationStatus === 'failure') {
+        alert('OTP Validation Failed');
+      }
+    });
   }
 
   startCountdown(timeLeft: number): void {
