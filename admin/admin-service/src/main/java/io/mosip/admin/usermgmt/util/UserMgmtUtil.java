@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
@@ -31,7 +32,8 @@ public class UserMgmtUtil {
 	
 	public static <S> S getResponse(ObjectMapper objectMapper,ResponseEntity<String> response, Class<S> clazz) {
 		try {
-			return objectMapper.readValue(response.getBody(), clazz);
+			JsonNode res =objectMapper.readTree(response.getBody());
+			return objectMapper.readValue(res.get("response").toString(), clazz);
 		} catch (IOException e) {
 			throw new ServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + e.getMessage());

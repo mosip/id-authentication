@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserregistrationService } from '../../../shared/services/userregistration.service';
-import { UserRegistrationRequestModel } from '../../../shared/Models/user-registration-model';
-import { RequestModel } from '../../../shared/Models/Request-model';
+import { UserRegistrationRequestModel } from '../../../shared/models/user-registration-model';
+import { RequestModel } from '../../../shared/models/request-model';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { DatePipe } from '@angular/common';
 @Component({
@@ -43,6 +43,10 @@ export class UserregistrationComponent implements OnInit {
   }
 
   onSubmit() {
+    if (!this.userRegistrationForm.valid) {
+      alert("please fill all the requirements");
+      return;
+    }
     this.requestObject.firstName = this.userRegistrationForm.get('firstName').value;
     this.requestObject.userName = this.userRegistrationForm.get('userName').value;
     this.requestObject.lastName = this.userRegistrationForm.get('lastName').value;
@@ -56,7 +60,6 @@ export class UserregistrationComponent implements OnInit {
     this.requestObject.ridValidationUrl = this.originUrl + "/#/admin/usermgmt/ridverification";
     this.requestDTO = new RequestModel("id", "v1", this.requestObject, null);
     this.service.registerUser(this.requestDTO).subscribe(data => {
-      console.log(data);
       alert("Detail submitted successfully");
       this.router.navigateByUrl('admin/dashboard');
     }, error => {

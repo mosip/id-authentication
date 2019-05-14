@@ -41,13 +41,13 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Value("${auth.server.sendotp-url}")
+	@Value("${auth.server.user-register-url}")
 	private String authUserRegistrationURL;
 	@Value("${mosip.kernel.emailnotifier-url}")
 	private String emailServiceApiURL;
 	@Value("${auth.server.sendotp-url}")
 	private String authSendOtpURL;
-	@Value("${auth.server.sendotp-url}")
+	@Value("${auth.server.user-add-password-url}")
 	private String passwordURL;
 
 	@Override
