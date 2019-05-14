@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.admin.masterdata.dto.MasterCardDto;
 import io.mosip.admin.masterdata.dto.MasterDataCardResponseDto;
+import io.mosip.admin.masterdata.exception.MasterDataCardException;
 import io.mosip.admin.masterdata.service.MasterDataCardService;
 import io.mosip.admin.masterdata.utils.MasterDataCardUtil;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
  * Masterdata card service implementation
@@ -23,7 +23,6 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 @Service
 public class MasterDataCardServiceImpl implements MasterDataCardService {
-
 	@Autowired
 	private MasterDataCardUtil masterDataCardUtil;
 
@@ -38,7 +37,7 @@ public class MasterDataCardServiceImpl implements MasterDataCardService {
 				cards.add(new MasterCardDto(key, map.get(key)));
 			}
 		} else {
-			throw new BaseUncheckedException();
+			throw new MasterDataCardException("","");
 		}
 
 		responseDto = new MasterDataCardResponseDto();
