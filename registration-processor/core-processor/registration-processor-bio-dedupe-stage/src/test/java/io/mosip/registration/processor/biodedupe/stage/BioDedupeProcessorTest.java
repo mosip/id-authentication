@@ -9,7 +9,6 @@ import static org.mockito.Matchers.anyString;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +44,6 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
-import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -211,15 +208,6 @@ public class BioDedupeProcessorTest {
 	}
 
 	@Test
-	public void testNewInsertionParseException() throws Exception {
-
-		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
-		Mockito.when(utilities.getApplicantAge(any())).thenThrow(new ParseException("ParseException", 0));
-		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
-		assertTrue(messageDto.getInternalError());
-	}
-
-	@Test
 	public void testNewInsertionIOException() throws Exception {
 
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
@@ -230,11 +218,13 @@ public class BioDedupeProcessorTest {
 
 	@Test
 	public void testDataAccessException() {
-		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenThrow(new DataAccessException("DataAccessException") {});
+		Mockito.when(registrationStatusService.getRegistrationStatus(any()))
+				.thenThrow(new DataAccessException("DataAccessException") {
+				});
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 		assertTrue(messageDto.getInternalError());
-	} 
-	
+	}
+
 	@Test
 	public void testNewInsertionAPIResourseException() throws Exception {
 
@@ -351,5 +341,4 @@ public class BioDedupeProcessorTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
-	
 }
