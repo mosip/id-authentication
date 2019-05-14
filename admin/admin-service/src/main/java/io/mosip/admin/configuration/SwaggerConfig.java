@@ -1,4 +1,4 @@
-package io.mosip.admin.core.config;
+package io.mosip.admin.configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,15 +32,15 @@ public class SwaggerConfig {
 	/**
 	 * Master service Version
 	 */
-	private static final String CRYPTOMANAGER_SERVICE_VERSION = "1.0";
+	private static final String ADMIN_SERVICE_VERSION = "1.0";
 	/**
 	 * Application Title
 	 */
-	private static final String TITLE = "Crypto Manager Service";
+	private static final String TITLE = "Admin Service";
 	/**
 	 * Master Data Service
 	 */
-	private static final String DISCRIPTION = "Crypto Manager Service for Encryption/Decryption";
+	private static final String DISCRIPTION = "Admin Service";
 
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
@@ -62,7 +62,7 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION)
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION)
 				.build();
 	}
 
@@ -91,7 +91,7 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag("cryptomanager", "operation related to encryption and decryption")).groupName(TITLE)
+				.tags(new Tag("user_registration", "operation related to user Registration")).groupName(TITLE)
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
