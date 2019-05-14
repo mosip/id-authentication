@@ -116,10 +116,10 @@ public class BioDedupeProcessor {
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
-		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
-				.getRegistrationStatus(registrationId);
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
-
+			registrationStatusDto = registrationStatusService
+			.getRegistrationStatus(registrationId);
 			String registrationType = registrationStatusDto.getRegistrationType();
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString())) {
 				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
