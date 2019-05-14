@@ -23,5 +23,11 @@ public class ResponseDTO {
 
 	/** The Value to hold vidStatus */
 	private String vidStatus;
+	
+	/** The Value to hold updatedVid */
+	private String updatedVid;
+	
+	/**  The Value to hold UpdatedVidStatus */
+	private String updatedVidStatus;
 
 }

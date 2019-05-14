@@ -58,7 +58,7 @@ public class VidRequestValidator implements Validator {
 	private static final String VER = "version";
 
 	/** The Constant TIMESTAMP. */
-	private static final String REQUEST_TIME = "requestTime";
+	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -113,12 +113,12 @@ public class VidRequestValidator implements Validator {
 		validateVersion(request.getVersion(), errors);
 		validateRequest(request.getRequest(), errors);
 		
-		if (request.getId().equals(id.get(CREATE))) {
+		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {
 			validateVidType(request.getRequest().getVidType(), errors);
 			validateUin(request.getRequest().getUin(), errors);
 		}
 		
-		if (request.getId().equals(id.get(UPDATE))) {
+		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
 			validateStatus(request.getRequest().getVidStatus(), errors);
 		}
 	}
