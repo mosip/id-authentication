@@ -50,6 +50,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** server context Path. */
+	@Value("${server.servlet.path}")
+	private String contextPath;
+
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String MODULE_ID = "mosip.registration.processor.packet.id";

@@ -196,6 +196,85 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
+	 * Builds the request and passess it to REST client util
+	 * 
+	 * @param url
+	 *            - MDM service url
+	 * @param serviceName
+	 *            - MDM service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 * @return
+	 * @throws RegBaseCheckedException
+	 */
+	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
+			throws RegBaseCheckedException {
+
+		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+				"invokeRestService method has been called");
+
+		Map<String, Object> responseMap = null;
+		Object responseBody = null;
+
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+
+		prepareRequest(requestHTTPDTO, serviceName, request, responseType, url);
+
+		try {
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
+		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
+				| SocketTimeoutException exception) {
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage(), exception);
+		}
+		if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
+			responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
+		}
+		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+				"invokeRestService method has been ended");
+
+		return responseBody;
+
+	}
+	
+	/**
+	 * prepares the request
+	 * 
+	 * @param requestHTTPDTO
+	 *            - holds the request data for a REST call
+	 * @param serviceName
+	 *            - service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 */
+	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
+			Class<?> responseType, String url) {
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
+				"Preparing request");
+
+		requestHTTPDTO.setHttpMethod(
+				HttpMethod.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.HTTPMETHOD)));
+		requestHTTPDTO.setHttpHeaders(new HttpHeaders());
+		requestHTTPDTO.setRequestBody(request);
+		requestHTTPDTO.setClazz(Object.class);
+		requestHTTPDTO.setIsSignRequired(false);
+		try {
+			requestHTTPDTO.setUri(new URI(url));
+		} catch (URISyntaxException e) {
+		}
+		// set timeout
+		setTimeout(requestHTTPDTO);
+		// Headers
+		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
+		requestHTTPDTO.setAuthRequired(false);
+	}
+	
+	/**
 	 * Prepare GET request.
 	 *
 	 * @param requestHTTPDTO the request HTTPDTO

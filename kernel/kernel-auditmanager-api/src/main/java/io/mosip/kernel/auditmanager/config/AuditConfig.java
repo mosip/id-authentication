@@ -1,15 +1,10 @@
 package io.mosip.kernel.auditmanager.config;
 
-
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.datamapper.orika.builder.DataMapperBuilderImpl;
 
 /**
  * The configuration class for Audit having package location to scan
@@ -29,8 +24,8 @@ public class AuditConfig {
 	 * @return The {@link ModelMapper}
 	 */
 	@Bean
-	public DataMapper<AuditRequestDto, Audit> datamapper() {
-		return new DataMapperBuilderImpl<>(AuditRequestDto.class, Audit.class).build();
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 
 }

@@ -41,7 +41,12 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
 public class CleanUpServiceTest {
 
 	@InjectMocks
-	private FileManagerImpl fileManager;
+	private FileManagerImpl fileManager = new FileManagerImpl() {
+		@Override
+		public String getExtension() {
+			return ".zip";
+		}
+	};
 
 	private File file;
 
@@ -53,6 +58,9 @@ public class CleanUpServiceTest {
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
 
+	@Value("${registration.processor.packet.ext}")
+	private String extention;
+	
 	@Mock
 	private Environment env;
 
@@ -63,6 +71,7 @@ public class CleanUpServiceTest {
 		// Mockito.when(env.getProperty(any()).thenReturn("");
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
+		when(env.getProperty("registration.processor.packet.ext")).thenReturn(extention);
 
 	}
 
@@ -200,7 +209,7 @@ public class CleanUpServiceTest {
 	public void getFileTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		File file = FileUtils.getFile(DirectoryPathDto.VIRUS_SCAN_ENC.toString(), fileNameWithoutExtn + null);
+		File file = FileUtils.getFile(DirectoryPathDto.VIRUS_SCAN_ENC.toString(), fileName );
 		File getFile = fileManager.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
 		assertEquals(file.getName().trim(), getFile.getName().trim());
 	}

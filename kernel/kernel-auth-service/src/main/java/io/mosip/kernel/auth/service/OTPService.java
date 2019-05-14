@@ -23,6 +23,6 @@ public interface OTPService {
 
 	AuthNResponseDto sendOTPForUin(MosipUserDto mosipUser, List<String> otpChannel, String appId);
 	
-	AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser);
+	AuthNResponseDto sendOTP(MosipUserDto mosipUser, OtpUser otpUser) throws Exception;
 
 }

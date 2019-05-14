@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -42,7 +42,7 @@ public class GlobalParamServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 
 	@InjectMocks
 	private GlobalParamServiceImpl gloablContextParamServiceImpl;

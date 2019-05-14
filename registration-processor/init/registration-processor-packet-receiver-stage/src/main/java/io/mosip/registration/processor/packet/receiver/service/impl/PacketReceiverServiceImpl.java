@@ -117,7 +117,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/** The decryptor. */
 	@Autowired
-	private Decryptor decryptor;
+	private Decryptor packetReceiverDecryptor;
 
 	/** The storage flag. */
 	private Boolean storageFlag = false;
@@ -448,12 +448,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {
-				InputStream decryptedData = decryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
+				InputStream decryptedData = packetReceiverDecryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
 						registrationId);
 				scanningFlag = scanFile(decryptedData);
 			}
 			if (scanningFlag) {
-				fileManager.put(registrationId, encryptedInputStream, DirectoryPathDto.LANDING_ZONE);
+				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray), DirectoryPathDto.LANDING_ZONE);
 				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());

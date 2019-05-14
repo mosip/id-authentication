@@ -22,7 +22,7 @@ public class PrintApiConfig {
 	public Docket printingapiBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Print PDF").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.printing.api.controller"))
-				.paths(PathSelectors.ant("/registration-processor/*/*")).build();
+				.paths(PathSelectors.ant("/*")).build();
 	}
 
 }

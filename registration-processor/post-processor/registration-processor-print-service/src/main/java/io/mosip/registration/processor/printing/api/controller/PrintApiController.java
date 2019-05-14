@@ -44,7 +44,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author M1048358 Alok
  */
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "Print PDF")
 public class PrintApiController {
 
@@ -80,7 +79,8 @@ public class PrintApiController {
 	 * @return the file
 	 * @throws RegPrintAppException
 	 */
-	@PostMapping(path = "/print/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+	@PostMapping(path = "/uincard", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ApiOperation(value = "Service to get Pdf of UIN Card", response = Object.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "UIN card is successfully fetched")})
 	public ResponseEntity<Object> getFile(@Valid @RequestBody(required = true) PrintRequest printRequest,
@@ -98,6 +98,7 @@ public class PrintApiController {
                 .header("Content-Disposition", "attachment; filename=\"" +
                         printRequest.getRequest().getIdValue() + ".pdf\"")
                 .body((Object) resource);
+
 	}
 
 	private void validateRequest(RequestDTO dto, Errors errors ) throws RegPrintAppException{

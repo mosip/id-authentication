@@ -194,6 +194,7 @@ public class RegPacketStatusServiceTest {
 		Registration reg=new Registration();
 		reg.setId("123456");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		packetsToBeSynched.add(reg);
 		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
 		ResponseDTO responseDTO = new ResponseDTO();

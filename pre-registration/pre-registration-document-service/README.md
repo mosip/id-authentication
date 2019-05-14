@@ -11,7 +11,7 @@ server.port=9093
 server.servlet.context-path=/preregistration/v1
 ```
 #### Url 
-```https://{dns-name}:9093/preregistration/v1/document/swagger-ui.html```
+```https://{dns-name}:9093/preregistration/v1/documents/swagger-ui.html```
 
 [Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
