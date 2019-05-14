@@ -61,9 +61,17 @@ public enum IdRepoErrorConstants {
 	
 	INVALID_VID("IDR-VID-002","%s VID"),
 	
+	INVALID_UIN("IDR-VID-008","%s UIN"),
+	
 	INVALID_INPUT_PARAMETER_VID("IDR-VID-001","Invalid Input Parameter - %s"),
 	/** The missing input parameter. */
-	MISSING_INPUT_PARAMETER_VID("IDR-VID-007", "Missing Input Parameter - %s");
+	MISSING_INPUT_PARAMETER_VID("IDR-VID-007", "Missing Input Parameter - %s"),
+	
+	UIN_RETRIEVAL_FAILED("IDR-VID-009", "Failed to retrieve uin data using Identity Service"),
+	
+	VID_GENERATION_FAILED("IDR-VID-003","Could not generate VID"),
+	
+	VID_CREATION_FAILED("IDR-VID-005","Could not generate/regenerate VID as per policy");
 	
 
 	/** The error code. */

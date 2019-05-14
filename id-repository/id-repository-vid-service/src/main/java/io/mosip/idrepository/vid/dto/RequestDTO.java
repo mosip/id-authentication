@@ -11,7 +11,7 @@ import lombok.Data;
  *
  */
 @Data
-public class RequestDto {
+public class RequestDTO {
 
 	/** The Value to hold vidStatus */
 	private String vidStatus;
