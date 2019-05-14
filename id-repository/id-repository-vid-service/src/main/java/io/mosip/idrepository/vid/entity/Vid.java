@@ -32,6 +32,7 @@ public class Vid {
 	private String vid;
 	
 	/** The uin Hash value */
+	@Column(name = "uin_hash")
 	private String uinHash;
 	
 	/** The uin value */
@@ -50,6 +51,7 @@ public class Vid {
 	private LocalDateTime expiryDTimes;
 
 	/** The value to hold status Code */
+	@Column(name = "status_code")
 	private String statusCode;
 
 	/** The value to hold created By */
@@ -69,6 +71,7 @@ public class Vid {
 	private LocalDateTime updatedDTimes;
 
 	/** The boolean of isDeleted */
+	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
 	/** The value to hold deleted DTimes */

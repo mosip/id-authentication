@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class VidPolicy {
 
-	private String validForInMinutes;
+	private Integer validForInMinutes;
 	
-	private String allowedTransactions;
+	private Integer allowedTransactions;
 	
-	private String allowedInstances;
+	private Integer allowedInstances;
 	
-	private String autoRestoreAllowed;
+	private Boolean autoRestoreAllowed;
 	
 	private String restoreOnAction;
 }

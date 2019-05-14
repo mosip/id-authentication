@@ -116,6 +116,7 @@ public class RestHelper {
 							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
+			ExceptionUtils.getStackTrace(e);
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
