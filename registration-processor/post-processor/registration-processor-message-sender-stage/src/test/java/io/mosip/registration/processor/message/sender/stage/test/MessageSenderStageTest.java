@@ -14,6 +14,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -54,6 +55,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.vertx.core.Vertx;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class, JsonUtil.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
