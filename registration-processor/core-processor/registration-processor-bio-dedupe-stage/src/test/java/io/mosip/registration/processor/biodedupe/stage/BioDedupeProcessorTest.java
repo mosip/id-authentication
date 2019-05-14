@@ -9,6 +9,7 @@ import static org.mockito.Matchers.anyString;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,12 +186,49 @@ public class BioDedupeProcessorTest {
 	}
 
 	@Test
-	public void testNewInsertionCBEFFFailure() throws Exception {
+	public void testNewInsertionAdultCBEFFNotFoundException() throws Exception {
 
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 		Mockito.when(utilities.getApplicantAge(any())).thenReturn(12);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
-		assertFalse(messageDto.getInternalError());
+		assertTrue(messageDto.getInternalError());
+	}
+
+	@Test
+	public void testNewException() throws Exception {
+		ReflectionTestUtils.setField(bioDedupeProcessor, "ageLimit", "age");
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
+		Mockito.when(utilities.getApplicantAge(any())).thenReturn(12);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+		assertTrue(messageDto.getInternalError());
+	}
+
+	@Test
+	public void testNewInsertionParseException() throws Exception {
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
+		Mockito.when(utilities.getApplicantAge(any())).thenThrow(new ParseException("ParseException", 0));
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+		assertTrue(messageDto.getInternalError());
+	}
+
+	@Test
+	public void testNewInsertionIOException() throws Exception {
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
+		Mockito.when(utilities.getApplicantAge(any())).thenThrow(new IOException("IOException"));
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+		assertTrue(messageDto.getInternalError());
+	}
+
+	@Test
+	public void testNewInsertionAPIResourseException() throws Exception {
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+				.thenThrow(new ApisResourceAccessException());
+		Mockito.when(utilities.getApplicantAge(any())).thenReturn(12);
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+		assertTrue(messageDto.getInternalError());
 	}
 
 	@Test
