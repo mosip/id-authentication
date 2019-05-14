@@ -180,7 +180,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors, String idFieldName) {
-		String allowedIdTypes = env.getProperty(IdAuthConfigKeyConstants.MOSIP_IDTYPE_ALLOWED);
+		String allowedIdTypes = env.getProperty(getAllowedIdTypesConfigKey());
 		Set<String> allowedIdTypeSet = Stream.of(allowedIdTypes.split(",")).filter(str -> !str.isEmpty())
 				.collect(Collectors.toSet());
 		// Checks for null IdType
@@ -230,6 +230,10 @@ public abstract class IdAuthValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
+	}
+
+	protected String getAllowedIdTypesConfigKey() {
+		return IdAuthConfigKeyConstants.MOSIP_IDTYPE_ALLOWED;
 	}
 
 	/**

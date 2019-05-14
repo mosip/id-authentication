@@ -1,5 +1,7 @@
 package io.mosip.authentication.vid.service.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,7 @@ import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
+import io.mosip.authentication.vid.service.integration.VIDManager;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -37,7 +39,7 @@ public class VIDController {
 
 	/** The Static Pin Facade */
 	@Autowired
-	private VIDServiceImpl vidService;
+	private VIDManager vidManager;
 
 	/**
 	 * Generate VID.
@@ -53,7 +55,7 @@ public class VIDController {
 		VIDResponseDTO vidResponse = null;
 		try {
 			uinValidator.validateId(uin);
-			vidResponse = vidService.generateVID(uin);
+			vidResponse = vidManager.getVIDByUIN(uin);
 		} catch (IdAuthenticationBusinessException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateVID",
 					e.getErrorTexts() == null || e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
