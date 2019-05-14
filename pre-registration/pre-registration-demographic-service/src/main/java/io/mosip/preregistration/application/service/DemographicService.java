@@ -515,8 +515,8 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
-
-					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+			        		
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
 						statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 						statusdto.setStatusCode(demographicEntity.getStatusCode());
 						response.setResponse(statusdto);
@@ -629,7 +629,7 @@ public class DemographicService {
 					// userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
-					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
 
 						DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 						response.setResponse(createDto);

@@ -100,7 +100,7 @@ public class LoginController {
 	 * @return AuthNResponse
 	 */
 	@PostMapping(value="/invalidateToken",produces=MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Inavlidate the token")
+	@ApiOperation(value = "Invalidate the token")
 	@ResponseStatus(value=HttpStatus.OK)
 	public ResponseEntity<MainResponseDTO<AuthNResponse>> invalidateToken(HttpServletRequest req){
 		log.info("sessionId", "idType", "id",

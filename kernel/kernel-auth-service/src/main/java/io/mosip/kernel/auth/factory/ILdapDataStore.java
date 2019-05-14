@@ -358,7 +358,7 @@ public class ILdapDataStore implements IDataStore {
 		for (Entry entry : peoplesData) {
 			UserDetailsSalt saltDetails = new UserDetailsSalt();
 			saltDetails.setUserId(entry.get("uid").get().toString());
-			if (entry.get("userPassword").get() != null) {
+			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
 					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));

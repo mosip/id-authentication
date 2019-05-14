@@ -15,10 +15,11 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
  * The Class BioDedupeApiApp.
  */
 @SpringBootApplication
-@ComponentScan(basePackages = { "io.mosip.registration.processor.stages.config",
-		"io.mosip.registration.processor.demo.dedupe.config", "io.mosip.registration.processor.status.config",
-		"io.mosip.registration.processor.packet.storage.config", "io.mosip.registration.processor.core.config",
-		"io.mosip.registration.processor.core.kernel.beans"  }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+
+@ComponentScan(basePackages = { "io.mosip.registration.processor.bio.dedupe.api.*",
+		"io.mosip.registration.processor.packet.storage.*", "io.mosip.registration.processor.rest.client.*",
+		"io.mosip.registration.processor.bio.dedupe.*",
+		"io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 				RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class,
 				KernelConfig.class }))
 

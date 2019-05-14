@@ -114,7 +114,7 @@ public class DocumentUploadServiceTest {
 	@MockBean
 	private CryptoUtil cryptoUtil;
 	@MockBean
-	private VirusScanner<Boolean, String> virusScan;
+	private VirusScanner<Boolean, InputStream> virusScan;
 
 	private MockMultipartFile mockMultipartFile;
 	private MockMultipartFile mockMultipartFileSizeCheck;
