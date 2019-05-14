@@ -221,9 +221,11 @@ public class OTPManagerTest {
 		serviceError.setMessage(OtpErrorConstants.USERBLOCKED.getErrorMessage());
 		errors.add(serviceError);
 		response.setErrors(errors);
-		OtpGeneratorResponseDto otpGeneratorResponsetDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponsetDto.setStatus("failure");
-		otpGeneratorResponsetDto.setMessage("USER_BLOCKED");
+		ResponseWrapper<Map> otpGeneratorResponsetDto = new ResponseWrapper<>();
+		Map<String, Object> response1 = new HashMap<>();
+		response1.put("status", "failure");
+		response1.put("message", USER_BLOCKED);
+		otpGeneratorResponsetDto.setResponse(response1);
 		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put("status", "failure");
 		valueMap.put("message", "USER_BLOCKED");
@@ -232,8 +234,8 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, null,
 				OTPValidateResponseDTO.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE, response.toString(), response));
+
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		otpManager.sendOtp(otpRequestDTO, "123456", "Name in PrimaryLang", "Name in SecondaryLang",
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
