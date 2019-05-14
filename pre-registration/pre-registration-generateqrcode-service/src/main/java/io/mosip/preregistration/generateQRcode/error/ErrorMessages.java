@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.error;
+package io.mosip.preregistration.generateqrcode.error;
 
 /**
  * @author Sanober Noor

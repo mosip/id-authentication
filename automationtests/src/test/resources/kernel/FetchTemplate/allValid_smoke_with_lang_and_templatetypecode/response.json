@@ -1,4 +1,9 @@
 {
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-19T11:17:38.322Z",
+  "metadata": null,
+  "response": {
   "templates": [
     {
       "id": "1148",
@@ -14,4 +19,6 @@
       "isActive": true
     }
   ]
+},
+  "errors": null
 }

@@ -28,9 +28,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
-import io.mosip.preregistration.core.code.EventId;
-import io.mosip.preregistration.core.code.EventName;
-import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -45,7 +42,6 @@ import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.OtpUser;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.dto.UserOtp;
-import io.mosip.preregistration.login.dto.UserOtpDTO;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
 import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
@@ -105,6 +101,9 @@ public class LoginService {
 	@Value("${appId}")
 	private String appId;
 	
+	@Value("${context}")
+	private String context;
+	
 	@Autowired
 	AuditLogUtil auditLogUtil;
 	
@@ -121,10 +120,7 @@ public class LoginService {
 //	@Value("${mosip.prereg.app-id}")
 //	private String appId;
 	
-	/**
-	 * UserId for auditing
-	 */
-	private String auditUserId;
+	
 	/**
 	 * It will fetch otp from Kernel auth service  and send to the userId provided
 	 * 
@@ -138,13 +134,13 @@ public class LoginService {
 		OtpRequestDTO otp=userOtpRequest.getRequest();
 		requiredRequestMap.put("id",sendOtpId);
 		response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
-		boolean isRetrieveSuccess = false;
+		
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
-				auditUserId=otp.getUserId();
-				otpChannel=loginCommonUtil.validateUserIdAndLangCode(otp.getUserId(),otp.getLangCode());
-				OtpUser user=new OtpUser(otp.getUserId(), otp.getLangCode(), otpChannel, appId, useridtype);
+				
+				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
+				OtpUser user=new OtpUser(otp.getUserId(),otpChannel, appId, useridtype,null,context);
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
@@ -160,7 +156,7 @@ public class LoginService {
 				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
 				response.setResponse(responseBody);
 				}
-			isRetrieveSuccess = true;
+			
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -187,12 +183,10 @@ public class LoginService {
 		response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
 		requiredRequestMap.put("id",userIdOtpId);
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
 				loginCommonUtil.validateOtpAndUserid(user);
 				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
-				UserOtpDTO userOtpDTO=new UserOtpDTO();
-				userOtpDTO.setRequest(userOtp);
 				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(userOtp);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
@@ -241,7 +235,7 @@ public class LoginService {
 		MainResponseDTO<AuthNResponse> response  = new MainResponseDTO<>();
 		response.setId(invalidateTokenId);
 		response.setVersion(version);
-		boolean isRetrieveSuccess = false;
+		
 		try {
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
@@ -255,7 +249,7 @@ public class LoginService {
 			ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 			authNResponse = (AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()), AuthNResponse.class);
 			response.setResponse(authNResponse);
-			isRetrieveSuccess = true;
+			
 		}
 		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
@@ -308,8 +302,8 @@ public class LoginService {
 				reqParams.add(uiParams[i]);
 			}
 			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = loginCommonUtil.configRestCall(globalFileName);
-				String preregParam = loginCommonUtil.configRestCall(preRegFileName);
+				String globalParam = loginCommonUtil.getConfig(globalFileName);
+				String preregParam = loginCommonUtil.getConfig(preRegFileName);
 				Properties prop1 = loginCommonUtil.parsePropertiesString(globalParam);
 				Properties prop2 = loginCommonUtil.parsePropertiesString(preregParam);
 				loginCommonUtil.getConfigParams(prop1,configParams,reqParams);

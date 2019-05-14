@@ -4,7 +4,7 @@ package io.mosip.preregistration.batchjobservices.repository;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 
 /**
  * @author M1043008

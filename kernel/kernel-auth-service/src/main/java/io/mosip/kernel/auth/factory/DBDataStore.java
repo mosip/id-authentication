@@ -17,13 +17,19 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
+import io.mosip.kernel.auth.entities.UserNameDto;
+import io.mosip.kernel.auth.entities.User;
+import io.mosip.kernel.auth.entities.UserCreationRequestDto;
+import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -81,7 +87,8 @@ public class DBDataStore implements IDataStore {
 		if (mosipUserDto != null && (Arrays.areEqual(password, test))) {
 			return mosipUserDto;
 		} else {
-			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.PASSWORD_VALIDATION_ERROR.getErrorMessage());
 		}
 	}
 
@@ -227,6 +234,36 @@ public class DBDataStore implements IDataStore {
 
 	@Override
 	public RIdDto getRidFromUserId(String userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserCreationResponseDto createAccount(UserCreationRequestDto userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

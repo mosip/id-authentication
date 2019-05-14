@@ -325,6 +325,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		} else if (individualIdType.equals(IdType.VID.getType())) {
 			return IdType.VID;
 		}
+		else if (individualIdType.equals(IdType.USER_ID.getType())) {
+			return IdType.USER_ID;
+		}
 		return null;
 	}
 	

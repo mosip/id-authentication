@@ -50,8 +50,9 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	 * @param object
 	 * @param contentType
 	 */
-	public void setResponse(RoutingContext ctx, Object object, String contentType) {
+	public void setResponse(RoutingContext ctx, Object object, String contentType,String digitalSignauture) {
 		ctx.response().putHeader("content-type", contentType)
+					  .putHeader("Response-Signature", digitalSignauture)
 					  .putHeader("Access-Control-Allow-Origin", "*")
 					  .putHeader("Access-Control-Allow-Methods","GET, POST") 
 					  .setStatusCode(200)

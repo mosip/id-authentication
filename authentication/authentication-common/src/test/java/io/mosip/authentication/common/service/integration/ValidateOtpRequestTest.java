@@ -26,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.integration.OTPManager;
+import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -45,7 +45,7 @@ import io.mosip.authentication.core.indauth.dto.PinDTO;
 public class ValidateOtpRequestTest {
 
 	@InjectMocks
-	RestHelper restHelper;
+	RestHelperImpl restHelper;
 
 	@Autowired
 	MockMvc mvc;

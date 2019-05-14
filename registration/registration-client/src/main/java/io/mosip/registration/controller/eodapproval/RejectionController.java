@@ -20,10 +20,11 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.RegistrationApprovalDTO;
+import io.mosip.registration.controller.vo.RegistrationApprovalVO;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
-import io.mosip.registration.service.MasterSyncService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -53,6 +54,9 @@ public class RejectionController extends BaseController implements Initializable
 
 	@Autowired
 	private MasterSyncService masterSyncService;
+	
+	@Autowired
+	private RegistrationApprovalController registrationApprovalController;
 	/**
 	 * Combobox for for rejection reason
 	 */
@@ -68,10 +72,12 @@ public class RejectionController extends BaseController implements Initializable
 	private List<Map<String, String>> rejectionmapList;
 
 	/** The rej reg data. */
-	private RegistrationApprovalDTO rejRegData;
+	private RegistrationApprovalVO rejRegData;
 
 	/** The rejection table. */
-	private TableView<RegistrationApprovalDTO> regRejectionTable;
+	private TableView<RegistrationApprovalVO> regRejectionTable;
+	
+	private ObservableList<RegistrationApprovalVO> observableList;
 
 	private String controllerName;
 	
@@ -106,11 +112,12 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param mapList
 	 * @param table
 	 */
-	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList,
-			TableView<RegistrationApprovalDTO> table, String controller) {
+	public void initData(RegistrationApprovalVO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
+			TableView<RegistrationApprovalVO> table, String controller) {
 		rejRegData = regData;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
+		observableList = oList;
 		regRejectionTable = table;
 		controllerName = controller;
 	}
@@ -144,12 +151,13 @@ public class RejectionController extends BaseController implements Initializable
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
 			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
-			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
-					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
-					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
+			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
+					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
+					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
 
-			regRejectionTable.getItems().set(rowNum, approvalDTO);
+			observableList.set(rowNum, approvalDTO);
+			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
 			regRejectionTable.getFocusModel().focus(rowNum);
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

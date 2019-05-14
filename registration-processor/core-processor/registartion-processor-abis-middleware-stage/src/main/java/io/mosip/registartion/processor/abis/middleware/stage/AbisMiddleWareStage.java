@@ -151,6 +151,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;

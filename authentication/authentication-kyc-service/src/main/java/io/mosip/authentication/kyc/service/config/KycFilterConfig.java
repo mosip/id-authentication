@@ -23,7 +23,7 @@ public class KycFilterConfig {
 	public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
 		FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new KycAuthFilter());
-		registrationBean.addUrlPatterns("/kyc/*");
+		registrationBean.addUrlPatterns("/*");
 		return registrationBean;
 	}
 

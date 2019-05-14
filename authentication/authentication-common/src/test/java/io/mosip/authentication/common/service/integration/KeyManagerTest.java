@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.integration;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -31,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
-import io.mosip.authentication.common.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
@@ -66,15 +64,11 @@ public class KeyManagerTest {
 	@InjectMocks
 	private KeyManager keyManager;
 
-	@Autowired
-	private Environment environment;
-
-	/**
-	 * Before.
-	 */
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(keyManager, "environment", environment);
+		ReflectionTestUtils.setField(keyManager, "keySplitter", "#KEY_SPLITTER#");
+		ReflectionTestUtils.setField(keyManager, "partnerId", "PARTNER");
+		ReflectionTestUtils.setField(keyManager, "appId", "IDA");
 	}
 
 	/**
@@ -84,25 +78,21 @@ public class KeyManagerTest {
 	 * @throws IDDataValidationException    the ID data validation exception
 	 * @throws JsonProcessingException      the json processing exception
 	 */
-	@Ignore
 	@Test
 	public void requestDataTest()
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		ResponseWrapper<Map<String, Object>> symmetricKeyResponse = new ResponseWrapper<>();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj2tDM");
+		new ResponseWrapper<>();
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "eyJ0aW1lc3RhbXAiOiIyMDE5LTA1LTA3VDEyOjQxOjU3LjA4NiswNTozMCIsInRyYW5zYWN0aW9uSUQiOiIxMjM0NTY3ODkwIiwiYmlvbWV0cmljcyI6W3siZGF0YSI6eyJiaW9UeXBlIjoiRklEIiwiYmlvU3ViVHlwZSI6IlVOS05PV04iLCJkZXZpY2VQcm92aWRlcklEIjoiY29nZW50IiwiYmlvVmFsdWUiOiJSazFTQUNBeU1BQUFBQUZjQUFBQlBBRmlBTVVBeFFFQUFBQW9OVUI5QU1GMFY0Q0JBS0JCUEVDMEFMNjhaSUM0QUtqTlpFQmlBSnZXWFVCUEFOUFdOVURTQUs3UlVJQzJBUUlmWkVESkFQTXhQRUJ5QUd3UFhZQ3BBUllQWkVDZkFGam9aRUNHQUV2OVpFQkVBRm10VjBCcEFVR05YVUMvQVVFRVNVQ1VBVklFUEVDMkFWTnhQSUNjQUxXdVpJQ3VBTG0zWkVDTkFKcXhRMENVQUkzR1EwQ1hBUGdoVjBCVkFLRE9aRUJmQVBxSFhVQkRBS2UvWklCOUFHM3hYVURQQUliWlVFQmNBR1loWkVDSUFTZ0hYWUJKQUdBblYwRGpBUjRqRzBES0FUcUpJVUNHQURHU1pFRFNBVVlHSVVBeEFEK25WMENYQUsrb1NVQm9BTHI2UTRDU0FPdUtYVUNpQUl2TlpFQzlBSnpRWklCTkFMYlRYVUJCQUw2OFYwQ2VBSERaWkVDd0FIUGFaRUJSQVB3SFVJQkhBSFcyWFVEWEFSQVVEVUM0QVM0SFpFRFhBUzBDUTBDWUFETDRaRUNzQVV6dVBFQmtBQ2dSWkFBQSIsInRpbWVzdGFtcCI6IjIwMTktMDUtMDdUMTM6NDE6NTcuMDg2KzA1OjMwIiwidHJhbnNhY3Rpb25JRCI6IjEyMzQ1Njc4OTAifX1dfQ");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
-		CryptomanagerResponseDto cryptoResponse = new CryptomanagerResponseDto(Base64.encodeBase64URLSafeString(
-				("{\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\"}")
-						.getBytes()));
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
 		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper);
-		assertTrue(decryptedReqMap.containsKey("secretKey"));
+		assertTrue(decryptedReqMap.containsKey("transactionID"));
 	}
 
 	/**
@@ -118,10 +108,10 @@ public class KeyManagerTest {
 			throws IdAuthenticationAppException, IDDataValidationException, JsonProcessingException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
@@ -198,10 +188,10 @@ public class KeyManagerTest {
 	public void requestInvalidDataIOException() throws IDDataValidationException, IdAuthenticationAppException {
 		Map<String, Object> reqMap = createRequest();
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		Map<String, Object> symKeyMap = new HashMap<>();
-		symKeyMap.put("symmetricKey", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
 		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("response", symKeyMap);
+		responseMap.put("response", cryptoResMap);
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
@@ -262,25 +252,6 @@ public class KeyManagerTest {
 	}
 
 	/**
-	 * Creates the response.
-	 *
-	 * @return the map
-	 */
-	private Map<String, Object> createResponse() {
-		String data = "{\\r\\n\\tidentity = {\\r\\n\\t\\tleftIndex = [{\\r\\n\\t\\t\\tvalue = Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT + oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN \\/ QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI + oZECLAG0FZAAA\\r\\n\\t\\t}]\\r\\n\\t}\\r\\n}";
-		Map<String, Object> readValue = null;
-		try {
-			readValue = mapper.readValue(data, new TypeReference<Map<String, Object>>() {
-			});
-			readValue.put("request", Base64.decodeBase64((String) readValue.get("request")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return readValue;
-	}
-
-	/**
 	 * Gets the rest request DTO.
 	 *
 	 * @return the rest request DTO
@@ -294,6 +265,44 @@ public class KeyManagerTest {
 		restRequestDTO.setResponseType(OtpGeneratorResponseDto.class);
 		restRequestDTO.setTimeout(23);
 		return restRequestDTO;
+	}
+	
+	private RestRequestDTO getRestRequestDTOEncrypt() {
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		restRequestDTO.setHttpMethod(HttpMethod.POST);
+		restRequestDTO.setUri("http://localhost:8089/cryptomanager/v1.0/encrypt");
+		CryptomanagerRequestDto cryptomanagerRqt = new CryptomanagerRequestDto();
+		restRequestDTO.setRequestBody(cryptomanagerRqt);
+		restRequestDTO.setResponseType(OtpGeneratorResponseDto.class);
+		restRequestDTO.setTimeout(23);
+		return restRequestDTO;
+	}
+	
+	@Test
+	public void encryptDataTest1() throws IDDataValidationException, IdAuthenticationAppException {
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("data", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("response", cryptoResMap);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+		.thenReturn(getRestRequestDTOEncrypt());
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
+		assertNotNull(keyManager.encryptData(createIdentity()));
+	}
+	
+	@Test(expected=IdAuthenticationAppException.class)
+	public void encryptDataTest2() throws IDDataValidationException, IdAuthenticationAppException {
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+		.thenReturn(getRestRequestDTOEncrypt());
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
+		keyManager.encryptData(createIdentity());
+	}
+	
+	private Map<String, Object> createIdentity(){
+		String identity = "{phoneNumber=[{value=9000007865}], gender=[{language=ara, value=الذكر}, {language=fra, value=mâle}], dob=[{value=1955/04/15}], name=[{language=ara, value=ابراهيم بن علي}, {language=fra, value=Ibrahim Ibn Ali}], location1=[{language=ara, value=الدار البيضاء}, {language=fra, value=Casablanca}], location2=[{language=ara, value=طنجة - تطوان - الحسيمة}, {language=fra, value=Tanger-Tétouan-Al Hoceima}], addressLine1=[{language=ara, value=عنوان العينة سطر 1}, {language=fra, value=exemple d'adresse ligne 1}], emailId=[{value=adc.xyz@mindtree.com}], addressLine2=[{language=ara, value=عنوان العينة سطر 2}, {language=fra, value=exemple d'adresse ligne 2}], location3=[{language=ara, value=فاس-مكناس}, {language=fra, value=Fès-Meknès}], addressLine3=[{language=ara, value=عنوان العينة سطر 2}, {language=fra, value=exemple d'adresse ligne 2}]}";
+		Map<String, Object> map = new HashMap<>();
+		map.put("identity", identity);
+		return map;
 	}
 
 }

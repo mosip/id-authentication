@@ -43,6 +43,10 @@ The key non-functional requirements are
 
 **Solution**
 
+**Class Diagram**
+
+![Document Service](_images/_class_diagram/document-service.png)
+
 **Document Upload:**
 
 - Create a REST API as '/documents' with POST method which accept the pre-registartion id from the request path parameter, document and document's JSON object from the request part parameter.
@@ -57,12 +61,9 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the document save mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Upload](_class_diagram/document-service.png)
 **Sequence Diagram**
-![Pre-Registration Document Upload](_sequence_diagram/document-upload.png)
 
-
+![Pre-Registration Document Upload](_images/_sequence_diagram/document-upload.png)
 
 
 **Document Copy:**
@@ -77,12 +78,9 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the document copy mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Copy](_class_diagram/document-service.png)
 **Sequence Diagram**
-![Pre-Registration Document Copy](_sequence_diagram/document-copy.png)
 
-
+![Pre-Registration Document Copy](_images/_sequence_diagram/document-copy.png)
 
 **Reterive All documents metadata for the pre-registartion:**
 
@@ -96,12 +94,9 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive all documents metadata mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Reterive All Metadata](_class_diagram/document-service.png)
 **Sequence Diagram**
-![Pre-Registration Document Reterive All Metadata](_sequence_diagram/document-reterive-by-preRegId.png)
 
-
+![Pre-Registration Document Reterive All Metadata](_images/_sequence_diagram/document-reterive-by-preRegId.png)
 
 **Reterive document :**
 
@@ -119,10 +114,9 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration reterive document mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Reterive](_class_diagram/document-service.png)
 **Sequence Diagram**
-![Pre-Registration Document Reterive](_sequence_diagram/document-reterive-by-documentId.png)
+
+![Pre-Registration Document Reterive](_images/_sequence_diagram/document-reterive-by-documentId.png)
 
 
 **Discard Document:**
@@ -135,10 +129,10 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration document delete mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Delete](_class_diagram/document-service.png)
+
 **Sequence Diagram**
-![Pre-Registration Document Delete](_sequence_diagram/document-delete-by-documentId.png)
+
+![Pre-Registration Document Delete](_images/_sequence_diagram/document-delete-by-documentId.png)
 
 
 **Discard All Document:**
@@ -151,10 +145,10 @@ The key non-functional requirements are
 
 - Audit the exception/start/exit of the each stages of the Pre-registration delete all mechanism using AuditManager component.
 
-**Class Diagram**
-![Pre-Registration Document Delete All](_class_diagram/document-service.png)
+
 **Sequence Diagram**
-![Pre-Registration Document Delete All](_sequence_diagram/document-delete-preRegId.png)
+
+![Pre-Registration Document Delete All](_images/_sequence_diagram/document-delete-preRegId.png)
 
 
 **Success / Error Code** 

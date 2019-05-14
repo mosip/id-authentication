@@ -30,7 +30,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
@@ -41,9 +41,9 @@ import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.impl.CenterMachineReMapServiceImpl;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
+import io.mosip.registration.service.remap.impl.CenterMachineReMapServiceImpl;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
@@ -76,7 +76,7 @@ public class CenterMachineReMapServiceTest {
 	@Mock
 	private Connection connection;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@Mock
 	private PreRegistrationDataSyncDAO preRegistrationDataSyncDAO;
 	@Autowired

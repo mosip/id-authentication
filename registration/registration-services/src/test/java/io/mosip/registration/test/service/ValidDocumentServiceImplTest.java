@@ -18,7 +18,7 @@ import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.ApplicantValidDocument;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.id.ApplicantValidDocumentID;
-import io.mosip.registration.service.impl.ValidDocumentServiceImpl;
+import io.mosip.registration.service.doc.category.impl.ValidDocumentServiceImpl;
 
 public class ValidDocumentServiceImplTest {
 

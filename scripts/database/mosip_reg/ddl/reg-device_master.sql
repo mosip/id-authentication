@@ -3,12 +3,6 @@
 -- table 		: device_master		- Master List of device used for registration
 -- table alias  : devicem
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------
 create table reg.device_master (
 
@@ -39,7 +33,4 @@ create table reg.device_master (
  alter table reg.device_master add constraint pk_devicem_id primary key (id, lang_code)
  ;
 
--- indexes section -------------------------------------------------
--- create index idx_devicem_<colX> on reg.device_master (colX )
--- ;
 

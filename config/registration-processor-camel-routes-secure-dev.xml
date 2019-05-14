@@ -1,9 +1,9 @@
 <routes xmlns="http://camel.apache.org/schema/spring">
-	<!-- Registration connector to packet-validator Route -->
-	<route id="registration-connector-->packet-validator route">
-	<from uri="vertx:registration-connector-bus-out" />
+	<!-- packet-uploader to packet-validator Route -->
+	<route id="packet-uploader-->packet-validator route">
+	<from uri="vertx:packet-uploader-bus-out" />
 	<log
-			message="registration-connector-->packet-validator route ${bodyAs(String)}" />
+			message="packet-uploader-->packet-validator route ${bodyAs(String)}" />
 		<choice>
 			<when>
 				<simple>${bodyAs(String)} contains '"isValid":true'</simple>

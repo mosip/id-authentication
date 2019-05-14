@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -81,6 +82,8 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant KYC. */
 	private static final String KYC = null;
 
+	private static final String SESSION_KEY = "requestSessionKey";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,15 +94,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decipherRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-			requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
+			
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
-				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
-				if (null != request.get(SECRET_KEY)) {
-					SecretKey secretKey = (SecretKey) request.get(SECRET_KEY);
-					byte[] reqHMAC = keyManager.symmetricDecrypt(secretKey, (byte[]) requestBody.get(REQUEST_HMAC));
-					request.remove(SECRET_KEY);
-					validateRequestHMAC(new String(reqHMAC, StandardCharsets.UTF_8),
+				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
+			Map<String, Object> request = keyManager.requestData(requestBody, mapper);
+				if (null != requestBody.get(REQUEST_HMAC)) {
+					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
+					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
+					String reqHMAC = keyManager.kernelDecrypt((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey);
+					validateRequestHMAC(reqHMAC,
 							mapper.writeValueAsString(request));
 
 				}
@@ -125,10 +128,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 		Map<String, String> partnerLkMap = getAuthPart(requestWrapper);
 		String partnerId = partnerLkMap.get(PARTNER_ID);
 		String licenseKey = partnerLkMap.get(MISPLICENSE_KEY);
-		String mispId = licenseKeyMISPMapping(licenseKey);
-		validPartnerId(partnerId);
-		String policyId = validMISPPartnerMapping(partnerId, mispId);
-		checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
+
+		if (partnerId != null && licenseKey != null) {
+			String mispId = licenseKeyMISPMapping(licenseKey);
+			validPartnerId(partnerId);
+			String policyId = validMISPPartnerMapping(partnerId, mispId);
+			checkAllowedAuthTypeBasedOnPolicy(policyId, requestBody);
+		}
 	}
 
 	/*
@@ -502,8 +508,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 				String[] paramsArray = Stream.of(splitedUrlByContext[1].split("/")).filter(str -> !str.isEmpty())
 						.toArray(size -> new String[size]);
 
-				params.put(PARTNER_ID, paramsArray[1]);
-				params.put(MISPLICENSE_KEY, paramsArray[2]);
+				if (paramsArray.length >= 2) {
+					params.put(PARTNER_ID, paramsArray[paramsArray.length - 2]);
+					params.put(MISPLICENSE_KEY, paramsArray[paramsArray.length - 1]);
+				}
 			}
 		}
 		return params;

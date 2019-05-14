@@ -11,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -18,8 +20,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateRequest;
 import io.mosip.kernel.auth.entities.otp.OtpGenerateRequestDto;
@@ -54,8 +59,8 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.kernel.
-	 * auth.entities.MosipUserDto, java.lang.String)
+	 * io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.
+	 * kernel. auth.entities.MosipUserDto, java.lang.String)
 	 */
 	@Override
 	public OtpGenerateResponseDto generateOTP(MosipUserDto mosipUserDto, String token) {
@@ -64,16 +69,15 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 			OtpGenerateResponseDto otpGenerateResponseDto;
 			OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUserDto);
 			final String url = mosipEnvironment.getGenerateOtpApi();
-			
+
 			RequestWrapper<OtpGenerateRequestDto> reqWrapper = new RequestWrapper<>();
 			reqWrapper.setRequesttime(LocalDateTime.now());
 			reqWrapper.setRequest(otpGenerateRequestDto);
 			HttpHeaders headers = new HttpHeaders();
-			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
-			HttpEntity<RequestWrapper<OtpGenerateRequestDto>> request = new HttpEntity<>(reqWrapper,headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(url, request,
-					String.class);
-			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
+			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+			HttpEntity<RequestWrapper<OtpGenerateRequestDto>> request = new HttpEntity<>(reqWrapper, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
@@ -83,32 +87,53 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				otpGenerateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage());
 			}
 			return otpGenerateResponseDto;
-		} catch (HttpClientErrorException | HttpServerErrorException exp) {
-			System.out.println(exp.getResponseBodyAsString());
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
-		}
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from Internal token services");
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from Internal token services");
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+			}
+		} 
 	}
 
 	@Override
-	public OtpGenerateResponseDto generateOTPMultipleChannels(MosipUserDto mosipUserDto, OtpUser otpUser,String token) {
+	public OtpGenerateResponseDto generateOTPMultipleChannels(MosipUserDto mosipUserDto, OtpUser otpUser,
+			String token) {
 		try {
 			List<ServiceError> validationErrorsList = null;
 			OtpGenerateResponseDto otpGenerateResponseDto;
-			OtpGenerateRequest otpGenerateRequestDto = new OtpGenerateRequest(mosipUserDto,otpUser);
+			OtpGenerateRequest otpGenerateRequestDto = new OtpGenerateRequest(mosipUserDto);
 			final String url = mosipEnvironment.getGenerateOtpApi();
-			
+
 			RequestWrapper<OtpGenerateRequest> reqWrapper = new RequestWrapper<>();
 			reqWrapper.setRequesttime(LocalDateTime.now());
 			reqWrapper.setRequest(otpGenerateRequestDto);
 			HttpHeaders headers = new HttpHeaders();
-			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
-			HttpEntity<RequestWrapper<OtpGenerateRequest>> request = new HttpEntity<>(reqWrapper,headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(url, request,
-					String.class);
-			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());  
+			headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
+			HttpEntity<RequestWrapper<OtpGenerateRequest>> request = new HttpEntity<>(reqWrapper, headers);
+			ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+			validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}

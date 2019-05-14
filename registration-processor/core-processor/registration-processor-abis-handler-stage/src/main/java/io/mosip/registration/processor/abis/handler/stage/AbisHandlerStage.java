@@ -131,6 +131,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 		Boolean isTransactionSuccessful = false;
 		String regId = object.getRid();
 		InternalRegistrationStatusDto registrationStatusDto = null;

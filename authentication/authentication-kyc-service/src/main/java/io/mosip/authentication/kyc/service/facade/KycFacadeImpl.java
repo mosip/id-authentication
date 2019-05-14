@@ -131,7 +131,6 @@ public class KycFacadeImpl implements KycFacade {
 		if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 			response = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					kycAuthRequestDTO.getAllowedKycAttributes(), kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
-			response.setTtl(env.getProperty(IdAuthConfigKeyConstants.EKYC_TTL_HOURS));
 		}
 		if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 			response.setKycStatus(authResponse.isAuthStatus());

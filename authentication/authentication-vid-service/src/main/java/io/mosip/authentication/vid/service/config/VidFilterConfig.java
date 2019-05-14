@@ -23,7 +23,7 @@ public class VidFilterConfig {
 	public FilterRegistrationBean<DefaultIDAFilter> getStaticPinStoreFilter() {
 		FilterRegistrationBean<DefaultIDAFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultIDAFilter());
-		registrationBean.addUrlPatterns("/vid/*");
+		registrationBean.addUrlPatterns("/*");
 		return registrationBean;
 	}
 

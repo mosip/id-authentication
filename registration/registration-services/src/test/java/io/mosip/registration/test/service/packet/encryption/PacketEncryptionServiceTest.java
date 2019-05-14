@@ -17,7 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -30,9 +30,9 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
+import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 import static org.mockito.Mockito.doNothing;
@@ -53,7 +53,7 @@ public class PacketEncryptionServiceTest {
 	@Mock
 	private RegistrationDAO registrationDAO;
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 	@Mock
 	private AuditLogControlDAO auditLogControlDAO;
 	private RegistrationDTO registrationDTO;

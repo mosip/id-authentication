@@ -1,20 +1,18 @@
+
 package io.mosip.authentication.testdata;
 
-import java.io.BufferedWriter; 
-import java.io.FileInputStream; 
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -24,18 +22,12 @@ import org.json.JSONObject;
 import org.testng.Reporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
+import io.mosip.authentication.fw.util.FileUtil;
+import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
-import io.mosip.authentication.testdata.keywords.KernelKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
-import io.mosip.authentication.testdata.keywords.PreRegKeywordUtil;
-import io.mosip.authentication.testdata.keywords.RegKeywordUtil;
 
 /**
  * Precondtion json file according to the input and mapping provided in test
@@ -45,7 +37,7 @@ import io.mosip.authentication.testdata.keywords.RegKeywordUtil;
  */
 public class Precondtion {
 	
-	private static Logger logger = Logger.getLogger(Precondtion.class);
+	private static final Logger PRECON_LOGGER = Logger.getLogger(Precondtion.class);
 
 	/**
 	 * Method will return updated json field value , it will set property of json
@@ -55,9 +47,9 @@ public class Precondtion {
 	 * @param fieldvalue
 	 * @param outputFilePath
 	 * @param propFileName
-	 * @return
+	 * @return map
 	 */
-	public Map<String, String> parseAndWriteTestDataJsonFile(String inputFilePath, Map<String, String> fieldvalue,
+	public static Map<String, String> parseAndWriteTestDataJsonFile(String inputFilePath, Map<String, String> fieldvalue,
 			String outputFilePath, String propFileName) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -68,22 +60,22 @@ public class Precondtion {
 			for (Entry<String, String> map : fieldvalue.entrySet()) {
 				if (map.getValue().contains("LONG:")) {
 					String value = map.getValue().replace("LONG:", "");
-					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Long.parseLong(value));
 				} else if (map.getValue().contains("DOUBLE:")) {
 					String value = map.getValue().replace("DOUBLE:", "");
-					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Double.parseDouble(value));
 				} else if (map.getValue().contains("BOOLEAN:")) {
 					String value = map.getValue();
 					if (value.contains("true"))
-						PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								true);
 					if (value.contains("false"))
-						PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								false);
 				} else
-					PropertyUtils.setProperty(jsonObj, getFieldHierarchy(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
@@ -93,24 +85,31 @@ public class Precondtion {
 			outputJson = outputJson.replaceAll("$version$", RunConfig.getAuthVersion());
 			if (outputJson.contains("$REMOVE$"))
 				outputJson = removeObject(new JSONObject(outputJson));
-			writeFile(outputFilePath, outputJson);
-			logger.info("Updated json file location: " + outputJson.toString());
-			logger.info("Updated json file content: " + toPrettyFormat(outputJson.toString()));
+			FileUtil.writeFile(outputFilePath, outputJson);
+			PRECON_LOGGER.info("Updated json file content: " + JsonPrecondtion.toPrettyFormat(outputJson.toString()));
 			return fieldvalue;
 		} catch (Exception e) {
-			logger.error("Exception Occured: " + e.getMessage());
-			Reporter.log("Exception Occured: " + e.getMessage());
+			PRECON_LOGGER.error("Exception Occured in precondtion message: " + e.getMessage());
+			Reporter.log("Exception Occured in precondtion message: " + e.getMessage());
 			return fieldvalue;
 		}
 	}
 	
-	public Map<String, String> parseAndWritePropertyFile(String auditMappingPath,Map<String, String> fieldvalue,
+	/**
+	 * Method update the property file and return map of property
+	 * 
+	 * @param auditMappingPath
+	 * @param fieldvalue
+	 * @param outputFilePath
+	 * @return map
+	 */
+	public static Map<String, String> parseAndWritePropertyFile(String auditMappingPath,Map<String, String> fieldvalue,
 			String outputFilePath) {
 		try {
 			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
 			Map<String, String> auditTxnValue = new HashMap<String, String>();
 			for (Entry<String, String> entry : fieldvalue.entrySet()) {
-				String orgKey = getFieldHierarchy(auditMappingPath).get(entry.getKey()).toString();
+				String orgKey = IdaScriptsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
 				auditTxnValue.put(orgKey, entry.getValue());
 			}
 			Properties prop = new Properties();
@@ -118,10 +117,72 @@ public class Precondtion {
 				for (Entry<String, String> entry : auditTxnValue.entrySet()) {
 					prop.setProperty(entry.getKey(), entry.getValue());
 				}
-				prop.store(output, null);
+				prop.store(output, "UTF-8");
 			return auditTxnValue;
 		} catch (Exception e) {
-			logger.error("Exception Occured: " + e.getMessage());
+			PRECON_LOGGER.error("Exception Occured: " + e.getMessage());
+			Reporter.log("Exception Occured: " + e.getMessage());
+			return null;
+		}
+	}
+	/**
+	 * Method update the property file and return map of property
+	 * 
+	 * @param emailMappingPath
+	 * @param fieldvalue
+	 * @param outputFilePath
+	 * @return map
+	 */
+	public static Map<String, String> parseAndWriteEmailNotificationPropertyFile(String emailMappingPath,
+			Map<String, String> fieldvalue, String outputFilePath) {
+		try {
+			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
+																									// add
+			Map<String, String> emailTemplatevalue = new HashMap<String, String>();
+			for (Entry<String, String> entry : fieldvalue.entrySet()) {
+				String key = entry.getKey().toString();
+				if (key.matches("email.template.*")) {
+					String[] templates = entry.getValue().split(Pattern.quote("|"));
+					emailTemplatevalue.put(templates[0], templates[1]);
+				} else if (entry.getKey().toString().contains("email.otp")) {
+					emailTemplatevalue.put(entry.getKey(), entry.getValue());
+				}
+			}
+			Properties prop = new Properties();
+			for (Entry<String, String> entry : emailTemplatevalue.entrySet()) {
+				prop.setProperty(entry.getKey(), entry.getValue());
+			}
+			prop.store(new OutputStreamWriter(new FileOutputStream(outputFilePath), "UTF-8"), null);
+			return emailTemplatevalue;
+		} catch (Exception e) {
+			PRECON_LOGGER.error("Exception Occured: " + e.getMessage());
+			Reporter.log("Exception Occured: " + e.getMessage());
+			return null;
+		}
+	}
+	
+	/**
+	 * Method update the property file and return map of property
+	 * 
+	 * @param fieldvalue
+	 * @param outputFilePath
+	 * @return map
+	 */
+	public static Map<String, String> parseAndWritePropertyFile(Map<String, String> fieldvalue, String outputFilePath) {
+		try {
+			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
+																									// add
+			Properties prop = new Properties();
+			if (!new File(outputFilePath).exists())
+				new File(outputFilePath).getParentFile().mkdirs();
+			FileOutputStream output = new FileOutputStream(outputFilePath);
+			for (Entry<String, String> entry : fieldvalue.entrySet()) {
+				prop.setProperty(entry.getKey(), entry.getValue());
+			}
+			prop.store(output, null);
+			return fieldvalue;
+		} catch (Exception e) {
+			PRECON_LOGGER.error("Exception Occured: " + e.getMessage());
 			Reporter.log("Exception Occured: " + e.getMessage());
 			return null;
 		}
@@ -132,9 +193,9 @@ public class Precondtion {
 	 * test data
 	 * 
 	 * @param object
-	 * @return
+	 * @return string
 	 */
-	public String removeObject(JSONObject object) {
+	public static String removeObject(JSONObject object) {
 		Iterator<String> keysItr = object.keys();
 		while (keysItr.hasNext()) {
 			String key = keysItr.next();
@@ -143,11 +204,9 @@ public class Precondtion {
 				JSONArray array = (JSONArray) value;
 				String finalarrayContent = "";
 				for (int i = 0; i < array.length(); ++i) {
-
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()),finalarrayContent);
-					if(!arrayContent.equals("{}"))
-							finalarrayContent=finalarrayContent+","+arrayContent;	
-
+					String arrayContent = removeObject(new JSONObject(array.get(i).toString()), finalarrayContent);
+					if (!arrayContent.equals("{}"))
+						finalarrayContent = finalarrayContent + "," + arrayContent;
 				}
 				finalarrayContent = finalarrayContent.substring(1, finalarrayContent.length());
 				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
@@ -162,34 +221,14 @@ public class Precondtion {
 		}
 		return object.toString();
 	}
-	public String removeObject2(org.json.simple.JSONObject object) {
-		Set keysItr = object.keySet();
-		while (((Iterator<String>) keysItr).hasNext()) {
-			String key = ((Iterator<String>) keysItr).next();
-			Object value = object.get(key);
-			if (value instanceof org.json.simple.JSONArray) {
-				org.json.simple.JSONArray array = (org.json.simple.JSONArray) value;
-				String finalarrayContent="";
-				for (int i = 0; i < ((CharSequence) array).length(); ++i) {
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()),finalarrayContent);
-					if(!arrayContent.equals("{}"))
-							finalarrayContent=finalarrayContent+","+arrayContent;	
-				}
-				finalarrayContent=finalarrayContent.substring(1,finalarrayContent.length());
-				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
-			} else if (value instanceof JSONObject) {
-				String objectContent = removeObject(new JSONObject(value.toString()));
-				object.put(key, new JSONObject(objectContent));
-			}
-			if (value.toString().equals("$REMOVE$")) {
-				object.remove(key);
-				keysItr = object.keySet();
-			}
-		}
-		return object.toString();
-	}
-	
-	private String removeObject(JSONObject object,String tempArrayContent) {
+	/**
+	 * The method remove Object from Json array
+	 * 
+	 * @param object
+	 * @param tempArrayContent
+	 * @return string
+	 */
+	private static String removeObject(JSONObject object, String tempArrayContent) {
 		Iterator<String> keysItr = object.keys();
 		while (keysItr.hasNext()) {
 			String key = keysItr.next();
@@ -198,7 +237,7 @@ public class Precondtion {
 				JSONArray array = (JSONArray) value;
 				for (int i = 0; i < array.length(); ++i) {
 					String arrayContent = removeObject(new JSONObject(array.get(i).toString()));
-					object.put(key, new JSONArray("[" + arrayContent + "]"));					
+					object.put(key, new JSONArray("[" + arrayContent + "]"));
 				}
 			} else if (value instanceof JSONObject) {
 				String objectContent = removeObject(new JSONObject(value.toString()));
@@ -211,67 +250,17 @@ public class Precondtion {
 		}
 		return object.toString();
 	}
-	
 	/**
-	 * Get json mapper from the mapping properties file
+	 * The method return object of KeywordUtil
 	 * 
-	 * @param propFileName
+	 * @param moduleName
 	 * @return
 	 */
-	public Properties getFieldHierarchy(String propFileName) {
-		Properties prop = new Properties();
-		InputStream input = null;
-		try {
-			input = new FileInputStream(propFileName);
-			prop.load(input);
-			return prop;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return null;
-		}
-	}
-	
-	public String toPrettyFormat(String jsonString) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		JsonParser jp = new JsonParser();
-		JsonElement je = jp.parse(jsonString);
-		return gson.toJson(je);
-	}
-	
-	/**
-	 * Write file with UTF8 charset to support local language character
-	 * 
-	 * @param filePath
-	 * @param content
-	 * @return
-	 */
-	public boolean writeFile(String filePath, String content) {
-		try {
-			Path path = Paths.get(filePath);
-			Charset charset = Charset.forName("UTF-8");
-			BufferedWriter writer = Files.newBufferedWriter(path,StandardCharsets.UTF_8);
-			writer.write(content);
-            writer.flush();
-            writer.close();           
-			return true;
-		} catch (Exception e) {
-			logger.error("Exception " + e);
-			return false;
-		}
-	}
-	
-	public KeywordUtil getObject(String moduleName) {
+	public static KeywordUtil getObject(String moduleName) {
 		KeywordUtil objKeywordUtil = null;
 		if (moduleName.equalsIgnoreCase("ida"))
 			objKeywordUtil = new IdaKeywordUtil();
-		else if (moduleName.equalsIgnoreCase("prereg"))
-			objKeywordUtil = new PreRegKeywordUtil();
-		else if (moduleName.equalsIgnoreCase("kernel"))
-			objKeywordUtil = new KernelKeywordUtil();
-		else if (moduleName.equalsIgnoreCase("reg"))
-			objKeywordUtil = new RegKeywordUtil();
 		return objKeywordUtil;
 	}
 
 }
-
