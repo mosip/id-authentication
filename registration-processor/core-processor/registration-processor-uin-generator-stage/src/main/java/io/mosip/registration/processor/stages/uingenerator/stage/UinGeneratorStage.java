@@ -370,7 +370,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		requestDto.setRegistrationId("10001100010007220190411113702");
+		requestDto.setRegistrationId(regId);
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
 		requestDto.setBiometricReferenceId(uin);
 		
