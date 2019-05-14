@@ -22,13 +22,26 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.RestServicesConstants;
+import io.mosip.idrepository.core.dto.IdResponseDTO;
+import io.mosip.idrepository.core.dto.ResponseDTO;
+import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.vid.dto.RequestDTO;
+import io.mosip.idrepository.vid.dto.VidPolicy;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
+import io.mosip.idrepository.vid.dto.VidResponseDTO;
 import io.mosip.idrepository.vid.entity.Vid;
+import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 import io.mosip.idrepository.vid.repository.VidRepo;
+import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -48,7 +61,28 @@ public class VidServiceImplTest {
 
 	@Mock
 	private VidRepo vidRepo;
+	
+	@Mock
+	private VidPolicyProvider vidPolicyProvider;
+	
+	@Mock
+	private VidServiceImpl vidServiceImpl;
+	
+	@Mock
+	private RestRequestBuilder restBuilder;
 
+	@Mock
+	private RestHelper restHelper;
+	
+	@Mock
+	private WebClient webClient;
+	
+	@Mock
+	private VidGenerator<String> vidGenerator;
+	
+	/** The mapper. */
+	@Mock
+	private ObjectMapper mapper;
 	@Autowired
 	Environment environment;
 	
@@ -66,6 +100,13 @@ public class VidServiceImplTest {
 	public void before() {
 		ReflectionTestUtils.setField(impl, "env", environment);
 		ReflectionTestUtils.setField(impl, "vidRepo", vidRepo);
+		ReflectionTestUtils.setField(impl, "vidpolicyProvider", vidPolicyProvider);
+		ReflectionTestUtils.setField(impl, "restHelper", restHelper);
+		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
+		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
+		ReflectionTestUtils.setField(impl, "restBuilder", restBuilder);
+		ReflectionTestUtils.setField(impl, "vidGenerator", vidGenerator);
+		ReflectionTestUtils.setField(restBuilder, "env", environment);
 		ReflectionTestUtils.setField(impl, "id", id);
 	}
 
@@ -137,7 +178,13 @@ public class VidServiceImplTest {
 				currentTime);
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
-		
+		VidPolicy policy=new VidPolicy();
+		policy.setAllowedInstances(1);
+		policy.setAllowedTransactions(null);
+		policy.setAutoRestoreAllowed(true);
+		policy.setRestoreOnAction("REVOKE");
+		policy.setValidForInMinutes(null);
+		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
 		VidRequestDTO req=new VidRequestDTO();
 		req.setId("mosip.vid.update");
 		RequestDTO request=new RequestDTO();
@@ -151,6 +198,45 @@ public class VidServiceImplTest {
 		impl.updateVid("12345678", req);
 	}
 	
+	@Test
+	public void testUpdateVid_valid_REVOKE() throws IdRepoAppException {
+		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.toLocalDateTime().plusDays(1);
+		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
+				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
+				currentTime);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
+		VidPolicy policy=new VidPolicy();
+		policy.setAllowedInstances(1);
+		policy.setAllowedTransactions(null);
+		policy.setAutoRestoreAllowed(true);
+		policy.setRestoreOnAction("REVOKE");
+		policy.setValidForInMinutes(null);
+		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
+		VidRequestDTO req=new VidRequestDTO();
+		RestRequestDTO restRequestDTO=new RestRequestDTO();
+		IdResponseDTO idResponse=new IdResponseDTO();
+		ResponseDTO resDTO=new ResponseDTO();
+		resDTO.setStatus("ACTIVATED");
+		idResponse.setResponse(resDTO);
+		Mockito.when(vidServiceImpl.createVid(req)).thenReturn(new VidResponseDTO());
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null,
+				IdResponseDTO.class)).thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(restRequestDTO)).thenReturn(idResponse);
+		Mockito.when(vidRepo.save(Mockito.any())).thenReturn(vid);
+		req.setId("mosip.vid.update");
+		RequestDTO request=new RequestDTO();
+		request.setVidStatus("REVOKE");
+		req.setRequest(request);
+		req.setVersion("v1");
+		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+		req.setRequest(request);
+		
+		impl.updateVid("12345678", req);
+	}
 	@Test
 	public void testUpdateVid_Invalid(){
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
