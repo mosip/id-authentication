@@ -47,55 +47,53 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform GetAll Document For PreRegId related Positive and Negative test cases
+ * Test Class to perform GetAll Document For PreRegId related Positive and
+ * Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
-
 public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
-	
+
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(GetAllDocumentForPreRegId.class);
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(GetAllDocumentForPreRegId.class);
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static String preReg_URI ;
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	static String dest = "";
-	static String folderPath = "preReg/GetAllDocumentForPreRegId";
-	static String outputFile = "GetAllDocumentForPreRegIdOutput.json";
-	static String requestKeyFile = "GetAllDocumentForPreRegIdRequest.json";
-	
-	static PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	
-	//implement,IInvokedMethodListener
-		public GetAllDocumentForPreRegId() {
+	Response Actualresponse = null;
+	JSONObject xpectedresponse = null;
+	String preReg_URI;
+	CommonLibrary commonLibrary = new CommonLibrary();
+	JSONObject Expectedresponse = null;
+	String dest = "";
+	String folderPath = "preReg/GetAllDocumentForPreRegId";
+	String outputFile = "GetAllDocumentForPreRegIdOutput.json";
+	String requestKeyFile = "GetAllDocumentForPreRegIdRequest.json";
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
-		}
-	
-		/**
-		 * Data Providers to read the input json files from the folders
-		 * @param context
-		 * @return input request file
-		 * @throws JsonParseException
-		 * @throws JsonMappingException
-		 * @throws IOException
-		 * @throws ParseException
-		 */
+	// implement,IInvokedMethodListener
+	public GetAllDocumentForPreRegId() {
+
+	}
+
+	/**
+	 * This method is used for reading the test data based on the test case name
+	 * passed
+	 * 
+	 * @param context
+	 * @return object[][]
+	 * @throws Exception
+	 */
 	@DataProvider(name = "GetAllDocumentForPreRegId")
-	public static Object[][] readData(ITestContext context) throws Exception {
-		
-		
+	public Object[][] readData(ITestContext context) throws Exception {
+
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch ("smoke") {
 		case "smoke":
@@ -107,93 +105,108 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		}
 	}
 
+	/*
+	 * Given Document Upload valid request when I Send GET request to
+	 * https://mosip.io/preregistration/v1/documents/:documentId?preRegistrationId=:preRegistrationId
+	 *  Then I should get success
+	 * response with elements defined as per specifications Given Invalid
+	 * request when I send GET request to
+	 * https://mosip.io/preregistration/v1/documents/:documentId?preRegistrationId=:preRegistrationId 
+	 * Then I should get Error
+	 * response along with Error Code and Error messages as per Specification
+	 * 
+	 */
 	@Test(dataProvider = "GetAllDocumentForPreRegId")
-	public void generate_Response1(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+	public void getAllDocumentForPreRegId(String testSuite, Integer i, JSONObject object) throws Exception {
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		AssertKernel assertions = new AssertKernel();
-		
+
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
-		//Creating the Pre-Registration Application
+
+		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId=createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-		
-		System.out.println("My PreId:"+preId);
-		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse,preId);
-		
-		
-		//Get PreId from Document upload response
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+
+	
+		// Document Upload for created application
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+
+		// Get PreId from Document upload response
 		docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-		
-		
-		if(testCaseName.contains("smoke"))
-		{
-			//Get All Document For PreID
-		   Response getAllDocRes=preRegLib.getAllDocumentForPreId(preId);
-		   getAllDocRes.jsonPath().get("response.documentsMetaData[0].documentId").toString();
-		   outerKeys.add("responsetime");
+
+		if (testCaseName.contains("smoke")) {
+			// Get All Document For PreID
+			Response getAllDocRes = preRegLib.getAllDocumentForPreId(preId);
+			getAllDocRes.jsonPath().get("response.documentsMetaData[0].documentId").toString();
+			outerKeys.add("responsetime");
 			innerKeys.add("documentsMetaData");
-			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docName").toString(), "AadhaarCard_POI.pdf");
-			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docCatCode").toString(), "POA");
-			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docTypCode").toString(), "address");
-			
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docName").toString(),
+					"AadhaarCard_POI.pdf");
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docCatCode").toString(),
+					"POA");
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docTypCode").toString(),
+					"address");
+
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
-		}
-		else
-		{
-			
-			preId= actualRequest.get("preRegistrationId").toString();
-			HashMap<String, String> parm= new HashMap<>();
+		} else {
+
+			preId = actualRequest.get("preRegistrationId").toString();
+			HashMap<String, String> parm = new HashMap<>();
 			parm.put("preRegistrationId", preId);
 			Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
-			System.out.println("Test Case name:"+testCaseName+"getAllDocResDoc Actualresponse::"+Actualresponse.asString());
+			System.out.println(
+					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("documentId");
 			innerKeys.add("multipartFile");
-			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
-			 
-			
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
 		}
-		
-		
-		
+
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		boolean setFinalStatus=false;
-        if(finalStatus.equals("Fail"))
-              setFinalStatus=false;
-        else if(finalStatus.equals("Pass"))
-              setFinalStatus=true;
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
-		
+
 	}
 
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
+
 		testCaseName = object.get("testCaseName").toString();
-		/**
-         * Get All document by PreReg Id Resource URI           
-         */
-        
-        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
-		 authToken=preRegLib.getToken();
+		
+		//Get All document by PreReg Id Resource URI
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		authToken = preRegLib.getToken();
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -209,25 +222,27 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source =  "src/test/resources/" + folderPath + "/";
+		String source = "src/test/resources/" + folderPath + "/";
 
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
-		//preIds.add(preId);
+		// Add generated PreRegistrationId to list to be Deleted from DB
+		// AfterSuite
+		// preIds.add(preId);
 	}
 
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }

@@ -55,8 +55,8 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	 **/
 
 	private static Logger logger = Logger.getLogger(BookingAppointment.class);
-	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	static CommonLibrary commonLibrary = new CommonLibrary();
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	CommonLibrary commonLibrary = new CommonLibrary();
 	static String testCaseName = "";
 	String preId = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -143,8 +143,6 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 		
-
-		System.out.println("Book App Status:"+bookAppointmentResponse.asString());
 		
 		switch (val) {
 
@@ -160,7 +158,6 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			try {
 				fetchCenter = preRegLib.FetchCentre();
 				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
-				System.out.println("Book App Statusr:"+rebookAppointmentRes.asString());
 				break;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -293,11 +290,10 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		CommonLibrary.backUpFiles(source, folderPath);
 
 		/*
-		 * Add generated PreRegistrationId to list to be Deleted from DB
-		 * AfterSuite
+		 * Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
 		 */
 
-		/* preIds.add(preId); */
+		// preIds.add(preId); 
 
 	}
 
@@ -332,14 +328,10 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		/**
-		 * Booking Appointment Resource URI
-		 */
-
+		// Booking Appointment Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
-
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
-
 	}
 
 	@Override

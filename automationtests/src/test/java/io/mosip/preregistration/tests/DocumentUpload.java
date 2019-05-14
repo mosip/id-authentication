@@ -51,43 +51,42 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	/**
 	 * Declaration of all variables
 	 **/
-	static String folder = "preReg";
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
+	String folder = "preReg";
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
 	boolean status = false;
 	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI;
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg/DocumentUpload";
-	static String outputFile = "DocumentUploadOutput.json";
-	static String requestKeyFile = "DocumentUploadRequest.json";
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	String preReg_URI;
+	CommonLibrary commonLibrary = new CommonLibrary();
+	String dest = "";
+	String configPaths = "";
+	String folderPath = "preReg/DocumentUpload";
+	String outputFile = "DocumentUploadOutput.json";
+	String requestKeyFile = "DocumentUploadRequest.json";
 	String testParam = null;
 	boolean status_val = false;
-	static PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 
+	/* implement,IInvokedMethodListener */
 	public DocumentUpload() {
 
 	}
 
 	/**
-	 * Data Providers to read the input json files from the folders
+	 * This method is used for reading the test data based on the test case name
+	 * passed
 	 * 
 	 * @param context
-	 * @return input request file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws ParseException
+	 * @return object[][]
+	 * @throws Exception
 	 */
 	@DataProvider(name = "documentUpload")
 	public Object[][] readData(ITestContext context)
@@ -107,42 +106,38 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 	/*
 	 * Given Document Upload valid request when I Send POST request to
-	 * /pre-registration/v1.0/document/documents Then I should get success response
-	 * with elements defined as per specifications Given Invalid request when I send
-	 * POST request to /pre-registration/v1.0/document/documents Then I should get
-	 * Error response along with Error Code and Error messages as per Specification
-	 * 
+	 * /pre-registration/v1.0/document/documents Then I should get success
+	 * response with elements defined as per specifications Given Invalid
+	 * request when I send POST request to
+	 * /pre-registration/v1.0/document/documents Then I should get Error
+	 * response along with Error Code and Error messages as per Specification
 	 */
-
-	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "documentUpload")
 	public void documentUpload(String testSuite, Integer i, JSONObject object) throws Exception {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-
-		// String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-       
+
 		if (testCaseName.contains("smoke")) {
 			// Document Upload for created application
-			// Response docUploadResponse =
-			// preRegLib.documentUpload(createApplicationResponse);
-
 			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preRegIdCreateAPI);
-
+			logger.info("res::" + docUploadResponse.asString());
 			// PreId of Uploaded document
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
+			// Removing the dynamic value from Document Upload response and
+			// Asserting actual and expected response
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("documentId");
 			preRegLib.compareValues(preId, preRegIdCreateAPI);
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
@@ -158,7 +153,6 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
 
-					
 				} else {
 					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 					JSONObject parm = preRegLib.getRequest(testSuite);
@@ -167,15 +161,19 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
-					}
+				}
 
 			} catch (Exception e) {
 				logger.info(e);
 			}
+			
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("documentId");
 
+			
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
 
@@ -189,24 +187,15 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		}
 
 		boolean setFinalStatus = false;
-
 		setFinalStatus = finalStatus.equals("Pass") ? true : false;
-
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 
 	}
 
 	/**
-	 * Writing output into configpath
-	 * 
-	 * @throws IOException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * This method is used for generating output file with the test case result
 	 */
-
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
@@ -221,12 +210,12 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		String source = "src/test/resources/" + folderPath + "/";
 		CommonLibrary.backUpFiles(source, folderPath);
 
-		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		// Add generated PreRegistrationId to list to be Deleted from DB  AfterSuite
 		// preIds.add(preId);
 	}
 
 	/**
-	 * Writing test case name into testng
+	 * This method is used for generating report
 	 * 
 	 * @param result
 	 */
@@ -245,16 +234,21 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		}
 	}
 
+	
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		/**
-		 * Document Upload Resource URI
-		 */
-
+		//Document Upload Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
 

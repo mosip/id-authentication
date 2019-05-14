@@ -56,7 +56,9 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	public FetchAppointmentDetails() {
 
 	}
-
+	/**
+	 * Declaration of all variables
+	 **/
 	private static Logger logger = Logger.getLogger(FetchAppointmentDetails.class);
 	static String testCaseName = "";
 	String preId = "";
@@ -80,17 +82,13 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	Object[][] readFolder = null;
 
-	/*
-	 * Given Fetch Appointment Details valid data when User Send GET request to
-	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then the
-	 * user should be able to retrieve Pre-Registration appointment details by
-	 * pre-Registration id.
+	/**
+	 * This method is used for reading the test data based on the test case name
+	 * passed
 	 * 
-	 * Given Invalid request when when User Send GET request to
-	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then the
-	 * user should get Error response along with Error Code and Error messages as
-	 * per Specification
-	 * 
+	 * @param context
+	 * @return object[][]
+	 * @throws Exception
 	 */
 	@DataProvider(name = "FetchAppointmentDetails")
 	public Object[][] readData(ITestContext context) throws Exception {
@@ -103,10 +101,21 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		default:
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-
+	
 	}
 
-	@SuppressWarnings("unchecked")
+	/*
+	 * Given Fetch Appointment Details valid data when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the user should be able to retrieve Pre-Registration appointment details
+	 *  by pre-Registration id.
+	 * 
+	 * Given Invalid request when when User Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then
+	 * the user should get Error response along with Error Code and Error
+	 * messages as per Specification
+	 * 
+	 */
 	@Test(dataProvider = "FetchAppointmentDetails")
 	public void fetchAppointmentDetails(String testSuite, Integer i, JSONObject object) throws Exception {
 
@@ -131,15 +140,17 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 			// Fetch Appointment Details
 			Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
-
-			logger.info("fetchAppointmentDetailsResponse:" + fetchAppointmentDetailsResponse.asString());
-
+             
+			logger.info("fetchAppointmentDetailsResponse:"+fetchAppointmentDetailsResponse.asString());
+			
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("registration_center_id");
 			innerKeys.add("appointment_date");
 			innerKeys.add("time_slot_from");
 			innerKeys.add("time_slot_to");
 
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys,
 					innerKeys);
 
@@ -155,11 +166,14 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			} else {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
-
+		
 			preReg_URI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
-			System.out.println("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
+			logger.info("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
+			
+			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
+			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}
@@ -182,20 +196,31 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 	}
 
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
 
-		/**
-		 * Fetch Appointment Details Resource URI
-		 */
-
+		//Fetch Appointment Details Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
+		
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
 
+	
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -211,6 +236,9 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {

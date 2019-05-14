@@ -118,8 +118,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
-		if (testCaseName.contains("smoke"))
-		{
+		if (testCaseName.contains("smoke")) {
 			Response fetchCenter = null;
 
 			/* Fetch availability[or]center details */
@@ -128,16 +127,15 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			/* Book An Appointment for the available data */
 			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 
-			
-			/*Cancel an Re-booked Appointment*/
+			/* Cancel an Re-booked Appointment */
 			if (testCaseName.contains("CancelAnReBookedAppointment")) {
 				fetchCenter = preRegLib.FetchCentre();
 				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
 			}
 
-			/*Cancel Booked Appointment Details*/
+			/* Cancel Booked Appointment Details */
 			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
-			logger.info("CancelBookingApp"+CancelBookingApp.asString());
+			logger.info("CancelBookingApp" + CancelBookingApp.asString());
 			List<? extends Object> val = preRegLib.preregFetchPreregDetails(preId);
 
 			Object[] TestData = null;
@@ -147,11 +145,12 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 				statusCode = TestData[1].toString();
 
 			}
-           logger.info("Status code:"+statusCode);
-			// removing the keys for assertion
+			logger.info("Status code:" + statusCode);
+			// outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("transactionId");
 			preRegLib.compareValues(statusCode, "Pending_Appointment");
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(CancelBookingApp, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
@@ -169,8 +168,11 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 			preRegURI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.putRequest_WithoutBody(preRegURI);
+
+			// outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("transactionId");
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}
@@ -205,8 +207,10 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
-
+		// Cancel Appointment Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI1");
+		// Fetch the generated Authorization Token by using following Kernel
+		// AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
 

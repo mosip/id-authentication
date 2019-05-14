@@ -1,6 +1,7 @@
 package io.mosip.preregistration.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +13,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -38,6 +41,31 @@ public class PreRegistrationUtil
 	static JSONObject request;
 	static String folder = "preReg";
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
+	Properties propConfig = new Properties();
+	Properties propresorceURL = new Properties();
+	String configPath="src/test/resources/";
+	
+	File f = new File(configPath);
+	 File resourcesDirectory = new File("src/test/resources");
+	public Map<String, String> fetchPreregProp() {
+		try {
+			propConfig.load(new FileInputStream(configPath+"/preReg/config/preRegistrationResourceURL.properties"));
+			//propConfig.load(new FileInputStream(f));
+			propresorceURL.load(new FileInputStream(configPath+"/preReg/config/preregistrationConfig.properties"));
+			propConfig.putAll(propresorceURL);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Map<String, String> mapProp = propConfig.entrySet().stream()
+				.collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
+
+		logger.info("Map :"+mapProp);
+		return mapProp;
+
+	}
+	
 	
 	/*
 	 * We configure the jsonProvider using Configuration builder.
