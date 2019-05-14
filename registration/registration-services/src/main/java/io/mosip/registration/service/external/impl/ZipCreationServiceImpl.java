@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -65,15 +66,16 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
 				}
-
-				// Add Introducer Biometrics to packet zip
-				if (filesGeneratedForPacket.containsKey(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME)) {
+				
+				// Add UIN Update Biometrics to packet zip
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)) {
 					writeFileToZip(
-							"Biometric".concat(separator).concat(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
-							filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
+							"Biometric".concat(separator)
+									.concat(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME),
+							filesGeneratedForPacket.get(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
-					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Introcucer's biometric added");
+					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Authentication biometric added");
 				}
 			}
 
@@ -130,6 +132,36 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME), zipOutputStream);
 
 			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration packet_osi_hash added");
+			
+			// Add Exception photo of parent in child registration
+			if (checkNotNull(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace())
+					&& filesGeneratedForPacket.containsKey(RegistrationConstants.PARENT
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME))) {
+				writeFileToZip(
+						((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+								? RegistrationConstants.PARENT.toLowerCase()
+								: RegistrationConstants.INDIVIDUAL.toLowerCase())
+										.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME),
+						filesGeneratedForPacket.get(RegistrationConstants.PARENT
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME)),
+						zipOutputStream);
+			}
+			// Add Exception photo of individual in new registration
+			if (checkNotNull(registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace())
+					&& filesGeneratedForPacket.containsKey(RegistrationConstants.INDIVIDUAL
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME))) {
+				writeFileToZip(
+						((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+								? RegistrationConstants.PARENT.toLowerCase()
+								: RegistrationConstants.INDIVIDUAL.toLowerCase())
+										.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME),
+						filesGeneratedForPacket.get(RegistrationConstants.INDIVIDUAL
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME)),
+						zipOutputStream);
+			}
+
+						LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
+								"Registration Exception photo has been added");
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();

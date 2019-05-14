@@ -12,7 +12,7 @@
       <!-- search container -->
       <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
         <div *ngIf="REGISTRATION_CENTRES" class="center_selection-center_recommendation-display">
-         <span><b>{{ 'centerSelection.display_recommended' | translate }}</b>&nbsp;&nbsp;
+         <span (click)="getRecommendedCenters()"><b>{{ 'centerSelection.display_recommended' | translate }}</b>&nbsp;&nbsp;
           <span class="center_selection-center-available-text">( {{ 'centerSelection.text_found' | translate }} {{ REGISTRATION_CENTRES.length }} {{ 'centerSelection.text_centers' | translate }} )
           </span>
           <mat-icon matTooltip="{{ 'helpText.recommended_centers' | translate}}" [inline]="true">help_outline</mat-icon>

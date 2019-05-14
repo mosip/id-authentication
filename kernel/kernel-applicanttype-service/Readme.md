@@ -24,15 +24,28 @@ mosip.kernel.applicant.type.age.limit = 5
 
 
 **The inputs which have to be provided are:**
-We need to provide some attributes and its values : 
+
+We need to provide the Map<String,Object> and the key, value pairs are as follows :
 
 individualTypeCode: mandatory
+
 dateofbirth: mandatory
+
 genderCode: mandatory
+
 biometricAvailable: optional
 
 
-**The response will be true is audit request is successful, otherwise false** 
+*Valid values for above keys are as follows :*
+ 
+individualTypeCode: FR,NFR
+
+dateofbirth: must be in this pattern yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+
+genderCode: MLE,FLE
+
+biometricAvailable: true,false
+
 
 **Exceptions to be handled while using this functionality:**
 

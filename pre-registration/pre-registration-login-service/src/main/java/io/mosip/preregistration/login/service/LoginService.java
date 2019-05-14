@@ -28,27 +28,24 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
-import io.mosip.preregistration.core.code.EventId;
-import io.mosip.preregistration.core.code.EventName;
-import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.login.dto.MainRequestDTO;
-import io.mosip.preregistration.login.dto.MainResponseDTO;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.OtpUser;
-import io.mosip.preregistration.login.dto.OtpUserDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.dto.UserOtp;
-import io.mosip.preregistration.login.dto.UserOtpDTO;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
 import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
+import io.mosip.preregistration.login.exception.InvalidOtpOrUseridException;
 import io.mosip.preregistration.login.exception.LoginServiceException;
 import io.mosip.preregistration.login.exception.util.LoginExceptionCatcher;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
@@ -93,6 +90,9 @@ public class LoginService {
 	@Value("${sendOtp.resource.url}")
 	private String sendOtpResourceUrl;
 	
+	@Value("${validationStatus}")
+	private String status;
+	
 	private List<String> otpChannel;
 	
 	@Value("${userIdType}")
@@ -101,13 +101,16 @@ public class LoginService {
 	@Value("${appId}")
 	private String appId;
 	
+	@Value("${context}")
+	private String context;
+	
 	@Autowired
 	AuditLogUtil auditLogUtil;
 	
 	Map<String, String> requiredRequestMap = new HashMap<>();
 	
 	@PostConstruct
-	public void setupBookingService() {
+	public void setupLoginService() {
 		requiredRequestMap.put("version", version);
 
 	}
@@ -117,10 +120,7 @@ public class LoginService {
 //	@Value("${mosip.prereg.app-id}")
 //	private String appId;
 	
-	/**
-	 * UserId for auditing
-	 */
-	private String auditUserId;
+	
 	/**
 	 * It will fetch otp from Kernel auth service  and send to the userId provided
 	 * 
@@ -133,45 +133,38 @@ public class LoginService {
 		MainResponseDTO<AuthNResponse> response  = null;
 		OtpRequestDTO otp=userOtpRequest.getRequest();
 		requiredRequestMap.put("id",sendOtpId);
+		response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 		
-		boolean isRetrieveSuccess = false;
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
-				auditUserId=otp.getUserId();
-				otpChannel=loginCommonUtil.validateUserIdAndLangCode(otp.getUserId(),otp.getLangCode());
-				OtpUser user=new OtpUser(otp.getUserId(), otp.getLangCode(), otpChannel, appId, useridtype);
+				
+				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
+				OtpUser user=new OtpUser(otp.getUserId(),otpChannel, appId, useridtype,null,context);
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
-				response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
+				//response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
 				}
-				response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
-				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 				
-				response.setResponse((AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class));
-			}
-			isRetrieveSuccess = true;
+				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
+				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
+				response.setResponse(responseBody);
+				}
+			
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In callsendOtp method of kernel service- " + ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"sendOtp");	
+			new LoginExceptionCatcher().handle(ex,"sendOtp",response);	
 		}
 		finally {
-			if (isRetrieveSuccess) {
-				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"Send otp to user successfully",
-						AuditLogVariables.MULTIPLE_ID.toString(),otp.getUserId(),otp.getUserId());
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to send otp to user ", AuditLogVariables.NO_ID.toString(),otp.getUserId(),otp.getUserId());
-			}
+			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
 		}
 		return response;
 	}
@@ -187,18 +180,17 @@ public class LoginService {
 		log.info("sessionId", "idType", "id",
 				"In calluserIdOtp method of login service ");
 		MainResponseDTO<ResponseEntity<String>> response  = null;
+		response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
 		requiredRequestMap.put("id",userIdOtpId);
 		try {
-			if(ValidationUtil.requestValidator(loginCommonUtil.prepareRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
+			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
 				loginCommonUtil.validateOtpAndUserid(user);
 				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
-				UserOtpDTO userOtpDTO=new UserOtpDTO();
-				userOtpDTO.setRequest(userOtp);
 				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(userOtp);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
-				response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
+				
 				ResponseEntity<String> responseEntity = null;
 				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
 				responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
@@ -207,14 +199,22 @@ public class LoginService {
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
 				}
-				response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
+				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
+				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
+				if(!responseBody.getStatus().equals(status)) {
+					throw new InvalidOtpOrUseridException(ErrorCodes.PRG_AUTH_013.getCode(),responseBody.getMessage(), response);
+				}
+				
 				response.setResponse(responseEntity);
 			}
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In calluserIdOtp method of kernel service- " + ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"userIdOtp");	
+			new LoginExceptionCatcher().handle(ex,"userIdOtp",response);	
+		}
+		finally {
+			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
 		}
 		
 		return response;
@@ -227,12 +227,15 @@ public class LoginService {
 	 * @return AuthNResponse
 	 */
 
-	public AuthNResponse invalidateToken(String authHeader){
+	public MainResponseDTO<AuthNResponse> invalidateToken(String authHeader){
 		log.info("sessionId", "idType", "id",
 				"In calluserIdOtp method of login service ");
 		ResponseEntity<String> responseEntity = null;
 		AuthNResponse authNResponse = null;
-		boolean isRetrieveSuccess = false;
+		MainResponseDTO<AuthNResponse> response  = new MainResponseDTO<>();
+		response.setId(invalidateTokenId);
+		response.setVersion(version);
+		
 		try {
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
@@ -241,28 +244,22 @@ public class LoginService {
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 			if(!validationErrorList.isEmpty()) {
-				throw new LoginServiceException(validationErrorList,null);
+				throw new LoginServiceException(validationErrorList,response);
 			}
 			ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 			authNResponse = (AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()), AuthNResponse.class);
-			isRetrieveSuccess = true;
+			response.setResponse(authNResponse);
+			
 		}
 		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
 					"In call invalidateToken method of kernel service- " + ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"invalidateToken");	
+			new LoginExceptionCatcher().handle(ex,"invalidateToken",null);	
 		}
 		finally {
-			if (isRetrieveSuccess) {
-				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"Logout successfully",
-						AuditLogVariables.MULTIPLE_ID.toString(),auditUserId,auditUserId);
-			} else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to logout    ", AuditLogVariables.NO_ID.toString(),auditUserId,auditUserId);
-			}
+			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
 		}
-		return authNResponse;
+		return response;
 	}
 	
 	/**
@@ -295,6 +292,8 @@ public class LoginService {
 		log.info("sessionId", "idType", "id",
 				"In login service of getConfig ");
 		MainResponseDTO<Map<String, String>> res = new MainResponseDTO<>();
+		res.setId(configId);
+		res.setVersion(version);
 		List<String> reqParams = new ArrayList<>();
 		Map<String, String> configParams = new HashMap<>();
 		try {
@@ -303,25 +302,25 @@ public class LoginService {
 				reqParams.add(uiParams[i]);
 			}
 			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = loginCommonUtil.configRestCall(globalFileName);
-				String preregParam = loginCommonUtil.configRestCall(preRegFileName);
+				String globalParam = loginCommonUtil.getConfig(globalFileName);
+				String preregParam = loginCommonUtil.getConfig(preRegFileName);
 				Properties prop1 = loginCommonUtil.parsePropertiesString(globalParam);
 				Properties prop2 = loginCommonUtil.parsePropertiesString(preregParam);
 				loginCommonUtil.getConfigParams(prop1,configParams,reqParams);
 				loginCommonUtil.getConfigParams(prop2,configParams,reqParams);
 		
 			} else {
-				throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
-						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name());
+				throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),
+						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(),res);
 			}
 			
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In login service of getConfig "+ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"config");
+			new LoginExceptionCatcher().handle(ex,"config",res);
 		}
 		res.setResponse(configParams);
-		res.setResponsetime(loginCommonUtil.getCurrentResponseTime());
+		res.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return res;
 	}
 }

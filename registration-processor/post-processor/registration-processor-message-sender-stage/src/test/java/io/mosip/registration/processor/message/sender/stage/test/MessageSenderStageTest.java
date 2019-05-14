@@ -130,6 +130,9 @@ public class MessageSenderStageTest {
 		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("NEW");
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		Mockito.when(transcationStatusService.addRegistrationTransaction(any())).thenReturn(null);
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
+		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
+		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 		FieldValue registrationType = new FieldValue();
@@ -326,7 +329,7 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.MANUAL_VARIFICATION.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.MANUAL_VERIFICATION.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
 
 		MessageDTO dto = new MessageDTO();

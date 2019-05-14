@@ -1,9 +1,5 @@
 package io.mosip.registration.device.fp;
 
-import java.io.IOException;
-
-import javafx.scene.image.WritableImage;
-
 /**
  * This interface will have the list of FP related functions which needs to implemented in the device specific class.
  * The client class will invoke this interface to communicate with the respective provider based class.
@@ -75,13 +71,4 @@ public interface MosipFingerprintProvider {
 	 * 
 	 */
 	String getErrorMessage();
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.
-	 * MosipFingerprintProvider#getFingerPrintImage()
-	 * 
-	 */
-	WritableImage getFingerPrintImage()throws IOException;
 }

@@ -1,18 +1,14 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;  
+import java.io.File;   
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.ITest;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -20,13 +16,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.authentication.fw.util.AuditValidUtil;
+import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
@@ -48,23 +43,16 @@ import org.testng.Reporter;
  */
 public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements ITest{
 
-	private static Logger logger = Logger.getLogger(StaticTokenIdGenerationForOTPAuth.class);
-	private DataProviderClass objDataProvider = new DataProviderClass();
-	private OutputValidationUtil objOpValiUtil = new OutputValidationUtil();
-	private ReportUtil objReportUtil = new ReportUtil();
-	private RunConfig objRunConfig = new RunConfig();
-	private FileUtil objFileUtil = new FileUtil();
+	private static final Logger logger = Logger.getLogger(StaticTokenIdGenerationForOTPAuth.class);
 	protected static String testCaseName = "";
-	private TestDataProcessor objTestDataProcessor = new TestDataProcessor();
-	private AuditValidUtil objAuditValidUtil = new AuditValidUtil();
 	private String TESTDATA_PATH="ida/TestData/StaticTokenId/Otp/OtpAuthentication/";
 	private String TESTDATA_FILENAME="testdata.ida.Otp.OtpAuthentication.mapping.yml";
 
 	@Parameters({"testType"})
 	@BeforeClass
 	public void setConfigurations(String testType) {
-		objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
-		objTestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
+		RunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		TestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
 	@BeforeMethod
@@ -88,7 +76,7 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 	
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
-		return objDataProvider.getDataProvider(
+		return DataProviderClass.getDataProvider(
 				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
 				RunConfig.getScenarioPath(), RunConfig.getTestType());
 	}
@@ -127,43 +115,43 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 		displayContentInFile(testCaseName.listFiles(),"otp-generate");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getOtpPath()
 				+ " *******");
-		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
+		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
 				RunConfig.getEndPointUrl() + RunConfig.getOtpPath(), "otp-generate", "output-1-actual-res",200), true);
-		Map<String, List<OutputValidationDto>> ouputValid = objOpValiUtil.doOutputValidation(
-				objFileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
-				objFileUtil.getFilePath(testCaseName, "output-1-expected").toString());
-		Reporter.log(objReportUtil.getOutputValiReport(ouputValid));
-		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid));
+		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
+				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
+				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
+		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
+		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid));
 		logger.info("*************Modification Otp Authentication request ******************");
 		Map<String,String> tempMap = new HashMap<String, String>();
-		tempMap.put("pinInfovalue", getOtpValue(objFileUtil.getFilePath(testCaseName,"request").getAbsolutePath(),mapping,"pinInfovalue"));
+		tempMap.put("pinInfovalue", getOtpValue(FileUtil.getFilePath(testCaseName,"request").getAbsolutePath(),mapping,"pinInfovalue"));
 		Reporter.log("<b><u>Modification of otp Authentication request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "request"), true);
 		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
 				+ " *******");
-		Assert.assertEquals(postAndGenOutFile(testCaseName.listFiles(),
+		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
 				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-2-actual-res",200), true);
-		Map<String, List<OutputValidationDto>> ouputValid2 = objOpValiUtil.doOutputValidation(
-				objFileUtil.getFilePath(testCaseName, "output-2-actual").toString(),
-				objFileUtil.getFilePath(testCaseName, "output-2-expected").toString());
-		Reporter.log(objReportUtil.getOutputValiReport(ouputValid2));
-		Verify.verify(objOpValiUtil.publishOutputResult(ouputValid2));
-		if(objFileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
+		Map<String, List<OutputValidationDto>> ouputValid2 = OutputValidationUtil.doOutputValidation(
+				FileUtil.getFilePath(testCaseName, "output-2-actual").toString(),
+				FileUtil.getFilePath(testCaseName, "output-2-expected").toString());
+		Reporter.log(ReportUtil.getOutputValiReport(ouputValid2));
+		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid2));
+		if(FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
 			Reporter.log("<b><u>Auth Transaction Validation</u></b>");
-			Map<String, List<OutputValidationDto>> auditTxnvalidation = objAuditValidUtil
+			Map<String, List<OutputValidationDto>> auditTxnvalidation = AuditValidation
 					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
-			Reporter.log(objReportUtil.getOutputValiReport(auditTxnvalidation));
-			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditTxnvalidation), true);
-		}if (objFileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
+			Reporter.log(ReportUtil.getOutputValiReport(auditTxnvalidation));
+			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditTxnvalidation), true);
+		}if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
 			wait(5000);
 			logger.info("************* Audit Log Validation ******************");
 			Reporter.log("<b><u>Audit Log Validation</u></b>");
-			Map<String, List<OutputValidationDto>> auditLogValidation = objAuditValidUtil
+			Map<String, List<OutputValidationDto>> auditLogValidation = AuditValidation
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
-			Reporter.log(objReportUtil.getOutputValiReport(auditLogValidation));
-			Assert.assertEquals(objOpValiUtil.publishOutputResult(auditLogValidation), true);
+			Reporter.log(ReportUtil.getOutputValiReport(auditLogValidation));
+			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditLogValidation), true);
 		}
 	}
 

@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -48,24 +50,25 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		super();
 	}
 
-	private static Logger logger = Logger.getLogger(FetchDevice.class);
-	private static final String jiraID = "MOS-18217";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "RIDGenerator";
-	private static final String requestJsonName = "RIDGeneratorRequest";
-	private static final String outputJsonName = "RIDGeneratorOutput";
-	private static final String service_URI = "/v1/ridgenerator/generate/rid/{centerid}/{machineid}";
-	private static final int ridGenerationCount = 5;
+	private static Logger logger = Logger.getLogger(RIDGenerator.class);
+	private final String jiraID = "MOS-18217";
+	private final String moduleName = "kernel";
+	private final String apiName = "RIDGenerator";
+	private final String requestJsonName = "RIDGeneratorRequest";
+	private final String outputJsonName = "RIDGeneratorOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String RIDGenerator_URI = props.get("RIDGenerator_URI").toString();
+	private final int ridGenerationCount = 5;
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 
 	/**
 	 * method to set the test case name to the report
@@ -74,8 +77,9 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
+
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 
@@ -142,7 +146,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-					response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -168,7 +172,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			int intRidPre = Integer.parseInt(rid.substring(10,15));
 			for(int i =0; i<ridGenerationCount; i++)
 			{
-				response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+				response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData);
 				int intRidPost = Integer.parseInt(((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString().substring(10, 15));
 				if(intRidPost-intRidPre!=1)
 				{
@@ -182,7 +186,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			softAssert.assertTrue(machidValid, "generated RID does not contains passed machineID");
 			softAssert.assertTrue(ridTimestampvalid, "generated RID does not contains valid timeStamp");
 			softAssert.assertTrue(alphabetValid, "generated RID contains Alphabets in sequence");
-			softAssert.assertTrue(sequenceValid, "generated RID does not have inccremental sequence");
+			softAssert.assertTrue(sequenceValid, "generated RID does not have incremental sequence");
 			
 			status = lengthValid && centidValid && machidValid && ridTimestampvalid && alphabetValid && sequenceValid;
 		}

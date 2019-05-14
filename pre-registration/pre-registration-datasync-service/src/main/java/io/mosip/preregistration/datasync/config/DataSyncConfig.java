@@ -43,7 +43,7 @@ public class DataSyncConfig {
 	int port = -1;
 	String hostWithPort = "localhost:9094";
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 		
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
@@ -63,7 +63,7 @@ public class DataSyncConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Datasync").select()
-				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 
 		if (swaggerBaseUrlSet) {

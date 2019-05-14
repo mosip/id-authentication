@@ -281,7 +281,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		}
 		try {
 			registrationStatusDto
-					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.MANUAL_VARIFICATION.toString());
+					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.MANUAL_VERIFICATION.toString());
 			registrationStatusDto.setRegistrationStageName(stageName);
 
 			if (manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {

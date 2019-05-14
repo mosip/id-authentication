@@ -62,7 +62,7 @@ public class DocumentNotFoundTest {
 	@Test
 	public void notFoundException() throws FileNotFoundException, IOException {
 
-		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
+		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException("PRG_PAM_DOC_005",DOCUMENT_Not_FOUND);
 		String preRegistrationId ="48690172097498";
 		DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
 

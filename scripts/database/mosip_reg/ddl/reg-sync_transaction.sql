@@ -3,12 +3,6 @@
 -- table 		: sync_transaction 		- Sync Job and Transaction details
 -- table alias  : synctrn
 
--- schemas section -----------------------------------------------------------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 create table reg.sync_transaction (
@@ -49,13 +43,6 @@ create table reg.sync_transaction (
 
 -- keys section -------------------------------------------------------------------------------
 alter table reg.sync_transaction add constraint pk_synctrn_id primary key (id)
- ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_synctrn_<colX> on reg.sync_transaction (<colX>)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
-comment on table reg.sync_transaction is 'Master sync_transaction table which hold all sync job details and transactions'
 ;
+
 

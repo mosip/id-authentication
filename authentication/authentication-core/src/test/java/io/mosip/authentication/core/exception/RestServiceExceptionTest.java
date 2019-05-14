@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * The Class RestServiceExceptionTest.

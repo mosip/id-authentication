@@ -4,7 +4,7 @@
  */
 package io.mosip.preregistration.booking.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.booking.dto.DemographicBookingRightJoin;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 
 /**
@@ -33,7 +32,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 
 	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
 	public static final String deletePreIdQuery = "delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
-	public static final String getPreIdQuery = "select u from RegistrationBookingEntity u where u.registrationCenterId=?3 and u.bookingPK.bookingDateTime between ?1 and ?2";
+	public static final String getPreIdQuery = "select u from RegistrationBookingEntity u where u.registrationCenterId=?3 and u.regDate between ?1 and ?2";
 
 	@Query(preIdQuery)
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
@@ -62,8 +61,8 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @return list of booked preregistration data between start and end date
 	 */
 	@Query(getPreIdQuery)
-	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDateTime start,
-			LocalDateTime end, String regCenterId);
+	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDate start,
+			LocalDate end, String regCenterId);
 	/*@Query("SELECT new io.mosip.preregistration.booking.dto.DemographicBookingRightJoin(d.statusCode,b.registrationCenterId,b.slotFromTime,b.slotToTime,b.regDate)"+" FROM RegistrationBookingEntity b JOIN DemographicEntity d ON b.bookingPK.preregistrationId=d.preRegistrationId where d.preRegistrationId= ?1")
 	public DemographicBookingRightJoin getDemographiBookingRightJoin( String preid);
 */

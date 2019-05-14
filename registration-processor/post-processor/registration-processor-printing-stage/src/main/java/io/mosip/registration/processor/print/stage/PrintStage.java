@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.jms.Message;
 
+import io.mosip.registration.processor.core.code.*;
 import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -25,10 +26,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
-import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
@@ -154,6 +151,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.printpostaladdress}")
 	private String printPostalAddress;
+	
+	@Value("${server.servlet.path}")
+	private String contextPath;
 
 	/** The packet info manager. */
 	@Autowired
@@ -195,7 +195,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			QueueListener listener = new QueueListener() {
 				@Override
 				public void setListener(Message message) {
-					cosnumerListener(message);
+					consumerListener(message);
 				}
 			};
 
@@ -226,6 +226,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
+			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
 			JSONObject jsonObject = utilities.retrieveUIN(regId);
 			Integer value=JsonUtil.getJSONValue(jsonObject, UIN);
@@ -241,11 +243,15 @@ public class PrintStage extends MosipVerticleAPIManager {
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
 				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
+				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
 				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
@@ -333,7 +339,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			byte[] printQueueBytes = bos.toByteArray();
 			isAddedToQueue = mosipQueueManager.send(queue, printQueueBytes, address);
 
-		} catch (QueueConnectionNotFound e) {
+		} catch (ConnectionUnavailableException e) {
 			if (count < 5) {
 				sendToQueue(queue, documentBytesMap, count + 1, uin);
 			} else {
@@ -341,7 +347,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 								+ ExceptionUtils.getStackTrace(e));
-				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getCode());
+				throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getCode());
 			}
 		}
 
@@ -367,11 +373,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 *            the router
 	 */
 	private void routes(MosipRouter router) {
-		router.post("/v0.1/registration-processor/print-stage/resend");
+		router.post(contextPath+"/resend");
 		router.handler(this::reSendPrintPdf, this::failure);
-
-		router.get("/print-stage/health");
+		
+		router.get(contextPath+"/resend/health");
 		router.handler(this::health);
+
 
 	}
 
@@ -428,7 +435,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		}
 	}
 
-	public void cosnumerListener(Message message) {
+	public void consumerListener(Message message) {
 		String description = null;
 		try {
 
@@ -444,11 +451,15 @@ public class PrintStage extends MosipVerticleAPIManager {
 			if (status.equals(SUCCESS)) {
 				description = "Print and Post Completed for the regId : " + registrationId;
 				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
+				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			} else if (status.equals(RESEND)) {
 				description = "Re-Send uin card with regId " + registrationId + " for printing";
 				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setLatestTransactionStatusCode(RESEND);
+				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 				registrationStatusDto.setUpdatedBy(USER);
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS, this.stageObject);

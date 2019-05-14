@@ -33,13 +33,13 @@ public class HMACUtilsTest {
 	}
 	
 	@Test
-	public void testGenarateRandomIV(){
-		assertThat(HMACUtils.genarateSalt(),isA(byte[].class));
+	public void testGenerateRandomIV(){
+		assertThat(HMACUtils.generateSalt(),isA(byte[].class));
 	}
 	
 	@Test
-	public void testGenarateRandomIVInputBytes(){
-		assertThat(HMACUtils.genarateSalt(16),isA(byte[].class));
+	public void testGenerateRandomIVInputBytes(){
+		assertThat(HMACUtils.generateSalt(16),isA(byte[].class));
 	}
 
 }

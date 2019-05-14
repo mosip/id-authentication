@@ -15,6 +15,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.code.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ import io.mosip.registration.processor.message.sender.utility.NotificationStageS
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateCode;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -137,6 +139,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The service. */
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
+	
+	@Autowired
+	private TransactionService<TransactionDto> transactionStatusService; 
 
 	/** The Constant SMS_TYPE. */
 	private static final String SMS_TYPE = "SMS";
@@ -192,7 +197,11 @@ public class MessageSenderStage extends MosipVerticleManager {
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
 		status=registrationStatusDto.getLatestTransactionTypeCode() +"_"+ registrationStatusDto.getLatestTransactionStatusCode();
-		
+
+
+		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.NOTIFICATION.toString());
+		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
+
 		try {
 			InputStream packetMetaInfoStream = adapter.getFile(id, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
@@ -240,16 +249,18 @@ public class MessageSenderStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, description);
 
-	
+
 			registrationStatusDto.setStatusComment(description);
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null, TransactionTypeCode.UPDATE.toString(),
-					"updated registration status record", registrationStatusDto.getStatusCode(),
+					registrationStatusDto.getRegistrationId(), null, registrationStatusDto.getLatestTransactionTypeCode(),
+					"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
 					registrationStatusDto.getStatusComment());
+
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("updated registration record");
-			transcationStatusService.addRegistrationTransaction(transactionDto);
+			transactionStatusService.addRegistrationTransaction(transactionDto);
 
 			object.setIsValid(Boolean.TRUE);
 

@@ -21,9 +21,9 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
-import io.mosip.dbaccess.KernelMasterDataR;
+import io.mosip.authentication.fw.util.IdaScriptsUtil;
+
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
@@ -34,7 +34,7 @@ import io.restassured.RestAssured;
  *
  */
 
-public class BaseTestCase extends KernelMasterDataR {
+public class BaseTestCase  {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();
@@ -117,7 +117,8 @@ public class BaseTestCase extends KernelMasterDataR {
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 
-			//authToken=pil.getToken();
+			//IdaScriptsUtil.wakeDemoApp();
+
 			
 		} // End suiteSetup
 
@@ -151,6 +152,7 @@ public class BaseTestCase extends KernelMasterDataR {
 				reportMove(currentModule);	
 			};
 			new Thread(reporting).start();*/
+			//IdaScriptsUtil.authTestTearDown();
 			RestAssured.reset();
 			logger.info("\n\n");
 			logger.info("Rest Assured framework has been reset because all tests have been executed.");
@@ -173,14 +175,7 @@ public class BaseTestCase extends KernelMasterDataR {
 			String date = sdf.format(c.getTime());
 			try {
 				Path sourcePath = Paths.get(System.getProperty("user.dir")+"/test-output/" + "emailable-report.html");
-				//Path sourcePath = Paths.get("target/surefire-reports/" + "emailable-report.html");
-				Path DesPath = Paths.get("src/test/resources/" + "Reports" + "/" 
-				+ currentModule+"-emailable-report-"+date+".html");
-				
 				boolean createCurrentPathStatus = new File("src/test/resources/Reports/current-build-reports").mkdirs();
-				boolean createBackupPathStatus = new File("src/test/resources/Reports/backup-build-reports").mkdirs();
-				
-				
 				Path currentPathWithFileName = Paths.get("src/test/resources/Reports/current-build-reports/"+ currentModule+"-emailable-report.html");
 				Path backupPathWithFileName = Paths.get("src/test/resources/Reports/backup-build-reports/"+ currentModule+"-emailable-report-"+date+".html");
 				
@@ -190,7 +185,7 @@ public class BaseTestCase extends KernelMasterDataR {
 				temp = Files.copy(sourcePath,currentPathWithFileName,java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 				temp = Files.copy(sourcePath,backupPathWithFileName);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} 
 			

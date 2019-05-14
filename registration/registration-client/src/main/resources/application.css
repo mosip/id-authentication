@@ -10,6 +10,14 @@
 	-fx-font-size:10.0px;
 }
 
+
+
+#syncProgressBar > .bar{
+	-fx-background-color : red;
+	 -fx-padding: 0;
+	 -fx-background-insets : 0;
+}
+
 .demoGraphicTextFieldFocused{
 	-fx-border-color: red;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
@@ -28,36 +36,39 @@
 	-fx-border-color : #C9C9C9;
 }
 
-.scroll-bar:horizontal > .increment-button > .increment-arrow {
+.parentScrollPane .scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: white;
     -fx-shape: "";
 }
 
-.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+.parentScrollPane .scroll-bar:horizontal > .decrement-button > .decrement-arrow {
     -fx-background-color: white;
     -fx-shape: "";
+}
+
+.parentScrollPane .scroll-bar:horizontal {
+		-fx-background-color : white;
 }
 
 .scroll-bar:vertical > .thumb {
     -fx-background-color: white;
  }
  
+
+.parentScrollPane .scroll-pane > .corner {
+    -fx-background-color: white;
+}
+ 
 .scroll-pane {
     -fx-background-color: white;
 	-fx-border-width : 0.0 0.0 0.0 0.0;
     
 }
- .scroll-bar:horizontal {
-		-fx-background-color : white;
-}
+
 
 .scroll-bar:horizontal > .thumb {
     -fx-background-color: white;
  }
- 
- .scroll-pane > .corner {
-    -fx-background-color: white;
-}
  
 
 .toolTip{
@@ -513,6 +524,13 @@ Working on new Css by taleev
 
 }
 
+.searchBoxTextStyle{
+	-fx-pref-height: 30.0px;
+	-fx-pref-width: 312.0px;
+	-fx-border-width: 0.0 0.0 2.0 0.0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+
 .higlightedLoginLable{
 	-fx-font-size: 30.0px;
 }
@@ -964,8 +982,11 @@ Working on new Css by taleev
 	-fx-pref-width : 35.0;
 }
 
+.tableId{
+		-fx-text-fill: black;
+}
+
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell{
-	-fx-text-fill: #000000;
     -fx-background-color: #FFFFFF;
     -fx-border-width : 0.0 0.0 1.0 0.0;
 }
@@ -1393,6 +1414,13 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
+
+.operationalPaneDetails{
+	-fx-border-width: 1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;
+}
+
 .operationalPaneDetailsBioUpdate{
 	-fx-border-width: 0.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;

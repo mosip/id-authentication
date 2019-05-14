@@ -31,7 +31,7 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.KeyPolicySyncJob;
-import io.mosip.registration.service.PolicySyncService;
+import io.mosip.registration.service.sync.PolicySyncService;
 
 public class KeyPolicySyncJobTest {
 

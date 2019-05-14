@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -23,11 +24,13 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import com.google.common.base.Verify;
+
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.mosip.util.UIN_Assertions;
 import io.restassured.response.Response;
 /**
@@ -40,44 +43,33 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	{
 		super();
 	}
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(UINGeneration.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String uingenerator = "/v1/uingenerator/uin";
-	static String dest = "";
-	static String folderPath = "kernel/UINGeneration";
-	static String outputFile = "UINGenerationOutput.json";
-	static String requestKeyFile = "UINGenerationInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	String alphanumeric_regEx="^[a-zA-Z0-9]*$";
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String uingenerator =props.get("uingenerator");
+	private String folderPath = "kernel/UINGeneration";
+	private String outputFile = "UINGenerationOutput.json";
+	private String requestKeyFile = "UINGenerationInput.json";
+	private String finalStatus = "";
+	private String alphanumeric_regEx="^[a-zA-Z0-9]*$";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
 	
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINValidator")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
-		 testParam = context.getCurrentXmlTest().getParameter("testType");
+	public Object[][] readData1(ITestContext context) throws Exception {
 		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -93,42 +85,44 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * getUIN
 	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin send
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	
+	@SuppressWarnings({ "unchecked"})
 	@Test(dataProvider="UINValidator",invocationCount=1)
 	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
-		/*
-		 * Calling the GET method with no parameters
-		 */
-		Response res=applicationLibrary.getRequestNoParameter(uingenerator);
+		// Calling the get method with no parameter
+		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 		
+		//Getting UIN from response
 		 String uin = res.jsonPath().getMap("response").get("uin").toString();
 		 
+		 //Getting the length of UIN
 		 int uin_length=uin.length();
+		//Getting the First half of UIN
 		 String first_half=uin.substring(0, uin_length/2);
+		//Getting the second half of UIN
 		 String second_half=uin.substring(uin_length/2);
+		 //Reversing the second half of UIN
 		 String rev_half="";
 		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
+		 
 		boolean isAscending = UIN_Assertions.ascendingMethod(uin);
      	boolean isDescending = UIN_Assertions.ascendingMethod(uin);
      	boolean alpanumeric = UIN_Assertions.asserUinWithPattern(uin, alphanumeric_regEx);
      	
 		if(uin_length==10){
         	   if(first_half.equals(second_half)){ 
-        		   finalStatus="fail";
+        		   finalStatus="Fail";
         	   }else {
         		   if(first_half.equals(rev_half)&&isAscending&&isDescending&&alpanumeric){
-        			   finalStatus="fail";
+        			   finalStatus="Fail";
         		   }else{
         			   String first2=uin.substring(0,1);int count =1;
         				for(int k=2;k<uin.length();k++){
@@ -136,18 +130,17 @@ public class UINGeneration extends BaseTestCase implements ITest{
         						count++;
         					}
         				}if(count==5)
-        					finalStatus="fail";
+        					finalStatus="Fail";
         				else
-        					finalStatus="pass";
+        					finalStatus="Pass";
         		   }
            }   
         	
         	  
            }
 		else
-			finalStatus="fail";
-        		   
-
+			finalStatus="Fail";
+        		  
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
@@ -156,16 +149,18 @@ public class UINGeneration extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 		
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
 		} 
 		
 		@AfterMethod(alwaysRun = true)
-		public void setResultTestName(ITestResult result) {
-			
+		public void setResultTestName(ITestResult result) {	
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -173,10 +168,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
 				f.set(baseTestMethod, UINGeneration.testCaseName);
-
-				
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}

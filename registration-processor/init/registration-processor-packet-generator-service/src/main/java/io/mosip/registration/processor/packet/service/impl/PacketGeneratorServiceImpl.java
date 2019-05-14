@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.google.gson.Gson;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -30,7 +30,9 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
@@ -50,7 +52,7 @@ import io.mosip.registration.processor.packet.storage.exception.IdRepoAppExcepti
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
-
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 /**
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
@@ -82,11 +84,14 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
 
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 	private ObjectMapper mapper=new ObjectMapper();
-	
+
 	@Autowired
 	private Utilities utilities;
 
@@ -135,8 +140,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equals(RegistrationType.ACTIVATED.toString())
-				|| registrationType.equals(RegistrationType.DEACTIVATED.toString()))) {
+		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {
 

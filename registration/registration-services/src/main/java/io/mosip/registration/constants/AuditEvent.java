@@ -68,10 +68,12 @@ public enum AuditEvent {
 	REG_BIO_THUMBS_SCAN("REG-EVT-045", USER_EVENT.getCode(), "REG_BIO_THUMBS_SCAN", "Fingerprints: Scan of thumbs"),
 	REG_BIO_FINGERPRINT_NEXT("REG-EVT-046", USER_EVENT.getCode(), "REG_BIO_FINGERPRINT_NEXT", "Click of Next after capturing fingerprints"),
 	REG_BIO_FINGERPRINT_BACK("REG-EVT-047", USER_EVENT.getCode(), "REG_BIO_FINGERPRINT_BACK", "Click of Back from fingerprint capture screen"),
-	REG_BIO_IRIS_SCAN("REG-EVT-048", USER_EVENT.getCode(), "REG_BIO_IRIS_SCAN", "Iris: Scan of both irises"),
+	REG_BIO_LEFT_IRIS_SCAN("REG-EVT-048", USER_EVENT.getCode(), "REG_BIO_IRIS_SCAN", "Iris: Scan of left iris"),
+	REG_BIO_RIGHT_IRIS_SCAN("REG-EVT-143", USER_EVENT.getCode(), "REG_BIO_IRIS_SCAN", "Iris: Scan of right iris"),
 	REG_BIO_IRIS_NEXT("REG-EVT-049", USER_EVENT.getCode(), "REG_BIO_IRIS_NEXT", "Click of Next after capturing irises"),
 	REG_BIO_IRIS_BACK("REG-EVT-050", USER_EVENT.getCode(), "REG_BIO_IRIS_BACK", "Click of Back from iris capture screen"),
 	REG_BIO_FACE_CAPTURE("REG-EVT-051", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE", "Photo: Face capture"),
+	REG_BIO_EXCEP_FACE_CAPTURE("REG-EVT-144", USER_EVENT.getCode(), "REG_BIO_EXCEPION_FACE_CAPTURE", "Photo: Exception face capture"),
 	REG_BIO_FACE_CAPTURE_NEXT("REG-EVT-052", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE_NEXT", "Click of Next after capturing face photo"),
 	REG_BIO_FACE_CAPTURE_BACK("REG-EVT-053", USER_EVENT.getCode(), "REG_BIO_FACE_CAPTURE_BACK", "Click of Back from face photo capture screen"),
 
@@ -203,8 +205,13 @@ public enum AuditEvent {
 	
 	//Scheduler Util
 	SCHEDULER_REFRESHED_TIMEOUT("REG-EVT-141", SYSTEM_EVENT.getCode(),"REFRESHED_TIMEOUT", "The time task remainder alert"),
-	SCHEDULER_SESSION_TIMEOUT("REG-EVT-142", SYSTEM_EVENT.getCode(),"SESSION_TIMEOUT", "The time task session expires");
+	SCHEDULER_SESSION_TIMEOUT("REG-EVT-142", SYSTEM_EVENT.getCode(),"SESSION_TIMEOUT", "The time task session expires"),
 	
+	//MDM 
+	MDM_CAPTURE_FAILED("REG-EVT-143", USER_EVENT.getCode(), "CAPTURE_FAILED", "Biometric capture failed"),
+	MDM_CAPTURE_SUCCESS("REG-EVT-144", USER_EVENT.getCode(), "CAPTURE_SUCESS", "Biometric capture completed"),
+	MDM_NO_DEVICE_AVAILABLE("REG-EVT-145", USER_EVENT.getCode(), "DEVICE_NOT_FOUND", "No devic3 is available"),
+	MDM_DEVICE_FOUND("REG-EVT-146", USER_EVENT.getCode(), "MDM_DEVICE_FOUND", "Device is found");
 	
 	/**
 	 * The constructor

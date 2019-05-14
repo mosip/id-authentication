@@ -31,7 +31,7 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.RegUserMappingSyncJob;
-import io.mosip.registration.service.impl.UserMachineMappingServiceImpl;
+import io.mosip.registration.service.operator.impl.UserMachineMappingServiceImpl;
 
 public class RegUserMachineSyncJobTest {
 	@InjectMocks

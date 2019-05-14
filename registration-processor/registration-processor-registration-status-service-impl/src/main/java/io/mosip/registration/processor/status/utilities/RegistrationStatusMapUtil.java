@@ -72,16 +72,16 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION+"_"+RegistrationTransactionStatusCode.FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationTransactionTypeCode.MANUAL_VARIFICATION+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationTransactionTypeCode.MANUAL_VARIFICATION+"_"+RegistrationTransactionStatusCode.FAILED, RegistrationExternalStatusCode.REREGISTER);
+		statusMap.put(RegistrationTransactionTypeCode.MANUAL_VERIFICATION+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationTransactionTypeCode.MANUAL_VERIFICATION+"_"+RegistrationTransactionStatusCode.FAILED, RegistrationExternalStatusCode.REREGISTER);
 
 		statusMap.put(RegistrationTransactionTypeCode.UIN_GENERATOR+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationTransactionTypeCode.UIN_GENERATOR+"_"+RegistrationTransactionStatusCode.FAILED, RegistrationExternalStatusCode.REREGISTER);
 
 		statusMap.put(RegistrationTransactionTypeCode.PRINT+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSED);
 		statusMap.put(RegistrationTransactionTypeCode.NOTIFICATION+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSED);
-		
-		
+
+
 		statusMap.put(RegistrationTransactionTypeCode.EXTERNAL_INTEGRATION+"_"+RegistrationTransactionStatusCode.SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 
 		return unmodifiableMap;
@@ -97,7 +97,7 @@ public class RegistrationStatusMapUtil {
 				.statusMapper();
 		if (entity.getStatusCode() != null) {
 			mappedValue = mapStatus.get(RegistrationStatusCode.valueOf(entity.getLatestTransactionTypeCode()+"_"+entity.getLatestTransactionStatusCode()));
-			if ((entity.getLatestTransactionTypeCode()+"_"+entity.getLatestTransactionStatusCode()).equals(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString()+"_"+RegistrationTransactionStatusCode.FAILED.toString()) 
+			if ((entity.getLatestTransactionTypeCode()+"_"+entity.getLatestTransactionStatusCode()).equals(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString()+"_"+RegistrationTransactionStatusCode.FAILED.toString())
 					&&(entity.getRetryCount() < threshold)
 					&& (mappedValue.equals(RegistrationExternalStatusCode.REREGISTER))) {
 				mappedValue = RegistrationExternalStatusCode.RESEND;

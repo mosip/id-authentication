@@ -35,9 +35,10 @@ import io.mosip.registration.processor.packet.storage.exception.IdRepoAppExcepti
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import lombok.Data;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 
 /**
-* 
+*
  * @author Girish Yarru
 *
 */
@@ -85,7 +86,7 @@ public class Utilities {
               }
 
               public int getApplicantAge(String registrationId)
-                                           throws IOException, ApisResourceAccessException, ParseException, IdRepoAppException {
+                                           throws IOException, ApisResourceAccessException {
                              RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
                              String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
                              String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -134,13 +135,20 @@ public class Utilities {
 
               }
 
-              private int calculateAge(String applicantDob) throws ParseException {
-                             DateFormat sdf = new SimpleDateFormat(dobFormat);
-                             Date birthDate = sdf.parse(applicantDob);
-                             LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
-                             Period p = Period.between(ld, LocalDate.now());
-                             return p.getYears();
-              }
+    private int calculateAge(String applicantDob) {
+        DateFormat sdf = new SimpleDateFormat(dobFormat);
+        Date birthDate = null;
+        try {
+            birthDate = sdf.parse(applicantDob);
+
+        } catch (ParseException e) {
+            throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
+        }
+        LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
+        Period p = Period.between(ld, LocalDate.now());
+        return p.getYears();
+
+    }
 
               public Long getUIn(String registrationId) throws IOException {
                              JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);

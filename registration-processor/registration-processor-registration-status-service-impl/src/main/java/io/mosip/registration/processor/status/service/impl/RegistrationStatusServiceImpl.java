@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -127,22 +128,23 @@ public class RegistrationStatusServiceImpl
 	@Override
 	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isTransactionSuccessful = false;
-		String transactionId = generateId();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::addRegistrationStatus()::entry");
-		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
+			String transactionId = generateId();
+			registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
 			description = "Registration status added successfully";
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
-					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
-					registrationStatusDto.getStatusCode(), registrationStatusDto.getStatusComment());
+					null, registrationStatusDto.getLatestTransactionTypeCode(), "Added registration status record",
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
+
 		} catch (DataAccessException | DataAccessLayerException e) {
 			description = "DataAccessLayerException while adding Registration status for Registration Id : "
 					+ registrationStatusDto.getRegistrationId() + "::" + e.getMessage();
@@ -181,8 +183,17 @@ public class RegistrationStatusServiceImpl
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
 		boolean isTransactionSuccessful = false;
+		String transactionId = generateId();
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
-		registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
+		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
+				latestTransactionId, registrationStatusDto.getLatestTransactionTypeCode(),
+				"updated registration status record", registrationStatusDto.getLatestTransactionStatusCode(),
+				registrationStatusDto.getStatusComment());
+		transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
+		transactionDto.setReferenceIdType("updated registration record");
+		transcationStatusService.addRegistrationTransaction(transactionDto);
+
+		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
 			InternalRegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
 			if (dto != null) {
@@ -190,14 +201,6 @@ public class RegistrationStatusServiceImpl
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
 				description = "Updated registration status successfully";
-
-				TransactionDto transactionDto = new TransactionDto(generateId(),
-						registrationStatusDto.getRegistrationId(), latestTransactionId,
-						TransactionTypeCode.UPDATE.toString(), "updated registration status record",
-						registrationStatusDto.getStatusCode(), registrationStatusDto.getStatusComment());
-				transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-				transactionDto.setReferenceIdType("updated registration record");
-				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessException | DataAccessLayerException e) {
 			description = "DataAccessLayerException while Updating registration status for registration Id"
@@ -343,11 +346,11 @@ public class RegistrationStatusServiceImpl
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
-		
-		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil.getExternalStatus(
-				entity);
+
+		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil
+				.getExternalStatus(entity);
 		String mappedValue = registrationExternalStatusCode.toString();
-		
+
 		registrationStatusDto.setStatusCode(mappedValue);
 		return registrationStatusDto;
 	}
@@ -510,8 +513,7 @@ public class RegistrationStatusServiceImpl
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::entry");
 		try {
-			int count = registrationStatusDao.getUnProcessedPacketsCount(
-					elapseTime, reprocessCount, status);
+			int count = registrationStatusDao.getUnProcessedPacketsCount(elapseTime, reprocessCount, status);
 
 			isTransactionSuccessful = true;
 			description = "Get list of reprocess packets successful";
@@ -545,5 +547,5 @@ public class RegistrationStatusServiceImpl
 		return uinAvailable;
 	}
 
-	
+
 }

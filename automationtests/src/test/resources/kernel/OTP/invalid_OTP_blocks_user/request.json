@@ -1,4 +1,10 @@
 {
-  "key": "Sring",
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "key": "lockKey"
+  },
+  "requesttime": "2018-12-12T11:11:11.256Z",
+  "version": "string",
   "case": "blockUser"
 }

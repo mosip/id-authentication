@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.status.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,11 +10,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
@@ -53,11 +53,10 @@ public class SyncRegistrationDaoTest {
 		syncRegistrationEntity.setId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
 		syncRegistrationEntity.setRegistrationId("1001");
 		syncRegistrationEntity.setRegistrationType(SyncTypeDto.NEW.getValue());
-		syncRegistrationEntity.setParentRegistrationId("1234");
+
 		syncRegistrationEntity.setStatusCode(SyncStatusDto.PRE_SYNC.toString());
 		syncRegistrationEntity.setStatusComment("NEW");
 		syncRegistrationEntity.setLangCode("eng");
-		syncRegistrationEntity.setIsActive(true);
 		syncRegistrationEntity.setIsDeleted(false);
 		syncRegistrationEntity.setCreateDateTime(LocalDateTime.now());
 		syncRegistrationEntity.setUpdateDateTime(LocalDateTime.now());
@@ -66,10 +65,9 @@ public class SyncRegistrationDaoTest {
 
 		syncRegistrationEntityList.add(syncRegistrationEntity);
 
-		Mockito.when(syncRegistrationRepository.save(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
+		Mockito.when(syncRegistrationRepository.save(any())).thenReturn(syncRegistrationEntity);
 
-		Mockito.when(syncRegistrationRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(syncRegistrationEntityList);
+		Mockito.when(syncRegistrationRepository.createQuerySelect(any(), any())).thenReturn(syncRegistrationEntityList);
 
 	}
 
@@ -103,8 +101,7 @@ public class SyncRegistrationDaoTest {
 	@Test
 	public void findByIdFailureTest() {
 		syncRegistrationEntityList = new ArrayList<>();
-		Mockito.when(syncRegistrationRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(syncRegistrationEntityList);
+		Mockito.when(syncRegistrationRepository.createQuerySelect(any(), any())).thenReturn(syncRegistrationEntityList);
 		SyncRegistrationEntity syncRegistrationEntityResult = syncRegistrationDao.findById("1001");
 		assertEquals("Check id Registration Id is present in DB, expected value is empty List", null,
 				syncRegistrationEntityResult);

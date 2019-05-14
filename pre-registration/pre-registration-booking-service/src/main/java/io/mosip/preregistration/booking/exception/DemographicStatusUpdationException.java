@@ -1,15 +1,19 @@
 package io.mosip.preregistration.booking.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import lombok.Getter;
 
 /**
  * @author M1046129
  *
  */
+
+@Getter
 public class DemographicStatusUpdationException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
+	private MainResponseDTO<?> mainResponseDTO;
 
 	public DemographicStatusUpdationException(String msg) {
 		super("", msg);
@@ -21,6 +25,11 @@ public class DemographicStatusUpdationException extends BaseUncheckedException {
 
 	public DemographicStatusUpdationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
+	}
+	
+	public DemographicStatusUpdationException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+		super(errorCode, errorMessage, null);
+		this.mainResponseDTO=response;
 	}
 
 	public DemographicStatusUpdationException(String errorCode, String errorMessage, Throwable rootCause) {

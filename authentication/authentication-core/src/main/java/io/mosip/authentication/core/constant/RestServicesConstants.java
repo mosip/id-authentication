@@ -32,10 +32,16 @@ public enum RestServicesConstants {
 	ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG("id-masterdata-template-service-multilang"),
 	
 	GENDER_TYPE_SERVICE("id-masterdata-gender-service"),
+	
+	ENCRYPTION_SERVICE("encrypt-service"),
 
 	DECRYPTION_SERVICE("decrypt-service"),
 	
 	TITLE_SERVICE("id-masterdata-title-service"),
+	
+	USERID_RID("userid-rid"),
+	
+	RID_UIN("rid-uin"),
 	
 	TOKEN_ID_GENERATOR("token-id-generator");
 

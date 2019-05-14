@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -56,4 +57,10 @@ public class CryptomanagerRequestDto {
 	@ApiModelProperty(notes = "Data in BASE64 encoding to encrypt/decrypt", required = true)
 	@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
 	private String data;
+	/**
+	 *  Salt to be passed as IV
+	 */
+	@Pattern(regexp=CryptomanagerConstant.EMPTY_REGEX,message=CryptomanagerConstant.EMPTY_ATTRIBUTE)
+	@ApiModelProperty(notes = " Base64 Encoded Salt to be send as IV")
+	private String salt;
 }

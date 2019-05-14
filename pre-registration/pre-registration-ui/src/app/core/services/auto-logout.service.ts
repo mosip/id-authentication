@@ -64,6 +64,7 @@ export class AutoLogoutService {
       (this.ping = Number(
         this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_ping)
       ));
+
     this.primaryLang = langCode;
     this.dataStroage.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['autologout'];
@@ -115,6 +116,7 @@ export class AutoLogoutService {
           console.log(res);
         } else {
           if (this.isActive) {
+            if (this.dialogref)
             this.dialogref.close();
           }
         }
@@ -143,6 +145,7 @@ export class AutoLogoutService {
    */
   onLogOut() {
     this.dialogref.close();
+    this.dialog.closeAll();
     this.userIdle.stopWatching();
     this.popUpPostLogOut();
     this.authService.onLogout();

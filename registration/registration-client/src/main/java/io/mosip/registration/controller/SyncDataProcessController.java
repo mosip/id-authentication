@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.controller.vo.SyncDataProccessVO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -56,15 +58,15 @@ public class SyncDataProcessController extends BaseController implements Initial
 
 	/** Sync Data Process Table View */
 	@FXML
-	private TableView<SyncDataProcessDTO> syncDataTableViewId;
+	private TableView<SyncDataProccessVO> syncDataTableViewId;
 	@FXML
-	private TableColumn<SyncDataProcessDTO, String> syncDataJobId;
+	private TableColumn<SyncDataProccessVO, String> syncDataJobId;
 	@FXML
-	private TableColumn<SyncDataProcessDTO, String> syncDataJobNameId;
+	private TableColumn<SyncDataProccessVO, String> syncDataJobNameId;
 	@FXML
-	private TableColumn<SyncDataProcessDTO, String> syncDataStatusId;
+	private TableColumn<SyncDataProccessVO, String> syncDataStatusId;
 	@FXML
-	private TableColumn<SyncDataProcessDTO, String> syncDataLastUpdTimesId;
+	private TableColumn<SyncDataProccessVO, String> syncDataLastUpdTimesId;
 
 	@Autowired
 	private JobConfigurationService jobConfigurationService;
@@ -80,11 +82,11 @@ public class SyncDataProcessController extends BaseController implements Initial
 		syncDataTableViewId.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
 		/** Assign DTO values to Table view */
-		syncDataJobId.setCellValueFactory(new PropertyValueFactory<SyncDataProcessDTO, String>("jobId"));
-		syncDataJobNameId.setCellValueFactory(new PropertyValueFactory<SyncDataProcessDTO, String>("jobName"));
-		syncDataStatusId.setCellValueFactory(new PropertyValueFactory<SyncDataProcessDTO, String>("jobStatus"));
+		syncDataJobId.setCellValueFactory(new PropertyValueFactory<SyncDataProccessVO, String>("jobId"));
+		syncDataJobNameId.setCellValueFactory(new PropertyValueFactory<SyncDataProccessVO, String>("jobName"));
+		syncDataStatusId.setCellValueFactory(new PropertyValueFactory<SyncDataProccessVO, String>("jobStatus"));
 		syncDataLastUpdTimesId
-				.setCellValueFactory(new PropertyValueFactory<SyncDataProcessDTO, String>("lastUpdatedTimes"));
+				.setCellValueFactory(new PropertyValueFactory<SyncDataProccessVO, String>("lastUpdatedTimes"));
 
 	}
 
@@ -99,8 +101,8 @@ public class SyncDataProcessController extends BaseController implements Initial
 			List<SyncDataProcessDTO> dataProcessDTOs = (List<SyncDataProcessDTO>) responseDTO.getSuccessResponseDTO()
 					.getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO);
 
-			final ObservableList<SyncDataProcessDTO> syncDataProcessDTOsObservableList = FXCollections
-					.observableArrayList(dataProcessDTOs);
+			final ObservableList<SyncDataProccessVO> syncDataProcessDTOsObservableList = FXCollections
+					.observableArrayList(convertDtoToVO(dataProcessDTOs));
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
@@ -110,6 +112,16 @@ public class SyncDataProcessController extends BaseController implements Initial
 
 		}
 
+	}
+
+	private List<SyncDataProccessVO> convertDtoToVO(List<SyncDataProcessDTO> dataProcessDTOs) {
+		List<SyncDataProccessVO> dataProccessVOs = new LinkedList<>();
+		dataProcessDTOs.forEach(dto -> {
+			dataProccessVOs.add(new SyncDataProccessVO(dto.getJobId(), dto.getJobName(), dto.getJobStatus(),
+					dto.getLastUpdatedTimes()));
+		});
+
+		return dataProccessVOs;
 	}
 
 	// Event Listener on Button[#syncDataLastCompletedButton].onAction
@@ -122,8 +134,8 @@ public class SyncDataProcessController extends BaseController implements Initial
 			List<SyncDataProcessDTO> dataProcessDTOs = (List<SyncDataProcessDTO>) responseDTO.getSuccessResponseDTO()
 					.getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO);
 
-			final ObservableList<SyncDataProcessDTO> syncDataProcessDTOsObservableList = FXCollections
-					.observableArrayList(dataProcessDTOs);
+			final ObservableList<SyncDataProccessVO> syncDataProcessDTOsObservableList = FXCollections
+					.observableArrayList(convertDtoToVO(dataProcessDTOs));
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {
@@ -143,8 +155,8 @@ public class SyncDataProcessController extends BaseController implements Initial
 			List<SyncDataProcessDTO> dataProcessDTOs = (List<SyncDataProcessDTO>) responseDTO.getSuccessResponseDTO()
 					.getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO);
 
-			final ObservableList<SyncDataProcessDTO> syncDataProcessDTOsObservableList = FXCollections
-					.observableArrayList(dataProcessDTOs);
+			final ObservableList<SyncDataProccessVO> syncDataProcessDTOsObservableList = FXCollections
+					.observableArrayList(convertDtoToVO(dataProcessDTOs));
 
 			syncDataTableViewId.setItems(syncDataProcessDTOsObservableList);
 		} else if (responseDTO.getErrorResponseDTOs() != null) {

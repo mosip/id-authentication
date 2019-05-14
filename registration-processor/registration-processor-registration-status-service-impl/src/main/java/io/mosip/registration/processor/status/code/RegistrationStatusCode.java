@@ -10,14 +10,14 @@ public enum RegistrationStatusCode {
 	// If any new status is being added here then add it in
 	// RegistrationStatusMapUtil also.
 	/** Potential Match found in data base. */
-	
-	
+
+
 	FAILED,
-	
+
 	REJECTED,
-	
+
 	PROCESSING,
-	
+
 	PROCESSED
-	
+
 }
