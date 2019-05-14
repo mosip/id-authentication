@@ -235,6 +235,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
+				System.out.println(test);
 				Gson gsonObj = new Gson();
 				uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
 				long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
@@ -369,7 +370,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		requestDto.setRegistrationId(regId);
+		requestDto.setRegistrationId("10001100010007220190411113702");
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
 		requestDto.setBiometricReferenceId(uin);
 		
@@ -387,11 +388,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
+			System.out.println(result.toString());
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
+			System.out.println(e.getMessage());
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -500,8 +503,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 					requestDto.setRegistrationId(regId);
 					requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-					pathsegments.add(Long.toString(uin));
+					requestDto.setBiometricReferenceId(Long.toString(uin));
+					
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRequest(requestDto);
 					idRequestDTO.setMetadata(null);
@@ -516,7 +519,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
-
+				
 				if (result != null && result.getResponse() != null) {
 
 						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
@@ -590,7 +593,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				requestDto.setRegistrationId(regId);
 				requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
 
-				pathsegments.add(Long.toString(uin));
+				requestDto.setBiometricReferenceId(Long.toString(uin));
 				idRequestDTO.setId(idRepoUpdate);
 				idRequestDTO.setMetadata(null);
 				idRequestDTO.setRequest(requestDto);
@@ -646,6 +649,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
 					"", "", IdResponseDTO.class);
+			System.out.println(response.toString());
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -692,6 +696,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			String response;
 			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
 					jsonString, String.class);
+			System.out.println(response);
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getResponse() != null) {
