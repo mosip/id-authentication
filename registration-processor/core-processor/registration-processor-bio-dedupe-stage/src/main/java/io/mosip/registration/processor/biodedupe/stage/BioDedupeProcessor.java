@@ -2,7 +2,6 @@ package io.mosip.registration.processor.biodedupe.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,8 +117,7 @@ public class BioDedupeProcessor {
 		String registrationId = object.getRid();
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		try {
-			registrationStatusDto = registrationStatusService
-			.getRegistrationStatus(registrationId);
+			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 			String registrationType = registrationStatusDto.getRegistrationType();
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString())) {
 				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
@@ -170,18 +168,6 @@ public class BioDedupeProcessor {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 					description + "\n" + ExceptionUtils.getStackTrace(e));
-			object.setInternalError(Boolean.TRUE);
-			object.setIsValid(Boolean.FALSE);
-		} catch (ParseException ex) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
-			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
-			registrationStatusDto.setLatestTransactionStatusCode(
-					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
-			code = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode();
-			description = PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					code + " -- " + LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-					description + "\n" + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} catch (AdultCbeffNotPresentException ex) {
@@ -237,7 +223,7 @@ public class BioDedupeProcessor {
 	}
 
 	private void newPacketInsertion(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException, ParseException {
+			throws ApisResourceAccessException, IOException {
 		if (checkCBEFF(registrationStatusDto.getRegistrationId())) {
 
 			registrationStatusDto
@@ -336,7 +322,7 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private Boolean checkCBEFF(String registrationId) throws ApisResourceAccessException, IOException, ParseException {
+	private Boolean checkCBEFF(String registrationId) throws ApisResourceAccessException, IOException {
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(registrationId);
