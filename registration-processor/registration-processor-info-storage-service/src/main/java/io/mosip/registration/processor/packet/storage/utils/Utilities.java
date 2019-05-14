@@ -147,7 +147,7 @@ public class Utilities {
 
 	}
 
-	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException {
+	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
 
 		if (uin != null) {
 			List<String> pathSegments = new ArrayList<>();
@@ -236,15 +236,13 @@ public class Utilities {
 	}
 
 	public RegistrationProcessorIdentity getRegistrationProcessorIdentityJson() throws IOException {
-
 		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-
 		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
-
 	}
 
 	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException {
+
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
