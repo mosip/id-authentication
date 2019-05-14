@@ -206,8 +206,9 @@ public class IdRepoManager {
 		return uinMap;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String getUINByVID(String vid) throws IdAuthenticationBusinessException {
-		RestRequestDTO buildRequest = new RestRequestDTO();
+		RestRequestDTO buildRequest;
 		String uin = null;
 		try {
 			Map<String, String> params = new HashMap<>();
