@@ -13,9 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.naming.Context;
-import javax.naming.NamingEnumeration;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -58,15 +58,13 @@ import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
-import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
 import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
 import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
@@ -610,11 +608,15 @@ public class ILdapDataStore implements IDataStore {
 
 		return (password.contains(userId) || password.contains(email));
 	}
-
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto){
-		LdapConnection connection = null;
-		Dn dn = null;
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
 			userDn = createUserDn(userCreationRequestDto.getUserName());
 			List<Attribute> attributes = new ArrayList<>();
@@ -662,15 +664,6 @@ public class ILdapDataStore implements IDataStore {
 
 	}
 
-	private void rollbackUser(Dn userDn, DirContext context) {
-		try {
-			context.destroySubcontext(userDn.getName());
-		} catch (NamingException exception) {
-			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
-					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
-		}
-	}
-
 	@Override
 	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
 		Dn userDn = null;
@@ -700,5 +693,14 @@ public class ILdapDataStore implements IDataStore {
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
 		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
+	}
+	
+	private void rollbackUser(Dn userDn, DirContext context) {
+		try {
+			context.destroySubcontext(userDn.getName());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
+					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
+		}
 	}
 }
