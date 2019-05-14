@@ -15,6 +15,7 @@ import { UserregistrationService } from './shared/services/userregistration.serv
 import { GetContactService } from '../app/shared/services/get-contact.service';
 import { AccountManagementService } from '../app/shared/services/account-management.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FacadeService } from './shared/services/facade.service';
 @NgModule({
   declarations: [
     AppComponent
@@ -31,7 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     AssetmgmtModule,
     HttpClientModule
   ],
-  providers: [UserregistrationService, GetContactService, AccountManagementService],
+  providers: [UserregistrationService, GetContactService, AccountManagementService, FacadeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

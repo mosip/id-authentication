@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GetContactService } from '../../shared/services/get-contact.service';
+
+import { FacadeService } from '../../shared/services/facade.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -16,7 +18,7 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   counter: number;
   interval: any;
 
-  constructor(private getContactService: GetContactService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private facadeService: FacadeService, private router: Router, private formBuilder: FormBuilder) { }
 
   otpAuthenticationForm = this.formBuilder.group({
     otp: ['', [Validators.required, Validators.pattern('[0-9]+')] ]
@@ -25,7 +27,7 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.otpExpiryTimeReached = false;
     this.startCountdown(120);
-    this.userMobileNumber = this.getContactService.getContactNumber();
+    this.userMobileNumber = this.facadeService.getContact();
   }
 
   ngOnDestroy(): void {
