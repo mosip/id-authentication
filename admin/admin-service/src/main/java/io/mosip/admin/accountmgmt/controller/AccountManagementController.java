@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
+import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
@@ -60,8 +61,8 @@ public class AccountManagementController {
 	 * @param otpChannel
 	 *            the otp channel
 	 */
-	@PostMapping("/resetPassword")
-	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<PasswordDto> passwordDto) {
+	@PostMapping("/resetpassword")
+	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<ResetPasswordDto> passwordDto) {
 		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.resetPassword(passwordDto.getRequest()));
 		return responseWrapper;

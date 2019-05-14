@@ -78,7 +78,8 @@ export const PARAMS_KEYS = {
 };
 
 export const ERROR_CODES = {
-  noApplicantEnrolled: 'PRG_PAM_APP_005'
+  noApplicantEnrolled: 'PRG_PAM_APP_005',
+  userBlocked: 'PRG_PAM_LGN_013'
 };
 
 export const CONFIG_KEYS = {
