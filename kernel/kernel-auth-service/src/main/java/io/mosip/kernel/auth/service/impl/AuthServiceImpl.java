@@ -27,10 +27,12 @@ import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.factory.UserStoreFactory;
@@ -412,8 +414,13 @@ public class AuthServiceImpl implements AuthService {
 	
 
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
-		return userStoreFactory.getDataStoreBasedOnApp(userCreationRequestDto.getAppId()).createAccount(userCreationRequestDto);
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		return userStoreFactory.getDataStoreBasedOnApp(userCreationRequestDto.getAppId()).registerUser(userCreationRequestDto);
+	}
+
+	@Override
+	public UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		return userStoreFactory.getDataStoreBasedOnApp(userPasswordRequestDto.getAppId()).addPassword(userPasswordRequestDto);
 	}
 
 }

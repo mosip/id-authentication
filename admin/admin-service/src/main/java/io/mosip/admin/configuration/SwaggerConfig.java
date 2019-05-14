@@ -1,4 +1,4 @@
-package io.mosip.admin.core.config;
+package io.mosip.admin.configuration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +13,7 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -61,7 +62,8 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION).build();
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION)
+				.build();
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-
+				.tags(new Tag("user-registration", "operation related to user Registration")).groupName(TITLE)
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {

@@ -1,4 +1,4 @@
-package io.mosip.admin.core.config;
+package io.mosip.admin.configuration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

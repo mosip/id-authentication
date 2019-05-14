@@ -1,6 +1,4 @@
-package io.mosip.kernel.auth.entities;
-
-import java.time.LocalDate;
+package io.mosip.admin.usermgmt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreationResponseDto {
+public class UserPasswordResponseDto {
 
-	private String success;
+	private String userName;
 }

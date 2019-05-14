@@ -30,14 +30,16 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.PasswordDto;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -340,10 +342,8 @@ public class AuthController {
 	/**
 	 * This API will fetch RID based on appId and userId.
 	 * 
-	 * @param appId
-	 *            - application Id
-	 * @param userId
-	 *            - user Id
+	 * @param appId  - application Id
+	 * @param userId - user Id
 	 * @return {@link RIdDto}
 	 * @throws Exception
 	 */
@@ -370,7 +370,7 @@ public class AuthController {
 	 *             - exception is thrown if
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/unblock/{appid}/{userid}")
+	@GetMapping(value = "unblock/{appid}/{userid}")
 	public ResponseWrapper<AuthZResponseDto> getUserName(@PathVariable("appid") String appId,
 			@PathVariable("userid") String userId) throws Exception {
 		AuthZResponseDto authZResponseDto = authService.unBlockUser(userId, appId);
@@ -432,19 +432,28 @@ public class AuthController {
 
 	
 	/**
-	 * Fetch username based on the user id.
-	 * @param appId - application id
-	 * @param userId - user id
-	 * @return {@link UserNameDto}
-	 * @throws Exception - exception is thrown if
+	 * Create a user account in Data Store
+	 * 
+	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
+	 * @return {@link UserRegistrationResponseDto}
 	 */
 	@ResponseFilter
-	@PostMapping(value="unblock/{appid}/{userid}")
-	public ResponseWrapper<UserCreationResponseDto> createAccount(@RequestBody @Valid UserCreationRequestDto userCreationRequestDto) throws Exception{
-		ResponseWrapper<UserCreationResponseDto> responseWrapper= new ResponseWrapper<>();
-		responseWrapper.setResponse(authService.createAccount(userCreationRequestDto));
+	@PostMapping(value = "/user")
+	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
+			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
+		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
 	}
 	
+	
+	@ResponseFilter
+	@PostMapping(value = "/user/addpassword")
+	public ResponseWrapper<UserPasswordResponseDto> addPassword(
+			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> userPasswordRequestDto) {
+		ResponseWrapper<UserPasswordResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.addUserPassword(userPasswordRequestDto.getRequest()));
+		return responseWrapper;
+	}
 
 }
