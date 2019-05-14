@@ -41,7 +41,12 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
 public class CleanUpServiceTest {
 
 	@InjectMocks
-	private FileManagerImpl fileManager;
+	private FileManagerImpl fileManager = new FileManagerImpl() {
+		@Override
+		public String getExtension() {
+			return ".zip";
+		}
+	};
 
 	private File file;
 

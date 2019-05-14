@@ -21,7 +21,7 @@ public interface IMosipBioDeviceIntegrator {
 	 * @return Object - Device info
 	 * @throws RegBaseCheckedException
 	 */
-	Object getDeviceInfo(String url, String serviceName, Class<?> responseType) throws RegBaseCheckedException;
+	Object getDeviceInfo(String url, Class<?> responseType) throws RegBaseCheckedException;
 
 	/**
 	 * discovers the device for the given device type
@@ -38,8 +38,8 @@ public interface IMosipBioDeviceIntegrator {
 	 * @return List - list of device details
 	 * @throws RegBaseCheckedException
 	 */
-	List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String serviceName, String deviceType,
-			Class<?> responseType) throws RegBaseCheckedException;
+	List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String deviceType, Class<?> responseType)
+			throws RegBaseCheckedException;
 
 	/**
 	 * Captures the biometric details from the Bio device through MDM service
@@ -55,8 +55,7 @@ public interface IMosipBioDeviceIntegrator {
 	 * @return Map<String, byte[]> - the captured biometric details
 	 * @throws RegBaseCheckedException
 	 */
-	Map<String, byte[]> capture(String url, String serviceName, Object request, Class<?> responseType)
-			throws RegBaseCheckedException;
+	Map<String, byte[]> capture(String url, Object request, Class<?> responseType) throws RegBaseCheckedException;
 
 	CaptureResponseDto getFrame();
 

@@ -24,10 +24,11 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
-import io.mosip.registration.mdm.restclient.MosipBioDeviceServiceDelagate;
 import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * Handles the request and response of bio devices
@@ -39,76 +40,91 @@ import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
 public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 	private static final Logger LOGGER = AppConfig.getLogger(MosipBioDeviceIntegratorImpl.class);
-	
-	@Autowired
-	protected MosipBioDeviceServiceDelagate mosipBioDeviceServiceDelagate;
-	
+
 	@Autowired
 	private AuditManagerService auditFactory;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceInfo(java.lang.String, java.lang.String, java.lang.Class)
+	@Autowired
+	protected ServiceDelegateUtil serviceDelegateUtil;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceInfo(
+	 * java.lang.String, java.lang.String, java.lang.Class)
 	 */
 	@Override
-	public Object getDeviceInfo(String url, String serviceName, Class<?> responseType) throws RegBaseCheckedException {
-		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID,
-				"Getting the device info");
+	public Object getDeviceInfo(String url, Class<?> responseType) throws RegBaseCheckedException {
+		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting the device info");
 
-		return mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName, null, responseType);
+		return serviceDelegateUtil.invokeRestService(url, MosipBioDeviceConstants.DEVICE_INFO_SERVICENAME, null,
+				responseType);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getDeviceDiscovery(java.lang.String, java.lang.String, java.lang.String, java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#
+	 * getDeviceDiscovery(java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.Class)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String serviceName, String deviceType,
-			Class<?> responseType) throws RegBaseCheckedException {
+	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String url, String deviceType, Class<?> responseType)
+			throws RegBaseCheckedException {
 
-		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID,
-				"Getting into device Discovery");
-		return (List<DeviceDiscoveryResponsetDto>) mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName,
+		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting into device Discovery");
+		return (List<DeviceDiscoveryResponsetDto>) serviceDelegateUtil.invokeRestService(url,
+				MosipBioDeviceConstants.DEVICE_DISCOVERY_SERVICENAME,
 				MdmRequestResponseBuilder.buildDeviceDiscoveryRequest(deviceType), Object[].class);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#capture(java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#capture(java.
+	 * lang.String, java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, byte[]> capture(String url, String serviceName, Object request, Class<?> responseType)
+	public Map<String, byte[]> capture(String url, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
-		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID,
-				"Getting into capture method");
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CaptureResponseDto mosipBioCaptureResponseDto=null;
+		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting into capture method");
 
-		Map<String, Object> mosipBioCaptureResponseMap = (HashMap<String, Object>) mosipBioDeviceServiceDelagate.invokeRestService(url, serviceName, request, responseType);
+		ObjectMapper mapper = new ObjectMapper();
+		CaptureResponseDto mosipBioCaptureResponseDto = null;
+
+		Map<String, Object> mosipBioCaptureResponseMap = (HashMap<String, Object>) serviceDelegateUtil
+				.invokeRestService(url, MosipBioDeviceConstants.CAPTURE_SERVICENAME, request, responseType);
 
 		try {
-			mosipBioCaptureResponseDto = mapper.readValue(mapper.writeValueAsString(mosipBioCaptureResponseMap), CaptureResponseDto.class);
-			auditFactory.audit(AuditEvent.MDM_CAPTURE_SUCCESS, Components.MDM_CAPTURE_SUCESS, RegistrationConstants.APPLICATION_NAME,
-					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+			mosipBioCaptureResponseDto = mapper.readValue(mapper.writeValueAsString(mosipBioCaptureResponseMap),
+					CaptureResponseDto.class);
+			auditFactory.audit(AuditEvent.MDM_CAPTURE_SUCCESS, Components.MDM_CAPTURE_SUCESS,
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
-					String.format(
-							"%s -> Error while reading the response from capture%s",
+					String.format("%s -> Error while reading the response from capture%s",
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
-			auditFactory.audit(AuditEvent.MDM_CAPTURE_FAILED, Components.MDM_CAPTURE_FAIELD, RegistrationConstants.APPLICATION_NAME,
-					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-					
+			auditFactory.audit(AuditEvent.MDM_CAPTURE_FAILED, Components.MDM_CAPTURE_FAIELD,
+					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
 		}
 
 		return MdmRequestResponseBuilder.parseBioCaptureResponse(mosipBioCaptureResponseDto);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getFrame()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#getFrame()
 	 */
 	@Override
 	public CaptureResponseDto getFrame() {
@@ -116,8 +132,11 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#forceCapture()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#forceCapture()
 	 */
 	@Override
 	public CaptureResponseDto forceCapture() {
@@ -125,8 +144,11 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#responseParsing()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator#
+	 * responseParsing()
 	 */
 	@Override
 	public CaptureResponseDto responseParsing() {
