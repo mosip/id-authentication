@@ -76,7 +76,7 @@ public class KeymanagerController {
 	 * 
 	 * @return {@link SymmetricKeyResponseDto} symmetricKeyResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','TEST', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/decrypt")
 	public ResponseWrapper<SymmetricKeyResponseDto> decryptSymmetricKey(
