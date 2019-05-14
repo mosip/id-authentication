@@ -152,36 +152,7 @@ public class OTPManager {
 					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody
-						.get();
-				List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
-				if (errorList != null && !errorList.isEmpty()) {
-					if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.PHONE.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.EMAIL.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					}
-
-//					else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-//							.equalsIgnoreCase(OtpErrorConstants.USERBLOCKED.getErrorCode()))) {
-//						throw new IdAuthenticationBusinessException(
-//								IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
-//					}
-				}
+				handleOtpErrorResponse(responseBody.get());
 
 			} else {
 				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
@@ -195,6 +166,39 @@ public class OTPManager {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, e);
 		}
 		return isOtpGenerated;
+	}
+
+	/**
+	 * Handle otp error response.
+	 *
+	 * @param responseBody the response body
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void handleOtpErrorResponse(Object responseBody) throws IdAuthenticationBusinessException {
+		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody;
+		List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
+		if (errorList != null && !errorList.isEmpty()) {
+			if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.PHONE.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.EMAIL.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			}
+		}
 	}
 
 	/*
