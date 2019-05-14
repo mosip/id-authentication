@@ -17,12 +17,9 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_QRC_002
 	 */
-	QRCODE_FAILED_TO_GENERATE("Failed to generate QR code"),
+	QRCODE_FAILED_TO_GENERATE("Failed to generate QR code");
 	
-	/**
-	 * ErrorMessage for PRG_QRC_003
-	 */
-	CONFIG_FILE_NOT_FOUND_EXCEPTION("Config file not fount exception");
+	
 	
 	private ErrorMessages(String code) {
 		this.code = code;
