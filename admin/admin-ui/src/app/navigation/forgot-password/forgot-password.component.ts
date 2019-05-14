@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
-import { GetContactService } from '../../shared/services/get-contact.service';
-import { AccountManagementService } from '../../shared/services/account-management.service';
 import { FacadeService } from '../../shared/services/facade.service';
-import { strictEqual } from 'assert';
 
 @Component({
   selector: 'app-forgot-password',
