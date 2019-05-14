@@ -1,6 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { AccountManagementService } from './account-management.service';
 import { GetContactService } from './get-contact.service';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class FacadeService {
@@ -30,6 +31,10 @@ export class FacadeService {
 
   setContact(contactNumber: number) {
     this.contactService.setContactNumber(contactNumber);
+  }
+
+  getUserNameFromPhoneNumber(phoneNumber: number): Observable<any> {
+    return this.accountManagementService.getUserNameFromPhoneNumber(phoneNumber);
   }
 
 }

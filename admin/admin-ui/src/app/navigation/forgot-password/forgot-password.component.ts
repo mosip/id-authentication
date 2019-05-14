@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { GetContactService } from '../../shared/services/get-contact.service';
 import { AccountManagementService } from '../../shared/services/account-management.service';
 import { FacadeService } from '../../shared/services/facade.service';
+import { strictEqual } from 'assert';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,9 +14,9 @@ import { FacadeService } from '../../shared/services/facade.service';
 export class ForgotPasswordComponent implements OnInit {
   mobileNumber: number;
   errorMessage: string;
+  userId: any;
 
-  constructor(private accountManagementService: AccountManagementService, private facadeService: FacadeService,
-    private router: Router, private formBuilder: FormBuilder) { }
+  constructor( private facadeService: FacadeService, private router: Router, private formBuilder: FormBuilder) { }
 
   forgotPasswordForm = this.formBuilder.group({
     mobileNumber: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]+')]]
@@ -26,15 +27,13 @@ export class ForgotPasswordComponent implements OnInit {
 
   onSubmit() {
     this.facadeService.setContact(this.mobileNumber);
-    this.router.navigate(['otpauthentication']);
-  }
-
-  getUserName(phoneNumber: number): string {
-    // .subscribe(data => this.object = data);
-    this.accountManagementService.getUserNameFromPhoneNumber(phoneNumber).subscribe(result => {
-      console.log(result);
+    this.facadeService.getUserNameFromPhoneNumber(this.mobileNumber).subscribe(result => {
+      this.userId = result['response']['userName'];
+      // Call SendOTP
+      this.router.navigate(['otpauthentication']);
     },
     error => this.errorMessage = error );
-    return '';
   }
 }
+
+
