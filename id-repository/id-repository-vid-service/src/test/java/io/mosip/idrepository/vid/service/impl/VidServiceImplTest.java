@@ -25,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
-import io.mosip.idrepository.vid.dto.RequestDTO;
+import io.mosip.idrepository.vid.dto.RequestDto;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
 import io.mosip.idrepository.vid.entity.Vid;
 import io.mosip.idrepository.vid.repository.VidRepo;
@@ -140,11 +140,11 @@ public class VidServiceImplTest {
 		
 		VidRequestDTO req=new VidRequestDTO();
 		req.setId("mosip.vid.update");
-		RequestDTO request=new RequestDTO();
+		RequestDto request=new RequestDto();
 		request.setVidStatus("ACTIVE");
 		req.setRequest(request);
 		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
+		req.setRequestTime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		
@@ -158,11 +158,11 @@ public class VidServiceImplTest {
 		
 		VidRequestDTO req=new VidRequestDTO();
 		req.setId("mosip.vid.update");
-		RequestDTO request=new RequestDTO();
+		RequestDto request=new RequestDto();
 		request.setVidStatus("ACTIVE");
 		req.setRequest(request);
 		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
+		req.setRequestTime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		
