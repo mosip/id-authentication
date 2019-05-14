@@ -19,7 +19,8 @@ public enum ErrorMessages {
 	INVALID_REQUEST_LANGCODE("Invlaid Request langcode recieved"),//PRG_AUTH_009
 	INVALID_REQUEST_OTP("Invlaid Request Id recieved"),//PRE_AUTH_010
 	ERROR_WHILE_PARSING("Error while Parsing the kernel response"),//PRE_AUTH_011
-	CONFIG_FILE_NOT_FOUND_EXCEPTION("Config file not found in the config server");//PRE_AUTH_011
+	CONFIG_FILE_NOT_FOUND_EXCEPTION("Config file not found in the config server"),//PRE_AUTH_011
+	TOKEN_NOT_PRESENT("Token is not present in the header");//PRE_AUTH_014
 	private ErrorMessages(String message) {
 		this.message = message;
 	}

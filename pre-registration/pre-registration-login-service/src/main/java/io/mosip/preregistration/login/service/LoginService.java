@@ -47,6 +47,7 @@ import io.mosip.preregistration.login.errorcodes.ErrorMessages;
 import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.login.exception.InvalidOtpOrUseridException;
 import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.NoAuthTokenException;
 import io.mosip.preregistration.login.exception.util.LoginExceptionCatcher;
 import io.mosip.preregistration.login.util.LoginCommonUtil;
 
@@ -203,6 +204,9 @@ public class LoginService {
 				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
 				if(!responseBody.getStatus().equals(status)) {
 					throw new InvalidOtpOrUseridException(ErrorCodes.PRG_AUTH_013.getCode(),responseBody.getMessage(), response);
+				}
+				if(responseEntity.getHeaders().get("Set-Cookie").isEmpty()) {
+					throw new NoAuthTokenException(ErrorCodes.PRG_AUTH_014.getCode(), ErrorMessages.TOKEN_NOT_PRESENT.getMessage(), null);
 				}
 				
 				response.setResponse(responseEntity);
