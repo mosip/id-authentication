@@ -1,6 +1,5 @@
 package io.mosip.admin.usermgmt.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
 import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
 import io.mosip.admin.usermgmt.dto.RidVerificationResponseDto;
 import io.mosip.admin.usermgmt.dto.SendOtpRequestDto;
@@ -25,7 +23,6 @@ import io.mosip.admin.usermgmt.dto.UserPasswordRequestDto;
 import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
-import io.mosip.admin.usermgmt.exception.ServiceException;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
 import io.mosip.admin.usermgmt.util.UserMgmtUtil;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -85,6 +82,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	public RidVerificationResponseDto ridVerification(RidVerificationRequestDto ridVerificationRequestDto) {
 
 		SendOtpRequestDto requestDto = new SendOtpRequestDto();
+		// validate rid
 		UserMgmtUtil.validateUserRid(ridVerificationRequestDto.getRid(), ridVerificationRequestDto.getUserName());
 		requestDto.setAppId("admin");
 		requestDto.setContext("auth-otp");
