@@ -347,5 +347,101 @@ public class DemodedupeProcessorTest {
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 	}
+	
+	@Test
+	public void testDemoDedupeSuccessNotDuplicateAfterAuth() throws Exception {
+		
+		byte[] b = "sds".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("NEW");
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		registrationStatusDto.setRegistrationType("NEW");
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		assertFalse(messageDto.getIsValid());
+
+	}
+
+	/**
+	 * Test demo dedupe potential match.
+	 *
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDemoDedupePotentialMatchSuccess() throws Exception {
+		List<AbisResponseDto> abisResponseDtos = new ArrayList<>();
+		AbisResponseDto abisResponseDto = new AbisResponseDto();
+		abisResponseDto.setId("100");
+		abisResponseDto.setStatusCode("PROCESSED");
+		abisResponseDto.setLangCode("eng");	
+		abisResponseDtos.add(abisResponseDto);
+		
+		byte[] b = "sds".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		registrationStatusDto.setRegistrationType("NEW");
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
+		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(),anyString())).thenReturn(abisResponseDtos);
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		
+		assertTrue(messageDto.getIsValid());
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDemoDedupePotentialMatchWithEmpty() throws Exception {
+		List<AbisResponseDto> abisResponseDtos = new ArrayList<>();
+		List<AbisResponseDetDto> abisResponseDetDtos = new ArrayList<>();
+		List<String> matchedRegIds = new ArrayList<>();
+		AbisResponseDto abisResponseDto = new AbisResponseDto();
+		abisResponseDto.setId("100");
+		abisResponseDto.setStatusCode("PROCESSED");
+		abisResponseDto.setLangCode("eng");	
+		abisResponseDtos.add(abisResponseDto);
+		
+		AbisResponseDetDto abisResponseDetDto = new AbisResponseDetDto();
+		abisResponseDetDto.setAbiRespId("100");
+		abisResponseDetDtos.add(abisResponseDetDto);
+		
+		matchedRegIds.add("2018701130000410092018110735");
+		byte[] b = "sds".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
+		registrationStatusDto.setRegistrationType("NEW");
+		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
+		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
+		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(),anyString())).thenReturn(abisResponseDtos);
+		Mockito.when(packetInfoManager.getAbisResponseDetRecords(any())).thenReturn(abisResponseDetDtos);
+		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRegIds);
+		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any());
+		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
+		
+		assertFalse(messageDto.getIsValid());
+
+	}
 
 }
