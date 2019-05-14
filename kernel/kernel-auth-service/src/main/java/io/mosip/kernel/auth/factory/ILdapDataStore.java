@@ -50,7 +50,7 @@ import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserOtp;
 import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
@@ -411,7 +411,7 @@ public class ILdapDataStore implements IDataStore {
 	}
 
 	@Override
-	public UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
 		Hashtable<String, String> env = new Hashtable<>();
@@ -461,7 +461,7 @@ public class ILdapDataStore implements IDataStore {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
-		return new UserCreationResponseDto(userCreationRequestDto.getUserName());
+		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
 
 	}
 

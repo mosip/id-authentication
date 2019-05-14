@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
+import io.mosip.admin.usermgmt.dto.RidVerificationResponseDto;
+import io.mosip.admin.usermgmt.dto.UserPasswordRequestDto;
+import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
@@ -55,10 +58,19 @@ public class UserRegistrationController {
 
 	@ResponseFilter
 	@PostMapping(value = "/rid")
-	public ResponseWrapper<UserRegistrationResponseDto> ridVerification(@ApiParam("Rid and username details")
+	public ResponseWrapper<RidVerificationResponseDto> ridVerification(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
-		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<RidVerificationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userRegistrationService.ridVerification(ridRequestDto.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping(value = "/password")
+	public ResponseWrapper<UserPasswordResponseDto> addPassword(@ApiParam("Rid and username details")
+			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> request) {
+		ResponseWrapper<UserPasswordResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userRegistrationService.addPassword(request.getRequest()));
 		return responseWrapper;
 	}
 }

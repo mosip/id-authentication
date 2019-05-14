@@ -12,7 +12,7 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
 import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
 import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
@@ -37,7 +37,7 @@ public interface AuthService extends AuthZService, AuthNService {
 	
 	public AuthZResponseDto unBlockUser(String userId,String appId) throws Exception;
 	
-	UserCreationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
+	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
 
 	UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
 

@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistrationResponseDto {
-	
+@NoArgsConstructor
+public class UserPasswordResponseDto {
+
 	private String userName;
-	
 }

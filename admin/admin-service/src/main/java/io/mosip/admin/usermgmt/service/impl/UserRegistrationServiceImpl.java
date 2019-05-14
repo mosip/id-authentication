@@ -1,9 +1,11 @@
 package io.mosip.admin.usermgmt.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,17 +15,27 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
 import io.mosip.admin.usermgmt.dto.RidVerificationRequestDto;
+import io.mosip.admin.usermgmt.dto.RidVerificationResponseDto;
 import io.mosip.admin.usermgmt.dto.SendOtpRequestDto;
+import io.mosip.admin.usermgmt.dto.UserPasswordRequestDto;
+import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
-import io.mosip.admin.usermgmt.exception.AdminServiceResponseException;
+import io.mosip.admin.usermgmt.exception.ServiceException;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
 import io.mosip.admin.usermgmt.util.UserMgmtUtil;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * @author Urvil Joshi
+ * @author Ritesh Sinha
+ *
+ */
 @Service
 public class UserRegistrationServiceImpl implements UserRegistrationService {
 
@@ -31,68 +43,87 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private UserMgmtUtil validateRidUtil;
+	private ObjectMapper objectMapper;
+
+	@Value("${auth.server.sendotp-url}")
+	private String authUserRegistrationURL;
+	@Value("${mosip.kernel.emailnotifier-url}")
+	private String emailServiceApiURL;
+	@Value("${auth.server.sendotp-url}")
+	private String authSendOtpURL;
+	@Value("${auth.server.sendotp-url}")
+	private String passwordURL;
 
 	@Override
-	public UserRegistrationResponseDto register(UserRegistrationRequestDto request) {
-		String authUserRegistrationUrl = "http://localhost:8091/v1/authmanager/user";
-		String emailServiceApi = "https://qa.mosip.io/v1/emailnotifier/email/send";
+	public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequestDto) {
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		RequestWrapper<UserRegistrationRequestDto> userRegistrationRequestDto = new RequestWrapper<>();
-		userRegistrationRequestDto.setRequest(request);
+		userRegistrationRequestDto.setRequest(registrationRequestDto);
 		HttpEntity<RequestWrapper<UserRegistrationRequestDto>> userHttpEntity = new HttpEntity<>(
 				userRegistrationRequestDto, headers);
-		ResponseEntity<String> response = restTemplate.postForEntity(authUserRegistrationUrl, userHttpEntity,
+		ResponseEntity<String> response = restTemplate.postForEntity(authUserRegistrationURL, userHttpEntity,
 				String.class);
-		String responseBody = response.getBody();
-		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseBody);
-		if (!validationErrorList.isEmpty()) {
-			throw new AdminServiceResponseException(validationErrorList);
-		}
+		UserMgmtUtil.throwExceptionIfExist(response);
+
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		emailMap.add("mailContent",
-				"YOUR RID SUBMISSION LINK IS " + request.getRidValidationUrl() + "?username=" + request.getUserName());
+		emailMap.add("mailContent", "YOUR RID SUBMISSION LINK IS " + registrationRequestDto.getRidValidationUrl()
+				+ "?username=" + registrationRequestDto.getUserName());
 		emailMap.add("mailSubject", "ADMIN USER REGISTRATION ALERT");
-		emailMap.add("mailTo", request.getEmailID());
+		emailMap.add("mailTo", registrationRequestDto.getEmailID());
 		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
-		restTemplate.postForEntity(emailServiceApi, httpEntity, Object.class);
+		ResponseEntity<String> responseEmailService = restTemplate.postForEntity(emailServiceApiURL, httpEntity,
+				String.class);
 
-		return new UserRegistrationResponseDto("SUCCESS");
+		UserMgmtUtil.throwExceptionIfExist(responseEmailService);
+
+		return getResponse(response, UserRegistrationResponseDto.class);
 	}
 
 	@Override
-	public UserRegistrationResponseDto ridVerification(RidVerificationRequestDto request) {
-		String authSendOtpUrl = "https://dev.mosip.io/v1/authmanager/authenticate/sendotp";
-		SendOtpRequestDto requestDto = new SendOtpRequestDto();
-		String demoAuthResponse = validateRidUtil.validateUserRid(request.getRid(), request.getUserName());
-		UserRegistrationResponseDto ridVerificationResponse = new UserRegistrationResponseDto();
-		if (demoAuthResponse.equals("SUCCESS")) {
-			requestDto.setAppId("admin");
-			requestDto.setContext("auth-otp");
-			requestDto.setUserId(request.getUserName());
-			requestDto.setUseridtype("USERID");
-			List<String> channel = new ArrayList<>();
-			channel.add("email");
-			requestDto.setOtpChannel(channel);
-			// sendOTP
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			RequestWrapper<SendOtpRequestDto> requestWrapper = new RequestWrapper<>();
-			requestWrapper.setRequest(requestDto);
-			HttpEntity<RequestWrapper<SendOtpRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
-			ResponseEntity<String> response = restTemplate.postForEntity(authSendOtpUrl, otpHttpEntity, String.class);
-			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(response.getBody());
-			if (!validationErrorList.isEmpty()) {
-				throw new AdminServiceResponseException(validationErrorList);
-			}
-			ridVerificationResponse.setStatus("SUCCESS");
+	public RidVerificationResponseDto ridVerification(RidVerificationRequestDto ridVerificationRequestDto) {
 
-		} else {
-			ridVerificationResponse.setStatus("FAILURE");
+		SendOtpRequestDto requestDto = new SendOtpRequestDto();
+		UserMgmtUtil.validateUserRid(ridVerificationRequestDto.getRid(), ridVerificationRequestDto.getUserName());
+		requestDto.setAppId("admin");
+		requestDto.setContext("auth-otp");
+		requestDto.setUserId(ridVerificationRequestDto.getUserName());
+		requestDto.setUseridtype("USERID");
+		List<String> channel = new ArrayList<>();
+		channel.add("email");
+		requestDto.setOtpChannel(channel);
+		// sendOTP
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		RequestWrapper<SendOtpRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(requestDto);
+		HttpEntity<RequestWrapper<SendOtpRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
+		ResponseEntity<String> response = restTemplate.postForEntity(authSendOtpURL, otpHttpEntity, String.class);
+		UserMgmtUtil.throwExceptionIfExist(response);
+		return getResponse(response, RidVerificationResponseDto.class);
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		RequestWrapper<UserPasswordRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setRequest(userPasswordRequestDto);
+		HttpEntity<RequestWrapper<UserPasswordRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
+		ResponseEntity<String> response = restTemplate.postForEntity(passwordURL, otpHttpEntity, String.class);
+		UserMgmtUtil.throwExceptionIfExist(response);
+		return getResponse(response, UserPasswordResponseDto.class);
+	}
+
+	private <S> S getResponse(ResponseEntity<String> response, Class<S> clazz) {
+		try {
+			return objectMapper.readValue(response.getBody(), clazz);
+		} catch (IOException e) {
+			throw new ServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + e.getMessage());
 		}
-		return ridVerificationResponse;
 	}
 
 }

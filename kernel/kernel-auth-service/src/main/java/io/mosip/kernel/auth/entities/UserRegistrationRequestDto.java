@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.auth.constant.AuthConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,23 +16,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegistrationRequestDto {
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String userName;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String firstName;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String lastName;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String contactNo;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String emailID;
 	@NotNull
 	@JsonFormat(pattern="dd-MM-yyyy")
 	private LocalDate dateOfBirth;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String gender;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String role;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String appId;
 }

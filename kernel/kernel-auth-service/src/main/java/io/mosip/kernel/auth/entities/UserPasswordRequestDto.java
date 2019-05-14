@@ -2,6 +2,7 @@ package io.mosip.kernel.auth.entities;
 
 import javax.validation.constraints.NotBlank;
 
+import io.mosip.kernel.auth.constant.AuthConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,13 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPasswordRequestDto {
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String appId;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String userName;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String rid;
-	@NotBlank
+	@NotBlank(message=AuthConstant.INVALID_REQUEST)
 	private String password;
 
 }

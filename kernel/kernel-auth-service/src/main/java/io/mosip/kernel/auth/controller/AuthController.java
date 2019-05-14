@@ -32,7 +32,7 @@ import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
@@ -378,13 +378,13 @@ public class AuthController {
 	 * Create a user account in Data Store
 	 * 
 	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
-	 * @return {@link UserCreationResponseDto}
+	 * @return {@link UserRegistrationResponseDto}
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/user")
-	public ResponseWrapper<UserCreationResponseDto> registerUser(
+	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
 			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
-		ResponseWrapper<UserCreationResponseDto> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
 	}
