@@ -241,13 +241,10 @@ public class PacketInfoMapper {
 		RegBioRefDto bioRefDto = new RegBioRefDto();
 		bioRefDto.setBioRefId(regBioRefEntity.getBioRefId());
 		bioRefDto.setCrBy(regBioRefEntity.getCrBy());
-		bioRefDto.setCrDtimes(regBioRefEntity.getCrDtimes());
-		bioRefDto.setDelDtimes(regBioRefEntity.getDelDtimes());
 		bioRefDto.setIsActive(regBioRefEntity.getIsActive());
 		bioRefDto.setIsDeleted(regBioRefEntity.getIsDeleted());
 		bioRefDto.setRegId(regBioRefEntity.getId().getRegId());
 		bioRefDto.setUpdBy(regBioRefEntity.getUpdBy());
-		bioRefDto.setUpdDtimes(regBioRefEntity.getUpdDtimes());
 		return bioRefDto;
 	}
 
@@ -255,7 +252,6 @@ public class PacketInfoMapper {
 		RegBioRefEntity entity = new RegBioRefEntity();
 		entity.setBioRefId(regBioRefDto.getBioRefId());
 		entity.setCrBy(regBioRefDto.getCrBy());
-		entity.setCrDtimes(regBioRefDto.getCrDtimes());
 		entity.setIsActive(regBioRefDto.getIsActive());
 		entity.setUpdBy(regBioRefDto.getUpdBy());
 		RegBioRefPKEntity refPKEntity = new RegBioRefPKEntity();
@@ -278,8 +274,6 @@ public class PacketInfoMapper {
 		AbisApplicationDto applicationDto = new AbisApplicationDto();
 		applicationDto.setCode(entity.getId().getCode());
 		applicationDto.setCrBy(entity.getCrBy());
-		applicationDto.setCrDtimes(entity.getCrDtimes());
-		applicationDto.setDelDtimes(entity.getDelDtimes());
 		applicationDto.setDescr(entity.getDescr());
 		applicationDto.setIsDeleted(entity.getIsDeleted());
 		applicationDto.setLangCode(entity.getId().getLangCode());
@@ -287,7 +281,6 @@ public class PacketInfoMapper {
 		applicationDto.setStatusCode(entity.getStatusCode());
 		applicationDto.setStatusUpdateDtimes(entity.getStatusUpdateDtimes());
 		applicationDto.setUpdBy(entity.getUpdBy());
-		applicationDto.setUpdDtimes(entity.getUpdDtimes());
 
 		return applicationDto;
 	}
@@ -297,8 +290,6 @@ public class PacketInfoMapper {
 		entity.setAbisAppCode(abisRequestDto.getAbisAppCode());
 		entity.setBioRefId(abisRequestDto.getBioRefId());
 		entity.setCrBy(abisRequestDto.getCrBy());
-		entity.setCrDtimes(abisRequestDto.getCrDtimes());
-		entity.setDelDtimes(abisRequestDto.getDelDtimes());
 		AbisRequestPKEntity abisRequestPKEntity = new AbisRequestPKEntity();
 		abisRequestPKEntity.setId(abisRequestDto.getId());
 		entity.setId(abisRequestPKEntity);
@@ -307,12 +298,10 @@ public class PacketInfoMapper {
 		entity.setRefRegtrnId(abisRequestDto.getRefRegtrnId());
 		entity.setReqBatchId(abisRequestDto.getReqBatchId());
 		entity.setReqText(abisRequestDto.getReqText());
-		entity.setRequestDtimes(abisRequestDto.getRequestDtimes());
 		entity.setRequestType(abisRequestDto.getRequestType());
 		entity.setStatusCode(abisRequestDto.getStatusCode());
 		entity.setStatusComment(abisRequestDto.getStatusComment());
 		entity.setUpdBy(abisRequestDto.getUpdBy());
-		entity.setUpdDtimes(abisRequestDto.getUpdDtimes());
 
 		return entity;
 	}
@@ -329,15 +318,12 @@ public class PacketInfoMapper {
 	private static RegDemoDedupeListDto convertDemoDedupeEntityToDto(RegDemoDedupeListEntity entity) {
 		RegDemoDedupeListDto regDemoDedupeListDto = new RegDemoDedupeListDto();
 		regDemoDedupeListDto.setCrBy(entity.getCrBy());
-		regDemoDedupeListDto.setCrDtimes(entity.getCrDtimes());
-		regDemoDedupeListDto.setDelDtimes(entity.getDelDtimes());
 		regDemoDedupeListDto.setIsDeleted(entity.getIsDeleted());
 		regDemoDedupeListDto.setMatchedRegId(entity.getId().getMatchedRegId());
 		regDemoDedupeListDto.setRegId(entity.getRegId());
 
 		regDemoDedupeListDto.setRegtrnId(entity.getId().getRegtrnId());
 		regDemoDedupeListDto.setUpdBy(entity.getUpdBy());
-		regDemoDedupeListDto.setUpdDtimes(entity.getUpdDtimes());
 
 		return regDemoDedupeListDto;
 	}

@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.abis.handler.stage;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -222,11 +221,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
 			abisRequestDto.setCrBy(USER);
-			abisRequestDto.setCrDtimes(LocalDateTime.now());
 			abisRequestDto.setUpdBy(null);
-			abisRequestDto.setUpdDtimes(LocalDateTime.now());
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
-			abisRequestDto.setRequestDtimes(LocalDateTime.now());
 			packetInfoManager.saveAbisRequest(abisRequestDto);
 		}
 	}
@@ -298,13 +294,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		RegBioRefDto regBioRefDto = new RegBioRefDto();
 		regBioRefDto.setBioRefId(bioRefId);
 		regBioRefDto.setCrBy(USER);
-		regBioRefDto.setCrDtimes(LocalDateTime.now());
-		regBioRefDto.setDelDtimes(null);
 		regBioRefDto.setIsActive(Boolean.TRUE);
 		regBioRefDto.setIsDeleted(Boolean.FALSE);
 		regBioRefDto.setRegId(regId);
 		regBioRefDto.setUpdBy(null);
-		regBioRefDto.setUpdDtimes(LocalDateTime.now());
 		packetInfoManager.saveBioRef(regBioRefDto);
 	}
 
@@ -341,11 +334,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
 			abisRequestDto.setCrBy(USER);
-			abisRequestDto.setCrDtimes(LocalDateTime.now());
 			abisRequestDto.setUpdBy(null);
-			abisRequestDto.setUpdDtimes(LocalDateTime.now());
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
-			abisRequestDto.setRequestDtimes(LocalDateTime.now());
 			if (!abisRequestDtoList.isEmpty()) {
 				for (AbisRequestDto dto : abisRequestDtoList) {
 					if ((dto.getAbisAppCode().equals(applicationDto.getCode()) && (!dto.getStatusCode()

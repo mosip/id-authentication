@@ -53,6 +53,7 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	@Column(name = "req_text")
 	private byte[] reqText;
 
+	@UpdateTimestamp
 	@Column(name = "request_dtimes")
 	private LocalDateTime requestDtimes;
 
