@@ -2,7 +2,16 @@ package io.mosip.authentication.internal.service.integarion;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -12,10 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -32,10 +43,13 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
@@ -50,7 +64,11 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -95,6 +113,9 @@ public class RestHelperImplTest {
 
 	/** The server. */
 	static BlockingNettyContext server;
+	
+	@Mock
+	HttpServletRequest httpservletrequest;
 
 	/**
 	 * Before.
@@ -556,5 +577,22 @@ public class RestHelperImplTest {
 		}
 	}
 	
+	@Test(expected = RestServiceException.class)
+	public void testRequestSyncTokenError() throws Throwable {
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("errorCode", "KER-ATH-401");
+			map.put("message", "Token Expired");
+			Map<String,	Map<String, Object>> map2 = new HashMap<>();
+			map2.put("errors", map);
+			byte[] bytes = mapper.writeValueAsBytes(map2);
+			ReflectionTestUtils
+			.invokeMethod(restHelper, "handleStatusError",
+					new WebClientResponseException("message", 401, "failed", null,bytes , null), String.class)
+			.getClass().equals(RestServiceException.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}	
 }
 

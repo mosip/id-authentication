@@ -103,8 +103,8 @@ public class OTPManagerTest {
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang",
-				"Name in SecondaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
+				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 
 	}
@@ -128,8 +128,8 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang",
-				"Name in SecondaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
+				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 
 	}
@@ -153,8 +153,8 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang",
-				"Name in SecondaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
+				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 
 	}
@@ -178,8 +178,8 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang",
-				"Name in SecondaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
+		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
+				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 
 	}
@@ -233,8 +233,8 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, null,
 				ResponseWrapper.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
-				IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE, response.toString(), response));
+
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		otpManager.sendOtp(otpRequestDTO, "123456", "Name in PrimaryLang", "Name in SecondaryLang",
 				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
@@ -445,7 +445,7 @@ public class OTPManagerTest {
 		response.put("status", "failure");
 		response.put("message", "USER_BLOCKED");
 		valueMap.put("response", response);
-		
+
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
@@ -453,7 +453,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		
+
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(
 				new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, output, valueMap));
 		otpManager.validateOtp("Test123", "123456");
