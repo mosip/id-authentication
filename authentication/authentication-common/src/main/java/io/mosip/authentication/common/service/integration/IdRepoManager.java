@@ -123,6 +123,7 @@ public class IdRepoManager {
 		return response;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getRIDByUID(String idvId) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
 		String rid = null;
@@ -161,6 +162,7 @@ public class IdRepoManager {
 		return rid;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getUINByRID(String regID) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
 		Map<String, Object> uinMap = null;

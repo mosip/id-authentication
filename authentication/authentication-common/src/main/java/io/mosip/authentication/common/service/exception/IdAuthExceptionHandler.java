@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -278,5 +279,14 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 
 		return err;
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(), "handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
+		IdAuthenticationAppException e = new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		return new ResponseEntity<>(
+				buildExceptionResponse((BaseCheckedException) e, (HttpServletRequest) request),
+				HttpStatus.OK);
 	}
 }

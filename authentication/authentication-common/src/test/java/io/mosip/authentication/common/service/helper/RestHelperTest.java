@@ -156,11 +156,12 @@ public class RestHelperTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws RestServiceException the rest service exception
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testReqSync() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.mock(ClientResponse.class);
 		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
 		String response = "{\"response\":{\"status\":\"success\"}}";
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
@@ -192,11 +193,12 @@ public class RestHelperTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws RestServiceException the rest service exception
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testReqSyncWithHeaders() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.mock(ClientResponse.class);
 		String response = "{\"response\":{\"status\":\"success\"}}";
 		RestRequestDTO restReqDTO=new RestRequestDTO();
 		HttpHeaders headers=new HttpHeaders();
@@ -228,6 +230,7 @@ public class RestHelperTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws RestServiceException the rest service exception
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test(expected=RestServiceException.class)
 	public void testReqSyncUnknownError() throws JsonParseException, JsonMappingException, IOException, RestServiceException {
 		PowerMockito.mockStatic(WebClient.class);
@@ -265,6 +268,7 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testGetAuthToken() throws JsonParseException, JsonMappingException, IOException {
 		ReflectionTestUtils.setField(restHelper, "authToken", null);
@@ -295,6 +299,7 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testGetAuthTokenInvalid() throws JsonParseException, JsonMappingException, IOException {
 		ReflectionTestUtils.setField(restHelper, "authToken", null);
@@ -330,11 +335,12 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void vtestRequestSyncWithParams() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.mock(ClientResponse.class);
 		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
 		String response = "{\"response\":{\"status\":\"success\"}}";
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
@@ -343,115 +349,115 @@ public class RestHelperTest {
 
 			@Override
 			public int size() {
-				// TODO Auto-generated method stub
+				
 				return 0;
 			}
 
 			@Override
 			public boolean isEmpty() {
-				// TODO Auto-generated method stub
+				
 				return false;
 			}
 
 			@Override
 			public boolean containsKey(Object key) {
-				// TODO Auto-generated method stub
+				
 				return false;
 			}
 
 			@Override
 			public boolean containsValue(Object value) {
-				// TODO Auto-generated method stub
+				
 				return false;
 			}
 
 			@Override
 			public List<String> get(Object key) {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public List<String> put(String key, List<String> value) {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public List<String> remove(Object key) {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public void putAll(Map<? extends String, ? extends List<String>> m) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public void clear() {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public Set<String> keySet() {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public Collection<List<String>> values() {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public Set<Entry<String, List<String>>> entrySet() {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public String getFirst(String key) {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 
 			@Override
 			public void add(String key, String value) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public void addAll(String key, List<? extends String> values) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public void addAll(MultiValueMap<String, String> values) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public void set(String key, String value) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public void setAll(Map<String, String> values) {
-				// TODO Auto-generated method stub
+				
 				
 			}
 
 			@Override
 			public Map<String, String> toSingleValueMap() {
-				// TODO Auto-generated method stub
+				
 				return null;
 			}
 		};
@@ -485,11 +491,12 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void vtestRequestSyncWithPathVariables() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.mock(ClientResponse.class);
 		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
 		String response = "{\"response\":{\"status\":\"success\"}}";
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
@@ -523,13 +530,12 @@ public class RestHelperTest {
 	 *
 	 * @throws Exception the exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(expected = RestServiceException.class)
 	public void utestRequestSyncWithTimeout() throws Exception {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
-		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
-		String response = "{\"response\":{\"status\":\"success\"}}";
+		PowerMockito.mock(ClientResponse.class);
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
 		RestRequestDTO restReqDTO=new RestRequestDTO();
 		restReqDTO.setTimeout(1);
@@ -568,11 +574,12 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testRequestAsync() throws IDDataValidationException, RestServiceException, JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
+		PowerMockito.mock(ClientResponse.class);
 		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
 		String response = "{\"response\":{\"status\":\"success\"}}";
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
@@ -678,14 +685,13 @@ public class RestHelperTest {
 	 * @throws InterruptedException
 	 *             the interrupted exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncWebClientResponseException()
 			throws IDDataValidationException, RestServiceException, InterruptedException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
-		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
-		String response = "{\"response\":{\"status\":\"success\"}}";
+		PowerMockito.mock(ClientResponse.class);
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
 		RestRequestDTO restReqDTO=new RestRequestDTO();
 		restReqDTO.setTimeout(1);
@@ -721,15 +727,14 @@ public class RestHelperTest {
 	 * @throws RestServiceException the rest service exception
 	 * @throws InterruptedException the interrupted exception
 	 */
+	@SuppressWarnings("unchecked")
 	@Ignore
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncUnauthorisedWebClientResponseException()
 			throws IDDataValidationException, RestServiceException, InterruptedException {
 		PowerMockito.mockStatic(WebClient.class);
 		ResponseSpec responseSpec=PowerMockito.mock(ResponseSpec.class);
-		ClientResponse clientResponse = PowerMockito.mock(ClientResponse.class);
-		//PowerMockito.when(requestHeadersSpec.exchange()).thenReturn(Mono.just(clientResponse));
-		String response = "{\"errors\":[{\"errorCode\":\"KER-ATH-402\"}]} ";  
+		PowerMockito.mock(ClientResponse.class);
 		//Mono<? extends ObjectNode> monoResponse= Mono.just(mapper.readValue(response.getBytes(), ObjectNode.class));
 		RestRequestDTO restReqDTO=new RestRequestDTO();
 		restReqDTO.setTimeout(1);
@@ -810,6 +815,7 @@ public class RestHelperTest {
 	 *
 	 * @throws Throwable the throwable
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testHandleStatusErrorWithoutResponseBodyUnauthorisedError() throws Throwable {
 		try {
@@ -872,24 +878,6 @@ public class RestHelperTest {
 		}
 	}
 
-
-
-	/**
-	 * Ztest request sync check for errors unknown error.
-	 *
-	 * @throws Throwable the throwable
-	 */
-	@Test(expected = RestServiceException.class)
-	public void ztestRequestSyncCheckForErrorsUnknownError() throws Throwable {
-		try {
-			ReflectionTestUtils.invokeMethod(restHelper, "checkErrorResponse", "args", null);
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
-	}
-
-	
-
 	/**
 	 * Test auth token valid.
 	 *
@@ -897,6 +885,7 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAuthTokenValid() throws JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
@@ -920,6 +909,7 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAuthTokenExpired() throws JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
@@ -943,6 +933,7 @@ public class RestHelperTest {
 	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAuthTokenNotExpired() throws JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(WebClient.class);
