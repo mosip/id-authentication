@@ -1042,12 +1042,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	
 	public Response FetchCentre() {
-
 		String regCenterId = randomRegistrationCenterId();		
-		
 		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
 		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
-		
 		return response;
 	}
 	/*public Response FetchCentre() {
