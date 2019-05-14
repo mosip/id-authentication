@@ -494,7 +494,6 @@ public class ILdapDataStore implements IDataStore {
 					new BasicAttribute(LdapConstants.USER_PASSWORD, userPasswordRequestDto.getPassword()));
 			mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 					new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.TRUE));
-			//attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
 			context.modifyAttributes(userDn.getName(), mods);
 
 		} catch (NamingException exception) {
