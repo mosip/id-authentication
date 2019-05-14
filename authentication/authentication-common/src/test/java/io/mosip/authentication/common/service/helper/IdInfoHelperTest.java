@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +31,16 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
@@ -177,6 +184,46 @@ public class IdInfoHelperTest {
 		identityInfoDTO.setValue("test@test.com");
 		identityInfoList.add(identityInfoDTO);
 		idInfo.put("phoneNumber", identityInfoList);
+	}
+
+	@Test
+	public void TestgetEntityInfoAsString() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		idInfo.put("phoneNumber", identityInfoList);
+		idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, idInfo);
+	}
+
+	@Test
+	public void TestgetAuthReqestInfo() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		idInfoHelper.getAuthReqestInfo(DemoMatchType.ADDR, authRequestDTO);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	public void TestmatchIdentityData() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Map<String, List<IdentityInfoDTO>> identityEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		identityEntity.put("phoneNumber", identityInfoList);
+		List<MatchInput> listMatchInputsExp = new ArrayList<>();
+		AuthType demoAuthType = null;
+		Map<String, Object> matchProperties = new HashMap<>();
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.PARTIAL.getType(),
+				60, matchProperties, "fra"));
+		idInfoHelper.matchIdentityData(authRequestDTO, identityEntity, listMatchInputsExp, "12523823232");
+	}
+
+	@Test
+	public void TestisMatchtypeEnabled() {
+		idInfoHelper.isMatchtypeEnabled(DemoMatchType.GENDER);
 	}
 
 	private List<IdentityInfoDTO> getValueList() {
