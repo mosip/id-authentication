@@ -78,7 +78,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
 		UserMgmtUtil.throwExceptionIfExist(responseEmailService);
 
-		return getResponse(response, UserRegistrationResponseDto.class);
+		return UserMgmtUtil.getResponse(objectMapper, response, UserRegistrationResponseDto.class);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		HttpEntity<RequestWrapper<SendOtpRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<String> response = restTemplate.postForEntity(authSendOtpURL, otpHttpEntity, String.class);
 		UserMgmtUtil.throwExceptionIfExist(response);
-		return getResponse(response, RidVerificationResponseDto.class);
+		return UserMgmtUtil.getResponse(objectMapper, response, RidVerificationResponseDto.class);
 	}
 
 	@Override
@@ -113,16 +113,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		HttpEntity<RequestWrapper<UserPasswordRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<String> response = restTemplate.postForEntity(passwordURL, otpHttpEntity, String.class);
 		UserMgmtUtil.throwExceptionIfExist(response);
-		return getResponse(response, UserPasswordResponseDto.class);
-	}
-
-	private <S> S getResponse(ResponseEntity<String> response, Class<S> clazz) {
-		try {
-			return objectMapper.readValue(response.getBody(), clazz);
-		} catch (IOException e) {
-			throw new ServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
-					UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + e.getMessage());
-		}
+		return UserMgmtUtil.getResponse(objectMapper, response, UserPasswordResponseDto.class);
 	}
 
 }

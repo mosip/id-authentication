@@ -1,10 +1,15 @@
 package io.mosip.admin.usermgmt.util;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
 import io.mosip.admin.usermgmt.exception.AdminServiceResponseException;
+import io.mosip.admin.usermgmt.exception.ServiceException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 
@@ -21,6 +26,15 @@ public class UserMgmtUtil {
 		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorList.isEmpty()) {
 			throw new AdminServiceResponseException(validationErrorList);
+		}
+	}
+	
+	public static <S> S getResponse(ObjectMapper objectMapper,ResponseEntity<String> response, Class<S> clazz) {
+		try {
+			return objectMapper.readValue(response.getBody(), clazz);
+		} catch (IOException e) {
+			throw new ServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+					UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 }
