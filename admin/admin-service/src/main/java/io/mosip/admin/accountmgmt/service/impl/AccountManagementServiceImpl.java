@@ -150,7 +150,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto changePassword(PasswordDto passwordDto) {
 		passwordDto.setHashAlgo("SSHA-256");
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(changePassword + "registrationclient/");
+		urlBuilder.append(authManagerBaseUrl).append(changePassword + appId+"/");
 		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getChangePasswordHttpRequest(passwordDto);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, passwordHttpEntity);
 
@@ -168,7 +168,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto resetPassword(ResetPasswordDto passwordDto) {
 		passwordDto.setHashAlgo("SSHA-256");
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(resetPassword + "registrationclient");
+		urlBuilder.append(authManagerBaseUrl).append(resetPassword + appId);
 		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getResetPasswordHttpRequest(passwordDto);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, passwordHttpEntity);
 		return getSuccessResponse(response);
@@ -183,7 +183,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + "registrationclient/").append(mobile);
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + appId+"/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}
