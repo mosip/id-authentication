@@ -628,14 +628,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					.getDemographicInfoDTO().getIdentity();
 
 			try {
-
-				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
-				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
-						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-					updatePacketStatus();
-					syncAndUploadPacket();
-				}
-
 				// Deletes the pre registration Data after creation of registration Packet.
 				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
 						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
@@ -661,6 +653,16 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
+				
+				sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
+						registrationDTO.getRegistrationId());
+				
+				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
+				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
+						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+					updatePacketStatus();
+					syncAndUploadPacket();
+				}
 
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
@@ -672,9 +674,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 			}
-
-			sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
-					registrationDTO.getRegistrationId());
 
 			if (registrationDTO.getSelectionListDTO() == null) {
 
@@ -775,6 +774,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (response.equals(RegistrationConstants.EMPTY)) {
 
 				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+			} else {
+				generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
 			}
 
 		}

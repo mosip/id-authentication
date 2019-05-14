@@ -136,8 +136,15 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 			
 			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
-			if(cbeffInBytes != null) {
-				filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+			if (cbeffInBytes != null) {
+				if (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+						.equals(RegistrationConstants.ENABLE)) {
+					filesGeneratedForPacket.put(RegistrationConstants.PARENT
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				} else {
+					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				}
 			}
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
@@ -152,10 +159,19 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 				}
-				
-				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace();
-				if(cbeffInBytes != null) {
-					filesGeneratedForPacket.put(RegistrationConstants.PARENT.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+
+				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+						.getFace();
+				if (cbeffInBytes != null) {
+					if (registrationDTO.isUpdateUINChild()
+							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+									.equals(RegistrationConstants.ENABLE)) {
+						filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					} else {
+						filesGeneratedForPacket.put(RegistrationConstants.PARENT
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					}
 				}
 			}
 
