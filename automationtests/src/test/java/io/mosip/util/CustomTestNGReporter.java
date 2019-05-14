@@ -21,6 +21,9 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.testng.IReporter;
 import org.testng.IResultMap;
 import org.testng.ISuite;
@@ -37,7 +40,7 @@ import com.google.inject.internal.util.StackTraceElements;
  * @author Vignesh,Tabish
  *
  */
-public class CustomTestNGReporter implements IReporter {
+public class CustomTestNGReporter  implements IReporter {
 
 	// This is the customize emailable report template file path.
 	private static final String emailableReportTemplateFile = new File(
@@ -51,9 +54,10 @@ public class CustomTestNGReporter implements IReporter {
 	private String color = "";
 	private int countTestClassName = 0;
 	private boolean testClassNameFlag = false;
-
+	String buildNumber="";
 	@Override
 	public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory) {
+		buildNumber=getBuildTag();
 		try {
 			// Get content data in TestNG report template file.
 			customReportTemplateStr = this.readEmailabelReportTemplate();
@@ -153,6 +157,10 @@ public class CustomTestNGReporter implements IReporter {
 					/* Module Name. */
 					retBuf.append("<td>");
 					retBuf.append(testObj.getName());
+					retBuf.append("</td>");
+					/* Build Tag Number */
+					retBuf.append("<td>");
+					retBuf.append(buildNumber);
 					retBuf.append("</td>");
 
 					/* Total test case count. */
@@ -593,5 +601,16 @@ public class CustomTestNGReporter implements IReporter {
 
 		return base64encodedString;
 	}
-
+	public String getBuildTag() {
+		MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model=null;
+		try {
+			model = reader.read(new FileReader("pom.xml"));
+		} catch (IOException | XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model.getParent().getVersion();
+		
+	}
 }
