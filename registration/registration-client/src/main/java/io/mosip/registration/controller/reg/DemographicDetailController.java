@@ -1096,7 +1096,6 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int age = 0;
-				if (newValue.matches(RegistrationConstants.NUMBER_REGEX_ZERO_TO_THREE)) {
 					if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
 						if (!(Integer.parseInt(ageField.getText()) > maxAge)) {
 							age = Integer.parseInt(ageField.getText());
@@ -1149,10 +1148,7 @@ public class DemographicDetailController extends BaseController {
 								parentUinIdLocalLanguage.clear();
 								parentUinId.clear();
 							}
-						}
 					}
-				} else {
-					ageField.setText(oldValue);
 				}
 
 			});
@@ -2137,33 +2133,46 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean validateDateOfBirth(boolean isValid) {
 		int age;
-		try {
-			age = Period.between(LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
-					Integer.parseInt(dd.getText())), LocalDate.now()).getYears();
-			if (age <= maxAge) {
-				ageField.setText(age + "");
-				ageFieldLocalLanguage.setText(age + "");
-			} else {
-				dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
-				dobMessage.setVisible(true);
-				isValid = false;
-			}
-		} catch (DateTimeException exception) {
-			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-					.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty() && mm.getText().isEmpty()
-					&& yyyy.getText().isEmpty()) {
-				isValid = true;
-			} else {
-				if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
-					dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
-				} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
-					dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
+		LocalDate date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+				Integer.parseInt(dd.getText()));
+		LocalDate localDate = LocalDate.now();
+
+		if (localDate.compareTo(date) != -1) {
+
+			try {
+				age = Period.between(date, localDate).getYears();
+				if (age <= maxAge) {
+					ageField.setText(age + "");
+					ageFieldLocalLanguage.setText(age + "");
 				} else {
-					dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
+					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
+					dobMessage.setVisible(true);
+					isValid = false;
 				}
-				dobMessage.setVisible(true);
-				isValid = false;
+			} catch (DateTimeException exception) {
+				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
+						&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+					isValid = true;
+				} else {
+					if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
+						dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
+					} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
+						dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
+					} else {
+						dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
+					}
+					dobMessage.setVisible(true);
+					isValid = false;
+				}
 			}
+		} else {
+			ageField.clear();
+			ageFieldLocalLanguage.clear();
+			dobMessage.setText(RegistrationUIConstants.FUTURE_DOB);
+			dobMessage.setVisible(true);
+			isValid = false;
+
 		}
 		return isValid;
 	}

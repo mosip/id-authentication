@@ -155,6 +155,7 @@ public class RegistrationUIConstants {
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
 	public static final String INVALID_DATE = bundle.getString("INVALID_DATE");
 	public static final String INVALID_YEAR = bundle.getString("INVALID_YEAR");
+	public static final String FUTURE_DOB = bundle.getString("FUTURE_DOB");
 	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
 	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
 

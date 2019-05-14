@@ -142,13 +142,21 @@ public class DateValidation extends BaseController {
 			TextField ageLocalField) {
 
 		if (date != null && month != null && year != null && !date.getText().isEmpty() && !month.getText().isEmpty()
-				&& !year.getText().isEmpty()) {
+				&& !year.getText().isEmpty() && year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 			try {
-				int age = Period.between(LocalDate.of(Integer.parseInt(year.getText()),
-						Integer.parseInt(month.getText()), Integer.parseInt(date.getText())), LocalDate.now())
-						.getYears();
-				ageField.setText(age + "");
-				ageLocalField.setText(age + "");
+				LocalDate givenDate = LocalDate.of(Integer.parseInt(year.getText()), Integer.parseInt(month.getText()),
+						Integer.parseInt(date.getText()));
+				LocalDate localDate = LocalDate.now();
+
+				if (localDate.compareTo(givenDate) != -1) {
+
+					int age = Period.between(givenDate, localDate).getYears();
+					ageField.setText(age + "");
+					ageLocalField.setText(age + "");
+				} else {
+					ageField.clear();
+					ageLocalField.clear();
+				}
 			} catch (Exception exception) {
 
 			}
