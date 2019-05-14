@@ -23,10 +23,10 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
-import io.mosip.kernel.auth.entities.User;
 import io.mosip.kernel.auth.entities.UserCreationRequestDto;
 import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserNameDto;
@@ -392,6 +392,24 @@ public class AuthServiceImpl implements AuthService {
 	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).unBlockAccount(userId);
 	}
+	
+	@Override
+	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).changePassword(passwordDto);
+	}
+
+	@Override
+	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).resetPassword(passwordDto);
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String appId, String mobileNumber) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp("registrationclient")
+				.getUserNameBasedOnMobileNumber(mobileNumber);
+
+	}
+	
 
 	@Override
 	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto) {
