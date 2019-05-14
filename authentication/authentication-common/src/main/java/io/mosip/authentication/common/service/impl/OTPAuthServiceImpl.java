@@ -17,8 +17,8 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
@@ -59,6 +59,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	/** The MatchInputBuilder. */
+	@Autowired
+	private IdRepoManager idRepo;
 
 	/** The IdInfoHelper. */
 	@Autowired
@@ -68,9 +72,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
 
-	/** The Vid Repository. */
-	@Autowired
-	private VIDRepository vidrepository;
 
 	/** The IdaMappingconfig. */
 	@Autowired
@@ -95,12 +96,14 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIndividualIdType())) {
 				vid = authRequestDTO.getIndividualId();
 			} else {
-				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
-						.findFirst();
-				if (findVidByUin.isPresent()) {
-					vid = findVidByUin.get().trim();
-				}
+				//FIXME handle scenario of OTP sent using VID and then OTP auth invoked using UIN
+//				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
+//						.findFirst();
+//				if (findVidByUin.isPresent()) {
+//					vid = findVidByUin.get().trim();
+//				}
 			}
+			
 
 			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
 			if (isValidRequest) {

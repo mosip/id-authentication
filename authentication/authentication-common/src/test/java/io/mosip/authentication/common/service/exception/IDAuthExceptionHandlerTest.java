@@ -43,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.BaseAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 
 /**
  * @author Manoj SP
@@ -266,5 +267,18 @@ public class IDAuthExceptionHandlerTest {
 		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
 		actualResponse.setResponseTime(null);
 //		assertEquals(expectedResponse, actualResponse);
+	}
+	
+	@Test
+	public void testHandleAllException2() {
+		Mockito.when(servletRequest.getContextPath()).thenReturn("/otp");
+		ResponseEntity<Object> handleAllExceptions = handler
+				.handleAllExceptions(new RuntimeException("Runtime Exception"), null);
+		OtpResponseDTO response = (OtpResponseDTO) handleAllExceptions.getBody();
+		List<AuthError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals("IDA-MLC-007", e.getErrorCode());
+			assertEquals("Request could not be processed. Please try again", e.getErrorMessage());
+		});
 	}
 }
