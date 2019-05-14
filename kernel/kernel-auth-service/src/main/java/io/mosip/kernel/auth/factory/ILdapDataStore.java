@@ -430,6 +430,7 @@ public class ILdapDataStore implements IDataStore {
 			attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
 			attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
 			attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
+			attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
 			Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
 			oc.add(LdapConstants.INET_ORG_PERSON);
 			oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
@@ -486,11 +487,14 @@ public class ILdapDataStore implements IDataStore {
 		try {
 			userDn = createUserDn(userPasswordRequestDto.getUserName());
 			context = new InitialDirContext(env);
-			ModificationItem[] mods = new ModificationItem[2];
+			ModificationItem[] mods = new ModificationItem[3];
 			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
 					new BasicAttribute(LdapConstants.RID, userPasswordRequestDto.getRid()));
 			mods[1] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
 					new BasicAttribute(LdapConstants.USER_PASSWORD, userPasswordRequestDto.getPassword()));
+			mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.TRUE));
+			//attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
 			context.modifyAttributes(userDn.getName(), mods);
 
 		} catch (NamingException exception) {

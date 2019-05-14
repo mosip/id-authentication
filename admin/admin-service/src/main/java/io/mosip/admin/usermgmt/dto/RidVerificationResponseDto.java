@@ -7,7 +7,5 @@ import lombok.Data;
 @Data
 public class RidVerificationResponseDto {
 	@NotBlank
-	private String rid;
-	@NotBlank
 	private String userName;
 }
