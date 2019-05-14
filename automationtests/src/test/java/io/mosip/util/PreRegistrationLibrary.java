@@ -242,12 +242,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	/**
 	 * Generate OTP
-<<<<<<< HEAD
 	 * 
 	 * @return
-=======
-	 * @return response
->>>>>>> 0.11.0
+	 * 
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
@@ -260,9 +257,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
 		logger.info("userid is ++++++++++++++" + userId);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		otp = otpData.get(0).toString();
+		otp=dao.getOTP(userId).get(0);
 		logger.info("OTP is============" + otp);
 		testSuite = "validateOTP/validateOTP_smoke";
 		request = validateOTPRequest(testSuite);
