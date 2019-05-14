@@ -1,5 +1,4 @@
 node {
-
  try{
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
