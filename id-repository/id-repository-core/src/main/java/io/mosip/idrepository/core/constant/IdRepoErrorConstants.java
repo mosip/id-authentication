@@ -57,23 +57,23 @@ public enum IdRepoErrorConstants {
 
 	AUTHORIZATION_FAILED("IDR-IDS-021", "Authorization Failed"),
 	
-	NO_RECORD_FOUND_VID("IDR-VID-006", "No Record(s) found"),
+	INVALID_INPUT_PARAMETER_VID("IDR-VID-001","Invalid Input Parameter - %s"),
 	
 	INVALID_VID("IDR-VID-002","%s VID"),
-	
-	INVALID_UIN("IDR-VID-008","%s UIN"),
-	
-	INVALID_INPUT_PARAMETER_VID("IDR-VID-001","Invalid Input Parameter - %s"),
-	/** The missing input parameter. */
-	MISSING_INPUT_PARAMETER_VID("IDR-VID-007", "Missing Input Parameter - %s"),
-	
-	UIN_RETRIEVAL_FAILED("IDR-VID-009", "Failed to retrieve uin data using Identity Service"),
 	
 	VID_GENERATION_FAILED("IDR-VID-003","Could not generate VID"),
 	
 	VID_CREATION_FAILED("IDR-VID-005","Could not generate/regenerate VID as per policy"),
 	
-	UIN_HASH_MISMATCH("IDR-IDS-003", "Uin hash does not match");
+	NO_RECORD_FOUND_VID("IDR-VID-006", "No Record(s) found"),
+
+	MISSING_INPUT_PARAMETER_VID("IDR-VID-007", "Missing Input Parameter - %s"),
+	
+	INVALID_UIN("IDR-VID-008","%s UIN"),
+	
+	UIN_RETRIEVAL_FAILED("IDR-VID-009", "Failed to retrieve uin data using Identity Service"),
+	
+	UIN_HASH_MISMATCH("IDR-IDS-010", "Uin hash does not match");
 	
 
 	/** The error code. */

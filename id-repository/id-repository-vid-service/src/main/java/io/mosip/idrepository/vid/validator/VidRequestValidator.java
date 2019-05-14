@@ -58,7 +58,7 @@ public class VidRequestValidator implements Validator {
 	private static final String VER = "version";
 
 	/** The Constant TIMESTAMP. */
-	private static final String REQUEST_TIME = "requestTime";
+	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";

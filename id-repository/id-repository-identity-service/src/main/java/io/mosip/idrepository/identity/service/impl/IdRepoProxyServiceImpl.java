@@ -286,15 +286,15 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			try {
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId();
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-				String data = new String(
-						securityManager.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
+				byte[] data = securityManager
+						.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
 				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 						"time taken to get file in millis: " + fileName + "  - "
 								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
 								+ "Start time : " + startTime + "  " + "end time : "
 								+ DateUtils.getUTCCurrentDateTime());
-				if (demo.getDocHash().equals(securityManager.hash(CryptoUtil.decodeBase64(data)))) {
-					documents.add(new Documents(demo.getDoccatCode(), data));
+				if (demo.getDocHash().equals(securityManager.hash(data))) {
+					documents.add(new Documents(demo.getDoccatCode(), CryptoUtil.encodeBase64(data)));
 				} else {
 					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());
@@ -330,17 +330,16 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				try {
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
 					LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-					String data = new String(securityManager
-							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
+					byte[] data = securityManager
+							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
 					mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 							"time taken to get file in millis: " + fileName + "  - "
 									+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
 									+ "Start time : " + startTime + "  " + "end time : "
 									+ DateUtils.getUTCCurrentDateTime());
 					if (Objects.nonNull(data)) {
-						if (StringUtils.equals(bio.getBiometricFileHash(),
-								securityManager.hash(CryptoUtil.decodeBase64(data)))) {
-							documents.add(new Documents(bio.getBiometricFileType(), data));
+						if (StringUtils.equals(bio.getBiometricFileHash(), securityManager.hash(data))) {
+							documents.add(new Documents(bio.getBiometricFileType(), CryptoUtil.encodeBase64(data)));
 						} else {
 							mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 									IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());

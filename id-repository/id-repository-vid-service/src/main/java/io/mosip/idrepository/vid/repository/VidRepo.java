@@ -23,9 +23,7 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	 */
 	Vid findByVid(String vid);
 	
-	@Query("select v from Vid v where uin = :uin  and statusCode = :statusCode and vidTypeCode = :vidTypeCode")
-	List<Vid> retrieveActiveVidByUin(@Param("uin") String uin, @Param("statusCode") String statusCode,
-			@Param("vidTypeCode") String vidTypeCode);
+	List<Vid> findByUinHashAndStatusCodeAndVidTypeCode(String uinHash, String statusCode, String vidTypeCode);
 	
 	/**
 	 * The Query to retrieve Uin by passing vid as parameter.

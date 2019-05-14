@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
@@ -116,7 +115,6 @@ public class RestHelper {
 							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
-			ExceptionUtils.getStackTrace(e);
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
@@ -187,7 +185,7 @@ public class RestHelper {
 
 		if (request.getHeaders() != null) {
 			requestBodySpec = requestBodySpec
-					.headers((headers) -> headers.addAll(request.getHeaders()));
+					.headers(headers -> headers.addAll(request.getHeaders()));
 		}
 
 		if (request.getRequestBody() != null) {

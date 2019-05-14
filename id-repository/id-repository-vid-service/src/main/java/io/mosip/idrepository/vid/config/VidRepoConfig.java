@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
@@ -30,6 +31,9 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private Interceptor interceptor;
 	
 	/** The id. */
 	private Map<String, String> id;
@@ -86,6 +90,8 @@ public class VidRepoConfig extends HibernateDaoConfig {
 		Map<String, Object> jpaProperties = super.jpaProperties();
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
+		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
+		jpaProperties.replace("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
 		return jpaProperties;
 	}
 	
@@ -98,10 +104,10 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_URL.getValue()));
-		dataSource.setUsername(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_USERNAME.getValue()));
-		dataSource.setPassword(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_PASSWORD.getValue()));
-		dataSource.setDriverClassName(env.getProperty(IdRepoConstants.MOSIP_IDREPO_DB_VID_DRIVER_CLASS_NAME.getValue()));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(IdRepoConstants.VID_DB_URL.getValue()));
+		dataSource.setUsername(env.getProperty(IdRepoConstants.VID_DB_USERNAME.getValue()));
+		dataSource.setPassword(env.getProperty(IdRepoConstants.VID_DB_PASSWORD.getValue()));
+		dataSource.setDriverClassName(env.getProperty(IdRepoConstants.VID_DB_DRIVER_CLASS_NAME.getValue()));
 		return dataSource;
 	}
 }

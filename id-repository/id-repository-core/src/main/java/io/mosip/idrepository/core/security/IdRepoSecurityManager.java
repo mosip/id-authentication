@@ -112,10 +112,10 @@ public class IdRepoSecurityManager {
 			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
 			request.put("timeStamp",
 					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
-			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
+			request.put("data", new String(dataToDecrypt));
 			baseRequest.set("request", request);
-			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT,
-					baseRequest, ObjectNode.class));
+			return CryptoUtil.decodeBase64(new String(encryptDecryptData(restBuilder
+					.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class))));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
@@ -131,6 +131,7 @@ public class IdRepoSecurityManager {
 	 */
 	private byte[] encryptDecryptData(final RestRequestDTO restRequest) throws IdRepoAppException {
 		try {
+			restRequest.setTimeout(null);
 			ObjectNode response = restHelper.requestSync(restRequest);
 
 			if (response.has("response") && Objects.nonNull(response.get("response"))

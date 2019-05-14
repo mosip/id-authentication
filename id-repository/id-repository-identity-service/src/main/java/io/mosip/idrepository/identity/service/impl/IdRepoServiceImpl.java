@@ -299,7 +299,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 		fsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId,
-				new ByteArrayInputStream(CryptoUtil.decodeBase64(new String(securityManager.encrypt(data)))));
+				new ByteArrayInputStream(securityManager.encrypt(data)));
 		mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
 				"time taken to store file in millis: " + fileRefId + "  - "
 						+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
@@ -312,7 +312,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 		uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-				securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+				securityManager.hash(doc.getValue().getBytes()),
 				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 				now(), false, now()));
 	}
@@ -339,8 +339,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
 			LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-			fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId, new ByteArrayInputStream(CryptoUtil
-					.decodeBase64(new String(securityManager.encrypt(CryptoUtil.decodeBase64(doc.getValue()))))));
+			byte[] data = CryptoUtil.decodeBase64(doc.getValue());
+			fsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId,
+					new ByteArrayInputStream(securityManager.encrypt(data)));
 			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
 					"time taken to store file in millis: " + fileRefId + "  - "
 							+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
@@ -349,14 +350,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
 					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+					securityManager.hash(data),
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 
 			uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
 					fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
 					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
-					securityManager.hash(CryptoUtil.decodeBase64(doc.getValue())),
+					securityManager.hash(data),
 					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
 					now(), false, now()));
 		} catch (NullPointerException e) {
@@ -661,8 +662,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				.filter(doc -> StringUtils.equals(bio.getBiometricFileType(), doc.getCategory())).forEach(doc -> {
 					try {
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
-						String data = new String(securityManager
-								.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName))));
+						byte[] data = securityManager
+								.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
 						if (StringUtils.equalsIgnoreCase(
 								identityMap.get(bio.getBiometricFileType())
 										.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
@@ -670,7 +671,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 								&& fileName.endsWith(IdRepoConstants.CBEFF_FORMAT.getValue())) {
 							doc.setValue(CryptoUtil.encodeBase64(cbeffUtil.updateXML(
 									convertToBIR(cbeffUtil.getBIRDataFromXML(CryptoUtil.decodeBase64(doc.getValue()))),
-									CryptoUtil.decodeBase64(data))));
+									data)));
 						}
 					} catch (FSAdapterException e) {
 						mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
