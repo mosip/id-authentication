@@ -19,6 +19,8 @@ export class UserregistrationComponent implements OnInit {
   requestDTO:any;
   originUrl:string;
   userRegistrationForm:FormGroup;
+  genderResponseObject=[];
+  languageCode="eng";
   constructor(private router: Router,private formBuilder:FormBuilder,private service:UserregistrationService) {
     this.userRegistrationForm = this.formBuilder.group({
       firstName: ['', Validators.required],
@@ -26,7 +28,9 @@ export class UserregistrationComponent implements OnInit {
       contactNumber:['',[Validators.required,Validators.pattern("^[0-9]*$")]],
       emailID:['',[Validators.required,Validators.email]],
       DOB:['',Validators.required],
-      userName:['',Validators.required]
+      userName:['',Validators.required],
+      gender:['',Validators.required],
+      roles:['',Validators.required]
     });
    }
  
@@ -34,7 +38,8 @@ export class UserregistrationComponent implements OnInit {
   ngOnInit() {
    this.originUrl = window.location.origin;
     this.service.getGenderTypes().subscribe(data=>{
-      console.log(data);
+      this.genderResponseObject=data['response']['genderType'];
+      console.log(this.genderResponseObject);
     });
   }
 
@@ -46,8 +51,8 @@ this.requestObject.contactNo=this.userRegistrationForm.get('contactNumber').valu
 this.now=this.userRegistrationForm.get('DOB').value;
 this.requestObject.dateOfBirth=this.dateFormatter(this.now);
 this.requestObject.emailID=this.userRegistrationForm.get('emailID').value;
-this.requestObject.gender="Male";
-this.requestObject.role="MISP";
+this.requestObject.gender=this.userRegistrationForm.get('gender').value;
+this.requestObject.role=this.userRegistrationForm.get('roles').value;
 this.requestObject.appId="admin";
 this.requestObject.ridValidationUrl=this.originUrl+"/#/admin/usermgmt/ridverification";
 this.requestDTO=new RequestModel("id","v1",this.requestObject,null);
@@ -74,5 +79,11 @@ dateFormatter(date:Date){
   get emailID(){
     return this.userRegistrationForm.get('emailID');
   }
-
+isValid(langCode:any){
+if(langCode==this.languageCode){
+  return true;
+}else{
+  return false;
+}
+}
 }
