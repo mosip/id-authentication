@@ -701,6 +701,8 @@ public class DemographicDetailController extends BaseController {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
 				getRegistrationDTOFromSession().setUpdateUINChild(false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
+						RegistrationConstants.DISABLE);
 			}
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
