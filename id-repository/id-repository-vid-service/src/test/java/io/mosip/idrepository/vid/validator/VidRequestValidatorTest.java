@@ -93,9 +93,9 @@ public class VidRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "requestTime"),
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("requestTime", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 
@@ -106,9 +106,9 @@ public class VidRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "requestTime"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
-			assertEquals("requestTime", ((FieldError) error).getField());
+			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
 	

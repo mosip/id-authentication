@@ -9,9 +9,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,19 +39,18 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@ConfigurationProperties("mosip.idrepo.vid")
+@ActiveProfiles("test")
 public class VidControllerTest {
 
 	/** The Constant TIMESTAMP. */
-	private static final String REQUEST_TIME = "requestTime";
+	private static final String REQUEST_TIME = "requesttime";
 
 	@InjectMocks
 	private VidController controller;
 
 	@Mock
 	private VidService<Object, VidResponseDTO> vidService;
-
-	@InjectMocks
-	private VidRequestValidator vidRequestValidator;
 
 	@Mock
 	private VidRequestValidator vidValidator;
@@ -59,7 +60,7 @@ public class VidControllerTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(controller, "vidRequestValidator", vidRequestValidator);
+		ReflectionTestUtils.setField(controller, "validator", vidValidator);
 	}
 
 	/**
@@ -67,8 +68,7 @@ public class VidControllerTest {
 	 */
 	@Test
 	public void testInitBinder() {
-		WebDataBinder binder = new WebDataBinder(new VidRequestDTO());
-		controller.initBinder(binder);
+		controller.initBinder(Mockito.mock(WebDataBinder.class));
 	}
 
 	@Test
