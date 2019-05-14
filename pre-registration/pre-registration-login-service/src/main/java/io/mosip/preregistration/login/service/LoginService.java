@@ -165,7 +165,7 @@ public class LoginService {
 			new LoginExceptionCatcher().handle(ex,"sendOtp",response);	
 		}
 		finally {
-			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
+			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		}
 		return response;
 	}
@@ -218,7 +218,7 @@ public class LoginService {
 			new LoginExceptionCatcher().handle(ex,"userIdOtp",response);	
 		}
 		finally {
-			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
+			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		}
 		
 		return response;
@@ -261,7 +261,7 @@ public class LoginService {
 			new LoginExceptionCatcher().handle(ex,"invalidateToken",null);	
 		}
 		finally {
-			response.setResponsetime(loginCommonUtil.getCurrentResponseTime());
+			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		}
 		return response;
 	}
