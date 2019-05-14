@@ -10,6 +10,7 @@ import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.login.exception.InvalidOtpOrUseridException;
 import io.mosip.preregistration.login.exception.InvalidateTokenException;
 import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.NoAuthTokenException;
 import io.mosip.preregistration.login.exception.ParseResponseException;
 import io.mosip.preregistration.login.exception.SendOtpFailedException;
 import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
@@ -50,6 +51,9 @@ public class LoginExceptionCatcher {
 		}
 		else if(ex instanceof InvalidOtpOrUseridException) {
 			throw new InvalidOtpOrUseridException(ErrorCodes.PRG_AUTH_013.getCode(),((InvalidOtpOrUseridException) ex).getErrorText(),mainResponsedto);
+		}
+		else if (ex instanceof NoAuthTokenException) {
+			throw new NoAuthTokenException(((NoAuthTokenException) ex).getErrorCode(), ((NoAuthTokenException) ex).getErrorText(), mainResponsedto);
 		}
 		
 		
