@@ -5,13 +5,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.registartion.processor.abis.middleware.stage.AbisMiddleWareStage;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 
-
 /**
  * Hello world!
  *
  */
-public class AbisMiddleWareApplication 
-{
+public class AbisMiddleWareApplication {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
 		configApplicationContext.scan("io.mosip.registration.processor.stages.config",
@@ -25,6 +23,6 @@ public class AbisMiddleWareApplication
 		} catch (RegistrationProcessorCheckedException e) {
 			System.out.println(e);
 		}
-	
+
 	}
 }

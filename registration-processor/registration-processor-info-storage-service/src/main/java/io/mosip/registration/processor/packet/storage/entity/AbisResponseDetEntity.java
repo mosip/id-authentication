@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,11 +18,11 @@ public class AbisResponseDetEntity extends BasePacketEntity<AbisResponseDetPKEnt
 
 	@Embedded
 	AbisResponseDetPKEntity id;
-	
+
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "SYSTEM";
 
-	@Column(name = "cr_dtimes", updatable = false, nullable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 

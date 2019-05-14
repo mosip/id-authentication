@@ -290,6 +290,24 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getIsValid());
 	}
 
+	@Test
+	public void testIdentityNotFoundException() throws Exception {
+
+		InputStream inputStream = new FileInputStream("src/test/resources/ID3.json");
+		PowerMockito.mockStatic(Utilities.class);
+		Mockito.when(utilities.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+
+		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
+
+		registrationStatusDto.setRegistrationId("reg1234");
+		registrationStatusDto.setRegistrationType("Update");
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
+
+		assertTrue(messageDto.getInternalError());
+	}
+
 	////////////////////
 	@Test
 	public void testBioDeDupUpdatePacketHandlerProcessingSuccess() throws ApisResourceAccessException, IOException {

@@ -196,7 +196,7 @@ public class BioDedupeProcessor {
 					description + "\n" + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-		} catch (IOException ex) {
+		} catch (IdentityNotFoundException | IOException ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
 			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
 			registrationStatusDto.setLatestTransactionStatusCode(
