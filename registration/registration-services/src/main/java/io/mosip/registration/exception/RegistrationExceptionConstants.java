@@ -54,7 +54,8 @@ public enum RegistrationExceptionConstants {
 	REG_PACKET_JSON_VALIDATOR_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-003", "Exception while validating ID json file"),
 	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while adding authorization token to web-service request"),
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
-	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected");
+	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
+	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body");
 
 	/**
 	 * The constructor

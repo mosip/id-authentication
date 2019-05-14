@@ -47,7 +47,19 @@ public enum IdRepoConstants {
 	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path");
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path"),
+	
+	MOSIP_IDREPO_VID_STATUS("mosip.idrepo.vid.active-status"),
+	
+	MOSIP_IDREPO_VID_ALLOWED_STATUS("mosip.idrepo.vid.allowedStatus"),
+	
+	MOSIP_IDREPO_DB_VID_URL("mosip.idrepo.vid.db.url"),
+	
+	MOSIP_IDREPO_DB_VID_USERNAME("mosip.idrepo.vid.db.username"),
+	
+	MOSIP_IDREPO_DB_VID_PASSWORD("mosip.idrepo.vid.db.password"),
+	
+	MOSIP_IDREPO_DB_VID_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName");
 	/** The value. */
 	private final String value;
 

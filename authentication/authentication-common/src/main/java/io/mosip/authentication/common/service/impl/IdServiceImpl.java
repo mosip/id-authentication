@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
@@ -23,6 +25,7 @@ import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
@@ -31,6 +34,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -62,6 +66,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	/** The rest factory. */
 	@Autowired
 	private RestRequestFactory restFactory;
+	
+	@Autowired
+	private Environment environment;
+
 
 	/** The audit factory. */
 	@Autowired
@@ -162,7 +170,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw e;
 			}
-		} else {
+		} else if(idvIdType.equals(IdType.VID.getType())) {
 			try {
 				idResDTO = getIdByVid(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
@@ -170,9 +178,24 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
-
+		
+		else if(idvIdType.equals(IdType.USER_ID.getType())) {
+			
+				 try {
+					 String regId = idRepoManager.getRIDByUID(idvId);
+					 if(null!=regId) {
+							idResDTO=idRepoManager.getUINByRID(regId);
+						}
+					} catch (IdAuthenticationBusinessException e) {
+						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+						throw e;
+					}
+	            } 
 		return idResDTO;
-	}
+		}
+
+		
+	
 
 	/**
 	 * Store entry in Auth_txn table for all authentications.

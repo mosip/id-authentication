@@ -13,6 +13,79 @@ package io.mosip.kernel.qrcode.generator.zxing.constant;
 public enum QrVersion {
 
 	/**
+	 * Version 1
+	 */
+	V1(1, 58),/**
+	 * Version 2
+	 */
+	V2(2, 66),/**
+	 * Version 3
+	 */
+	V3(3, 74),/**
+	 * Version 4
+	 */
+	V4(4, 82),/**
+	 * Version 5
+	 */
+	V5(5, 90),/**
+	 * Version 6
+	 */
+	V6(6, 98),/**
+	 * Version 7
+	 */
+	V7(7, 106),/**
+	 * Version 8
+	 */
+	V8(8, 114),/**
+	 * Version 9
+	 */
+	V9(9, 122),/**
+	 * Version 10
+	 */
+	V10(10, 130),/**
+	 * Version 11
+	 */
+	V11(11, 138),/**
+	 * Version 12
+	 */
+	V12(12, 146),/**
+	 * Version 13
+	 */
+	V13(13, 154),/**
+	 * Version 14
+	 */
+	V14(14, 162),/**
+	 * Version 15
+	 */
+	V15(15, 170),/**
+	 * Version 16
+	 */
+	V16(16, 178),/**
+	 * Version 17
+	 */
+	V17(17, 186),/**
+	 * Version 18
+	 */
+	V18(18, 194),/**
+	 * Version 19
+	 */
+	V19(19, 202),/**
+	 * Version 20
+	 */
+	V20(20, 210),/**
+	 * Version 21
+	 */
+	V21(21, 218),/**
+	 * Version 22
+	 */
+	V22(22, 226),/**
+	 * Version 23
+	 */
+	V23(23, 234),/**
+	 * Version 24
+	 */
+	V24(24, 242),
+	/**
 	 * Version 25
 	 */
 	V25(25, 250),

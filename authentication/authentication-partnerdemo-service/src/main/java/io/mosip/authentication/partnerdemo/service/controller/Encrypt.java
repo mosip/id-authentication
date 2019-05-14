@@ -98,7 +98,7 @@ public class Encrypt {
 	private String appID;
 	
 	/** The IDA Public Key. */
-	@Value("${mosip.ida.publickey}")
+	@Value("${cryptomanager.partner.id}")
 	private String publicKeyId;
 
 	/**

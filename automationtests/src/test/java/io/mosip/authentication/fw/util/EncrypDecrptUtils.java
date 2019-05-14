@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.testng.Reporter;
 
-import io.mosip.authentication.fw.client.RestClient;
+
 
 /**
  * Perform encryption and decryption util. 

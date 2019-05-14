@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,7 +41,6 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -225,6 +225,7 @@ public class NotificationServiceImplTest {
 		return map;
 	}
 
+	@Ignore
 	@Test
 	public void testSendOtpNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {

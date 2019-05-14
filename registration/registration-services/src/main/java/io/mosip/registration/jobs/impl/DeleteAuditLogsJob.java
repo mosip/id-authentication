@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.service.audit.AuditService;
 
 /**
  * This is a job to delete audit logs
@@ -29,7 +29,7 @@ public class DeleteAuditLogsJob extends BaseJob {
 	 * The RegPacketStatusServiceImpl
 	 */
 	@Autowired
-	private AuditService auditService;
+	private AuditManagerService auditService;
 
 	/**
 	 * LOGGER for logging
@@ -52,7 +52,7 @@ public class DeleteAuditLogsJob extends BaseJob {
 		try {
 
 			this.jobId = loadContext(context);
-			auditService = applicationContext.getBean(AuditService.class);
+			auditService = applicationContext.getBean(AuditManagerService.class);
 
 			/* Run the Parent JOB always first */
 			this.responseDTO = auditService.deleteAuditLogs();

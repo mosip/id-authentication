@@ -28,8 +28,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.BookingStatus;
+import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.MultiBookingRequest;
+import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.booking.test.BookingApplicationTest;
@@ -66,14 +70,19 @@ public class BookingControllerTest {
 	private AvailabilityDto availabilityDto;
 
 	MainRequestDTO bookingDTO = new MainRequestDTO();
-	List<BookingRequestDTO> bookingList = new ArrayList<>();
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
+	MultiBookingRequestDTO multiBookingRequestDto1=new MultiBookingRequestDTO();
+	MultiBookingRequestDTO multiBookingRequestDto2=new MultiBookingRequestDTO();
+	
+	List<MultiBookingRequestDTO> multiBookingListDto=new ArrayList<>();
+	List<BookingRequestDTO> bookingList = new ArrayList<>();
 	BookingRegistrationDTO oldBooking = new BookingRegistrationDTO();
 	BookingRegistrationDTO newBooking = new BookingRegistrationDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
 	MainResponseDTO responseDto = new MainResponseDTO();
 	private Object jsonObject = null;
+	private Object jsonObjectMulti = null;
 
 	private Object jsonObject1 = null;
 	CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
@@ -96,9 +105,15 @@ public class BookingControllerTest {
 		URI dataSyncUri = new URI(
 				classLoader.getResource("booking.json").getFile().trim().replaceAll("\\u0020", "%20"));
 		File file = new File(dataSyncUri.getPath());
+		
 		jsonObject = parser.parse(new FileReader(file));
+		
+		URI multiBookingUrl = new URI(
+				classLoader.getResource("multibooking.json").getFile().trim().replaceAll("\\u0020", "%20")); 
+		File fileMulti = new File(multiBookingUrl.getPath());	
+		jsonObjectMulti = parser.parse(new FileReader(fileMulti));
 
-		 bookingRequestDTO.setRegDate("1");;
+		 bookingRequestDTO.setRegDate("1");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
 		bookingRequestDTO.setRegDate("2018-12-06");
@@ -149,7 +164,7 @@ public class BookingControllerTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	//@Test
+	@Test
 	@WithUserDetails("INDIVIDUAL")
 	public void successBookingTest() throws Exception {
 
@@ -166,9 +181,46 @@ public class BookingControllerTest {
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@WithUserDetails("INDIVIDUAL")
+	public void successMultiBookingTest() throws Exception {
+
+		multiBookingListDto.add(multiBookingRequestDto1);
+		multiBookingListDto.add(multiBookingRequestDto2);
+		
+		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
+		multiBookingRequest.setBookingRequest(multiBookingListDto);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
+		BookingStatus bookingStatus= new BookingStatus();
+		BookingStatusDTO bookingStatusDTO1=new BookingStatusDTO();
+		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
+		
+		BookingStatusDTO bookingStatusDTO2=new BookingStatusDTO();
+		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
+		
+		List<BookingStatusDTO> bookingStatusDTOs=new ArrayList<>();
+		bookingStatusDTOs.add(bookingStatusDTO1);
+		bookingStatusDTOs.add(bookingStatusDTO2);
+		
+		bookingStatus.setBookingStatusResponse(bookingStatusDTOs);
+		responseDto.setErrors(null);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		responseDto.setResponse(bookingStatus);
+
+		Mockito.when(service.bookMultiAppointment(bookingDTO)).thenReturn(responseDto);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/appointment")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").
+				accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObjectMulti.toString());
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 
 	@SuppressWarnings("unchecked")
-	//@Test
+	@Test
 	@WithUserDetails("INDIVIDUAL")
 	public void failureBookingTest() throws Exception {
 

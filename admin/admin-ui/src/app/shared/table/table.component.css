@@ -1,0 +1,23 @@
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow-x: visible;
+}
+td,
+th {
+  border: 1px solid #ccc;
+  height: 30px;
+  text-align: left;
+  padding: 10px;
+}
+th {
+  background: #b6b6b6;
+  font-weight: bold;
+  text-transform: capitalize;
+  font-family: sans-serif;
+  font-size: 15px;
+}
+td {
+  font-family: sans-serif;
+  font-size: 13px;
+}

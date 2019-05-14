@@ -179,7 +179,7 @@ public class UserOnBoardDAOImlpTest {
 		BiometricInfoDTO info = new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 
 		biometricDTO.setOperatorBiometricDTO(info);
 
@@ -302,7 +302,7 @@ public class UserOnBoardDAOImlpTest {
 		BiometricInfoDTO info = new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 
 		biometricDTO.setOperatorBiometricDTO(info);
 

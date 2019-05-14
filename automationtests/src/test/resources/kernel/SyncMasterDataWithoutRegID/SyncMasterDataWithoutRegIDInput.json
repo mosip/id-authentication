@@ -5,5 +5,6 @@
 	"serialNumber_anotherMachine":"string",
 	"anotherMachine_macId":"string",
 	"only_macId":"string",
-	"only_serialNumber":"string"
+	"only_serialNumber":"string",
+	"response_time":"string"
 }

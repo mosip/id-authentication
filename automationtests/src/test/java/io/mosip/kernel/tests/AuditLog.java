@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,8 +32,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.DeviceDto;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
@@ -51,22 +53,25 @@ public class AuditLog extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(AuditLog.class);
-	private static final String jiraID = "MOS-8/441/829";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "AuditLog";
-	private static final String requestJsonName = "AuditLogRequest";
-	private static final String outputJsonName = "AuditLogOutput";
-	private static final String auditLog_URI = "/v1/auditmanager/audits";
+	private final String jiraID = "MOS-8/441/829";
+	private final String moduleName = "kernel";
+	private final String apiName = "AuditLog";
+	private final String requestJsonName = "AuditLogRequest";
+	private final String outputJsonName = "AuditLogOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String auditLog_URI = props.get("auditLog_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -75,11 +80,11 @@ public class AuditLog extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
-
+		cookie=auth.getAuthForIDA();
 	}
 
 	/**
@@ -141,7 +146,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), auditLog_URI);
+				response = applicationLibrary.postRequest(objectData.toJSONString(), auditLog_URI,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -163,7 +168,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT count(*) FROM master.machine_spec WHERE id='" + id + "'";
-				long count = KernelMasterDataR.validateDBCount(queryStr);
+				long count = new KernelDataBaseAccess().validateDBCount(queryStr);
 				if (count==1) {
 					finalStatus = "Pass";
 				} else {
@@ -189,6 +194,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

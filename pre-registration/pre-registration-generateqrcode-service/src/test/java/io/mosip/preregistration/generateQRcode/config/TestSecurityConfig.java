@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.config;
+package io.mosip.preregistration.generateqrcode.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;

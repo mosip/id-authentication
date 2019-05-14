@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.config;
+package io.mosip.preregistration.generateqrcode.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +17,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 /**
+ * This class is used for Swagger configuration, also to configure Host and
+ * Port.
  * @author Sanober Noor
  *@since 1.0.0
  */
@@ -67,7 +69,7 @@ public class GenerateQRcodeConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
@@ -87,8 +89,7 @@ public class GenerateQRcodeConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.generateQRcode.controller"))
-				.paths(PathSelectors.ant("/*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

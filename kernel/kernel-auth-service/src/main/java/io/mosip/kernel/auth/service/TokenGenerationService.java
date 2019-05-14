@@ -11,4 +11,6 @@ public interface TokenGenerationService {
 	
 	String getInternalTokenGenerationService() throws Exception;
 
+	String getUINBasedToken() throws Exception;
+
 }

@@ -150,6 +150,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 			userDetailsResponse.getUserDetails().forEach(userDtals -> {
 
 				UserDetail userDtls = new UserDetail();
+				userDtls.setSalt(userDtals.getSalt());
 				UserPassword usrPwd = new UserPassword();
 				// password details
 				usrPwd.setUsrId(userDtals.getUserName());

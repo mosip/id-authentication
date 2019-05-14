@@ -1,14 +1,9 @@
 {
 	"identityRequest": {
-		"identity": {
-		
-    "dob": [
-             {
-         
-               "value": "15/04/1955"
-             }
-                ]   
-		}
-	},
-  "tspID": "TSP00001"
+		"demographics": {
+			"dob": "25/11/1990"
+		},
+		"timestamp": "2019-03-16T10:01:57.086+05:30",
+		"transactionID": "1234567890"
+	}
 }

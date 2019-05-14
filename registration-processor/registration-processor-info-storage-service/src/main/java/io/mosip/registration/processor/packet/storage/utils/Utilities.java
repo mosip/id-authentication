@@ -18,10 +18,38 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -120,6 +148,52 @@ public class Utilities {
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
+	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException {
+		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
+		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
+		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
+
+		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
+		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
+		Integer applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+		if (applicantDob != null) {
+			return calculateAge(applicantDob);
+		} else if (applicantAge != null) {
+			return applicantAge;
+
+		} else {
+			Long uin = getUIn(registrationId);
+			JSONObject identityJSONOject = retrieveIdrepoJson(uin);
+			String idRepoApplicantDob = JsonUtil.getJSONValue(identityJSONOject, dobKey);
+			if (idRepoApplicantDob != null)
+				return calculateAge(idRepoApplicantDob);
+			Integer idRepoApplicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			return idRepoApplicantAge != null ? idRepoApplicantAge : 0;
+
+		}
+
+	}
+
+	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
+
+		if (uin != null) {
+			List<String> pathSegments = new ArrayList<>();
+			pathSegments.add(String.valueOf(uin));
+			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
+					pathSegments, "", "", IdResponseDTO1.class);
+			if (!idResponseDto.getErrors().isEmpty())
+				throw new IdRepoAppException(
+						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
+
+			idResponseDto.getResponse().getIdentity();
+			ObjectMapper objMapper = new ObjectMapper();
+			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+
+		}
+
+		return null;
+	}
+
 	public List<List<String>> getInboundOutBoundAddressList() throws RegistrationProcessorCheckedException {
 		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
 		List<String> inBoundAddressList = new ArrayList<>();
@@ -188,33 +262,6 @@ public class Utilities {
 		return value;
 	}
 
-	public int getApplicantAge(String registrationId)
-			throws IOException, ApisResourceAccessException, ParseException, IdRepoAppException {
-		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
-		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
-		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
-
-		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
-		Integer applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-		if (applicantDob != null) {
-			return calculateAge(applicantDob);
-		} else if (applicantAge != null) {
-			return applicantAge;
-
-		} else {
-			Long uin = getUIn(registrationId);
-			JSONObject identityJSONOject = retrieveIdrepoJson(uin);
-			String idRepoApplicantDob = JsonUtil.getJSONValue(identityJSONOject, dobKey);
-			if (idRepoApplicantDob != null)
-				return calculateAge(idRepoApplicantDob);
-			Integer idRepoApplicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-			return idRepoApplicantAge != null ? idRepoApplicantAge : 0;
-
-		}
-
-	}
-
 	public RegistrationProcessorIdentity getRegistrationProcessorIdentityJson() throws IOException {
 		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
@@ -238,12 +285,19 @@ public class Utilities {
 
 	}
 
-	private int calculateAge(String applicantDob) throws ParseException {
+	private int calculateAge(String applicantDob) {
 		DateFormat sdf = new SimpleDateFormat(dobFormat);
-		Date birthDate = sdf.parse(applicantDob);
+		Date birthDate = null;
+		try {
+			birthDate = sdf.parse(applicantDob);
+
+		} catch (ParseException e) {
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
+		}
 		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
 		Period p = Period.between(ld, LocalDate.now());
 		return p.getYears();
+
 	}
 
 	public Long getUIn(String registrationId) throws IOException {
@@ -253,26 +307,6 @@ public class Utilities {
 		Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
 		return number != null ? number.longValue() : null;
 
-	}
-
-	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
-
-		if (uin != null) {
-			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
-					pathSegments, "", "", IdResponseDTO1.class);
-			if (!idResponseDto.getErrors().isEmpty())
-				throw new IdRepoAppException(
-						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
-
-			idResponseDto.getResponse().getIdentity();
-			ObjectMapper objMapper = new ObjectMapper();
-			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
-
-		}
-
-		return null;
 	}
 
 	public String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {

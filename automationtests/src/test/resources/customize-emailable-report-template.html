@@ -16,16 +16,13 @@ function detailedReport() {
 <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
           ['Status', 'Count'],
           ['Passed',  $pass$],
           ['Skipped', $skip$],
           ['Failed',  $fail$]
         ]);
-
        var options = {
           /* title: 'My Daily Activities' */
            legend: 'none',
@@ -34,9 +31,7 @@ function detailedReport() {
           /*  chartArea: {left:'-8%',top:0,right:5,width:'30%',height:'70%'} */
    
         };
-
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
         chart.draw(data, options);
       }
     </script>
@@ -50,19 +45,19 @@ function detailedReport() {
 		style="float: left; width: 10%; margin-left: 2%; margin-right: 4%; margin-top: 2.5em; margin-bottom: 0.5em;" />
 	<center>
 		<table border="1" cellpadding="1" cellspacing="1"
-			style="float: center; margin-left: 1%;">
+			style="float: center; margin-left: 1%; table-layout: fixed; word-wrap:break-word; width: 60%;">
 			<b>$TestNG_Custom_Report_Title$</b>
 			<br>
 			<thead>
 				<tr>
-					<th>Module Name</th>
-					<th># Total Case</th>
-					<th># Passed</th>
-					<th># Skipped</th>
-					<th># Failed</th>
-					<th>Start Time<i><legend>(HH:MM:SS)</legend></i></th>
-					<th>End Time<i><legend>(HH:MM:SS)</legend></i></th>
-					<th>Execute Time<i><legend>(HH:MM:SS)</legend></i></th>
+					<th style="width:33%;">Module Name</th>
+					<th style="width:10%;"># Total Case</th>
+					<th style="width:10%;"># Passed</th>
+					<th style="width:11%;"># Skipped</th>
+					<th style="width:10%;"># Failed</th>
+					<th style="width:18%;">Start Time<i><legend>(HH:MM:SS)</legend></i></th>
+					<th style="width:18%;">End Time<i><legend>(HH:MM:SS)</legend></i></th>
+					<th style="width:18%;">Execute Time<i><legend>(HH:MM:SS)</legend></i></th>
 				</tr>
 			</thead>
 			$Test_Case_Summary$

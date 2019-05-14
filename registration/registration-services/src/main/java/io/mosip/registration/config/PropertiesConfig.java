@@ -37,9 +37,6 @@ public class PropertiesConfig {
 		    public Map<String,Object> extractData(ResultSet globalParamResultset) throws SQLException {
 		        Map<String,Object> globalParamProps= new WeakHashMap<>();
 		        while(globalParamResultset.next()){
-//		        	if(globalParamResultset.getString(VALUE)==null)
-//		        		globalParamProps.put(globalParamResultset.getString(KEY),"null");
-//		        	else
 		        	globalParamProps.put(globalParamResultset.getString(KEY),globalParamResultset.getString(VALUE));
 		        }
 		        return globalParamProps;

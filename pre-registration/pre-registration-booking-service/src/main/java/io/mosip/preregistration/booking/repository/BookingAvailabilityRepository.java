@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -56,5 +57,13 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	public AvailibityEntity findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 			@Param("slot_from_time") LocalTime slotFromTime, @Param("slot_to_time") LocalTime slotToTime,
 			@Param("availability_date") LocalDate regDate, @Param("regcntr_id") String regcntrd);
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of available date
+	 */
+	@Query("SELECT DISTINCT e.regDate FROM AvailibityEntity e  WHERE e.regDate>= ?1")
+	public List<LocalDate> findAvaialableDate(LocalDate regDate);
 
 }

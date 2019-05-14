@@ -28,10 +28,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -136,7 +134,6 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
-import io.mosip.kernel.syncdata.utils.SigningUtil;
 import io.mosip.kernel.syncdata.test.TestBootApplication;
 
 @SpringBootTest(classes = TestBootApplication.class)
@@ -282,7 +279,7 @@ public class SyncDataIntegrationTest {
 	@MockBean
 	private SignatureUtil signatureUtil;
 
-	@Value("${mosip.kernel.syncdata.admin-base-url:http://localhost:8099/v1/admin/syncjobdef}")
+	@Value("${mosip.kernel.syncdata.syncjob-base-url:http://localhost:8099/v1/admin/syncjobdef}")
 	private String baseUri;
 	/*
 	 * @MockBean private RestTemplate restTemplateM;
@@ -309,6 +306,7 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
+	
 	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
 	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
 	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
@@ -318,7 +316,7 @@ public class SyncDataIntegrationTest {
 
 	@Before
 	public void setup() {
-		signResponse=new SignatureResponse();
+		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
 		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
@@ -742,8 +740,8 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(builder.toUriString())).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
 		when(signatureUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
 	}
-	
-    @Test
+
+	@Test
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataSuccess() throws Exception {
 		mockSuccess();
@@ -1330,5 +1328,7 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
 		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 	}
+
+	
 
 }
