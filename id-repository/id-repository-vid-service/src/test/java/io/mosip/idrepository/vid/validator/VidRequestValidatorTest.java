@@ -29,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
-import io.mosip.idrepository.vid.dto.RequestDto;
+import io.mosip.idrepository.vid.dto.RequestDTO;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -151,11 +151,11 @@ public class VidRequestValidatorTest {
 	public void testValidateRequest() {
 		VidRequestDTO req=new VidRequestDTO();
 		req.setId("mosip.vid.update");
-		RequestDto request=new RequestDto();
+		RequestDTO request=new RequestDTO();
 		request.setVidStatus("ACTIVE");
 		req.setRequest(request);
 		req.setVersion("v1");
-		req.setRequestTime(DateUtils.getUTCCurrentDateTime()
+		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req,errors);
