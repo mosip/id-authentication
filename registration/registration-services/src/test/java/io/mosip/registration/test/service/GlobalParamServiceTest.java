@@ -4,14 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 
 import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.validation.constraints.AssertTrue;
-
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -191,8 +190,8 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParam.setVal("Y");
 
-		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
-		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true);
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean(), Mockito.any(Timestamp.class))).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true, Timestamp.from(Instant.now()));
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
 	}
@@ -209,8 +208,8 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParam.setVal("N");
 
-		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
-		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false);
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean(), Mockito.any(Timestamp.class))).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false, Timestamp.from(Instant.now()));
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 	}
