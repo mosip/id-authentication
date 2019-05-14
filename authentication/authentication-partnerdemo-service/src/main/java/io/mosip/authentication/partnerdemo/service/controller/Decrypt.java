@@ -1,6 +1,7 @@
 package io.mosip.authentication.partnerdemo.service.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.mosip.authentication.partnerdemo.service.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;;
 
 /**
@@ -54,7 +57,7 @@ public class Decrypt {
 	private String appID;
 	
 	/** The app ID. */
-	@Value("${cryptomanager.application.id}")
+	@Value("${cryptomanager.partner.id}")
 	private String partnerId;
 	
 	/** The encrypt URL. */
@@ -71,7 +74,7 @@ public class Decrypt {
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws KeyManagementException 
 	 */
-	@PostMapping(path = "/authRequest/decrypt")
+	@PostMapping(path = "/authRequest/decrypt", produces = MediaType.APPLICATION_JSON_VALUE) 
 	public String decrypt(@RequestBody String data)
 			throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, KeyManagementException {
 		return kernelDecrypt(data);
@@ -110,11 +113,12 @@ public class Decrypt {
 		cryptomanagerRequestDto.setData(data);
 		cryptomanagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 		
-		HttpEntity<CryptomanagerRequestDto> httpEntity = new HttpEntity<>(cryptomanagerRequestDto);
+		HttpEntity<RequestWrapper<CryptomanagerRequestDto>> httpEntity = new HttpEntity<>(createRequest(cryptomanagerRequestDto));
 		ResponseEntity<Map> response = restTemplate.exchange(decryptURL, HttpMethod.POST, httpEntity, Map.class);
 		
 		if(response.getStatusCode() == HttpStatus.OK) {
-			return (String) ((Map<String, Object>) response.getBody().get("response")).get("data");
+			String responseData = (String) ((Map<String, Object>) response.getBody().get("response")).get("data");
+			return new String (CryptoUtil.decodeBase64(responseData), StandardCharsets.UTF_8);
 		}
 		return null;
 	}
@@ -138,5 +142,13 @@ public class Decrypt {
 		}
 		return "";
 	}
+	
+	public static <T> RequestWrapper<T> createRequest(T t){
+    	RequestWrapper<T> request = new RequestWrapper<>();
+    	request.setRequest(t);
+    	request.setId("ida");
+    	request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+    	return request;
+    }
 
 }

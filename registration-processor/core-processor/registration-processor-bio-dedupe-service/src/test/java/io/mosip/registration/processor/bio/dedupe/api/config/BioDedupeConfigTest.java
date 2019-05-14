@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
@@ -28,4 +29,7 @@ public class BioDedupeConfigTest {
 
 	@MockBean
 	public ConnectionUtils connectionUtil;
+
+	@MockBean
+	public RestTemplate restTemplate;
 }

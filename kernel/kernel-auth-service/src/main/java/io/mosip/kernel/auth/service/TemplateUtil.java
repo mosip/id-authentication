@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -22,11 +23,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
@@ -100,9 +107,10 @@ public class TemplateUtil {
 						OTPErrorCode.LANGUAGENOTCONFIGURED.getErrorMessage());
 			}
 			String emailSubject = getEmailData(otpUser, "email-subject-template", token, primaryLanguage, secondaryLanguage);
+			String mergedEmailSubject = getMergedEmailContent(otp, emailSubject, otpUser.getTemplateVariables());
 			String emailContent = getEmailData(otpUser, "email-content-template", token, primaryLanguage, secondaryLanguage);
 			String mergedEmailContent = getMergedEmailContent(otp, emailContent, otpUser.getTemplateVariables());
-			otpEmailTemplate.setEmailSubject(emailSubject);
+			otpEmailTemplate.setEmailSubject(mergedEmailSubject);
 			otpEmailTemplate.setEmailContent(mergedEmailContent);
 			return otpEmailTemplate;
 
@@ -114,9 +122,10 @@ public class TemplateUtil {
 						OTPErrorCode.LANGUAGENOTCONFIGURED.getErrorMessage());
 			}
 			String emailSubject = getEmailData(otpUser, "email-subject-template", token, primaryLanguage, secondaryLanguage);
+			String mergedEmailSubject = getMergedEmailContent(otp, emailSubject, otpUser.getTemplateVariables());
 			String emailContent = getEmailData(otpUser, "email-content-template", token, primaryLanguage, secondaryLanguage);
 			String mergedEmailContent = getMergedEmailContent(otp, emailContent, otpUser.getTemplateVariables());
-			otpEmailTemplate.setEmailSubject(emailSubject);
+			otpEmailTemplate.setEmailSubject(mergedEmailSubject);
 			otpEmailTemplate.setEmailContent(mergedEmailContent);
 			return otpEmailTemplate;
 		} else if (SECONDARY.equals(environment.getProperty(MOSIP_NOTIFICATION_LANGUAGE_TYPE))) {
@@ -127,9 +136,10 @@ public class TemplateUtil {
 						OTPErrorCode.LANGUAGENOTCONFIGURED.getErrorMessage());
 			}
 			String emailSubject = getEmailData(otpUser, "email-subject-template", token, primaryLanguage, secondaryLanguage);
+			String mergedEmailSubject = getMergedEmailContent(otp, emailSubject, otpUser.getTemplateVariables());
 			String emailContent = getEmailData(otpUser, "email-content-template", token, primaryLanguage, secondaryLanguage);
 			String mergedEmailContent = getMergedEmailContent(otp, emailContent, otpUser.getTemplateVariables());
-			otpEmailTemplate.setEmailSubject(emailSubject);
+			otpEmailTemplate.setEmailSubject(mergedEmailSubject);
 			otpEmailTemplate.setEmailContent(mergedEmailContent);
 			return otpEmailTemplate;
 		}
@@ -193,6 +203,7 @@ public class TemplateUtil {
 	public String getMasterDataForLanguage(OtpUser otpUser, String templateType, String token, String language) {
 		OtpTemplateResponseDto otpTemplateResponseDto = null;
 		final String url;
+		ResponseEntity<String> response = null;
 		if(templateType!=null)
 		{
 			url = mosipEnvironment.getMasterDataTemplateApi() + "/" + language + "/" + otpUser.getContext()+"-"+templateType;
@@ -204,27 +215,67 @@ public class TemplateUtil {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER + token);
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
-				String.class);
-		if (response.getStatusCode().equals(HttpStatus.OK)) {
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = null;
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-			if (!validationErrorsList.isEmpty()) {
-				throw new AuthManagerServiceException(validationErrorsList);
-			}
-			ResponseWrapper<?> responseObject;
-			try {
-				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
-				otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
-						OtpTemplateResponseDto.class);
-			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+		try
+		{
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
+					String.class);
+			if (response.getStatusCode().equals(HttpStatus.OK)) {
+				String responseBody = response.getBody();
+				List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+				Optional<ServiceError> service = validationErrorsList.stream().filter(a->a.getErrorCode().equals("KER-MSD-046")).findFirst();
+				if(service.isPresent())
+				{
+					throw new AuthManagerException(AuthErrorCode.TEMPLATE_ERROR.getErrorCode(),
+							AuthErrorCode.TEMPLATE_ERROR.getErrorMessage()+language+"with context "+otpUser.getContext()+"-"+templateType);
+				}
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthManagerServiceException(validationErrorsList);
+				}
+				ResponseWrapper<?> responseObject;
+				try {
+					responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+					otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+							OtpTemplateResponseDto.class);
+				} catch (Exception e) {
+					throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(),
+							AuthErrorCode.SERVER_ERROR.getErrorMessage()+e.getMessage());
+				}
 			}
 		}
+		catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from Internal token services");
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from Internal token services");
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage()+ex.getMessage());
+			}
+		}
+		String templateText=null;
+		OtpTemplateDto templateDto = null;
 		List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
-		OtpTemplateDto templateDto = otpTemplateList.get(0);
-		return templateDto.getFileText();
+		if(otpTemplateList!=null && otpTemplateList.size()>0)
+		{
+			templateDto = otpTemplateList.get(0);
+			templateText = templateDto.getFileText();
+		}
+		return templateText;
 	}
 
 	public String getOtpSmsMessage(String otp, OtpUser otpUser, String token) {

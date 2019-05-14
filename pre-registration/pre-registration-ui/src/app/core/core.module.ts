@@ -14,6 +14,5 @@ import { SharedModule } from '../shared/shared.module';
   imports: [CommonModule, AppRoutingModule, SharedModule],
   declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
   exports: [HeaderComponent, FooterComponent, SharedModule]
-  //  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }]
 })
 export class CoreModule {}

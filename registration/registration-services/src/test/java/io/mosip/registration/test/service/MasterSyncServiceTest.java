@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -56,8 +56,8 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.id.IndividualTypeId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
+import io.mosip.registration.service.operator.UserOnboardService;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -95,7 +95,7 @@ public class MasterSyncServiceTest {
 	 */
 
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	@BeforeClass
 	public static void beforeClass() throws URISyntaxException {
@@ -210,7 +210,7 @@ public class MasterSyncServiceTest {
 		responseDTO.setErrorResponseDTOs(errorResponses);
 
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
-		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG,
+		assertEquals(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO,
 				responseDto.getErrorResponseDTOs().get(0).getMessage());
 	}
 

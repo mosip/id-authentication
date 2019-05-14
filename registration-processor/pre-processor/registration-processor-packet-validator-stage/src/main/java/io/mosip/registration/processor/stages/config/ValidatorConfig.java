@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.jsonvalidator.impl.JsonSchemaLoader;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
+import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
@@ -36,5 +37,10 @@ public class ValidatorConfig {
 	@Bean
 	public JsonSchemaLoader getJsonSchemaLoader() {
 		return new JsonSchemaLoader();
+	}
+
+	@Bean
+	public ApplicantTypeDocument getApplicantTypeDocument() {
+		return new ApplicantTypeDocument();
 	}
 }

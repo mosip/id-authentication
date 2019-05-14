@@ -1,3 +1,4 @@
+<img src="assets/ajax-loader.gif" *ngIf="start" class="loader" />
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
   <div class="file-upload__message">
@@ -58,7 +59,7 @@
           </span>
         </span>
         <div class="file-upload__body__document-name">
-          <div *ngFor="let file of users[0].files[0]; let j = index">
+          <div *ngFor="let file of users[0].files.documentsMetaData; let j = index">
             <div *ngIf="file.docCatCode == document.code">
               <span>{{ file.docName }}</span>
               <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
@@ -69,7 +70,7 @@
         </div>
       </div>
     </div>
-    <div class="file-upload__body__2" *ngIf="this.users[0].files[0].length != 0">
+    <div class="file-upload__body__2" *ngIf="this.users[0].files">
       <p>{{ fileName }}</p>
       <iframe
         *ngIf="fileExtension == 'pdf'"
@@ -89,14 +90,14 @@
         [attr.src]="fileUrl"
         type="image/png;Base64,"
       />
-      <div class="file-buttons">
+      <div class="file-buttons" *ngIf="!users[0].files.length">
         <button class="previousFile" [disabled]="fileIndex == 0 ? true : false" (click)="previousFile(fileIndex)">
           <img src="assets/left.png" />
         </button>
-        <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files[0].length }}</p>
+        <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files.documentsMetaData.length }}</p>
         <button
           class="nextFile"
-          [disabled]="fileIndex < users[0].files[0].length - 1 ? false : true"
+          [disabled]="fileIndex < users[0].files.documentsMetaData.length - 1 ? false : true"
           (click)="nextFile(fileIndex)"
         >
           <img src="assets/right.png" />

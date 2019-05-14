@@ -1,3 +1,25 @@
-<p>
-  authentication works!
-</p>
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <form class="auth-form">
+        <mat-form-field class="input-full-width">
+          <input matInput placeholder="PASSWORD" />
+        </mat-form-field>
+        <div class="forgot-password-link" (click)="onForgotPassword()">
+          <a>Forgot Password</a>
+        </div>
+        <mat-form-field class="input-full-width">
+          <input matInput placeholder="ENTER OTP" />
+        </mat-form-field>
+      </form>
+      <div class="valid-timer">
+       <span class="valid-text">Valid :</span><span id="timer">02:00</span>
+      </div>
+      <div class="button-container">
+        <button mat-raised-button class="login-button" (click)="onSubmit()">
+          Login
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

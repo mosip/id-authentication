@@ -8,18 +8,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.crypto.SecretKey;
-
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * The Class KycAuthFilter - used to authenticate the request and manipulate
@@ -57,41 +52,6 @@ public class KycAuthFilter extends IdAuthFilter {
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-	}
-
-	/**
-	 * encryptKycResponse method is used to encode and encipher the
-	 * response.
-	 *
-	 * @param identity the response
-	 * @return the string
-	 * @throws JsonProcessingException the json processing exception
-	 */
-	private String encryptKycResponse(Map<String, Object> identity) throws JsonProcessingException {
-		byte[] symmetricDataEncrypt = null;
-		byte[] asymmetricKeyEncrypt = null;
-		if (Objects.nonNull(identity)) {
-			SecretKey symmetricKey = keyManager.getSymmetricKey();
-			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(identity).getBytes());
-			asymmetricKeyEncrypt = encryptor.asymmetricPublicEncrypt(publicKey, symmetricKey.getEncoded());
-		}
-
-		if (Objects.nonNull(asymmetricKeyEncrypt) && Objects.nonNull(symmetricDataEncrypt)) {
-			return CryptoUtil.encodeBase64String(asymmetricKeyEncrypt)
-					.concat(CryptoUtil.encodeBase64String(symmetricDataEncrypt));
-		}
-		return null;
-	}
-
-	/**
-	 * toJsonString method converts a object to a JSON string
-	 *
-	 * @param map the map
-	 * @return the string
-	 * @throws JsonProcessingException the json processing exception
-	 */
-	private String toJsonString(Object map) throws JsonProcessingException {
-		return mapper.writerFor(Map.class).writeValueAsString(map);
 	}
 
 	/*

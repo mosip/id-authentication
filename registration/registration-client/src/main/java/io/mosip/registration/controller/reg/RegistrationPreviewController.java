@@ -155,7 +155,7 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			}
 			registrationController.goToAuthenticationPage();
 		} else {
-			nextButton.setDisable(true);
+			nextButton.setDisable(false);
 		}
 	}
 

@@ -122,7 +122,8 @@ public class RegistrationUIConstants {
 			.getString("DEMOGRAPHIC_DETAILS_ERROR_CONTEXT");
 
 	// REGISTRATION
-	public static final String MAX_AGE_WARNING = bundle.getString("MAX_AGE_WARNING");
+	public static final String AGE_WARNING = bundle.getString("AGE_WARNING");
+	public static final String TO = bundle.getString("TO");
 	public static final String MIN_AGE_WARNING = bundle.getString("MIN_AGE_WARNING");
 	public static final String POA_DOCUMENT_EMPTY = bundle.getString("poaDocuments");
 	public static final String POI_DOCUMENT_EMPTY = bundle.getString("poiDocuments");
@@ -261,6 +262,8 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_TO_SYNC_AND_UPLOAD = bundle.getString("UNABLE_TO_SYNC_AND_UPLOAD");
 	public static final String NETWORK_ERROR = bundle.getString("NETWORK_ERROR");
 	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
+	public static final String EOD_DETAILS_EXPORT_FAILURE = bundle.getString("EOD_DETAILS_EXPORT_FAILURE");
+	public static final String EOD_DETAILS_EXPORT_SUCCESS = bundle.getString("EOD_DETAILS_EXPORT_SUCCESS");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
@@ -314,6 +317,8 @@ public class RegistrationUIConstants {
 	public static final String CONFIRM_UPDATE = bundle.getString("CONFIRM_UPDATE");
 	public static final String UPDATE_COMPLETED = bundle.getString("UPDATE_COMPLETED");
 	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
+	public static final String UPDATE_LATER = bundle.getString("UPDATE_LATER");
+	public static final String UPDATE_FREEZE_TIME_EXCEED = bundle.getString("UPDATE_FREEZE_TIME_EXCEED");
 	
 	//AUTH TOKEN
 		public static String UNABLE_TO_GET_AUTH_TOKEN= bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");

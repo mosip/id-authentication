@@ -3,12 +3,6 @@
 -- table 		: screen_authorization  - Screen authorization for role level
 -- table alias  : scrauth	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
-
 -- table section -------------------------------------------------------------------------------
 
 create table reg.screen_authorization (
@@ -35,12 +29,4 @@ create table reg.screen_authorization (
 -- keys section -------------------------------------------------------------------------------
 alter table reg.screen_authorization add constraint pk_scrauth_screen_id primary key (screen_id, role_code)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_scrauth_<colX> on reg.screen_authorization (<colX>)
--- ;
-
--- comments section -------------------------------------------------------------------------- 
--- comment on table reg.screen_authorization is 'Client screen_authorization table'
--- ;
 

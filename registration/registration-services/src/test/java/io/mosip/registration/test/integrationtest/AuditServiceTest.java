@@ -6,13 +6,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.util.IOUtils;
 import org.junit.After;
@@ -20,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -29,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -40,18 +38,15 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
-import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.service.audit.impl.AuditServiceImpl;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
-
-import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AuditServiceTest extends BaseIntegrationTest{
 	
 	@Autowired
-	private AuditServiceImpl auditServiceImpl;
+	private AuditManagerSerivceImpl auditServiceImpl;
 	@Autowired
 	private   AuditLogControlDAO repo;
 	@Autowired

@@ -1,7 +1,6 @@
 package io.mosip.registration.test.template;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.awt.image.BufferedImage;
@@ -118,6 +117,7 @@ public class TemplateGeneratorTest {
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+		SessionContext.map().put(RegistrationConstants.IS_Child, false);
 
 		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
 		
@@ -127,7 +127,7 @@ public class TemplateGeneratorTest {
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
 
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNull(response.getSuccessResponseDTO());
+		assertNotNull(response.getSuccessResponseDTO());
 	}
 
 	@Test

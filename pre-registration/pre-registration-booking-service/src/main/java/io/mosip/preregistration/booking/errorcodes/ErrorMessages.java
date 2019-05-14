@@ -14,6 +14,10 @@ package io.mosip.preregistration.booking.errorcodes;
  * @since 1.0.0
  *
  */
+/**
+ * @author M1043008
+ *
+ */
 public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_BOOK_RCI_001
@@ -164,7 +168,9 @@ public enum ErrorMessages {
 	/*
 	 * ErrorMessage for PRG_TRL_APP_031
 	 */
-	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time");
+	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time"),
+	
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id");
 	/**
 	 * @param code
 	 */

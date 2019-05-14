@@ -36,8 +36,8 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
-import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.impl.DocumentCategoryService;
+import io.mosip.registration.service.doc.category.DocumentCategoryService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -308,6 +308,10 @@ public class DocumentScanController extends BaseController {
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
 				comboBox.setPrefWidth(docScanVbox.getWidth() / 2);
 				comboBox.setId(docCategoryCode);
+				
+				comboBox.valueProperty().addListener((v,oldValue,newValue)->{
+					validateDocumentsPane();
+				});
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
@@ -755,7 +759,6 @@ public class DocumentScanController extends BaseController {
 				if(node instanceof ComboBox<?>) {
 					ComboBox<?> document  = (ComboBox<?>) node;
 					document.setValue(null);
-					document.setPromptText(getDocumentName(key));
 				}
 			}	
 
@@ -994,19 +997,6 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
-	}
-	
-	private String getDocumentName(String documentCode) {
-		if(documentCode.equals(RegistrationConstants.POR_DOCUMENT)) {
-			return "Proof of Relationship";
-		} else if(documentCode.equals(RegistrationConstants.POI_DOCUMENT)) {
-			return "Proof of Identity";
-		} else if(documentCode.equals(RegistrationConstants.POA_DOCUMENT)) {
-			return "Proof of Address";
-		} else if(documentCode.equals(RegistrationConstants.DOB_DOCUMENT)) {
-			return "Proof of Birth";
-		}
-		return documentCode;
 	}
 	
 	private void validateDocumentsPane() {

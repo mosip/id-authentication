@@ -1,25 +1,19 @@
 {
-  "registrationCenters": [
-    {
-      "cntrId": "10001",
-      "machineId": "10001",
-      "usrId": "110001",
-      "isActive": true,
-      "effectivetimes": "2019-01-21T10:46:21.041Z"
-    },
-    {
-      "cntrId": "10001",
-      "machineId": "10001",
-      "usrId": "110001",
-      "isActive": false,
-      "effectivetimes": "2019-02-04T07:31:10.759Z"
-    },
-    {
-      "cntrId": "10001",
-      "machineId": "10001",
-      "usrId": "110001",
-      "isActive": true,
-      "effectivetimes": "2019-02-04T07:31:18.935Z"
-    }
-  ]
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-19T12:04:26.954Z",
+  "metadata": null,
+  "response": {
+    "registrationCenters": [
+      {
+        "cntrId": "10001",
+        "machineId": "10001",
+        "usrId": "110001",
+        "isActive": true,
+        "langCode": "eng",
+        "effectivetimes": "2019-04-17T07:08:40.988Z"
+      }
+    ]
+  },
+  "errors": null
 }

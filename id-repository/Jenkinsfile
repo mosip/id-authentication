@@ -12,7 +12,7 @@ node {
  def registryCredentials = env.REGISTRY_CREDENTIALS
  def gitUrl = env.GIT_URL
  def gitCredentials = env.GIT_CREDENTIALS
- k8DevContext = 'dev-k8-cluster'
+ def k8DevContext = 'mosip-dev-cluster'
  updatedServices = []
  updatedDockerImages = []
  
@@ -101,10 +101,11 @@ stage('-----------Docker image push and cleanup-----------') {
 
 }
 
-stage('Kubernetes Deploy : DEV-INT'){
+stage('Kubernetes Deploy : DEV'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
       sh " kubectl set image deployment/id-repository-identity-service id-repository-identity-service=$registryName/id-repository-identity-service:$dockerImagesTagVersion.$BUILD_NUMBER"
+      sh " kubectl set image deployment/id-repository-vid-service id-repository-vid-service=$registryName/id-repository-vid-service:$dockerImagesTagVersion.$BUILD_NUMBER"
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }

@@ -73,7 +73,7 @@ public class BookingConfig {
 	 * @return Docket docket
 	 */
 	@Bean
-	public Docket registrationStatusBean() {
+	public Docket api() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
@@ -91,7 +91,7 @@ public class BookingConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Booking").select()
-				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 
 		if (swaggerBaseUrlSet) {

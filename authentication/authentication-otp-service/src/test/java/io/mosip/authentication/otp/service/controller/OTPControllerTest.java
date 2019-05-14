@@ -4,7 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -32,9 +37,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.AuthError;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
@@ -66,12 +76,19 @@ public class OTPControllerTest {
 	private OTPService otpService;
 	@Mock
 	Date date;
+
 	@Mock
 	IdAuthenticationBusinessException idAuthenticationBusinessException;
 	@Mock
 	IdAuthenticationAppException idAuthenticationAppException;
 	@Mock
 	WebDataBinder binder;
+
+	@Mock
+	IdServiceImpl idServiceImpl;
+
+	@Mock
+	AuditHelper auditHelper;
 
 	/** inject the mocked object */
 	@InjectMocks
@@ -81,6 +98,7 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(otpController, "env", env);
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 
@@ -97,14 +115,11 @@ public class OTPControllerTest {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 		date = new Date();
-
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
-
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
-		otpController.generateOTP(otpRequestDto, result, "TEST0000001",
-				"TEST0000001");
+		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001");
 
 	}
 
@@ -126,7 +141,7 @@ public class OTPControllerTest {
 
 	@Ignore
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testConstraintVoilation() throws IdAuthenticationAppException {
+	public void testConstraintVoilation() throws IdAuthenticationAppException, IDDataValidationException {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
@@ -187,10 +202,34 @@ public class OTPControllerTest {
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
-	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
+	public void testGenerateOtpDataValidationException()
+			throws IdAuthenticationAppException, IDDataValidationException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001");
+	}
+
+	@Test
+	public void TestValidOtpRequest() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
+		otpRequestDTO.setId("mosip.identity.otp");
+		otpRequestDTO.setIndividualId("274390482564");
+		otpRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		List<String> otpChannel = new ArrayList<>();
+		otpChannel.add("email");
+		otpChannel.add("mobile");
+		otpRequestDTO.setOtpChannel(otpChannel);
+		otpRequestDTO.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		otpRequestDTO.setVersion("1.0");
+		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
+		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
+		List<AuthError> autherror=new ArrayList<>();
+		otpResponseDTO.setErrors(autherror);
+		otpResponseDTO.setResponseTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
+
+		otpController.generateOTP(otpRequestDTO, errors, "121212", "232323");
 	}
 
 	// =========================================================

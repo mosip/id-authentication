@@ -11,6 +11,7 @@ import io.mosip.registration.entity.Location;
 import io.mosip.registration.entity.ReasonCategory;
 import io.mosip.registration.entity.ReasonList;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.ValidDocument;
 
 /**
@@ -113,5 +114,7 @@ public interface MasterSyncDao {
 	 * @return the individul type
 	 */
 	List<IndividualType> getIndividulType(String code,String langCode);
+	
+	List<SyncJobDef> getSyncJobs();
 
 }

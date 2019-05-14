@@ -618,11 +618,11 @@
                <children>
                   <GridPane fx:id="userOnboardFooter" styleClass="userOnboardFooter">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="10.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
@@ -668,91 +668,56 @@
                         </GridPane>
                      </children>
                   </GridPane>
-                  <GridPane fx:id="registrationFooter" styleClass="registrationFooter" visible="false">
+                  <GridPane fx:id="registrationFooter" styleClass="userOnboardFooter" visible="false">
                      <children>
-                        <GridPane hgap="10.0" GridPane.columnIndex="1">
+                        <GridPane fx:id="backButtonPane" GridPane.columnIndex="1">
                            <children>
-                              <GridPane>
-                                 <children>
-                                    <GridPane>
-                                       <children>
-                                          <GridPane fx:id="backButtonPane" GridPane.columnIndex="1">
-                                             <children>
-                                                <Button fx:id="backBtn" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" />
-                                             </children>
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                          </GridPane>
-                                       </children>
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="65.0" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                                       </rowConstraints>
-                                    </GridPane>
-                                    <GridPane GridPane.columnIndex="1">
-                                       <children>
-                                          <GridPane fx:id="continueButtonPane" GridPane.columnIndex="2">
-                                             <children>
-	                                             <Button fx:id="continueBtn" minWidth="${continueButtonPane.width}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT">
-					                                 <graphic>
-					                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-					                                       <image>
-					                                          <Image url="@../images/arrowRight.png" />
-					                                       </image>
-					                                    </ImageView>
-					                                 </graphic>
-					                              </Button>
-                                             </children>
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                          </GridPane>
-                                       </children>
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                                       </rowConstraints>
-                                    </GridPane>
-                                 </children>
-                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                              </GridPane>
+                              <Button fx:id="backBtn" minWidth="${previousButton.width}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowLeft.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
                            </children>
                            <columnConstraints>
-                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
                            <rowConstraints>
-                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                        <GridPane fx:id="continueButtonPane" GridPane.columnIndex="3">
+                           <children>
+                              <Button fx:id="continueBtn" minWidth="${continousButton.width}" mnemonicParsing="false" onAction="#goToNextPage" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/arrowRight.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
                      </children>
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="55.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints percentHeight="100" vgrow="SOMETIMES" />
+                        <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                   </GridPane>
                </children>

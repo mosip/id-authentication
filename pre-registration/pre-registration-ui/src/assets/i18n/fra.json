@@ -342,10 +342,6 @@
       "mobile_required": "Veuillez entrer un numéro de téléphone valide",
       "email_required": "S'il vous plaît entrer email id valide",
       "pin_required": "S'il vous plaît entrer CNIE valide"
-    },
-    "error": {
-      "error": "L'application ne peut pas être créée. S'il vous plaît essayer après un certain temps",
-      "button_ok": "D'accord"
     }
   },
   "documents": {
@@ -430,9 +426,6 @@
     "cancelAppointment": {
       "msg1": "Appointment for the selected application will be cancelled",
       "msg2": "Appointment for the selected application has been successfully cancelled"
-    },
-    "config": {
-      "error": "Service non disponible. Veuillez réessayer plus tard"
     }
   },
   "dashboard": {

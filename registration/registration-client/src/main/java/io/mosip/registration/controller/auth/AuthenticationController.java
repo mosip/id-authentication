@@ -42,8 +42,8 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.AuthenticationService;
-import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.login.LoginService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -241,9 +241,16 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (!username.getText().isEmpty()) {
 				if (fetchUserRole(username.getText())) {
 					status = validatePwd(username.getText(), password.getText());
-					if (!isEODAuthentication) {
-						getOSIData().setSupervisorID(userNameField);
-						getOSIData().setSuperviorAuthenticatedByPassword(true);
+					if (RegistrationConstants.SUCCESS.equals(status)) {
+						userAuthenticationTypeListValidation.remove(0);
+						userNameField = username.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+							getOSIData().setSuperviorAuthenticatedByPassword(true);
+						}
+						loadNextScreen();
+					} else if (RegistrationConstants.FAILURE.equals(status)) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -254,6 +261,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		} else {
 			if (!username.getText().isEmpty()) {
 				status = validatePwd(username.getText(), password.getText());
+				if (RegistrationConstants.SUCCESS.equals(status)) {
+					userAuthenticationTypeListValidation.remove(0);
+					userNameField = username.getText();
+					loadNextScreen();
+				} else if (RegistrationConstants.FAILURE.equals(status)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
+				}
 				if (!isEODAuthentication) {
 					getOSIData().setOperatorAuthenticatedByPassword(true);
 				}
@@ -262,13 +276,6 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		}
 
-		if (RegistrationConstants.SUCCESS.equals(status)) {
-			userAuthenticationTypeListValidation.remove(0);
-			userNameField = username.getText();
-			loadNextScreen();
-		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
-		}
 	}
 
 	/**
@@ -454,8 +461,16 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
 		try {
-			Boolean toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
-					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+			Boolean toogleBioException = false;
+			if (!SessionContext.userMap().isEmpty()) {
+				if (SessionContext.userMap().get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS) == null) {
+					SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, false);
+				}
+				toogleBioException = (Boolean) SessionContext.userContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)
+						|| (Boolean) SessionContext.userContext().getUserMap()
+								.get(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS);
+			}
 
 			if (!userAuthenticationTypeList.isEmpty()) {
 				authCount++;
@@ -516,8 +531,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to enable the respective authentication mode
 	 * 
-	 * @param loginMode
-	 *            - name of authentication mode
+	 * @param loginMode - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -677,8 +691,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to check the role of supervisor in case of biometric exception
 	 * 
-	 * @param userId
-	 *            - username entered by the supervisor in the authentication screen
+	 * @param userId - username entered by the supervisor in the authentication
+	 *               screen
 	 * @return boolean variable "true", if the person is authenticated as supervisor
 	 *         or "false", if not
 	 */
@@ -698,8 +712,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the fingerprint for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
@@ -768,8 +781,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
@@ -810,8 +822,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
@@ -827,12 +838,12 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (isSupervisor) {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFace(faceDetailsDTO);
 				SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFace(faceDetailsDTO);
 			}
 		}
 
@@ -854,8 +865,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * event class to exit from authentication window. pop up window.
 	 * 
-	 * @param event
-	 *            - the action event
+	 * @param event - the action event
 	 */
 	public void exitWindow(ActionEvent event) {
 		Stage primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
@@ -866,10 +876,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * Setting the init method to the Basecontroller
 	 * 
-	 * @param parentControllerObj
-	 *            - Parent Controller name
-	 * @param authType
-	 *            - Authentication Type
+	 * @param parentControllerObj - Parent Controller name
+	 * @param authType            - Authentication Type
 	 * @throws RegBaseCheckedException
 	 */
 	public void init(BaseController parentControllerObj, String authType) throws RegBaseCheckedException {
@@ -948,7 +956,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			break;
 		case RegistrationConstants.PWORD:
 			validatePwd();
-			
+
 			break;
 		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			validateFingerprint();
@@ -968,12 +976,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	/**
 	 * This method will remove the auth method from list
 	 * 
-	 * @param authList
-	 *            authentication list
-	 * @param disableFlag
-	 *            configuration flag
-	 * @param authCode
-	 *            auth mode
+	 * @param authList    authentication list
+	 * @param disableFlag configuration flag
+	 * @param authCode    auth mode
 	 */
 	private void removeAuthModes(List<String> authList, String flag, String authCode) {
 

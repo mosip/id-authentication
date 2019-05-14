@@ -1,4 +1,4 @@
-package io.mosip.preregistration.generateQRcode.controller;
+package io.mosip.preregistration.generateqrcode.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.generateQRcode.dto.QRCodeResponseDTO;
-import io.mosip.preregistration.generateQRcode.service.GenerateQRcodeService;
+import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
+import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
 
 /**
+ * This class provides  API's to generate the QR code operations on
+ * pre-registration.
  * @author Sanober Noor
  *@since 1.0.0
  */

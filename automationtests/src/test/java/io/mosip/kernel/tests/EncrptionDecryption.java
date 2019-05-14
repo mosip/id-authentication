@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,8 +33,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -50,23 +53,28 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(EncrptionDecryption.class);
-	private static final String jiraID = "MOS-9284";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "EncrptionDecryption";
-	private static final String requestJsonName = "encryptdecryptRequest";
-	private static final String outputJsonName = "encryptdecryptOutput";
-	private static final String encrypt_URI = "/v1/cryptomanager/encrypt";
-	private static final String decrypt_URI = "/v1/cryptomanager/decrypt";
+	private final String jiraID = "MOS-9284";
+	private final String moduleName = "kernel";
+	private final String apiName = "EncrptionDecryption";
+	private final String requestJsonName = "encryptdecryptRequest";
+	private final String outputJsonName = "encryptdecryptOutput";
+	
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	
+	private final String encrypt_URI = props.get("encrypt_URI").toString();
+	private final String decrypt_URI = props.get("decrypt_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -75,10 +83,11 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 
 	}
 
@@ -156,7 +165,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 				
 				logger.info("Json Request Is : " + objectData.toJSONString());
 				
-				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI);
+				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -250,6 +259,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

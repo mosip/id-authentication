@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,8 +27,8 @@ import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.UserOnboardService;
-import io.mosip.registration.service.impl.UserDetailServiceImpl;
+import io.mosip.registration.service.operator.UserOnboardService;
+import io.mosip.registration.service.operator.impl.UserDetailServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
