@@ -235,7 +235,7 @@ stage('----------- Publish build info -------------') {
     /*
      Removing all untagged images
      */
-    sh "docker rmi \$(docker images | awk '/<none>/ {print \}') || true"
+    sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
 
   }
 
