@@ -94,9 +94,6 @@ public class DemodedupeProcessorTest {
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
-	/** The manual verification entity. */
-	private ManualVerificationEntity manualVerificationEntity;
-
 	/** The demographic dedupe repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
@@ -436,6 +433,7 @@ public class DemodedupeProcessorTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupePotentialMatchAbisResponseNotProcessed() throws Exception {
 		List<AbisResponseDto> abisResponseDtos = new ArrayList<>();
