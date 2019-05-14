@@ -19,8 +19,11 @@ public class LdapConstants {
 	public static final String USER_PASSWORD="userPassword";
 	public static final String RID="rid";
 	public static final String ORGANIZATIONAL_PERSON="organizationalPerson";
+	public static final String IS_ACTIVE="isActive";
 	public static final String PERSON="person";
 	public static final String TOP="top";
 	public static final String USER_DETAILS="userDetails";
 	public static final String ROLE_OCCUPANT="roleOccupant";
+	public static final String TRUE="true";
+	public static final String FALSE="false";
 }
