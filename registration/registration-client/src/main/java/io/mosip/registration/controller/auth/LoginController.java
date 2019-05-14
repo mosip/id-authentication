@@ -67,7 +67,6 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
-import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
@@ -232,8 +231,9 @@ public class LoginController extends BaseController implements Initializable {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 				hasUpdate = registrationUpdate.hasUpdate();
-				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate,timestamp);
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {

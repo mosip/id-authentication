@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { UserregistrationService } from '../../../shared/services/userregistration.service';
-import { UserRegistrationRequestModel } from '../../../shared/Models/user-registration-model';
-import { RequestModel } from '../../../shared/Models/Request-model';
+import { UserRegistrationRequestModel } from '../../../shared/models/user-registration-model';
+import { RequestModel } from '../../../shared/models/Request-model';
 import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { DatePipe } from '@angular/common';
 @Component({

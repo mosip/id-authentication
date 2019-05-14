@@ -13,7 +13,6 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -32,15 +31,15 @@ public class SwaggerConfig {
 	/**
 	 * Master service Version
 	 */
-	private static final String CRYPTOMANAGER_SERVICE_VERSION = "1.0";
+	private static final String ADMIN_SERVICE_VERSION = "1.0";
 	/**
 	 * Application Title
 	 */
-	private static final String TITLE = "Crypto Manager Service";
+	private static final String TITLE = "Admin Service";
 	/**
 	 * Master Data Service
 	 */
-	private static final String DISCRIPTION = "Crypto Manager Service for Encryption/Decryption";
+	private static final String DISCRIPTION = "Admin Service";
 
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
@@ -62,8 +61,7 @@ public class SwaggerConfig {
 	 * @return {@link ApiInfo}
 	 */
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(CRYPTOMANAGER_SERVICE_VERSION)
-				.build();
+		return new ApiInfoBuilder().title(TITLE).description(DISCRIPTION).version(ADMIN_SERVICE_VERSION).build();
 	}
 
 	/**
@@ -91,12 +89,12 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-				.tags(new Tag("cryptomanager", "operation related to encryption and decryption")).groupName(TITLE)
+
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
-			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
+
 		}
 		return docket;
 	}

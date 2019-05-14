@@ -3,7 +3,7 @@ import {Router, ActivatedRoute, Params} from '@angular/router';
 import {FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { UserregistrationService } from '../../../shared/services/userregistration.service';
 import { RidVeerificationRequestModel } from '../../../shared/models/rid-verification-model';
-import { RequestModel } from '../../../shared/Models/Request-model';
+import { RequestModel } from '../../../shared/models/Request-model';
 @Component({
   selector: 'app-ridverification',
   templateUrl: './ridverification.component.html',
