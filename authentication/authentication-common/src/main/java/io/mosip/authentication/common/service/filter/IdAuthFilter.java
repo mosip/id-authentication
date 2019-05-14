@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -56,9 +53,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 
 	/** The Constant REQUEST_HMAC. */
 	private static final String REQUEST_HMAC = "requestHMAC";
-
-	/** The Constant SECRET_KEY. */
-	private static final String SECRET_KEY = "secretKey";
 
 	/** The Constant MISPLICENSE_KEY. */
 	private static final String MISPLICENSE_KEY = "misplicenseKey";

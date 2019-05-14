@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import io.mosip.authentication.core.dto.MaskUtil;
-
 /**
  * The Class MaskUtilTest.
  * 

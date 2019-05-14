@@ -1,0 +1,1 @@
+package io.mosip.authentication.core.util;

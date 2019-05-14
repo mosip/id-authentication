@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -55,10 +54,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
-
-	/** The env. */
-	@Autowired
-	private Environment env;
 
 	/** The IdInfoHelper. */
 	@Autowired

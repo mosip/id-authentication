@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.dto;
+package io.mosip.authentication.core.util;
 
 import java.util.stream.IntStream;
 
