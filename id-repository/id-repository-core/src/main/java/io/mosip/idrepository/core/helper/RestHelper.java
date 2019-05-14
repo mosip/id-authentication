@@ -187,8 +187,7 @@ public class RestHelper {
 
 		if (request.getHeaders() != null) {
 			requestBodySpec = requestBodySpec
-					.header(HttpHeaders.CONTENT_TYPE,
-							request.getHeaders().getContentType().toString());
+					.headers((headers) -> headers.addAll(request.getHeaders()));
 		}
 
 		if (request.getRequestBody() != null) {

@@ -71,7 +71,9 @@ public enum IdRepoErrorConstants {
 	
 	VID_GENERATION_FAILED("IDR-VID-003","Could not generate VID"),
 	
-	VID_CREATION_FAILED("IDR-VID-005","Could not generate/regenerate VID as per policy");
+	VID_CREATION_FAILED("IDR-VID-005","Could not generate/regenerate VID as per policy"),
+	
+	UIN_HASH_MISMATCH("IDR-IDS-003", "Uin hash does not match");
 	
 
 	/** The error code. */

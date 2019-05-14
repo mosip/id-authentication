@@ -3,9 +3,11 @@ package io.mosip.idrepository.vid.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -24,7 +26,6 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
-import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.spi.VidService;
 import io.mosip.idrepository.vid.dto.ResponseDTO;
 import io.mosip.idrepository.vid.dto.VidPolicy;
@@ -37,10 +38,12 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
  * 
+ * @author Manoj SP
  * @author Prem Kumar
  *
  */
@@ -69,9 +72,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	@Autowired
 	private VidPolicyProvider policyProvider;
 
-	@Autowired
-	private IdRepoSecurityManager security;
-
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
@@ -87,12 +87,17 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 			if (Objects.isNull(vidDetails) || vidDetails.isEmpty()
 					|| vidDetails.size() < policy.getAllowedInstances()) {
 				LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime();
-				Vid vid = vidRepo.save(new Vid("id", vidGenerator.generateId(),
-						security.hash(vidRequest.getRequest().getUin().getBytes()), vidRequest.getRequest().getUin(),
+				String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID,
+						vidRequest.getRequest().getUin() + "_" + DateUtils.getUTCCurrentDateTime()
+								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+								.toInstant().toEpochMilli())
+						.toString();
+				Vid vid = vidRepo.save(new Vid(vidRefId, vidGenerator.generateId(),
+						vidRequest.getRequest().getUin(), vidRequest.getRequest().getUin(),
 						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()), currentTime,
 						Objects.nonNull(policy.getValidForInMinutes())
 								? DateUtils.getUTCCurrentDateTime().plusMinutes(policy.getValidForInMinutes())
-								: LocalDateTime.MAX,
+								: LocalDateTime.MAX.withYear(9999),
 						env.getProperty(IdRepoConstants.MOSIP_IDREPO_VID_STATUS.getValue()), "createdBy", currentTime,
 						"updatedBy", currentTime, false, currentTime));
 				return buildResponse(null, vid.getVid(), vid.getStatusCode(), id.get("create"));
@@ -116,7 +121,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 						String.format(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), uinStatus));
 			}
 		} catch (RestServiceException e) {
-			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString().get());
+			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(
+					e.getResponseBodyAsString().isPresent() ? e.getResponseBodyAsString().get() : null);
 			if (errorList.get(0).getErrorCode().equals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode())) {
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID);
 			} else {
