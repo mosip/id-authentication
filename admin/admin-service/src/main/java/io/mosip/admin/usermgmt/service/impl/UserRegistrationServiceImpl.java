@@ -28,7 +28,6 @@ import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
 import io.mosip.admin.usermgmt.exception.ServiceException;
 import io.mosip.admin.usermgmt.service.UserRegistrationService;
 import io.mosip.admin.usermgmt.util.UserMgmtUtil;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
