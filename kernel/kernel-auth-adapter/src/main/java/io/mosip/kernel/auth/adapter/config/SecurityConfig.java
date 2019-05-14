@@ -1,31 +1,19 @@
 package io.mosip.kernel.auth.adapter.config;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 
-
-import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,11 +22,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auth.adapter.filter.AuthFilter;
 import io.mosip.kernel.auth.adapter.filter.CorsFilter;
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
+import io.mosip.kernel.auth.adapter.handler.AuthSuccessHandler;
 
 /**
  * Holds the main configuration for authentication and authorization using
@@ -64,44 +52,37 @@ import io.mosip.kernel.auth.adapter.handler.AuthHandler;
  **/
 
 @Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-//@Order(2)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	 @Override
-	    public void configure(WebSecurity web) throws Exception {
-	        web
-	           .ignoring()
-	               .antMatchers("/**");
-	    }
 
 	@Autowired
 	private AuthHandler authProvider;
 
-//	@Bean
+	@Bean
 	public AuthenticationManager authenticationManager() {
 		return new ProviderManager(Collections.singletonList(authProvider));
 	}
 
-//	@Bean
+	@Bean
 	public AuthFilter authFilter() {
 		RequestMatcher requestMatcher = new AntPathRequestMatcher("*");
 		AuthFilter filter = new AuthFilter(requestMatcher);
 		filter.setAuthenticationManager(authenticationManager());
-//		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
+		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
 		return filter;
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-//		http.csrf().disable().authorizeRequests().antMatchers("*").authenticated().and().exceptionHandling()
-//				.authenticationEntryPoint(new AuthEntryPoint()).and().sessionManagement()
-//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.csrf().disable().authorizeRequests().antMatchers("*").authenticated().and().exceptionHandling()
+				.authenticationEntryPoint(new AuthEntryPoint()).and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-//		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
-//		http.addFilterBefore(new CorsFilter(), AuthFilter.class);
-//		http.headers().cacheControl();
+		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(new CorsFilter(), AuthFilter.class);
+		http.headers().cacheControl();
 	}
 
 }

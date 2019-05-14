@@ -113,12 +113,12 @@ public class VidRequestValidator implements Validator {
 		validateVersion(request.getVersion(), errors);
 		validateRequest(request.getRequest(), errors);
 		
-		if (request.getId().equals(id.get(CREATE))) {
+		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {
 			validateVidType(request.getRequest().getVidType(), errors);
 			validateUin(request.getRequest().getUin(), errors);
 		}
 		
-		if (request.getId().equals(id.get(UPDATE))) {
+		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
 			validateStatus(request.getRequest().getVidStatus(), errors);
 		}
 	}

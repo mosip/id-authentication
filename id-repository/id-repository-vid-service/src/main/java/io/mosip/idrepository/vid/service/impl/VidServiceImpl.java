@@ -28,6 +28,7 @@ import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.spi.VidService;
+import io.mosip.idrepository.vid.dto.RequestDTO;
 import io.mosip.idrepository.vid.dto.ResponseDTO;
 import io.mosip.idrepository.vid.dto.VidPolicy;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
@@ -44,41 +45,50 @@ import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
- * 
+ * The Class VidServiceImpl.
+ *
  * @author Manoj SP
  * @author Prem Kumar
- *
  */
 @Component
 @ConfigurationProperties("mosip.idrepo.vid")
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO> {
 	
+	/** The mosip logger. */
 	private Logger mosipLogger = IdRepoLogger.getLogger(VidServiceImpl.class);
 
+	/** The Constant EXPIRED. */
 	private static final String EXPIRED = "Expired";
 
+	/** The Constant ID_REPO_VID_SERVICE. */
 	private static final String ID_REPO_VID_SERVICE = "VidService";
 
 	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The vid repo. */
 	@Autowired
 	private VidRepo vidRepo;
 
+	/** The vid generator. */
 	@Autowired
 	private VidGenerator<String> vidGenerator;
 
+	/** The rest builder. */
 	@Autowired
 	private RestRequestBuilder restBuilder;
 
+	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
 
+	/** The policy provider. */
 	@Autowired
 	private VidPolicyProvider policyProvider;
 	
+	/** The security manager. */
 	@Autowired
 	private IdRepoSecurityManager securityManager;
 
@@ -86,6 +96,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	@Resource
 	private Map<String, String> id;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.idrepository.core.spi.VidService#createVid(java.lang.Object)
+	 */
 	@Override
 	public VidResponseDTO createVid(VidRequestDTO vidRequest) throws IdRepoAppException {
 		try {
@@ -111,7 +124,10 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 								: LocalDateTime.MAX.withYear(9999),
 						env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), "createdBy", currentTime,
 						"updatedBy", currentTime, false, currentTime));
-				return buildResponse(null, vid.getVid(), vid.getStatusCode(), id.get("create"));
+				ResponseDTO responseDTO = new ResponseDTO();
+				responseDTO.setVid(vid.getVid());
+				responseDTO.setVidStatus(vid.getStatusCode());
+				return buildResponse(responseDTO, id.get("create"));
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "createVid",
 						"throwing vid creation failed");
@@ -123,6 +139,12 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		}
 	}
 
+	/**
+	 * Check uin status.
+	 *
+	 * @param uin the uin
+	 * @throws IdRepoAppException the id repo app exception
+	 */
 	private void checkUinStatus(String uin) throws IdRepoAppException {
 		try {
 			RestRequestDTO request = restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null,
@@ -172,7 +194,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		if (vidObject != null) {
 			checkExpiry(vidObject.getExpiryDTimes());
 			checkStatus(vidObject.getStatusCode());
-			return buildResponse(vidObject.getUin(), null, null, id.get("read"));
+			ResponseDTO resDTO=new ResponseDTO();
+			resDTO.setUin(vidObject.getUin());
+			return buildResponse(resDTO, id.get("read"));
 		} else {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "retrieveUinByVid",
 					"throwing NO_RECORD_FOUND_VID");
@@ -195,22 +219,32 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 					"throwing NO_RECORD_FOUND_VID");
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID);
 		}
-		if (vidObject.getStatusCode().equals(env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()))) {
-			vidObject.setStatusCode(vidStatus);
-			vidRepo.save(vidObject);
-			return buildResponse(null, null, vidStatus, id.get("update"));
-		} else {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "updateVid",
-					"throwing INVALID_VID");
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), vidObject.getStatusCode()));
+		checkStatus(vidObject.getStatusCode());
+		checkExpiry(vidObject.getExpiryDTimes());
+		VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
+		ResponseDTO response = new ResponseDTO();
+		response.setVidStatus(vidStatus);
+		if (policy.getAutoRestoreAllowed() && policy.getRestoreOnAction().equals(vidStatus)) {
+			// create
+			RequestDTO reqDTO=new RequestDTO();
+			reqDTO.setUin(vidObject.getUin());
+			reqDTO.setVidType(vidObject.getVidTypeCode());
+			reqDTO.setVidStatus(vidStatus);
+			request.setRequest(reqDTO);
+			VidResponseDTO createVidResponse = createVid(request);
+			response.setUpdatedVid(createVidResponse.getResponse().getVid());
+			response.setUpdatedVidStatus(createVidResponse.getResponse().getVidStatus());
 		}
+		
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setVidStatus(vidStatus);
+		return buildResponse(responseDTO, id.get("update"));
 	}
 
 	/**
 	 * This Method will accepts vid as parameter and will return Vid Object from DB.
-	 * 
-	 * @param Vid
+	 *
+	 * @param vid the vid
 	 * @return The Vid Object
 	 */
 	private Vid retrieveVidEntity(String vid) {
@@ -220,9 +254,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	/**
 	 * This method will check expiry date of the vid, if vid is expired then it will
 	 * throw IdRepoAppException.
-	 * 
-	 * @param expiryDTimes
-	 * @throws IdRepoAppException
+	 *
+	 * @param expiryDTimes the expiry D times
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
@@ -237,9 +271,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 
 	/**
 	 * This method will check Status of the vid.
-	 * 
-	 * @param statusCode
-	 * @throws IdRepoAppException
+	 *
+	 * @param statusCode the status code
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void checkStatus(String statusCode) throws IdRepoAppException {
 		if (!statusCode.equalsIgnoreCase(env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()))) {
@@ -251,20 +285,16 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	}
 
 	/**
-	 * This Method will build the Vid Response
-	 * 
-	 * @param response
-	 * @param id
+	 * This Method will build the Vid Response.
+	 *
+	 * @param response the response
+	 * @param id the id
 	 * @return The Vid Response
 	 */
-	private VidResponseDTO buildResponse(String uin, String vid, String vidStatus, String id) {
+	private VidResponseDTO buildResponse(ResponseDTO response, String id) {
 		VidResponseDTO responseDto = new VidResponseDTO();
 		responseDto.setId(id);
 		responseDto.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-		ResponseDTO response = new ResponseDTO();
-		response.setUin(uin);
-		response.setVid(vid);
-		response.setVidStatus(vidStatus);
 		responseDto.setResponse(response);
 		return responseDto;
 	}
