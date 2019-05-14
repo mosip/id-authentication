@@ -46,7 +46,6 @@ public class DaoConfig extends HibernateDaoConfig {
 	private static final String DB_AUTHENITICATION = ";bootPassword=";
 	private static final String DB_AUTH_FILE_PATH = "mosip.registration.db.key";
 	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration";
-	private static final String IS_ENABLED = "Y";
 
 	/**
 	 * instance of datasource
@@ -66,13 +65,12 @@ public class DaoConfig extends HibernateDaoConfig {
 
 			String dbConnectionURL = URL + System.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION;
 			
-			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)
-					&& keys.getProperty(MOSIP_CLIENT_TPM_AVAILABILITY).equals(IS_ENABLED)) {
-				driverManagerDataSource.setUrl(dbConnectionURL + new String(TPMUtil.asymmetricDecrypt(Base64
-						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
-			} else {
+			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)) {
 				driverManagerDataSource.setUrl(dbConnectionURL + new String(Base64
 						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes())));
+			} else {
+				driverManagerDataSource.setUrl(dbConnectionURL + new String(TPMUtil.asymmetricDecrypt(Base64
+						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
 			}
 
 			dataSource = driverManagerDataSource;
