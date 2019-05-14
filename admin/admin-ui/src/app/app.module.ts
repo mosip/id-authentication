@@ -33,8 +33,7 @@ import { FacadeService } from './shared/services/facade.service';
     AssetmgmtModule,
     HttpClientModule
   ],
-  providers: [UserregistrationService, GetContactService, AccountManagementService,LoginServiceService],
-  providers: [UserregistrationService, GetContactService, AccountManagementService, FacadeService],
+  providers: [UserregistrationService, GetContactService, AccountManagementService, FacadeService,LoginServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
