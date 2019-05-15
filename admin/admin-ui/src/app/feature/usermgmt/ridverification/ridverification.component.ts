@@ -35,7 +35,7 @@ export class RidverificationComponent implements OnInit {
     this.requestDTO = new RequestModel('id', 'v1', this.requestObject, null);
     this.service.ridVerification(this.requestDTO).subscribe(data => {
       alert('Rid submitted successfully');
-      this.router.navigateByUrl('/admin/usermgmt/validateotp?username='+this.userName);
+      this.router.navigateByUrl('/admin/usermgmt/validateotp?username=' + this.userName + '&rid=' + this.requestObject.rid);
     }, error => {
       console.log(error);
     });

@@ -61,6 +61,15 @@ export class UserregistrationComponent implements OnInit {
     this.requestDTO = new RequestModel('id', 'v1', this.requestObject, null);
     console.log(this.requestDTO);
     this.service.registerUser(this.requestDTO).subscribe(data => {
+      if (data['response'] === null) {
+        if (data['errors'] != null) {
+          for (let i = 0; i < data['errors'].length; i++) {
+            alert(data['errors'][i]['message']);
+          }
+          this.userRegistrationForm.reset();
+          return;
+        }
+      }
       alert('Detail submitted successfully');
       console.log(data);
       this.router.navigateByUrl('admin/dashboard');

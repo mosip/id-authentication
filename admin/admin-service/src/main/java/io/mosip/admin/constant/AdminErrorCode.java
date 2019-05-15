@@ -4,19 +4,22 @@
  * 
  * 
  */
-package io.mosip.admin.usermgmt.constant;
+package io.mosip.admin.constant;
 
 /**
- * Error Constants for Crypto-Manager-Service
+ * Error Constants for inAdm
  * 
  * @author Urvil Joshi
  * @since 1.0.0
  *
  */
-public enum UserMgmtErrorCode {
+public enum AdminErrorCode {
 	
+	INVALID_REQUEST("ADM-UMT-002", "should not be null or empty"),
 	
-	INTERNAL_SERVER_ERROR("ADM-UMT-500", "Internal server error occured : ");
+	INTERNAL_SERVER_ERROR("ADM-UMT-500", "Internal server error occured : "),
+	
+	CLIENT_SERVICE_ERROR("ADM-UMT-500","Error occured while calling service");
 
 	/**
 	 * The errorCode
@@ -28,12 +31,12 @@ public enum UserMgmtErrorCode {
 	private final String errorMessage;
 
 	/**
-	 * {@link UserMgmtErrorCode} constructor
+	 * {@link AdminErrorCode} constructor
 	 * 
 	 * @param errorCode    error code
 	 * @param errorMessage error message
 	 */
-	private UserMgmtErrorCode(final String errorCode, final String errorMessage) {
+	private AdminErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
