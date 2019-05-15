@@ -46,6 +46,25 @@ rxtxSerial.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> 
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
 run.jar|NA|NA|<br>Please execute the command to run the shaded jar</br><br> **“java -Dfile.encoding=UTF-8 -Dspring.profiles.active=qa -jar <Fat_Jar_Name>.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
+kernel-core|NA|NA|Basic core kernel packages.
+kernel-logger-logback|NA|NA|Use for the logging.
+kernel-dataaccess-hibernate|NA|NA|Used for the communicating to the DB.
+kernel-auditmanager-api|NA|NA|Used to audit the reocrds into the DB
+kernel-idvalidator-rid|NA|NA|Used to validate the RID format.
+kernel-idvalidator-uin|NA|NA|Used to validate the UIN format
+kernel-idvalidator-prid|NA|NA|Used to validate the PRID format
+kernel-idgenerator-rid|NA|NA|Used to Generate the RID.
+kernel-crypto-signature|NA|NA|Used to validate the signature response from server.
+kernel-keygenerator-bouncycastle|NA|NA|Used to generate the key pair for AES -256.
+kernel-templatemanager-velocity|NA|NA|Used to generate the template manager using the velocity
+kernel-qrcodegenerator-zxing|NA|NA|Used to generate the QR code in acknowledgment page.
+kernel-pdfgenerator-itext|NA|NA|Used to scan the document in PDF format.
+kernel-crypto-jce|NA|NA|Used to encrypt the packet information
+kernel-jsonvalidator|NA|NA|Used to validate the JSON.
+kernel-virusscanner-clamav|NA|NA|Used to communicate to the Antivirus Clam AV
+kernel-transliteration-icu4j|NA|NA|Used to transliterate the Arabic to French and vice versa.
+kernel-applicanttype-api|NA|NA|Used to get the applicant types 
+kernel-cbeffutil-api|NA|NA|Used to generate the CBEFF file and validate against the schema also.
 
 #### 2.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
