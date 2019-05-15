@@ -7,9 +7,9 @@ import java.util.List;
 
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
-import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
 import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
@@ -18,6 +18,7 @@ import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.UserRoleDto;
 
 /**
  * @author Ramadurai Pandian
@@ -45,8 +46,10 @@ public interface AuthService extends AuthZService, AuthNService {
 	
 	public UserNameDto getUserNameBasedOnMobileNumber(String appId,String mobileNumber) throws Exception;
 
-	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
+	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
 
-	public UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
+	UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
+  
+  public UserRoleDto getUserRole(String appId, String userId) throws Exception;
 
 }

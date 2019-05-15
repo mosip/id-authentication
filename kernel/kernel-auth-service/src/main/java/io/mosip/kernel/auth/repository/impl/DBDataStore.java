@@ -79,7 +79,7 @@ public class DBDataStore implements DataStore {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.auth.service.AuthNDataService#authenticateUser(io.mosip.
-	 * kernel.auth.entities.LoginUser)
+	 * kernel.auth.dto.LoginUser)
 	 */
 
 	@Override
@@ -151,7 +151,7 @@ public class DBDataStore implements DataStore {
 	 * 
 	 * @see
 	 * io.mosip.kernel.auth.service.AuthNDataService#authenticateWithOtp(io.mosip.
-	 * kernel.auth.entities.otp.OtpUser)
+	 * kernel.auth.dto.otp.OtpUser)
 	 */
 	@Override
 	public MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception {
@@ -196,7 +196,7 @@ public class DBDataStore implements DataStore {
 	 * 
 	 * @see
 	 * io.mosip.kernel.auth.service.AuthNDataService#authenticateUserWithOtp(io.
-	 * mosip.kernel.auth.entities.UserOtp)
+	 * mosip.kernel.auth.dto.UserOtp)
 	 */
 	@Override
 	public MosipUserDto authenticateUserWithOtp(UserOtp loginUser) throws Exception {
@@ -209,7 +209,7 @@ public class DBDataStore implements DataStore {
 	 * 
 	 * @see
 	 * io.mosip.kernel.auth.service.AuthNDataService#authenticateWithSecretKey(io.
-	 * mosip.kernel.auth.entities.ClientSecret)
+	 * mosip.kernel.auth.dto.ClientSecret)
 	 */
 	@Override
 	public MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
@@ -273,6 +273,12 @@ public class DBDataStore implements DataStore {
 
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+  
+  @Override
+	public MosipUserDto getUserRoleByUserId(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}

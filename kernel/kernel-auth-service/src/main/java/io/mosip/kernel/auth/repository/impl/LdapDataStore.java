@@ -53,12 +53,12 @@ import io.mosip.kernel.auth.dto.LdapControl;
 import io.mosip.kernel.auth.dto.LoginUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
+import io.mosip.kernel.auth.dto.MosipUserSalt;
 import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.Role;
 import io.mosip.kernel.auth.dto.RolesListDto;
-import io.mosip.kernel.auth.dto.MosipUserSalt;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -105,7 +105,7 @@ public class LdapDataStore implements DataStore {
 				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
-	
+
 	private LdapContext getContext() throws NamingException {
 
 		Hashtable<String, String> env = new Hashtable<String, String>();
@@ -244,17 +244,17 @@ public class LdapDataStore implements DataStore {
 				mosipUserDto
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
-				if(userLookup.get("userPassword")!=null) {
-				PasswordDetails password = PasswordUtil
-						.splitCredentials(userLookup.get("userPassword").get().getBytes());
-				mosipUserDto.setUserPassword(
-						userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
-								: null);
+				if (userLookup.get("userPassword") != null) {
+					PasswordDetails password = PasswordUtil
+							.splitCredentials(userLookup.get("userPassword").get().getBytes());
+					mosipUserDto.setUserPassword(
+							userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
+									: null);
 				}
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
-				if(userLookup.get("rid")!=null) {
-				mosipUserDto.setRId(userLookup.get("rid").get().toString());
+				if (userLookup.get("rid") != null) {
+					mosipUserDto.setRId(userLookup.get("rid").get().toString());
 				}
 				mosipUserDto.setRole(rolesString);
 			}
@@ -264,6 +264,7 @@ public class LdapDataStore implements DataStore {
 					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
+
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");
@@ -294,11 +295,11 @@ public class LdapDataStore implements DataStore {
 		return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
 	}
 
-	private Dn createUserDn(String userName) throws LdapInvalidDnException  {
+	private Dn createUserDn(String userName) throws LdapInvalidDnException {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
 	}
 
-	private Dn createRoleDn(String role) throws LdapInvalidDnException  {
+	private Dn createRoleDn(String role) throws LdapInvalidDnException {
 		return new Dn("cn=" + role + ",ou=roles,c=morocco");
 	}
 
@@ -393,6 +394,7 @@ public class LdapDataStore implements DataStore {
 			ridDto = new RIdDto();
 			ridDto.setRId(data.getRId());
 		}
+		ldapConnection.close();
 		return ridDto;
 	}
 
@@ -597,18 +599,16 @@ public class LdapDataStore implements DataStore {
 	 * Check password matches with either userid or email id. At most 3 letters can
 	 * match with the password.
 	 * 
-	 * @param userId
-	 *            - user id
-	 * @param email
-	 *            - email
-	 * @param password
-	 *            - password
+	 * @param userId   - user id
+	 * @param email    - email
+	 * @param password - password
 	 * @return {@link boolean}
 	 */
 	private boolean isNotAMatchWithUserOrEmail(String userId, String email, String password) {
 
 		return (password.contains(userId) || password.contains(email));
 	}
+
 	@Override
 	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
@@ -657,7 +657,7 @@ public class LdapDataStore implements DataStore {
 		} catch (NamingException exception) {
 			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
 					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
-		}catch (LdapInvalidDnException exception) {
+		} catch (LdapInvalidDnException exception) {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
@@ -689,13 +689,13 @@ public class LdapDataStore implements DataStore {
 		} catch (NamingException exception) {
 			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
 					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
-		}catch (LdapInvalidDnException exception) {
+		} catch (LdapInvalidDnException exception) {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
 		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
 	}
-	
+
 	private void rollbackUser(Dn userDn, DirContext context) {
 		try {
 			context.destroySubcontext(userDn.getName());
@@ -703,5 +703,17 @@ public class LdapDataStore implements DataStore {
 			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
 					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
 		}
+	}
+	@Override
+	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(username);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		ldapConnection.close();
+		return data;
 	}
 }

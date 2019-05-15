@@ -27,9 +27,9 @@ import io.mosip.kernel.auth.dto.ClientSecret;
 import io.mosip.kernel.auth.dto.ClientSecretDto;
 import io.mosip.kernel.auth.dto.LoginUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
-import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
 import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
@@ -40,6 +40,7 @@ import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.UserRoleDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -77,7 +78,7 @@ public class AuthController {
 	private AuthService authService;
 
 	/**
-	 * Autowired reference for {@link TokenService}
+	 * Autowired reference for {@link CustomTokenServices}
 	 */
 
 	@Autowired
@@ -455,5 +456,16 @@ public class AuthController {
 		responseWrapper.setResponse(authService.addUserPassword(userPasswordRequestDto.getRequest()));
 		return responseWrapper;
 	}
+  
+  @GetMapping("/role/{appId}/{userId}")
+	@ResponseFilter
+	public ResponseWrapper<UserRoleDto> getUserRole(@PathVariable("appId") String appId,
+			@PathVariable("userId") String userId) throws Exception {
+		ResponseWrapper<UserRoleDto> responseWrapper = new ResponseWrapper<>();
+		UserRoleDto userRole = authService.getUserRole(appId, userId);
+		responseWrapper.setResponse(userRole);
+		return responseWrapper;
+	}
 
 }
+
