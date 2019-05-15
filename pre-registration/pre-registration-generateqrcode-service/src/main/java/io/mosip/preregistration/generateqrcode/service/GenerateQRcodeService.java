@@ -75,16 +75,18 @@ public class GenerateQRcodeService {
 				"In generateQRCode service of generateQRCode ");
 		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
 		
+		
 		MainRequestDTO<String> qrcodedto = new MainRequestDTO<>();
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 		
 		try {
 			JSONObject qrCodeReqData = new JSONObject(data);
-			String qrCodeData =   qrCodeReqData.get("request").toString();
+			
 			qrcodedto.setId(qrCodeReqData.get("id").toString());
 			qrcodedto.setVersion(qrCodeReqData.get("version").toString());
 			qrcodedto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(qrCodeReqData.get("requesttime").toString()) );
+			String qrCodeData =   qrCodeReqData.get("request").toString();
 			qrcodedto.setRequest(qrCodeData);
 			response.setId(qrcodedto.getId());
 			response.setVersion(qrcodedto.getVersion());
