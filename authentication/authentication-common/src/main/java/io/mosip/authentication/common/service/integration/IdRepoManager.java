@@ -145,7 +145,7 @@ public class IdRepoManager {
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("appId", environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			params.put("rid", idvId);
+			params.put("uid", idvId);
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.USERID_RID, null, Map.class);
 
 			buildRequest.setPathVariables(params);
