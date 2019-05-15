@@ -49,6 +49,15 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 	private String authSendOtpURL;
 	@Value("${auth.server.user-add-password-url}")
 	private String passwordURL;
+	
+	@Value("${mosip.admin-appid}")
+	private String addID;
+	
+	@Value("${mosip.admin-otp-context}")
+	private String otpContext;
+	
+	@Value("${mosip.admin-userid-otp-type}")
+	private String userIDType;
 
 	@Override
 	public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequestDto) {
@@ -84,10 +93,10 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		SendOtpRequestDto requestDto = new SendOtpRequestDto();
 		// validate rid
 		UserMgmtUtil.validateUserRid(ridVerificationRequestDto.getRid(), ridVerificationRequestDto.getUserName());
-		requestDto.setAppId("admin");
-		requestDto.setContext("auth-otp");
+		requestDto.setAppId(addID);
+		requestDto.setContext(otpContext);
 		requestDto.setUserId(ridVerificationRequestDto.getUserName());
-		requestDto.setUseridtype("USERID");
+		requestDto.setUseridtype(userIDType);
 		List<String> channel = new ArrayList<>();
 		channel.add("email");
 		requestDto.setOtpChannel(channel);
