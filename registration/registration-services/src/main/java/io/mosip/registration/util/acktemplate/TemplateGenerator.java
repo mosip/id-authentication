@@ -579,7 +579,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB,
 					DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge()));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB, RegistrationConstants.EMPTY);
 		}
 		templateValues.put(RegistrationConstants.TEMPLATE_AGE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("ageField"));
