@@ -28,16 +28,16 @@ MOS-21339|Integration|Integrate Kernel Authentication Fix for Auth token expiry 
 MOS-18108|New|Add UserID as ID Type for Internal Auth.
 MOS-21768|Integration|Integrate with Kernel Crypto Manager for decrypting HMAC and request data
 MOS-17444|Integration|As the MOSIP System(IDA), I should be able to integrate with Kernel send OTP Service
-MOS-21327|Integration|Integrate with VID Service
+MOS-21327|Integration|Integrate with VID Service.
 
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
+ID Repository|ID Repository Identity Service|0.11.1|GET API
 Kernel|Kernel-Audit Service|0.11.1| 
 Kernel|Kernel OTP Validator Service|0.11.1|
 Kernel|Kernel Auth-Send OTP Service|0.11.1|
-Kernel|Kernel Id Repo Service|0.11.1|GET API
 Kernel|Mail Notification Service|0.11.1|
 Kernel|SMS Notification Service|0.11.1|
 Kernel|Master Data Service|0.11.1|Titles, Gender, Templates
@@ -69,7 +69,7 @@ MOS-21757|As the MOSIP system, I should be able to implement digital signature f
 ### 1.8 DB Changes :
 |DB Script Name|Description|
 |---------------|-------------|
-|         |          |
+|         |Removed existing VID table as the VID service module is removed from IDA.|
 
 
 
