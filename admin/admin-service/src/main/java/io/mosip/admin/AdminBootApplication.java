@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import io.mosip.admin.iddefinition.JsonIdentitySchemaValidator;
 
 @SpringBootApplication(scanBasePackages = { "io.mosip.admin.*", "io.mosip.kernel.auth.*" })
 @EnableAsync
@@ -29,18 +30,4 @@ public class AdminBootApplication {
 		executor.initialize();
 		return executor;
 	}
-	
-	public CommandLineRunner runner() {
-		return args-> {
-			getcurrentTimeStamp();
-		};
-	}
-		
-		private String getcurrentTimeStamp() {
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern("yyyyMMddHHmmss");
-			System.out.println(LocalDateTime.now(ZoneId.of("UTC")).format(format));
-			return LocalDateTime.now(ZoneId.of("UTC")).format(format);
-		}
-
 }
