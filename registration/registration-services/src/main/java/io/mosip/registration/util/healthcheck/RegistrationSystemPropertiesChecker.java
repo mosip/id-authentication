@@ -64,10 +64,26 @@ public class RegistrationSystemPropertiesChecker {
 		while (true) {
 			String line = bufferedReader.readLine();
 			if (line != null) {
-				Pattern p = Pattern.compile(".*Physical Address.*: (.*)");
-				Matcher m = p.matcher(line);
-				if (m.matches()) {
-					windowsMachineId = m.group(1);
+				Pattern englishPattern = Pattern.compile(".*Physical Address.*: (.*)");
+				Pattern frenchPattern = Pattern.compile(".*Adresse physique.*: (.*)");
+				Pattern arabicPattern = Pattern.compile(".*العنوان الفعلي.*: (.*)");
+
+
+				Matcher englishMatcher = englishPattern.matcher(line);
+				if (englishMatcher.matches()) {
+					windowsMachineId = englishMatcher.group(1);
+					break;
+				}
+
+				Matcher frenchMatcher = frenchPattern.matcher(line);
+				if (frenchMatcher.matches()) {
+					windowsMachineId = frenchMatcher.group(1);
+					break;
+				}
+				
+				Matcher arabicMatcher = arabicPattern.matcher(line);
+				if (arabicMatcher.matches()) {
+					windowsMachineId = arabicMatcher.group(1);
 					break;
 				}
 			}
