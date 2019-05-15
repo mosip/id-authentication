@@ -39,7 +39,7 @@ export class UinComponent implements OnInit {
   search() {
     console.log(this.uinStatusForm)
 
-    this.inhttp.get("http://localhost:8098/v1/admin/uin/status/" + this.inputUin.trim())
+    this.inhttp.get("http://localhost:8098/v1/admin/uinmgmt/status/" + this.inputUin.trim())
       .subscribe((response) => {  
         this.response = response;
         console.log(response);
