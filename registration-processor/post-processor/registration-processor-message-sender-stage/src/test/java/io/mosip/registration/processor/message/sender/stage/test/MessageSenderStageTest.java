@@ -55,7 +55,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.vertx.core.Vertx;
 
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class, JsonUtil.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })

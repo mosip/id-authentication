@@ -88,10 +88,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The transcation status service. */
-	@Autowired
-	private TransactionService<TransactionDto> transcationStatusService;
-
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
