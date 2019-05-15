@@ -40,6 +40,7 @@ import com.google.gson.JsonObject;
 
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.dao.PreRegistartionDAOO;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -64,9 +65,8 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
-	PreregistrationDAO dao = new PreregistrationDAO();
+	PreRegistartionDAOO dao = new PreRegistartionDAOO();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
-
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
@@ -79,18 +79,9 @@ public class Sample extends BaseTestCase implements ITest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForDemographicCreate() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		lib.CreatePreReg(createPregRequest);
-		/*String userId = lib.userId;
-		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
-		expectedRequest.put("session_user_id", userId);
-		List<Object> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 0);
-		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");*/
+	dao.setDate("56073873527340");
+		
+		
 	}
 	@Override
 	public String getTestName() {

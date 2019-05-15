@@ -243,10 +243,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Generate OTP <<<<<<< HEAD
 	 * 
 	 * @return =======
 	 * @return response >>>>>>> 0.11.0
+=======
+	 * Generate OTP
+	 * 
+	 * @return
+	 * 
+>>>>>>> d3ba50ddf457a5c8e71e42c53f31c5d29c5f27c0
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
@@ -259,9 +266,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
 		logger.info("userid is ++++++++++++++" + userId);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		otp = otpData.get(0).toString();
+		otp=dao.getOTP(userId).get(0);
 		logger.info("OTP is============" + otp);
 		testSuite = "validateOTP/validateOTP_smoke";
 		request = validateOTPRequest(testSuite);
@@ -1043,6 +1048,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public Response FetchCentre() {
 
+		String regCenterId = randomRegistrationCenterId();		
+		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
+		return response;
+	}
+	/*public Response FetchCentre() {
+		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+>>>>>>> d3ba50ddf457a5c8e71e42c53f31c5d29c5f27c0
 		String regCenterId = randomRegistrationCenterId();
 
 		String preRegFetchCenterIDURI = preReg_FetchCenterIDURI + regCenterId;

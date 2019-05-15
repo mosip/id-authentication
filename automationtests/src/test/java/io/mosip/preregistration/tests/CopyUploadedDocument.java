@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
