@@ -1,18 +1,18 @@
 **MOSIP Release Notes**
 #### 2. Registration Client
 
-#### 2.1 Introduction : <br><sub>This document highlights Sprint 10 features for Registration-Client that are released for QA phase.</sub></br>
+#### 2.1 Introduction : <br><sub>This document highlights Sprint 11 features for Registration-Client that are released for QA phase.</sub></br>
 
 #### 2.2 Release Summary : 
 |         |          |
 |----------|----------|
 SubmittedBy|Omsai Eswar M
-Date Raised | 05-APR-2019
+Date Raised | 15-MAY-2019
 Impact of Release|NA
-Implementation Start Date |25-MAR-2019
-Implementation end date	|05-APR-2019
-Jenkins Build #	|Min Version : 1128 [Any later version also]
-Objective & Scope of Release| Sprint10 & Scope: Refer the section 3
+Implementation Start Date |26-APR-2019
+Implementation end date	|13-MAY-2019
+Jenkins Build #	|Min Version : 1407  [Any later version also]
+Objective & Scope of Release| Sprint11 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
 RFC(s) #|	NA
@@ -21,26 +21,17 @@ RFC(s) #|	NA
 #### 2.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
-MOS-22148 |New|Tech story--Digital Signature of the Response received by Client
-MOS-22397|New|As the MOSIP Registration Client, <br>I should enforce security-related rules for first time login and sync</br>
-MOS-22822, MOS-22810 |New|Tech story -Upload packet changes
-MOS-21517|New|Stub--As MOSIP registration client, <br>for new registration of child capture any one biometric of the Parent/Guardian</br>
-MOS-22841|New|Deletion of Pre-reg packet once RID is created.
-MOS-18150|New|Tech Story - Secure the keys at Reg. client using TPM
-MOS-22068|New|As the MOSIP Registration Client, <br>for new registration and update, I should enable upload of applicable documents
-MOS-1279|New|Sync registration centre data</br>
-MOS-13527,MOS-16120|New|Download and run the registration client software[Partially].
-MOS-13560|New|Update UIN – proxy implementation
-MOS-13561|New|Select packets to upload
-MOS-13698,MOS-18089|New|Remap a machine from one centre to another
-MOS-16040|New|Technical story – Integration: Mode of login to client
-MOS-16109|New|Mark low quality biometrics as exceptions – proxy implementation 
-MOS-16712|New|Technical story – Push packet to server as background process
-MOS-17663,MOS-20253|New|Visual design changes
-MOS-18117|New|Retrieve lost UIN – proxy implementation
-MOS-19886|New|Authenticate registration with low quality biometrics – proxy implementation
-MOS-20066|New|Validate demographic details contain no blacklisted words
-MOS-20244|New|Technical story – UI validation using global parameters
+MOS-67 |New|As the MOSIP registration client, I should be able to update the client software from the server
+MOS-21461|New|Tech story - Send extra parameters related to the packet while Sync to registration- processor
+MOS-22009 |New|As a Registration Officer, I should be able to search for packets on the EoD process page
+MOS-21929|New|As a Registration Officer, I should be able to search for packets on the Upload page
+MOS-21573|New|Tech story--Generate packet using center id and unique machine id
+MOS-21470|New|Stub--As MOSIP registration client, for UIN Update of Child, capture the UIN, Name and one biometric of the Parent/Guardian
+MOS-22405|New|Tech Story - Secure the keys at Reg. client using TPM part 2
+MOS-16121|New|Stub - MOSIP Device Manager implementation - Part 2
+MOS-23288|New|Capture exception photo of Parent if exception is marked for a child's new registration/UIN update
+
+
 
 #### 2.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module/Files|Component|Version|Description (If any)
@@ -52,61 +43,91 @@ rxtxcomm-2.2.jar|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext</br>
 java.security|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\security</br> <br>security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider</br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
 rxtxParallel.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin </br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
 rxtxSerial.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> Please copy the dll to the ‘JAVA_HOME\jre\bin’ file</br>
+local_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
+US_export_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
 run.jar|NA|NA|<br>Please execute the command to run the shaded jar</br><br> **“java -Dfile.encoding=UTF-8 -Dspring.profiles.active=qa -jar <Fat_Jar_Name>.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
+kernel-core|NA|NA|Basic core kernel packages.
+kernel-logger-logback|NA|NA|Use for the logging.
+kernel-dataaccess-hibernate|NA|NA|Used for the communicating to the DB.
+kernel-auditmanager-api|NA|NA|Used to audit the reocrds into the DB
+kernel-idvalidator-rid|NA|NA|Used to validate the RID format.
+kernel-idvalidator-uin|NA|NA|Used to validate the UIN format
+kernel-idvalidator-prid|NA|NA|Used to validate the PRID format
+kernel-idgenerator-rid|NA|NA|Used to Generate the RID.
+kernel-crypto-signature|NA|NA|Used to validate the signature response from server.
+kernel-keygenerator-bouncycastle|NA|NA|Used to generate the key pair for AES -256.
+kernel-templatemanager-velocity|NA|NA|Used to generate the template manager using the velocity
+kernel-qrcodegenerator-zxing|NA|NA|Used to generate the QR code in acknowledgment page.
+kernel-pdfgenerator-itext|NA|NA|Used to scan the document in PDF format.
+kernel-crypto-jce|NA|NA|Used to encrypt the packet information
+kernel-jsonvalidator|NA|NA|Used to validate the JSON.
+kernel-virusscanner-clamav|NA|NA|Used to communicate to the Antivirus Clam AV
+kernel-transliteration-icu4j|NA|NA|Used to transliterate the Arabic to French and vice versa.
+kernel-applicanttype-api|NA|NA|Used to get the applicant types 
+kernel-cbeffutil-api|NA|NA|Used to generate the CBEFF file and validate against the schema also.
 
 #### 2.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
 Transliteration|English-Arabic Transliteration  won’t work because of non-availability of kernel library
 Sonar Issues|Vulnerability – 10 : Due to sonar rule set upgradation.<br>java/io/File.<init>(Ljava/lang/String;)V reads a file whose location might be specified by user input Needs to be Addressed.</br>
-All new user passwords were point to default password ‘mosip’| Still waiting for the URLs from Kernel, we are unable to integrate with SSHA.
-User On-boarding|OTP communication is there. We will release this change by using the hot fix.
-Reg-client S/W download and Update|Partially was done. Initially provided with the ZIP of fat jar and DB. It span across the multiple sprints.
 MDM|Mosip Device Management partially implemented. It Span across the multiple sprints.
-Signature changes|At present we implemented for the Sync services. RegProc/Pre-Reg services yet to implement this.
-Child Registration & UIN Update|Due to packet meta info and ID json changes, <br>in this fit 4 partially completed. It might be spill over next.</br><br> [So the code will be merged separately will send later for this story]</br>
+TPM|The application will work for only TPM 2.0. If machine having the TPM 1.2 version then disable the TPM from properties and test the application.
+
 
 #### 2.6 Defects list
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
-MOS-22966|DONE|YES
-MOS-22967|DONE|YES
-MOS-22964|DONE|YES
-MOS-22804|DONE|YES
-MOS-22715|DONE|YES
-MOS-22725|DONE|YES
-MOS-22879|DONE|YES
-MOS-22979|DONE|YES
-MOS-22130|DONE|YES
-MOS-23105|DONE|YES
-MOS-23247|DONE|YES
-MOS-23119|DONE|YES
-MOS-23118|DONE|YES
-MOS-23100|DONE|YES
-MOS-22983|DONE|YES
-MOS-22838|DONE|YES
-MOS-22806|DONE|YES
-MOS-22805|DONE|YES
-MOS-22797|DONE|YES
-MOS-22783|DONE|YES
-MOS-22727|DONE|YES
-MOS-22712|DONE|YES
-MOS-22059|DONE|YES
-MOS-22756|DONE|YES
-MOS-22758|DONE|YES
-MOS-22783|DONE|YES
-MOS-22784|DONE|YES
-MOS-22788|DONE|YES
-MOS-22791|DONE|YES
-MOS-22794|DONE|YES
-MOS-22796|DONE|YES
-MOS-22712|DONE|YES
-MOS-22089|DONE|YES
-MOS-22448|DONE|YES
-MOS-22978|DONE|YES
-MOS-22977|DONE|YES
+MOS-23733|FIXED|YES
+MOS-23732|FIXED|YES
+MOS-23125|FIXED|YES
+MOS-22444|FIXED|YES
+MOS-21573|FIXED|YES
+MOS-23594|FIXED|YES
+MOS-23595|FIXED|YES
+MOS-23780|FIXED|YES
+MOS-18317|FIXED|YES
+MOS-23866|FIXED|YES
+MOS-23872|FIXED|YES
+MOS-23779|FIXED|YES
+MOS-22405|FIXED|YES
+MOS-22967|FIXED|YES
+MOS-22854|FIXED|YES
+MOS-13075|FIXED|YES
+MOS-21461|FIXED|YES
+MOS-23105|FIXED|YES
+MOS-23752|FIXED|YES
+MOS-23700|FIXED|YES
+MOS-23698|FIXED|YES
+MOS-23590|FIXED|YES
+MOS-23346|FIXED|YES
+MOS-23345|FIXED|YES
+MOS-23164|FIXED|YES
+MOS-23163|FIXED|YES
+MOS-22978|FIXED|YES
+MOS-22796|FIXED|YES
+MOS-21470|FIXED|YES
+MOS-21929|FIXED|YES
+MOS-23123|FIXED|YES
+MOS-22979|FIXED|YES
+MOS-23124|FIXED|YES
+MOS-23344|FIXED|YES
+MOS-22009|FIXED|YES
+MOS-23288|FIXED|YES
+MOS-23735|FIXED|YES
+MOS-23734|FIXED|YES
+MOS-23512|FIXED|YES
+MOS-22976|FIXED|YES
+MOS-22783|FIXED|YES
+MOS-22736|FIXED|YES
+MOS-22060|FIXED|YES
+MOS-21981|FIXED|YES
+MOS-21939|FIXED|YES
+MOS-18314|FIXED|YES
+MOS-14139|FIXED|YES
+
 
 #### 2.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
