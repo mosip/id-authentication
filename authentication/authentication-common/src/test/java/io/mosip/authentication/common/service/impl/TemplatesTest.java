@@ -405,8 +405,6 @@ public class TemplatesTest {
 		byte[] byteArray = baos.toByteArray();
 		
 		File pdfFile = new File(EKYC_FULL_PRI_FILE);
-		System.out.println(pdfFile);
-		
 		try(FileOutputStream fileOutputStream = new FileOutputStream(pdfFile);) {
 			fileOutputStream.write(byteArray);
 			fileOutputStream.flush();

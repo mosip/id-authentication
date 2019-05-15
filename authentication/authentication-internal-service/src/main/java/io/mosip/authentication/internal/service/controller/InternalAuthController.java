@@ -134,8 +134,7 @@ public class InternalAuthController {
 				: false;
 		String uin = authRequestDTO.getIndividualId();
 		String idType = authRequestDTO.getIndividualIdType();
-		IdType actualidType = null;
-		actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+		IdType actualidType = IdType.getIDTypeOrDefault(idType);
 		if (requestedAuthType.isOtp()) {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
 					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,

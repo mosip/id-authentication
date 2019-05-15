@@ -138,8 +138,7 @@ public class AuthController {
 		Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
 		String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
 		String idType = authrequestdto.getIndividualIdType();
-		IdType actualidType = null;
-		actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+		IdType actualidType =IdType.getIDTypeOrDefault(idType);
 		if (requestedAuthType.isOtp()) {
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID,
 					env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), AUTH_FACADE,

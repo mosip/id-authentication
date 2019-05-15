@@ -60,4 +60,6 @@ public final class IdAuthCommonConstants {
 	public static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 	
 	public static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
+	
+	public static final String DATA = "data";
 }

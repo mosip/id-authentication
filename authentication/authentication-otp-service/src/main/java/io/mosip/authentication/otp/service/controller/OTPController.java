@@ -104,7 +104,7 @@ public class OTPController {
 			IdType actualidType = null;
 			String idType = otpRequestDto.getIndividualIdType();
 			if (idType != null && !idType.isEmpty()) {
-				actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+				actualidType = IdType.getIDTypeOrDefault(idType);
 			}
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					AUTH_FACADE, "OTP Request status : " + isStatus);

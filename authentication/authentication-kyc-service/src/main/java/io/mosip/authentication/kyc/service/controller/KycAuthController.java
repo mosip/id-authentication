@@ -135,9 +135,8 @@ public class KycAuthController {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		} finally {
 			if (kycAuthRequestDTO != null) {
-				IdType actualidType = null;
 				String idType = kycAuthRequestDTO.getIndividualIdType();
-				actualidType = idType.equalsIgnoreCase(IdType.UIN.getType()) ? IdType.UIN : IdType.VID;
+				IdType actualidType = IdType.getIDTypeOrDefault(idType);
 				String uin = kycAuthRequestDTO.getIndividualId();
 				Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE,
 						Boolean.class);
