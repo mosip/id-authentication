@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataStorageService } from '../../../shared/services/data-storage.service';
 
 @Component({
   selector: 'app-categories',
@@ -8,21 +9,23 @@ import { Router } from '@angular/router';
 })
 export class CategoriesComponent implements OnInit {
 
-  data = [
-    { displayValue: 'Registration Centers' },
-    { displayValue: 'Assets' },
-    { displayValue: 'Location Data' },
-    { displayValue: 'Random Data' }
-  ];
+  data = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private dataStorageService: DataStorageService) { }
 
   ngOnInit() {
+    this.getCards();
+  }
+
+  getCards() {
+    this.dataStorageService.getMasterDataCards().subscribe(response => {
+      this.data = response['response']['masterdata'];
+    });
   }
 
   loadData(item: any) {
     console.log(item);
-    this.router.navigateByUrl('admin/dashboard/masterdata');
+    this.router.navigateByUrl(`admin/dashboard/masterdata/${item.dataCode}`);
   }
 
 }

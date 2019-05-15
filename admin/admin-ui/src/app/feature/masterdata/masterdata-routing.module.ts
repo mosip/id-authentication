@@ -5,7 +5,7 @@ import { CategoriesComponent } from './categories/categories.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'categories', pathMatch: 'full' },
-  { path: 'masterdata', component: MasterdataComponent },
+  { path: 'masterdata/:id', component: MasterdataComponent },
   { path: 'categories', component: CategoriesComponent }
 ];
 
