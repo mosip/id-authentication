@@ -12,7 +12,12 @@ export class UinComponent implements OnInit {
   inputUin: String = '';
   response: any = {};
   status: String = '';
-  uinStatusForm = this.formBuilder.group({ uin: ['', Validators.required]});
+  activeMessage: String = ' is Active';
+  deactiveMessage: String = ' is Deactive';
+
+
+
+  uinStatusForm = this.formBuilder.group({ uin: ['', Validators.required] });
 
   constructor(private inhttp: HttpClient, private formBuilder: FormBuilder, private service: UinstatusService) {
 
@@ -22,15 +27,15 @@ export class UinComponent implements OnInit {
 
   search() {
     this.service.getUinStatus(this.inputUin.trim()).subscribe((response) => {
-        this.response = response;
-        console.log(response);
+      this.response = response;
+      console.log(response);
 
       if (this.response.response.status === 'ACTIVATED') {
-          this.status = 'ACTIVE';
-       } else if (this.response.response.status === 'DEACTIVATED') {
-          this.status = 'DEACTIVE';
-        }
-      });
+        this.status = this.inputUin + '' + this.activeMessage;
+      } else if (this.response.response.status === 'DEACTIVATED') {
+        this.status = this.inputUin + '' + this.deactiveMessage;
+      }
+    });
 
   }
 
