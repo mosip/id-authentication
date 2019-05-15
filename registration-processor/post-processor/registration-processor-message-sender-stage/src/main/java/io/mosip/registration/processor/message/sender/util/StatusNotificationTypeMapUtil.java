@@ -44,7 +44,7 @@ public class StatusNotificationTypeMapUtil {
 
 		statusMap.put(NotificationStageStatus.OSI_VALIDATE_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
 		statusMap.put(NotificationStageStatus.VALIDATE_PACKET_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
-		statusMap.put(NotificationStageStatus.MANUAL_VARIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
+		statusMap.put(NotificationStageStatus.MANUAL_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
 		statusMap.put(NotificationStageStatus.UIN_GENERATOR_PROCESSED, NotificationTemplateType.UIN_CREATED);
 		statusMap.put(NotificationStageStatus.BIOGRAPHIC_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
 		statusMap.put(NotificationStageStatus.DEMOGRAPHIC_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);
