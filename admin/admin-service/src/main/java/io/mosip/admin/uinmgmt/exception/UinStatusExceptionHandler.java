@@ -2,6 +2,8 @@ package io.mosip.admin.uinmgmt.exception;
 
 import java.util.Arrays;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,10 +19,11 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  *
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class UinStatusExceptionHandler {
 
 	@ExceptionHandler(UinStatusException.class)
-	public ResponseEntity<ResponseWrapper<?>> handlerError(UinStatusException e) {
+	public ResponseEntity<ResponseWrapper<ServiceError>> handlerError(UinStatusException e) {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		errorResponse.setErrors(Arrays.asList(error));

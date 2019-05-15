@@ -12,7 +12,7 @@ public class UinStatusException extends BaseUncheckedException{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8720020780479867131L;
+	private static final long serialVersionUID = 2785372588639412708L;
 
 	/**
 	 * Constructor to initialize handler exception
