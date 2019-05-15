@@ -25,7 +25,7 @@ align-items: center
     display: flex;
     justify-content: center;
     padding-left: 30%;
-    padding-right: 35%;
+    padding-right: 40%;
     padding-top: 10%;
     width: 18em;
     margin: 0;
@@ -34,5 +34,11 @@ align-items: center
 .resend-otp-title{
     color:rgb(173,58,58);
     display: flex;
-    cursor:pointer
+    cursor:pointer;
+    margin-left:50%;
+}
+.valid-timer{
+    display: flex;
+    justify-content: center;
+    padding-right:20%;
 }
