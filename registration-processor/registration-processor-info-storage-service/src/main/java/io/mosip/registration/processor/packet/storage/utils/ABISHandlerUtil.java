@@ -44,8 +44,7 @@ public class ABISHandlerUtil {
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
-
-	public List<String> getUniqueRegIds(String registrationId, String status)
+	public List<String> getUniqueRegIds(String registrationId, String registrationType)
 			throws ApisResourceAccessException, IOException {
 
 		String latestTransactionId = utilities.getLatestTransactionId(registrationId);
@@ -67,9 +66,11 @@ public class ABISHandlerUtil {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
 				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, AbisConstant.PROCESSING);
-				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, AbisConstant.PROCESSED);
-				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, status);
+				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+						AbisConstant.PROCESSING);
+				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+						AbisConstant.PROCESSED);
+				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
 				uniqueRIDs.addAll(processingRegIds);
 			}
 		}
@@ -78,7 +79,7 @@ public class ABISHandlerUtil {
 
 	}
 
-	public String getPacketStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
+	public String getPacketStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		if (getMatchedRegIds(registrationStatusDto.getRegistrationId()).isEmpty()) {
 			return AbisConstant.PRE_ABIS_IDENTIFICATION;
 		}
@@ -99,7 +100,7 @@ public class ABISHandlerUtil {
 		return abisRequestDtoList;
 	}
 
-	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId, String status)
+	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId, String registrationType)
 			throws ApisResourceAccessException, IOException {
 
 		Map<String, String> filteredRegMap = new LinkedHashMap<>();
@@ -109,13 +110,13 @@ public class ABISHandlerUtil {
 
 			Number matchedUin = getUinFromIDRepo(machedRegId);
 
-			if (status.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
+			if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
 				Number packetUin = utilities.getUIn(registrationId);
 				if (matchedUin != null && packetUin != matchedUin) {
 					filteredRegMap.put(matchedUin.toString(), machedRegId);
 				}
 			}
-			if (status.equalsIgnoreCase(SyncTypeDto.NEW.toString()) && matchedUin != null) {
+			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString()) && matchedUin != null) {
 				filteredRegMap.put(matchedUin.toString(), machedRegId);
 			}
 
@@ -138,8 +139,8 @@ public class ABISHandlerUtil {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response;
 
-		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, AbisConstant.TYPE,
-				AbisConstant.ALL, ResponseWrapper.class);
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
+				AbisConstant.TYPE, AbisConstant.ALL, ResponseWrapper.class);
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();

@@ -117,8 +117,7 @@ public class BioDedupeProcessor {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 			String registrationType = registrationStatusDto.getRegistrationType();
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.NEW.toString())) {
-				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
-						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
+				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto);
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					newPacketPreAbisIdentification(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
@@ -127,8 +126,7 @@ public class BioDedupeProcessor {
 				}
 
 			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
-				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
-						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
+				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto);
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					updatePacketPreAbisIdentification(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
