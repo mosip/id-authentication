@@ -66,7 +66,8 @@ public class ClientJarEncryption {
 	// For TPM
 	private static final String MOSIP_CLIENT_DB_KEY = "mosip.registration.db.key = ";
 	private static final String MOSIP_CLIENT_APP_KEY = "mosip.registration.app.key = ";
-	private static final String MOSIP_CLIENT_DB_PASSWORD = "mosip12345";
+	private static final String MOSIP_CLIENT_DB_BOOT = "bW9zaXAxMjM0NQ==";
+	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration = N";
 
 	/**
 	 * Encrypt the bytes
@@ -141,10 +142,9 @@ public class ClientJarEncryption {
 							+ "\n" + MOSIP_ENV_PARAM + MOSIP_ENV_VAL + "\n" + MOSIP_CLIENT_URL + MOSIP_CLIENT_URL_VAL
 							+ "\n" + MOSIP_XML_FILE_URL + MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM
 							+ MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM + MOSIP_CER_PATH + SLASH
-							+ mosipCertificateFile.getName() + "\n"
-							+ MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
-									.concat(Base64.getEncoder().encodeToString(MOSIP_CLIENT_DB_PASSWORD.getBytes())))
-											.getBytes();
+							+ mosipCertificateFile.getName() + "\n" + MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n")
+									.concat(MOSIP_CLIENT_DB_KEY).concat(MOSIP_CLIENT_DB_BOOT)
+							+ "\n" + MOSIP_CLIENT_TPM_AVAILABILITY).getBytes();
 
 					fileNameByBytes.put(propertiesFile, propertiesBytes);
 

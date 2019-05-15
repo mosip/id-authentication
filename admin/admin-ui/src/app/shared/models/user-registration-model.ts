@@ -10,4 +10,5 @@ export interface UserRegistrationRequestModel {
     gender: string;
     role: string;
     ridValidationUrl:string;
+    appId:string;
 }

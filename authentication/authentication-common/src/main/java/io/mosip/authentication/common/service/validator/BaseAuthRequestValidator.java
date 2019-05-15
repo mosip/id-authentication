@@ -65,9 +65,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	
 	private static final String BIOMETRICS_TIMESTAMP = "biometrics/timestamp";
 	
-	/** The Constant MOSIP_SUPPORTED_LANGUAGES. */
-	private static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
-
 	private static final String BIO_SUB_TYPE = "bioSubType";
 
 	/** The Constant OTP2. */
@@ -1013,7 +1010,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	protected void validateLangCode(String langCode, Errors errors, String field) {
 		if(Objects.nonNull(langCode)) {
 			Set<String> allowedLang;
-			String languages = env.getProperty(MOSIP_SUPPORTED_LANGUAGES);
+			String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES);
 			if (null != languages && languages.contains(",")) {
 				allowedLang = Arrays.stream(languages.split(",")).collect(Collectors.toSet());
 			} else {

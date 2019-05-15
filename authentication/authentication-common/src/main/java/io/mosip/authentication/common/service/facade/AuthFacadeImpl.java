@@ -122,7 +122,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		try {
 			idInfo = idInfoService.getIdInfo(idResDTO);
 			authResponseBuilder.setTxnID(authRequestDTO.getTransactionID());
-			staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : "";
+			staticTokenId = staticTokenRequired && isAuth ? tokenIdManager.generateTokenId(uin, partnerId) : "";
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth, staticTokenId,
 					partnerId);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);

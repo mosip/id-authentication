@@ -44,6 +44,10 @@ public final class IdAuthCommonConstants {
 	
 	public static final String RESPONSE = "response";
 	
+	public static final String ERROR_CODE = "errorCode";
+
+	public static final String ERRORS = "errors";
+	
 	/** The Constant KER_OTP_KEY_NOT_EXISTS_CODE. */
 	public static final String KER_OTP_KEY_NOT_EXISTS_CODE = "KER-OTV-005";
 	
@@ -52,4 +56,8 @@ public final class IdAuthCommonConstants {
 	
 	/** The Constant KER_DECRYPTION_FAILURE. */
 	public static final String KER_DECRYPTION_FAILURE = "KER-FSE-003";
+	
+	public static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
+	
+	public static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
 }

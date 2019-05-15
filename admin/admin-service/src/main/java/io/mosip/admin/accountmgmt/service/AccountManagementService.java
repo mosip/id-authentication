@@ -1,6 +1,7 @@
 package io.mosip.admin.accountmgmt.service;
 
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
+import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 
@@ -47,7 +48,7 @@ public interface AccountManagementService {
 	 *            the user id
 	 * @return the status response dto
 	 */
-	public StatusResponseDto resetPassword(PasswordDto passworddto);
+	public StatusResponseDto resetPassword(ResetPasswordDto resetPasswordDto);
 
 	/**
 	 * Gets the user name based on mobile number.

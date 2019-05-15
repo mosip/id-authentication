@@ -3,6 +3,7 @@ package io.mosip.authentication.otp.service.impl;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +136,6 @@ public class OTPServiceImplTest {
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestPhoneorEmailisNull() throws IdAuthenticationBusinessException, RestServiceException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
@@ -143,7 +143,6 @@ public class OTPServiceImplTest {
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("1234567890");
 		ArrayList<String> channelList = new ArrayList<String>();
-		channelList.add(null);
 		otpRequestDto.setOtpChannel(channelList);
 		otpRequestDto.setIndividualId("2345678901234");
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());
@@ -159,7 +158,7 @@ public class OTPServiceImplTest {
 		identityInfoDTO1.setValue("9876543210");
 		phoneList.add(identityInfoDTO1);
 		idInfo.put("email", mailList);
-		idInfo.put("phone", phoneList);
+		idInfo.put("mobile", phoneList);
 		valueMap.put("uin", "426789089018");
 		valueMap.put("phone", "426789089018");
 		valueMap.put("response", idInfo);
@@ -203,7 +202,6 @@ public class OTPServiceImplTest {
 		otpRequestDto.setRequestTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTransactionID("1234567890");
 		ArrayList<String> channelList = new ArrayList<String>();
-		channelList.add(null);
 		otpRequestDto.setOtpChannel(channelList);
 		otpRequestDto.setIndividualId("2345678901234");
 		otpRequestDto.setIndividualIdType(IdType.UIN.getType());

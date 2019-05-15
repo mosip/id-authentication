@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.naming.Context;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -30,7 +32,7 @@ import javax.naming.ldap.LdapContext;
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
@@ -44,6 +46,7 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
+import io.mosip.kernel.auth.constant.LdapConstants;
 import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LdapControl;
@@ -55,11 +58,13 @@ import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
 import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
@@ -258,7 +263,6 @@ public class ILdapDataStore implements IDataStore {
 					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
-
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");
@@ -289,8 +293,12 @@ public class ILdapDataStore implements IDataStore {
 		return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
 	}
 
-	private Dn createUserDn(String userName) throws Exception {
+	private Dn createUserDn(String userName) throws LdapInvalidDnException  {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
+	}
+
+	private Dn createRoleDn(String role) throws LdapInvalidDnException  {
+		return new Dn("cn=" + role + ",ou=roles,c=morocco");
 	}
 
 	@Override
@@ -358,7 +366,7 @@ public class ILdapDataStore implements IDataStore {
 		for (Entry entry : peoplesData) {
 			UserDetailsSalt saltDetails = new UserDetailsSalt();
 			saltDetails.setUserId(entry.get("uid").get().toString());
-			if (entry.get("userPassword").get() != null) {
+			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
 					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
@@ -384,6 +392,7 @@ public class ILdapDataStore implements IDataStore {
 			ridDto = new RIdDto();
 			ridDto.setRId(data.getRId());
 		}
+    ldapConnection.close();
 		return ridDto;
 	}
 
@@ -600,55 +609,111 @@ public class ILdapDataStore implements IDataStore {
 
 		return (password.contains(userId) || password.contains(email));
 	}
-
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userCreationRequestDto){
-		LdapConnection connection = null;
-		Dn dn = null;
-		try {
-			connection = createAnonymousConnection();
-			dn=createUserDn(userCreationRequestDto.getUserName());
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		Hashtable<String,String> env = new Hashtable<>();
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
-		if(connection.exists(dn)) {
-			//throw already exist exception
-		}else {
-	  DirContext  context = null;	
-	
-	  List<Attribute> attributes= new ArrayList<>();
-       attributes.add(new BasicAttribute("cn", userCreationRequestDto.getUserName()));  
-       attributes.add(new BasicAttribute("sn", userCreationRequestDto.getUserName()));  
-       attributes.add(new BasicAttribute("mail", userCreationRequestDto.getEmailID()));  
-       attributes.add(new BasicAttribute("mobile", userCreationRequestDto.getContactNo()));
-       attributes.add(new BasicAttribute("dateOfBirth", userCreationRequestDto.getDateOfBirth()));
-       attributes.add( new BasicAttribute("firstName", userCreationRequestDto.getFirstName()));
-       attributes.add(new BasicAttribute("lastName", userCreationRequestDto.getLastName()));
-       attributes.add( new BasicAttribute("gender", userCreationRequestDto.getGender()));
-        
-        Attribute oc = new BasicAttribute("objectClass");  
-        oc.add("top");  
-        oc.add("person");  
-        oc.add("organizationalPerson");  
-        oc.add("inetOrgPerson");  
-        oc.add("userDetails"); 
-        attributes.add(oc);
+			userDn = createUserDn(userCreationRequestDto.getUserName());
+			List<Attribute> attributes = new ArrayList<>();
+			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.SN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.MAIL, userCreationRequestDto.getEmailID()));
+			attributes.add(new BasicAttribute(LdapConstants.MOBILE, userCreationRequestDto.getContactNo()));
+			attributes.add(new BasicAttribute(LdapConstants.DOB, userCreationRequestDto.getDateOfBirth().toString()));
+			attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
+			attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
+			attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
+			attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
+			Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
+			oc.add(LdapConstants.INET_ORG_PERSON);
+			oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
+			oc.add(LdapConstants.PERSON);
+			oc.add(LdapConstants.TOP);
+			oc.add(LdapConstants.USER_DETAILS);
+			attributes.add(oc);
+			context = new InitialDirContext(env);
+			BasicAttributes entry = new BasicAttributes();
+			attributes.parallelStream().forEach(entry::put);
+			context.createSubcontext(userDn.getName(), entry);
+			Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+			ModificationItem[] mods = new ModificationItem[1];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.ROLE_OCCUPANT, userDn.getName()));
+			context.modifyAttributes(roleOccupant.getName(), mods);
 
-	context = new InitialDirContext(env);
-	BasicAttributes entry = new BasicAttributes();  
-    attributes.parallelStream().forEach(entry::put); 
-    context.createSubcontext(dn.getName(), entry);  
+		} catch (NameAlreadyBoundException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
+					AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
+		} catch (NameNotFoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
+
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		try {
+			userDn = createUserDn(userPasswordRequestDto.getUserName());
+			context = new InitialDirContext(env);
+			ModificationItem[] mods = new ModificationItem[3];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.RID, userPasswordRequestDto.getRid()));
+			mods[1] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.USER_PASSWORD, userPasswordRequestDto.getPassword()));
+			mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.TRUE));
+			context.modifyAttributes(userDn.getName(), mods);
+
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
+	}
 	
-}}catch (NamingException|LdapException e) {
-	System.out.println(e.getMessage());
+	private void rollbackUser(Dn userDn, DirContext context) {
+		try {
+			context.destroySubcontext(userDn.getName());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
+					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
+		}
+	}
+  @Override
+	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(username);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		ldapConnection.close();
+		return data;
+	}
 }
-        return null;
-	
-	}}

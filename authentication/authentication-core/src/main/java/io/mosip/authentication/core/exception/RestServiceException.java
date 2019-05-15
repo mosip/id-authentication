@@ -3,6 +3,7 @@ package io.mosip.authentication.core.exception;
 import java.util.Optional;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
  * Thrown when an exception occurs using Rest exchange.
@@ -58,6 +59,18 @@ public class RestServiceException extends IdAuthenticationAppException {
 		super(exceptionConstant);
 		this.responseBody = responseBody;
 		this.responseBodyAsString = responseBodyAsString;
+	}
+	
+	/**
+	 * Constructs exception for the given  error code, error message and {@code Throwable}.
+	 *
+	 * @param errorCode the error code
+	 * @param errorMessage the error message
+	 * @param cause the cause
+	 * @see BaseUncheckedException#BaseUncheckedException(String, String, Throwable)
+	 */
+	public RestServiceException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 
 	/**
