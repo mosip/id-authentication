@@ -367,7 +367,7 @@ public class DocumentScanController extends BaseController {
 										+ documentCategory.getCode() + " " + RegistrationUIConstants.DOCUMENT);
 					}
 				});
-				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
+				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
@@ -614,8 +614,9 @@ public class DocumentScanController extends BaseController {
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
+		
 
-		((ImageView) (((HBox) vboxElement.getParent()).getChildren().get(0))).setImage(new Image(
+		((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -745,7 +746,7 @@ public class DocumentScanController extends BaseController {
 					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
+			((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
 			initializePreviewSection();		
