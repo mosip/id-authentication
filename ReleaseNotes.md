@@ -46,7 +46,7 @@ rxtxSerial.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> 
 local_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 US_export_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
-run.jar|NA|NA|<br>Please execute the command to run the shaded jar</br><br> **“java -Dfile.encoding=UTF-8 -Dspring.profiles.active=qa -jar <Fat_Jar_Name>.jar”**</br>
+mosip-sw-0.11.0.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
 kernel-core|NA|NA|Basic core kernel packages.
 kernel-logger-logback|NA|NA|Use for the logging.
