@@ -329,8 +329,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		table.setItems(sortedList);
 	}
 
-	private FilteredList<RegistrationApprovalVO> filterData(String newValue,
-			FilteredList<RegistrationApprovalVO> filteredData) {
+	private void filterData(String newValue, FilteredList<RegistrationApprovalVO> filteredData) {
 		filteredData.setPredicate(reg -> {
 			// If filter text is empty, display all ID's.
 			if (newValue == null || newValue.isEmpty()) {
@@ -349,7 +348,6 @@ public class RegistrationApprovalController extends BaseController implements In
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
 		}
-		return filteredData;
 	}
 
 	/**

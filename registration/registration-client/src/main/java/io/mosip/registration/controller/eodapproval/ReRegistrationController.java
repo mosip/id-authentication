@@ -284,8 +284,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
-			observableList = FXCollections
-					.observableArrayList(reRegistrationPacketsList);
+			observableList = FXCollections.observableArrayList(reRegistrationPacketsList);
 			wrapListAndAddFiltering();
 			table.setItems(sortedList);
 		} else {
@@ -303,33 +302,40 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredList.setPredicate(reg -> {
-				// If filter text is empty, display all ID's.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-
-				// Compare every ID with filter text.
-				String lowerCaseFilter = newValue.toLowerCase();
-
-				if (reg.getFileName().contains(lowerCaseFilter)) {
-					// Filter matches first name.
-					table.getSelectionModel().selectFirst();
-					return true;
-				}
-				return false; // Does not match.
-			});
-			table.getSelectionModel().selectFirst();
-			if (table.getSelectionModel().getSelectedItem() != null) {
-				viewAck();
-			}
+			filterData(newValue, filteredList);
 		});
+		if(!filterField.getText().isEmpty()) {
+			filterData(filterField.getText(), filteredList);
+		}
 
 		// 3. Wrap the FilteredList in a SortedList.
 		sortedList = new SortedList<>(filteredList);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
+	}
+
+	private void filterData(String newValue, FilteredList<PacketStatusDTO> filteredList) {
+		filteredList.setPredicate(reg -> {
+			// If filter text is empty, display all ID's.
+			if (newValue == null || newValue.isEmpty()) {
+				return true;
+			}
+
+			// Compare every ID with filter text.
+			String lowerCaseFilter = newValue.toLowerCase();
+
+			if (reg.getFileName().contains(lowerCaseFilter)) {
+				// Filter matches first name.
+				table.getSelectionModel().selectFirst();
+				return true;
+			}
+			return false; // Does not match.
+		});
+		table.getSelectionModel().selectFirst();
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
 	}
 
 	private void setInvisible() {
