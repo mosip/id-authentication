@@ -99,17 +99,16 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParamList.add(globalParam);
 		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);
-
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 
 	@Test
 	public void syncConfigData() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
-		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap = new LinkedHashMap<>();
 
 		globalParamJsonMap.put("kernel", "5");
-		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap2 = new LinkedHashMap<>();
 		globalParamJsonMap2.put("loginSequence1", "OTP");
 		globalParamJsonMap.put("response", globalParamJsonMap2);
 

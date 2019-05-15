@@ -140,6 +140,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
+	public static final String REG_LGN_001 = bundle.getString("REG_LGN_001");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
 	public static final String SCAN = bundle.getString("SCAN");
