@@ -303,7 +303,9 @@ public class RegistrationApprovalController extends BaseController implements In
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			table.getItems().clear();
+			observableList.clear();
+			filterField.clear();
+			wrapListAndAddFiltering(observableList);
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
