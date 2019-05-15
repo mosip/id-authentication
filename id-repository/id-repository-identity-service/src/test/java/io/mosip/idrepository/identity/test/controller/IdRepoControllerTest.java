@@ -44,6 +44,7 @@ import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.spi.IdRepoService;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.identity.controller.IdRepoController;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -69,7 +70,7 @@ public class IdRepoControllerTest {
 	@Mock
 	private IdRepoService<IdRequestDTO, IdResponseDTO> idRepoService;
 
-	@InjectMocks
+	@Mock
 	private IdRequestValidator validator;
 
 	@Mock
@@ -203,9 +204,8 @@ public class IdRepoControllerTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityInvalidUin() throws IdRepoAppException {
-		IdResponseDTO response = new IdResponseDTO();
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		when(idRepoService.retrieveIdentityByUin(any(), any())).thenReturn(response);
+		when(idRepoService.retrieveIdentityByUin(any(), any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 		controller.retrieveIdentityByUin("1234", "demo");
 	}
 
@@ -247,9 +247,8 @@ public class IdRepoControllerTest {
 	@Test(expected = IdRepoAppException.class)
 	public void updateIdentityInvalidId()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		IdResponseDTO response = new IdResponseDTO();
-		when(uinValidator.validateId(any())).thenThrow(new InvalidIDException(null, null));
-		when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
+		when(idRepoService.updateIdentity(any(), any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 		IdRequestDTO request = new IdRequestDTO();
 		request.setId("mosip.id.update");
 		RequestDTO requestDTO = new RequestDTO();
@@ -324,11 +323,11 @@ public class IdRepoControllerTest {
 
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityByRidInvalidUin() throws IdRepoAppException {
-		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
 		when(ridValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		try {
-			when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
+			when(idRepoService.retrieveIdentityByRid(any(), any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 			controller.retrieveIdentityByRid("1234", "demo");
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

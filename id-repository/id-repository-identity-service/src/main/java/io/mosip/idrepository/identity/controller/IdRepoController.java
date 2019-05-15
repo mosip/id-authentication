@@ -54,6 +54,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	private static final String READ = "read";
+
 	private static final String REGISTRATION_ID = "registrationId";
 
 	private static final String RETRIEVE_IDENTITY_BY_RID = "retrieveIdentityByRid";
@@ -138,7 +140,7 @@ public class IdRepoController {
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), errors, CREATE);
-			validator.validateUin(uin);
+			validator.validateUin(uin,CREATE);
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
@@ -166,7 +168,7 @@ public class IdRepoController {
 		try {
 			IdRepoLogger.setUin(uin);
 			type = validateType(uin, type);
-			validator.validateUin(uin);
+			validator.validateUin(uin,READ);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByUin(uin, type), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
@@ -219,7 +221,7 @@ public class IdRepoController {
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), errors, UPDATE);
-			validator.validateUin(uin);
+			validator.validateUin(uin,UPDATE);
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {

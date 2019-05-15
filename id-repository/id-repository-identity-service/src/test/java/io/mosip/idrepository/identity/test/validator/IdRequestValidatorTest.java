@@ -44,6 +44,7 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
@@ -72,7 +73,7 @@ public class IdRequestValidatorTest {
 
 	@InjectMocks
 	IdRequestValidator validator;
-
+	
 	@Autowired
 	private Environment env;
 
@@ -465,7 +466,7 @@ public class IdRequestValidatorTest {
 
 		RequestDTO req = new RequestDTO();
 		req.setRegistrationId("1234");
-		req.setStatus("ACTIVATED");
+		req.setStatus("BLOCKED");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		request.setRequesttime(DateUtils.getUTCCurrentDateTime());
@@ -500,7 +501,7 @@ public class IdRequestValidatorTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testInvalidUin() throws IdRepoAppException {
 		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		validator.validateUin("1234");
+		validator.validateUin("1234","read");
 	}
 	
 
@@ -512,7 +513,7 @@ public class IdRequestValidatorTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testValidateNullId() throws IdRepoAppException {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
-		validator.validateUin(null);
+		validator.validateUin(null,"create");
 	}
 	
 
