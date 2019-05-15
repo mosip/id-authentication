@@ -2,12 +2,15 @@ package io.mosip.admin.core.exception;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -20,6 +23,8 @@ import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
 import io.mosip.admin.accountmgmt.exception.RequestException;
+import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
+import io.mosip.admin.usermgmt.constants.UserManagementConstants;
 import io.mosip.admin.usermgmt.exception.UsermanagementServiceException;
 import io.mosip.admin.usermgmt.exception.UsermanagementServiceResponseException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -80,6 +85,19 @@ public class ApiExceptionHandler {
 
 		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
+			HttpServletRequest httpServletRequest, final MethodArgumentNotValidException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+		fieldErrors.forEach(x -> {
+			ServiceError error = new ServiceError(UserMgmtErrorCode.INVALID_REQUEST.getErrorCode(),
+					x.getField() + UserManagementConstants.WHITESPACE + x.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
@@ -97,6 +115,7 @@ public class ApiExceptionHandler {
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
+
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultServiceErrorHandler(HttpServletRequest request,

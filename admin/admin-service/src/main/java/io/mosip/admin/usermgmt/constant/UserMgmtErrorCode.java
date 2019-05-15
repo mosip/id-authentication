@@ -15,6 +15,8 @@ package io.mosip.admin.usermgmt.constant;
  */
 public enum UserMgmtErrorCode {
 	
+	INVALID_REQUEST("KER-UMT-002", "should not be null or empty"),
+	
 	INTERNAL_SERVER_ERROR("KER-UMT-500", "Internal server error occured : ");
 
 	/**

@@ -612,12 +612,8 @@ public class ILdapDataStore implements IDataStore {
 	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
-		Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
-		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
-		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
+			context = getDirContext();
 			userDn = createUserDn(userCreationRequestDto.getUserName());
 			List<Attribute> attributes = new ArrayList<>();
 			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
@@ -636,7 +632,7 @@ public class ILdapDataStore implements IDataStore {
 			oc.add(LdapConstants.TOP);
 			oc.add(LdapConstants.USER_DETAILS);
 			attributes.add(oc);
-			context = new InitialDirContext(env);
+			
 			BasicAttributes entry = new BasicAttributes();
 			attributes.parallelStream().forEach(entry::put);
 			context.createSubcontext(userDn.getName(), entry);
@@ -662,6 +658,15 @@ public class ILdapDataStore implements IDataStore {
 		}
 		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
 
+	}
+
+	private DirContext getDirContext() throws NamingException {
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		return new InitialDirContext(env);
 	}
 
 	@Override
