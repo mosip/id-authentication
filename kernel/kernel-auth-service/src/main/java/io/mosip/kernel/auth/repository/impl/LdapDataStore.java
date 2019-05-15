@@ -537,13 +537,8 @@ public class LdapDataStore implements DataStore {
 	 */
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
-		Dn searchBase = new Dn("ou=people,c=morocco");
+		NamingEnumeration<SearchResult> searchResult = getUserDetail(mobileNumber);
 		UserNameDto userNameDto = new UserNameDto();
-		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
-				+ mobileNumber + "))";
-		LdapContext context = getContext();
-		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
-				new SearchControls());
 		if (!searchResult.hasMore()) {
 			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
 		}
@@ -552,7 +547,7 @@ public class LdapDataStore implements DataStore {
 			Attribute uid = attributes.get("uid");
 			userNameDto.setUserName((String) uid.get());
 		}
-		context.close();
+
 		return userNameDto;
 	}
 
@@ -600,9 +595,12 @@ public class LdapDataStore implements DataStore {
 	 * Check password matches with either userid or email id. At most 3 letters can
 	 * match with the password.
 	 * 
-	 * @param userId   - user id
-	 * @param email    - email
-	 * @param password - password
+	 * @param userId
+	 *            - user id
+	 * @param email
+	 *            - email
+	 * @param password
+	 *            - password
 	 * @return {@link boolean}
 	 */
 	private boolean isNotAMatchWithUserOrEmail(String userId, String email, String password) {
@@ -722,5 +720,58 @@ public class LdapDataStore implements DataStore {
 		}
 		ldapConnection.close();
 		return data;
+	}
+
+	@Override
+	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+		MosipUserDto mosipUserDto = new MosipUserDto();
+		try {
+			LdapContext context = getContext();
+			NamingEnumeration<SearchResult> searchResult = getUserDetail(mobileNumber);
+
+			while (searchResult.hasMore()) {
+				Attributes attributes = searchResult.next().getAttributes();
+				mosipUserDto.setUserId((String) attributes.get("uid").get());
+				Dn searchBase = new Dn("ou=roles,c=morocco");
+				String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid="
+						+ (String) attributes.get("uid").get() + ",ou=people,c=morocco))";
+				NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
+						new SearchControls());
+				Set<String> roles = new HashSet<String>();
+				while (searchResultRoles.hasMore()) {
+					Attributes attributeRoles = searchResultRoles.next().getAttributes();
+					roles.add((String) attributeRoles.get("cn").get());
+				}
+				String rolesAsString = convertRolesToString(roles);
+				mosipUserDto.setMail((String) attributes.get("mail").get());
+				mosipUserDto.setMobile((String) attributes.get("mobile").get());
+				mosipUserDto.setName((String) attributes.get("cn").get());
+				mosipUserDto.setRole(rolesAsString);
+				context.close();
+			}
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+		} catch (LdapInvalidDnException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+		}
+
+		return mosipUserDto;
+	}
+
+	private NamingEnumeration<SearchResult> getUserDetail(String mobileNumber)
+			throws LdapInvalidDnException, NamingException {
+		Dn searchBase = new Dn("ou=people,c=morocco");
+		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
+				+ mobileNumber + "))";
+		LdapContext context = getContext();
+		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		if (!searchResult.hasMore()) {
+			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
+		}
+		context.close();
+		return searchResult;
 	}
 }
