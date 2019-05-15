@@ -93,7 +93,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 
 		
-		switch (testParam) {
+		switch ("smoke") {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");

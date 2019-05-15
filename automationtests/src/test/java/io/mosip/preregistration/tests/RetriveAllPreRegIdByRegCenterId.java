@@ -153,7 +153,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
-
+		
+		
 		switch (val) {
 
 		case "RetrivePreIdByRegCenterId_smoke":
@@ -204,6 +205,29 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			Actualresponse = applicationLibrary
 					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
+
+			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("resTime");
+			innerKeys.add("registartion_center_id");
+			innerKeys.add("pre_registration_ids");
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+			
+		case "RetrivePreIdByRegCenterIdByPassingInvalidToDate":
+			LocalDate curFrmDate = currentTime.toLocalDate();
+			
+			String invToDate = actualRequest.get("to_date").toString();
+			HashMap<String, String> parmForToDate = new HashMap<>();
+			parmForToDate.put("from_date", curFrmDate.toString());
+			parmForToDate.put("to_date", invToDate);
+
+			String preReg_RetriveBookedPreRegIdByRegId_InvTodate = preReg_URI + regCenterId;
+
+			Actualresponse = applicationLibrary
+					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response

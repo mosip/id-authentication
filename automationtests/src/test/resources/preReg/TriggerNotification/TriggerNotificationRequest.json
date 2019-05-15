@@ -1,7 +1,7 @@
 {
     "preReg_TriggerNotification_id_withEmptyValue":"",
     "preReg_TriggerNotification_id_withOtherThanStandardValue":"",
-    "preReg_TriggerNotification_requesttime_witDateLessThanCurrentDate":"",
+    "preReg_TriggerNotification_requesttime_withDateLessThanCurrentDate":"",
     "preReg_TriggerNotification_requesttime_withAlphabets":"",
     "preReg_TriggerNotification_requesttime_withDateGreaterThanCurrentDate":"",
     "preReg_TriggerNotification_requesttime_withEmptyValue":"",
