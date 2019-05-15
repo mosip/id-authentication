@@ -58,7 +58,6 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
     },
     error => {
       this.errorMessage = error;
-      alert(this.errorMessage);
     });
   }
 
@@ -96,6 +95,9 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
         } else {
           alert('OTP_SEND_FAILED');
         }
+    },
+    error => {
+      this.errorMessage = error;
     });
     this.otpExpiryTimeReached = false;
     clearInterval(this.interval);
