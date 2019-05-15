@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -60,7 +59,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 		LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into get public key method.....");
 
-		ResponseDTO responseDTO = null;
+		ResponseDTO responseDTO = new ResponseDTO();
 
 		try {
 
@@ -74,9 +73,13 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 				responseDTO = insertPublickey(triggerPoint);
 
 				if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
+					responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+							null);
 					LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							responseDTO.getSuccessResponseDTO().getMessage());
 				} else {
+					responseDTO = setErrorResponse(new ResponseDTO(), RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE,
+							null);
 					LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 							"Public Key Sync Failure");
 				}
@@ -91,13 +94,19 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 					responseDTO = insertPublickey(triggerPoint);
 
 					if (null != responseDTO && null != responseDTO.getSuccessResponseDTO()) {
+						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE,
+								null);
 						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 								responseDTO.getSuccessResponseDTO().getMessage());
 					} else {
+						responseDTO = setErrorResponse(new ResponseDTO(),
+								RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 						LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
 								"Public Key Sync Failure");
 					}
 				}
+				
+				responseDTO=setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 			}
 
 		} catch (RegBaseCheckedException regBaseCheckedException) {
@@ -174,7 +183,7 @@ public class PublicKeySyncImpl extends BaseService implements PublicKeySync {
 				}
 			} else {
 				LOGGER.error(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
-						"Unable to sync user salt data as there is no internet connection");
+						"Unable to sync public key as there is no internet connection");
 				setErrorResponse(responseDTO, RegistrationConstants.ERROR, null);
 			}
 

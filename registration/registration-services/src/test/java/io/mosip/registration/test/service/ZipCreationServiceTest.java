@@ -74,6 +74,8 @@ public class ZipCreationServiceTest {
 		irisDetailsDTOs.add(irisDetailsDTO);
 		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFingerprintDetailsDTO(null);
+		filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+				.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), "cbeff".getBytes());
 		byte[] packetZipInBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		Assert.assertNotNull(packetZipInBytes);
 	}
@@ -105,6 +107,8 @@ public class ZipCreationServiceTest {
 		filesGeneratedForPacket.put(PACKET_DATA_HASH_FILE_NAME, "HASHCode".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
 		filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, "packet_osi_hash".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.PARENT
+				.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), "cbeff".getBytes());
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
@@ -125,7 +129,7 @@ public class ZipCreationServiceTest {
 		
 		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		
-		//zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
+		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
 	}
 
 }
