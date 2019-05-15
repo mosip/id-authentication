@@ -19,6 +19,7 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
   interval: any;
   otpValidationStatus: string;
   userName: string;
+  rid: string;
   otpValidatorModel = {} as OtpValidator;
   requestModel: any;
   constructor(private router: Router, private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private service: UserregistrationService) {
@@ -36,6 +37,7 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
     this.startCountDown(120);
     this.activatedRoute.queryParams.subscribe(params => {
       const userNameQueryParam = params['username'];
+      this.rid = params['rid'];
       this.userName = userNameQueryParam;
     });
   }
@@ -76,7 +78,7 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
       }
       if (data['response']['status'] === 'success') {
         alert('OTP verified successfully');
-        this.router.navigateByUrl('/admin/usermgmt/createpassword?username=' + this.userName);
+        this.router.navigateByUrl('/admin/usermgmt/createpassword?username=' + this.userName + '&rid=' + this.rid);
       }
       if (data['response']['status'] === 'failure') {
         alert('OTP Validation Failed');

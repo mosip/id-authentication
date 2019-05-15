@@ -20,4 +20,7 @@ export class UserregistrationService {
   otpValidator(requestDTO: any) {
     return this.http.post('http://localhost:8091/v1/authmanager/authenticate/useridOTP', requestDTO);
   }
+  passwordCreation(requestDTO: any) {
+    return this.http.post('http://localhost:8098/v1/admin/usermgmt/password', requestDTO);
+  }
 }
