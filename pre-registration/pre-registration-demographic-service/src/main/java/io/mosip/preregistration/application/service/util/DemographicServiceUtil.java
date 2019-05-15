@@ -242,23 +242,7 @@ public class DemographicServiceUtil {
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
-	// public Map<String, String>
-	// prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO>
-	// demographicRequestDTO) {
-	// log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of
-	// pre-registration service util");
-	// Map<String, String> inputValidation = new HashMap<>();
-	// inputValidation.put(RequestCodes.ID.getCode(),
-	// demographicRequestDTO.getId());
-	// inputValidation.put(RequestCodes.VER.getCode(),
-	// demographicRequestDTO.getVersion());
-	// inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-	// new
-	// SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
-	// inputValidation.put(RequestCodes.REQUEST.getCode(),
-	// demographicRequestDTO.getRequest().toString());
-	// return inputValidation;
-	// }
+	
 
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.

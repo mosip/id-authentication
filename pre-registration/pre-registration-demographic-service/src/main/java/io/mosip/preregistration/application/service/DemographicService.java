@@ -616,7 +616,7 @@ public class DemographicService {
 	 *            pass the preregId of individual
 	 * @return response DemographicData of preRegId
 	 */
-	public MainResponseDTO<DemographicResponseDTO> getDemographicData(String preRegId, String userId) {
+	public MainResponseDTO<DemographicResponseDTO> getDemographicData(String preRegId) {
 		log.info("sessionId", "idType", "id", "In getDemographicData method of pre-registration service ");
 		MainResponseDTO<DemographicResponseDTO> response = new MainResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
@@ -628,7 +628,6 @@ public class DemographicService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
-					// userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
 					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
