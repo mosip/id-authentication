@@ -22,25 +22,7 @@ RFC(s) #|	NA
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
 MOS-22148 |New|Tech story--Digital Signature of the Response received by Client
-MOS-22397|New|As the MOSIP Registration Client, <br>I should enforce security-related rules for first time login and sync</br>
-MOS-22822, MOS-22810 |New|Tech story -Upload packet changes
-MOS-21517|New|Stub--As MOSIP registration client, <br>for new registration of child capture any one biometric of the Parent/Guardian</br>
-MOS-22841|New|Deletion of Pre-reg packet once RID is created.
-MOS-18150|New|Tech Story - Secure the keys at Reg. client using TPM
-MOS-22068|New|As the MOSIP Registration Client, <br>for new registration and update, I should enable upload of applicable documents
-MOS-1279|New|Sync registration centre data</br>
-MOS-13527,MOS-16120|New|Download and run the registration client software[Partially].
-MOS-13560|New|Update UIN – proxy implementation
-MOS-13561|New|Select packets to upload
-MOS-13698,MOS-18089|New|Remap a machine from one centre to another
-MOS-16040|New|Technical story – Integration: Mode of login to client
-MOS-16109|New|Mark low quality biometrics as exceptions – proxy implementation 
-MOS-16712|New|Technical story – Push packet to server as background process
-MOS-17663,MOS-20253|New|Visual design changes
-MOS-18117|New|Retrieve lost UIN – proxy implementation
-MOS-19886|New|Authenticate registration with low quality biometrics – proxy implementation
-MOS-20066|New|Validate demographic details contain no blacklisted words
-MOS-20244|New|Technical story – UI validation using global parameters
+
 
 #### 2.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module/Files|Component|Version|Description (If any)
@@ -72,41 +54,6 @@ Child Registration & UIN Update|Due to packet meta info and ID json changes, <br
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
 MOS-22966|DONE|YES
-MOS-22967|DONE|YES
-MOS-22964|DONE|YES
-MOS-22804|DONE|YES
-MOS-22715|DONE|YES
-MOS-22725|DONE|YES
-MOS-22879|DONE|YES
-MOS-22979|DONE|YES
-MOS-22130|DONE|YES
-MOS-23105|DONE|YES
-MOS-23247|DONE|YES
-MOS-23119|DONE|YES
-MOS-23118|DONE|YES
-MOS-23100|DONE|YES
-MOS-22983|DONE|YES
-MOS-22838|DONE|YES
-MOS-22806|DONE|YES
-MOS-22805|DONE|YES
-MOS-22797|DONE|YES
-MOS-22783|DONE|YES
-MOS-22727|DONE|YES
-MOS-22712|DONE|YES
-MOS-22059|DONE|YES
-MOS-22756|DONE|YES
-MOS-22758|DONE|YES
-MOS-22783|DONE|YES
-MOS-22784|DONE|YES
-MOS-22788|DONE|YES
-MOS-22791|DONE|YES
-MOS-22794|DONE|YES
-MOS-22796|DONE|YES
-MOS-22712|DONE|YES
-MOS-22089|DONE|YES
-MOS-22448|DONE|YES
-MOS-22978|DONE|YES
-MOS-22977|DONE|YES
 
 #### 2.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
