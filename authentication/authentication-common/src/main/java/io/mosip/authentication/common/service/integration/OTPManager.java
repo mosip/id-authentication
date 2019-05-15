@@ -111,8 +111,8 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang,
-			String secLang) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, Map<String, String> valueMap)
+			throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
@@ -124,8 +124,7 @@ public class OTPManager {
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
 			otpGeneratorRequestDto.setUserId(uin);
-			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, namePri, nameSec, priLang,
-					secLang);
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, valueMap);
 			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
 			List<String> otpChannel = new ArrayList<>();
@@ -172,7 +171,8 @@ public class OTPManager {
 	 * Handle otp error response.
 	 *
 	 * @param responseBody the response body
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleOtpErrorResponse(Object responseBody) throws IdAuthenticationBusinessException {
@@ -205,8 +205,8 @@ public class OTPManager {
 	 * Send Otp Notification
 	 * 
 	 */
-	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri,
-			String nameSec, String priLang, String secLang) {
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin,
+			Map<String, String> valueMap) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -226,10 +226,9 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-
-		values.put(NAME, namePri);
-		values.put(NAME + "_" + priLang, namePri);
-		values.put(NAME + "_" + secLang, nameSec);
+		values.put(NAME, valueMap.get("namePri"));
+		values.put(NAME + "_" + valueMap.get("primaryLang"), valueMap.get("namePri"));
+		values.put(NAME + "_" + valueMap.get("secondayLang"), valueMap.get("nameSec"));
 		return values;
 	}
 
