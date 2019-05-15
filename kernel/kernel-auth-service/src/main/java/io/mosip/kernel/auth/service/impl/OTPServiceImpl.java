@@ -29,29 +29,29 @@ import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
-import io.mosip.kernel.auth.entities.AuthNResponseDto;
-import io.mosip.kernel.auth.entities.BasicTokenDto;
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.MosipUserDtoToken;
-import io.mosip.kernel.auth.entities.otp.OtpEmailSendResponseDto;
-import io.mosip.kernel.auth.entities.otp.OtpGenerateRequest;
-import io.mosip.kernel.auth.entities.otp.OtpGenerateRequestDto;
-import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
-import io.mosip.kernel.auth.entities.otp.OtpSmsSendRequestDto;
-import io.mosip.kernel.auth.entities.otp.OtpTemplateDto;
-import io.mosip.kernel.auth.entities.otp.OtpTemplateResponseDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.OtpValidatorResponseDto;
-import io.mosip.kernel.auth.entities.otp.SmsResponseDto;
-import io.mosip.kernel.auth.entities.otp.email.OTPEmailTemplate;
+import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.BasicTokenDto;
+import io.mosip.kernel.auth.dto.MosipUserDto;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
+import io.mosip.kernel.auth.dto.otp.OtpEmailSendResponseDto;
+import io.mosip.kernel.auth.dto.otp.OtpGenerateRequest;
+import io.mosip.kernel.auth.dto.otp.OtpGenerateRequestDto;
+import io.mosip.kernel.auth.dto.otp.OtpGenerateResponseDto;
+import io.mosip.kernel.auth.dto.otp.OtpSmsSendRequestDto;
+import io.mosip.kernel.auth.dto.otp.OtpTemplateDto;
+import io.mosip.kernel.auth.dto.otp.OtpTemplateResponseDto;
+import io.mosip.kernel.auth.dto.otp.OtpUser;
+import io.mosip.kernel.auth.dto.otp.OtpValidatorResponseDto;
+import io.mosip.kernel.auth.dto.otp.SmsResponseDto;
+import io.mosip.kernel.auth.dto.otp.email.OTPEmailTemplate;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
-import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.service.OTPGenerateService;
 import io.mosip.kernel.auth.service.OTPService;
-import io.mosip.kernel.auth.service.TemplateUtil;
 import io.mosip.kernel.auth.service.TokenGenerationService;
-import io.mosip.kernel.auth.validator.AuthOtpValidator;
+import io.mosip.kernel.auth.util.OtpValidator;
+import io.mosip.kernel.auth.util.TemplateUtil;
+import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -94,7 +94,7 @@ public class OTPServiceImpl implements OTPService {
 	private TemplateUtil templateUtil;
 
 	@Autowired
-	private AuthOtpValidator authOtpValidator;
+	private OtpValidator authOtpValidator;
 
 	@Override
 	public AuthNResponseDto sendOTP(MosipUserDto mosipUserDto, List<String> otpChannel, String appId) {
@@ -321,9 +321,9 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	@Override
-	public MosipUserDtoToken validateOTP(MosipUserDto mosipUser, String otp) {
+	public MosipUserTokenDto validateOTP(MosipUserDto mosipUser, String otp) {
 		String key = new OtpGenerateRequest(mosipUser).getKey();
-		MosipUserDtoToken mosipUserDtoToken = null;
+		MosipUserTokenDto mosipUserDtoToken = null;
 		ResponseEntity<String> response = null;
 		final String url = mosipEnvironment.getVerifyOtpUserApi();
 		String token = null;
@@ -357,12 +357,12 @@ public class OTPServiceImpl implements OTPService {
 			}
 			if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
 				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
-				mosipUserDtoToken = new MosipUserDtoToken(mosipUser, basicToken.getAuthToken(),
+				mosipUserDtoToken = new MosipUserTokenDto(mosipUser, basicToken.getAuthToken(),
 						basicToken.getRefreshToken(), basicToken.getExpiryTime(), null, null);
 				mosipUserDtoToken.setMessage(otpResponse.getMessage());
 				mosipUserDtoToken.setStatus(otpResponse.getStatus());
 			} else {
-				mosipUserDtoToken = new MosipUserDtoToken();
+				mosipUserDtoToken = new MosipUserTokenDto();
 				mosipUserDtoToken.setMessage(otpResponse.getMessage());
 				mosipUserDtoToken.setStatus(otpResponse.getStatus());
 			}

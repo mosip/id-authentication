@@ -11,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -159,7 +160,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The id repo api version. */
-	private String idRepoApiVersion = "1.0";
+	private String idRepoApiVersion = "v1";
 
 	/** The reg processor identity json. */
 	@Autowired
@@ -371,9 +372,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		requestDto.setDocuments(documentInfo);
 		requestDto.setRegistrationId(regId);
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
+		requestDto.setBiometricReferenceId(uin);
+		
 		IdResponseDTO result = null;
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setRequest(requestDto);
@@ -386,13 +386,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Request to IdRepo API", "is: " + idRequest);
 		try {
-			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments,
+			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
+			
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -501,8 +503,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 					requestDto.setRegistrationId(regId);
 					requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-					pathsegments.add(Long.toString(uin));
+					requestDto.setBiometricReferenceId(Long.toString(uin));
+					
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRequest(requestDto);
 					idRequestDTO.setMetadata(null);
@@ -517,7 +519,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
-
+				
 				if (result != null && result.getResponse() != null) {
 
 						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
@@ -591,7 +593,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				requestDto.setRegistrationId(regId);
 				requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
 
-				pathsegments.add(Long.toString(uin));
+				requestDto.setBiometricReferenceId(Long.toString(uin));
 				idRequestDTO.setId(idRepoUpdate);
 				idRequestDTO.setMetadata(null);
 				idRequestDTO.setRequest(requestDto);
@@ -647,6 +649,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
 					"", "", IdResponseDTO.class);
+			
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -692,7 +695,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			jsonString = objMapper.writeValueAsString(uinRequest);
 			String response;
 			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
-					jsonString, String.class);
+					jsonString, String.class,MediaType.APPLICATION_JSON);
+			
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getResponse() != null) {

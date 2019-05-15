@@ -146,7 +146,7 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 					});
-			if(!responseEntity.getBody().getErrors().isEmpty()) {
+			if(responseEntity.getBody().getErrors()!=null&&!responseEntity.getBody().getErrors().isEmpty()) {
 				throw new MasterDataNotAvailableException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity.getBody().getErrors().get(0).getMessage());
 			}
@@ -190,7 +190,7 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, httpHolidayEntity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
 					});
-			if(!responseEntity2.getBody().getErrors().isEmpty()) {
+			if(responseEntity2.getBody().getErrors()!=null&&!responseEntity2.getBody().getErrors().isEmpty()) {
 				throw new MasterDataNotAvailableException(responseEntity2.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity2.getBody().getErrors().get(0).getMessage());
 			}

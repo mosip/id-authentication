@@ -184,6 +184,8 @@ export class TimeSelectionComponent implements OnInit {
         console.log(response);
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
+        } else if (response[appConstants.NESTED_ERROR]) {
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       error => {
