@@ -108,7 +108,10 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 		HttpEntity<RequestWrapper<SendOtpRequestDto>> otpHttpEntity = new HttpEntity<>(requestWrapper, headers);
 		ResponseEntity<String> response = restTemplate.postForEntity(authSendOtpURL, otpHttpEntity, String.class);
 		UserMgmtUtil.throwExceptionIfExist(response);
-		return UserMgmtUtil.getResponse(objectMapper, response, RidVerificationResponseDto.class);
+		RidVerificationResponseDto responseDto=new RidVerificationResponseDto();
+		responseDto.setUserName(ridVerificationRequestDto.getUserName());
+		return responseDto;
+		//return UserMgmtUtil.getResponse(objectMapper, response, RidVerificationResponseDto.class);
 	}
 
 	@Override
