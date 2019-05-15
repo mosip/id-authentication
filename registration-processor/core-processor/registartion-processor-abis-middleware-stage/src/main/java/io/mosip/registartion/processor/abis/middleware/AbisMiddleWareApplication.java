@@ -6,7 +6,8 @@ import io.mosip.registartion.processor.abis.middleware.stage.AbisMiddleWareStage
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 
 /**
- * Hello world!
+ * @author Girish Yarru
+ * @since v1.0
  *
  */
 public class AbisMiddleWareApplication {
@@ -18,11 +19,9 @@ public class AbisMiddleWareApplication {
 				"io.mosip.registration.processor.core.kernel.beans");
 		configApplicationContext.refresh();
 		AbisMiddleWareStage demodedupeStage = configApplicationContext.getBean(AbisMiddleWareStage.class);
-		try {
+	
 			demodedupeStage.deployVerticle();
-		} catch (RegistrationProcessorCheckedException e) {
-			System.out.println(e);
-		}
+
 
 	}
 }
