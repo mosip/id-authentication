@@ -38,13 +38,13 @@ Module/Files|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
 Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine.
 ZIP|Fat Jar + DB|Latest version|The ZIP contains the both fat jar and required the initial DB. 
-RXTXcomm.jar[]|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext </br> <br>Please copy the jar to the ‘JAVA_HOME\jre\lib\ext’ folder</br>
-rxtxcomm-2.2.jar|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext</br> <br>Please copy the jar to the ‘JAVA_HOME\jre\lib\ext’ folder</br>
-java.security!(https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/java.security)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\security</br> <br>security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider</br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
-rxtxParallel.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin </br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
-rxtxSerial.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> Please copy the dll to the ‘JAVA_HOME\jre\bin’ file</br>
-local_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
-US_export_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
+[RXTXcomm.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/RXTXcomm.jar)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext </br> <br>Please copy the jar to the ‘JAVA_HOME\jre\lib\ext’ folder</br>
+[rxtxcomm-2.2.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/rxtxcomm-2.2.jar)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext</br> <br>Please copy the jar to the ‘JAVA_HOME\jre\lib\ext’ folder</br>
+[java.security](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/java.security)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\security</br> <br>security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider</br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
+[rxtxParallel.dll](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/rxtxParallel.dll)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin </br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
+[rxtxSerial.dll](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/rxtxSerial.dll)|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> Please copy the dll to the ‘JAVA_HOME\jre\bin’ file</br>
+[local_policy.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/local_policy.jar)|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
+[US_export_policy.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/US_export_policy.jar)|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
 mosip-sw-0.11.0.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
