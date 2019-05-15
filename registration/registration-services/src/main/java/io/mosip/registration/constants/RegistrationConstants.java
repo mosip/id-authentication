@@ -65,6 +65,9 @@ public class RegistrationConstants {
 	public static final String FINGER_PANE = "fingerPane";
 	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
 	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
+	public static final String MDM_ENVIRONMENT = "DEV";
+	public static final int MDM_TIMEOUT = 1000;
+	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
