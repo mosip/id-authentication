@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
@@ -43,21 +44,6 @@ public class ABISHandlerUtil {
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
-	private static final String IDENTIFY = "IDENTIFY";
-
-	private static final String TYPE = "type";
-
-	private static final String ALL = "ALL";
-
-	private static final String UIN = "UIN";
-
-	private static final String NEW = "NEW";
-
-	private static final String POST_API_PROCESS = "POST_API_PROCESS";
-
-	private static final String PROCESSING = "PROCESSING";
-
-	private static final String PROCESSED = "PROCESSED";
 
 	public List<String> getUniqueRegIds(String registrationId, String status)
 			throws ApisResourceAccessException, IOException {
@@ -72,7 +58,7 @@ public class ABISHandlerUtil {
 
 		if (!regBioRefIds.isEmpty()) {
 			List<AbisResponseDto> abisResponseDtoList = packetInfoManager.getAbisResponseRecords(regBioRefIds.get(0),
-					latestTransactionId, IDENTIFY);
+					latestTransactionId, AbisConstant.IDENTIFY);
 			for (AbisResponseDto abisResponseDto : abisResponseDtoList) {
 				abisResponseDetDtoList.addAll(packetInfoManager.getAbisResponseDetails(abisResponseDto.getId()));
 			}
@@ -81,8 +67,8 @@ public class ABISHandlerUtil {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
 				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, PROCESSING);
-				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, PROCESSED);
+				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, AbisConstant.PROCESSING);
+				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds, AbisConstant.PROCESSED);
 				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, status);
 				uniqueRIDs.addAll(processingRegIds);
 			}
@@ -94,9 +80,9 @@ public class ABISHandlerUtil {
 
 	public String getPacketStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
 		if (getMatchedRegIds(registrationStatusDto.getRegistrationId()).isEmpty()) {
-			return NEW;
+			return AbisConstant.PRE_ABIS_IDENTIFICATION;
 		}
-		return POST_API_PROCESS;
+		return AbisConstant.POST_ABIS_IDENTIFICATION;
 	}
 
 	private List<AbisRequestDto> getMatchedRegIds(String registrationId) {
@@ -152,8 +138,8 @@ public class ABISHandlerUtil {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response;
 
-		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, TYPE,
-				ALL, ResponseWrapper.class);
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, AbisConstant.TYPE,
+				AbisConstant.ALL, ResponseWrapper.class);
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
@@ -161,7 +147,7 @@ public class ABISHandlerUtil {
 			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
 			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
 					utilities.getGetRegProcessorDemographicIdentity());
-			uin = JsonUtil.getJSONValue(demographicIdentity, UIN);
+			uin = JsonUtil.getJSONValue(demographicIdentity, AbisConstant.UIN);
 		}
 		return uin;
 	}
