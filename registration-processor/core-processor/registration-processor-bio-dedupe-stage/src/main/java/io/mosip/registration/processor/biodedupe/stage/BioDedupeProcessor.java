@@ -122,8 +122,8 @@ public class BioDedupeProcessor {
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					newPacketPreAbisIdentification(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
-					newPacketPostAbisIdentification(registrationStatusDto, object);
-			
+					postAbisIdentification(registrationStatusDto, object, registrationType);
+
 				}
 
 			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
@@ -132,7 +132,7 @@ public class BioDedupeProcessor {
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					updatePacketPreAbisIdentification(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
-					updatePacketPostAbisIdentification(registrationStatusDto, object);
+					postAbisIdentification(registrationStatusDto, object, registrationType);
 				}
 
 			}
@@ -240,8 +240,8 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private void updatePacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws IOException {
+	private void updatePacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
+			MessageDTO object) throws IOException {
 
 		InputStream idJsonStream = adapter.getFile(registrationStatusDto.getRegistrationId(),
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -273,34 +273,11 @@ public class BioDedupeProcessor {
 		}
 	}
 
-	private void newPacketPostAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException {
+	private void postAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object,
+			String registrationType) throws ApisResourceAccessException, IOException {
 
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
-				SyncTypeDto.NEW.toString());
-		if (matchedRegIds.isEmpty()) {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			object.setIsValid(Boolean.TRUE);
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
-
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-			object.setIsValid(Boolean.FALSE);
-			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-					DedupeSourceName.BIO);
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(),
-					"ABIS response Details not null, destination stage is Manual_verification");
-
-		}
-	}
-
-	private void updatePacketPostAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
-			MessageDTO object) throws ApisResourceAccessException, IOException {
-		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
-				SyncTypeDto.UPDATE.toString());
+				registrationType);
 		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
