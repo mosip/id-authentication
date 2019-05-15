@@ -12,6 +12,7 @@ import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
 import { UserregistrationService } from './shared/services/userregistration.service';
 import { HttpClientModule } from '@angular/common/http';
+import { UinmgmtModule } from './feature/uinmgmt/uinmgmt.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -25,7 +26,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
     UsermgmtModule,
-    HttpClientModule
+    HttpClientModule,
+    UinmgmtModule
   ],
   providers: [UserregistrationService],
   bootstrap: [AppComponent]

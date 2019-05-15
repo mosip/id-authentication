@@ -21,7 +21,7 @@ import io.mosip.admin.usermgmt.dto.UserPasswordRequestDto;
 import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
-import io.mosip.admin.usermgmt.service.UserRegistrationService;
+import io.mosip.admin.usermgmt.service.UsermanagementService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -39,13 +39,13 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/usermgmt")
 @Api(value = "Operation related to User registration", tags = { "user_registration" })
-public class UserRegistrationController {
+public class UsermanagementController {
 
 	/**
 	 * {@link CryptomanagerService} instance
 	 */
 	@Autowired
-	private UserRegistrationService userRegistrationService;
+	private UsermanagementService userRegistrationService;
 
 	@ResponseFilter
 	@PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
