@@ -36,10 +36,12 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -290,7 +292,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("NEW");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -348,9 +350,9 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("NEW");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -369,7 +371,7 @@ public class DemodedupeProcessorTest {
 		List<AbisResponseDto> abisResponseDtos = new ArrayList<>();
 		AbisResponseDto abisResponseDto = new AbisResponseDto();
 		abisResponseDto.setId("100");
-		abisResponseDto.setStatusCode("PROCESSED");
+		abisResponseDto.setStatusCode(AbisStatusCode.SUCCESS.toString());
 		abisResponseDto.setLangCode("eng");
 		abisResponseDtos.add(abisResponseDto);
 
@@ -381,9 +383,9 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
@@ -401,7 +403,7 @@ public class DemodedupeProcessorTest {
 		List<String> matchedRegIds = new ArrayList<>();
 		AbisResponseDto abisResponseDto = new AbisResponseDto();
 		abisResponseDto.setId("100");
-		abisResponseDto.setStatusCode("PROCESSED");
+		abisResponseDto.setStatusCode(AbisStatusCode.SUCCESS.toString());
 		abisResponseDto.setLangCode("eng");
 		abisResponseDtos.add(abisResponseDto);
 
@@ -418,9 +420,9 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
@@ -451,9 +453,9 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
@@ -483,7 +485,7 @@ public class DemodedupeProcessorTest {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn(RegistrationType.NEW.toString());
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -526,8 +528,8 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		FSAdapterException exp = new FSAdapterException("errorMessage", "test");
-		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any(), any());
-		registrationStatusDto.setRegistrationType("NEW");
+		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any());
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());
@@ -538,8 +540,8 @@ public class DemodedupeProcessorTest {
 			IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IllegalArgumentException exp = new IllegalArgumentException("errorMessage");
-		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any(), any());
-		registrationStatusDto.setRegistrationType("NEW");
+		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any());
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.toString());
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
 		assertEquals(true, messageDto.getInternalError());

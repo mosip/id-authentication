@@ -17,6 +17,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -25,6 +26,7 @@ import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
+import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -135,14 +137,6 @@ public class DemodedupeProcessor {
 	/** The code. */
 	private String code = "";
 
-	/** The Constant POST_API_PROCESS. */
-	private static final String POST_API_PROCESS = "POST_API_PROCESS";
-	
-	
-
-	/** The Constant RE_REGISTER. */
-	private static final String RE_REGISTER = "RE-REGISTER";
-
 	/**
 	 * Process.
 	 *
@@ -167,10 +161,9 @@ public class DemodedupeProcessor {
 			// Persist Demographic packet Data if packet Registration type is NEW
 			if (registrationStatusDto.getRegistrationType().equals(RegistrationType.NEW.name())) {
 
-				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto,
-						RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
+				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto);
 
-				if (packetStatus.equalsIgnoreCase(RegistrationType.NEW.name())) {
+				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					InputStream packetMetaInfoStream = adapter.getFile(registrationId,
 							PacketFiles.PACKET_META_INFO.name());
 					PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
@@ -181,8 +174,7 @@ public class DemodedupeProcessor {
 					packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
 							packetMetaInfo.getIdentity().getMetaData());
 					isTransactionSuccessful = performDemoDedupe(registrationStatusDto, object);
-				} else if (packetStatus.equalsIgnoreCase(POST_API_PROCESS)) {
-					// Do the handler process
+				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
 					isTransactionSuccessful = processDemoDedupeRequesthandler(registrationStatusDto, object);
 				}
 
@@ -293,6 +285,8 @@ public class DemodedupeProcessor {
 			isMatchFound = true;
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			code = PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode();
 			description = "Record is inserted in demo dedupe potential match, destination stage is abis handler"
@@ -303,9 +297,7 @@ public class DemodedupeProcessor {
 
 		} else {
 			object.setIsValid(Boolean.TRUE);
-
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-
 			registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 
@@ -348,12 +340,14 @@ public class DemodedupeProcessor {
 		List<AbisResponseDto> abisResponseDto = packetInfoManager.getAbisResponseRecords(latestTransactionId, IDENTIFY);
 
 		for (AbisResponseDto responseDto : abisResponseDto) {
-			if (responseDto.getStatusCode().equalsIgnoreCase(RegistrationTransactionStatusCode.PROCESSED.toString())) {
+			if (responseDto.getStatusCode().equalsIgnoreCase(AbisStatusCode.SUCCESS.toString())) {
 				List<AbisResponseDetDto> abisResponseDetDto = packetInfoManager.getAbisResponseDetRecords(responseDto);
 				if (abisResponseDetDto.isEmpty()) {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 							"ABIS response Details null, hence no duplicates found");
@@ -362,6 +356,9 @@ public class DemodedupeProcessor {
 					object.setIsValid(Boolean.FALSE);
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
+					registrationStatusDto.setStatusComment(
+							StatusMessage.POTENTIAL_MATCH_FOUND_IN_ABIS + registrationStatusDto.getRegistrationId());
 					saveManualAdjudicationData(registrationStatusDto);
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
@@ -369,18 +366,21 @@ public class DemodedupeProcessor {
 
 				}
 			} else {
+				isTransactionSuccessful = true;
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
 						: 1;
-				description = registrationStatusDto.getStatusComment() + " -- "
+				description = "Failed in Abis. Hence sending to Reprocess" + " -- "
 						+ registrationStatusDto.getRegistrationId();
 				registrationStatusDto.setRetryCount(retryCount);
 
-				registrationStatusDto
-						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND));
+				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-						"ABIS response not processed. Hence sending to Reprocess");
+						"Failed in Abis. Hence sending to Reprocess");
 			}
 		}
 
@@ -402,7 +402,7 @@ public class DemodedupeProcessor {
 					.getRegistrationStatus(demographicInfoDto.getRegId());
 			if (potentialMatchRegistrationDto.getLatestTransactionStatusCode()
 					.equalsIgnoreCase(RegistrationTransactionStatusCode.REPROCESS.toString())
-					|| potentialMatchRegistrationDto.getLatestTransactionStatusCode().equalsIgnoreCase(RE_REGISTER)) {
+					|| potentialMatchRegistrationDto.getLatestTransactionStatusCode().equalsIgnoreCase(AbisConstant.RE_REGISTER)) {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"The packet status is Rejected or Re-Register. Hence ignoring Registration Id");

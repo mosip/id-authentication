@@ -9,6 +9,7 @@ public enum AbisStatusCode {
 	SENT, 
 	PROCESSED, 
 	FAILED,
+	SUCCESS,
 	
 	INSERT,
 	IDENTIFY
