@@ -8,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.iddefinition.JsonIdentitySchemaValidator;
 import io.mosip.admin.iddefinition.exception.JsonSchemaException;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+/*@SpringBootTest(classes=TestBootApplication.class)
+@RunWith(SpringRunner.class)*/
 public class JsonIdentitySchemaValidatorTest {
 
 	@Autowired

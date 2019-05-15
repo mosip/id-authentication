@@ -25,13 +25,14 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.securitypolicy.dto.UserRoleDto;
 import io.mosip.admin.securitypolicy.dto.UserRoleResponseDto;
 import io.mosip.kernel.core.exception.ServiceError;
 
-@SpringBootTest
+/*@SpringBootTest(classes=TestBootApplication.class)
 @RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class SecurityPolicyControllerTest {
 	@Autowired
 	private RestTemplate restTemplate;
