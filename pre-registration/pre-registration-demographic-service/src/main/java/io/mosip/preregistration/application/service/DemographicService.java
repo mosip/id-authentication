@@ -515,7 +515,7 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 
 				if (demographicEntity != null) {
-					userValidation(userId, demographicEntity.getCreatedBy());
+				//	userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 			        		
 					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
