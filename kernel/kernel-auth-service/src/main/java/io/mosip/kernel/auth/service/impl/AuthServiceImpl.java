@@ -33,6 +33,7 @@ import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
 import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
 import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.entities.UserRoleDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.factory.UserStoreFactory;
