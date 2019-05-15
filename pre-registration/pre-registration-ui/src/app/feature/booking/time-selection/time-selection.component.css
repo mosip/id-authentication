@@ -147,7 +147,7 @@
   .button-right {
       float: right;
   }
-  
+
   .user__btn:disabled,
   .user__btn:active {
     border: 1px solid gray;
@@ -226,7 +226,7 @@
     display: flex;
     text-align: center;
   }
-  
+
   .left-button{
       margin-top: 35px;
       float: left;
@@ -268,16 +268,15 @@
     flex: 1 1 auto;
   }
   .user-back-btn{
-    color: #FD518C;
-    background-color: white;
-    font-family: Roboto;
-    margin-right: 30px;
-    border: 1px solid #FD518C;
-    opacity:100%;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 1px;
-    border-radius: 0;
+    background-color: #ff4081;
+    border: none;
+    color: white !important;
+    padding: 0.8rem 4rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
 }
   .user-book_later-btn{
       color: #FD518C;
@@ -293,14 +292,15 @@
   }
   .user-continue-btn {
     background-color: #ff4081;
-    border-radius: 0;
+    border: none;
     color: white;
-    opacity:100%;
-    font-family: Roboto;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 1px;
-    
+    padding: 0.8rem 4rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+
   }
 
   .time-selection__date {
@@ -319,12 +319,12 @@
       }
       div::-webkit-scrollbar {
         width: 0px;
-        background: transparent; 
+        background: transparent;
     }
       .sizing{
           margin: 0 5px 0 5px;
       }
-      
+
     .time-selection__name-list-header {
         height: 150px;
         padding: 5px;
