@@ -5,12 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -1376,8 +1374,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -1484,9 +1481,8 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity
-								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
-										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setDateOfBirth(
+								applicationAge.isDisable() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
 										: Integer.parseInt(ageField.getText())))
