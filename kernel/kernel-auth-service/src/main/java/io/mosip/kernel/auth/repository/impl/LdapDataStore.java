@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
+import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
 import io.mosip.kernel.auth.constant.LdapConstants;
@@ -613,12 +614,8 @@ public class LdapDataStore implements DataStore {
 	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
-		Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, LdapConstants.LDAP_INITAL_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
-		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
-		env.put(Context.SECURITY_CREDENTIALS, "secret");
 		try {
+			context = getDirContext();
 			userDn = createUserDn(userCreationRequestDto.getUserName());
 			List<Attribute> attributes = new ArrayList<>();
 			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
@@ -637,7 +634,7 @@ public class LdapDataStore implements DataStore {
 			oc.add(LdapConstants.TOP);
 			oc.add(LdapConstants.USER_DETAILS);
 			attributes.add(oc);
-			context = new InitialDirContext(env);
+			
 			BasicAttributes entry = new BasicAttributes();
 			attributes.parallelStream().forEach(entry::put);
 			context.createSubcontext(userDn.getName(), entry);
@@ -657,7 +654,7 @@ public class LdapDataStore implements DataStore {
 		} catch (NamingException exception) {
 			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
 					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
-		} catch (LdapInvalidDnException exception) {
+		}catch (LdapInvalidDnException exception) {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
@@ -665,12 +662,21 @@ public class LdapDataStore implements DataStore {
 
 	}
 
+	private DirContext getDirContext() throws NamingException {
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		return new InitialDirContext(env);
+	}
+
 	@Override
 	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
 		Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, LdapConstants.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
 		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
 		env.put(Context.SECURITY_CREDENTIALS, "secret");
@@ -689,13 +695,13 @@ public class LdapDataStore implements DataStore {
 		} catch (NamingException exception) {
 			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
 					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
-		} catch (LdapInvalidDnException exception) {
+		}catch (LdapInvalidDnException exception) {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
 		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
 	}
-
+	
 	private void rollbackUser(Dn userDn, DirContext context) {
 		try {
 			context.destroySubcontext(userDn.getName());
@@ -704,6 +710,7 @@ public class LdapDataStore implements DataStore {
 					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
 		}
 	}
+
 	@Override
 	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
 		LdapConnection ldapConnection = createAnonymousConnection();

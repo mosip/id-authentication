@@ -5,7 +5,7 @@ import java.util.List;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 
-public class AdminServiceResponseException extends BaseUncheckedException{
+public class UsermanagementServiceResponseException extends BaseUncheckedException{
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class AdminServiceResponseException extends BaseUncheckedException{
 	 * @param list
 	 *            The error list.
 	 */
-	public AdminServiceResponseException(List<ServiceError> list) {
+	public UsermanagementServiceResponseException(List<ServiceError> list) {
 		this.list = list;
 	}
 
