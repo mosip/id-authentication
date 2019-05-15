@@ -16,6 +16,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
@@ -118,9 +120,9 @@ public class DemographicService {
 	/**
 	 * Autowired reference for {@link #JsonValidatorImpl}
 	 */
-//	@Autowired
-//	@Lazy
-//	private IdObjectValidator jsonValidator;
+	@Autowired
+	@Lazy
+	private IdObjectValidator jsonValidator;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -266,7 +268,7 @@ public class DemographicService {
 				DemographicRequestDTO demographicRequest = request.getRequest();
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-//				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
@@ -335,7 +337,7 @@ public class DemographicService {
 					DemographicRequestDTO demographicRequest = request.getRequest();
 					log.info("sessionId", "idType", "id",
 							"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-//					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
+					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
 					log.info("sessionId", "idType", "id",
 							"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 					DemographicEntity demographicEntity = demographicRepository
