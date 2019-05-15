@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,9 +31,11 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.mortbay.util.ajax.JSON;
 import org.postgresql.ssl.jdbc4.LibPQFactory;
 
 import com.google.common.io.Files;
+import com.google.gson.Gson;
 
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
@@ -774,10 +777,10 @@ public class CommonLibrary extends BaseTestCase{
         return getResponse;
       }
 	
-	public Response regProcSyncRequest(String url, Object body, String contentHeader, String acceptHeader) {
+	public Response regProcSyncRequest(String url, Object body, String center_machine_refId, String ldt, String contentHeader) {
 		Cookie.Builder builder = new Cookie.Builder("Authorization",regProcAuthToken);
-		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
-				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+		Response postResponse = given().cookie(builder.build()).header("Center-Machine-RefId",center_machine_refId).header("timestamp",ldt).relaxedHTTPSValidation().body("\""+body+"\"").contentType(contentHeader)
+				.log().all().when().post(url).then().log().all().extract().response();
 		return postResponse;
 	}
 	public Response regProcPacketUpload(File file,String url) {

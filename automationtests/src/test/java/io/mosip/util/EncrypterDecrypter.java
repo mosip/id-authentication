@@ -14,7 +14,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.zip.ZipInputStream;
 
@@ -23,6 +25,7 @@ import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -53,7 +56,7 @@ public class EncrypterDecrypter {
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
 	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
 			"";
-	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://dev.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
 	public void generateHash(byte[] fileByte) {
@@ -389,5 +392,85 @@ public class EncrypterDecrypter {
 				}
 			}
 		}
-}
+	}
+		@SuppressWarnings("unchecked")
+		public JSONObject generateCryptographicDataEncryption(JSONObject requestJson) {
+			JSONObject encryptRequest=new JSONObject();
+			CryptomanagerDto request=new CryptomanagerDto();
+			JSONObject cryptographicRequest=new JSONObject();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
+			InputStream encryptedPacket=null;
+			DecrypterDto decrypterDto=new DecrypterDto();
+			String registrationId = null;
+			
+			try {
+				//encryptedPacket=new FileInputStream(file);
+				byte [] fileInBytes= requestJson.toString().getBytes();
+				String encryptedPacketString= Base64.getEncoder().encodeToString(fileInBytes);
+				//String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
+				encryptedPacketString=encryptedPacketString.replaceAll("\\s+","");
+				JSONArray requestData = (JSONArray) requestJson.get("request");
+				JSONObject obj = (JSONObject) requestData.get(0);
+				registrationId = obj.get("registrationId").toString();
+				
+				String refId=registrationId.substring(0,5)+"_"+registrationId.substring(5,10);
+				String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
+				int n = 100 + new Random().nextInt(900);
+				String milliseconds = String.valueOf(n);
+				//encryptedPacket.close();
+				Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
+						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
+				LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+				Date currentDate=new Date();
+				LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+				decrypterDto.setApplicationId(applicationId);
+				decrypterDto.setReferenceId(refId);
+				decrypterDto.setData(encryptedPacketString);
+				decrypterDto.setTimeStamp(ldt);
+				request.setRequesttime(requestTime);
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.registerModule(new JavaTimeModule());
+				cryptographicRequest.put("applicationId", applicationId);
+				cryptographicRequest.put("data", encryptedPacketString);
+				cryptographicRequest.put("referenceId", refId);
+				cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+				encryptRequest.put("id","");
+				encryptRequest.put("metadata","");
+				encryptRequest.put("request",cryptographicRequest);
+				encryptRequest.put("requesttime", request.getRequesttime().atOffset(ZoneOffset.UTC).toString());
+				encryptRequest.put("version","");
+			} catch (java.text.ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return encryptRequest;
+		}
+		
+		public Map<String,Object> encryptJson(JSONObject  requestJson) {
+			String encryptedPacket =null;
+			String responseTime = null;
+			Map<String,Object> demo = new HashMap<>();
+			logger.info("requestJson : "+requestJson);
+			  JSONObject decryptedFileBody=new JSONObject();
+			  decryptedFileBody=generateCryptographicDataEncryption(requestJson);
+			  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
+			  try {
+				  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
+				  JSONObject responseObject=(JSONObject) data.get("response");
+				//  String encryptedPacketString= CryptoUtil.encodeBase64(data.get("data").toString().getBytes());
+				encryptedPacket = responseObject.get("data").toString();
+				responseTime = data.get("responsetime").toString();
+				logger.info("RESPONSE TIME : "+responseTime);
+				
+				demo.put("data", encryptedPacket);
+				demo.put("responsetime", responseTime);
+				
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return demo;
+			  
+			  
+		}
 }

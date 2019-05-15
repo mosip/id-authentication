@@ -2,6 +2,8 @@
 package io.mosip.service;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -160,9 +162,8 @@ public class ApplicationLibrary extends BaseTestCase {
 	        return commonLibrary.getRequestPathQueryParamString(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
 	
-	 public Response regProcSync(Object body, String Resource_URI) {
-			return commonLibrary.regProcSyncRequest(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
-					MediaType.APPLICATION_JSON);
+	 public Response regProcSync(Object body, String Resource_URI, String center_machine_refId, String ldt) {
+			return commonLibrary.regProcSyncRequest(ApplnURI + Resource_URI, body,center_machine_refId,ldt, MediaType.APPLICATION_JSON);
 		}
 		public Response regProcPacketUpload(File file, String Url) {
 			return commonLibrary.regProcPacketUpload(file,ApplnURI+Url);
