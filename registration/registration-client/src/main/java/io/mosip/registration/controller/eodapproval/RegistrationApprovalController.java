@@ -387,6 +387,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			wrapListAndAddFiltering(observableList);
 			table.requestFocus();
 			table.getFocusModel().focus(row);
+			table.getSelectionModel().select(row);
 			filterField.clear();
 
 		} else {

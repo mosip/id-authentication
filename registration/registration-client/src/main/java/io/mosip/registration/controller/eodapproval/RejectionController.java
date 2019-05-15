@@ -168,6 +168,7 @@ public class RejectionController extends BaseController implements Initializable
 			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
 			regRejectionTable.getFocusModel().focus(rowNum);
+			regRejectionTable.getSelectionModel().select(rowNum);
 			filterField.clear();
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
