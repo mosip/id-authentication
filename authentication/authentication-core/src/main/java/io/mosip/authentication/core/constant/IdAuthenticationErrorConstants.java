@@ -105,6 +105,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occurred"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
+	INVALID_USERID( "IDA-BIA-012","Invalid userid of the individual"),
 	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed")
 
 	;

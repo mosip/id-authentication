@@ -467,7 +467,7 @@ public abstract class BaseIDAFilter implements Filter {
 			
 			String responseTime = Objects.nonNull(responseBody.get(RES_TIME)) ? (String) responseBody.get(RES_TIME) :
 				DateUtils.getUTCCurrentDateTimeString();
-			responseBody.remove("requesttime");// Handled for forbidden error scenario
+			responseBody.remove("responsetime");// Handled for forbidden error scenario
 			responseBody.remove("metadata");// Handled for forbidden error scenario
 			responseBody
 					.put(RES_TIME,

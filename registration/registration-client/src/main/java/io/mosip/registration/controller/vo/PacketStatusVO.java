@@ -15,6 +15,36 @@ public class PacketStatusVO {
 	private String uploadStatus;
 	private String clientStatusComments;
 	private String packetStatus;
+	private String supervisorStatus;
+	private String supervisorComments;
+	
+	/**
+	 * @return the supervisorStatus
+	 */
+	public String getSupervisorStatus() {
+		return supervisorStatus;
+	}
+
+	/**
+	 * @param supervisorStatus the supervisorStatus to set
+	 */
+	public void setSupervisorStatus(String supervisorStatus) {
+		this.supervisorStatus = supervisorStatus;
+	}
+
+	/**
+	 * @return the supervisorComments
+	 */
+	public String getSupervisorComments() {
+		return supervisorComments;
+	}
+
+	/**
+	 * @param supervisorComments the supervisorComments to set
+	 */
+	public void setSupervisorComments(String supervisorComments) {
+		this.supervisorComments = supervisorComments;
+	}
 
 	public String getFileName() {
 		return fileName;

@@ -284,7 +284,9 @@ public class RegistrationController extends BaseController {
 									outputStream);
 							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
 							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-									|| getRegistrationDTOFromSession().isUpdateUINChild()) {
+									|| (getRegistrationDTOFromSession().isUpdateUINChild() && !SessionContext.map()
+											.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+											.equals(RegistrationConstants.ENABLE))) {
 								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 										.getExceptionFace().setFace(exceptionPhotoInBytes);
 								biometricDTO.setHasExceptionPhoto(true);

@@ -4,6 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -135,6 +139,21 @@ public class PacketUploadController extends BaseController implements Initializa
 						packetStatusVO.setPacketServerStatus(packet.getPacketServerStatus());
 						packetStatusVO.setPacketStatus(packet.getPacketStatus());
 						packetStatusVO.setUploadStatus(packet.getUploadStatus());
+						packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
+						packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
+						
+						try (FileInputStream fis = new FileInputStream(new File(packet.getPacketPath()
+								.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
+							byte[] byteArray = new byte[(int) fis.available()];
+							fis.read(byteArray);
+							byte[] packetHash = HMACUtils.generateHash(byteArray);
+							packetStatusVO.setPacketHash(HMACUtils.digestAsPlainText(packetHash));
+							packetStatusVO.setPacketSize(BigInteger.valueOf(byteArray.length));		
+							
+						} catch (IOException ioException) {
+							LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+						} 
 						packetsToBeSynced.add(packetStatusVO);
 					});
 					String packetSyncStatus = packetSynchService.packetSync(packetsToBeSynced);
@@ -378,10 +397,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			public void onChanged(Change<? extends PacketStatusVO> c) {
 				while (c.next()) {
 					if (c.wasUpdated()) {
-						if (!selectedPackets.contains(list.get(c.getFrom()))) {
-							selectedPackets.add(list.get(c.getFrom()));
+						if (!selectedPackets.contains(table.getItems().get(c.getFrom()))) {
+							selectedPackets.add(table.getItems().get(c.getFrom()));
 						} else {
-							selectedPackets.remove(list.get(c.getFrom()));
+							selectedPackets.remove(table.getItems().get(c.getFrom()));
 						}
 						saveToDevice.setDisable(!selectedPackets.isEmpty());
 					}
@@ -462,6 +481,8 @@ public class PacketUploadController extends BaseController implements Initializa
 			packetStatusVO.setPacketStatus(packet.getPacketStatus());
 			packetStatusVO.setStatus(false);
 			packetStatusVO.setUploadStatus(packet.getUploadStatus());
+			packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
+			packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
 			packetsToBeExport.add(packetStatusVO);
 		});
 		if (packetsToBeExport.isEmpty()) {

@@ -1,6 +1,7 @@
 package io.mosip.preregistration.core.util;
 
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.HashUtils;
 
 
 /**
@@ -14,5 +15,9 @@ public class HashUtill {
 
 	public static String hashUtill(byte[] bytes) {
 		return HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytes));
+	}
+	
+	public static boolean isHashEqual(byte[] source, byte[] target) {
+		return new HashUtils().isDigestEqual(source, target);
 	}
 }
