@@ -1,6 +1,7 @@
 package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class DocumentTypeDAOImplTest {
 	private DocumentTypeRepository registrationDocumentTypeRepository;
 
 	@Test
-	public void test() {
+	public void getDocumentTypesTest() {
 
 		List<DocumentType> list = new ArrayList<>();
 		DocumentType documentType = new DocumentType();
@@ -50,5 +51,12 @@ public class DocumentTypeDAOImplTest {
 		Mockito.when(registrationDocumentTypeRepository.findAll()).thenReturn(list);
 		assertEquals(list, registrationDocumentTypeDAOImpl.getDocumentTypes());
 
+	}
+	@Test
+	public void getDocTypeByNameTest()
+	{
+		List<DocumentType> list=new ArrayList<>();
+		Mockito.when(registrationDocumentTypeRepository.findByIsActiveTrueAndName(Mockito.anyString())).thenReturn(list);
+		assertNotNull(registrationDocumentTypeDAOImpl.getDocTypeByName("docTypeName"));
 	}
 }
