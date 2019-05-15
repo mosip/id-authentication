@@ -3,6 +3,8 @@ package io.mosip.authentication.internal.service.integarion;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +27,8 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -95,7 +99,7 @@ public class RestHelperImplTest {
 
 	/** The server. */
 	static BlockingNettyContext server;
-
+	
 	/**
 	 * Before.
 	 */
@@ -556,5 +560,91 @@ public class RestHelperImplTest {
 		}
 	}
 	
-}
+	@Test(expected = RestServiceException.class)
+	public void testRequestSyncTokenError() throws Throwable {
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("errorCode", "KER-ATH-401");
+			map.put("message", "Token Expired");
+			Map<String,	Map<String, Object>> map2 = new HashMap<>();
+			map2.put("errors", map);
+			byte[] bytes = mapper.writeValueAsBytes(map2);
+			ReflectionTestUtils
+			.invokeMethod(restHelper, "handleStatusError",
+					new WebClientResponseException("message", 401, "failed", null,bytes , null), String.class)
+			.getClass().equals(RestServiceException.class);
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected=RestServiceException.class)
+	public void testRequestSyncInvalid1() throws IDDataValidationException, RestServiceException {
 
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.FACE_AUTH,
+				AuditEvents.INTERNAL_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+		restRequest.setUri("https://dev.mosip.io/asdsa/");
+		restRequest.setTimeout(100);
+
+		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected=RestServiceException.class)
+	public void testRequestSyncInvalid2() throws IDDataValidationException, RestServiceException {
+
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.FACE_AUTH,
+				AuditEvents.INTERNAL_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+		restRequest.setUri("https://dev.mosip.io/asdsa/");
+		restRequest.setPathVariables(null);
+		MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+		paramMap.add("aasdsa", "asda");
+		restRequest.setParams(paramMap);
+		restRequest.setTimeout(100);
+
+		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected=RestServiceException.class)
+	public void testRequestSyncInvalid3() throws IDDataValidationException, RestServiceException {
+
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.FACE_AUTH,
+				AuditEvents.INTERNAL_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+		restRequest.setUri("https://dev.mosip.io/asdsa/");
+		Map<String, String> map = new HashMap<>();
+		map.put("aasdsa", "asda");
+		restRequest.setPathVariables(map);
+		restRequest.setParams(null);
+		restRequest.setTimeout(100);
+
+		restHelper.requestSync(restRequest);
+	}
+	
+	@Test(expected=RestServiceException.class)
+	public void testRequestSyncInvalid4() throws IDDataValidationException, RestServiceException {
+
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(AuditModules.FACE_AUTH,
+				AuditEvents.INTERNAL_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+
+		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+		restRequest.setUri("https://dev.mosip.io/asdsa/");
+		Map<String, String> map = new HashMap<>();
+		map.put("aasdsa", "asda");
+		restRequest.setPathVariables(map);
+		MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+		paramMap.add("aasdsa", "asda");
+		restRequest.setParams(paramMap);
+		restRequest.setTimeout(100);
+
+		restHelper.requestSync(restRequest);
+	}
+}

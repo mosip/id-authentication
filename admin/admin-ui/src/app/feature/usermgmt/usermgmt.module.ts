@@ -5,6 +5,7 @@ import { UsermgmtRoutingModule } from './usermgmt-routing.module';
 import { UserregistrationComponent } from './userregistration/userregistration.component';
 import { MaterialModule } from '../../material.module';
 import { RidverificationComponent } from './ridverification/ridverification.component';
+import { OtpvalidatorComponent } from './otpvalidator/otpvalidator.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { RidverificationComponent } from './ridverification/ridverification.comp
     MaterialModule,
     ReactiveFormsModule
   ],
-  declarations: [UserregistrationComponent, RidverificationComponent]
+  declarations: [UserregistrationComponent, RidverificationComponent, OtpvalidatorComponent]
 })
 export class UsermgmtModule { }

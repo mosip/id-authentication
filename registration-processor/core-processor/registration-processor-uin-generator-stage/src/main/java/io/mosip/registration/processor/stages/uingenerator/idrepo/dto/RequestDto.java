@@ -30,5 +30,6 @@ public class RequestDto {
 	
 	private String status;
 
-
+	/** The UIN */
+	private String biometricReferenceId;
 }

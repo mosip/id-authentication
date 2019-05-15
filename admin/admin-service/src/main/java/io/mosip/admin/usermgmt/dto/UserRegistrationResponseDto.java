@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserRegistrationResponseDto {
 	
-	private String status;
+	private String userName;
 	
 }
