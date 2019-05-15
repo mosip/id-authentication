@@ -14,6 +14,7 @@ import {RequestModel} from '../../shared/models/request-model';
 })
 export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   otpExpiryTimeReached: boolean;
+  errorMessage: string;
   userMobileNumber: number;
   minutes: number;
   seconds: number;
@@ -45,14 +46,17 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
     this.otpValidateModel.userId = this.facadeService.getUserID();
     this.requestModel = new RequestModel('id', 'v1', this.otpValidateModel, null);
     this.facadeService.validateOTP(this.requestModel).subscribe(otpValidateResponse => {
-      console.log(otpValidateResponse);
       this.otpValidationStatus = otpValidateResponse['response']['status'];
       if (this.otpValidationStatus === 'success') {
         this.router.navigate(['resetpassword']);
       }
-      if (this.otpValidationStatus === 'failure') {
+      if (this.otpValidationStatus === null) {
         alert('OTP Validation Failed');
       }
+    },
+    error => {
+      this.errorMessage = error;
+      alert(this.errorMessage);
     });
   }
 

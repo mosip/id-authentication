@@ -40,14 +40,18 @@ export class ForgotPasswordComponent implements OnInit {
       this.otpSendModel.useridtype = 'USERID';
       this.requestModel = new RequestModel('id', 'v1', this.otpSendModel, null);
       this.facadeService.sendOTP(this.requestModel).subscribe(sendOTPResponse => {
-        console.log(sendOTPResponse);
         this.sendOTPStatus = sendOTPResponse['response']['status'];
         if (this.sendOTPStatus === 'success') {
           this.router.navigate(['otpauthentication']);
+        } else {
+          alert('OTP_SEND_FAILED');
         }
       });
     },
-      error => this.errorMessage = error);
+      error => {
+        this.errorMessage = error;
+        alert(this.errorMessage);
+      });
   }
 }
 
