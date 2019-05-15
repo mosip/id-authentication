@@ -38,9 +38,9 @@ public interface DataStore  {
 	
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception;
 	
-	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) ;
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) ;
 
-	UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto);
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto);
 	
 	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception;
 	
@@ -48,13 +48,15 @@ public interface DataStore  {
 	
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception;
 	
-	MosipUserDto authenticateUser(LoginUser loginUser) throws Exception;
+	public MosipUserDto authenticateUser(LoginUser loginUser) throws Exception;
 
-	MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception;
+	public MosipUserDto authenticateWithOtp(OtpUser otpUser) throws Exception;
 
-	MosipUserDto authenticateUserWithOtp(UserOtp loginUser) throws Exception;
+	public MosipUserDto authenticateUserWithOtp(UserOtp loginUser) throws Exception;
 
-	MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception;
+	public MosipUserDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception;
+	
+	public MosipUserDto getUserRoleByUserId(String username)throws Exception;
 	
 
 }

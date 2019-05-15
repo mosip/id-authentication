@@ -1,4 +1,4 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.dto;
 
 import lombok.Data;
 
