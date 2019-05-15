@@ -1,5 +1,9 @@
+import { RequestModel } from './../../../shared/models/request-model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { OtpValidator } from '../../../shared/models/otp-validator-model';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { UserregistrationService } from '../../../shared/services/userregistration.service';
 @Component({
   selector: 'app-otpvalidator',
   templateUrl: './otpvalidator.component.html',
@@ -14,9 +18,10 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
   counter: number;
   interval: any;
   otpValidationStatus: string;
-
-
-  constructor(private formBuilder: FormBuilder) {
+  userName: string;
+  otpValidatorModel = {} as OtpValidator;
+  requestModel: any;
+  constructor(private router: Router, private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private service: UserregistrationService) {
     this.otpAuthenticationForm = this.formBuilder.group(
       {
         otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern('[0-9]+')]]
@@ -29,6 +34,10 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.otpExpiryTimeReached = false;
     this.startCountDown(120);
+    this.activatedRoute.queryParams.subscribe(params => {
+      const userNameQueryParam = params['username'];
+      this.userName = userNameQueryParam;
+    });
   }
   ngOnDestroy() {
     clearInterval(this.interval);
@@ -53,20 +62,29 @@ export class OtpvalidatorComponent implements OnInit, OnDestroy {
     this.startCountdown(120);
   }
   onSubmit() {
-    // this.otpValidateModel.appId = 'admin';
-    // this.otpValidateModel.otp = this.otpAuthenticationForm.get('otp').value;
-    // this.otpValidateModel.userId = this.facadeService.getUserID();
-    // this.requestModel = new RequestModel('id', 'v1', this.otpValidateModel, null);
-    // this.facadeService.validateOTP(this.requestModel).subscribe(otpValidateResponse => {
-    //   console.log(otpValidateResponse);
-    //   this.otpValidationStatus = otpValidateResponse['response']['status'];
-    //   if (this.otpValidationStatus === 'success') {
-    //     this.router.navigate(['resetpassword']);
-    //   }
-    //   if (this.otpValidationStatus === 'failure') {
-    //     alert('OTP Validation Failed');
-    //   }
-    // });
+    this.otpValidatorModel.appId = 'admin';
+    this.otpValidatorModel.userId = this.userName;
+    this.otpValidatorModel.otp = this.otpAuthenticationForm.get('otp').value;
+    this.requestModel = new RequestModel('id', 'v1', this.otpValidatorModel, null);
+    this.service.otpValidator(this.requestModel).subscribe(data => {
+      if (data['response'] === null) {
+        if (data['errors'] != null) {
+          alert('OTP authentication failed');
+          this.otpAuthenticationForm.reset();
+        }
+        return;
+      }
+      if (data['response']['status'] === 'success') {
+        alert('OTP verified successfully');
+        this.router.navigateByUrl('/admin/usermgmt/createpassword?username=' + this.userName);
+      }
+      if (data['response']['status'] === 'failure') {
+        alert('OTP Validation Failed');
+      }
+    }, error => {
+      console.log(error);
+    });
+
   }
 
 
