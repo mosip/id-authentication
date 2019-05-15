@@ -183,6 +183,7 @@ public class PacketUploadController extends BaseController implements Initializa
 				loadInitialPage();
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
 			}
+			filterField.clear();
 		} catch (RegBaseCheckedException checkedException) {
 			LOGGER.info("REGISTRATION - UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					checkedException.getMessage() + ExceptionUtils.getStackTrace(checkedException));

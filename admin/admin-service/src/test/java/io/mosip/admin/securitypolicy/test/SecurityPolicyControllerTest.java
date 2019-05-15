@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,11 +26,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.securitypolicy.dto.UserRoleDto;
 import io.mosip.admin.securitypolicy.dto.UserRoleResponseDto;
 import io.mosip.kernel.core.exception.ServiceError;
 
-@SpringBootTest
+@SpringBootTest(classes=TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class SecurityPolicyControllerTest {
@@ -58,6 +60,7 @@ public class SecurityPolicyControllerTest {
 	private String url = "/security/authfactors/{username}";
 
 	@Test
+	@WithUserDetails("zonal-admin")
 	public void testGetAuthFactorSuccess() throws Exception {
 		String user = "zonalAdmin";
 
@@ -75,6 +78,7 @@ public class SecurityPolicyControllerTest {
 	}
 
 	@Test
+	@WithUserDetails("zonal-admin")
 	public void testGetAuthFactorNoPolicyFound() throws Exception {
 
 		String user = "zonalAdmin";
@@ -93,6 +97,7 @@ public class SecurityPolicyControllerTest {
 	}
 	
 	@Test
+	@WithUserDetails("zonal-admin")
 	public void testGetAuthFactorRestClientException() throws Exception {
 
 		String user = "zonalAdmin";
@@ -111,6 +116,7 @@ public class SecurityPolicyControllerTest {
 	}
 	
 	@Test
+	@WithUserDetails("zonal-admin")
 	public void testGetAuthFactorClientError() throws Exception {
 		
 		String user = "zonalAdmin";

@@ -1,6 +1,6 @@
 <mat-card class="time-selection__title-card">
   <mat-card-header>
-      <p class="time-selection__title-card-text">{{'timeSelection.title_book'|translate}} 
+      <p class="time-selection__title-card-text">{{'timeSelection.title_book'|translate}}
           <mat-icon class="icon" matTooltip="{{ 'helpText.bookAppointment' | translate}}" [inline]="true">help_outline</mat-icon>
       </p>
   </mat-card-header>
@@ -15,7 +15,7 @@
           <a (click)="scrollLeft()"><img src="assets/left.png" /></a>
       </div>
       <div #widgetsContent class="middle">
-        <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index" 
+        <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index"
                   [ngClass]="data.holiday ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
                   (click)="dateSelected(i)">
             <mat-card-content class="time-selection__date">
@@ -62,9 +62,9 @@
   <mat-card class="time-selection__names-container">
     <div>
       <div *ngIf="availabilityData[selectedTile] !== undefined" class="time-selection__name-list-header">
-        <span class="time-selection__names-header-date-text">{{availabilityData[selectedTile].displayDate}}</span>, 
+        <span class="time-selection__names-header-date-text">{{availabilityData[selectedTile].displayDate}}</span>,
         <span class="time-selection__names-header-date-text">{{availabilityData[selectedTile].displayDay}}</span> <br>
-        <span class="time-selection__names-header-time-text">{{availabilityData[selectedTile].timeSlots[selectedCard].displayTime}}</span>, 
+        <span class="time-selection__names-header-time-text">{{availabilityData[selectedTile].timeSlots[selectedCard].displayTime}}</span>,
         <span class="time-selection__names-header-day-text">{{'timeSelection.text_morning'|translate}}</span>
       </div>
       <div *ngIf="availabilityData[selectedTile] !== undefined">
@@ -77,7 +77,7 @@
     </div>
     <div *ngIf="deletedNames.length !== 0">
      <div class="time-selection__name-list-header">
-       {{'timeSelection.text_available'|translate}} 
+       {{'timeSelection.text_available'|translate}}
      </div>
      <div>
       <table class="time-selection__name-list">
@@ -92,10 +92,10 @@
 
 <div>
   <mat-card class="center-selection__button-container">
-    <button mat-button (click)="navigateBack()" class="user-back-btn"> {{'timeSelection.action_back'|translate}}</button>
+    <button  (click)="navigateBack()" class="user-back-btn"> {{'timeSelection.action_back'|translate}}</button>
     <span class="spacer"></span>
-    <button mat-button (click)="navigateDashboard()" class="user-book_later-btn">{{'timeSelection.action_bookLater'|translate}} </button>
-    <button mat-button [disabled]="disableContinueButton" (click)="makeBooking()" class="user-continue-btn">{{'timeSelection.action_continue'|translate}}</button>
+    <button  (click)="navigateDashboard()" class="user-book_later-btn">{{'timeSelection.action_bookLater'|translate}} </button>
+    <button  [disabled]="disableContinueButton" (click)="makeBooking()" class="user-continue-btn">{{'timeSelection.action_continue'|translate}}</button>
   </mat-card>
 </div>
 

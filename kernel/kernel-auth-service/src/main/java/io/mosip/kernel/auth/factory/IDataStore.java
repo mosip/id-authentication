@@ -6,6 +6,7 @@ package io.mosip.kernel.auth.factory;
 import java.util.List;
 
 import io.mosip.kernel.auth.entities.AuthZResponseDto;
+import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
 import io.mosip.kernel.auth.entities.PasswordDto;
