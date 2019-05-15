@@ -455,5 +455,16 @@ public class AuthController {
 		responseWrapper.setResponse(authService.addUserPassword(userPasswordRequestDto.getRequest()));
 		return responseWrapper;
 	}
+  
+  @GetMapping("/role/{appId}/{userId}")
+	@ResponseFilter
+	public ResponseWrapper<UserRoleDto> getUserRole(@PathVariable("appId") String appId,
+			@PathVariable("userId") String userId) throws Exception {
+		ResponseWrapper<UserRoleDto> responseWrapper = new ResponseWrapper<>();
+		UserRoleDto userRole = authService.getUserRole(appId, userId);
+		responseWrapper.setResponse(userRole);
+		return responseWrapper;
+	}
 
 }
+

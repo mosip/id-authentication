@@ -392,6 +392,7 @@ public class ILdapDataStore implements IDataStore {
 			ridDto = new RIdDto();
 			ridDto.setRId(data.getRId());
 		}
+    ldapConnection.close();
 		return ridDto;
 	}
 
@@ -702,5 +703,17 @@ public class ILdapDataStore implements IDataStore {
 			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
 					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
 		}
+	}
+  @Override
+	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(username);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		ldapConnection.close();
+		return data;
 	}
 }

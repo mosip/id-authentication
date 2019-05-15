@@ -49,5 +49,7 @@ public interface AuthService extends AuthZService, AuthNService {
 	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
 
 	UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
+  
+  public UserRoleDto getUserRole(String appId, String userId) throws Exception;
 
 }

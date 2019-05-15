@@ -274,5 +274,11 @@ public class DBDataStore implements IDataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
+  
+  @Override
+	public MosipUserDto getUserRoleByUserId(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

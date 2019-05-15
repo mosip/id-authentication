@@ -422,5 +422,15 @@ public class AuthServiceImpl implements AuthService {
 	public UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto) {
 		return userStoreFactory.getDataStoreBasedOnApp(userPasswordRequestDto.getAppId()).addPassword(userPasswordRequestDto);
 	}
+  
+  @Override
+	public UserRoleDto getUserRole(String appId, String userId) throws Exception {
+		MosipUserDto mosipuser = null;
+		mosipuser = userStoreFactory.getDataStoreBasedOnApp(appId).getUserRoleByUserId(userId);
+		UserRoleDto userRole = new UserRoleDto();
+		userRole.setUserId(mosipuser.getUserId());
+		userRole.setRole(mosipuser.getRole());
+		return userRole;
+	}
 
 }
