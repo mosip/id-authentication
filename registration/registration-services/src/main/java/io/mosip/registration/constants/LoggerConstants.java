@@ -167,5 +167,7 @@ public class LoggerConstants {
 	public static final String TPM_SERVICE_ASYMMETRIC_DECRYPTION = TPM_SERVICE + "ASYMMETRIC_DECRYPT";
 	public static final String TPM_SERVICE_GET_SIGN_PUBLIC = TPM_SERVICE + "GET_SIGNING_PUBLIC_PART";
 	
+	public static final String LOG_REG_MAC_ADDRESS = "MAC_ADDRESS_UTILL";
+	
 
 }
