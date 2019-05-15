@@ -12,36 +12,36 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
-import io.mosip.kernel.auth.entities.AuthNResponse;
-import io.mosip.kernel.auth.entities.AuthNResponseDto;
-import io.mosip.kernel.auth.entities.AuthToken;
-import io.mosip.kernel.auth.entities.AuthZResponseDto;
-import io.mosip.kernel.auth.entities.BasicTokenDto;
-import io.mosip.kernel.auth.entities.ClientSecret;
-import io.mosip.kernel.auth.entities.LoginUser;
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.MosipUserDtoToken;
-import io.mosip.kernel.auth.entities.MosipUserListDto;
-import io.mosip.kernel.auth.entities.MosipUserSaltList;
-import io.mosip.kernel.auth.entities.PasswordDto;
-import io.mosip.kernel.auth.entities.RIdDto;
-import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.TimeToken;
-import io.mosip.kernel.auth.entities.UserNameDto;
-import io.mosip.kernel.auth.entities.UserOtp;
-import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
-import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
-import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.dto.AuthNResponse;
+import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.AuthToken;
+import io.mosip.kernel.auth.dto.AuthZResponseDto;
+import io.mosip.kernel.auth.dto.BasicTokenDto;
+import io.mosip.kernel.auth.dto.ClientSecret;
+import io.mosip.kernel.auth.dto.LoginUser;
+import io.mosip.kernel.auth.dto.MosipUserDto;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
+import io.mosip.kernel.auth.dto.MosipUserListDto;
+import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
+import io.mosip.kernel.auth.dto.PasswordDto;
+import io.mosip.kernel.auth.dto.RIdDto;
+import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.TimeToken;
+import io.mosip.kernel.auth.dto.UserNameDto;
+import io.mosip.kernel.auth.dto.UserOtp;
+import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
+import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
+import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
-import io.mosip.kernel.auth.factory.UserStoreFactory;
-import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
-import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
+import io.mosip.kernel.auth.repository.UserStoreFactory;
 import io.mosip.kernel.auth.service.AuthService;
-import io.mosip.kernel.auth.service.CustomTokenServices;
+import io.mosip.kernel.auth.service.TokenService;
 import io.mosip.kernel.auth.service.OTPService;
 import io.mosip.kernel.auth.service.UinService;
+import io.mosip.kernel.auth.util.TokenGenerator;
+import io.mosip.kernel.auth.util.TokenValidator;
 
 /**
  * Auth Service for Authentication and Authorization
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
 	TokenValidator tokenValidator;
 
 	@Autowired
-	CustomTokenServices customTokenServices;
+	TokenService customTokenServices;
 
 	@Autowired
 	OTPService oTPService;
@@ -81,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
 	 * @param token
 	 *            token
 	 * 
-	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
+	 * @return mosipUserDtoToken is of type {@link MosipUserTokenDto}
 	 * 
 	 * @throws Exception
 	 *             exception
@@ -89,9 +89,9 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public MosipUserDtoToken validateToken(String token) throws Exception {
+	public MosipUserTokenDto validateToken(String token) throws Exception {
 		// long currentTime = Instant.now().toEpochMilli();
-		MosipUserDtoToken mosipUserDtoToken = tokenValidator.validateToken(token);
+		MosipUserTokenDto mosipUserDtoToken = tokenValidator.validateToken(token);
 		/*
 		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
 		 * (authToken == null) { throw new
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
-	private AuthToken getAuthToken(MosipUserDtoToken mosipUserDtoToken) {
+	private AuthToken getAuthToken(MosipUserTokenDto mosipUserDtoToken) {
 		return new AuthToken(mosipUserDtoToken.getMosipUserDto().getUserId(), mosipUserDtoToken.getToken(),
 				mosipUserDtoToken.getExpTime(), mosipUserDtoToken.getRefreshToken());
 	}
@@ -203,7 +203,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public AuthNResponseDto authenticateUserWithOtp(UserOtp userOtp) throws Exception {
 		AuthNResponseDto authNResponseDto = new AuthNResponseDto();
-		MosipUserDtoToken mosipToken = null;
+		MosipUserTokenDto mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
 		if(mosipUser==null)
@@ -254,7 +254,7 @@ public class AuthServiceImpl implements AuthService {
 					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
 		}
 		if (mosipUser != null) {
-			MosipUserDtoToken mosipToken = null;
+			MosipUserTokenDto mosipToken = null;
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
 			try
 			{
@@ -312,7 +312,7 @@ public class AuthServiceImpl implements AuthService {
 	 * @param existingToken
 	 *            existing token
 	 * 
-	 * @return mosipUserDtoToken is of type {@link MosipUserDtoToken}
+	 * @return mosipUserDtoToken is of type {@link MosipUserTokenDto}
 	 * 
 	 * @throws Exception
 	 *             exception
@@ -320,8 +320,8 @@ public class AuthServiceImpl implements AuthService {
 	 */
 
 	@Override
-	public MosipUserDtoToken retryToken(String existingToken) throws Exception {
-		MosipUserDtoToken mosipUserDtoToken = null;
+	public MosipUserTokenDto retryToken(String existingToken) throws Exception {
+		MosipUserTokenDto mosipUserDtoToken = null;
 		boolean checkRefreshToken = false;
 		AuthToken accessToken = customTokenServices.getTokenDetails(existingToken);
 		if (accessToken != null) {
@@ -379,8 +379,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public MosipUserSaltList getAllUserDetailsWithSalt(String appId) throws Exception {
-		MosipUserSaltList mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getAllUserDetailsWithSalt();
+	public MosipUserSaltListDto getAllUserDetailsWithSalt(String appId) throws Exception {
+		MosipUserSaltListDto mosipUserListDto = userStoreFactory.getDataStoreBasedOnApp(appId).getAllUserDetailsWithSalt();
 		return mosipUserListDto;
 	}
 

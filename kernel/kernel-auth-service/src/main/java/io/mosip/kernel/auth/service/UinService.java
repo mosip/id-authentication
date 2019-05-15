@@ -3,8 +3,7 @@
  */
 package io.mosip.kernel.auth.service;
 
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.dto.MosipUserDto;
 
 /**
  * @author Ramadurai Pandian

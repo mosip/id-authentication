@@ -43,11 +43,7 @@ public class AuthConstant {
 
 	public static final String UIN_NOTIFICATION_MESSAGE = "UIN sent successfully for the channels";
 
-	public static final String UNAUTHORIZED_CODE = "401";
-
 	public static final String INDIVIDUAL = "INDIVIDUAL";
-
-	public static final String PREREGISTRATION = "preregistration";
 
 	public static final int RETURN_EXP_TIME = -10;
 
@@ -58,12 +54,6 @@ public class AuthConstant {
 	public static final String COOKIE="Cookie";
 
 	public static final String FAILURE_STATUS = "failure";
-	
-	public static final String LDAP_INITAL_CONTEXT_FACTORY="com.sun.jndi.ldap.LdapCtxFactory";
-	
-	public static final String PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE="pwdAccountLockedTime";
-	
-	public static final String PWD_FAILURE_TIME_ATTRIBUTE="pwdFailureTime";
 	
 	public static final String INVALID_REQUEST = "should not be null or empty";
 }
