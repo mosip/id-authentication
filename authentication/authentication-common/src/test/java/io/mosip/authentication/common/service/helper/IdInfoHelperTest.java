@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,12 +29,22 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
-import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.common.service.impl.match.DemoAuthType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.AuthType;
+import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
@@ -177,6 +188,127 @@ public class IdInfoHelperTest {
 		identityInfoDTO.setValue("test@test.com");
 		identityInfoList.add(identityInfoDTO);
 		idInfo.put("phoneNumber", identityInfoList);
+	}
+
+	@Test
+	public void TestgetEntityInfoAsString() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		idInfo.put("phoneNumber", identityInfoList);
+		idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, idInfo);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestgetEntityInfo() throws Throwable {
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		demoEntity.put("phoneNumber", identityInfoList);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthType demoAuthType = null;
+		Map<String, Object> matchProperties = null;
+		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
+		EntityValueFetcher entityValueFetcher = null;
+		MatchingStrategy matchingStrategy;
+		MatchType matchType = DemoMatchType.PHONE;
+		MatchingStrategy strategy = null;
+		Map<String, String> reqInfo = new HashMap<>();
+		try {
+			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
+					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestgetEntityInfowithBio() throws Throwable {
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		demoEntity.put("phoneNumber", identityInfoList);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthType demoAuthType = BioAuthType.FACE_IMG;
+		Map<String, Object> matchProperties = null;
+		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE, MatchingStrategyType.PARTIAL.getType(),
+				60, matchProperties, null);
+		EntityValueFetcher entityValueFetcher = null;
+		MatchingStrategy matchingStrategy;
+		MatchType matchType = BioMatchType.FACE;
+		MatchingStrategy strategy = null;
+		Map<String, String> reqInfo = new HashMap<>();
+		try {
+			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
+					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestgetEntityInfowithBiowithLanguage() throws Throwable {
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		demoEntity.put("phoneNumber", identityInfoList);
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthType demoAuthType = DemoAuthType.PERSONAL_IDENTITY;
+		Map<String, Object> matchProperties = null;
+		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, "fra");
+		EntityValueFetcher entityValueFetcher = null;
+		MatchingStrategy matchingStrategy;
+		MatchType matchType = DemoMatchType.PHONE;
+		MatchingStrategy strategy = null;
+		Map<String, String> reqInfo = new HashMap<>();
+		try {
+			ReflectionTestUtils.invokeMethod(idInfoHelper, "getEntityInfo", demoEntity, "426789089018", authRequestDTO,
+					matchInput, entityValueFetcher, matchType, strategy, reqInfo, "426789089018");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+
+	}
+
+	@Test
+	public void TestgetAuthReqestInfo() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		idInfoHelper.getAuthReqestInfo(DemoMatchType.ADDR, authRequestDTO);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	public void TestmatchIdentityData() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Map<String, List<IdentityInfoDTO>> identityEntity = new HashMap<>();
+		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("test@test.com");
+		identityInfoList.add(identityInfoDTO);
+		identityEntity.put("phoneNumber", identityInfoList);
+		List<MatchInput> listMatchInputsExp = new ArrayList<>();
+		AuthType demoAuthType = null;
+		Map<String, Object> matchProperties = new HashMap<>();
+		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.PARTIAL.getType(),
+				60, matchProperties, "fra"));
+		idInfoHelper.matchIdentityData(authRequestDTO, identityEntity, listMatchInputsExp, "12523823232");
+	}
+
+	@Test
+	public void TestisMatchtypeEnabled() {
+		idInfoHelper.isMatchtypeEnabled(DemoMatchType.GENDER);
 	}
 
 	private List<IdentityInfoDTO> getValueList() {

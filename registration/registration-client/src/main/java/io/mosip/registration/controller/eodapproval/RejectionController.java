@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -30,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -78,6 +80,8 @@ public class RejectionController extends BaseController implements Initializable
 	private TableView<RegistrationApprovalVO> regRejectionTable;
 	
 	private ObservableList<RegistrationApprovalVO> observableList;
+	private Map<String, Integer> packetIds = new HashMap<>();
+	private TextField filterField;
 
 	private String controllerName;
 	
@@ -108,18 +112,22 @@ public class RejectionController extends BaseController implements Initializable
 	 * other controller page.
 	 *
 	 * @param regData
+	 * @param packetIds 
 	 * @param stage
 	 * @param mapList
 	 * @param table
+	 * @param filterField 
 	 */
-	public void initData(RegistrationApprovalVO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
-			TableView<RegistrationApprovalVO> table, String controller) {
+	public void initData(RegistrationApprovalVO regData, Map<String, Integer> packets, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
+			TableView<RegistrationApprovalVO> table, String controller, TextField filter) {
 		rejRegData = regData;
+		packetIds = packets;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
 		observableList = oList;
 		regRejectionTable = table;
 		controllerName = controller;
+		filterField = filter;
 	}
 
 	/**
@@ -150,16 +158,17 @@ public class RejectionController extends BaseController implements Initializable
 
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
-			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
+			int rowNum=packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
-					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
-					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
 
 			observableList.set(rowNum, approvalDTO);
 			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
 			regRejectionTable.getFocusModel().focus(rowNum);
+			filterField.clear();
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
 		}

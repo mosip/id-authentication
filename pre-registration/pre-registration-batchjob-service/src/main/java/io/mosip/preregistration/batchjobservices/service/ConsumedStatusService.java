@@ -30,6 +30,7 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
  * @author Kishan Rathore
@@ -127,7 +128,7 @@ public class ConsumedStatusService {
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e,response);
 		}
-		response.setResponsetime(getCurrentResponseTime());
+		response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
 		response.setResponse("Demographic status to consumed updated successfully");

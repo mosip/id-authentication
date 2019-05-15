@@ -1,5 +1,6 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public interface GlobalParamDAO {
 	 *            the status
 	 * @return the global param
 	 */
-	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable);
+	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp);
 	
 	/**
 	 * Update Global Param

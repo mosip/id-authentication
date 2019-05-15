@@ -115,7 +115,8 @@ public class SendNotificationController extends BaseController implements Initia
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				Writer writeNotificationTemplate = getNotificationTemplate("");
+				Writer emailNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+				Writer smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
 				String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
 				List<String> notifications = new ArrayList<>();
@@ -127,7 +128,7 @@ public class SendNotificationController extends BaseController implements Initia
 						String prefix = "";
 						for (String emailId : emailList) {
 							ResponseDTO emailNotificationResponse = notificationService
-									.sendEmail(writeNotificationTemplate.toString(), emailId, registrationId);
+									.sendEmail(emailNotificationTemplate.toString(), emailId, registrationId);
 							if (emailNotificationResponse.getErrorResponseDTOs() != null) {
 								unsentMails.append(prefix);
 								prefix = ",";
@@ -151,7 +152,7 @@ public class SendNotificationController extends BaseController implements Initia
 						String prefix = "";
 						for (String mobileNo : mobileList) {
 							ResponseDTO smsNotificationResponse = notificationService
-									.sendSMS(writeNotificationTemplate.toString(), mobileNo, registrationId);
+									.sendSMS(smsNotificationTemplate.toString(), mobileNo, registrationId);
 							if (smsNotificationResponse.getErrorResponseDTOs() != null) {
 								unsentSMS.append(prefix);
 								prefix = ",";

@@ -16,6 +16,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -120,6 +121,7 @@ public class DemographicService {
 	 * Autowired reference for {@link #JsonValidatorImpl}
 	 */
 	@Autowired
+	@Lazy
 	private IdObjectValidator jsonValidator;
 
 	/**
@@ -515,8 +517,8 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
-
-					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+			        		
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
 						statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 						statusdto.setStatusCode(demographicEntity.getStatusCode());
 						response.setResponse(statusdto);
@@ -629,7 +631,7 @@ public class DemographicService {
 					// userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
-					if (demographicEntity.getDemogDetailHash().equals(hashString)) {
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
 
 						DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 						response.setResponse(createDto);

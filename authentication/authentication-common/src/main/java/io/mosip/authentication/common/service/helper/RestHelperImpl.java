@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.helper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
@@ -33,6 +34,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -53,9 +55,6 @@ import reactor.core.publisher.Mono;
 public class RestHelperImpl implements RestHelper {
 
 	private static final String GENERATE_AUTH_TOKEN = "generateAuthToken";
-
-	/** The Constant ERRORS. */
-	private static final String ERRORS = "errors";
 
 	/** The mapper. */
 	@Autowired
@@ -286,10 +285,9 @@ public class RestHelperImpl implements RestHelper {
 		ClientResponse response = WebClient.create(env.getProperty("auth-token-validator.rest.uri")).post()
 				.cookie("Authorization", getAuthToken()).exchange().block();
 		ObjectNode responseBody = response.bodyToMono(ObjectNode.class).block();
-		if (!responseBody.get("errors").isNull() && responseBody.get("errors").size() > 0
-				&& Objects.nonNull(responseBody.get("errors").get(0).get("errorCode"))
-				&& !responseBody.get("errors").get(0).get("errorCode").isNull()
-				&& responseBody.get("errors").get(0).get("errorCode").asText().contentEquals("KER-ATH-402")) {
+		List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBody.toString());
+		if (Objects.nonNull(errorList) && !errorList.isEmpty()
+				&& errorList.get(0).getErrorCode().contentEquals("KER-ATH-402")) {
 			authToken = null;
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkAuthTokenExpired",
 					"Auth token expired. setting authToken as null to regenerate.");
@@ -310,16 +308,18 @@ public class RestHelperImpl implements RestHelper {
 	 */
 	private void checkErrorResponse(Object response, Class<?> responseType) throws RestServiceException {
 		try {
-			ObjectNode responseNode = mapper.readValue(mapper.writeValueAsBytes(response), ObjectNode.class);
-			if (responseNode.has(ERRORS) && !responseNode.get(ERRORS).isNull() && responseNode.get(ERRORS).isArray()
-					&& responseNode.get(ERRORS).size() > 0
-					&& !responseNode.get(ERRORS).get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+			String responseBodyAsString = mapper.writeValueAsString(response);
+			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
+			if (Objects.nonNull(errorList)
+					&& !errorList.isEmpty()
+					&& !errorList.get(0).getErrorCode().startsWith("KER-ATH-401")) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
-				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, responseNode.toString(),
-						mapper.readValue(responseNode.toString().getBytes(), responseType));
-			} else if (responseNode.has(ERRORS) && responseNode.get(ERRORS).size() > 0
-					&& responseNode.get(ERRORS).get(0).get("errorCode").asText().contentEquals("KER-ATH-401")) {
+				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, responseBodyAsString,
+						mapper.readValue(responseBodyAsString.getBytes(), responseType));
+			} else if (Objects.nonNull(errorList)
+					&& !errorList.isEmpty()
+					&& errorList.get(0).getErrorCode().contentEquals("KER-ATH-401")) {
 				retry++;
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						"errorCode -> KER-ATH-401" + " - retry++");

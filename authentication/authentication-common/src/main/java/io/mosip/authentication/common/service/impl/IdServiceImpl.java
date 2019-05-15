@@ -21,7 +21,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.VIDRepository;
+//import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -75,9 +75,6 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
-	/** The vid repository. */
-	@Autowired
-	private VIDRepository vidRepository;
 
 	@Autowired
 	private IdRepoManager idRepoManager;
@@ -123,11 +120,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
-		Optional<VIDEntity> vidEntityOpt = vidRepository.findUinByVid(vid);
-		if (vidEntityOpt.isPresent()) {
-			if (vidEntityOpt.get().getExpiryDate().isAfter(DateUtils.getUTCCurrentDateTime())
-					&& vidEntityOpt.get().isActive()) {
-				String uin = vidEntityOpt.get().getUin().trim();
+		String uin = idRepoManager.getUINByVID(vid);
 				try {
 					idRepo = idRepoManager.getIdenity(uin, isBio);
 				} catch (IdAuthenticationBusinessException e) {
@@ -137,14 +130,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 					}
 				}
-			} else {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_VID);
-			}
-
-		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID);
-		}
-
+			
 		return idRepo;
 	}
 

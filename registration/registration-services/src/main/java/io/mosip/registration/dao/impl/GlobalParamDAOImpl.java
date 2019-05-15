@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
@@ -116,27 +115,29 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	 * @see io.mosip.registration.dao.GlobalParamDAO#updateSoftwareUpdateStatus(java.lang.String)
 	 */
 	@Override
-	public GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable) {
-		
+	public GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp) {
+
 		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag started.");
 
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
 		GlobalParamId globalParamId = new GlobalParamId();
 		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
 		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
-		
+
 		GlobalParam globalParam = get(globalParamId);
-		
-		if (isUpdateAvailable) {
-			globalParam.setVal(RegistrationConstants.ENABLE);
-		} else {
-			globalParam.setVal(RegistrationConstants.DISABLE);
+
+		if (!globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+
+			if (isUpdateAvailable) {
+				globalParam.setVal(RegistrationConstants.ENABLE);
+			} else {
+				globalParam.setVal(RegistrationConstants.DISABLE);
+			}
+			globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			globalParam.setUpdDtimes(timestamp);
+
 		}
-		globalParam.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-		globalParam.setUpdDtimes(time);
-		
 		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Updating the SoftwareUpdate flag ended.");
 		return globalParamRepository.update(globalParam);
