@@ -66,4 +66,6 @@ public class AuthConstant {
 	public static final String PWD_FAILURE_TIME_ATTRIBUTE="pwdFailureTime";
 	
 	public static final String INVALID_REQUEST = "should not be null or empty";
+
+	public static final String WHITESPACE = " ";
 }
