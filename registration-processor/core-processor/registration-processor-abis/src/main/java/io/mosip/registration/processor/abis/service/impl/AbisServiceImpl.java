@@ -88,11 +88,11 @@ public class AbisServiceImpl implements AbisService {
 
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
-		
-			response.setId(ABIS_INSERT);
-			response.setRequestId(abisInsertRequestDto.getRequestId());
-			response.setTimestamp(abisInsertRequestDto.getTimestamp());
-		
+
+		response.setId(ABIS_INSERT);
+		response.setRequestId(abisInsertRequestDto.getRequestId());
+		response.setTimestamp(abisInsertRequestDto.getTimestamp());
+
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
@@ -199,7 +199,7 @@ public class AbisServiceImpl implements AbisService {
 		Document doc;
 		try {
 			doc = getCbeffDocument(referenceId);
-	
+
 			response.setId(ABIS_IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
 			response.setTimestamp(identifyRequest.getTimestamp());
