@@ -1063,12 +1063,13 @@ public class RegistrationConstants {
 
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
-
+	
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX = "^.{1,50}$";
 	public static final String NUMBER_REGEX = "\\d+";
+	public static final String NUMBER_OR_NOTHING_REGEX = "^\\d*$";
 	public static final String FOUR_NUMBER_REGEX = "\\d{4}";
 	public static final String NUMBER_REGEX_ZERO_TO_THREE = "\\d{0,3}";
 	public static final int MOBILE_NUMBER_LENGTH = 9;
@@ -1370,5 +1371,6 @@ public class RegistrationConstants {
 
 	// TPM
 	public static final byte[] NULL_VECTOR = new byte[0];
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
 	
 }

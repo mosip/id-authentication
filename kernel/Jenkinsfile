@@ -1,5 +1,4 @@
 node {
-
  try{
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
@@ -12,12 +11,12 @@ node {
  def registryCredentials = env.REGISTRY_CREDENTIALS
  def gitUrl = env.GIT_URL
  def gitCredentials = env.GIT_CREDENTIALS
- targetDeploymentServer = 'kernel-dev-server'
+ targetDeploymentServer = 'mosip-dev-cluster'
  updatedServices = []
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'dev-k8-cluster'
+ k8DevContext = 'mosip-dev-cluster'
 
 
  stage('------- Checkout --------') {

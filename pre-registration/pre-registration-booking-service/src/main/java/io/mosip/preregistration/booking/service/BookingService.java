@@ -102,8 +102,6 @@ public class BookingService {
 	@Value("${version}")
 	String versionUrl;
 
-	@Value("${id}")
-	String idUrl;
 
 	@Value("${mosip.preregistration.booking.availability.sync.id}")
 	String idUrlSync;
@@ -854,7 +852,7 @@ public class BookingService {
 			new BookingExceptionCatcher().handle(ex, response);
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setId(idUrl);
+		response.setId(idUrlBookingByDate);
 		response.setVersion(versionUrl);
 		response.setErrors(null);
 		return response;

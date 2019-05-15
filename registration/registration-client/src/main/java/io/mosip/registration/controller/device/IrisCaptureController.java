@@ -478,7 +478,11 @@ public class IrisCaptureController extends BaseController {
 
 			try {
 				irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
-			} catch (RegBaseCheckedException e) {
+			} catch (RegBaseCheckedException runtimeException) {
+				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
+						ExceptionUtils.getStackTrace(runtimeException)));
 			}
 
 			// getIrisImage(irisDetailsDTO,

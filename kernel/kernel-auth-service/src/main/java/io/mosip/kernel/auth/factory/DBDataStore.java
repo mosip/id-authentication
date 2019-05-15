@@ -23,12 +23,15 @@ import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 
@@ -243,7 +246,37 @@ public class DBDataStore implements IDataStore {
 	}
 
 	@Override
-	public UserCreationResponseDto createAccount(UserCreationRequestDto userId) {
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+  
+  @Override
+	public MosipUserDto getUserRoleByUserId(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}

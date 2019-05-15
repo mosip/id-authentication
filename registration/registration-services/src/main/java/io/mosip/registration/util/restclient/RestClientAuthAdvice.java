@@ -23,7 +23,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-import io.mosip.registration.tpm.spi.TPMService;
+import io.mosip.registration.tpm.spi.TPMUtil;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -43,8 +43,6 @@ public class RestClientAuthAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
-	@Autowired
-	private TPMService tpmService;
 
 	/**
 	 * The {@link Around} advice method which be invoked for all web services. This
@@ -216,7 +214,7 @@ public class RestClientAuthAdvice {
 
 		try {
 			httpHeaders.add("request-signature", String.format("Authorization:%s",
-					CryptoUtil.encodeBase64(tpmService.signData(new ObjectMapper().writeValueAsBytes(requestBody)))));
+					CryptoUtil.encodeBase64(TPMUtil.signData(new ObjectMapper().writeValueAsBytes(requestBody)))));
 		} catch (JsonProcessingException jsonProcessingException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorMessage(),

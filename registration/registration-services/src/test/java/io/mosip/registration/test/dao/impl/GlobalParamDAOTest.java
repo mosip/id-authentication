@@ -2,6 +2,8 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -99,7 +101,7 @@ public class GlobalParamDAOTest {
 		
 		Mockito.when(globalContextParamDAOImpl.get(globalParamId)).thenReturn(globalParam);
 		Mockito.when(globalParamRepository.update(globalParam)).thenReturn(globalParam1);
-		GlobalParam globalParam2 = globalContextParamDAOImpl.updateSoftwareUpdateStatus(true);
+		GlobalParam globalParam2 = globalContextParamDAOImpl.updateSoftwareUpdateStatus(true, Timestamp.from(Instant.now()));
 		assertEquals(globalParam2.getVal(),globalParam1.getVal());
 	}
 	
@@ -122,7 +124,7 @@ public class GlobalParamDAOTest {
 		
 		Mockito.when(globalContextParamDAOImpl.get(globalParamId)).thenReturn(globalParam);
 		Mockito.when(globalParamRepository.update(globalParam)).thenReturn(globalParam1);
-		GlobalParam globalParam2 = globalContextParamDAOImpl.updateSoftwareUpdateStatus(false);
+		GlobalParam globalParam2 = globalContextParamDAOImpl.updateSoftwareUpdateStatus(false, Timestamp.from(Instant.now()));
 		assertEquals(globalParam2.getVal(),globalParam1.getVal());
 	}
 	

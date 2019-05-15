@@ -3,7 +3,8 @@ import {Router, ActivatedRoute, Params} from '@angular/router';
 import {FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { UserregistrationService } from '../../../shared/services/userregistration.service';
 import { RidVeerificationRequestModel } from '../../../shared/models/rid-verification-model';
-import { RequestModel } from '../../../shared/Models/Request-model';
+import { RequestModel } from '../../../shared/models/request-model';
+
 @Component({
   selector: 'app-ridverification',
   templateUrl: './ridverification.component.html',
@@ -34,7 +35,7 @@ this.requestObject.userName=this.userName;
 this.requestDTO=new RequestModel("id","v1",this.requestObject,null);
 this.service.ridVerification(this.requestDTO).subscribe(data=>{
   alert("Rid submitted successfully");
-  this.router.navigateByUrl('/admin/dashboard');
+  this.router.navigateByUrl('/admin/usermgmt/validateotp');
 },error=>{
 console.log(error);
 });

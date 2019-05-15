@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.logger.logback.impl.LoggerImpl;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 import tss.Tpm;
 import tss.TpmFactory;
@@ -75,7 +76,7 @@ public class TPMInitializationTest {
 		TPMInitialization.closeTPMInstance();
 	}
 
-	@Test(expected = IOException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testCloseTPMInstanceException() throws Exception {
 		Tpm tpm = PowerMockito.mock(Tpm.class);
 

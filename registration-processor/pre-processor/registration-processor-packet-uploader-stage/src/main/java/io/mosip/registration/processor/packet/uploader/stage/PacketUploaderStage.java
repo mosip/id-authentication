@@ -72,7 +72,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 	/**
 	 * contains all the routes in this stage
-	 * 
+	 *
 	 * @param router
 	 */
 	private void routes(Router router) {
@@ -134,7 +134,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)

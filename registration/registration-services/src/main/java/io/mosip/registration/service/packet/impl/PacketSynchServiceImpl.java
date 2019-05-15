@@ -173,6 +173,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketPath(reg.getAckFilename());
 			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
+			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
+			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;

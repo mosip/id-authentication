@@ -43,6 +43,8 @@ public enum RestServicesConstants {
 	
 	RID_UIN("rid-uin"),
 	
+	VID_SERVICE("vid-service.vid-uin"),
+	
 	TOKEN_ID_GENERATOR("token-id-generator");
 
 	/** The service name. */

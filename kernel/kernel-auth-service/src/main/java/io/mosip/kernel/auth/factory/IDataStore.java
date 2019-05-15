@@ -8,12 +8,15 @@ import java.util.List;
 import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.User;
-import io.mosip.kernel.auth.entities.UserCreationRequestDto;
-import io.mosip.kernel.auth.entities.UserCreationResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.UserNameDto;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
 import io.mosip.kernel.auth.service.AuthNDataService;
 
 /**
@@ -32,7 +35,16 @@ public interface IDataStore extends AuthNDataService {
 	
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception;
 	
-	UserCreationResponseDto createAccount(UserCreationRequestDto userId) ;
-	
+	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) ;
 
+	UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto);
+	
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception;
+	
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto ) throws Exception;
+	
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception;
+  
+  public MosipUserDto getUserRoleByUserId(String username)throws Exception;
+	
 }

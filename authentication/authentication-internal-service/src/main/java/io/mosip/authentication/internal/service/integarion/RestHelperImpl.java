@@ -25,7 +25,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -158,8 +157,9 @@ public class RestHelperImpl implements RestHelper{
 	 * @param e            the response
 	 * @param responseType the response type
 	 * @return the mono<? extends throwable>
+	 * @throws RestServiceException 
 	 */
-	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) {
+	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) throws RestServiceException {
 		try {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
@@ -171,8 +171,7 @@ public class RestHelperImpl implements RestHelper{
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
 					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "Throwing AuthenticationException",
 							errorList.toString());
-					throw new AuthenticationException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(),
-							e.getRawStatusCode());
+					throw new RestServiceException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(), e);
 					
 				} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,

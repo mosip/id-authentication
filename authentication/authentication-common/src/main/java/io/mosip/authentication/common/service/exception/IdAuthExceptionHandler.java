@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -38,7 +37,6 @@ import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
-import io.mosip.authentication.core.staticpin.dto.StaticPinResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -234,16 +232,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			otpResponseDTO.setErrors(errors);
 			otpResponseDTO.setResponseTime(responseTime);
 			return otpResponseDTO;
-		case "vid":
-			VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
-			vidResponseDTO.setErrors(errors);
-			vidResponseDTO.setResponseTime(responseTime);
-			return vidResponseDTO;
-		case "staticpin":
-			StaticPinResponseDTO staticPinResponseDTO = new StaticPinResponseDTO();
-			staticPinResponseDTO.setErrors(errors);
-			staticPinResponseDTO.setResponseTime(responseTime);
-			return staticPinResponseDTO;
 		default:
 			AuthResponseDTO authResp = new AuthResponseDTO();
 			ResponseDTO res = new ResponseDTO();
