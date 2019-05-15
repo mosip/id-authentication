@@ -126,6 +126,7 @@ export class CenterSelectionComponent implements OnInit {
               this.displayResults(response['response']);
             } else {
               this.showMessage = true;
+              this.selectedCentre = null;
             }
           },
           error => {
@@ -251,5 +252,4 @@ export class CenterSelectionComponent implements OnInit {
     });
     return dialogRef;
   }
-
 }
