@@ -290,7 +290,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("NEW");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn("NEW");
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(emptyDuplicateDtoSet);
 
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -348,7 +348,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("NEW");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn("NEW");
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
@@ -381,7 +381,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn("POST_API_PROCESS");
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
@@ -418,7 +418,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn("POST_API_PROCESS");
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
@@ -451,7 +451,7 @@ public class DemodedupeProcessorTest {
 				.thenReturn(packetMetaInfo);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(b);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn("POST_API_PROCESS");
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn("POST_API_PROCESS");
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
@@ -483,7 +483,7 @@ public class DemodedupeProcessorTest {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any(), any())).thenReturn(RegistrationType.NEW.toString());
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(RegistrationType.NEW.toString());
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(true);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
@@ -526,7 +526,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		FSAdapterException exp = new FSAdapterException("errorMessage", "test");
-		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any(), any());
+		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any());
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
@@ -538,7 +538,7 @@ public class DemodedupeProcessorTest {
 			IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 		IllegalArgumentException exp = new IllegalArgumentException("errorMessage");
-		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any(), any());
+		Mockito.doThrow(exp).when(abisHandlerUtil).getPacketStatus(any());
 		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
