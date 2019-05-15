@@ -141,19 +141,20 @@ public class PacketUploadController extends BaseController implements Initializa
 						packetStatusVO.setUploadStatus(packet.getUploadStatus());
 						packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
 						packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
-						
-						try (FileInputStream fis = new FileInputStream(new File(packet.getPacketPath()
-								.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
+
+						try (FileInputStream fis = new FileInputStream(new File(
+								packet.getPacketPath().replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION,
+										RegistrationConstants.ZIP_FILE_EXTENSION)))) {
 							byte[] byteArray = new byte[(int) fis.available()];
 							fis.read(byteArray);
 							byte[] packetHash = HMACUtils.generateHash(byteArray);
 							packetStatusVO.setPacketHash(HMACUtils.digestAsPlainText(packetHash));
-							packetStatusVO.setPacketSize(BigInteger.valueOf(byteArray.length));		
-							
+							packetStatusVO.setPacketSize(BigInteger.valueOf(byteArray.length));
+
 						} catch (IOException ioException) {
 							LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-						} 
+						}
 						packetsToBeSynced.add(packetStatusVO);
 					});
 					String packetSyncStatus = packetSynchService.packetSync(packetsToBeSynced);
@@ -183,7 +184,6 @@ public class PacketUploadController extends BaseController implements Initializa
 				loadInitialPage();
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NETWORK_ERROR);
 			}
-			filterField.clear();
 		} catch (RegBaseCheckedException checkedException) {
 			LOGGER.info("REGISTRATION - UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					checkedException.getMessage() + ExceptionUtils.getStackTrace(checkedException));
@@ -422,30 +422,36 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredList.setPredicate(reg -> {
-				// If filter text is empty, display all ID's.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-
-				// Compare every ID with filter text.
-				String lowerCaseFilter = newValue.toLowerCase();
-
-				if (reg.getFileName().contains(lowerCaseFilter)) {
-					// Filter matches first name.
-					table.getSelectionModel().selectFirst();
-					return true;
-				}
-				return false; // Does not match.
-			});
-			table.getSelectionModel().selectFirst();
+			filterData(newValue, filteredList);
 		});
-
+		if(!filterField.getText().isEmpty()) {
+			filterData(filterField.getText(), filteredList);
+		}
 		// 3. Wrap the FilteredList in a SortedList.
 		sortedList = new SortedList<>(filteredList);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
+	}
+
+	private void filterData(String newValue, FilteredList<PacketStatusVO> filteredList) {
+		filteredList.setPredicate(reg -> {
+			// If filter text is empty, display all ID's.
+			if (newValue == null || newValue.isEmpty()) {
+				return true;
+			}
+
+			// Compare every ID with filter text.
+			String lowerCaseFilter = newValue.toLowerCase();
+
+			if (reg.getFileName().contains(lowerCaseFilter)) {
+				// Filter matches first name.
+				table.getSelectionModel().selectFirst();
+				return true;
+			}
+			return false; // Does not match.
+		});
+		table.getSelectionModel().selectFirst();
 	}
 
 	/**
@@ -521,7 +527,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<>(
 					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS);
 			statusCol.setMinWidth(250);
-			
+
 			statusCol.getStyleClass().add("tableId");
 			ObservableList<PacketStatusDTO> displayList = FXCollections.observableArrayList(filesToDisplay);
 			statusTable.setItems(displayList);

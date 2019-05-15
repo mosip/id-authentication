@@ -316,31 +316,40 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredData.setPredicate(reg -> {
-				// If filter text is empty, display all ID's.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-				// Compare every ID with filter text.
-				String lowerCaseFilter = newValue.toLowerCase();
-				if (reg.getId().contains(lowerCaseFilter)) {
-					// Filter matches first name.
-					table.getSelectionModel().selectFirst();
-					return true;
-				}
-				return false; // Does not match.
-			});
-			table.getSelectionModel().selectFirst();
-			if (table.getSelectionModel().getSelectedItem() != null) {
-				viewAck();
-			}
+			filterData(newValue, filteredData);
 		});
+		if (!filterField.getText().isEmpty()) {
+			filterData(filterField.getText(), filteredData);
+		}
 		// 3. Wrap the FilteredList in a SortedList.
 		SortedList<RegistrationApprovalVO> sortedList = new SortedList<>(filteredData);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
 		table.setItems(sortedList);
+	}
+
+	private FilteredList<RegistrationApprovalVO> filterData(String newValue,
+			FilteredList<RegistrationApprovalVO> filteredData) {
+		filteredData.setPredicate(reg -> {
+			// If filter text is empty, display all ID's.
+			if (newValue == null || newValue.isEmpty()) {
+				return true;
+			}
+			// Compare every ID with filter text.
+			String lowerCaseFilter = newValue.toLowerCase();
+			if (reg.getId().contains(lowerCaseFilter)) {
+				// Filter matches first name.
+				table.getSelectionModel().selectFirst();
+				return true;
+			}
+			return false; // Does not match.
+		});
+		table.getSelectionModel().selectFirst();
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
+		return filteredData;
 	}
 
 	/**
@@ -378,6 +387,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			authenticateBtn.setDisable(false);
 
+			int focusedIndex = table.getSelectionModel().getFocusedIndex();
+
 			int row = packetIds.get(table.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
 					table.getSelectionModel().getSelectedItem().getId(),
@@ -386,9 +397,9 @@ public class RegistrationApprovalController extends BaseController implements In
 			observableList.set(row, approvalDTO);
 			wrapListAndAddFiltering(observableList);
 			table.requestFocus();
-			table.getFocusModel().focus(row);
-			table.getSelectionModel().select(row);
-			filterField.clear();
+			table.getFocusModel().focus(focusedIndex);
+			table.getSelectionModel().select(focusedIndex);
+			// filterField.clear();
 
 		} else {
 			Stage primarystage = new Stage();
@@ -398,7 +409,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 					rejectionController.initData(table.getSelectionModel().getSelectedItem(), packetIds, primarystage,
 							approvalmapList, observableList, table,
-							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER, filterField);
+							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
