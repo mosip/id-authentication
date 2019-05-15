@@ -67,6 +67,7 @@ import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
@@ -207,10 +208,10 @@ public class MessageSenderStage extends MosipVerticleManager {
 
 			NotificationTemplateType type=null;
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
-			if(status.equals("UIN_GENERATOR_PROCESSED")) {
-				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase("NEW"))
+			if(registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSED.toString())) {
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
 					type=NotificationTemplateType.UIN_CREATED;
-				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase("UPDATE"))
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
 					type=NotificationTemplateType.UIN_UPDATE;
 			}
 			else {

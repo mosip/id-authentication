@@ -333,6 +333,7 @@ public class MessageSenderStageTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.MANUAL_VERIFICATION.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.REJECTED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -365,6 +366,7 @@ public class MessageSenderStageTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.OSI_VALIDATE.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.FAILED.name());
 		
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");

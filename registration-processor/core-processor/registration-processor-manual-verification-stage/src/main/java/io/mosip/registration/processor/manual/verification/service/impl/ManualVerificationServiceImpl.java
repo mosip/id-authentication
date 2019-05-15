@@ -295,7 +295,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				isTransactionSuccessful = true;
 				description = "Manual verification approved for registration id : " + registrationId;
 			} else {
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
