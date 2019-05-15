@@ -394,12 +394,12 @@ public class PrintStageTest {
 	}
 	
 	public void testRoutes() throws ClientProtocolException, IOException {
-		HttpGet health = new HttpGet("http://localhost:8099/print-stage/health");
+		HttpGet health = new HttpGet("http://localhost:8099/v1/registration-processor/print-stage/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(health);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());
 
-		HttpPost resend = getHttpPost("http://localhost:8099/v0.1/registration-processor/print-stage/resend");
+		HttpPost resend = getHttpPost("http://localhost:8099/v1/registration-processor/print-stage/resend");
 		CloseableHttpResponse response = HttpClients.createDefault().execute(resend);
 		assertEquals(200, response.getStatusLine().getStatusCode());
 	}
