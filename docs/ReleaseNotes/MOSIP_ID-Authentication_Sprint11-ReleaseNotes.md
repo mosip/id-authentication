@@ -1,9 +1,9 @@
-**MOSIP Release Notes**
-#### ID Authentication
+# MOSIP Release Notes
+## ID Authentication
 
-#### 1.1 Introduction : <br><sub>This document highlights Sprint 11 features for ID Authentication that are released for QA phase.</sub></br>
+### 1.1 Introduction : <br><sub>This document highlights Sprint 11 features for ID Authentication that are released for QA phase.</sub></br>
 
-#### 1.2 Release Summary : 
+### 1.2 Release Summary : 
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
@@ -18,7 +18,7 @@ Role/Job Title|Technical Lead
 RFC(s) #|	NA
 
 
-#### 1.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
+### 1.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
 MOS-22933|New|Restructuring of ID Auth services.
@@ -31,7 +31,7 @@ MOS-17444|Integration|As the MOSIP System(IDA), I should be able to integrate wi
 MOS-21327|Integration|Integrate with VID Service
 
 
-#### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
+### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
 Kernel|Kernel-Audit Service|0.11.1| 
@@ -49,27 +49,27 @@ Kernel|Kernel ID Generator – VID|0.11.1|Java API
 Kernel|Kernel ID Generator – Token ID|0.11.1|Java API
 Kernel|Kernel Crypto Manager - KeyGenarator|0.11.1|Java API
 
-#### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
+### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
 MOS-24006|Kernel OTP Manager- Negative Scenarios in send OTP
 MOS-24012|Kernel OTP Validator - error format is not per standard
 
-#### 1.6 Defects list
+### 1.6 Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
 ||
 
-#### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
+### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
 --------------|-----------|-----------|-------------
 MOS-21757|As the MOSIP system, I should be able to implement digital signature for auth/eKYC/OTP request|Sprint12|Kernel Java API needs to be converted to REST API
 
 
-#### 1.8 DB Changes
-DB Script Name|Description
----------------|-------------
-|
+### 1.8 DB Changes :
+|DB Script Name|Description|
+|---------------|-------------|
+|         |          |
 
 
 
