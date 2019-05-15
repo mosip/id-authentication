@@ -18,8 +18,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
-import io.mosip.registration.dto.biometric.BiometricInfoDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -129,10 +127,4 @@ public class WebCameraController extends BaseController implements Initializable
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}
-
-	public void captureStubApplicantPhoto(BiometricInfoDTO biometricInfoDTO, boolean isExceptionPhoto)
-			throws RegBaseCheckedException {
-		photoCaptureFacade.captureStubApplicantPhoto(biometricInfoDTO, isExceptionPhoto);
-	}
-
 }
