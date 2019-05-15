@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -67,9 +68,9 @@ public class ABISHandlerUtil {
 				}
 				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
 				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-						AbisConstant.PROCESSING);
+						RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-						AbisConstant.PROCESSED);
+						RegistrationTransactionStatusCode.PROCESSED.toString());
 				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
 				uniqueRIDs.addAll(processingRegIds);
 			}

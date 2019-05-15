@@ -13,10 +13,6 @@ public interface AbisConstant {
 	static final String PRE_ABIS_IDENTIFICATION = "PRE_ABIS_IDENTIFICATION";
 
 	static final String POST_ABIS_IDENTIFICATION = "POST_ABIS_IDENTIFICATION";
-	
-	static final String PROCESSING = "PROCESSING";
-
-	static final String PROCESSED = "PROCESSED";
 
 	
 }
