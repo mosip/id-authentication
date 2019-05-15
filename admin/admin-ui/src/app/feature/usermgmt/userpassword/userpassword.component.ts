@@ -67,6 +67,8 @@ export class UserpasswordComponent implements OnInit {
         }
         return;
       }
+      alert('you have successfully registered');
+      this.router.navigateByUrl('');
     }, error => {
       console.log(error);
     });
