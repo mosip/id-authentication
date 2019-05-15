@@ -370,7 +370,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		router.post(contextPath+"/resend");
 		router.handler(this::reSendPrintPdf, this::failure);
 		
-		router.get(contextPath+"/resend/health");
+		router.get(contextPath+"/health");
 		router.handler(this::health);
 
 

@@ -65,7 +65,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr rgs invalid synctype. */
 	RPR_RGS_INVALID_SYNCTYPE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
-			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
+			"Invalid syncType. Available types are NEW,UPDATE, LOST,ACTIVATED, DEACTIVATED, RES_UPDATE"),
 
 	/** The rpr rgs invalid languagecode. */
 	RPR_RGS_INVALID_LANGUAGECODE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
