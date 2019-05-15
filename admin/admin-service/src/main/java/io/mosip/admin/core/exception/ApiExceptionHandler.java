@@ -78,12 +78,15 @@ public class ApiExceptionHandler {
 		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 	
+	
 	@ExceptionHandler(UsermanagementServiceResponseException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> usermanagementServiceResponseException(
 			HttpServletRequest httpServletRequest, final UsermanagementServiceResponseException exception)
 			throws IOException {
 
-		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getList());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
