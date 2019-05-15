@@ -152,7 +152,7 @@ public class BioDedupeProcessorTest {
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setRegistrationType("new");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(NEW);
+		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn("1233445566".getBytes("UTF-16"));
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn(ERROR);
