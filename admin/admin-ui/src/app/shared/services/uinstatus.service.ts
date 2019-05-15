@@ -7,7 +7,7 @@ export class UinstatusService {
   constructor(private http: HttpClient) { }
 
    getUinStatus(inputUin: String) {
-    return this.http.get('http://dev.mosip.io/v1/admin/uinmgmt/status/' + inputUin.trim());
+    return this.http.get('https://dev.mosip.io/v1/admin/uinmgmt/status/' + inputUin.trim());
   }
 
 }
