@@ -57,7 +57,7 @@ export class UserregistrationComponent implements OnInit {
     this.requestObject.gender = this.userRegistrationForm.get('gender').value;
     this.requestObject.role = this.userRegistrationForm.get('roles').value;
     this.requestObject.appId = 'admin';
-    this.requestObject.ridValidationUrl = this.originUrl + '/#/admin/usermgmt/ridverification';
+    this.requestObject.ridValidationUrl = this.originUrl + '/admin-ui/#/admin/usermgmt/ridverification';
     this.requestDTO = new RequestModel('id', 'v1', this.requestObject, null);
     console.log(this.requestDTO);
     this.service.registerUser(this.requestDTO).subscribe(data => {
