@@ -40,6 +40,7 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -122,7 +123,7 @@ public class DemographicService {
 	 */
 	@Autowired
 	@Lazy
-	private IdObjectValidator jsonValidator;
+	private IdObjectSchemaValidator jsonValidator;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -288,6 +289,7 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
