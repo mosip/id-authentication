@@ -113,6 +113,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/** The description. */
 	private String description = "";
 
+	private String transactionTypeCode = null;
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -138,7 +140,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		String bioRefId = null;
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
-			String transactionTypeCode = registrationStatusDto.getLatestTransactionTypeCode();
+			transactionTypeCode = registrationStatusDto.getLatestTransactionTypeCode();
 			String transactionId = registrationStatusDto.getLatestRegistrationTransactionId();
 
 			Boolean isIdentifyRequestPresent = packetInfoManager.getIdentifyByTransactionId(transactionId, IDENTIFY);
@@ -172,8 +174,12 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			registrationStatusDto
-					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+			if (transactionTypeCode.equalsIgnoreCase(DEMOGRAPHIC_VERIFICATION)) {
+				registrationStatusDto.setRegistrationStageName("DemoDedupeStage");
+			} else if (transactionTypeCode.equalsIgnoreCase(BIOGRAPHIC_VERIFICATION)) {
+				registrationStatusDto.setRegistrationStageName("BioDedupeStage");
+			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

@@ -6,6 +6,7 @@ import static org.mockito.Matchers.any;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,6 +68,8 @@ public class AbisHandlerStageTest {
 	/** The reg demo dedupe list dto list. */
 	List<RegDemoDedupeListDto> regDemoDedupeListDtoList = new ArrayList<>();
 
+	List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
+
 	/** The abis handler stage. */
 	@InjectMocks
 	private AbisHandlerStage abisHandlerStage = new AbisHandlerStage() {
@@ -93,10 +96,13 @@ public class AbisHandlerStageTest {
 		ReflectionTestUtils.setField(abisHandlerStage, "targetFPIR", 30);
 
 		AbisApplicationDto dto = new AbisApplicationDto();
+		dto.setCode("ABIS1");
 		abisApplicationDtos.add(dto);
 		
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
+
+		Mockito.when(packetInfoManager.getAbisRequestsByBioRefId(any())).thenReturn(abisRequestDtoList);
 		
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -235,6 +241,38 @@ public class AbisHandlerStageTest {
 
 		assertTrue(result.getInternalError());
 		
+	}
+	
+	@Test
+	public void testReprocessInsert() {
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn("BIOGRAPHIC_VERIFICATION");
+		Mockito.when(registrationStatusDto.getLatestRegistrationTransactionId())
+				.thenReturn("dd7b7d20-910a-4b84-be21-c9f211318563");
+		Mockito.when(packetInfoManager.getIdentifyByTransactionId(any(), any())).thenReturn(Boolean.FALSE);
+		Mockito.when(packetInfoManager.getAllAbisDetails()).thenReturn(abisApplicationDtos);
+		
+		RegBioRefDto bioRefDto = new RegBioRefDto();
+		bioRefDtos.add(bioRefDto);
+		Mockito.when(packetInfoManager.getBioRefIdByRegId(any())).thenReturn(bioRefDtos);
+
+		Mockito.doNothing().when(packetInfoManager).saveBioRef(any());
+
+		AbisRequestDto abisRequestDto = new AbisRequestDto();
+		abisRequestDto.setAbisAppCode("ABIS1");
+		abisRequestDto.setStatusCode("IN-PROGRESS");
+		abisRequestDtoList.add(abisRequestDto);
+		Mockito.when(packetInfoManager.getAbisRequestsByBioRefId(any())).thenReturn(abisRequestDtoList);
+
+		Mockito.doNothing().when(packetInfoManager).saveAbisRequest(any());
+
+		Mockito.when(packetInfoManager.getDemoListByTransactionId(any())).thenReturn(regDemoDedupeListDtoList);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10003100030001520190422074511");
+		MessageDTO result = abisHandlerStage.process(dto);
+
+		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 
 }
