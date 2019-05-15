@@ -23,7 +23,7 @@ import io.mosip.admin.usermgmt.dto.UserPasswordRequestDto;
 import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
-import io.mosip.admin.usermgmt.service.UserRegistrationService;
+import io.mosip.admin.usermgmt.service.UsermanagementService;
 import io.mosip.admin.usermgmt.util.UserMgmtUtil;
 import io.mosip.kernel.core.http.RequestWrapper;
 
@@ -33,7 +33,7 @@ import io.mosip.kernel.core.http.RequestWrapper;
  *
  */
 @Service
-public class UserRegistrationServiceImpl implements UserRegistrationService {
+public class UsermanagementServiceImpl implements UsermanagementService {
 
 	@Autowired
 	private RestTemplate restTemplate;

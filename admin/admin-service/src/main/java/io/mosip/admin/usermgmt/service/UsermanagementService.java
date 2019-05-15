@@ -7,7 +7,7 @@ import io.mosip.admin.usermgmt.dto.UserPasswordResponseDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationRequestDto;
 import io.mosip.admin.usermgmt.dto.UserRegistrationResponseDto;
 
-public interface UserRegistrationService {
+public interface UsermanagementService {
 
 	UserRegistrationResponseDto register(UserRegistrationRequestDto userRegistrationRequestDto);
 	RidVerificationResponseDto ridVerification(RidVerificationRequestDto ridVerificationRequestDto);

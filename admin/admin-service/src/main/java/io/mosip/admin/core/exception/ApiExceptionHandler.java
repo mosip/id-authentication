@@ -20,6 +20,8 @@ import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
 import io.mosip.admin.accountmgmt.exception.RequestException;
+import io.mosip.admin.usermgmt.exception.UsermanagementServiceException;
+import io.mosip.admin.usermgmt.exception.UsermanagementServiceResponseException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -28,6 +30,7 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 /**
  * Rest Controller Advice for Admin Service Controllers.
  * 
+ * @author Urvil Joshi
  * @author Bal Vikash Sharma
  *
  * @since 1.0.0
@@ -57,6 +60,22 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(AccountManagementServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> accountManagementServiceException(
 			HttpServletRequest httpServletRequest, final AccountManagementServiceException exception)
+			throws IOException {
+
+		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
+	}
+	
+	@ExceptionHandler(UsermanagementServiceException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> usermanagementServiceException(
+			HttpServletRequest httpServletRequest, final UsermanagementServiceException exception)
+			throws IOException {
+
+		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
+	}
+	
+	@ExceptionHandler(UsermanagementServiceResponseException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> usermanagementServiceResponseException(
+			HttpServletRequest httpServletRequest, final UsermanagementServiceResponseException exception)
 			throws IOException {
 
 		return getServiceErrorResponseEntity(exception, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
