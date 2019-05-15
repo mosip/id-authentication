@@ -6,12 +6,10 @@ import { loginURL } from '../../app.constants';
 export class LoginServiceService {
   userId: string;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   login(userId) {
     this.userId = userId;
-    return this.http.get(loginURL.userRole +`${this.userId}`);
+    return this.http.get(loginURL.userRole + `${this.userId}`);
   }
-  
-
 }

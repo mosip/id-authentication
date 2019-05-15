@@ -1,6 +1,7 @@
 .mat-card {
     height: 700px;
     padding: 0;
+    z-index: 1;
 }
 
 .sidebar {
