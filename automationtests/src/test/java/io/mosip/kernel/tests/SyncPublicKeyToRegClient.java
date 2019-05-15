@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,7 +34,8 @@ import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 
 import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.PublicKeyResponse;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -53,22 +56,22 @@ import io.restassured.response.Response;
 	       }
 	
 	       private static Logger logger = Logger.getLogger(SyncPublicKeyToRegClient.class);
-	       private static final String jiraID = "MOS-997";
-	       private static final String moduleName = "kernel";
-	       private static final String apiName = "SyncPublicKeyToRegClient";
-	       private static final String requestJsonName = "syncPublicKeyRequest";
-	       private static final String outputJsonName = "syncPublicKeyOutput";
-	       private static final String service_URI = "/v1/keymanager/publickey/";
-	
-	       protected static String testCaseName = "";
-	       static SoftAssert softAssert = new SoftAssert();
+	       private final String jiraID = "MOS-997";
+	       private final String moduleName = "kernel";
+	       private final String apiName = "SyncPublicKeyToRegClient";
+	       private final String requestJsonName = "syncPublicKeyRequest";
+	       private final String outputJsonName = "syncPublicKeyOutput";
+	       private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	       private final String SyncPublicKeyToRegClient_URI = props.get("SyncPublicKeyToRegClient_URI").toString();	
+	       protected String testCaseName = "";
+	       SoftAssert softAssert = new SoftAssert();
 	       boolean status = false;
 	       String finalStatus = "";
-	       public static JSONArray arr = new JSONArray();
-	       static Response response = null;
-	       static JSONObject responseObject = null;
-	       private static AssertKernel assertions = new AssertKernel();
-	       private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	       public JSONArray arr = new JSONArray();
+	       Response response = null;
+	       JSONObject responseObject = null;
+	       private AssertKernel assertions = new AssertKernel();
+	       private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	
 	       /**
 	       * method to set the test case name to the report
@@ -78,7 +81,7 @@ import io.restassured.response.Response;
 	       * @param ctx
 	       */
 	       @BeforeMethod(alwaysRun=true)
-	       public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	       public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 	              String object = (String) testdata[0];
 	              testCaseName = object.toString();
 	
@@ -151,7 +154,7 @@ import io.restassured.response.Response;
 	                           
 	                            objectData.remove("applicationId");
 	                           
-	                           response = applicationLibrary.getRequest(service_URI+applicationId, GetHeader.getHeader(objectData));
+	                           response = applicationLibrary.getRequest(SyncPublicKeyToRegClient_URI+applicationId, GetHeader.getHeader(objectData));
 	
 	
 	                     } else if (listofFiles[k].getName().toLowerCase().contains("response"))
@@ -163,13 +166,14 @@ import io.restassured.response.Response;
 	              logger.info("Status Code is : " +statusCode);
 	              
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+	              listOfElementToRemove.add("responsetime");
 	              listOfElementToRemove.add("timestamp");
 	              
 	              if (testcaseName.toLowerCase().contains("smoke"))
 	              {
 	                     String referenceId=(objectData.get("referenceId")).toString();
 	                     String queryStr = "select public_key from kernel.key_store where id = (select id from kernel.key_alias where ref_id = '"+referenceId+"' and app_id='"+applicationId+"')";
-	                     boolean valid = KernelMasterDataR.masterDataDBConnection(PublicKeyResponse.class,queryStr);
+	                     boolean valid = new KernelDataBaseAccess().validateDataInDb(queryStr);
 	                     String s = null;
 	                     if(valid)
 	                     {
@@ -183,7 +187,7 @@ import io.restassured.response.Response;
 	                     }
 	                     
 	                     logger.info("obtained key from db : "+s);
-	                     valid = (response.jsonPath().get("publicKey")).toString().equals(s);
+	                     valid = (((HashMap<String, String>)response.jsonPath().get("response")).get("publicKey")).toString().equals(s);
 	                     if(valid) {
 	                           finalStatus = "Pass";
 	                     }
@@ -223,7 +227,8 @@ import io.restassured.response.Response;
 	              softAssert.assertAll();
 	       }
 	
-	       @Override
+	       @SuppressWarnings("static-access")
+		@Override
 	       public String getTestName() {
 	              return this.testCaseName;
 	       }

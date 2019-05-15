@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,13 +19,7 @@ import * as appConstants from './../../../app.constants';
   styleUrls: ['./center-selection.component.css']
 })
 export class CenterSelectionComponent implements OnInit {
-  // @ViewChild(TimeSelectionComponent)
-  // timeSelectionComponent: TimeSelectionComponent;
-
   REGISTRATION_CENTRES: RegistrationCentre[] = [];
-  // displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
-  // dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
-  // selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
 
   locationTypes = [];
@@ -37,6 +32,7 @@ export class CenterSelectionComponent implements OnInit {
   showMessage = false;
   enableNextButton = false;
   bookingDataList = [];
+  errorlabels: any;
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
@@ -64,6 +60,7 @@ export class CenterSelectionComponent implements OnInit {
     //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['response']['locations'];
+      this.errorlabels = response['error'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
@@ -133,6 +130,7 @@ export class CenterSelectionComponent implements OnInit {
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
     }
@@ -170,6 +168,7 @@ export class CenterSelectionComponent implements OnInit {
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
       });
@@ -215,7 +214,6 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   routeDashboard() {
-    // const routeParams = this.router.url.split('/');
     const url = Utils.getURL(this.router.url, 'dashboard', 3);
     this.router.navigateByUrl(url);
   }
@@ -223,27 +221,35 @@ export class CenterSelectionComponent implements OnInit {
   routeBack() {
     let url = '';
     if (this.registrationService.getUsers().length === 0) {
-      // const routeParams = this.router.url.split('/');
-      // console.log('route params', routeParams);
       url = Utils.getURL(this.router.url, 'dashboard', 3);
-
-      // this.router.navigateByUrl(`dashboard`);
     } else {
-      // const routeParams = this.router.url.split('/');
       url = Utils.getURL(this.router.url, 'summary/preview', 2);
-      // this.router.navigate([routeParams[1], 'summary', 'preview']);
     }
     this.router.navigateByUrl(url);
   }
 
   displayResults(response: any) {
     this.REGISTRATION_CENTRES = response['registrationCenters'];
-    // this.dataSource.data = REGISTRATION_CENTRES;
-    // console.log(this.dataSource.data);
     this.showTable = true;
     if (this.REGISTRATION_CENTRES) {
       this.selectedRow(this.REGISTRATION_CENTRES[0]);
       this.dispatchCenterCoordinatesList();
     }
   }
+  displayMessageError(title: string, message: string) {
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
+
 }

@@ -172,7 +172,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/**
 	 * @return the allowedAuthType
 	 */
-	public String getAllowedAuthTypeProperty() {
+	protected String getAllowedAuthTypeProperty() {
 		return ALLOWED_AUTH_TYPE;
 	}
 

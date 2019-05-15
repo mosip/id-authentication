@@ -21,7 +21,7 @@ This library can be used to validate ID Object. It performs below 4 validations.
 
 ***1.2. Key Non-Functional Requirements -***   
 -	Logging :
-	-	Log all the exceptions along with error code and short error message
+	-	Log all exceptions along with error code and short error message
 	-	As a security measure, Individualâ€™s UIN should not be logged
 -	Audit :
 	-	Audit all transaction details in database
@@ -47,4 +47,4 @@ The key solution considerations are -
 
 
 **2.3. Implementation**
-[kernel-idobjectvalidator](https://github.com/mosip/mosip/tree/master/kernel/kernel-idobjectvalidator)
+WIP

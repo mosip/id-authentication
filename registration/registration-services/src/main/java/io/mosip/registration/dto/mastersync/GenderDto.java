@@ -22,7 +22,7 @@ public class GenderDto extends MasterSyncBaseDto {
 	 * @return the code
 	 */
 	public String getCode() {
-		return code;
+		return code.trim();
 	}
 
 	/**

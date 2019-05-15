@@ -3,12 +3,6 @@
 -- table 		: registration_center  - Master registration_center list
 -- table alias  : regcntr	
 
--- schemas section ---------------------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------------------------------------
 
 create table reg.registration_center (
@@ -58,8 +52,4 @@ create table reg.registration_center (
 -- keys section -------------------------------------------------------------------------------
 alter table reg.registration_center add constraint pk_regcntr_code primary key (id, lang_code)
  ;
-
--- indexes section -----------------------------------------------------------------------
--- create index idx_regcntr_name on reg.registration_center (name)
--- ;
 

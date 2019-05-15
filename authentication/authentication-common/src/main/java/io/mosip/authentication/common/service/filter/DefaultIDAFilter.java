@@ -3,8 +3,8 @@ package io.mosip.authentication.common.service.filter;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
 /**
- * The Class DefaultIDAFilter - used to authenticate the request // * received
- * for the static pin storage {@link StaticPinController} // * and VID
+ * The Class DefaultIDAFilter - used to authenticate the request received
+ * for the static pin storage {@link StaticPinController} and VID
  * generation {@link VIDController}
  * 
  * @author Sanjay Murali

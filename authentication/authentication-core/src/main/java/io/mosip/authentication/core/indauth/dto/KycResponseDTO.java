@@ -21,9 +21,6 @@ public class KycResponseDTO {
 	/** The Variable to hold value of static Token */
 	private String staticToken;
 
-	/** The Variable to hold value of ttl */
-	private String ttl;
-
 	/** The Variable to hold value of identity */
 	private Map<String, ? extends Object> identity;
 }

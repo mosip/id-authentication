@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -25,16 +22,16 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.MaskUtil;
-import io.mosip.authentication.core.dto.OTPUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.MaskedResponseDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
-import io.mosip.authentication.core.spi.notification.service.NotificationService;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -65,14 +62,12 @@ public class OTPServiceImpl implements OTPService {
 	/** The env. */
 	@Autowired
 	private Environment env;
-	@Autowired
-	NotificationManager notificationManager;
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
-
+	
 	@Autowired
-	private NotificationService notificationService;
+	private IdInfoFetcher idInfoFetcher;
 
 	/** The otp manager. */
 	@Autowired
@@ -102,65 +97,46 @@ public class OTPServiceImpl implements OTPService {
 			String individualIdType = otpRequestDto.getIndividualIdType();
 			Map<String, Object> idResDTO = idAuthService.processIdType(individualIdType, individualId, false);
 			String uin = String.valueOf(idResDTO.get("uin"));
-			String productid = env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID);
 			String transactionId = otpRequestDto.getTransactionID();
-			String otpKey = OTPUtil.generateKey(productid, individualId, transactionId, partnerId);
-			Optional<String> otpValue = Optional.ofNullable(otpManager.generateOTP(otpKey));
-			if (otpValue.isPresent()) {
+			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
+			
+			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
+			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
+			String namePri = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
+			String nameSec = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
+
+
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, namePri, nameSec, priLang, secLang);
+			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
 				otpResponseDTO.setErrors(Collections.emptyList());
 				otpResponseDTO.setTransactionID(transactionId);
-				String responseTime = formatDate(new Date(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+				String responseTime = formatDate(new Date(),
+						env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 				otpResponseDTO.setResponseTime(responseTime);
-				Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
 				String email = getEmail(idInfo);
 				String phoneNumber = getPhoneNumber(idInfo);
 				MaskedResponseDTO maskedResponseDTO = new MaskedResponseDTO();
 				List<String> otpChannels = otpRequestDto.getOtpChannel();
-				
 				for (String channel : otpChannels) {
-					processChannel(channel,phoneNumber,email,maskedResponseDTO);
+					processChannel(channel, phoneNumber, email, maskedResponseDTO);
 				}
-				
 				otpResponseDTO.setResponse(maskedResponseDTO);
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId, "Y",
 						"OTP_GENERATED", RequestType.OTP_REQUEST);
 				idAuthService.saveAutnTxn(authTxn);
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
-						"generated OTP is: " + otpValue.get());
-				notificationService.sendOtpNotification(otpRequestDto, otpValue.get(), uin, email, phoneNumber, idInfo);
+						" is OTP generated: " + isOtpGenerated);
 			} else {
 				AutnTxn authTxn = createAuthTxn(individualId, individualIdType, uin, requestTime, transactionId,
 						OTP_GENERATION_FAILED_STATUS, OTP_GENERATION_FAILED_DESC, RequestType.OTP_REQUEST);
 				idAuthService.saveAutnTxn(authTxn);
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), this.getClass().getName(),
-						"OTP Generation failed");
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(),
+						this.getClass().getName(), "OTP Generation failed");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
 		}
 		return otpResponseDTO;
-
-	}
-
-	private void processChannel(String value,String phone,String email,MaskedResponseDTO maskedResponseDTO) throws IdAuthenticationBusinessException {
-		if (isNotNullorEmpty(value)) {
-			if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
-				maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
-			}
-			else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {
-				maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
-			} else {
-				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-								IdaIdMapping.EMAIL.name()));
-			}
-		}else {
-			throw new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
-							IdaIdMapping.EMAIL.name()));
-		}
 
 	}
 
@@ -177,10 +153,12 @@ public class OTPServiceImpl implements OTPService {
 		Date requestDateTime;
 		LocalDateTime reqTime;
 		try {
-			requestDateTime = DateUtils.parseToDate(requestTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+			requestDateTime = DateUtils.parseToDate(requestTime,
+					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 			reqTime = DateUtils.parseDateToLocalDateTime(requestDateTime);
 		} catch (ParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
+					e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		int addMinutes = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_DURATION));
@@ -191,6 +169,16 @@ public class OTPServiceImpl implements OTPService {
 			isOtpFlooded = true;
 		}
 		return isOtpFlooded;
+	}
+
+	private void processChannel(String value, String phone, String email, MaskedResponseDTO maskedResponseDTO)
+			throws IdAuthenticationBusinessException {
+		if (value.equalsIgnoreCase(NotificationType.SMS.getChannel())) {
+			maskedResponseDTO.setMaskedMobile(MaskUtil.maskMobile(phone));
+		} else if (value.equalsIgnoreCase(NotificationType.EMAIL.getChannel())) {
+			maskedResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+		}
+
 	}
 
 	/**
@@ -217,7 +205,8 @@ public class OTPServiceImpl implements OTPService {
 			// TODO check
 			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = DateUtils.getUTCTimeFromDate(DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			String strUTCDate = DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
 			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
 			autnTxn.setAuthTypeCode(otpRequest.getRequestType());
@@ -228,7 +217,8 @@ public class OTPServiceImpl implements OTPService {
 			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 			return autnTxn;
 		} catch (ParseException | DateTimeParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(), e.getMessage());
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
+					e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
@@ -240,33 +230,10 @@ public class OTPServiceImpl implements OTPService {
 	 * @return
 	 */
 	private String createId(String uin) {
-		String currentDate = DateUtils.formatDate(new Date(), env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
+		String currentDate = DateUtils.formatDate(new Date(),
+				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		String uinAndDate = uin + "-" + currentDate;
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
-	}
-
-	/**
-	 * Adds a number of minutes(positive/negative) to a date returning a new Date
-	 * object. Add positive, date increase in minutes. Add negative, date reduce in
-	 * minutes.
-	 *
-	 * @param date   the date
-	 * @param minute the minute
-	 * @return the date
-	 */
-	private Date addMinutes(Date date, int minute) {
-		return DateUtils.addMinutes(date, minute);
-	}
-
-	/**
-	 * Formate date.
-	 *
-	 * @param date   the date
-	 * @param format the formate
-	 * @return the date
-	 */
-	private String formatDate(Date date, String format) {
-		return new SimpleDateFormat(format).format(date);
 	}
 
 	/**
@@ -291,8 +258,28 @@ public class OTPServiceImpl implements OTPService {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
 	}
 
-	private boolean isNotNullorEmpty(String email) {
-		return email != null && !email.isEmpty() && email.trim().length() > 0;
+	/**
+	 * Adds a number of minutes(positive/negative) to a date returning a new Date
+	 * object. Add positive, date increase in minutes. Add negative, date reduce in
+	 * minutes.
+	 *
+	 * @param date   the date
+	 * @param minute the minute
+	 * @return the date
+	 */
+	private Date addMinutes(Date date, int minute) {
+		return DateUtils.addMinutes(date, minute);
+	}
+
+	/**
+	 * Formate date.
+	 *
+	 * @param date   the date
+	 * @param format the formate
+	 * @return the date
+	 */
+	private String formatDate(Date date, String format) {
+		return new SimpleDateFormat(format).format(date);
 	}
 
 }

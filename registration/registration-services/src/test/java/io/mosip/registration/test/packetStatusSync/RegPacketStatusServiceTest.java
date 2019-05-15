@@ -30,21 +30,26 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
+import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, HMACUtils.class })
 public class RegPacketStatusServiceTest {
 
 	@Rule
@@ -55,6 +60,8 @@ public class RegPacketStatusServiceTest {
 	private RegPacketStatusDAO packetStatusDao;
 	@Mock
 	private PacketSynchService packetSynchService;
+	@Mock
+	private AESEncryptionService aesEncryptionService;
 	@InjectMocks
 	private RegPacketStatusServiceImpl packetStatusService;
 
@@ -63,11 +70,14 @@ public class RegPacketStatusServiceTest {
 	
 	@Before
 	public void initiate() {
+		PowerMockito.mockStatic(HMACUtils.class);
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
+		applicationMap.put("PRIMARY_LANGUAGE", "ENG");
 	
+		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+		//when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 		SessionContext.getInstance();
 
 	}
@@ -183,6 +193,8 @@ public class RegPacketStatusServiceTest {
 		List<Registration> packetsToBeSynched=new ArrayList<>();
 		Registration reg=new Registration();
 		reg.setId("123456");
+		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		packetsToBeSynched.add(reg);
 		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetsToBeSynched);
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -193,6 +205,9 @@ public class RegPacketStatusServiceTest {
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 		Mockito.when(packetSynchService.syncPacketsToServer(Mockito.anyObject(),Mockito.anyString())).thenReturn(responseDTO);
 		Mockito.when(packetSynchService.updateSyncStatus(Mockito.anyList())).thenReturn(true);
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
+		Mockito.when(aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())).thenReturn("aes".getBytes());
+		Mockito.when(HMACUtils.generateHash(Mockito.anyString().getBytes())).thenReturn("asa".getBytes());		
 		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
 	}
 

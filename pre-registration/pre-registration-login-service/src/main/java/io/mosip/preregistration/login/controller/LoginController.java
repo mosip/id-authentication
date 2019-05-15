@@ -43,7 +43,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = "PreAuth")
-//@CrossOrigin("*")
 public class LoginController {
 
 	/** Autowired reference for {@link #authService}. */
@@ -101,7 +100,7 @@ public class LoginController {
 	 * @return AuthNResponse
 	 */
 	@PostMapping(value="/invalidateToken",produces=MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Inavlidate the token")
+	@ApiOperation(value = "Invalidate the token")
 	@ResponseStatus(value=HttpStatus.OK)
 	public ResponseEntity<MainResponseDTO<AuthNResponse>> invalidateToken(HttpServletRequest req){
 		log.info("sessionId", "idType", "id",
@@ -131,8 +130,7 @@ public class LoginController {
 	 */
 	@GetMapping(path="/config" ,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get global and Pre-Registration config data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully retrieved"),
-			@ApiResponse(code = 400, message = "Unable to get the global and Pre-Registration config data") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully retrieved") })
 	public ResponseEntity<MainResponseDTO<Map<String,String>>> configParams() {
 		log.info("sessionId", "idType", "id",
 				"In Login controller for getting config values ");

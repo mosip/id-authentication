@@ -39,7 +39,6 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
@@ -63,8 +62,6 @@ public class IdAuthServiceImplTest {
 	private RestRequestFactory restFactory;
 	@Mock
 	private RestHelper restHelper;
-	@Mock
-	private VIDRepository vidRepository;
 
 	@InjectMocks
 	IdServiceImpl idAuthServiceImpl;
@@ -88,22 +85,12 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "idRepoManager", idRepoManager);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "vidRepository", vidRepository);
 
 	}
 
 	@Test
 	public void testAuditData() {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void testGetIdRepoByVidNumberVIDExpired() throws Throwable {
-		try {
-			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdByVid", "232343234", false);
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
 	}
 
 	@Test
@@ -116,7 +103,7 @@ public class IdAuthServiceImplTest {
 		vidEntity.setActive(true);
 		vidEntity.setUin("476567");
 		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString(), false);
@@ -134,14 +121,14 @@ public class IdAuthServiceImplTest {
 		vidEntity.setActive(true);
 		vidEntity.setUin("476567");
 		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testProcessIdType_IdTypeIsV() throws IdAuthenticationBusinessException {
-		String idvIdType = "V";
+		String idvIdType = "VID";
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
@@ -150,7 +137,7 @@ public class IdAuthServiceImplTest {
 		vidEntity.setActive(true);
 		vidEntity.setUin("476567");
 		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		Mockito.when(idRepoManager.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idAuthServiceImpl,
 				"processIdType", idvIdType, idvId, false);
@@ -161,16 +148,16 @@ public class IdAuthServiceImplTest {
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
 		String idvIdType = "VID";
 		String idvId = "875948796";
-
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-
+         
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenThrow(idBusinessException);
+		
+		Mockito.when(idRepoManager.getUINByVID(idvId))
+		.thenReturn(Mockito.anyString());
 
-		Mockito.when(idAuthService.getIdByVid(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenThrow(idBusinessException);
-		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
+		idAuthServiceImpl.processIdType(idvIdType, idvId, false);
 
 	}
 
@@ -303,19 +290,22 @@ public class IdAuthServiceImplTest {
 	public void testIdRepoServiceException_UINDeActivated() throws Throwable {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
-			idRepo.put("uin", "476567");
+			String vid = "476567";
+			idRepo.put("uin", vid);
 			VIDEntity vidEntity = new VIDEntity();
 			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
 			vidEntity.setActive(true);
-			vidEntity.setUin("476567");
+			vidEntity.setUin(vid);
 			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-					.thenThrow(idBusinessException);
-			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			Mockito.when(idRepoManager.getUINByVID(vid))
+			.thenReturn("12345");
+			Mockito.when(idRepoManager.getIdenity("12345", false))
+			.thenThrow(idBusinessException);
+			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-					Mockito.anyString(), false);
+					vid, false);
 
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
@@ -326,20 +316,52 @@ public class IdAuthServiceImplTest {
 	public void testIdRepoServiceException_InvalidUIN() throws Throwable {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
-			idRepo.put("uin", "476567");
+			String vid = "476567";
+			idRepo.put("uin", vid);
 			VIDEntity vidEntity = new VIDEntity();
 			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
 			vidEntity.setActive(true);
-			vidEntity.setUin("476567");
+			vidEntity.setUin(vid);
 			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.INVALID_UIN);
 
-			Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-					.thenThrow(idBusinessException);
-			Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			
+			Mockito.when(idRepoManager.getUINByVID(vid))
+			.thenReturn("12345");
+			Mockito.when(idRepoManager.getIdenity("12345", false))
+			.thenThrow(idBusinessException);
+			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
-					Mockito.anyString(), false);
+					vid, false);
+
+		} catch (UndeclaredThrowableException e) {
+			throw e.getCause();
+		}
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testIdRepoServiceException_UINDeactivated() throws Throwable {
+		try {
+			Map<String, Object> idRepo = new HashMap<>();
+			String vid = "476567";
+			idRepo.put("uin", vid);
+			VIDEntity vidEntity = new VIDEntity();
+			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
+			vidEntity.setActive(true);
+			vidEntity.setUin(vid);
+			Optional<VIDEntity> optVID = Optional.of(vidEntity);
+			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
+
+			
+			Mockito.when(idRepoManager.getUINByVID(vid))
+			.thenReturn("12345");
+			Mockito.when(idRepoManager.getIdenity("12345", false))
+			.thenThrow(idBusinessException);
+			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
+					vid, false);
 
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();

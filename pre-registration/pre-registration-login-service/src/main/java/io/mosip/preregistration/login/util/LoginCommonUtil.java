@@ -49,10 +49,6 @@ import io.mosip.preregistration.login.exception.ParseResponseException;
 @Component
 public class LoginCommonUtil {
 	
-	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
-	
 	/**
 	 * Environment instance
 	 */
@@ -129,13 +125,10 @@ public class LoginCommonUtil {
 	 * @param langCode
 	 * @return List<String>
 	 */
-	public  List<String> validateUserIdAndLangCode(String userId,String langCode) {
+	public  List<String> validateUserId(String userId) {
 		log.info("sessionId", "idType", "id", "In validateUserIdandLangCode method of Login Common Util");
 		List<String> list=new ArrayList<>();
-		if(langCode == null || langCode.isEmpty()) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_009.getCode(),ErrorMessages.INVALID_REQUEST_LANGCODE.getMessage(),null);
-		}
-		else if(userId == null || userId.isEmpty()) {
+		 if(userId == null || userId.isEmpty()) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 		}
 		if(ValidationUtil.phoneValidator(userId)) {
@@ -149,17 +142,7 @@ public class LoginCommonUtil {
 		
 		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 	}
-	
-	/**
-	 * This method provides current response time
-	 * @return String
-	 */
-
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-
-	}
-	
+		
 	/**
 	 * This method will validate the null check for incoming request
 	 * @param mainRequest
@@ -211,6 +194,13 @@ public class LoginCommonUtil {
 		} 
 	}
 	
+	/**
+	 * This method is used to parse string to required object
+	 * @param serviceResponseBody
+	 * @param responseClass
+	 * @return
+	 * @throws ParseResponseException
+	 */
 	public Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) throws ParseResponseException{
 		try {
 			objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -221,6 +211,11 @@ public class LoginCommonUtil {
 		} 
 	}
 	
+	/**
+	 * This method is used for parse object to string
+	 * @param response
+	 * @return
+	 */
 	public String responseToString(Object response) {
 		try {
 			return objectMapper.writeValueAsString(response);
@@ -230,13 +225,24 @@ public class LoginCommonUtil {
 		}
 	}
 	
+	/**
+	 * This method is used for parsing string to properties
+	 * @param s
+	 * @return
+	 * @throws IOException
+	 */
 	public Properties parsePropertiesString(String s) throws IOException {
 		final Properties p = new Properties();
 		p.load(new StringReader(s));
 		return p;
 	}
 
-	public String configRestCall(String filname) {
+	/**
+	 * This method is used config rest call
+	 * @param filname
+	 * @return
+	 */
+	public String getConfig(String filname) {
 		String configServerUri = env.getProperty("spring.cloud.config.uri");
 		String configLabel = env.getProperty("spring.cloud.config.label");
 		String configProfile = env.getProperty("spring.profiles.active");
@@ -250,6 +256,11 @@ public class LoginCommonUtil {
 
 	}
 
+	/**This method is used for create key value pair from congif file
+	 * @param prop
+	 * @param configParamMap
+	 * @param reqParams
+	 */
 	public void getConfigParams(Properties prop, Map<String, String> configParamMap, List<String> reqParams) {
 		for (Entry<Object, Object> e : prop.entrySet()) {
 			if (reqParams.contains(String.valueOf(e.getKey()))) {
@@ -259,7 +270,12 @@ public class LoginCommonUtil {
 		}
 	}
 	
-	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
+	/**
+	 * This method is used for create request map
+	 * @param requestDto
+	 * @return
+	 */
+	public Map<String, String> createRequestMap(MainRequestDTO<?> requestDto) {
 		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Login Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());

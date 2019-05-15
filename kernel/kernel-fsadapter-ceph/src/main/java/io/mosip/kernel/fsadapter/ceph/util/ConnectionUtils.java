@@ -1,7 +1,6 @@
 package io.mosip.kernel.fsadapter.ceph.util;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -18,7 +17,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
  * @author Pranav Kumar
  * @since 0.0.1
  */
-@RefreshScope
+
 @Component
 public class ConnectionUtils {
 

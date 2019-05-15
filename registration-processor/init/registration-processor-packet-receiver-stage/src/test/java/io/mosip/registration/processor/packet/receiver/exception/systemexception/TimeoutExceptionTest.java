@@ -48,10 +48,10 @@ public class TimeoutExceptionTest {
 		}
 		MultipartFile file = new MockMultipartFile(name, originalFileName, contentType, content);
 
-		Mockito.when(packetHandlerService.storePacket(file, stageName)).thenThrow(ex);
+		Mockito.when(packetHandlerService.validatePacket(file, stageName)).thenThrow(ex);
 		try {
 
-			packetHandlerService.storePacket(file, stageName);
+			packetHandlerService.validatePacket(file, stageName);
 			fail();
 
 		} catch (TimeoutException e) {

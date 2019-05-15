@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.1</version>
 	</parent>
 	<artifactId>authentication-common</artifactId>
 	<name>authentication-common</name>
@@ -36,6 +36,17 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-pinvalidator</artifactId>
 			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.idrepository</groupId>
+			<artifactId>id-repository-core</artifactId>
+			<version>${kernel.core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Kernel Id Validator VID -->

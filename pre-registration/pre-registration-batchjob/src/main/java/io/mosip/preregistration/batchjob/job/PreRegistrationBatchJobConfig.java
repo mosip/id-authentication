@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjob.job;
 
 import javax.sql.DataSource;
@@ -17,7 +21,8 @@ import io.mosip.preregistration.batchjob.tasklets.ExpiredStatusTasklet;
 import io.mosip.preregistration.batchjob.tasklets.UpdateConsumedStatusTasklet;
 
 /**
- * @author M1043008
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Configuration

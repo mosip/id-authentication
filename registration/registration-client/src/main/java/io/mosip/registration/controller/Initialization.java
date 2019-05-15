@@ -14,6 +14,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.tpm.initialize.TPMInitialization;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -82,13 +84,15 @@ public class Initialization extends Application {
 	public void stop() {
 		try {
 			super.stop();
-			System.exit(0);
+			TPMInitialization.closeTPMInstance();
 		} catch (Exception exception) {
 			LOGGER.error("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 					APPLICATION_ID,
 					"Application Initilization Error"
 							+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis())
 							+ ExceptionUtils.getStackTrace(exception));
+		} finally {
+			System.exit(0);
 		}
 	}
 

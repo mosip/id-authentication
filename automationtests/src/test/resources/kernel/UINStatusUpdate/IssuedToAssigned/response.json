@@ -1,4 +1,11 @@
 {
-   "uin": "7061042563",
-   "status": "ASSIGNED"
+   "id": "string",
+   "version": "string",
+   "responsetime": "2019-04-30T07:08:41.149Z",
+   "metadata": null,
+   "response":    {
+      "uin": "7582019047",
+      "status": "ASSIGNED"
+   },
+   "errors": null
 }

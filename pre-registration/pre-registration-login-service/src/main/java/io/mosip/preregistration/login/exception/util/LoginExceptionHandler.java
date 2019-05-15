@@ -24,6 +24,7 @@ import io.mosip.preregistration.login.exception.ConfigFileNotFoundException;
 import io.mosip.preregistration.login.exception.InvalidOtpOrUseridException;
 import io.mosip.preregistration.login.exception.InvalidateTokenException;
 import io.mosip.preregistration.login.exception.LoginServiceException;
+import io.mosip.preregistration.login.exception.NoAuthTokenException;
 import io.mosip.preregistration.login.exception.ParseResponseException;
 import io.mosip.preregistration.login.exception.SendOtpFailedException;
 import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
@@ -43,55 +44,27 @@ public class LoginExceptionHandler {
 	private String utcDateTimePattern;
 
 	@ExceptionHandler(SendOtpFailedException.class)
-	public ResponseEntity<MainResponseDTO<?>> sendOtpException(final SendOtpFailedException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = e.getMainResposneDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> sendOtpException(final SendOtpFailedException e){
+		return GenericUtil.errorResponse(e, e.getMainResposneDto());
 	}
 	
 	@ExceptionHandler(UserIdOtpFaliedException.class)
-	public ResponseEntity<MainResponseDTO<?>> userIdOtpException(final UserIdOtpFaliedException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = e.getMainResponseDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> userIdOtpException(final UserIdOtpFaliedException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	}
 
 	@ExceptionHandler(InvalidateTokenException.class)
-	public ResponseEntity<MainResponseDTO<?>> invalidateTokenException(final InvalidateTokenException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes =e.getMainResponseDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> invalidateTokenException(final InvalidateTokenException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	}
 	
 	@ExceptionHandler(InvalidRequestParameterException.class)
-	public ResponseEntity<MainResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes =e.getMainResponseDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> invalidRequestParameterException(final InvalidRequestParameterException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	} 
 	
 	@ExceptionHandler(LoginServiceException.class)
-	public ResponseEntity<MainResponseDTO<?>> authServiceException(final LoginServiceException e,WebRequest request){
+	public ResponseEntity<MainResponseDTO<?>> authServiceException(final LoginServiceException e){
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getMessage())));
 		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
@@ -101,15 +74,8 @@ public class LoginExceptionHandler {
 	}
 	
 	@ExceptionHandler(ParseResponseException.class)
-	public ResponseEntity<MainResponseDTO<?>> parseResponseException(final ParseResponseException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
-		MainResponseDTO<?> errorRes = e.getMainResponseDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> parseResponseException(final ParseResponseException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	} 
 	
 	
@@ -121,18 +87,12 @@ public class LoginExceptionHandler {
 	 * @return response for ConfigFileNotFoundException
 	 */
 	@ExceptionHandler(ConfigFileNotFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> errorRes = e.getMainResposneDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e) {
+		return GenericUtil.errorResponse(e, e.getMainResposneDto());
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e,WebRequest request){
+	public ResponseEntity<MainResponseDTO<?>> DateFormatException(final InvalidFormatException e){
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_CORE_REQ_003.getCode(),ErrorMessages.INVALID_REQUEST_DATETIME.getMessage());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
@@ -143,19 +103,14 @@ public class LoginExceptionHandler {
 	}
 	
 	@ExceptionHandler(InvalidOtpOrUseridException.class)
-	public ResponseEntity<MainResponseDTO<?>> InavlidOtpOrUserIdException(final InvalidOtpOrUseridException e,WebRequest request){
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		MainResponseDTO<?> errorRes =e.getMainResponseDto();
-		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
-		errorList.add(errorDetails);
-		errorRes.setErrors(errorList);
-		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	public ResponseEntity<MainResponseDTO<?>> InavlidOtpOrUserIdException(final InvalidOtpOrUseridException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
+	}
+	
+	@ExceptionHandler(NoAuthTokenException.class)
+	public ResponseEntity<MainResponseDTO<?>> NoAuthTokenException(final NoAuthTokenException e){
+		return GenericUtil.errorResponse(e, e.getMainResponseDto());
 	}
 	
 	
-	private String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-
-	}
 }

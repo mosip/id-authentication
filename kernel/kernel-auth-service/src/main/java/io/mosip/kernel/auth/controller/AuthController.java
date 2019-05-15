@@ -22,6 +22,7 @@ import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.ClientSecretDto;
 import io.mosip.kernel.auth.entities.LoginUser;
@@ -29,11 +30,16 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsRequest;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
-import io.mosip.kernel.auth.entities.UserRoleDto;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -336,10 +342,8 @@ public class AuthController {
 	/**
 	 * This API will fetch RID based on appId and userId.
 	 * 
-	 * @param appId
-	 *            - application Id
-	 * @param userId
-	 *            - user Id
+	 * @param appId  - application Id
+	 * @param userId - user Id
 	 * @return {@link RIdDto}
 	 * @throws Exception
 	 */
@@ -352,8 +356,107 @@ public class AuthController {
 		responseWrapper.setResponse(rIdDto);
 		return responseWrapper;
 	}
+	
+	
+		/**
+	 * Fetch username based on the user id.
+	 * 
+	 * @param appId
+	 *            - application id
+	 * @param userId
+	 *            - user id
+	 * @return {@link UserNameDto}
+	 * @throws Exception
+	 *             - exception is thrown if
+	 */
+	@ResponseFilter
+	@GetMapping(value = "unblock/{appid}/{userid}")
+	public ResponseWrapper<AuthZResponseDto> getUserName(@PathVariable("appid") String appId,
+			@PathVariable("userid") String userId) throws Exception {
+		AuthZResponseDto authZResponseDto = authService.unBlockUser(userId, appId);
+		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authZResponseDto);
+		return responseWrapper;
+	}
 
-	@GetMapping("/role/{appId}/{userId}")
+	/**
+	 * This API will change the password of the particular user
+	 * @param appId - applicationId
+	 * @param passwordDto - {@link PasswordDto}
+	 * @return {@link AuthZResponseDto}
+	 * @throws Exception
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/changepassword/{appid}")
+	public ResponseWrapper<AuthZResponseDto> changePassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
+			throws Exception {
+		AuthZResponseDto mosipUserDto = authService.changePassword(appId,passwordDto.getRequest());
+		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
+	}
+
+	/**
+	 * This API will reset the password of the particular user
+	 * @param appId - applicationId
+	 * @param passwordDto -{@link PasswordDto}
+	 * @return {@link AuthZResponseDto}
+	 * @throws Exception
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/resetpassword/{appid}")
+	public ResponseWrapper<AuthZResponseDto> resetPassword(@PathVariable("appid")String appId,@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto)
+			throws Exception {
+		AuthZResponseDto mosipUserDto = authService.resetPassword(appId,passwordDto.getRequest());
+		ResponseWrapper<AuthZResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
+	}
+
+	/**
+	 * 
+	 * @param mobile - mobile number 
+	 * @param appId -  applicationId
+	 * @return {@link UserNameDto}
+	 * @throws Exception
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/username/{appid}/{mobilenumber}")
+	public ResponseWrapper<UserNameDto> getUsernameBasedOnMobileNumber(@PathVariable("mobilenumber") String mobile,
+			@PathVariable("appid") String appId) throws Exception {
+		UserNameDto userNameDto = authService.getUserNameBasedOnMobileNumber(appId, mobile);
+		ResponseWrapper<UserNameDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userNameDto);
+		return responseWrapper;
+	}
+
+	
+	/**
+	 * Create a user account in Data Store
+	 * 
+	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
+	 * @return {@link UserRegistrationResponseDto}
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/user")
+	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
+			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
+		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
+		return responseWrapper;
+	}
+	
+	
+	@ResponseFilter
+	@PostMapping(value = "/user/addpassword")
+	public ResponseWrapper<UserPasswordResponseDto> addPassword(
+			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> userPasswordRequestDto) {
+		ResponseWrapper<UserPasswordResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authService.addUserPassword(userPasswordRequestDto.getRequest()));
+		return responseWrapper;
+	}
+  
+  @GetMapping("/role/{appId}/{userId}")
 	@ResponseFilter
 	public ResponseWrapper<UserRoleDto> getUserRole(@PathVariable("appId") String appId,
 			@PathVariable("userId") String userId) throws Exception {
@@ -364,3 +467,4 @@ public class AuthController {
 	}
 
 }
+

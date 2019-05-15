@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -47,8 +48,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
@@ -58,6 +59,7 @@ import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -128,6 +130,9 @@ public class PacketValidateProcessor {
 
 	@Autowired
 	private Utilities utility;
+
+	@Autowired
+	ApplicantTypeDocument applicantTypeDocument;
 
 	/** The registration id. */
 	private String registrationId = "";
@@ -293,6 +298,21 @@ public class PacketValidateProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 
+		} catch (ParsingException exc) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage());
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
+			isTransactionSuccessful = false;
+			description = PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage();
+			code = PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode();
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
+							+ exc.getMessage() + ExceptionUtils.getStackTrace(exc));
+			object.setIsValid(Boolean.FALSE);
+			object.setInternalError(Boolean.TRUE);
+			object.setRid(registrationStatusDto.getRegistrationId());
+
 		} catch (TablenotAccessibleException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_REPROCESSING.toString());
 			registrationStatusDto
@@ -368,7 +388,8 @@ public class PacketValidateProcessor {
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException {
+			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
+			org.json.simple.parser.ParseException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -393,7 +414,7 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()));
 
 		if (!regTypeCheck) {
-			if (!applicantDocumentValidation(identity, registrationStatusDto))
+			if (!applicantDocumentValidation(jsonString))
 				return false;
 			if (!masterDataValidation(jsonString, registrationStatusDto))
 				return false;
@@ -453,22 +474,14 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean applicantDocumentValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException {
+	private boolean applicantDocumentValidation(String jsonString)
+			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		InputStream documentInfoStream = null;
-		List<Document> documentList = null;
-		documentInfoStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytes = null;
-		bytes = IOUtils.toByteArray(documentInfoStream);
-		documentList = documentUtility.getDocumentList(bytes);
 
-		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
-				registrationStatusDto);
-		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(identity, documentList,
-				registrationId);
+		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(utility, env,
+				applicantTypeDocument);
+		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(registrationId, jsonString);
 
 		return isApplicantDocumentValidation;
 
@@ -518,9 +531,9 @@ public class PacketValidateProcessor {
 					isTransactionSuccessful = false;
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage();
 
-				}
-				else {
-					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()+" as parent registration id is not present";
+				} else {
+					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
+							+ " as parent registration id is not present";
 				}
 
 			}

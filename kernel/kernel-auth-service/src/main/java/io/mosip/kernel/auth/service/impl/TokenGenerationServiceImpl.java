@@ -30,6 +30,15 @@ public class TokenGenerationServiceImpl implements TokenGenerationService {
 	
 	@Value("${mosip.kernel.auth.secret.key}")
 	private String secretKey;
+	
+	@Value("${mosip.kernel.ida.app.id}")
+	private String idaAppId;
+	
+	@Value("${mosip.kernel.ida.client.id}")
+	private String idaClientId;
+	
+	@Value("${mosip.kernel.ida.secret.key}")
+	private String idaSecretKey;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.kernel.auth.service.TokenGenerationService#getInternalTokenGenerationService()
@@ -40,6 +49,16 @@ public class TokenGenerationServiceImpl implements TokenGenerationService {
 		clientSecret.setAppId(authAppId);
 		clientSecret.setClientId(clientId);
 		clientSecret.setSecretKey(secretKey);
+		AuthNResponseDto authNResponseDto = authService.authenticateWithSecretKey(clientSecret);
+		return authNResponseDto.getToken();
+	}
+
+	@Override
+	public String getUINBasedToken() throws Exception {
+		ClientSecret clientSecret = new ClientSecret();
+		clientSecret.setAppId(idaAppId);
+		clientSecret.setClientId(idaClientId);
+		clientSecret.setSecretKey(idaSecretKey);
 		AuthNResponseDto authNResponseDto = authService.authenticateWithSecretKey(clientSecret);
 		return authNResponseDto.getToken();
 	}

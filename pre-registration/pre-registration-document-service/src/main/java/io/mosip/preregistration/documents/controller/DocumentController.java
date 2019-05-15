@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,8 +74,7 @@ public class DocumentController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PostMapping(path = "/documents/{preRegistrationId}", consumes = { "multipart/form-data" })
 	@ApiOperation(value = "Document Upload")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
-			@ApiResponse(code = 400, message = "Document uploaded failed") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully") })
 	public ResponseEntity<MainResponseDTO<DocumentResponseDTO>> fileUpload(
 			@PathVariable(value = "preRegistrationId") String preRegistrationId,
 			@RequestPart(value = "Document request", required = true) String reqDto,
@@ -102,8 +102,7 @@ public class DocumentController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@PutMapping(path = "/documents/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Copy uploaded document")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied"),
-			@ApiResponse(code = 400, message = "Document copying failed") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully copied") })
 	public ResponseEntity<MainResponseDTO<DocumentResponseDTO>> copyDocument(
 			@Valid @PathVariable(required = true, value = "preRegistrationId") String preRegistrationId,
 			@Valid @RequestParam(required = true) String catCode,
@@ -126,8 +125,7 @@ public class DocumentController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/documents/preregistration/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
-			@ApiResponse(code = 400, message = "Documents failed to reterive") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully") })
 	public ResponseEntity<MainResponseDTO<DocumentsMetaData>> getAllDocumentforPreid(
 			@Valid @PathVariable(required = true) String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
@@ -136,22 +134,21 @@ public class DocumentController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.getAllDocumentForPreId(preRegistrationId));
 	}
-	
+
 	/**
 	 * Get API to fetch document for a document Id
 	 * 
 	 * @param documentId
 	 *            pass documentId as path variable
-	 *            
+	 * 
 	 * @param preRegistrationId
-	 * 			  pass preRegistrationId as request param
+	 *            pass preRegistrationId as request param
 	 * @return response in a format specified in API document
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ ADMIN')")
 	@GetMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get All Document for Document Id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
-			@ApiResponse(code = 400, message = "Documents failed to reterive") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully") })
 	public ResponseEntity<MainResponseDTO<DocumentDTO>> getDocumentforDocId(
 			@Valid @PathVariable(required = true) String documentId,
 			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
@@ -159,7 +156,7 @@ public class DocumentController {
 				"In getAllDocumentforDocId method of document controller to get all the document for documentId "
 						+ documentId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(documentUploadService.getDocumentForDocId(documentId,preRegistrationId));
+				.body(documentUploadService.getDocumentForDocId(documentId, preRegistrationId));
 	}
 
 	/**
@@ -175,8 +172,7 @@ public class DocumentController {
 	@DeleteMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Delete document by document Id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
-			@ApiResponse(code = 400, message = "Document failed to delete") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted")})
 	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
 			@Valid @PathVariable(required = true) String documentId,
 			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
@@ -199,8 +195,7 @@ public class DocumentController {
 	@DeleteMapping(path = "/documents/preregistration/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
 	@ApiOperation(value = "Delete all documents by pre-registration Id")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted"),
-			@ApiResponse(code = 400, message = "Documents failed to delete") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents successfully deleted") })
 	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteAllByPreId(
 			@Valid @PathVariable(required = true) String preRegistrationId) {
 		log.info("sessionId", "idType", "id",

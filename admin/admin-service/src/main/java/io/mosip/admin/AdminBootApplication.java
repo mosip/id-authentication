@@ -1,7 +1,11 @@
 package io.mosip.admin;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executor;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootApplication(scanBasePackages = { "io.mosip.admin.*"})
+@SpringBootApplication(scanBasePackages = { "io.mosip.admin.*", "io.mosip.kernel.auth.*" })
 @EnableAsync
 public class AdminBootApplication {
 	
@@ -27,8 +31,4 @@ public class AdminBootApplication {
 		return executor;
 	}
 	
-	@Bean
-	public RestTemplate template() {
-		return new RestTemplate();
-	}
 }

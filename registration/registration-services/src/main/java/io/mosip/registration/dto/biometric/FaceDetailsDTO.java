@@ -13,8 +13,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FaceDetailsDTO extends BaseDTO{
-	
+public class FaceDetailsDTO extends BaseDTO {
+
 	/** The face. */
 	private byte[] face;
 
@@ -26,5 +26,11 @@ public class FaceDetailsDTO extends BaseDTO{
 
 	/** The num of retry. */
 	private int numOfRetries;
+	
+	/** The photograph name. */
+	private String photographName;
+
+	/** The compressed photo for QR Code. */
+	private byte[] compressedFacePhoto;
 
 }

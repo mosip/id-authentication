@@ -15,6 +15,7 @@ import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.entities.AuthNResponse;
 import io.mosip.kernel.auth.entities.AuthNResponseDto;
 import io.mosip.kernel.auth.entities.AuthToken;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.BasicTokenDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
 import io.mosip.kernel.auth.entities.LoginUser;
@@ -22,11 +23,16 @@ import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserDtoToken;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
 import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.TimeToken;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
-import io.mosip.kernel.auth.entities.UserRoleDto;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.factory.UserStoreFactory;
@@ -166,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
 		AuthNResponseDto authNResponseDto = null;
 		MosipUserDto mosipUser = null;
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
-			mosipUser = uinService.getDetailsFromUin(otpUser);
+			mosipUser = uinService.getDetailsFromUin(otpUser.getUserId());
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser);
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
@@ -200,6 +206,10 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDtoToken mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
+		if(mosipUser==null)
+		{
+			mosipUser = uinService.getDetailsFromUin(userOtp.getUserId());
+		}
 		if (mosipUser != null) {
 			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
 		} else {
@@ -246,11 +256,22 @@ public class AuthServiceImpl implements AuthService {
 		if (mosipUser != null) {
 			MosipUserDtoToken mosipToken = null;
 			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
-			try {
+			try
+			{
+			if(authToken!=null)
+			{
 				mosipToken = validateToken(authToken.getAccessToken());
-			} catch (AuthManagerException auth) {
-				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
-					mosipToken = null;
+			}
+			
+			}catch(AuthManagerException auth)
+			{
+				if(auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode()))
+				{
+					mosipToken=null;
+				}
+				else
+				{
+					throw new AuthManagerException(auth.getErrorCode(),auth.getMessage());
 				}
 			}
 			if (authToken != null && mosipToken != null) {
@@ -370,6 +391,39 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).unBlockAccount(userId);
+	}
+	
+	@Override
+	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).changePassword(passwordDto);
+	}
+
+	@Override
+	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).resetPassword(passwordDto);
+	}
+
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String appId, String mobileNumber) throws Exception {
+		return userStoreFactory.getDataStoreBasedOnApp("registrationclient")
+				.getUserNameBasedOnMobileNumber(mobileNumber);
+
+	}
+	
+
+	@Override
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		return userStoreFactory.getDataStoreBasedOnApp(userCreationRequestDto.getAppId()).registerUser(userCreationRequestDto);
+	}
+
+	@Override
+	public UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		return userStoreFactory.getDataStoreBasedOnApp(userPasswordRequestDto.getAppId()).addPassword(userPasswordRequestDto);
+	}
+  
+  @Override
 	public UserRoleDto getUserRole(String appId, String userId) throws Exception {
 		MosipUserDto mosipuser = null;
 		mosipuser = userStoreFactory.getDataStoreBasedOnApp(appId).getUserRoleByUserId(userId);

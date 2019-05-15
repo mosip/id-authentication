@@ -94,18 +94,36 @@ public class DataProvider {
 			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
 			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
+			biometricInfoDTO.setFace(DataProvider.getFaceDTO());			
+			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		} else if (persontype.equalsIgnoreCase("officer")) {
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-			faceDetailsDTO.setFace("face".getBytes());
-			faceDetailsDTO.setNumOfRetries(0);
-			faceDetailsDTO.setQualityScore(0);
-			biometricInfoDTO.setFaceDetailsDTO(faceDetailsDTO);
+			biometricInfoDTO.setFace(DataProvider.getFaceDTO());
+			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		} else {
 			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
-			biometricInfoDTO.setFaceDetailsDTO(new FaceDetailsDTO());
+			biometricInfoDTO.setFace(DataProvider.getFaceDTO());
+			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		}
 		return biometricInfoDTO;
+	}
+	
+	private static FaceDetailsDTO getFaceDTO() throws RegBaseCheckedException{
+		FaceDetailsDTO faceDetailsDTO=new FaceDetailsDTO();
+		faceDetailsDTO.setFace(DataProvider.getImageBytes("/applicantPhoto.jpg"));
+		faceDetailsDTO.setPhotographName("ApplicantPhoto.jpg");
+		faceDetailsDTO.setQualityScore(89.0);
+		faceDetailsDTO.setNumOfRetries(0);
+		return faceDetailsDTO;
+	}
+	private static FaceDetailsDTO getExceptionFaceDTO(BiometricInfoDTO biometricInfoDTO) throws RegBaseCheckedException{
+		FaceDetailsDTO exceptionFaceDetailsDTO=new FaceDetailsDTO();
+		exceptionFaceDetailsDTO.setFace(DataProvider.getImageBytes("/applicantPhoto.jpg"));
+		exceptionFaceDetailsDTO.setPhotographName("ExceptionPhoto.jpg");
+		exceptionFaceDetailsDTO.setQualityScore(89.0);
+		exceptionFaceDetailsDTO.setNumOfRetries(1);
+		biometricInfoDTO.setHasExceptionPhoto(true);
+		return exceptionFaceDetailsDTO;
 	}
 
 	private static List<FingerprintDetailsDTO> getFingerprintDetailsDTO(String personType)
@@ -328,14 +346,15 @@ public class DataProvider {
 
 	private static ApplicantDocumentDTO setApplicantDocumentDTO() throws RegBaseCheckedException {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+		
 		//applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
-		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
+		/*applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
 		applicantDocumentDTO.setHasExceptionPhoto(true);
 		applicantDocumentDTO.setExceptionPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto.jpg");
 		applicantDocumentDTO.setQualityScore(89.0);
-		applicantDocumentDTO.setNumRetry(1);
+		applicantDocumentDTO.setNumRetry(1);*/
 		applicantDocumentDTO.setAcknowledgeReceipt(DataProvider.getImageBytes("/acknowledgementReceipt.jpg"));
 		applicantDocumentDTO.setAcknowledgeReceiptName("RegistrationAcknowledgement.jpg");
 		return applicantDocumentDTO;

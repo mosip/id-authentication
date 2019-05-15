@@ -1,111 +1,38 @@
 # Pre-Registration-demographic-service:
 
-[Background & Design](pre-registration-individual.md)
+[Background & Design](https://github.com/mosip/mosip/blob/SPRINT11_PREREG_TEAM_BRANCH/docs/design/pre-registration/pre-registration-demographic-service.md)
 
-This Api can be use to store the demographic details of the citizen for a pre-registration.
+This Api can be use to create and store the demographic details of the citizen for a pre-registration.
 
-#### Api Documentation
+[Api Documentation](https://github.com/mosip/mosip/wiki/Pre-Registration-Services#demographic-service-public)
 
+### Default Port and Context Path
 ```
-mvn javadoc:javadoc
-
+server.port=9092
+server.servlet.context-path=/preregistration/v1
 ```
+#### Url 
+```https://{dns-name}:9092/preregistration/v1/applications/swagger-ui.html```
 
-####  POST Operation
-#### Path -  `/applications`
-#### Summary
-Create new pre-registration by demographic details or update demographic details by providing pre-registration id.
+[Application Properties](https://github.com/mosip/mosip/blob/master/config/pre-registration-dev.properties)
 
-**The inputs which have to be provided are:**
-1. Pre-Registration Id 
-2. Created By
-3. Created Date Time
-4. Updated By 
-5. Updated Date Time 
-6. Language Code 
-7. Demographic Details 
-8. Identity
-9. Gender 
-10. City
-11. Mobile Number
-12. Full Name 
-13. Local Administrative Authority
-14. Date Of Birth 
-15. Email
-16. Province 
-17. Postal Code
-18. Address
-19. Region
-20. CNIE Number
+The following are the Api name use in this service.
 
-**The response will be true if demographic request is successful, otherwise false** 
+1. POST /applications - This Api is used to create new pre-registration by demographic details by providing the demographic details in request body.
 
+2. PUT /applications/{preRegistrationId} - This Api is use to update the pre-registration details by providing pre-registration id in the path parameter and updated demographic details in request body.
 
-#### PUT Operation
-#### Path -  `/applications`
-#### Summary
-Update the pre-registration status by providing pre-registration id and valid status defined in pre-registration system in request parameter.
+3. GET /applications/{preRegistrationId} - This Api is use to 
+retrieve demographic details by providing the pre-registration id.
 
-**The inputs which have to be provided are:**
+4. GET /applications - This Api is use to fetch all the applications created by user.
 
-1. Pre-Registration Id 
-2. Status Code 
+5. GET /applications/status/{preRegistrationId} - This Api is use to fetch the status of the application by providing the pre-registration id.
 
-#### Response:
-"response": "STATUS_UPDATED_SUCESSFULLY"
+6. DELETE /applications/{preRegistrationId} - This Api is use to delete the Individual applicant and documents associated with the provided Pre-RegistrationId.
 
-#### DELETE Operation
-#### Path -  `/applications`
-#### Summary 
-Discard the entire pre-registration details based pre-registration id provided in request parameter.
+Following are the APIs which are using internally in this service.
 
-**The inputs which have to be provided are:**
+1. PUT /applications/status/{preRegistrationId} - This Api is use to update the status of the application by providing the pre-registration id.
 
-1. Pre-Registration Id
-
-#### Response:
-Get Pre-Registration Id , Deleted By and Deleted Time as response if request is successful, otherwise get error message
-#### GET Operation
-#### Path -  `/applications`
-#### Summary
-Retrieve All Pre-Registration id, Full name, Status and Appointment details by user id.
-
-**The inputs which have to be provided are:**
-1. User Id 
-
-#### Response:
-Get Pre-Registration Id , Full Name, Status Code and Demographic details as response if request is successful, otherwise get error message
-#### GET Operation
-#### Path -  `/applications/status`
-#### Summary
-Retrieve pre-registration application status by providing the pre-registration id in request parameter.
-
-**The inputs which have to be provided are:**
-
-1. Pre-Registration Id
-
-#### Response:
- Get Pre-Registration Id and Status Code as response if request is successful, otherwise get error message
-
-#### GET Operation
-#### Path -  `/applications/byDateTime`
-#### Summary 
-Retrieve pre-registration ids between created from and to dates provided in request parameters.
-
-**The inputs which have to be provided are:**
-
-1. From Date
-2. To Date 
-
-#### Response:
- Get list of Pre-Registration Id as response if request is successful, otherwise get error message
-#### GET Operation
-#### Path -  `/applications/details`
-#### Summary
-Retrieve Pre-Registration demographic data by pre-Registration id provided in request parameter.
-
-**The inputs which have to be provided are:**
-1. Pre-Registration Id 
-#### Response:
- Get details of Pre-Registration Id as response if request is successful, otherwise get error message
-
+2. POST /applications/updatedTime - This Api is use to fetch updated Date Time for List of Pre-Registration Id.

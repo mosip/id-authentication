@@ -166,11 +166,11 @@ public enum ApiName {
 	CENTERDETAILS,
 
 	/** The machinedetails. */
-	MACHINEDETAILS, 
-	
+	MACHINEDETAILS,
+
 	/** The external service. */
-	 EISERVICE,
-	 
-	 RIDGENERATION;
+	EISERVICE,
+
+	RIDGENERATION, RETRIEVEIDENTITY;
 
 }

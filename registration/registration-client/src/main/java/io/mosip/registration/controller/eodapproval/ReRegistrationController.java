@@ -3,10 +3,12 @@ package io.mosip.registration.controller.eodapproval;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -29,19 +31,21 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -86,7 +90,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private Button submitBtn;
 	/** The image view. */
 	@FXML
-	private ImageView imageView;
+	private WebView webView;
 
 	/** The image anchor pane. */
 	@FXML
@@ -95,12 +99,19 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@FXML
 	private GridPane reRegistrationChildPane;
 
+	@FXML
+	private TextField filterField;
+
 	private Map<String, String> reRegisterStatusMap = new HashMap<>();
 
 	@Autowired
 	private AuthenticationController authenticationController;
 
 	private Stage primaryStage;
+
+	private ObservableList<PacketStatusDTO> observableList;
+
+	private SortedList<PacketStatusDTO> sortedList;
 
 	/*
 	 * (non-Javadoc)
@@ -129,8 +140,20 @@ public class ReRegistrationController extends BaseController implements Initiali
 		id.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("fileName"));
 		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("sourcePath"));
 		showReregisterdPackets();
+		table.getSelectionModel().selectFirst();
+
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
+
 		table.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
+				viewAck();
+			}
+		});
+
+		table.setOnKeyReleased(event -> {
+			if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
 				viewAck();
 			}
 		});
@@ -157,10 +180,17 @@ public class ReRegistrationController extends BaseController implements Initiali
 					}
 				}
 			}
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getPacketPath()))) {
-
-				imageView.setImage(new Image(file));
+				BufferedReader bufferedReader = new BufferedReader(
+						new InputStreamReader(file, RegistrationConstants.TEMPLATE_ENCODING));
+				StringBuilder acknowledgementContent = new StringBuilder();
+				String line;
+				while ((line = bufferedReader.readLine()) != null) {
+					acknowledgementContent.append(line);
+				}
+				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (FileNotFoundException fileNotFoundException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(fileNotFoundException));
@@ -205,18 +235,19 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 		} catch (IOException ioException) {
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage()+ExceptionUtils.getStackTrace(ioException));
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			primarystage.close();
 			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
-					"No of authentication modes is empty"+ExceptionUtils.getStackTrace(regBaseCheckedException));
+					"No of authentication modes is empty" + ExceptionUtils.getStackTrace(regBaseCheckedException));
 		}
 	}
 
 	private void showAuthenticatePage(Stage primarystage) throws IOException {
-		AnchorPane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+		GridPane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
 		Scene scene = new Scene(authRoot);
-		scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		scene.getStylesheets().add(
+				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		primarystage.initStyle(StageStyle.UNDECORATED);
 		primarystage.setScene(scene);
 		primarystage.initModality(Modality.WINDOW_MODAL);
@@ -253,15 +284,52 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
-			ObservableList<PacketStatusDTO> observableList = FXCollections
+			observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
-			table.setItems(observableList);
+			wrapListAndAddFiltering();
+			table.setItems(sortedList);
 		} else {
 			reRegistrationChildPane.disableProperty().set(true);
-			table.getItems().clear();
+			observableList.clear();
+			wrapListAndAddFiltering();
+			table.setItems(sortedList);
 		}
 		LOGGER.info("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
+	}
+
+	private void wrapListAndAddFiltering() {
+		FilteredList<PacketStatusDTO> filteredList = new FilteredList<>(observableList, p -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes.
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredList.setPredicate(reg -> {
+				// If filter text is empty, display all ID's.
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				// Compare every ID with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if (reg.getFileName().contains(lowerCaseFilter)) {
+					// Filter matches first name.
+					table.getSelectionModel().selectFirst();
+					return true;
+				}
+				return false; // Does not match.
+			});
+			table.getSelectionModel().selectFirst();
+			if (table.getSelectionModel().getSelectedItem() != null) {
+				viewAck();
+			}
+		});
+
+		// 3. Wrap the FilteredList in a SortedList.
+		sortedList = new SortedList<>(filteredList);
+
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		sortedList.comparatorProperty().bind(table.comparatorProperty());
 	}
 
 	private void setInvisible() {
@@ -269,6 +337,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 		notInformedBtn.setVisible(false);
 		submitBtn.setDisable(true);
 		imageAnchorPane.setVisible(false);
-		imageView.imageProperty().set(null);
+		webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 	}
 }

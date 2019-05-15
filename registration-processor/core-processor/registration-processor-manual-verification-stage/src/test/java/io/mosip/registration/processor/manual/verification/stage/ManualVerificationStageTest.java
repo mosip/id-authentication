@@ -28,16 +28,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -84,6 +89,9 @@ public class ManualVerificationStageTest{
 	private String jsonData;
 	
 	@Mock
+	SignatureUtil signatureUtil;
+
+	@Mock
 	private Environment env;
 	@Mock
 	ManualVerificationRequestValidator manualVerificationRequestValidator;
@@ -92,11 +100,13 @@ public class ManualVerificationStageTest{
 	private List<ErrorDTO> errors=new ArrayList<>();
 	ErrorDTO errorCode=new ErrorDTO("","");
 
+	@Mock
+	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
 	@InjectMocks
 	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
 
 		@Override
-		public void setResponse(RoutingContext ctx, Object object,String jsonType) {
+		public void setResponse(RoutingContext ctx, Object object,String jsonType,String digitalSignature) {
 			jsonData = object.toString();
 
 
@@ -133,10 +143,17 @@ public class ManualVerificationStageTest{
 	};
 	@Before
 	public void setup() throws Exception {
+		
 		ctx = setContext();
 		ManualVerificationApplication.main(null);
 		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
 		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		
+		signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
+		when(signatureUtil.signResponse(anyString())).thenReturn(signatureResponse);
+		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
+		
+	
 	}
 
 
@@ -206,7 +223,7 @@ public class ManualVerificationStageTest{
 		serviceID="assign";
 
 		ManualVerificationDTO manualVerificationDTO= new ManualVerificationDTO();
-		when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
+		when(manualAdjudicationService.assignApplicant(any(UserDto.class),any(String.class))).thenReturn(manualVerificationDTO);
 		manualVerificationStage.processAssignment(ctx);
 		assertEquals(errors, null);
 
@@ -241,7 +258,7 @@ public class ManualVerificationStageTest{
 
 	public void packetUploaderTest() throws ClientProtocolException, IOException {
 
-		HttpGet httpGet = new HttpGet("http://localhost:8084/manualverification/health");
+		HttpGet httpGet = new HttpGet("http://localhost:8084/manual-verification/health");
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpResponse getResponse = client.execute(httpGet);
 		assertEquals(200, getResponse.getStatusLine().getStatusCode());

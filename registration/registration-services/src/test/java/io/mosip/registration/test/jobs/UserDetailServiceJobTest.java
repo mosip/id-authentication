@@ -29,10 +29,10 @@ import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.MasterSyncJob;
 import io.mosip.registration.jobs.impl.UserDetailServiceJob;
-import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.UserDetailService;
-import io.mosip.registration.service.impl.MasterSyncServiceImpl;
-import io.mosip.registration.service.impl.UserDetailServiceImpl;
+import io.mosip.registration.service.operator.UserDetailService;
+import io.mosip.registration.service.operator.impl.UserDetailServiceImpl;
+import io.mosip.registration.service.sync.MasterSyncService;
+import io.mosip.registration.service.sync.impl.MasterSyncServiceImpl;
 
 public class UserDetailServiceJobTest {
 
