@@ -648,4 +648,3 @@ public class RestHelperImplTest {
 		restHelper.requestSync(restRequest);
 	}
 }
-

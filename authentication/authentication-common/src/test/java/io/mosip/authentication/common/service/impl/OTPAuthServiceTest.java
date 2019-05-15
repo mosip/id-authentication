@@ -37,7 +37,6 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.VIDRepository;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -73,9 +72,6 @@ public class OTPAuthServiceTest {
 
 	@Mock
 	private AutnTxnRepository repository;
-
-	@Mock
-	private VIDRepository vidrepository;
 
 	@Mock
 	OTPManager otpmanager;
@@ -132,7 +128,6 @@ public class OTPAuthServiceTest {
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
@@ -158,7 +153,6 @@ public class OTPAuthServiceTest {
 		autntxnList.add(authtxn);
 		List<String> valueList = new ArrayList<>();
 		valueList.add("1234567890");
-		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
 		Mockito.when(otpmanager.validateOtp(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
@@ -312,7 +306,6 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setRequestedAuth(authType);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any(), Mockito.any())).thenReturn(valueList);
-		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
@@ -339,7 +332,6 @@ public class OTPAuthServiceTest {
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setOtp(true);
 		otpAuthRequestDTO.setRequestedAuth(authType);
-		Mockito.when(vidrepository.findVIDByUIN(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
