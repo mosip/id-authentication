@@ -94,14 +94,18 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 			String[] propertyNames, Type[] types) {
 		try {
 			if (entity instanceof Vid) {
+
+				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				int uinIndex = propertyNamesList.indexOf("uin");
 				Vid vidEntity = (Vid) entity;
 				vidEntity.setUin(new String(securityManager.encrypt(vidEntity.getUin().getBytes())));
-				vidEntity.setUinHash(securityManager.hash(vidEntity.getUin().getBytes()));
+				currentState[uinIndex] = vidEntity.getUin();
+				entity = vidEntity;
 			}
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_ENTITY_INTERCEPTOR, "onFlushDirty", "\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
-		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
+		return super.onFlushDirty(entity, id, currentState, currentState, propertyNames, types);
 	}
 }

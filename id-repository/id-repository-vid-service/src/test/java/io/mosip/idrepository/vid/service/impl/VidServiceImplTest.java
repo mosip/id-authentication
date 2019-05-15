@@ -34,6 +34,7 @@ import io.mosip.idrepository.core.dto.ResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.helper.RestHelper;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.vid.dto.RequestDTO;
 import io.mosip.idrepository.vid.dto.VidPolicy;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
@@ -80,6 +81,10 @@ public class VidServiceImplTest {
 	@Mock
 	private VidGenerator<String> vidGenerator;
 	
+	/** The security manager. */
+	@Mock
+	private IdRepoSecurityManager securityManager;
+	
 	/** The mapper. */
 	@Mock
 	private ObjectMapper mapper;
@@ -100,8 +105,9 @@ public class VidServiceImplTest {
 	public void before() {
 		ReflectionTestUtils.setField(impl, "env", environment);
 		ReflectionTestUtils.setField(impl, "vidRepo", vidRepo);
-		ReflectionTestUtils.setField(impl, "vidpolicyProvider", vidPolicyProvider);
+		ReflectionTestUtils.setField(impl, "policyProvider", vidPolicyProvider);
 		ReflectionTestUtils.setField(impl, "restHelper", restHelper);
+		ReflectionTestUtils.setField(impl, "securityManager", securityManager);
 		ReflectionTestUtils.setField(restHelper, "webClient", webClient);
 		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(impl, "restBuilder", restBuilder);
@@ -226,6 +232,8 @@ public class VidServiceImplTest {
 				IdResponseDTO.class)).thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(restRequestDTO)).thenReturn(idResponse);
 		Mockito.when(vidRepo.save(Mockito.any())).thenReturn(vid);
+		Mockito.when(securityManager.hash(Mockito.any())).thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
+		
 		req.setId("mosip.vid.update");
 		RequestDTO request=new RequestDTO();
 		request.setVidStatus("REVOKE");
