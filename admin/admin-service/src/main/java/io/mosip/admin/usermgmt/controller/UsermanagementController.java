@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiParam;
 @CrossOrigin
 @RestController
 @RequestMapping("/usermgmt")
-@Api(value = "Operation related to User registration", tags = { "user_registration" })
+@Api(value = "Operation related to User registration", tags = { "user-registration" })
 public class UsermanagementController {
 
 	/**
