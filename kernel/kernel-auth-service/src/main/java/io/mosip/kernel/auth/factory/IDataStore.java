@@ -44,6 +44,7 @@ public interface IDataStore extends AuthNDataService {
 	public AuthZResponseDto resetPassword(PasswordDto passwordDto ) throws Exception;
 	
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception;
+  
+  public MosipUserDto getUserRoleByUserId(String username)throws Exception;
 	
-
 }
