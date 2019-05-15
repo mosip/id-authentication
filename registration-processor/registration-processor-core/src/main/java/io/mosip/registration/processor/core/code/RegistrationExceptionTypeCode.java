@@ -186,6 +186,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED,
 
-	ADULT_CBEFF_NOT_PRESENT_EXCEPTION
+	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+	
+	ABIS_RESPONSE_DUPLICATES_FOUND,
 
 }

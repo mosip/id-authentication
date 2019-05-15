@@ -114,6 +114,9 @@ public class RegistrationExceptionMapperUtil {
 
 		statusMap.put(RegistrationExceptionTypeCode.ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
 				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND,
+				RegistrationTransactionStatusCode.REPROCESS);
+		
 		return unmodifiableMap;
 
 	}
