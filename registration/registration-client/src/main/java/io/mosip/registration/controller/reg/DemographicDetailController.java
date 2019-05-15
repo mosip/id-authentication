@@ -2106,8 +2106,8 @@ public class DemographicDetailController extends BaseController {
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
-		if (isValid) {
-			if (switchedOn.get() && !applicationAge.isDisable()) {
+		if (isValid  && !applicationAge.isDisable()) {
+			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
 				if (Integer.parseInt(ageField.getText()) > maxAge) {
