@@ -176,6 +176,7 @@
 		<module>kernel-syncjob-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-idobjectvalidator</module>
+		<module>kernel-crypto-signature-service</module>
 	</modules>
 
 	<dependencies>
