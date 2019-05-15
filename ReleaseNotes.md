@@ -43,6 +43,8 @@ rxtxcomm-2.2.jar|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\ext</br>
 java.security|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\lib\security</br> <br>security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider</br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
 rxtxParallel.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin </br> <br>Please add the above property to the ‘JAVA_HOME\jre\lib\security\java.security’ file</br>
 rxtxSerial.dll|NA|NA|Path: <br>C:\Program Files\Java\jre1.8.0_191\bin</br> <br> Please copy the dll to the ‘JAVA_HOME\jre\bin’ file</br>
+local_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
+US_export_policy.jar|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
 run.jar|NA|NA|<br>Please execute the command to run the shaded jar</br><br> **“java -Dfile.encoding=UTF-8 -Dspring.profiles.active=qa -jar <Fat_Jar_Name>.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
