@@ -1,18 +1,18 @@
 **MOSIP Release Notes**
 #### 2. Registration Client
 
-#### 2.1 Introduction : <br><sub>This document highlights Sprint 10 features for Registration-Client that are released for QA phase.</sub></br>
+#### 2.1 Introduction : <br><sub>This document highlights Sprint 11 features for Registration-Client that are released for QA phase.</sub></br>
 
 #### 2.2 Release Summary : 
 |         |          |
 |----------|----------|
 SubmittedBy|Omsai Eswar M
-Date Raised | 05-APR-2019
+Date Raised | 15-MAY-2019
 Impact of Release|NA
-Implementation Start Date |25-MAR-2019
-Implementation end date	|05-APR-2019
-Jenkins Build #	|Min Version : 1128 [Any later version also]
-Objective & Scope of Release| Sprint10 & Scope: Refer the section 3
+Implementation Start Date |26-APR-2019
+Implementation end date	|13-MAY-2019
+Jenkins Build #	|Min Version : 1407  [Any later version also]
+Objective & Scope of Release| Sprint11 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
 RFC(s) #|	NA
