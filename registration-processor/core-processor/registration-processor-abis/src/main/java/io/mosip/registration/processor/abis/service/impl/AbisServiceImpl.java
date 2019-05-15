@@ -39,6 +39,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 
 /**
  * The Class AbisServiceImpl.
@@ -260,62 +261,65 @@ public class AbisServiceImpl implements AbisService {
 		int count = 0;
 
 		CandidateListDto cd = new CandidateListDto();
-		CandidatesDto[] candidatesDto;
-		if(!identifyRequest.getGallery().getReferenceIds().isEmpty()) {
+		CandidatesDto[] candidatesDto = null;
+		if(identifyRequest.getGallery() == null ||identifyRequest.getGallery()!=null&& identifyRequest.getGallery().getReferenceIds().isEmpty()) {
+			candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
+			for (int i = 0; i <candidatesDto.length; i++) {
+				candidatesDto[i] = new CandidatesDto();
+				candidatesDto[i].setReferenceId(RegistrationUtility.generateId());
+				candidatesDto[i].setScaledScore(100 - i + "");
+				count++;
+			}					
+		}
+		else{
+
 			candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
 			for (int i = 0; i <candidatesDto.length; i++) {
 				candidatesDto[i] = new CandidatesDto();
 				candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
 				candidatesDto[i].setScaledScore(100 - i + "");
 				count++;
-			}							
+			}				
+
 		}
-		else{
-			candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-			for (int i = 0; i <candidatesDto.length; i++) {
-				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-				candidatesDto[i].setScaledScore(100 - i + "");
-				count++;
-			}
+	
+	cd.setCount(count + "");
+	cd.setCandidates(candidatesDto);
+	response.setCandidateList(cd);
+
+}
+
+/**
+ * Check duplicate.
+ *
+ * @param duplicate
+ *            the duplicate
+ * @param nodeList
+ *            the node list
+ * @return true, if successful
+ */
+private boolean checkDuplicate(boolean duplicate, NodeList nodeList) {
+	for (int i = 0; i < nodeList.getLength(); i++) {
+		String value = nodeList.item(i).getTextContent();
+		if (value.equalsIgnoreCase(DUPLICATE)) {
+			duplicate = true;
+			break;
 		}
-		cd.setCount(count + "");
-		cd.setCandidates(candidatesDto);
-		response.setCandidateList(cd);
-
 	}
+	return duplicate;
+}
 
-	/**
-	 * Check duplicate.
-	 *
-	 * @param duplicate
-	 *            the duplicate
-	 * @param nodeList
-	 *            the node list
-	 * @return true, if successful
-	 */
-	private boolean checkDuplicate(boolean duplicate, NodeList nodeList) {
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			String value = nodeList.item(i).getTextContent();
-			if (value.equalsIgnoreCase(DUPLICATE)) {
-				duplicate = true;
-				break;
-			}
-		}
-		return duplicate;
-	}
+/* (non-Javadoc)
+ * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
+ */
+@Override
+public void delete() {
+	// Delete should be implemented in future
+}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
-	 */
-	@Override
-	public void delete() {
-		// Delete should be implemented in future
-	}
-
-	@Override
-	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
-		// Ping should be implemented in future
-		return null;
-	}
+@Override
+public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
+	// Ping should be implemented in future
+	return null;
+}
 }
