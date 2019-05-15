@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +66,17 @@ public class PreRegistrationUtil
 		logger.info("Map :"+mapProp);
 		return mapProp;
 
+	}
+	
+	
+	/**
+	 * Generic method to get the current date
+	 **/
+	
+	public static String getCurrentDate() {
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+				.format(Calendar.getInstance().getTime());
+		return timeStamp;
 	}
 	
 	

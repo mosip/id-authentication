@@ -35,7 +35,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
+import io.mosip.preregistration.service.PreRegistrationApplicationLibrary;
+import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.preregistration.util.QRCodeUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -59,8 +61,8 @@ public class QRCode extends BaseTestCase implements ITest {
 	 * Declaration of all variables
 	 **/
 	Logger logger = Logger.getLogger(QRCode.class);
-	CommonLibrary commonLibrary = new CommonLibrary();
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	PreRegistrationApplicationLibrary preRegAppLib=new PreRegistrationApplicationLibrary();
 	String preId = "";
 	String docId = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -72,7 +74,9 @@ public class QRCode extends BaseTestCase implements ITest {
 	Response Actualresponse = null;
 	JSONObject Expectedresponse = null;
 	String preReg_URI;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	//ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	PreRegistrationUtil preregUtil=new PreRegistrationUtil();
+	QRCodeUtil qrCodeUtil=new QRCodeUtil();
 	HashMap<String, String> parm = new HashMap<>();
 	String dest = "";
 	String folderPath = "preReg/QRCode";
@@ -84,7 +88,16 @@ public class QRCode extends BaseTestCase implements ITest {
 
 	}
 
-	
+	/**
+	 * Data Providers to read the input json files from the folders
+	 * 
+	 * @param context
+	 * @return input request file
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	@DataProvider(name = "QRCode")
 	public Object[][] readData(ITestContext context) throws Exception {
 
@@ -117,14 +130,14 @@ public class QRCode extends BaseTestCase implements ITest {
 
 		if (testCaseName.contains("smoke")) {
 			// Get All Document For PreID
-			Response qrCoderes = preRegLib.QRCode();
+			Response qrCoderes = qrCodeUtil.QRCode();
 			outerKeys.add("responsetime");
 			innerKeys.add("qrcode");
 			logger.info("QR Code Valid TC::" + qrCoderes.asString());
 			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
-			Response qrCodeResponse = applicationLibrary.authPostRequest(actualRequest, preReg_URI);
+			Response qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
 			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(qrCodeResponse, Expectedresponse, outerKeys, innerKeys);
@@ -148,19 +161,29 @@ public class QRCode extends BaseTestCase implements ITest {
 
 	}
 
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
 	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
-		/**
-		 * Get All Document by Document Id Resource URI
-		 */
-
-		preReg_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
+		
+		//QR Code Resource URI
+		preReg_URI = preregUtil.fetchPreregProp().get("qrCode_URI");
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
 
+	/**
+	 * Writing test case name into testng
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -176,6 +199,15 @@ public class QRCode extends BaseTestCase implements ITest {
 		}
 	}
 
+	/**
+	 * Writing output into configpath
+	 * 
+	 * @throws IOException
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
@@ -186,8 +218,7 @@ public class QRCode extends BaseTestCase implements ITest {
 		}
 		String source = "src/test/resources/" + folderPath + "/";
 
-		// Add generated PreRegistrationId to list to be Deleted from DB
-		// AfterSuite
+		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
 		// preIds.add(preId);
 	}
 
