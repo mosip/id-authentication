@@ -57,7 +57,7 @@ public class UserRegistrationController {
 	}
 
 	@ResponseFilter
-	@PostMapping(value = "/rid")
+	@PostMapping(value = "/rid", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<RidVerificationResponseDto> ridVerification(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
 		ResponseWrapper<RidVerificationResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -66,7 +66,7 @@ public class UserRegistrationController {
 	}
 	
 	@ResponseFilter
-	@PostMapping(value = "/password")
+	@PostMapping(value = "/password", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserPasswordResponseDto> addPassword(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> request) {
 		ResponseWrapper<UserPasswordResponseDto> responseWrapper = new ResponseWrapper<>();
