@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -36,7 +37,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
@@ -72,6 +72,10 @@ public class RegistrationUpdate {
 
 	private String versionTag = "version";
 
+	private String latestVersionReleaseTimestamp;
+
+	private String lastUpdatedTag = "lastUpdated";
+
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -95,19 +99,28 @@ public class RegistrationUpdate {
 		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
 		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
 
-		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
+		setLatestVersion(getElementValue(metaInfXmlDocument, versionTag));
+		setLatestVersionReleaseTimestamp(getElementValue(metaInfXmlDocument, lastUpdatedTag));
+
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Checking for latest version completed");
+		return latestVersion;
+	}
+
+	private String getElementValue(Document metaInfXmlDocument, String tagName) {
+		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(tagName);
+		String val = null;
 		if (list != null && list.getLength() > 0) {
 			NodeList subList = list.item(0).getChildNodes();
 
 			if (subList != null && subList.getLength() > 0) {
 				// Set Latest Version
-				setLatestVersion(subList.item(0).getNodeValue());
+				val = subList.item(0).getNodeValue();
 			}
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Checking for latest version completed");
-		return latestVersion;
+		return val;
+
 	}
 
 	public String getCurrentVersion() throws IOException {
@@ -159,17 +172,14 @@ public class RegistrationUpdate {
 				} else {
 					Attributes localAttribute = jar.getValue();
 					Attributes serverAttribute = serverAttributes.get(jar.getKey());
-					try {
-						if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
-								.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
+					if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
+							.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
 
-							/* Jar to be downloaded */
-							downloadJars.add(jar.getKey());
+						/* Jar to be downloaded */
+						downloadJars.add(jar.getKey());
 
-						}
-					} catch(Exception e) {
-						System.out.println("Hello");
 					}
+
 					serverManifest.getEntries().remove(jar.getKey());
 
 				}
@@ -195,7 +205,7 @@ public class RegistrationUpdate {
 			setServerManifest(null);
 			setLatestVersion(null);
 
-			//Update global param of software update flag as false
+			// Update global param of software update flag as false
 			globalParamService.update(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE,
 					RegistrationConstants.DISABLE);
 
@@ -277,16 +287,16 @@ public class RegistrationUpdate {
 
 		File jarInFolder = new File(folderName + jarFileName);
 
-			if (!jarInFolder.exists()
-					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-							&& FileUtils.deleteQuietly(jarInFolder))) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-						"Downloading jar : " + jarFileName + " started");
-				// Download Jar
-				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Downloading jar : " + jarFileName + " started");
+			// Download Jar
+			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
-			}
+		}
 
 	}
 
@@ -405,5 +415,13 @@ public class RegistrationUpdate {
 			throw new IOException("No Disk Space");
 		}
 
+	}
+
+	public void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
+		this.latestVersionReleaseTimestamp = latestVersionReleaseTimestamp;
+	}
+
+	public String getLatestVersionReleaseTimestamp() {
+		return latestVersionReleaseTimestamp;
 	}
 }

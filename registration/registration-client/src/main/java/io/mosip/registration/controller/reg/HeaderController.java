@@ -447,7 +447,7 @@ public class HeaderController extends BaseController {
 			registrationUpdate.getWithLatestJars();
 			return RegistrationConstants.ALERT_INFORMATION;
 
-		} catch (Exception exception) {
+		} catch (Exception  exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			return RegistrationConstants.ERROR;
