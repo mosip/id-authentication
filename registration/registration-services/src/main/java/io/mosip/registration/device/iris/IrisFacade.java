@@ -97,7 +97,7 @@ public class IrisFacade {
 			if (irisType.equalsIgnoreCase("LeftEye")) {
 				qualityScore = 90.5;
 			} else {
-				qualityScore = 50.0;
+				qualityScore = 90.0;
 			}
 
 			// Add image format, image and quality score in bytes array to map
