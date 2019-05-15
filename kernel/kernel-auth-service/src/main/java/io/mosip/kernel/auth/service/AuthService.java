@@ -5,20 +5,20 @@ package io.mosip.kernel.auth.service;
 
 import java.util.List;
 
-import io.mosip.kernel.auth.entities.AuthNResponse;
-import io.mosip.kernel.auth.entities.AuthZResponseDto;
-import io.mosip.kernel.auth.entities.MosipUserDtoToken;
-import io.mosip.kernel.auth.entities.MosipUserListDto;
-import io.mosip.kernel.auth.entities.MosipUserSaltList;
-import io.mosip.kernel.auth.entities.PasswordDto;
-import io.mosip.kernel.auth.entities.RIdDto;
-import io.mosip.kernel.auth.entities.RolesListDto;
-import io.mosip.kernel.auth.entities.UserNameDto;
-import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
-import io.mosip.kernel.auth.entities.UserRoleDto;
-import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
-import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
-import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.dto.AuthNResponse;
+import io.mosip.kernel.auth.dto.AuthZResponseDto;
+import io.mosip.kernel.auth.dto.MosipUserListDto;
+import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
+import io.mosip.kernel.auth.dto.PasswordDto;
+import io.mosip.kernel.auth.dto.RIdDto;
+import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserNameDto;
+import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
+import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
+import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.UserRoleDto;
 
 /**
  * @author Ramadurai Pandian
@@ -26,7 +26,7 @@ import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
  */
 public interface AuthService extends AuthZService, AuthNService {
 
-	public MosipUserDtoToken retryToken(String existingToken) throws Exception;
+	public MosipUserTokenDto retryToken(String existingToken) throws Exception;
 
 	public AuthNResponse invalidateToken(String token) throws Exception;
 
@@ -34,12 +34,11 @@ public interface AuthService extends AuthZService, AuthNService {
 
 	public MosipUserListDto getListOfUsersDetails(List<String> userDetails, String appId) throws Exception;
 
-	public MosipUserSaltList getAllUserDetailsWithSalt(String appId) throws Exception;
+	public MosipUserSaltListDto getAllUserDetailsWithSalt(String appId) throws Exception;
 	
 	public RIdDto getRidBasedOnUid(String userId,String appId) throws Exception;
 	
 	public AuthZResponseDto unBlockUser(String userId,String appId) throws Exception;
-	
 	
 	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception;
 
