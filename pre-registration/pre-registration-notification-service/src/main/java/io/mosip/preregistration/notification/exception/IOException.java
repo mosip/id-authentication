@@ -11,11 +11,9 @@ public class IOException extends BaseUncheckedException{
 	 * 
 	 */
 	private static final long serialVersionUID = -6723728155340185347L;
-	private MainResponseDTO<?> mainResponseDTO;
+	private final MainResponseDTO<?> mainResponseDTO;
 
-	public IOException() {
-		super();
-	}
+	
 
 	public IOException(String arg0, String arg1, Throwable arg2,MainResponseDTO<?> response) {
 		super(arg0, arg1, arg2);

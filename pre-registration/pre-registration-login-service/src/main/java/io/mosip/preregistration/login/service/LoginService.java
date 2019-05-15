@@ -284,8 +284,8 @@ public class LoginService {
 		auditRequestDto.setId(idType);
 		auditRequestDto.setSessionUserId(userId);
 		auditRequestDto.setSessionUserName(userName);
-		auditRequestDto.setModuleId(AuditLogVariables.DEM.toString());
-		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
+		auditRequestDto.setModuleId(AuditLogVariables.AUTHENTICATION.toString());
+		auditRequestDto.setModuleName(AuditLogVariables.AUTHENTICATION_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 	

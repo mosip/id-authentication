@@ -369,8 +369,7 @@ public class DemographicServiceTest {
 		preRegistrationEntity.setDemogDetailHash(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson()));
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
-		MainResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672",
-				userId);
+		MainResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672");
 		assertEquals("98746563542672", res.getResponse().getPreRegistrationId());
 	}
 
@@ -1112,15 +1111,14 @@ public class DemographicServiceTest {
 		// String(HashUtill.hashUtill(preRegistrationEntity.getApplicantDetailJson())));
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(preRegistrationEntity);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
-		MainResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672",
-				userId);
+		MainResponseDTO<DemographicResponseDTO> res = preRegistrationService.getDemographicData("98746563542672");
 		assertEquals("98746563542672", res.getResponse().getPreRegistrationId());
 	}
 
 	@Test(expected = RecordNotFoundException.class)
 	public void getPreRegistrationFailureTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("98746563542672")).thenReturn(null);
-		preRegistrationService.getDemographicData("98746563542672", userId);
+		preRegistrationService.getDemographicData("98746563542672");
 	}
 
 	@Test
