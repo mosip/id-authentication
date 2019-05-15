@@ -61,7 +61,7 @@ export class AccountManagementService {
    * @memberof AccountManagementService
    */
   forgotUserName(userId: string): Observable<any> {
-    return this.httpClient.get<any>(this.baseURL + '?userId=' + userId);
+    return this.httpClient.get<any>(this.baseURL + '?userId=' + userId).catch(this.errorHandler);
 
   }
 
@@ -73,7 +73,7 @@ export class AccountManagementService {
    * @memberof AccountManagementService
    */
   changePassword(changePasswordRequest: any): Observable<any> {
-    return this.httpClient.post('', changePasswordRequest);
+    return this.httpClient.post('', changePasswordRequest).catch(this.errorHandler);
   }
 
   /**
@@ -84,7 +84,7 @@ export class AccountManagementService {
    * @memberof AccountManagementService
    */
   resetPassword(resetPasswordRequest: any): Observable<any> {
-    return this.httpClient.post(this.baseURL + 'resetpassword', resetPasswordRequest);
+    return this.httpClient.post(this.baseURL + 'resetpassword', resetPasswordRequest).catch(this.errorHandler);
   }
 
   /**
@@ -95,7 +95,6 @@ export class AccountManagementService {
    * @memberof AccountManagementService
    */
   errorHandler(error: HttpErrorResponse): Observable<any> {
-    alert('HTTP_ERROR_IN_ACM_SERVICE');
-    return Observable.throw(error.message || 'Server Error');
+    return Observable.throw(error.message || 'Server Error').catch(this.errorHandler);
   }
 }

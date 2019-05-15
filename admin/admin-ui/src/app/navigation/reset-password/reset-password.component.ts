@@ -16,6 +16,7 @@ export class ResetPasswordComponent implements OnInit {
   passwordPattern = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$';
   resetPasswordModel = {} as ResetPasswordModel;
   resetPasswordStatus: string;
+  errorMessage: string;
   requestModel: any;
 
   constructor(private router: Router, private formBuilder: FormBuilder, private facadeService: FacadeService) { }
@@ -38,11 +39,13 @@ export class ResetPasswordComponent implements OnInit {
     this.facadeService.resetPassword(this.requestModel).subscribe(resetPasswordResponse => {
       this.resetPasswordStatus = resetPasswordResponse['response']['status'];
       if (this.resetPasswordStatus === 'Success') {
-        alert('RESET_PASSWORD_SUCCESS');
         this.router.navigate(['login']);
       } else {
         alert('RESET_PASSWORD_FAILED');
       }
+    },
+    error => {
+      this.errorMessage = error;
     });
   }
 }

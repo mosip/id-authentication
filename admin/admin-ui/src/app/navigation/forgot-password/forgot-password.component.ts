@@ -50,7 +50,6 @@ export class ForgotPasswordComponent implements OnInit {
     },
       error => {
         this.errorMessage = error;
-        alert(this.errorMessage);
       });
   }
 }
