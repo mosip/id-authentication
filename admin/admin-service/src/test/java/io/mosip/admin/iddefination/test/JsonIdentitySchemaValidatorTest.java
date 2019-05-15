@@ -12,8 +12,8 @@ import io.mosip.admin.TestBootApplication;
 import io.mosip.admin.iddefinition.JsonIdentitySchemaValidator;
 import io.mosip.admin.iddefinition.exception.JsonSchemaException;
 
-/*@SpringBootTest(classes=TestBootApplication.class)
-@RunWith(SpringRunner.class)*/
+@SpringBootTest(classes=TestBootApplication.class)
+@RunWith(SpringRunner.class)
 public class JsonIdentitySchemaValidatorTest {
 
 	@Autowired

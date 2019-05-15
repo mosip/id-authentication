@@ -155,7 +155,7 @@ public enum PlatformErrorMessages {
 			"RegistrationStatusCode is null"),
 
 	RPR_RGS_INVALID_SUPERVISOR_STATUS(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "026",
-			"Invalid SupervisorStatus. Available types APPROVED,REJECT"),
+			"Invalid SupervisorStatus. Available types APPROVED,REJECTED"),
 
 	RPR_RGS_INVALID_HASHVALUE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "027",
 			"The Hash Sequence received is NULL"),
