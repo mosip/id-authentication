@@ -21,7 +21,16 @@ RFC(s) #|	NA
 #### 2.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
-MOS-22148 |New|Tech story--Digital Signature of the Response received by Client
+MOS-67 |New|As the MOSIP registration client, I should be able to update the client software from the server
+MOS-21461|New|Tech story - Send extra parameters related to the packet while Sync to registration- processor
+MOS-22009 |New|As a Registration Officer, I should be able to search for packets on the EoD process page
+MOS-21929|New|As a Registration Officer, I should be able to search for packets on the Upload page
+MOS-21573|New|Tech story--Generate packet using center id and unique machine id
+MOS-21470|New|Stub--As MOSIP registration client, for UIN Update of Child, capture the UIN, Name and one biometric of the Parent/Guardian
+MOS-22405|New|Tech Story - Secure the keys at Reg. client using TPM part 2
+MOS-16121|New|Stub - MOSIP Device Manager implementation - Part 2
+MOS-23288|New|Capture exception photo of Parent if exception is marked for a child's new registration/UIN update
+
 
 
 #### 2.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
