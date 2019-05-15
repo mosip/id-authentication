@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -29,6 +28,7 @@ import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExce
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
@@ -56,7 +56,7 @@ public class ConsumedStatusService {
 	@Value("${ver}")
 	String versionUrl;
 
-	@Value("${id}")
+	@Value("${mosip.preregistration.batchjob.service.consumed.id}")
 	String idUrl;
 
 	/**
@@ -76,7 +76,8 @@ public class ConsumedStatusService {
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
 		List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
@@ -124,7 +125,7 @@ public class ConsumedStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
 		response.setResponsetime(getCurrentResponseTime());
 		response.setId(idUrl);

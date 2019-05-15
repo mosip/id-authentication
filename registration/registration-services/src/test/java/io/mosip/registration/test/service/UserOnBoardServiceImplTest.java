@@ -28,7 +28,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.UserOnboardServiceImpl;
+import io.mosip.registration.service.operator.impl.UserOnboardServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 
@@ -160,7 +160,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
@@ -263,7 +263,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.SUCCESS);
@@ -366,7 +366,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RegBaseUncheckedException.class);
@@ -469,7 +469,7 @@ public class UserOnBoardServiceImplTest {
 		BiometricInfoDTO info=new BiometricInfoDTO();
 		info.setFingerprintDetailsDTO(listOfFingerPrints);
 		info.setIrisDetailsDTO(iriesList);
-		info.setFaceDetailsDTO(face);
+		info.setFace(face);
 		
 		biometricDTO.setOperatorBiometricDTO(info);
 		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenThrow(RuntimeException.class);

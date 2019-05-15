@@ -13,5 +13,6 @@ public class UserDetailDto extends BaseDto {
 	private byte[] userPassword;
 	private String name;
 	private String role;
+	private String rId;
 
 }

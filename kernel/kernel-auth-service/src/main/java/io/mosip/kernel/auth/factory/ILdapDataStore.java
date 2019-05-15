@@ -3,24 +3,40 @@
  */
 package io.mosip.kernel.auth.factory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
+
+import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
-import org.apache.directory.api.ldap.model.entry.DefaultEntry;
-import org.apache.directory.api.ldap.model.entry.DefaultModification;
 import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.entry.Modification;
-import org.apache.directory.api.ldap.model.entry.ModificationOperation;
+import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.password.PasswordDetails;
 import org.apache.directory.api.ldap.model.password.PasswordUtil;
-import org.apache.directory.api.util.Base64;
-import org.apache.directory.api.util.Strings;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +46,25 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.LDAPErrorCode;
+import io.mosip.kernel.auth.constant.LdapConstants;
+import io.mosip.kernel.auth.entities.AuthZResponseDto;
 import io.mosip.kernel.auth.entities.ClientSecret;
+import io.mosip.kernel.auth.entities.LdapControl;
 import io.mosip.kernel.auth.entities.LoginUser;
 import io.mosip.kernel.auth.entities.MosipUserDto;
 import io.mosip.kernel.auth.entities.MosipUserListDto;
 import io.mosip.kernel.auth.entities.MosipUserSaltList;
+import io.mosip.kernel.auth.entities.PasswordDto;
+import io.mosip.kernel.auth.entities.RIdDto;
 import io.mosip.kernel.auth.entities.RoleDto;
 import io.mosip.kernel.auth.entities.RolesListDto;
 import io.mosip.kernel.auth.entities.UserDetailsSalt;
+import io.mosip.kernel.auth.entities.UserNameDto;
 import io.mosip.kernel.auth.entities.UserOtp;
+import io.mosip.kernel.auth.entities.UserPasswordRequestDto;
+import io.mosip.kernel.auth.entities.UserPasswordResponseDto;
+import io.mosip.kernel.auth.entities.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.entities.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.entities.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
@@ -78,6 +104,20 @@ public class ILdapDataStore implements IDataStore {
 				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
 	}
+	
+	private LdapContext getContext() throws NamingException {
+
+		Hashtable<String, String> env = new Hashtable<String, String>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		// env.put(Context.PROVIDER_URL, "ldap://localhost:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		LdapContext context = new InitialLdapContext(env, null);
+		LdapControl ldapControl = new LdapControl();
+		context.setRequestControls(ldapControl.getControls());
+		return context;
+	}
 
 	@Override
 	public MosipUserDto authenticateUser(LoginUser loginUser) throws Exception {
@@ -102,12 +142,14 @@ public class ILdapDataStore implements IDataStore {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(otpUser.getUserId());
 		if (!connection.exists(userdn)) {
-			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 
 		}
 		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
 		return mosipUserDto;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,10 +188,10 @@ public class ILdapDataStore implements IDataStore {
 		Dn userdn = createUserDn(clientSecret.getClientId());
 		try {
 			connection.bind(userdn, clientSecret.getSecretKey());
-			}catch(Exception ex)
-			{
-				throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
-			}
+		} catch (Exception ex) {
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
 		}
@@ -169,10 +211,10 @@ public class ILdapDataStore implements IDataStore {
 		LdapConnection connection = createAnonymousConnection();
 		Dn userdn = createUserDn(loginUser.getUserName());
 		try {
-		connection.bind(userdn, loginUser.getPassword());
-		}catch(Exception ex)
-		{
-			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(), LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+			connection.bind(userdn, loginUser.getPassword());
+		} catch (Exception ex) {
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -201,20 +243,26 @@ public class ILdapDataStore implements IDataStore {
 				mosipUserDto
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
-				PasswordDetails password = PasswordUtil.splitCredentials(userLookup.get("userPassword").get().getBytes());
+				if(userLookup.get("userPassword")!=null) {
+				PasswordDetails password = PasswordUtil
+						.splitCredentials(userLookup.get("userPassword").get().getBytes());
 				mosipUserDto.setUserPassword(
 						userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
 								: null);
+				}
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
+				if(userLookup.get("rid")!=null) {
+				mosipUserDto.setRId(userLookup.get("rid").get().toString());
+				}
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
 		}
 	}
-
 	private Collection<String> getUserRoles(Dn userdn, LdapConnection connection) {
 		try {
 			Dn searchBase = new Dn("ou=roles,c=morocco");
@@ -230,7 +278,8 @@ public class ILdapDataStore implements IDataStore {
 			rolesData.close();
 			return roles;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -244,8 +293,12 @@ public class ILdapDataStore implements IDataStore {
 		return rolesString.length() > 0 ? rolesString.substring(0, rolesString.length() - 1) : "";
 	}
 
-	private Dn createUserDn(String userName) throws Exception {
+	private Dn createUserDn(String userName) throws LdapInvalidDnException  {
 		return new Dn("uid=" + userName + ",ou=people,c=morocco");
+	}
+
+	private Dn createRoleDn(String role) throws LdapInvalidDnException  {
+		return new Dn("cn=" + role + ",ou=roles,c=morocco");
 	}
 
 	@Override
@@ -273,7 +326,8 @@ public class ILdapDataStore implements IDataStore {
 
 			return rolesListDto;
 		} catch (Exception e) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -296,7 +350,8 @@ public class ILdapDataStore implements IDataStore {
 			userResponseDto.setMosipUserDtoList(mosipUserDtos);
 			return userResponseDto;
 		} catch (Exception err) {
-			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(), LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
 		}
 	}
 
@@ -311,17 +366,341 @@ public class ILdapDataStore implements IDataStore {
 		for (Entry entry : peoplesData) {
 			UserDetailsSalt saltDetails = new UserDetailsSalt();
 			saltDetails.setUserId(entry.get("uid").get().toString());
-				if(entry.get("userPassword").get()!=null)
-				{
-					PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
-					if(password.getSalt()!=null)
-					{
-						saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
-					}
+			if (entry.get("userPassword") != null) {
+				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
+				if (password.getSalt() != null) {
+					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
 				}
-				mosipUserDtos.add(saltDetails);
+			}
+			mosipUserDtos.add(saltDetails);
 		}
 		mosipUserSaltList.setMosipUserSaltList(mosipUserDtos);
 		return mosipUserSaltList;
+	}
+
+	@Override
+	public RIdDto getRidFromUserId(String userId) throws Exception {
+		RIdDto ridDto = null;
+		LdapConnection ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(userId);
+		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+		if (data == null) {
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		}
+		if (data.getRId() != null) {
+			ridDto = new RIdDto();
+			ridDto.setRId(data.getRId());
+		}
+		return ridDto;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
+
+		LdapContext context = null;
+		AuthZResponseDto authZResponseDto = null;
+		try {
+			context = getContext();
+			ModificationItem[] modItems = new ModificationItem[2];
+			modItems[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
+					new BasicAttribute(AuthConstant.PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE));
+			modItems[1] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
+					new BasicAttribute(AuthConstant.PWD_FAILURE_TIME_ATTRIBUTE));
+
+			context.modifyAttributes("uid=" + userId + ",ou=people,c=morocco", modItems);
+			authZResponseDto = new AuthZResponseDto();
+			authZResponseDto.setMessage("Successfully Unblocked");
+			authZResponseDto.setStatus("Sucesss");
+
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getExplanation());
+		} finally {
+			if (context != null) {
+				context.close();
+			}
+		}
+		return authZResponseDto;
+	}
+
+	@Override
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws NamingException {
+		LdapContext ldapContext = null;
+		AuthZResponseDto authZResponseDto = null;
+		LdapConnection ldapConnection = null;
+		try {
+			ldapContext = getContext();
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+
+		}
+
+		try {
+			ldapConnection = createAnonymousConnection();
+			Dn userdn = createUserDn(passwordDto.getUserId());
+			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
+			Objects.requireNonNull(mosipUserDto);
+			String ldapPassword = getPassword(mosipUserDto.getUserId(), ldapContext);
+			Objects.requireNonNull(ldapPassword);
+			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
+					passwordDto.getNewPassword());
+
+			validateOldPassword(passwordDto.getOldPassword(), ldapPassword);
+
+			if (!isNotMatching && !passwordDto.getOldPassword().equals(passwordDto.getNewPassword())) {
+				byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
+						LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
+
+				ModificationItem[] modItems = new ModificationItem[1];
+				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+						new BasicAttribute("userPassword", newUserPassword));
+				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
+				mosipUserDto.setUserPassword(new String(newUserPassword));
+				authZResponseDto = new AuthZResponseDto();
+				authZResponseDto.setMessage("Successfully changed");
+				authZResponseDto.setStatus("Success");
+			} else {
+				throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
+						AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			ldapContext.close();
+			try {
+				ldapConnection.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return authZResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#resetPassword(io.mosip.kernel.auth.
+	 * entities.PasswordDto)
+	 */
+	@Override
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
+		LdapContext ldapContext = null;
+		AuthZResponseDto authZResponseDto = null;
+		ldapContext = getContext();
+		LdapConnection ldapConnection;
+		ldapConnection = createAnonymousConnection();
+		Dn userdn = createUserDn(passwordDto.getUserId());
+		MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
+		Objects.requireNonNull(mosipUserDto);
+		boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
+				passwordDto.getNewPassword());
+		if (!isNotMatching) {
+			byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
+					LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
+
+			ModificationItem[] modItems = new ModificationItem[1];
+			modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute("userPassword", newUserPassword));
+			ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
+			mosipUserDto.setUserPassword(new String(newUserPassword));
+			authZResponseDto = new AuthZResponseDto();
+			authZResponseDto.setMessage("Successfully the password has been reset");
+			authZResponseDto.setStatus("Success");
+			ldapContext.close();
+			ldapConnection.close();
+
+		} else {
+			ldapContext.close();
+			ldapConnection.close();
+			throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
+					AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+		}
+		return authZResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.factory.IDataStore#getUserNameBasedOnMobileNumber(java.
+	 * lang.String)
+	 */
+	@Override
+	public UserNameDto getUserNameBasedOnMobileNumber(String mobileNumber) throws Exception {
+		Dn searchBase = new Dn("ou=people,c=morocco");
+		UserNameDto userNameDto = new UserNameDto();
+		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person)(mobile="
+				+ mobileNumber + "))";
+		LdapContext context = getContext();
+		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		if (!searchResult.hasMore()) {
+			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
+		}
+		while (searchResult.hasMore()) {
+			Attributes attributes = searchResult.next().getAttributes();
+			Attribute uid = attributes.get("uid");
+			userNameDto.setUserName((String) uid.get());
+		}
+		context.close();
+		return userNameDto;
+	}
+
+	/**
+	 * @param userid
+	 * @param ldapContext
+	 * @return
+	 * @throws Exception
+	 */
+	private String getPassword(String userid, LdapContext ldapContext) throws Exception {
+		String encryptedPassword = null;
+		Dn searchBase = new Dn("uid=" + userid + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> searchResult = ldapContext.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+		while (searchResult.hasMore()) {
+			SearchResult result = searchResult.next();
+			byte[] encryptedPasswordBytes = (byte[]) result.getAttributes().get("userPassword").get();
+			encryptedPassword = new String(encryptedPasswordBytes);
+
+		}
+		return encryptedPassword;
+	}
+
+	/**
+	 * TBD
+	 * 
+	 * @param oldPassword
+	 * @param hashedPassword
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	private void validateOldPassword(String oldPassword, String hashedPassword) {
+
+		boolean password = PasswordUtil.compareCredentials(oldPassword.getBytes(), hashedPassword.getBytes());
+		if (!password) {
+			throw new AuthManagerException(AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorCode(),
+					AuthErrorCode.OLD_PASSWORD_NOT_MATCH.getErrorMessage());
+		}
+	}
+
+	/**
+	 * Check password matches with either userid or email id. At most 3 letters can
+	 * match with the password.
+	 * 
+	 * @param userId
+	 *            - user id
+	 * @param email
+	 *            - email
+	 * @param password
+	 *            - password
+	 * @return {@link boolean}
+	 */
+	private boolean isNotAMatchWithUserOrEmail(String userId, String email, String password) {
+
+		return (password.contains(userId) || password.contains(email));
+	}
+	@Override
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		try {
+			userDn = createUserDn(userCreationRequestDto.getUserName());
+			List<Attribute> attributes = new ArrayList<>();
+			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.SN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.MAIL, userCreationRequestDto.getEmailID()));
+			attributes.add(new BasicAttribute(LdapConstants.MOBILE, userCreationRequestDto.getContactNo()));
+			attributes.add(new BasicAttribute(LdapConstants.DOB, userCreationRequestDto.getDateOfBirth().toString()));
+			attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
+			attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
+			attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
+			attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
+			Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
+			oc.add(LdapConstants.INET_ORG_PERSON);
+			oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
+			oc.add(LdapConstants.PERSON);
+			oc.add(LdapConstants.TOP);
+			oc.add(LdapConstants.USER_DETAILS);
+			attributes.add(oc);
+			context = new InitialDirContext(env);
+			BasicAttributes entry = new BasicAttributes();
+			attributes.parallelStream().forEach(entry::put);
+			context.createSubcontext(userDn.getName(), entry);
+			Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+			ModificationItem[] mods = new ModificationItem[1];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.ROLE_OCCUPANT, userDn.getName()));
+			context.modifyAttributes(roleOccupant.getName(), mods);
+
+		} catch (NameAlreadyBoundException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
+					AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
+		} catch (NameNotFoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
+
+	}
+
+	@Override
+	public UserPasswordResponseDto addPassword(UserPasswordRequestDto userPasswordRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, AuthConstant.LDAP_INITAL_CONTEXT_FACTORY);
+		env.put(Context.PROVIDER_URL, "ldap://52.172.11.190:10389");
+		env.put(Context.SECURITY_PRINCIPAL, "uid=admin,ou=system");
+		env.put(Context.SECURITY_CREDENTIALS, "secret");
+		try {
+			userDn = createUserDn(userPasswordRequestDto.getUserName());
+			context = new InitialDirContext(env);
+			ModificationItem[] mods = new ModificationItem[3];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.RID, userPasswordRequestDto.getRid()));
+			mods[1] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.USER_PASSWORD, userPasswordRequestDto.getPassword()));
+			mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.TRUE));
+			context.modifyAttributes(userDn.getName(), mods);
+
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
+		}catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
+	}
+	
+	private void rollbackUser(Dn userDn, DirContext context) {
+		try {
+			context.destroySubcontext(userDn.getName());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorCode(),
+					AuthErrorCode.ROLLBACK_USER_EXCEPTION.getErrorMessage());
+		}
 	}
 }

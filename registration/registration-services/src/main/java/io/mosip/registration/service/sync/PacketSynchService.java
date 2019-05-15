@@ -5,7 +5,6 @@ import java.util.List;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -40,7 +39,7 @@ public interface PacketSynchService {
 	 * @throws JsonProcessingException 
 	 * 				the json processing exception
 	 */
-	ResponseDTO syncPacketsToServer(RegistrationPacketSyncDTO syncDtoList,String triggerPoint)
+	ResponseDTO syncPacketsToServer(String syncDtoList,String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException;
 
 	/**

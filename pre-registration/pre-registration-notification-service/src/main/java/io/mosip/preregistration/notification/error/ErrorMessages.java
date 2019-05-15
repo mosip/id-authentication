@@ -6,9 +6,12 @@ package io.mosip.preregistration.notification.error;
  */
 public enum ErrorMessages {
 
+	/**
+	 * ErrorMessage for PRG_ACK_001
+	 */
 	MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED("Mobile number or Email Id is missing"),
 	/**
-	 * ErrorMessage for PRG_TRL_APP_002
+	 * ErrorMessage for PRG_ACK_002
 	 */
 	INCORRECT_MANDATORY_FIELDS("Mandatory fields are missing"),
 	/**
@@ -25,17 +28,7 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_ACK_005
 	 */
 	
-	INPUT_OUTPUT_EXCEPTION("INPUT_OUTPUT_EXCEPTION"),
-	
-	/**
-	 * ErrorMessage for PRG_ACK_006
-	 */
-	//QRCODE_FAILED_TO_GENERATE("QRCODE_FAILED_TO_GENERATE"),
-	
-	/**
-	 * ErrorMessage for PRG_ACK_007
-	 */
-	CONFIG_FILE_NOT_FOUND_EXCEPTION("Config file not found exception ");
+	INPUT_OUTPUT_EXCEPTION("INPUT_OUTPUT_EXCEPTION");
 	
 	private ErrorMessages(String code) {
 		this.code = code;

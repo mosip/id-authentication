@@ -52,7 +52,7 @@ export class PreviewComponent implements OnInit {
     this.setResidentStatus();
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
-    this.files = this.user.files[0];
+    this.files = this.user.files.documentsMetaData;
     this.documentsMapping();
   }
 
@@ -140,7 +140,7 @@ export class PreviewComponent implements OnInit {
     const locationName = locations.filter(
       location => location.languageCode === language && location.valueCode === locationCode
     );
-    return locationName[0].valueName;
+    return locationName[0] ? locationName[0].valueName : '';
   }
 
   enableContinue(): boolean {

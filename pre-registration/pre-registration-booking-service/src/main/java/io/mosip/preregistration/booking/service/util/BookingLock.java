@@ -4,8 +4,14 @@
  */
 package io.mosip.preregistration.booking.service.util;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * This class provides the locking object.
@@ -14,27 +20,18 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
  * @since 1.0.0
  *
  */
+@Component
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingLock {
-	private Logger log = LoggerConfiguration.logConfig(BookingLock.class);
 
 	String registrationCenter;
 	String date;
 	String timeslot;
 
-	/**
-	 * The setter class.
-	 * 
-	 * @param registrationCenter
-	 * @param date
-	 * @param timeslot
-	 */
-	public BookingLock(String registrationCenter, String date, String timeslot) {
-		log.info("sessionId", "idType", "id", "In BookingLock method of BookingLock");
-		this.registrationCenter = registrationCenter;
-		this.date = date;
-		this.timeslot = timeslot;
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

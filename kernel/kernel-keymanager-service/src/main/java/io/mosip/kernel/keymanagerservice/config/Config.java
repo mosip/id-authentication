@@ -5,6 +5,7 @@ import javax.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 /**
  * Config class with beans for keymanager service and request logging
@@ -27,5 +28,18 @@ public class Config {
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
+	}
+	
+	
+	//TODO: Logging To Be removed - added temporarily 
+	@Bean
+	public CommonsRequestLoggingFilter logFilter() {
+		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
+		filter.setIncludeQueryString(true);
+		filter.setIncludePayload(true);
+		filter.setMaxPayloadLength(100000);
+		filter.setIncludeHeaders(true);
+		filter.setAfterMessagePrefix("REQUEST DATA : ");
+		return filter;
 	}
 }

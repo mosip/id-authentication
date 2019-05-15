@@ -25,7 +25,7 @@ public class BioDedupeConfig {
 	public Docket biodedupeBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Biodedupe").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.bio.dedupe.api.controller"))
-				.paths(PathSelectors.ant("/v0.1/registration-processor/bio-dedupe/*")).build();
+				.paths(PathSelectors.ant("/biometricfile/*")).build();
 	}
 
 }

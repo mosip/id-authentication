@@ -23,7 +23,9 @@ public interface VirusScanner<U, V> {
 	 * @param fileName the file name
 	 * @return the u
 	 */
-	U scanFile(V fileName);
+	U scanFile(String fileName);
+
+	U scanFile(V file);
 
 	/**
 	 * Scan folder.
@@ -31,7 +33,7 @@ public interface VirusScanner<U, V> {
 	 * @param folderPath the folder path
 	 * @return the u
 	 */
-	U scanFolder(V folderPath);
+	U scanFolder(String folderPath);
 
 	/**
 	 * Scan byte array.

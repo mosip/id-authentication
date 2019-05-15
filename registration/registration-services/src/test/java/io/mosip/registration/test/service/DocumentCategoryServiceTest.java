@@ -12,7 +12,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.DocumentCategoryDAO;
-import io.mosip.registration.service.impl.DocumentCategoryServiceImpl;
+import io.mosip.registration.service.doc.category.impl.DocumentCategoryServiceImpl;
 
 public class DocumentCategoryServiceTest {
 

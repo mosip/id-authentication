@@ -26,7 +26,7 @@ import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.responsesignature.constant.SigningDataErrorCode;
+import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
@@ -80,7 +80,6 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 				SignatureResponse cryptoManagerResponseDto = signatureUtil
 						.signResponse(objectMapper.writeValueAsString(body));
 				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
-				body.setResponsetime(cryptoManagerResponseDto.getResponseTime());
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());

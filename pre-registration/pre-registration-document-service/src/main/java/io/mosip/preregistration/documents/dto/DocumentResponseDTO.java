@@ -31,7 +31,7 @@ public class DocumentResponseDTO implements Serializable {
 	/**
 	 * Document Id
 	 */
-	private String documentId;
+	private String docId;
 	/**
 	 * Document Name
 	 */

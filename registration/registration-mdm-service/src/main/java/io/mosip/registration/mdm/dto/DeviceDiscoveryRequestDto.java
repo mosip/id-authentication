@@ -15,4 +15,5 @@ public class DeviceDiscoveryRequestDto {
 
 	/* type - “Fingerprint” “Face”, ,”Iris”, “Vein”  */
 	private String type;
+	private String subType;
 }

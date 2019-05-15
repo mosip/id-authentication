@@ -90,13 +90,12 @@ public class SendNotificationController extends BaseController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		String modeOfCommunication = String
-				.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
-		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+		String modeOfCommunication = (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION)).toLowerCase();
+		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toLowerCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);
 		}
-		if (!modeOfCommunication.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+		if (!modeOfCommunication.contains(RegistrationConstants.SMS_SERVICE.toLowerCase())) {
 			mobile.setVisible(false);
 			mobileIcon.setVisible(false);
 		}
@@ -116,7 +115,8 @@ public class SendNotificationController extends BaseController implements Initia
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				Writer writeNotificationTemplate = getNotificationTemplate("");
+				Writer emailNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+				Writer smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
 				String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
 				List<String> notifications = new ArrayList<>();
@@ -128,7 +128,7 @@ public class SendNotificationController extends BaseController implements Initia
 						String prefix = "";
 						for (String emailId : emailList) {
 							ResponseDTO emailNotificationResponse = notificationService
-									.sendEmail(writeNotificationTemplate.toString(), emailId, registrationId);
+									.sendEmail(emailNotificationTemplate.toString(), emailId, registrationId);
 							if (emailNotificationResponse.getErrorResponseDTOs() != null) {
 								unsentMails.append(prefix);
 								prefix = ",";
@@ -152,7 +152,7 @@ public class SendNotificationController extends BaseController implements Initia
 						String prefix = "";
 						for (String mobileNo : mobileList) {
 							ResponseDTO smsNotificationResponse = notificationService
-									.sendSMS(writeNotificationTemplate.toString(), mobileNo, registrationId);
+									.sendSMS(smsNotificationTemplate.toString(), mobileNo, registrationId);
 							if (smsNotificationResponse.getErrorResponseDTOs() != null) {
 								unsentSMS.append(prefix);
 								prefix = ",";
@@ -228,7 +228,7 @@ public class SendNotificationController extends BaseController implements Initia
 					contentsList.add(content);
 				}
 			}
-			if (contentsList.size() == 0) {
+			if (contentsList.isEmpty()) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
 				} else {

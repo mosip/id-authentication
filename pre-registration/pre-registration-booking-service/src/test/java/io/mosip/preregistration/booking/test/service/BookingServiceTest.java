@@ -49,11 +49,14 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
+import io.mosip.preregistration.booking.dto.BookingStatus;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
+import io.mosip.preregistration.booking.dto.MultiBookingRequest;
+import io.mosip.preregistration.booking.dto.MultiBookingRequestDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -65,7 +68,6 @@ import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
@@ -79,13 +81,12 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
-import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
-import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.exception.AppointmentReBookException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
@@ -96,6 +97,7 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  * Booking service Test
  * 
  * @author Kishan Rathore
+ * @author Tapaswini Behera
  * @since 1.0.0
  *
  */
@@ -148,7 +150,7 @@ public class BookingServiceTest {
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 	List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 	PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
-	MainListResponseDTO preRegResponse = new MainListResponseDTO();
+	MainResponseDTO preRegResponse = new MainResponseDTO();
 
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 
@@ -177,9 +179,14 @@ public class BookingServiceTest {
 	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 	List<RegistrationBookingEntity> bookingEntities = new ArrayList<>();
 	MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO = new MainRequestDTO<>();
-	MainListRequestDTO<BookingRequestDTO> bookingDto = new MainListRequestDTO<>();
-	MainListRequestDTO<BookingRequestDTO> reBookingDto = new MainListRequestDTO<>();
+	MainRequestDTO<BookingRequestDTO> bookingDto = new MainRequestDTO<>();
+	MainRequestDTO<BookingRequestDTO> reBookingDto = new MainRequestDTO<>();
 
+	MultiBookingRequestDTO multiBookingRequestDto1=new MultiBookingRequestDTO();
+	MultiBookingRequestDTO multiBookingRequestDto2=new MultiBookingRequestDTO();
+	
+	List<MultiBookingRequestDTO> multiBookingListDto=new ArrayList<>();
+	
 	@Value("${version}")
 	String versionUrl;
 
@@ -242,12 +249,8 @@ public class BookingServiceTest {
 		oldBooking_success.setSlotToTime("09:13");
 		oldBooking_success.setRegDate("2019-12-05");
 
-		statusDTOA.setBookingStatus(StatusCodes.BOOKED.getCode());
-		statusDTOA.setPreRegistrationId(bookingPreId);
 		statusDTOA.setBookingMessage("Appointment booked successfully");
 
-		statusDTOB.setBookingStatus(StatusCodes.BOOKED.getCode());
-		statusDTOB.setPreRegistrationId(bookingPreId);
 		statusDTOB.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> resp = new ArrayList<>();
@@ -306,7 +309,7 @@ public class BookingServiceTest {
 		preRegIdsByRegCenterIdDTO.setPreRegistrationIds(preId);
 		requestDTO.setRequest(preRegIdsByRegCenterIdDTO);
 
-		requestDTO.setId("mosip.pre-registration.booking.book");
+		requestDTO.setId("mosip.preregistration.booking.book");
 		requestDTO.setVersion("1.0");
 		requestDTO.setRequesttime(new Date());
 		bookingDto.setId("mosip.pre-registration.booking.book");
@@ -368,14 +371,12 @@ public class BookingServiceTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void successBookAppointment() {
 
-		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
-		MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainListRequestDTO<>();
+		
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
@@ -383,10 +384,10 @@ public class BookingServiceTest {
 		successBookDto.setSlotToTime("09:15");
 		successBookDto.setRegDate("2019-12-12");
 		successBookDtoList.add(successBookDto);
-		bookingRequestDTOs.setId("mosip.pre-registration.booking.book");
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
 		bookingRequestDTOs.setRequesttime(new Date());
-		bookingRequestDTOs.setRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(successBookDto);
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
@@ -397,24 +398,26 @@ public class BookingServiceTest {
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
 		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
 		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
 		statusListrebook.add(preRegistartionStatus);
-		MainListResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainListResponseDTO<PreRegistartionStatusDTO>();
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
 		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(statusListrebook);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
 		// Update status
@@ -433,20 +436,27 @@ public class BookingServiceTest {
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
 		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
-		assertEquals(bookingPreId, response.getResponse().getPreRegistrationId());
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
 
-	@Test(expected=BookingPreIdNotFoundException.class)
-	public void successBookAppointmentFail() {
+	@SuppressWarnings("unchecked")
+	@Test
+	public void successBookAppointmentPendingAppointment() {
 
-		//Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		
-		MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainListRequestDTO<>();
+		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
@@ -454,10 +464,10 @@ public class BookingServiceTest {
 		successBookDto.setSlotToTime("09:15");
 		successBookDto.setRegDate("2019-12-12");
 		successBookDtoList.add(successBookDto);
-		bookingRequestDTOs.setId("mosip.pre-registration.booking.book");
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
 		bookingRequestDTOs.setRequesttime(new Date());
-		bookingRequestDTOs.setRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(successBookDto);
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
@@ -468,26 +478,29 @@ public class BookingServiceTest {
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
 		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
-		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatus.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
 		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
 		statusListrebook.add(preRegistartionStatus);
-		MainListResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainListResponseDTO<PreRegistartionStatusDTO>();
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
 		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(statusListrebook);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-		Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(respEntity);
-		
-		//Update status
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2
 				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
@@ -499,94 +512,74 @@ public class BookingServiceTest {
 		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
 		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
 
-
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-		Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {}),Mockito.anyMap())).thenReturn(resp2);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
 
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, null);
+		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
 	}
+	
+	@SuppressWarnings("unchecked")
 	@Test
-	public void successExpiredAppointment() {
+	public void bookAppointmentFailureTest() {
 
-		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
-		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
-		bookingRequestDTO.setRegistrationCenterId("1");
-		bookingRequestDTO.setSlotFromTime("09:00");
-		bookingRequestDTO.setSlotToTime("09:15");
-		bookingRequestDTO.setRegDate("2019-12-06");
+		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
+		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
+		BookingRequestDTO successBookDto = new BookingRequestDTO();
+		successBookDto.setRegistrationCenterId("1");
+		successBookDto.setSlotFromTime("09:00");
+		successBookDto.setSlotToTime("09:15");
+		successBookDto.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+		bookingRequestDTOs.setRequest(successBookDto);
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-06"));
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
 		availableEntity.setToTime(LocalTime.parse("09:00:00"));
 		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
-
-		/*
-		 * newBookingRegistrationDTO.setRegistrationCenterId("10005");
-		 * newBookingRegistrationDTO.setSlotFromTime("09:00");
-		 * newBookingRegistrationDTO.setSlotToTime("09:15");
-		 * newBookingRegistrationDTO.setRegDate("2019-12-12");
-		 */
-		List<BookingRequestDTO> rebookingReqList = new ArrayList<>();
-		rebookingReqList.add(bookingRequestDTO);
-
-		reBookingMainDto.setId("mosip.pre-registration.booking.book");
-		reBookingMainDto.setVersion("1.0");
-		reBookingMainDto.setRequesttime(new Date());
-		reBookingMainDto.setRequest(rebookingReqList);
-
-		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
-		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.EXPIRED.getCode());
-		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
-
-		List<BookingStatusDTO> respList = new ArrayList<>();
-		respList.add(bookingStatusDTO);
-		responseDTO.setResponse(respList);
-		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
 		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
-		preRegistartionStatus.setStatusCode(StatusCodes.EXPIRED.getCode());
-		preRegistartionStatus.setPreRegistartionId("12345678909876");
+		preRegistartionStatus.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
 		statusListrebook.add(preRegistartionStatus);
-		MainListResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainListResponseDTO<PreRegistartionStatusDTO>();
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
 		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(statusListrebook);
-
-		RegistrationBookingEntity bookingEntityRebook = new RegistrationBookingEntity();
-		bookingEntityRebook.setBookingPK(
-				new RegistrationBookingPK("12345678909876", DateUtils.parseDateToLocalDateTime(new Date())));
-		bookingEntityRebook.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntityRebook.setLangCode("12L");
-		bookingEntityRebook.setCrBy("987654321");
-		bookingEntityRebook.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntityRebook.setRegDate(LocalDate.parse("2019-12-06"));
-		bookingEntityRebook.setSlotFromTime(LocalTime.parse("09:00"));
-		bookingEntityRebook.setSlotToTime(LocalTime.parse("09:15"));
-
-		requestValidatorFlag = ValidationUtil.requestValidator(reBookingMainDto);
-
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
-		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntity);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
-				preRegResponseRebook, HttpStatus.OK);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
+		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(respEntity);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(null);
 
-		// update status
+		// Update status
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
 		bookingEntity2
 				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
@@ -602,90 +595,69 @@ public class BookingServiceTest {
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(null);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
-		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
-				.thenReturn(preRegistartionStatus);
-
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(reBookingMainDto, "12345678909876");
-		assertEquals("12345678909876", response.getResponse().getPreRegistrationId());
+		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void successRebookAppointment() {
-		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
-		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
-		bookingRequestDTO.setRegistrationCenterId("1");
-		bookingRequestDTO.setSlotFromTime("09:00");
-		bookingRequestDTO.setSlotToTime("09:15");
-		bookingRequestDTO.setRegDate("2019-12-06");
+	public void successExpiredAppointment() {
 
-		List<BookingRequestDTO> rebookingReqList = new ArrayList<>();
-		rebookingReqList.add(bookingRequestDTO);
-
-		reBookingMainDto.setId("mosip.pre-registration.booking.book");
-		reBookingMainDto.setVersion("1.0");
-		reBookingMainDto.setRequesttime(new Date());
-		reBookingMainDto.setRequest(rebookingReqList);
-
-		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
-		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
-
-		List<BookingStatusDTO> respList = new ArrayList<>();
-		respList.add(bookingStatusDTO);
-		responseDTO.setResponse(respList);
-		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
-		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
-		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
-		preRegistartionStatus.setPreRegistartionId("12345678909876");
-		statusListrebook.add(preRegistartionStatus);
-		MainListResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainListResponseDTO<PreRegistartionStatusDTO>();
-		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(statusListrebook);
-
-		RegistrationBookingEntity bookingEntityRebook = new RegistrationBookingEntity();
-		bookingEntityRebook.setBookingPK(
-				new RegistrationBookingPK("12345678909876", DateUtils.parseDateToLocalDateTime(new Date())));
-		bookingEntityRebook.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntityRebook.setLangCode("12L");
-		bookingEntityRebook.setCrBy("987654321");
-		bookingEntityRebook.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
-		bookingEntityRebook.setSlotToTime(LocalTime.parse("09:15"));
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
+		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
+		BookingRequestDTO successBookDto = new BookingRequestDTO();
+		successBookDto.setRegistrationCenterId("1");
+		successBookDto.setSlotFromTime("09:00");
+		successBookDto.setSlotToTime("09:15");
+		successBookDto.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+		bookingRequestDTOs.setRequest(successBookDto);
 
 		availableEntity.setAvailableKiosks(3);
 		availableEntity.setRegcntrId("1");
-		availableEntity.setRegDate(LocalDate.parse("2019-12-04"));
-		availableEntity.setToTime(localTime2);
-		availableEntity.setFromTime(localTime1);
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setToTime(LocalTime.parse("09:00:00"));
+		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
 		availableEntity.setCrBy("987654321");
 		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntity.setDeleted(false);
-
-		requestValidatorFlag = ValidationUtil.requestValidator(reBookingMainDto);
-
+		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
+		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
+		preRegistartionStatus.setStatusCode(StatusCodes.EXPIRED.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
+		statusListrebook.add(preRegistartionStatus);
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
+		preRegResponseRebook.setErrors(null);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
-		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntity);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
-				preRegResponseRebook, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
-				}), Mockito.anyMap())).thenReturn(respEntity);
-		Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class))
-				.thenReturn(preRegistartionStatus);
 
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
 		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
-		bookingEntity2.setBookingPK(
-				new RegistrationBookingPK("12345678909876", DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity2
+				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity2.setLangCode("12L");
 		bookingEntity2.setCrBy("987654321");
@@ -698,13 +670,413 @@ public class BookingServiceTest {
 		mainResponseDTO.setErrors(null);
 		mainResponseDTO.setResponse(bookingEntity2);
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
 				}), Mockito.anyMap())).thenReturn(resp2);
 
-		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(reBookingMainDto, "12345678909876");
-		assertEquals("12345678909876", response.getResponse().getPreRegistrationId());
+		MainResponseDTO<BookingStatusDTO> response = service.bookAppointment(bookingRequestDTOs, bookingPreId);
+
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingMessage());
 	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void successMultiBookAppointment() {
+
+
+		multiBookingListDto.add(multiBookingRequestDto1);
+		multiBookingListDto.add(multiBookingRequestDto2);
+		
+		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
+		multiBookingRequest.setBookingRequest(multiBookingListDto);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
+		BookingStatus bookingStatus= new BookingStatus();
+		BookingStatusDTO bookingStatusDTO1=new BookingStatusDTO();
+		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
+		
+		BookingStatusDTO bookingStatusDTO2=new BookingStatusDTO();
+		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
+		
+		List<BookingStatusDTO> bookingStatusDTOs=new ArrayList<>();
+		bookingStatusDTOs.add(bookingStatusDTO1);
+		bookingStatusDTOs.add(bookingStatusDTO2);
+		
+		MainRequestDTO<MultiBookingRequest> bookingRequestDTOs = new MainRequestDTO<>();
+		MultiBookingRequest bookingRequest= new MultiBookingRequest();
+		List<MultiBookingRequestDTO> successBookDtoList = new ArrayList<>();
+		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
+		successBookDto1.setPreRegistrationId("23587986034785");
+		successBookDto1.setRegistrationCenterId("1");
+		successBookDto1.setSlotFromTime("09:00");
+		successBookDto1.setSlotToTime("09:15");
+		successBookDto1.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto1);
+		bookingRequest.setBookingRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(bookingRequest);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+
+		availableEntity.setAvailableKiosks(3);
+		availableEntity.setRegcntrId("1");
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setToTime(LocalTime.parse("09:00:00"));
+		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
+		availableEntity.setCrBy("987654321");
+		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		availableEntity.setDeleted(false);
+		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
+		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
+		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
+		statusListrebook.add(preRegistartionStatus);
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
+		preRegResponseRebook.setErrors(null);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
+		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
+		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
+		bookingEntity2
+				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
+		bookingEntity2.setLangCode("12L");
+		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
+		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+
+		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setErrors(null);
+		mainResponseDTO.setResponse(bookingEntity2);
+		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
+
+		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
+	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void successPendingMultiBookAppointment() {
+
+
+		multiBookingListDto.add(multiBookingRequestDto1);
+		multiBookingListDto.add(multiBookingRequestDto2);
+		
+		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
+		multiBookingRequest.setBookingRequest(multiBookingListDto);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
+		BookingStatus bookingStatus= new BookingStatus();
+		BookingStatusDTO bookingStatusDTO1=new BookingStatusDTO();
+		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
+		
+		BookingStatusDTO bookingStatusDTO2=new BookingStatusDTO();
+		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
+		
+		List<BookingStatusDTO> bookingStatusDTOs=new ArrayList<>();
+		bookingStatusDTOs.add(bookingStatusDTO1);
+		bookingStatusDTOs.add(bookingStatusDTO2);
+		
+		MainRequestDTO<MultiBookingRequest> bookingRequestDTOs = new MainRequestDTO<>();
+		MultiBookingRequest bookingRequest= new MultiBookingRequest();
+		List<MultiBookingRequestDTO> successBookDtoList = new ArrayList<>();
+		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
+		successBookDto1.setPreRegistrationId("23587986034785");
+		successBookDto1.setRegistrationCenterId("1");
+		successBookDto1.setSlotFromTime("09:00");
+		successBookDto1.setSlotToTime("09:15");
+		successBookDto1.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto1);
+		bookingRequest.setBookingRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(bookingRequest);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+
+		availableEntity.setAvailableKiosks(3);
+		availableEntity.setRegcntrId("1");
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setToTime(LocalTime.parse("09:00:00"));
+		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
+		availableEntity.setCrBy("987654321");
+		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		availableEntity.setDeleted(false);
+		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
+		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
+		preRegistartionStatus.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
+		statusListrebook.add(preRegistartionStatus);
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
+		preRegResponseRebook.setErrors(null);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
+		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
+		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
+		bookingEntity2
+				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
+		bookingEntity2.setLangCode("12L");
+		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
+		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+
+		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setErrors(null);
+		mainResponseDTO.setResponse(bookingEntity2);
+		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
+
+		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void successExpiredMultiBookAppointment() {
+
+
+		multiBookingListDto.add(multiBookingRequestDto1);
+		multiBookingListDto.add(multiBookingRequestDto2);
+		
+		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
+		multiBookingRequest.setBookingRequest(multiBookingListDto);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
+		BookingStatus bookingStatus= new BookingStatus();
+		BookingStatusDTO bookingStatusDTO1=new BookingStatusDTO();
+		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
+		
+		BookingStatusDTO bookingStatusDTO2=new BookingStatusDTO();
+		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
+		
+		List<BookingStatusDTO> bookingStatusDTOs=new ArrayList<>();
+		bookingStatusDTOs.add(bookingStatusDTO1);
+		bookingStatusDTOs.add(bookingStatusDTO2);
+		
+		MainRequestDTO<MultiBookingRequest> bookingRequestDTOs = new MainRequestDTO<>();
+		MultiBookingRequest bookingRequest= new MultiBookingRequest();
+		List<MultiBookingRequestDTO> successBookDtoList = new ArrayList<>();
+		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
+		successBookDto1.setPreRegistrationId("23587986034785");
+		successBookDto1.setRegistrationCenterId("1");
+		successBookDto1.setSlotFromTime("09:00");
+		successBookDto1.setSlotToTime("09:15");
+		successBookDto1.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto1);
+		bookingRequest.setBookingRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(bookingRequest);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+
+		availableEntity.setAvailableKiosks(3);
+		availableEntity.setRegcntrId("1");
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setToTime(LocalTime.parse("09:00:00"));
+		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
+		availableEntity.setCrBy("987654321");
+		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		availableEntity.setDeleted(false);
+		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
+		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
+		preRegistartionStatus.setStatusCode(StatusCodes.EXPIRED.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
+		statusListrebook.add(preRegistartionStatus);
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
+		preRegResponseRebook.setErrors(null);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
+		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
+		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
+		bookingEntity2
+				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
+		bookingEntity2.setLangCode("12L");
+		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
+		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+
+		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setErrors(null);
+		mainResponseDTO.setResponse(bookingEntity2);
+		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity2);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
+
+		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
+		assertEquals("Appointment booked successfully", response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void failureMultiBookAppointment() {
+
+		// Mockito.doNothing().when(serviceSpy).setAuditValues(Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+		// Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+
+		multiBookingListDto.add(multiBookingRequestDto1);
+		multiBookingListDto.add(multiBookingRequestDto2);
+		
+		MultiBookingRequest multiBookingRequest = new MultiBookingRequest();
+		multiBookingRequest.setBookingRequest(multiBookingListDto);
+		responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+		
+		BookingStatus bookingStatus= new BookingStatus();
+		BookingStatusDTO bookingStatusDTO1=new BookingStatusDTO();
+		bookingStatusDTO1.setBookingMessage("Appointment booked successfully");
+		
+		BookingStatusDTO bookingStatusDTO2=new BookingStatusDTO();
+		bookingStatusDTO2.setBookingMessage("Appointment booked successfully");
+		
+		List<BookingStatusDTO> bookingStatusDTOs=new ArrayList<>();
+		bookingStatusDTOs.add(bookingStatusDTO1);
+		bookingStatusDTOs.add(bookingStatusDTO2);
+		
+		MainRequestDTO<MultiBookingRequest> bookingRequestDTOs = new MainRequestDTO<>();
+		MultiBookingRequest bookingRequest= new MultiBookingRequest();
+		List<MultiBookingRequestDTO> successBookDtoList = new ArrayList<>();
+		MultiBookingRequestDTO successBookDto1 = new MultiBookingRequestDTO();
+		successBookDto1.setPreRegistrationId("23587986034785");
+		successBookDto1.setRegistrationCenterId("1");
+		successBookDto1.setSlotFromTime("09:00");
+		successBookDto1.setSlotToTime("09:15");
+		successBookDto1.setRegDate("2019-12-12");
+		successBookDtoList.add(successBookDto1);
+		bookingRequest.setBookingRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(bookingRequest);
+		bookingRequestDTOs.setId("mosip.preregistration.booking.book");
+		bookingRequestDTOs.setVersion("1.0");
+		bookingRequestDTOs.setRequesttime(new Date());
+
+		availableEntity.setAvailableKiosks(3);
+		availableEntity.setRegcntrId("1");
+		availableEntity.setRegDate(LocalDate.parse("2019-12-12"));
+		availableEntity.setToTime(LocalTime.parse("09:00:00"));
+		availableEntity.setFromTime(LocalTime.parse("09:15:00"));
+		availableEntity.setCrBy("987654321");
+		availableEntity.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		availableEntity.setDeleted(false);
+		List<PreRegistartionStatusDTO> statusListrebook = new ArrayList<>();
+		
+		PreRegistartionStatusDTO preRegistartionStatus = new PreRegistartionStatusDTO();
+		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatus.setPreRegistartionId(bookingPreId);
+		preRegResponse.setResponse(preRegistartionStatus);
+		statusListrebook.add(preRegistartionStatus);
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
+		preRegResponseRebook.setErrors(null);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(bookingRequestDTOs);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(respEntity);
+
+		// Update status
+		RegistrationBookingEntity bookingEntity2 = new RegistrationBookingEntity();
+		bookingEntity2
+				.setBookingPK(new RegistrationBookingPK(bookingPreId, DateUtils.parseDateToLocalDateTime(new Date())));
+		bookingEntity2.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
+		bookingEntity2.setLangCode("12L");
+		bookingEntity2.setCrBy("987654321");
+		bookingEntity2.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
+		bookingEntity2.setRegDate(LocalDate.parse("2019-12-12"));
+		bookingEntity2.setSlotFromTime(LocalTime.parse("09:00:00"));
+		bookingEntity2.setSlotToTime(LocalTime.parse("09:15:00"));
+
+		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setErrors(null);
+		mainResponseDTO.setResponse(bookingEntity2);
+		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(null);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
+
+		MainResponseDTO<BookingStatus> response = service.bookMultiAppointment(bookingRequestDTOs);
+		//assertEquals("Appointment booked successfully", response.getResponse().getBookingStatusResponse().get(0).getBookingMessage());
+	}
+
+
 
 	@Test
 	public void addAvailabilityServiceTest() {
@@ -743,20 +1115,30 @@ public class BookingServiceTest {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 
-		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-
-		ResponseEntity<RegistrationCenterResponseDto> rescenter = new ResponseEntity<>(regCenDto, HttpStatus.OK);
-		ResponseEntity<RegistrationCenterHolidayDto> resHoliday = new ResponseEntity<>(CenholidayDto, HttpStatus.OK);
-
+		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
+		resp.setResponse(regCenDto);
+		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(RegistrationCenterResponseDto.class))).thenReturn(rescenter);
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
+				}))).thenReturn(res);
+
+		RegistrationCenterHolidayDto preRegResponseHoliday = new RegistrationCenterHolidayDto();
+		preRegResponseHoliday.setHolidays(holidayList);
+		ResponseWrapper<RegistrationCenterHolidayDto> respholiday = new ResponseWrapper<>();
+		respholiday.setResponse(preRegResponseHoliday);
+
+		ResponseEntity<ResponseWrapper<RegistrationCenterHolidayDto>> resHoli = new ResponseEntity<>(respholiday,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(RegistrationCenterHolidayDto.class))).thenReturn(resHoliday);
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
+				}))).thenReturn(resHoli);
 		response = service.addAvailability();
+
 		assertEquals("MASTER_DATA_SYNCED_SUCCESSFULLY", response.getResponse());
 	}
 
+
+	
 	@Test
 	public void addAvailabilityServiceFailTest() {
 
@@ -815,22 +1197,23 @@ public class BookingServiceTest {
 	@Test
 	public void cancelAppointmentSuccessTest() throws java.text.ParseException {
 
-		String date5 = "2016-11-09 14:20:00";
+		String date5 = "2019-11-09 14:20:00";
 		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
-		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
-		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
-		statusList.add(preRegistartionStatusDTO);
+		PreRegistartionStatusDTO bookedStatusDTO= new PreRegistartionStatusDTO();
+		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookedStatusDTO.setPreRegistartionId("23587986034785");
+		preRegResponse.setResponse(bookedStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
 
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
@@ -851,15 +1234,14 @@ public class BookingServiceTest {
 
 		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
-		MainResponseDTO<CancelBookingResponseDTO> responseDto = service.cancelAppointment(
-				"23587986034785");
+		MainResponseDTO<CancelBookingResponseDTO> responseDto = service.cancelAppointment("23587986034785");
 		assertEquals("Appointment cancelled successfully", responseDto.getResponse().getMessage());
 
 	}
 
 	@Test
 	public void getAppointmentDetailsTest() {
-		MainListRequestDTO<BookingRequestDTO> reBookingMainDto = new MainListRequestDTO<>();
+		MainRequestDTO<BookingRequestDTO> reBookingMainDto = new MainRequestDTO<>();
 		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		// BookingRegistrationDTO oldBookingRegistrationDTO = new
 		// BookingRegistrationDTO();
@@ -885,12 +1267,10 @@ public class BookingServiceTest {
 		reBookingMainDto.setId("mosip.pre-registration.booking.book");
 		reBookingMainDto.setVersion("1.0");
 		reBookingMainDto.setRequesttime(new Date());
-		reBookingMainDto.setRequest(rebookingReqList);
+		reBookingMainDto.setRequest(bookingRequestDTO);
 
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		bookingStatusDTO.setPreRegistrationId("12345678909876");
-		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
 		bookingStatusDTO.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> respList = new ArrayList<>();
@@ -902,9 +1282,9 @@ public class BookingServiceTest {
 		preRegistartionStatus.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatus.setPreRegistartionId("12345678909876");
 		statusListrebook.add(preRegistartionStatus);
-		MainListResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainListResponseDTO<PreRegistartionStatusDTO>();
+		MainResponseDTO<PreRegistartionStatusDTO> preRegResponseRebook = new MainResponseDTO<PreRegistartionStatusDTO>();
 		preRegResponseRebook.setErrors(null);
-		preRegResponseRebook.setResponse(statusListrebook);
+		preRegResponseRebook.setResponse(preRegistartionStatus);
 		RegistrationBookingEntity bookingEntityRebook = new RegistrationBookingEntity();
 		bookingEntityRebook.setBookingPK(
 				new RegistrationBookingPK("12345678909876", DateUtils.parseDateToLocalDateTime(new Date())));
@@ -918,11 +1298,11 @@ public class BookingServiceTest {
 		Mockito.when(bookingDAO.findByPreRegistrationId("12345678909876")).thenReturn(bookingEntityRebook);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(
 				preRegResponseRebook, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("12345678909876");
@@ -930,33 +1310,46 @@ public class BookingServiceTest {
 		assertEquals("1", responseDto.getResponse().getRegistrationCenterId());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = BookingDataNotFoundException.class)
 	public void getAppointmentDetailsTestFail() {
-		BookingDataNotFoundException exception=new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-				ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+		
+		PreRegistartionStatusDTO bookedStatusDTO= new PreRegistartionStatusDTO();
+		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookedStatusDTO.setPreRegistartionId("23587986034785");
+		preRegResponse.setResponse(bookedStatusDTO);
+		
+		BookingDataNotFoundException exception = new BookingDataNotFoundException(
+				ErrorCodes.PRG_BOOK_RCI_013.toString(), ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenThrow(exception);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 
 	}
 
+	 @SuppressWarnings("unchecked")
 	@Test(expected = TableNotAccessibleException.class)
 	public void getAppointmentDetailsFailureTest() {
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
+		 PreRegistartionStatusDTO bookedStatusDTO= new PreRegistartionStatusDTO();
+			bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+			bookedStatusDTO.setPreRegistartionId("23587986034785");
+			preRegResponse.setResponse(bookedStatusDTO);
+			
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> respEntity = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(respEntity);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.anyString()))
@@ -969,7 +1362,7 @@ public class BookingServiceTest {
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
-		MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainListRequestDTO<>();
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
@@ -980,7 +1373,7 @@ public class BookingServiceTest {
 		bookingRequestDTOs.setId("mosip.pre-registration.booking.book");
 		bookingRequestDTOs.setVersion("1.0");
 		bookingRequestDTOs.setRequesttime(new Date());
-		bookingRequestDTOs.setRequest(successBookDtoList);
+		bookingRequestDTOs.setRequest(successBookDto);
 
 		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
 		mainResponseDTO.setErrors(null);
@@ -1002,32 +1395,35 @@ public class BookingServiceTest {
 		assertEquals("Appointment booked successfully", response.getBookingMessage());
 	}
 
+	 //@SuppressWarnings("unchecked")
 	//@Test(expected = TableNotAccessibleException.class)
 	public void cancelBookingFailureTest() throws java.text.ParseException {
 
 		String date5 = "2016-11-09 14:20:00";
 		Date localDateTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date5);
-		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
-		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
-		statusList.add(preRegistartionStatusDTO);
-
+		PreRegistartionStatusDTO bookedStatusDTO= new PreRegistartionStatusDTO();
+		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookedStatusDTO.setPreRegistartionId("23587986034785");
+		preRegResponse.setResponse(bookedStatusDTO);
+		
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
 
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
-		service.cancelBooking( "23587986034785");
+		service.cancelBooking("23587986034785");
 	}
 
+	 @SuppressWarnings("unchecked")
 	@Test(expected = TimeSpanException.class)
 	public void cancelTimeSpanFailureTest() throws java.text.ParseException {
 		AppointmentReBookException exception = new AppointmentReBookException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
@@ -1056,21 +1452,23 @@ public class BookingServiceTest {
 		cancelbookingDto2.setRegistrationCenterId("1");
 		cancelbookingDto2.setSlotFromTime(LocalTime.now().toString());
 		cancelbookingDto2.setSlotToTime("09:13");
-		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
-		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
-		statusList.add(preRegistartionStatusDTO);
+		
+		PreRegistartionStatusDTO bookedStatusDTO= new PreRegistartionStatusDTO();
+		bookedStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		bookedStatusDTO.setPreRegistartionId("23587986034785");
+		preRegResponse.setResponse(bookedStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(cancelRequestdto);
 		// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
-		ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
 				HttpStatus.OK);
 
 		Mockito.when(bookingDAO.findByPreRegistrationId("23587986034785")).thenReturn(bookingEntity);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 
-				Mockito.eq(new ParameterizedTypeReference<MainListResponseDTO<PreRegistartionStatusDTO>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
 				}), Mockito.anyMap())).thenReturn(res);
 
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
@@ -1078,7 +1476,7 @@ public class BookingServiceTest {
 		service.cancelBooking("23587986034785");
 	}
 
-	//@Test
+	@Test
 	public void deleteBooking() {
 
 		List<DeleteBookingDTO> deleteList = new ArrayList<>();
@@ -1086,7 +1484,7 @@ public class BookingServiceTest {
 		List<RegistrationBookingEntity> registrationEntityList = new ArrayList<>();
 		RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
 		bookingEntity.setBookingPK(
-				new RegistrationBookingPK("12345678909876", DateUtils.parseDateToLocalDateTime(new Date())));
+				new RegistrationBookingPK("23587986034785", DateUtils.parseDateToLocalDateTime(new Date())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity.setLangCode("12L");
 		bookingEntity.setCrBy("987654321");
@@ -1095,11 +1493,11 @@ public class BookingServiceTest {
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
 		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
 		registrationEntityList.add(bookingEntity);
-
-		Mockito.when(bookingDAO.findByPreregistrationId(Mockito.anyString())).thenReturn(registrationEntityList);
+		
+		Mockito.when(bookingDAO.findByPreRegistrationId(Mockito.anyString())).thenReturn(bookingEntity);
 		deleteDto.setDeletedBy("987654321");
 		deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
-		deleteDto.setPreRegistrationId("12345678909876");
+		deleteDto.setPreRegistrationId("23587986034785");
 		deleteList.add(deleteDto);
 		Mockito.when(bookingDAO.deleteByPreRegistrationId(Mockito.anyString())).thenReturn(1);
 
@@ -1112,9 +1510,10 @@ public class BookingServiceTest {
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 
 		assertEquals(response.getResponse().getPreRegistrationId(),
-				service.deleteBooking("12345678909876").getResponse().getPreRegistrationId());
+				service.deleteBooking("23587986034785").getResponse().getPreRegistrationId());
 
 	}
+
 	@Test
 	public void deleteBookingFailTest() {
 
@@ -1140,25 +1539,24 @@ public class BookingServiceTest {
 		deleteList.add(deleteDto);
 		Mockito.when(bookingDAO.deleteByPreRegistrationId(Mockito.anyString())).thenReturn(0);
 
-		MainListResponseDTO<DeleteBookingDTO> response = new MainListResponseDTO<>();
+		MainResponseDTO<DeleteBookingDTO> response = new MainResponseDTO<>();
 		response.setErrors(null);
-		response.setResponse(deleteList);
+		response.setResponse(deleteDto);
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
 
-		assertEquals("1.0",
-				service.deleteBooking("12345678909876").getVersion());
+		assertEquals("1.0", service.deleteBooking("12345678909876").getVersion());
 
 	}
 
 	@Test
 	public void getBookedPreIdsByDateTest() {
-		MainListResponseDTO<String> response = new MainListResponseDTO<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		List<String> details = new ArrayList<>();
 		details.add("98746563542672");
 
 		preIds.add("98746563542672");
-		response.setResponse(preIds);
+		response.setResponse("98746563542672");
 		response.setVersion("1.0");
 		// response.setStatus(true);
 
@@ -1171,11 +1569,10 @@ public class BookingServiceTest {
 		LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
 				.toLocalDate();
 
-		LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-
-		LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
-		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromLocaldate, toLocaldate, "10001"))
-				.thenReturn(details);
+		// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
+		//
+		// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
+		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, "10001")).thenReturn(details);
 
 		MainResponseDTO<PreRegIdsByRegCenterIdResponseDTO> actualRes = service
 				.getBookedPreRegistrationByDate(fromDateStr, toDateStr, "10001");
@@ -1199,10 +1596,10 @@ public class BookingServiceTest {
 
 		LocalDate toDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(toDateStr.trim(), "yyyy-MM-dd"))
 				.toLocalDate();
-		LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-
-		LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
-		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromLocaldate, toLocaldate, "10001"))
+		// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
+		//
+		// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
+		Mockito.when(bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, "10001"))
 				.thenThrow(new BookingDataNotFoundException("", "", new Throwable()));
 		service.getBookedPreRegistrationByDate(fromDateStr, toDateStr, "10001");
 
@@ -1211,7 +1608,7 @@ public class BookingServiceTest {
 	@Test(expected = AvailablityNotFoundException.class)
 	public void checkSlotAvailabilityTest() {
 
-		MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainListRequestDTO<>();
+		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
 		successBookDto.setRegistrationCenterId("1");
@@ -1235,12 +1632,12 @@ public class BookingServiceTest {
 
 	@Test
 	public void deleteOldBookingTest() {
-		int count=1;
+		int count = 1;
 		Mockito.when(bookingDAO.deleteByPreRegistrationId("12345678909876")).thenReturn(count);
-		boolean flag=service.deleteOldBooking("12345678909876");
+		boolean flag = service.deleteOldBooking("12345678909876");
 		assertEquals(true, flag);
 	}
-	
+
 	@Test(expected = RecordFailedToDeleteException.class)
 	public void deleteOldBookingFailTest() {
 		RecordFailedToDeleteException exception = new RecordFailedToDeleteException(
@@ -1248,7 +1645,7 @@ public class BookingServiceTest {
 				ErrorMessages.FAILED_TO_DELETE_THE_PRE_REGISTRATION_RECORD.getMessage());
 		Mockito.when(service.deleteOldBooking("12345678909876")).thenThrow(exception);
 		service.deleteOldBooking("12345678909876");
-		
+
 	}
 
 	@Test(expected = AvailablityNotFoundException.class)

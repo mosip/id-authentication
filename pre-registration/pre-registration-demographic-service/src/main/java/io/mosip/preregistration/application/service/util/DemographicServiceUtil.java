@@ -29,7 +29,6 @@ import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
-import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
@@ -39,6 +38,8 @@ import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
@@ -57,8 +58,6 @@ public class DemographicServiceUtil {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
-	@Value("${mosip.nonmandatory.field}")
-	private String nonMandatoryField;
 
 	/**
 	 * Logger instance
@@ -374,39 +373,7 @@ public class DemographicServiceUtil {
 		return date.format(dateTimeFormatter);
 	}
 
-	/**
-	 * 
-	 * @param idValidationFields
-	 *            is a map with key and regex as value
-	 * @param demoDetails
-	 * @return boolean
-	 * @throws ParseException
-	 */
-
-	public boolean validation(Map<String, String> idValidationFields, JSONObject demoDetails) throws ParseException {
-		List<String> reqParams = new ArrayList<>();
-		String[] nonMandatoryParams = nonMandatoryField.split(",");
-		for (int i = 0; i < nonMandatoryParams.length; i++) {
-			reqParams.add(nonMandatoryParams[i]);
-		}
-		for (Map.Entry<String, String> entry : idValidationFields.entrySet()) {
-			String value = getIdJSONValue(demoDetails.toJSONString(), entry.getKey());
-			if (value != null && !value.isEmpty()) {
-				if (!ValidationUtil.idValidation(value,
-						entry.getValue())) {
-					throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
-							entry.getKey() + " failed for the regex " + entry.getValue());
-				}
-			} else {
-				if (!reqParams.contains(entry.getKey())) {
-					throw new SchemaValidationException(ErrorCodes.PRG_PAM_APP_014.getCode(),
-							entry.getKey() + " failed for the regex " + entry.getValue());
-				}
-			}
-		}
-		return true;
-	}
-
+	
 	public boolean isStatusValid(String status) {
 		for (StatusCodes choice : StatusCodes.values())
 			if (choice.getCode().equals(status))
@@ -414,4 +381,19 @@ public class DemographicServiceUtil {
 		return false;
 	}
 
+	/**
+	 * This method will return the MainResponseDTO with id and version
+	 * 
+	 * @param mainRequestDto
+	 * @return MainResponseDTO<?>
+	 */
+	public  MainResponseDTO<?> getMainResponseDto(MainRequestDTO<?> mainRequestDto ){
+		log.info("sessionId", "idType", "id", "In getMainResponseDTO method of Login Common Util");
+		MainResponseDTO<?> response=new MainResponseDTO<>();
+		response.setId(mainRequestDto.getId());
+		response.setVersion(mainRequestDto.getVersion());
+		
+		return response;
+	}
+	
 }

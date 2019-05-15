@@ -106,7 +106,7 @@ public final class HMACUtils {
 	 * 
 	 * @return Random Salt
 	 */
-	public static byte[] genarateSalt() {
+	public static byte[] generateSalt() {
 		SecureRandom random = new SecureRandom();
 		byte[] randomBytes = new byte[16];
 		random.nextBytes(randomBytes);
@@ -119,7 +119,7 @@ public final class HMACUtils {
 	 * @param bytes length of random salt
 	 * @return Random Salt of given length
 	 */
-	public static byte[] genarateSalt(int bytes) {
+	public static byte[] generateSalt(int bytes) {
 		SecureRandom random = new SecureRandom();
 		byte[] randomBytes = new byte[bytes];
 		random.nextBytes(randomBytes);

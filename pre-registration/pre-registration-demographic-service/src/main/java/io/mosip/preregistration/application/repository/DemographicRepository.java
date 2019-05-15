@@ -9,11 +9,13 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.application.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 
 /**
  * This repository interface is used to define the JPA methods for Demographic
@@ -40,6 +42,18 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	 */
 	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId,
 			@Param("statusCode") String statusCode);
+
+	/**
+	 * @param userId
+	 *            pass userId
+	 * @param statusCode
+	 *            pass statusCode
+	 * @param pageable
+	 *            pass pageable object
+	 * @return list of preregistration data for the created user
+	 */
+	public Page<DemographicEntity> findByCreatedByOrderByCreateDateTime(@Param("userId") String userId,
+			@Param("statusCode") String statusCode, Pageable pageable);
 
 	/**
 	 * @param preRegId
