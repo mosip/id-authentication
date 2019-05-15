@@ -236,7 +236,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if (uinFieldCheck == null) {
 				String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "",
 						String.class);
-				System.out.println(test);
 				Gson gsonObj = new Gson();
 				uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
 				long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
@@ -389,13 +388,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
-			System.out.println(result.toString());
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
-			System.out.println(e.getMessage());
+			
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -650,7 +649,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
 					"", "", IdResponseDTO.class);
-			System.out.println(response.toString());
+			
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -697,7 +696,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			String response;
 			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
 					jsonString, String.class,MediaType.APPLICATION_JSON);
-			System.out.println(response);
+			
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getResponse() != null) {
