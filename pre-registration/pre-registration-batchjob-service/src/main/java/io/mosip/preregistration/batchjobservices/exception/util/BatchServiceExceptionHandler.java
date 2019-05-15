@@ -5,10 +5,8 @@
 package io.mosip.preregistration.batchjobservices.exception.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +15,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.exception.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.exception.NoValidPreIdFoundException;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
@@ -36,8 +33,7 @@ import io.mosip.preregistration.core.util.GenericUtil;
 @RestControllerAdvice
 public class BatchServiceExceptionHandler {
 
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
+	
 
 	@ExceptionHandler(NoPreIdAvailableException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final NoPreIdAvailableException e) {
@@ -67,8 +63,5 @@ public class BatchServiceExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-	}
 
 }
