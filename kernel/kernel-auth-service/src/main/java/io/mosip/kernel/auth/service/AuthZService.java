@@ -3,7 +3,7 @@
  */
 package io.mosip.kernel.auth.service;
 
-import io.mosip.kernel.auth.entities.MosipUserDtoToken;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 
 /**
  * @author Ramadurai Pandian
@@ -11,6 +11,6 @@ import io.mosip.kernel.auth.entities.MosipUserDtoToken;
  */
 public interface AuthZService {
 
-	MosipUserDtoToken validateToken(String token) throws Exception;
+	MosipUserTokenDto validateToken(String token) throws Exception;
 
 }

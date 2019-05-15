@@ -60,6 +60,7 @@ public class ClientJarDecryption extends Application {
 	private static final String MOSIP_REGISTRATION_APP_KEY = "mosip.registration.app.key";
 	private static final String ENCRYPTED_KEY = "mosip.registration.key.encrypted";
 	private static final String IS_KEY_ENCRYPTED = "Y";
+	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration";
 
 	ProgressBar progressBar = new ProgressBar();
 	Stage primaryStage = new Stage();
@@ -144,7 +145,10 @@ public class ClientJarDecryption extends Application {
 		properties.load(fileInputStream);
 
 		// Encrypt the Keys
-		encryptRequiredProperties(properties, propsFilePath);
+		boolean isTPMAvailable = isTPMAvailable(properties);
+		if (isTPMAvailable) {
+			encryptRequiredProperties(properties, propsFilePath);
+		}
 		
 		try {
 		String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
@@ -205,7 +209,7 @@ public class ClientJarDecryption extends Application {
 					System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
 					byte[] decryptedRegFileBytes;
 					try {
-						byte[] decryptedKey = getValue(MOSIP_REGISTRATION_APP_KEY, properties);
+						byte[] decryptedKey = getValue(MOSIP_REGISTRATION_APP_KEY, properties, isTPMAvailable);
 						
 						decryptedRegFileBytes = aesDecrypt.decrypt(FileUtils.readFileToByteArray(encryptedClientJar),
 								decryptedKey);
@@ -252,6 +256,10 @@ public class ClientJarDecryption extends Application {
 			runtimeException.printStackTrace();
 		}
 	}
+
+	private boolean isTPMAvailable(Properties properties) {
+		return !properties.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY);
+	}
 	
 	private void activateProgressBar(final Task<?> task) {
 		progressBar.progressProperty().bind(task.progressProperty());
@@ -268,9 +276,12 @@ public class ClientJarDecryption extends Application {
 		primaryStage.setScene(scene);
 	}
 
-	private byte[] getValue(String key, Properties properties) {
-		return asymmetricDecryptionService.decryptUsingTPM(TPMInitialization.getTPMInstance(),
-				CryptoUtil.decodeBase64(properties.getProperty(key)));
+	private byte[] getValue(String key, Properties properties, boolean isTPMAvailable) {
+		byte[] value = CryptoUtil.decodeBase64(properties.getProperty(key));
+		if (isTPMAvailable) {
+			value = asymmetricDecryptionService.decryptUsingTPM(TPMInitialization.getTPMInstance(), value);
+		}
+		return value;
 	}
 
 	private void encryptRequiredProperties(Properties properties, String propertiesFilePath) throws IOException {

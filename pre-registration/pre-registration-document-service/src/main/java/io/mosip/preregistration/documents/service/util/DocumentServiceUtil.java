@@ -73,7 +73,7 @@ public class DocumentServiceUtil {
 	 * Autowired reference for {@link #VirusScanner}
 	 */
 	@Autowired
-	private VirusScanner<Boolean, String> virusScan;
+	private VirusScanner<Boolean, InputStream> virusScan;
 
 	/**
 	 * Reference for ${max.file.size} from property file

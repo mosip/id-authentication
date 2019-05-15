@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
+import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -60,8 +62,8 @@ public class AccountManagementController {
 	 * @param otpChannel
 	 *            the otp channel
 	 */
-	@PostMapping("/resetPassword")
-	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<PasswordDto> passwordDto) {
+	@PostMapping("/resetpassword")
+	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<ResetPasswordDto> passwordDto) {
 		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.resetPassword(passwordDto.getRequest()));
 		return responseWrapper;
@@ -102,5 +104,20 @@ public class AccountManagementController {
 		responseWrapper.setResponse(accountManagementService.getUserNameBasedOnMobileNumber(mobile));
 		return responseWrapper ;
 	}
+	
+	/**
+	 * Gets the user detail.
+	 *
+	 * @param mobile the mobile
+	 * @return the user detail
+	 */
+	@ResponseFilter
+	@GetMapping("/userdetail/{mobilenumber}")
+	public ResponseWrapper<UserDetailDto> getUserDetail(@PathVariable("mobilenumber") String mobile)  {
+		ResponseWrapper<UserDetailDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.getUserDetailBasedOnMobileNumber(mobile));
+		return responseWrapper ;
+	}
+
 
 }

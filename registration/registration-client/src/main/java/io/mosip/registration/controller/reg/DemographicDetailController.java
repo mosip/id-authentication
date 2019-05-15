@@ -5,8 +5,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.LinkedList;
@@ -698,6 +699,8 @@ public class DemographicDetailController extends BaseController {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
 				getRegistrationDTOFromSession().setUpdateUINChild(false);
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
+						RegistrationConstants.DISABLE);
 			}
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
@@ -996,7 +999,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
@@ -1020,7 +1024,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1039,7 +1044,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
@@ -1063,7 +1069,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1089,13 +1096,9 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false);
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				int age = 0;
-				if (newValue.matches(RegistrationConstants.NUMBER_REGEX_ZERO_TO_THREE)) {
+				if (newValue.matches(RegistrationConstants.NUMBER_OR_NOTHING_REGEX)) {
 					if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
-						if (Integer.parseInt(ageField.getText()) > maxAge) {
-							ageField.setText(oldValue);
-							generateAlert(parentFlowPane, ageField.getId(),
-									RegistrationUIConstants.AGE_WARNING + RegistrationConstants.SPACE + 1 + RegistrationConstants.SPACE + RegistrationUIConstants.TO +RegistrationConstants.SPACE + maxAge );
-						} else {
+						if (!(Integer.parseInt(ageField.getText()) > maxAge)) {
 							age = Integer.parseInt(ageField.getText());
 							LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 							dateOfBirth = Date
@@ -1202,18 +1205,10 @@ public class DemographicDetailController extends BaseController {
 
 			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage, ageField,
 					ageFieldLocalLanguage);
-			dateValidation.validateDate(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
-					fxUtils, null, ageField, ageFieldLocalLanguage);
 			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage, ageField,
 					ageFieldLocalLanguage);
-			dateValidation.validateMonth(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage,
-					validation, fxUtils, null, ageField, ageFieldLocalLanguage);
 			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage, ageField,
 					ageFieldLocalLanguage);
-			dateValidation.validateYear(parentFlowPane, ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation,
-					fxUtils, null, ageField, ageFieldLocalLanguage);
-			// fxUtils.dobListener(yyyy, ageField, ageFieldLocalLanguage,
-			// RegistrationConstants.FOUR_NUMBER_REGEX);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1411,15 +1406,15 @@ public class DemographicDetailController extends BaseController {
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			String platformLanguageCode = ApplicationContext.applicationLanguage();
 			String localLanguageCode = ApplicationContext.localLanguage();
-			registrationMetaDataDTO.setFullName(((List<ValuesDTO>) Builder.build(LinkedList.class)
-					.with(values -> values.add(Builder.build(ValuesDTO.class)
-							.with(value -> value.setLanguage(platformLanguageCode))
-							.with(value -> value.setValue(fullName.getText())).get()))
-					.with(values -> values.add(Builder.build(ValuesDTO.class)
-							.with(value -> value.setLanguage(localLanguageCode))
-							.with(value -> value.setValue(fullNameLocalLanguage.getText()))
-							.get()))
-					.get()));
+			registrationMetaDataDTO
+					.setFullName(((List<ValuesDTO>) Builder.build(LinkedList.class)
+							.with(values -> values.add(Builder.build(ValuesDTO.class)
+									.with(value -> value.setLanguage(platformLanguageCode))
+									.with(value -> value.setValue(fullName.getText())).get()))
+							.with(values -> values.add(
+									Builder.build(ValuesDTO.class).with(value -> value.setLanguage(localLanguageCode))
+											.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
+							.get()));
 			SessionContext.map().put(RegistrationConstants.IS_Child, isChild);
 			demographicInfoDTO = buildDemographicInfo();
 
@@ -1486,9 +1481,8 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity
-								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
-										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setDateOfBirth(
+								applicationAge.isDisable() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
 										: Integer.parseInt(ageField.getText())))
@@ -1755,8 +1749,10 @@ public class DemographicDetailController extends BaseController {
 			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
-			
-			populateFieldValue(fullName, fullNameLocalLanguage, registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName() : registrationDTO.getRegistrationMetaDataDTO().getFullName());
+
+			populateFieldValue(fullName, fullNameLocalLanguage,
+					registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName()
+							: registrationDTO.getRegistrationMetaDataDTO().getFullName());
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
@@ -2110,19 +2106,12 @@ public class DemographicDetailController extends BaseController {
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
-
-		if (isValid && switchedOn.get() && !applicationAge.isDisable()) {
-			SimpleDateFormat dateOfBirth = new SimpleDateFormat(RegistrationConstants.DATE_FORMAT_REG);
-			dateOfBirth.setLenient(false);
-			try {
-				dateOfBirth.parse(dd.getText() + "-" + mm.getText() + "-" + yyyy.getText());
-			} catch (ParseException exception) {
-				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-						.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
-						&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
-					isValid = true;
-				} else {
-					dobMessage.setText(RegistrationUIConstants.INVALID_DATE_OF_BIRTH);
+		if (isValid  && !applicationAge.isDisable()) {
+			if (switchedOn.get()) {
+				isValid = validateDateOfBirth(isValid);
+			} else {
+				if (Integer.parseInt(ageField.getText()) > maxAge) {
+					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
 					isValid = false;
 				}
@@ -2142,6 +2131,64 @@ public class DemographicDetailController extends BaseController {
 
 		return isValid;
 
+	}
+
+	private boolean validateDateOfBirth(boolean isValid) {
+		int age;
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+				.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
+				&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+			return true;
+		}
+		LocalDate date = null;
+		try {
+		date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+				Integer.parseInt(dd.getText()));
+		}catch(NumberFormatException exception) {
+			if(dd.getText().isEmpty()) {
+				dobMessage.setText(dd.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(mm.getText().isEmpty()) {
+				dobMessage.setText(mm.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(yyyy.getText().isEmpty()){
+				dobMessage.setText(yyyy.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}
+			dobMessage.setVisible(true);
+			return false;
+		}
+		LocalDate localDate = LocalDate.now();
+
+		if (localDate.compareTo(date) != -1) {
+
+			try {
+				age = Period.between(date, localDate).getYears();
+				if (age <= maxAge) {
+					ageField.setText(age + "");
+					ageFieldLocalLanguage.setText(age + "");
+				} else {
+					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
+					dobMessage.setVisible(true);
+					isValid = false;
+				}
+			} catch (DateTimeException exception) {
+					if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
+						dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
+					} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
+						dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
+					} else {
+						dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
+					}
+					dobMessage.setVisible(true);
+					isValid = false;
+			}
+		} else {
+			ageField.clear();
+			ageFieldLocalLanguage.clear();
+			dobMessage.setText(RegistrationUIConstants.FUTURE_DOB);
+			dobMessage.setVisible(true);
+			isValid = false;
+
+		}
+		return isValid;
 	}
 
 	/**

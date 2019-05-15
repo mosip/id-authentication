@@ -46,7 +46,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping("/gendertypes")
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {

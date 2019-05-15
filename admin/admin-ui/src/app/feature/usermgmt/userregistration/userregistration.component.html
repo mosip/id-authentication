@@ -36,6 +36,32 @@
         <input formControlName="userName" matInput placeholder="User Name" />
       </mat-form-field>
     </div>
+    <div class="row-option">
+        <mat-form-field class="select-field">
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="roles">
+              <mat-option value="MISP">MISP</mat-option>
+              <mat-option  value="CENTRAL_ADMIN">CENTRAL_ADMIN</mat-option>
+              <mat-option  value="CENTER_ADMIN">CENTER_ADMIN</mat-option>
+              <mat-option  value="ZONAL_ADMIN">ZONAL_ADMIN</mat-option>
+              <mat-option  value="REGISTRATION_SUPERVISOR">REGISTRATION_SUPERVISOR</mat-option>
+              <mat-option  value="REGISTRATION_ADMIN">REGISTRATION_ADMIN</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-radio-group aria-label="Select an option" formControlName="gender">
+              <div class="gender-radio">
+              <mat-radio-button  value=MLE>Male</mat-radio-button>
+              <mat-radio-button  value=FLE>FeMale</mat-radio-button>
+              </div>  
+            </mat-radio-group>
+          <!-- <mat-radio-group aria-label="Select an option" formControlName="gender">
+              <div class="gender-radio" *ngFor="let x of genderResponseObject">
+              <mat-radio-button  value={{x.code}} *ngIf="isValid(x.langCode)">{{x.genderName}}</mat-radio-button>
+              </div>  
+            </mat-radio-group> -->
+    </div>
+      
     <div class="button-container">
         <button mat-raised-button class="cancel-button" (click)="cancel()">
             Cancel

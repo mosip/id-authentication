@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -78,6 +79,7 @@ public class RejectionController extends BaseController implements Initializable
 	private TableView<RegistrationApprovalVO> regRejectionTable;
 	
 	private ObservableList<RegistrationApprovalVO> observableList;
+	private Map<String, Integer> packetIds = new HashMap<>();
 
 	private String controllerName;
 	
@@ -108,13 +110,16 @@ public class RejectionController extends BaseController implements Initializable
 	 * other controller page.
 	 *
 	 * @param regData
+	 * @param packetIds 
 	 * @param stage
 	 * @param mapList
 	 * @param table
+	 * @param filterField 
 	 */
-	public void initData(RegistrationApprovalVO regData, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
+	public void initData(RegistrationApprovalVO regData, Map<String, Integer> packets, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
 			TableView<RegistrationApprovalVO> table, String controller) {
 		rejRegData = regData;
+		packetIds = packets;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
 		observableList = oList;
@@ -150,16 +155,19 @@ public class RejectionController extends BaseController implements Initializable
 
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
-			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
+			int focusedIndex = regRejectionTable.getSelectionModel().getFocusedIndex();
+			
+			int rowNum=packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
-					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
-					observableList.get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
 
 			observableList.set(rowNum, approvalDTO);
 			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
-			regRejectionTable.getFocusModel().focus(rowNum);
+			regRejectionTable.getFocusModel().focus(focusedIndex);
+			regRejectionTable.getSelectionModel().select(focusedIndex);
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
 		}

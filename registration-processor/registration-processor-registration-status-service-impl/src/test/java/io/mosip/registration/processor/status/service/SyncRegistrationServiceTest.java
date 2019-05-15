@@ -154,7 +154,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto3.setIsActive(true);
 		syncRegistrationDto3.setIsDeleted(false);
 
-		syncRegistrationDto3.setSyncType(SyncTypeDto.CORRECTION.getValue());
+		syncRegistrationDto3.setSyncType(SyncTypeDto.NEW.getValue());
 		syncRegistrationDto3.setPacketHashValue("ab123");
 		syncRegistrationDto3.setSupervisorStatus("APPROVED");
 
@@ -164,7 +164,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto4.setIsActive(true);
 		syncRegistrationDto4.setIsDeleted(false);
 
-		syncRegistrationDto4.setSyncType(SyncTypeDto.LOST_UIN.getValue());
+		syncRegistrationDto4.setSyncType(SyncTypeDto.NEW.getValue());
 		syncRegistrationDto4.setPacketHashValue("ab123");
 		syncRegistrationDto4.setSupervisorStatus("APPROVED");
 
@@ -178,15 +178,6 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto5.setPacketHashValue("ab123");
 		syncRegistrationDto5.setSupervisorStatus("APPROVED");
 
-		SyncRegistrationDto syncRegistrationDto6 = new SyncRegistrationDto();
-		syncRegistrationDto6.setRegistrationId("12345678901234567890123456789");
-		syncRegistrationDto6.setLangCode("eng");
-		syncRegistrationDto6.setIsActive(true);
-		syncRegistrationDto6.setIsDeleted(false);
-
-		syncRegistrationDto6.setSyncType(SyncTypeDto.UPDATE_UIN.getValue());
-		syncRegistrationDto6.setPacketHashValue("ab123");
-		syncRegistrationDto6.setSupervisorStatus("APPROVED");
 
 		SyncRegistrationDto syncRegistrationDto7 = new SyncRegistrationDto();
 		syncRegistrationDto7.setRegistrationId(null);
@@ -194,7 +185,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto7.setIsActive(true);
 		syncRegistrationDto7.setIsDeleted(false);
 
-		syncRegistrationDto7.setSyncType(SyncTypeDto.ACTIVATE_UIN.getValue());
+		syncRegistrationDto7.setSyncType(SyncTypeDto.ACTIVATED.getValue());
 		syncRegistrationDto7.setPacketHashValue("ab123");
 		syncRegistrationDto7.setSupervisorStatus("APPROVED");
 
@@ -204,7 +195,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto8.setIsActive(true);
 		syncRegistrationDto8.setIsDeleted(false);
 
-		syncRegistrationDto8.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto8.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto8.setPacketHashValue("ab123");
 		syncRegistrationDto8.setSupervisorStatus("APPROVED");
 
@@ -214,7 +205,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto9.setIsActive(true);
 		syncRegistrationDto9.setIsDeleted(false);
 
-		syncRegistrationDto9.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto9.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto9.setPacketHashValue("ab123");
 		syncRegistrationDto9.setSupervisorStatus("APPROVED");
 
@@ -224,7 +215,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto10.setIsActive(true);
 		syncRegistrationDto10.setIsDeleted(false);
 
-		syncRegistrationDto10.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto10.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto10.setPacketHashValue("ab123");
 		syncRegistrationDto10.setSupervisorStatus("APPROVED");
 
@@ -234,7 +225,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto11.setIsActive(true);
 		syncRegistrationDto11.setIsDeleted(false);
 
-		syncRegistrationDto11.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto11.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto11.setPacketHashValue("ab123");
 		syncRegistrationDto11.setSupervisorStatus("APPROVED");
 
@@ -244,7 +235,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto12.setIsActive(true);
 		syncRegistrationDto12.setIsDeleted(false);
 
-		syncRegistrationDto12.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto12.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto12.setPacketHashValue("ab123");
 		syncRegistrationDto12.setSupervisorStatus("APPROVED");
 
@@ -254,7 +245,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto13.setIsActive(true);
 		syncRegistrationDto13.setIsDeleted(false);
 
-		syncRegistrationDto13.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto13.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto13.setPacketHashValue("ab123");
 		syncRegistrationDto13.setSupervisorStatus("test");
 
@@ -264,7 +255,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto14.setIsActive(true);
 		syncRegistrationDto14.setIsDeleted(false);
 
-		syncRegistrationDto14.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto14.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 
 		SyncRegistrationDto syncRegistrationDto15 = new SyncRegistrationDto();
 		syncRegistrationDto15.setRegistrationId("27847657360002520181208183124");
@@ -272,7 +263,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto15.setIsActive(true);
 		syncRegistrationDto15.setIsDeleted(false);
 
-		syncRegistrationDto15.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		syncRegistrationDto15.setSyncType(SyncTypeDto.DEACTIVATED.getValue());
 		syncRegistrationDto15.setSupervisorStatus("test");
 
 		entities.add(syncRegistrationDto);
@@ -281,7 +272,7 @@ public class SyncRegistrationServiceTest {
 		entities.add(syncRegistrationDto3);
 		entities.add(syncRegistrationDto4);
 		entities.add(syncRegistrationDto5);
-		entities.add(syncRegistrationDto6);
+		
 		entities.add(syncRegistrationDto7);
 		entities.add(syncRegistrationDto8);
 		entities.add(syncRegistrationDto9);

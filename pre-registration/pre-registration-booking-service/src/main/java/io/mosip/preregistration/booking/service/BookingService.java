@@ -168,9 +168,11 @@ public class BookingService {
 			List<RegistrationCenterDto> regCenter = serviceUtil.callRegCenterDateRestService();
 			for (RegistrationCenterDto regDto : regCenter) {
 				List<String> holidaylist = serviceUtil.callGetHolidayListRestService(regDto);
-				for (LocalDate sDate = LocalDate.now(); ((sDate.isBefore(endDate) || sDate.isEqual(endDate))
-						&& !insertedDate.contains(sDate)); sDate = sDate.plusDays(1)) {
-					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate) || sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
+					if(!insertedDate.contains(sDate)) {
+						serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+					}
+					
 				}
 
 			}
