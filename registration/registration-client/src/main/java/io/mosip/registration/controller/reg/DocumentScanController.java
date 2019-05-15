@@ -31,6 +31,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -146,7 +147,10 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
-
+	
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
+	
 	@Autowired
 	private MasterSyncService masterSyncService;
 
@@ -977,6 +981,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		fingerPrintCaptureController.clearImage();
 		irisCaptureController.clearIrisBasedOnExceptions();
+		guardianBiometricsController.manageBiometricsListBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);

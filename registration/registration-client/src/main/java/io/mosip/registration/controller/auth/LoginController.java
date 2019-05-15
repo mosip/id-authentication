@@ -1199,8 +1199,8 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						List<String> val = new LinkedList<>();
-						publicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
+						ResponseDTO publicKeySyncResponse = publicKeySyncImpl
+								.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
@@ -1219,7 +1219,8 @@ public class LoginController extends BaseController implements Initializable {
 						if (((masterResponseDTO.getErrorResponseDTOs() != null
 								|| userResponseDTO.getErrorResponseDTOs() != null
 								|| userSaltResponse.getErrorResponseDTOs() != null)
-								|| responseDTO.getErrorResponseDTOs() != null)) {
+								|| responseDTO.getErrorResponseDTOs() != null
+								|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
 							val.add(RegistrationConstants.FAILURE);
 						} else {
 							val.add(RegistrationConstants.SUCCESS);
