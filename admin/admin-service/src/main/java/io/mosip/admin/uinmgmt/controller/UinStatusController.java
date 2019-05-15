@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/uinmgmt")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @Api(value = "Operation related to Uin Active/Deactive", tags = { "UIN_Status" })
 public class UinStatusController {
 
