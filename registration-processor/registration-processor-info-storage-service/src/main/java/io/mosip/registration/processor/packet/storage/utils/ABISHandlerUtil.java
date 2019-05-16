@@ -134,6 +134,7 @@ public class ABISHandlerUtil {
 	@SuppressWarnings("unchecked")
 	private Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("rid");
 		pathSegments.add(machedRegId);
 		Number uin = null;
 
