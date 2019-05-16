@@ -113,7 +113,7 @@ public class ABISHandlerUtil {
 
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
 				Number packetUin = utilities.getUIn(registrationId);
-				if (matchedUin != null && packetUin != matchedUin) {
+				if (matchedUin != null && !packetUin.equals(matchedUin)) {
 					filteredRegMap.put(matchedUin.toString(), machedRegId);
 				}
 			}
@@ -134,6 +134,7 @@ public class ABISHandlerUtil {
 	@SuppressWarnings("unchecked")
 	private Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("rid");
 		pathSegments.add(machedRegId);
 		Number uin = null;
 
