@@ -37,6 +37,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -131,7 +132,7 @@ public class OTPManager {
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
 			List<String> otpChannel = new ArrayList<>();
 			for (String channel : otpRequestDTO.getOtpChannel()) {
-				otpChannel.add(channel.toLowerCase());
+				NotificationType.getNotificationTypeForChannel(channel).ifPresent(type -> otpChannel.add(type.getApiChannel().toLowerCase()));
 			}
 			otpGeneratorRequestDto.setOtpChannel(otpChannel);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,

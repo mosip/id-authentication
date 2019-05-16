@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -368,6 +370,15 @@ public class IdInfoHelperTest {
 	@Test
 	public void TestisMatchtypeEnabled() {
 		idInfoHelper.isMatchtypeEnabled(DemoMatchType.GENDER);
+	}
+
+	@Test
+	public void TestconcatValues() {
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) environment));
+		mockenv.setProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES, "");
+		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
+		idInfoHelper.getAllowedLang();
 	}
 
 	private List<IdentityInfoDTO> getValueList() {
