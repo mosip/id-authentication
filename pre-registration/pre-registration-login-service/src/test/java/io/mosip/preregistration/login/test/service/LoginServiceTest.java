@@ -195,6 +195,7 @@ public class LoginServiceTest {
 		authNResposne.setMessage("Success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(authCommonUtil.getUserDetailsFromToken(Mockito.any())).thenReturn("userid");
 		Mockito.when(responseWrapped.getResponse()).thenReturn(authNResposne);
 		//Mockito.when(authCommonUtil.responseToString(Mockito.any())).thenReturn(authNResposne.toString());
 		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);

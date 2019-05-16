@@ -36,22 +36,22 @@ public class ValidationUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	public void setDateTime(String value) {
-		this.utcDateTimePattern = value;
+		ValidationUtil.utcDateTimePattern = value;
 	}
 
 	@Value("${mosip.kernel.prid.length}")
 	public void setLength(String value) {
-		this.preIdLength = value;
+		ValidationUtil.preIdLength = value;
 	}
 
 	@Value("${mosip.id.validation.identity.email}")
 	public void setEmailRegex(String value) {
-		this.emailRegex = value;
+		ValidationUtil.emailRegex = value;
 	}
 
 	@Value("${mosip.id.validation.identity.phone}")
 	public void setPhoneRegex(String value) {
-		this.phoneRegex = value;
+		ValidationUtil.phoneRegex = value;
 	}
 
 	public static boolean emailValidator(String email) {

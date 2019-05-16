@@ -505,7 +505,7 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		responseDto.setId(idUrlFetch);
 		responseDto.setVersion(versionUrl);
-		RegistrationBookingEntity entity = new RegistrationBookingEntity();
+		RegistrationBookingEntity entity = null;
 		try {
 			/* Checking Status From Demographic */
 			serviceUtil.callGetStatusRestService(preRegID);
