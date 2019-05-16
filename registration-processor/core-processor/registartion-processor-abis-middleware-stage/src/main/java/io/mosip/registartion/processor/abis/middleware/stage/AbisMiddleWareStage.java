@@ -110,8 +110,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private List<AbisRequestDto> abisIdentifyRequestList;
 	private String registrationId;
 	private static final String REQUESTID = "requestId";
+	private MessageDTO messageDto;
+	private static final String DEMOGRAPHIC_VERIFICATION = "DEMOGRAPHIC_VERIFICATION";
+	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
 
-	public void deployVerticle() {
+	public void deployVerticle()  {
 		try {
 			MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
@@ -142,21 +145,24 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			}
 
 		} catch (Exception e) {
+			System.out.println(e + "*****8");
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
-			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
-					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
+//			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
+//					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 		}
 	}
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+
 		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		registrationId = object.getRid();
+
 		String exceptionMesaage = "";
 		try {
 			internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
@@ -206,7 +212,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
 			description = "Abis insertRequests sucessfully sent to Queue";
-
+			messageDto = object;
 		} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
@@ -224,8 +230,15 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		} finally {
-			if (!isTransactionSuccessful)
+			if (!isTransactionSuccessful) {
+				String transactionTypeCode = "";
+				if (transactionTypeCode.equalsIgnoreCase(DEMOGRAPHIC_VERIFICATION)) {
+					internalRegDto.setRegistrationStageName("DemoDedupeStage");
+				} else if (transactionTypeCode.equalsIgnoreCase(BIOGRAPHIC_VERIFICATION)) {
+					internalRegDto.setRegistrationStageName("BioDedupeStage");
+				}
 				registrationStatusService.updateRegistrationStatus(internalRegDto);
+			}
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
@@ -281,10 +294,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 				String batchId = packetInfoManager.getBatchIdByRequestId(abisIdentifyResponseDto.getRequestId());
 				if (checkAllIdentifyRequestsProcessed(batchId)) {
-					MessageDTO dto = new MessageDTO();
-					dto.setIsValid(true);
-					dto.setInternalError(false);
-					this.send(eventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT, dto);
+					// MessageDTO dto = new MessageDTO();
+					// dto.setIsValid(true);
+					// dto.setInternalError(false);
+					// dto.setRid(registrationId);
+					// dto.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+					this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
 				}
 
 			}
