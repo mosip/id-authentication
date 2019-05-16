@@ -2,9 +2,8 @@ package io.mosip.authentication.common.service.builder;
 
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import org.springframework.core.env.PropertyResolver;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -21,8 +20,14 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
-@Component
 public class AuthTransactionBuilder {
+	
+	private AuthTransactionBuilder() {
+	}
+	
+	public static AuthTransactionBuilder newInstance() {
+		return new AuthTransactionBuilder();
+	}
 	
 	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
@@ -33,26 +38,42 @@ public class AuthTransactionBuilder {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(AuditHelper.class);
 	
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
+	private AuthRequestDTO authRequestDTO;
 
-	@Autowired
-	private Environment env;
+	private String uin;
+
+	private RequestType requestType;
+
+	private String staticTokenId;
+
+	private boolean isStatus;
 	
-	/**
-	 * sets AuthTxn entity values
-	 * 
-	 * @param authRequestDTO
-	 * @param uin
-	 * @param status
-	 * @param comment
-	 * @param requestType
-	 * @param idInfoFetcher 
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	public AutnTxn buildAuthTransaction(AuthRequestDTO authRequestDTO, String uin, RequestType requestType,
-			String staticTokenId, boolean isStatus) throws IdAuthenticationBusinessException {
+	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
+		this.authRequestDTO = authRequestDTO;
+		return this;
+	}
+
+	public AuthTransactionBuilder withUin(String uin) {
+		this.uin = uin;
+		return this;
+	}
+
+	public AuthTransactionBuilder withRequestType(RequestType requestType) {
+		this.requestType = requestType;
+		return this;
+	}
+
+	public AuthTransactionBuilder withStaticToken(String staticTokenId) {
+		this.staticTokenId = staticTokenId;
+		return this;
+	}
+
+	public AuthTransactionBuilder withStatus(boolean isStatus) {
+		this.isStatus = isStatus;
+		return this;
+	}
+	
+	public AutnTxn build(IdInfoFetcher idInfoFetcher, Environment env) throws IdAuthenticationBusinessException {
 		try {
 			String status = isStatus ? SUCCESS_STATUS : FAILED;
 			String comment = isStatus ? requestType.getMessage() + " Success" : requestType.getMessage() + " Failed";
@@ -63,7 +84,7 @@ public class AuthTransactionBuilder {
 			AutnTxn autnTxn = new AutnTxn();
 			autnTxn.setRefId(idvId);
 			autnTxn.setRefIdType(idvIdType);
-			String id = createId(uin);
+			String id = createId(uin, env);
 			autnTxn.setId(id); // FIXME
 			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 			autnTxn.setStaticTknId(staticTokenId);
@@ -90,9 +111,10 @@ public class AuthTransactionBuilder {
 	 * Creates UUID
 	 * 
 	 * @param uin
+	 * @param env 
 	 * @return
 	 */
-	private String createId(String uin) {
+	private String createId(String uin, PropertyResolver env) {
 		String currentDate = DateUtils.formatDate(new Date(),
 				env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
 		String uinAndDate = uin + "-" + currentDate;
