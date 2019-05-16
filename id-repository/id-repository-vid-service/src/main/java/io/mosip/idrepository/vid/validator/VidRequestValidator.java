@@ -163,7 +163,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * @param vid
 	 * @throws IdRepoAppException
 	 */
-	public void validateVid(String vid) {
+	public void validateVid(String vid) throws IdRepoAppException{
 		vidValidator.validateId(vid);
 	}
 

@@ -195,11 +195,11 @@ public class IdRepoController {
 			validator.validateRid(rid);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByRid(rid, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(rid, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
+			mosipLogger.error(IdRepoLogger.getRid(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(rid, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
+			mosipLogger.error(IdRepoLogger.getRid(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}

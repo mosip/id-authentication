@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.spi.VidService;
+import io.mosip.idrepository.vid.dto.RequestDTO;
 import io.mosip.idrepository.vid.dto.VidRequestDTO;
 import io.mosip.idrepository.vid.dto.VidResponseDTO;
 import io.mosip.idrepository.vid.validator.VidRequestValidator;
@@ -72,7 +73,7 @@ public class VidControllerTest {
 	}
 
 	@Test
-	public void testVidControler_Valid() throws IdRepoAppException {
+	public void testVidControlerRetrieveVidByVid_Valid() throws IdRepoAppException {
 		VidResponseDTO value = new VidResponseDTO();
 		Mockito.when(vidService.retrieveUinByVid(Mockito.anyString())).thenReturn(value);
 		when(validator.validateId(Mockito.anyString())).thenReturn(true);
@@ -82,21 +83,22 @@ public class VidControllerTest {
 	}
 
 	@Test
-	public void testVidController_InvalidIDException() throws Throwable {
+	public void testVidControllerRetrieveVidByVid_InvalidIDException() throws Throwable {
 		try {
-			VidResponseDTO value = new VidResponseDTO();
 			when(validator.validateId(Mockito.anyString()))
 					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
-			Mockito.when(vidService.retrieveUinByVid(Mockito.anyString())).thenReturn(value);
+			Mockito.when(vidService.retrieveUinByVid(Mockito.anyString()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
 			controller.retrieveUinByVid("12345");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-001 --> Invalid Input Parameter - vid", e.getMessage());
+			assertEquals("IDR-IDC-002 --> Invalid Input Parameter - vid", e.getMessage());
 		}
 	}
 
 	@Test
-	public void testVidController_IdRepoAppException() throws Throwable {
+	public void testVidControllerRetrieveVidByVid_IdRepoAppException() throws Throwable {
 		try {
 			when(validator.validateId(Mockito.anyString())).thenReturn(true);
 			Mockito.when(vidService.retrieveUinByVid(Mockito.anyString()))
@@ -112,6 +114,11 @@ public class VidControllerTest {
 	public void testUpdateVidStatus_valid() throws IdRepoAppException {
 		when(validator.validateId(Mockito.anyString())).thenReturn(true);
 		VidRequestDTO req = new VidRequestDTO();
+		req.setId("mosip.vid.update");
+		RequestDTO request = new RequestDTO();
+		request.setVidStatus("ACTIVE");
+		req.setVersion("v1");
+		req.setRequest(request);
 		VidResponseDTO value = new VidResponseDTO();
 		Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
@@ -122,15 +129,16 @@ public class VidControllerTest {
 	public void testUpdateVid_InvalidVidException() {
 		try {
 			VidRequestDTO req = new VidRequestDTO();
-			VidResponseDTO value = new VidResponseDTO();
 			when(validator.validateId(Mockito.anyString()))
 					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
-			Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
+			Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any()))
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
 			controller.updateVidStatus("123456", req, errors);
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-001 --> Invalid Input Parameter - vid", e.getMessage());
+			assertEquals("IDR-IDC-002 --> Invalid Input Parameter - vid", e.getMessage());
 		}
 	}
 
@@ -159,6 +167,37 @@ public class VidControllerTest {
 			controller.updateVidStatus("123456", req, errors);
 		} catch (IdRepoAppException e) {
 			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getCause().getMessage());
+		}
+	}
+
+	@Test
+	public void testCreateVid_Valid() throws IdRepoAppException {
+		VidRequestDTO req = new VidRequestDTO();
+		RequestDTO request = new RequestDTO();
+		request.setUin("1234567");
+		req.setRequest(request);
+		VidResponseDTO value = new VidResponseDTO();
+		Mockito.when(vidService.createVid(Mockito.any())).thenReturn(value);
+		when(validator.validateId(Mockito.anyString())).thenReturn(true);
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
+		ResponseEntity<VidResponseDTO> responseEntity = controller.createVid(req, errors);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
+
+	@Test
+	public void testCreateVid_InValid() throws Throwable {
+		try {
+			VidRequestDTO req = new VidRequestDTO();
+			RequestDTO request = new RequestDTO();
+			request.setUin("1234567");
+			req.setRequest(request);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
+			Mockito.when(vidService.createVid(Mockito.any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(),
+					String.format(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), "create")));
+			when(validator.validateId(Mockito.anyString())).thenReturn(true);
+			controller.createVid(req, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals("IDR-VID-003 --> Failed to create VID", e.getCause().getMessage());
 		}
 	}
 }
