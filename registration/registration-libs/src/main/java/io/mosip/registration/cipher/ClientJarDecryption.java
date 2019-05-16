@@ -184,7 +184,7 @@ public class ClientJarDecryption extends Application {
 					try {
 						return checkForJars(true);
 					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-							| SAXException e) {
+							| SAXException | IOException e) {
 						return false;
 					}
 
@@ -257,6 +257,7 @@ public class ClientJarDecryption extends Application {
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");
+						primaryStage.close();
 					}
 				}
 			});
