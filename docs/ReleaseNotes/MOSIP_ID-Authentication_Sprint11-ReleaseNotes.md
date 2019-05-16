@@ -34,10 +34,10 @@ MOS-21327|Integration|Integrate with VID Service.
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-ID Repository|ID Repository Identity Service|0.11.1|GET API
+ID Repository|ID Repository Identity Service|0.11.1|Get Identity for UIN, Get Identity for RID, Get UIN for VID
 Kernel|Kernel-Audit Service|0.11.1| 
 Kernel|Kernel OTP Validator Service|0.11.1|
-Kernel|Kernel Auth-Send OTP Service|0.11.1|
+Kernel|Kernel AuthManager Service|0.11.1|Send OTP, Get RID for UserID, Authenticate with ClientId-SecretKey, Validate Token
 Kernel|Mail Notification Service|0.11.1|
 Kernel|SMS Notification Service|0.11.1|
 Kernel|Master Data Service|0.11.1|Titles, Gender, Templates
