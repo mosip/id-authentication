@@ -7,7 +7,7 @@ export const menuItems = [
 ];
 export const base_url = 'dev.mosip.io';
 export const code_url_mapping = {
-  centers: 'https://qa.mosip.io/v1/masterdata/registrationcenters'
+  centers: `https://${base_url}/v1/masterdata/registrationcenters`
 };
 
 export const loginURL = {
