@@ -51,12 +51,12 @@ public abstract class BaseIdRepoValidator {
 	 */
 	public void validateReqTime(LocalDateTime reqTime, Errors errors) {
 		if (Objects.isNull(reqTime)) {
-			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
+			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		} else {
 			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), String
-						.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
+				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+						.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			}
 		}
 	}
@@ -69,12 +69,12 @@ public abstract class BaseIdRepoValidator {
 	 */
 	public void validateVersion(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), VER));
+			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
 		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
 				.matches())) {
-			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), VER));
+			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 		}
 	}
 

@@ -107,13 +107,13 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	private void validateVidType(String vidType, Errors errors) {
 		if (Objects.isNull(vidType)) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType", "vidType is null");
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), VID_TYPE));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType",
 					"vidType is invalid - " + vidType);
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), VID_TYPE));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		}
 	}
 
@@ -123,8 +123,8 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateUin",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), UIN));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
 		}
 	}
 
@@ -135,8 +135,8 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 */
 	private void validateRequest(RequestDTO request, Errors errors) {
 		if (Objects.isNull(request)) {
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 		}
 	}
 
@@ -148,11 +148,11 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 */
 	private void validateStatus(String vidStatus, Errors errors) {
 		if (Objects.isNull(vidStatus)) {
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), STATUS_FIELD));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		} else if (!allowedStatus.contains(vidStatus)) {
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), STATUS_FIELD));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
 
 	}

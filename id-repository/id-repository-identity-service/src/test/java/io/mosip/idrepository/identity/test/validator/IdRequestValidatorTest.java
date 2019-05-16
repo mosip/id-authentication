@@ -45,6 +45,10 @@ import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
@@ -53,11 +57,9 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
 /**
  * @author Manoj SP
@@ -97,7 +99,7 @@ public class IdRequestValidatorTest {
 	private UinValidatorImpl uinValidator;
 
 	@Mock
-	private JsonValidatorImpl jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	@Mock
 	private RidValidatorImpl ridValidator;
@@ -143,8 +145,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestJsonAttributes() throws JsonParseException, JsonMappingException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport(true, null));
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		Object request = mapper.readValue(
 				"{\"identity\":{\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -202,8 +204,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestInvalidSchema() throws JsonParseException, JsonMappingException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any()))
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any()))
 				.thenThrow(new NullJsonSchemaException("errorCode", "errorMessage"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
@@ -212,8 +214,8 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorMessage(), "request"),
+			assertEquals(IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorMessage(), "request"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
@@ -221,8 +223,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestWithDocuments() throws JsonParseException, JsonMappingException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any())).thenReturn(null);
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(null);
 		Object request = mapper.readValue(
 				"{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":795429385028},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
@@ -239,8 +241,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestWithDocumentsEmptyDocValue() throws JsonParseException, JsonMappingException,
-			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any())).thenReturn(null);
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(null);
 		Object request = mapper.readValue(
 				"{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":795429385028},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"\"}]}"
 						.getBytes(),
@@ -258,8 +260,8 @@ public class IdRequestValidatorTest {
 	@Test
 	public void testValidateRequestWithDocumentsInvalidIdentityJsonValidator()
 			throws JsonParseException, JsonMappingException, IOException, JsonValidationProcessingException,
-			JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any())).thenReturn(null);
+			JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(null);
 		Object request = mapper.readValue(
 				"{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
@@ -320,8 +322,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestConfigServerConnectionException() throws JsonParseException, JsonMappingException,
-			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any()))
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any()))
 				.thenThrow(new ConfigServerConnectionException("errorCode", "errorMessage"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
@@ -330,8 +332,8 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorCode(), error.getCode());
-			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorMessage(),
+			assertEquals(IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorCode(), error.getCode());
+			assertEquals(IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorMessage(),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
@@ -339,8 +341,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestUnidentifiedJsonException() throws JsonParseException, JsonMappingException,
-			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any()))
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any()))
 				.thenThrow(new UnidentifiedJsonException("errorCode", "errorMessage"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
@@ -358,8 +360,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateRequestWithoutIdentity() throws JsonParseException, JsonMappingException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		when(jsonValidator.validateJson(Mockito.any()))
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		when(jsonValidator.validateIdObject(Mockito.any()))
 				.thenThrow(new NullJsonSchemaException("errorCode", "errorMessage"));
 		Object request = mapper.readValue(
 				"{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}".getBytes(),
@@ -376,9 +378,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateCreate() throws JsonParseException, JsonMappingException, JsonProcessingException,
-			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		ValidationReport value = new ValidationReport(true, null);
-		Mockito.when(jsonValidator.validateJson(Mockito.any())).thenReturn(value);
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		Mockito.when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		Mockito.when(ridValidator.validateId(Mockito.any())).thenReturn(true);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();
@@ -401,9 +402,8 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateUpdate() throws JsonParseException, JsonMappingException, JsonProcessingException,
-			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		ValidationReport value = new ValidationReport(true, null);
-		Mockito.when(jsonValidator.validateJson(Mockito.any())).thenReturn(value);
+			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		Mockito.when(jsonValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		Mockito.when(ridValidator.validateId(Mockito.any())).thenReturn(true);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		IdRequestDTO request = new IdRequestDTO();

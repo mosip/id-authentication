@@ -99,8 +99,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateReqTime", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
 			assertEquals("requesttime", ((FieldError) error).getField());
 		});
@@ -112,8 +112,8 @@ public class VidRequestValidatorTest {
 				DateUtils.parseToLocalDateTime("9999-12-31T15:28:28.610Z"), errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
 			assertEquals("requesttime", ((FieldError) error).getField());
 		});
@@ -124,8 +124,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateVersion", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "version"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "version"),
 					error.getDefaultMessage());
 			assertEquals("version", ((FieldError) error).getField());
 		});
@@ -136,8 +136,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateVersion", "1234.a", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "version"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "version"),
 					error.getDefaultMessage());
 			assertEquals("version", ((FieldError) error).getField());
 		});
@@ -147,8 +147,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateStatus", "ACTIVAT", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vidStatus"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vidStatus"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
@@ -159,8 +159,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateStatus", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "vidStatus"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "vidStatus"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
@@ -190,8 +190,8 @@ public class VidRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req,errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "request"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "request"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});

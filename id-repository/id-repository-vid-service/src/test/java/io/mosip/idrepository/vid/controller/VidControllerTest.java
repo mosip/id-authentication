@@ -86,8 +86,8 @@ public class VidControllerTest {
 		try {
 			VidResponseDTO value = new VidResponseDTO();
 			when(validator.validateId(Mockito.anyString()))
-					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vid")));
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
 			Mockito.when(vidService.retrieveUinByVid(Mockito.anyString())).thenReturn(value);
 			controller.retrieveUinByVid("12345");
 		} catch (IdRepoAppException e) {
@@ -100,8 +100,8 @@ public class VidControllerTest {
 		try {
 			when(validator.validateId(Mockito.anyString())).thenReturn(true);
 			Mockito.when(vidService.retrieveUinByVid(Mockito.anyString()))
-					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
-							IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage()));
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+							IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage()));
 			controller.retrieveUinByVid("12345");
 		} catch (IdRepoAppException e) {
 			assertEquals("IDR-VID-006 --> No Record(s) found", e.getCause().getMessage());
@@ -124,8 +124,8 @@ public class VidControllerTest {
 			VidRequestDTO req = new VidRequestDTO();
 			VidResponseDTO value = new VidResponseDTO();
 			when(validator.validateId(Mockito.anyString()))
-					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vid")));
+					.thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid")));
 			Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
 			controller.updateVidStatus("123456", req, errors);
@@ -141,8 +141,8 @@ public class VidControllerTest {
 		when(validator.validateId(Mockito.anyString())).thenReturn(true);
 		Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
-		errors.reject(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(),
-				String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), REQUEST_TIME));
+		errors.reject(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		controller.updateVidStatus("123456", req, errors);
 
 	}
@@ -153,8 +153,8 @@ public class VidControllerTest {
 			VidRequestDTO req = new VidRequestDTO();
 			when(validator.validateId(Mockito.anyString())).thenReturn(true);
 			Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any()))
-					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorCode(),
-							IdRepoErrorConstants.NO_RECORD_FOUND_VID.getErrorMessage()));
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
+							IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage()));
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
 			controller.updateVidStatus("123456", req, errors);
 		} catch (IdRepoAppException e) {

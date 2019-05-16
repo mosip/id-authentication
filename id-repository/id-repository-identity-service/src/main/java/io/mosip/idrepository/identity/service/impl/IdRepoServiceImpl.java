@@ -450,7 +450,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return uinRepo.save(uinObject);
 		} catch (JSONException | InvalidJsonException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.ID_OBJECT_PROCESSING_FAILED, e);
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY, "\n" + e.getErrorText());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -770,7 +770,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return mapper.readValue(identity, clazz);
 		} catch (IOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "convertToObject", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.ID_OBJECT_PROCESSING_FAILED, e);
 		}
 	}
 
@@ -786,7 +786,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			return mapper.writeValueAsBytes(identity);
 		} catch (JsonProcessingException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "convertToBytes", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.ID_OBJECT_PROCESSING_FAILED, e);
 		}
 	}
 	/*

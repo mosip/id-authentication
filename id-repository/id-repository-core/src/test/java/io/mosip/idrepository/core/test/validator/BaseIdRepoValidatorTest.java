@@ -68,8 +68,8 @@ public class BaseIdRepoValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateReqTime", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
 			assertEquals("requesttime", ((FieldError) error).getField());
 		});
@@ -81,8 +81,8 @@ public class BaseIdRepoValidatorTest {
 				DateUtils.parseToLocalDateTime("9999-12-31T15:28:28.610Z"), errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "requesttime"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
 					error.getDefaultMessage());
 			assertEquals("requesttime", ((FieldError) error).getField());
 		});
@@ -93,8 +93,8 @@ public class BaseIdRepoValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateVersion", null, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "version"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "version"),
 					error.getDefaultMessage());
 			assertEquals("version", ((FieldError) error).getField());
 		});
@@ -105,8 +105,8 @@ public class BaseIdRepoValidatorTest {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateVersion", "1234.a", errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "version"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "version"),
 					error.getDefaultMessage());
 			assertEquals("version", ((FieldError) error).getField());
 		});

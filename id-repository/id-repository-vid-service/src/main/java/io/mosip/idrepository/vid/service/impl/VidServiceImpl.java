@@ -134,7 +134,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "createVid",
 						"throwing vid creation failed");
-				throw new IdRepoAppException(IdRepoErrorConstants.VID_CREATION_FAILED);
+				throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
 			}
 		} catch (VidException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "createVid", e.getErrorText());
@@ -169,7 +169,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 					&& errorList.get(0).getErrorCode().equals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode())) {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkUinStatus",
 						"throwing no record found");
-				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID);
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkUinStatus",
 						"throwing UIN_RETRIEVAL_FAILED");
@@ -178,7 +178,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkUinStatus",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					e.getErrorText());
 		}
 	}
@@ -202,7 +202,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		} else {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "retrieveUinByVid",
 					"throwing NO_RECORD_FOUND_VID");
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID);
+			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 		String vidStatus = request.getRequest().getVidStatus();
 		if (Objects.isNull(vidObject)) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "updateVid", "throwing NO_RECORD_FOUND_VID");
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND_VID);
+			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
 		checkStatus(vidObject.getStatusCode());
 		checkExpiry(vidObject.getExpiryDTimes());

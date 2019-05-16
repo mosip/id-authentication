@@ -444,7 +444,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			return mapper.readValue(identity, clazz);
 		} catch (IOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "convertToObject", e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.ID_OBJECT_PROCESSING_FAILED, e);
 		}
 	}
 

@@ -6,9 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
@@ -21,9 +19,6 @@ import org.springframework.validation.Validator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
@@ -32,23 +27,22 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
-import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import net.minidev.json.JSONArray;
 
 /**
  * The Class IdRequestValidator.
@@ -100,9 +94,6 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "status";
 
-	/** The validation. */
-	private Map<String, String> validation;
-
 	/** The status. */
 	@Resource
 	private List<String> uinStatus;
@@ -113,7 +104,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 
 	/** The json validator. */
 	@Autowired
-	private JsonValidator jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	/** The mapper. */
 	@Autowired
@@ -126,15 +117,6 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 	/** The uin validator. */
 	@Autowired
 	private UinValidator<String> uinValidator;
-
-	/**
-	 * Sets the validation.
-	 *
-	 * @param validation the validation to set
-	 */
-	public void setValidation(Map<String, String> validation) {
-		this.validation = validation;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -249,16 +231,14 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 							.filter(key -> !key.contentEquals(IdRepoConstants.ROOT_PATH.getValue()))
 							.forEach(requestMap::remove);
 					if (!errors.hasErrors()) {
-						jsonValidator.validateJson(mapper.writeValueAsString(requestMap));
-						validateJsonAttributes(mapper.writeValueAsString(request), errors);
+						jsonValidator.validateIdObject(requestMap);
 					}
 				}
 			} else if (method.equals(CREATE)) {
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			}
-		} catch (IdRepoAppException | UnidentifiedJsonException | IOException | JsonValidationProcessingException
-				| JsonIOException e) {
+		} catch (UnidentifiedJsonException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
@@ -267,16 +247,28 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 							+ (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
 									? "/" + IdRepoConstants.ROOT_PATH.getValue()
 									: StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""))));
-		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
+					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							IdRepoConstants.ROOT_PATH.getValue()));
+		} catch (IdObjectValidationProcessingException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
+					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			e.getErrorTexts().parallelStream().forEach(errorText -> errors.rejectValue(REQUEST,
+					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), errorText));
+		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | IdObjectSchemaIOException
+				| IdObjectIOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(),
-					IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorMessage());
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorCode(),
+					IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorMessage());
 		} catch (ConfigServerConnectionException | HttpRequestException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorCode(),
-					IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorMessage());
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorCode(),
+					IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorMessage());
 		}
 	}
 
@@ -326,37 +318,6 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 							IdRepoConstants.ROOT_PATH.getValue()));
 		}
-	}
-
-	/**
-	 * Validate json attributes.
-	 *
-	 * @param request the request
-	 * @param errors  the errors
-	 */
-	private void validateJsonAttributes(String request, Errors errors) {
-		validation.entrySet().parallelStream().forEach(entry -> {
-			JsonPath jsonPath = JsonPath.compile(entry.getKey());
-			Pattern pattern = Pattern.compile(entry.getValue());
-			JSONArray data = jsonPath.read(request,
-					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
-			if (Objects.nonNull(data) && !data.isEmpty()) {
-				IntStream.range(0, data.size())
-						.filter(index -> !pattern.matcher(String.valueOf(data.get(index))).matches())
-						.forEach(index -> {
-							JSONArray pathList = jsonPath.read(request,
-									Configuration.defaultConfiguration()
-									.addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST, Option.AS_PATH_LIST));
-							String path = String.valueOf(pathList.get(index)).replaceAll("[$']", "");
-							path = path.substring(1, path.length() - 1).replace("][", "/");
-							errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-									String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-											"/" + path));
-							mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-									(VALIDATE_REQUEST + entry.getValue() + " -> " + data + "  path -> " + path));
-						});
-			}
-		});
 	}
 
 	/**

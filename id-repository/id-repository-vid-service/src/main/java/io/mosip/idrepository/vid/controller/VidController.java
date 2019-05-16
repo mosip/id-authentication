@@ -106,8 +106,8 @@ public class VidController {
 			return new ResponseEntity<>(vidService.retrieveUinByVid(vid), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vid"));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid"));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
@@ -134,8 +134,8 @@ public class VidController {
 			return new ResponseEntity<>(vidService.updateVid(vid, request), HttpStatus.OK);
 		} catch (InvalidIDException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vid"));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid"));
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
