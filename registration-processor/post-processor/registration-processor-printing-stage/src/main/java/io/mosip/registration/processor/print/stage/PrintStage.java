@@ -230,8 +230,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
 			JSONObject jsonObject = utilities.retrieveUIN(regId);
-			Integer value=JsonUtil.getJSONValue(jsonObject, UIN);
-			String uin= Integer.toString(value);
+			Long value=JsonUtil.getJSONValue(jsonObject, UIN);
+			String uin= Long.toString(value);
 			
 			
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);

@@ -54,6 +54,7 @@ import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFo
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -114,6 +115,8 @@ public class MessageNotificationServiceImpl
 	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
+	
+	
 
 	/** The email id. */
 	private String emailId;
@@ -214,6 +217,11 @@ public class MessageNotificationServiceImpl
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
+		}catch(ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
+			throw new ApisResourceAccessException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name(), e);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
 				"MessageNotificationServiceImpl::sendEmailNotification()::exit");
@@ -282,20 +290,16 @@ public class MessageNotificationServiceImpl
 	 * @return the template json
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException 
+	 * @throws IdRepoAppException 
 	 */
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
-			throws IOException {
+			throws IOException, ApisResourceAccessException {
 		InputStream demographicInfoStream = null;
 		Long uin = null;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
-			InputStream idJsonStream = adapter.getFile(id,
-					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-			String getJsonStringFromBytes = IOUtils.toString(idJsonStream, ENCODING);
-			JSONObject identityJson = JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
-			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
-					utility.getGetRegProcessorDemographicIdentity());
-			Number num = JsonUtil.getJSONValue(demographicIdentity, UIN);
-			uin = num.longValue();
+			JSONObject jsonObject = utility.retrieveUIN(id);
+			uin=JsonUtil.getJSONValue(jsonObject, UIN);
 			attributes.put("RID", id);
 			attributes.put("UIN", uin);
 		} else {
@@ -305,7 +309,7 @@ public class MessageNotificationServiceImpl
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		String demographicInfo = IOUtils.toString(demographicInfoStream, ENCODING);
 
-		if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
+		if (regType.equalsIgnoreCase(RegistrationType.NEW.name()) || regType.equalsIgnoreCase(RegistrationType.UPDATE.name())) {
 			setAttributes(demographicInfo, attributes, regType);
 		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
