@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
+import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -75,7 +75,7 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 	String preReg_URI;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-
+    PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
 	// implement,IInvokedMethodListener
 	public FetchAvailabilityDataOfRegistrationCenters() {
 
@@ -177,8 +177,8 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 
 		testCaseName = object.get("testCaseName").toString();
 		//Fetch Availability data by registration center Id Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		
+		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_FetchCenterIDURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

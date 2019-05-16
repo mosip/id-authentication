@@ -66,7 +66,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 	static JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI;
+    static String preReg_URI;
 	static String dest = "";
 	static String configPaths = "";
 	static String folderPath = "preReg\\Create_PreRegistration";
@@ -127,7 +127,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		try {
 
 			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
-			System.out.println("Actual res::"+Actualresponse.asString());
+			System.out.println("Actual res::"+Actualresponse.asString()+"Prereg URI:"+preReg_URI);
 		} catch (Exception e) {
 			logger.info(e);
 		}

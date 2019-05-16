@@ -1,7 +1,7 @@
 {
-    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_EmptyValue":"",
-    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_Alphabets":"", 
-    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_AlphaNumeric":"", 
-    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_SpecialCharacters":"",
-    "FetchAvailabilityDataOfRegistrationCentersInvalidRegistrationCenterId_AlphaNumericAndSpecialCharacters":"" 
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphabets":"",
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphaNumeric":"", 
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphaNumericAndSpecialCharacters":"", 
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withEmptyValue":"",
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withSpecialCharacters":"" 
 }

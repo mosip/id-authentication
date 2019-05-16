@@ -22,12 +22,13 @@ public class SyncMasterDataUtil
 	String testSuite = "";
 	JSONObject request;
 	Response response;
-	String syncMasterData_URI;
 	PreRegistrationApplicationLibrary applnLib = new PreRegistrationApplicationLibrary();
 	Logger logger = Logger.getLogger(BaseTestCase.class);
 	PreRegistrationUtil preregUtil=new PreRegistrationUtil();
 	String syncMasterDataFilePath;
-
+	String syncMasterData_URI= preregUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
+	
+	
 	/**
 	 * Generic method for synchronize booking slots availability table with master data
 	 * 
@@ -45,15 +46,5 @@ public class SyncMasterDataUtil
 		return syncMasterDataRes;
 	}
 
-	/**
-	 * Fetching the values from property files
-	 * 
-	 */
 	
-	
-	@BeforeClass
-	public void PreRegistrationResourceIntialize() 
-	{
-		syncMasterData_URI = preregUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
-	}
 }

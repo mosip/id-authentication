@@ -129,7 +129,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		// Document Upload for created application
 
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
-
+        logger.info("Doc upload res::"+docUploadResponse.asString());
 		// Get PreId from Document upload response
 		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 

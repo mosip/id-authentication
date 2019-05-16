@@ -23,13 +23,13 @@ public class TriggerNotificationUtil {
 	String testSuite = "";
 	JSONObject request;
 	Response response;
-	String notification_URI;
-	PreRegistrationApplicationLibrary applnLib = new PreRegistrationApplicationLibrary();
 	PreRegistrationUtil preregUtil = new PreRegistrationUtil();
 	Logger logger = Logger.getLogger(BaseTestCase.class);
-	String triggerNotificationFilePath;
-	String docFilePath;
-	String langCodeKey;
+	PreRegistrationApplicationLibrary applnLib = new PreRegistrationApplicationLibrary();
+	String	notification_URI = preregUtil.fetchPreregProp().get("preReg_NotifyURI");
+	String triggerNotificationFilePath = preregUtil.fetchPreregProp().get("notificationFilePath");
+	String docFilePath = preregUtil.fetchPreregProp().get("documentFilePath");
+	String langCodeKey = preregUtil.fetchPreregProp().get("langCode.key");
 
 	/**
 	 * Generic method to Trigger Notification
@@ -68,16 +68,5 @@ public class TriggerNotificationUtil {
 		return response;
 	}
 
-	/**
-	 * Fetching the values from property files
-	 * 
-	 */
-
-	@BeforeClass
-	public void PreRegistrationResourceIntialize() {
-		notification_URI = preregUtil.fetchPreregProp().get("preReg_NotifyURI");
-		triggerNotificationFilePath = preregUtil.fetchPreregProp().get("notificationFilePath");
-		docFilePath = preregUtil.fetchPreregProp().get("documentFilePath");
-		langCodeKey = preregUtil.fetchPreregProp().get("langCode.key");
-	}
+	
 }

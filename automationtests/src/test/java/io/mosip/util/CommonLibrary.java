@@ -267,6 +267,7 @@ public class CommonLibrary extends BaseTestCase {
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		logger.info("REST-ASSURED:454545445 The response Time is: " + postResponse.asString());
 		return postResponse;
 	}
 	public Response postRequestWithParm(String url, Object body, String contentHeader, String acceptHeader,HashMap<String, String> pathValue) {
@@ -795,6 +796,7 @@ public class CommonLibrary extends BaseTestCase {
 		Map<String, String> mapProp = prop.entrySet().stream()
 				.collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
 
+		System.out.println("mapProp::"+mapProp);
 		return mapProp;
 
 	}
