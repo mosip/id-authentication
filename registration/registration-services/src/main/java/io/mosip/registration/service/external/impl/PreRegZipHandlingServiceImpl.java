@@ -25,15 +25,16 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
@@ -69,7 +70,8 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
-	private JsonValidator jsonValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -213,17 +215,18 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				jsonValidator.validateJson(jsonString.toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
+				idObjectValidator
+						.validateIdObject(getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO());
 			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
-		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException | JSONException | ClassNotFoundException jsonValidationException) {
+		} catch (JSONException | IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
+				| FileIOException | ClassNotFoundException jsonValidationException) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()

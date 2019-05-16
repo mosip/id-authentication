@@ -101,12 +101,6 @@ public class RegistrationUIConstants {
 	public static final String NO_PENDING_APPLICATIONS = bundle.getString("NO_PENDING_APPLICATIONS");
 	public static final String NO_RE_REGISTER_APPLICATIONS = bundle.getString("NO_RE_REGISTER_APPLICATIONS");
 
-	// DEVICE MAPPING
-
-	public static final String DEVICE_ONBOARD_ERROR_MSG = bundle.getString("DEVICE_ONBOARD_ERROR_MSG");
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = bundle.getString("DEVICE_MAPPING_SUCCESS_MESSAGE");
-	public static final String DEVICE_MAPPING_ERROR_MESSAGE = bundle.getString("DEVICE_MAPPING_ERROR_MESSAGE");
-
 	// AUTHENTICATION
 	public static final String AUTHENTICATION_FAILURE = bundle.getString("AUTHENTICATION_FAILURE");
 	public static final String AUTH_APPROVAL_SUCCESS_MSG = bundle.getString("AUTH_APPROVAL_SUCCESS_MSG");
