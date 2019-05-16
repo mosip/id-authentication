@@ -158,7 +158,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			logger.info("Copy Uploadede Doc:" + copyDocresponse.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
-			innerKeys.add("documentId");
+			innerKeys.add("docId");
 			
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(copyDocresponse, Expectedresponse, outerKeys, innerKeys);
