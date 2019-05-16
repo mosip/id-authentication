@@ -24,6 +24,7 @@ import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
 import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
@@ -71,6 +72,10 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Value("${mosip.admin.app-id}")
 	private String appId;
+	
+	/** The user detail url. */
+	@Value("${mosip.admin.accountmgmt.user-detail-url}")
+	private String userDetailUrl;
 
 	/** The object mapper. */
 	@Autowired
@@ -187,6 +192,18 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#getUserDetailBasedOnMobileNumber(java.lang.String)
+	 */
+	@Override
+	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile) {
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(userDetailUrl + appId+"/").append(mobile);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
+		return getUserFromResponse(response);
+
+	}
 
 	/**
 	 * Call auth manager service.
@@ -299,6 +316,34 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		syncDataRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
 		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
 
+	}
+	
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return the user detail from response
+	 */
+	private UserDetailDto getUserFromResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		UserDetailDto userDetailDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AccountServiceException(validationErrorsList);
+		}
+		ResponseWrapper<UserDetailDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<UserDetailDto>>() {
+			});
+			userDetailDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
+					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		return userDetailDto;
 	}
 
 }
