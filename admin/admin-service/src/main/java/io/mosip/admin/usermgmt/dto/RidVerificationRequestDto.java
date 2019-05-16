@@ -1,14 +1,14 @@
 package io.mosip.admin.usermgmt.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
+import io.mosip.admin.constant.AdminConstant;
 import lombok.Data;
 
 @Data
 public class RidVerificationRequestDto {
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String rid;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String userName;
 }

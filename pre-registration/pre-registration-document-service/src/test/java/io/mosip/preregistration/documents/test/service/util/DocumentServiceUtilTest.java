@@ -2,6 +2,7 @@ package io.mosip.preregistration.documents.test.service.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +36,7 @@ import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 public class DocumentServiceUtilTest {
 	
 	@MockBean
-	private VirusScanner<Boolean, String> virusScan;
+	private VirusScanner<Boolean, InputStream> virusScan;
 	
 	List<DocumentEntity> docEntity = new ArrayList<>();
 	

@@ -428,7 +428,7 @@ public class Validations extends BaseController {
 	 * @return <code>true</code>, if successful, else <code>false</code>
 	 */
 	public boolean validateSingleString(String value, String id) {
-		String[] validationProperty = validationBundle.getString(id).split(RegistrationConstants.VALIDATION_SPLITTER);
+		String[] validationProperty = getValidationProperties(id, isLostUIN);
 
 		return value.matches(validationProperty[0]);
 	}

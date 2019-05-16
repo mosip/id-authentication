@@ -140,6 +140,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
+	public static final String REG_LGN_001 = bundle.getString("REG_LGN_001");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
 	public static final String SCAN = bundle.getString("SCAN");
@@ -153,7 +154,12 @@ public class RegistrationUIConstants {
 	public static final String UIN_INVALID = bundle.getString("UIN_INVALID");
 	public static final String IS_BLOCKED_WORD = bundle.getString("IS_BLOCKED_WORD");
 	public static final String THRESHOLD = bundle.getString("THRESHOLD");
-	public static final String INVALID_DATE_OF_BIRTH = bundle.getString("INVALID_DATE_OF_BIRTH");
+	public static final String INVALID_DATE = bundle.getString("INVALID_DATE");
+	public static final String INVALID_YEAR = bundle.getString("INVALID_YEAR");
+	public static final String FUTURE_DOB = bundle.getString("FUTURE_DOB");
+	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
+	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
+
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
 
@@ -298,6 +304,7 @@ public class RegistrationUIConstants {
 	public static final String UPLOAD_COLUMN_HEADER_FILE = bundle.getString("UPLOAD_COLUMN_HEADER_FILE");
 	public static final String UPLOAD_COLUMN_HEADER_STATUS = bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS = bundle.getString("PACKET_UPLOAD_SUCCESS");
+	public static final String UPLOAD_FAILED = bundle.getString("UPLOAD_FAILED");
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");

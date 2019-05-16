@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,14 +108,16 @@ public class OTPServiceImpl implements OTPService {
 			String uin = String.valueOf(idResDTO.get("uin"));
 			String transactionId = otpRequestDto.getTransactionID();
 			Map<String, List<IdentityInfoDTO>> idInfo = idAuthService.getIdInfo(idResDTO);
-			
-			String priLang = idInfoFetcher.getLanguageCode(LanguageType.PRIMARY_LANG);
-			String secLang = idInfoFetcher.getLanguageCode(LanguageType.SECONDARY_LANG);
-			String namePri = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, priLang, idInfo);
-			String nameSec = idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, secLang, idInfo);
-
-
-			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, namePri, nameSec, priLang, secLang);
+			String priLang = getLanguagecode(LanguageType.PRIMARY_LANG);
+			String secLang = getLanguagecode(LanguageType.SECONDARY_LANG);
+			String namePri = getName(priLang, idInfo);
+			String nameSec = getName(secLang, idInfo);
+			Map<String, String> valueMap = new HashMap<>();
+			valueMap.put(IdAuthCommonConstants.PRIMARY_LANG, priLang);
+			valueMap.put(IdAuthCommonConstants.SECONDAY_LANG, secLang);
+			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
+			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
+			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, valueMap);
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
 				otpResponseDTO.setErrors(Collections.emptyList());
@@ -151,6 +154,16 @@ public class OTPServiceImpl implements OTPService {
 		
 		return otpResponseDTO;
 
+	}
+
+	private String getName(String language, Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException {
+		return idInfoHelper.getEntityInfoAsString(DemoMatchType.NAME, language, idInfo);
+
+	}
+
+	private String getLanguagecode(LanguageType languageType) {
+		return idInfoFetcher.getLanguageCode(languageType);
 	}
 
 	/**

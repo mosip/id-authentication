@@ -51,7 +51,7 @@ public class LocationController {
 	 * @param langcode language code
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -90,7 +90,7 @@ public class LocationController {
 	 * @param hierarchyName hierarchy Name
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(

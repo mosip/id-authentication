@@ -1,11 +1,13 @@
 package io.mosip.admin.usermgmt.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.mosip.admin.constant.AdminConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,22 +17,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserRegistrationRequestDto {
 
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String userName;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String firstName;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String lastName;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String contactNo;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String emailID;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@NotNull
 	private LocalDate dateOfBirth;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String gender;
-	@NotBlank
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
 	private String role;
-	@NotNull
+	@NotBlank(message = AdminConstant.INVALID_REQUEST)
+	private String appId;
+
 	private String ridValidationUrl;
 }

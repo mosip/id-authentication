@@ -11,7 +11,9 @@ import { SharedModule } from './shared/shared.module';
 import { MaterialModule } from './material.module';
 import {UsermgmtModule} from './feature/usermgmt/usermgmt.module';
 import { UserregistrationService } from './shared/services/userregistration.service';
+import { UinstatusService } from './shared/services/uinstatus.service';
 import { HttpClientModule } from '@angular/common/http';
+import { UinmgmtModule } from './feature/uinmgmt/uinmgmt.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -25,9 +27,10 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
     UsermgmtModule,
-    HttpClientModule
+    HttpClientModule,
+    UinmgmtModule
   ],
-  providers: [UserregistrationService],
+  providers: [UserregistrationService, UinstatusService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
