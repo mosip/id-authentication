@@ -14,6 +14,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -65,6 +66,8 @@ public class AuthTransactionBuilder {
 
 	/**  */
 	private boolean isStatus;
+
+	private OtpRequestDTO otpRequestDTO;
 	
 	/**
 	 * Set the AuthRequestDTO
@@ -74,6 +77,11 @@ public class AuthTransactionBuilder {
 	 */
 	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
 		this.authRequestDTO = authRequestDTO;
+		return this;
+	}
+	
+	public AuthTransactionBuilder withOtpRequest(OtpRequestDTO otpRequestDTO) {
+		this.otpRequestDTO = otpRequestDTO;
 		return this;
 	}
 
@@ -131,14 +139,30 @@ public class AuthTransactionBuilder {
 	 */
 	public AutnTxn build(IdInfoFetcher idInfoFetcher, Environment env) throws IdAuthenticationBusinessException {
 		try {
-			if (authRequestDTO != null && uin != null && staticTokenId != null && requestType != null) {
+			String idvId;
+			String reqTime;
+			String idvIdType;
+			String txnID;
+			if(authRequestDTO != null) {
+				idvId = idInfoFetcher.getUinOrVid(authRequestDTO).get();
+				reqTime = authRequestDTO.getRequestTime();
+				idvIdType = idInfoFetcher.getUinOrVidType(authRequestDTO).getType();
+				txnID = authRequestDTO.getTransactionID();
+			} else if(otpRequestDTO != null) {
+				idvId = otpRequestDTO.getIndividualId();
+				reqTime = otpRequestDTO.getRequestTime();
+				idvIdType =otpRequestDTO.getIndividualIdType();
+				txnID = otpRequestDTO.getTransactionID();
+			} else {
+				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "Missing arguments to build for AutnTxn",
+						this.toString());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
+			}
+			
+			if (uin != null && staticTokenId != null && requestType != null) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
 				String comment = isStatus ? requestType.getMessage() + " Success"
 						: requestType.getMessage() + " Failed";
-				String idvId = idInfoFetcher.getUinOrVid(authRequestDTO).get();
-				String reqTime = authRequestDTO.getRequestTime();
-				String idvIdType = idInfoFetcher.getUinOrVidType(authRequestDTO).getType();
-				String txnID = authRequestDTO.getTransactionID();
 				AutnTxn autnTxn = new AutnTxn();
 				autnTxn.setRefId(idvId);
 				autnTxn.setRefIdType(idvIdType);
@@ -160,7 +184,7 @@ public class AuthTransactionBuilder {
 				return autnTxn;
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "Missing arguments to build for AutnTxn",
-						 this.toString());
+						this.toString());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 
@@ -170,7 +194,7 @@ public class AuthTransactionBuilder {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 	}
-	
+
 	/**
 	 * Creates UUID.
 	 *
