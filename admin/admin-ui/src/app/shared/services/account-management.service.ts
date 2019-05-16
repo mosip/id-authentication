@@ -39,7 +39,7 @@ export class AccountManagementService {
    * @memberof AccountManagementService
    */
   sendOTP(sendOTPRequest: any): Observable<any> {
-    return this.httpClient.post(this.baseAuthUrl + '/sendotp', sendOTPRequest).catch(this.errorHandler);
+    return this.httpClient.post(this.baseAuthUrl + 'sendotp', sendOTPRequest).catch(this.errorHandler);
   }
 
   /**
