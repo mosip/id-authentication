@@ -33,30 +33,30 @@ Module/Files|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
 Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine.
 ZIP|Fat Jar + DB|Latest version|The ZIP contains the both fat jar and required the initial DB. 
-mosip-sw-0.11.0.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
-kernel-core|NA|NA|Basic core kernel packages.
-kernel-logger-logback|NA|NA|Use for the logging.
-kernel-dataaccess-hibernate|NA|NA|Used for the communicating to the DB.
-kernel-auditmanager-api|NA|NA|Used to audit the reocrds into the DB.
-kernel-idgenerator-prid|NA|NA|Used to generate the PRID format.
-kernel-idvalidator-prid|NA|NA|Used to validate the PRID format.
-kernel-crypto-signature|NA|NA|Used to validate the signature response from server.
-kernel-templatemanager|NA|NA|Used to generate the template manager.
-kernel-qrcodegenerator-zxing|NA|NA|Used to generate the QR code in acknowledgment page.
-kernel-pdfgenerator-itext|NA|NA|Used to scan the document in PDF format.
-kernel-crypto-jce|NA|NA|Used to encrypt the pre-redistaion data information.
-kernel-jsonvalidator|NA|NA|Used to validate the JSON.
-kernel-virusscanner-clamav|NA|NA|Used to communicate to the Antivirus Clam AV.
-kernel-applicanttype-api|NA|NA|Used to get the applicant types. 
-kernel-masterdat-api|NA|NA|Used to get the master data. 
-kernel-notification-api|NA|NA|Used to notify the user. 
+kernel-core|NA|0.11.0|Basic core kernel packages.
+kernel-logger-logback|NA|0.11.0|Use for the logging.
+kernel-dataaccess-hibernate|NA|0.11.0|Used for the communicating to the DB.
+kernel-auditmanager-api|NA|0.11.0|Used to audit the reocrds into the DB.
+kernel-idgenerator-prid|NA|0.11.0|Used to generate the PRID format.
+kernel-idvalidator-prid|NA|0.11.0|Used to validate the PRID format.
+kernel-crypto-signature|NA|0.11.0|Used to validate the signature response from server.
+kernel-templatemanager|NA|0.11.0|Used to generate the template manager.
+kernel-qrcodegenerator-zxing|0.11.0|NA|Used to generate the QR code in acknowledgment page.
+kernel-pdfgenerator-itext|NA|0.11.0|Used to scan the document in PDF format.
+kernel-crypto-jce|NA|0.11.0|Used to encrypt the pre-redistaion data information.
+kernel-jsonvalidator|NA|0.11.0|Used to validate the JSON.
+kernel-virusscanner-clamav|NA|0.11.0|Used to communicate to the Antivirus Clam AV.
+kernel-applicanttype-api|NA|0.11.0|Used to get the applicant types. 
+kernel-masterdat-api|NA|0.11.0|Used to get the master data. 
+kernel-notification-api|NA|0.11.0|Used to notify the user. 
 
 #### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
 Audit login and logout| After login and logout system is not audit anything in audit table.  MOS-23793
 langCode validation | Invalid HTTP Status code,error code,error message when user tries to send request  by passing invalid value for langCode key of Create Pre-Registration API. MOS-12023
-File Upload Bug	| Same as is coming for the first applicant also. View File index is coming as 2, only 1 file is uploaded. OR is not displaying in French. MOS-24028 , When Same as is selected in document upload user should be able to view uploaded file. MOS-23912
+File Upload Bug	| Same as is coming for the first applicant also. View File index is coming as 2, only 1 file is uploaded. OR is not displaying in French. MOS-24028 , When Same as is selected in document upload user should be able to view uploaded file, Names without POA displaying in same as, When name selected without POA automatically next name is selected. MOS-23912
+File Preview | preview of images are displayed in document upload
 Consent template	| Consent should show actual data as per configured template. MOS-23916
 emailID field validation | User is not getting any error code or error message by entering the invalid value for emailID field. MOS-18849
 Appointment Dates | User is able to book the Appointment for ld dates i.e., date less than today date. MOS-12161
