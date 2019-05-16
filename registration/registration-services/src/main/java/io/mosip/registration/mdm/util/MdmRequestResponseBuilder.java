@@ -32,7 +32,8 @@ public class MdmRequestResponseBuilder {
 	
 	private static final Logger LOGGER = AppConfig.getLogger(MdmRequestResponseBuilder.class);
 
-	
+	private static Random rnd = new Random();
+
 	private MdmRequestResponseBuilder() {
 		
 	}
@@ -75,7 +76,6 @@ public class MdmRequestResponseBuilder {
 	}
 
 	private static long generateID() { 
-	    Random rnd = new Random();
 	    char [] digits = new char[10];
 	    digits[0] = (char) (rnd.nextInt(9) + '1');
 	    for(int i=1; i<digits.length; i++) {
