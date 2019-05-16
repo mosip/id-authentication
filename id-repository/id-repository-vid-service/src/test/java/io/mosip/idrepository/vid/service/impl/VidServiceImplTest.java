@@ -23,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.TransactionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -40,6 +41,7 @@ import io.mosip.idrepository.core.dto.VidPolicy;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
 import io.mosip.idrepository.core.dto.VidResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.AuditHelper;
@@ -170,7 +172,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testCreateVidVidGenerationFailed() throws RestServiceException, IdRepoDataValidationException {
+	public void testCreateVidPolicyFailed() throws RestServiceException, IdRepoDataValidationException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
 				.thenReturn(new RestRequestDTO());
@@ -293,6 +295,119 @@ public class VidServiceImplTest {
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.UIN_RETRIEVAL_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.UIN_RETRIEVAL_FAILED.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@Test
+	public void testCreateVidGenerationFailed() throws RestServiceException, IdRepoDataValidationException {
+		when(securityManager.hash(Mockito.any())).thenReturn("123");
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
+				.thenReturn(new RestRequestDTO());
+		IdResponseDTO identityResponse = new IdResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setStatus("ACTIVATED");
+		identityResponse.setResponse(response);
+		when(restHelper.requestSync(Mockito.any())).thenReturn(identityResponse);
+		VidPolicy policy = new VidPolicy();
+		policy.setAllowedInstances(2);
+		when(vidPolicyProvider.getPolicy(Mockito.any())).thenReturn(policy);
+		Vid vid = new Vid();
+		vid.setVid("123");
+		vid.setStatusCode("");
+		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Collections.singletonList(vid));
+		when(vidRepo.save(Mockito.any())).thenReturn(vid);
+		VidRequestDTO request = new VidRequestDTO();
+		request.setUin("123");
+		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
+		try {
+			service.createVid(request);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@Test
+	public void testCreateVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
+		when(securityManager.hash(Mockito.any()))
+				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
+		try {
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin("123");
+			service.createVid(request);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	@Test
+	public void testCreateVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
+		when(securityManager.hash(Mockito.any()))
+				.thenThrow(new TransactionException("") {});
+		try {
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin("123");
+			service.createVid(request);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@Test
+	public void testRetrieveVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
+		when(vidRepo.findByVid(Mockito.any()))
+				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
+		try {
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin("123");
+			service.updateVid("123", request);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	@Test
+	public void testUpdateVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
+		when(vidRepo.findByVid(Mockito.any()))
+				.thenThrow(new TransactionException("") {});
+		try {
+			VidRequestDTO request = new VidRequestDTO();
+			request.setUin("123");
+			service.updateVid("123", request);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@Test
+	public void testUpdateVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
+		when(vidRepo.findByVid(Mockito.any()))
+				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
+		try {
+			service.retrieveUinByVid("123");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	@Test
+	public void testRetrieveVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
+		when(vidRepo.findByVid(Mockito.any()))
+				.thenThrow(new TransactionException("") {});
+		try {
+			service.retrieveUinByVid("123");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
 		}
 	}
 
