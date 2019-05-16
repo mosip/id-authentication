@@ -1,8 +1,6 @@
 package io.mosip.idrepository.identity.validator;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,21 +25,20 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.HttpRequestException;
-import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonSchemaException;
-import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -147,11 +144,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getRequest().getStatus(), errors, CREATE);
-				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				validateRequest(request.getRequest(), errors, CREATE);
-				mosipLogger.debug(IdRepoLogger.getUin(), "IdRequestValidator", "validateRequest",
-						"Time taken for execution - "
-								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis());
 			} else if (request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getRequest().getStatus(), errors, UPDATE);
 				validateRequest(request.getRequest(), errors, UPDATE);
@@ -243,10 +236,11 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
 					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-					IdRepoConstants.ROOT_PATH.getValue() + " - "
-							+ (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
-									? "/" + IdRepoConstants.ROOT_PATH.getValue()
-									: StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""))));
+					(StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
+							? IdRepoConstants.ROOT_PATH.getValue()
+							: StringUtils.strip(
+									StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""),
+									"/"))));
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
@@ -286,7 +280,14 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 				Map<String, Object> identityMap = convertToMap(requestMap.get(IdRepoConstants.ROOT_PATH.getValue()));
 				if (Objects.nonNull(requestMap.get(DOCUMENTS)) && requestMap.get(DOCUMENTS) instanceof List
 						&& !((List<Map<String, String>>) requestMap.get(DOCUMENTS)).isEmpty()) {
-					checkForDuplicates(requestMap, errors);
+					if (!((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream()
+							.allMatch(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT))
+									&& doc.containsKey(DOC_VALUE) && Objects.nonNull(doc.get(DOC_VALUE)))) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS));
+					} else {
+						checkForDuplicates(requestMap, errors);
+					}
 					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream().filter(
 							doc -> !errors.hasErrors() && doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
 							.forEach(doc -> {
@@ -297,7 +298,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 											String.format(
 													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-													"Documents - " + doc.get(DOC_CAT)));
+													doc.get(DOC_CAT)));
 								}
 								if (StringUtils.isEmpty(doc.get(DOC_VALUE))) {
 									mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
@@ -306,7 +307,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 											String.format(
 													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-													"Documents - " + doc.get(DOC_CAT)));
+													doc.get(DOC_CAT)));
 								}
 							});
 				}
