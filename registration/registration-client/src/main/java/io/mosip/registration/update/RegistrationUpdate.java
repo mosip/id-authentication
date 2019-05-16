@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -47,6 +48,15 @@ import io.mosip.registration.service.config.GlobalParamService;
  */
 @Component
 public class RegistrationUpdate {
+	
+	public RegistrationUpdate() throws IOException {
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		Properties properties = new Properties();
+		properties.load(fileInputStream);
+		serverRegClientURL = properties.getProperty("mosip.client.url");
+		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+	}
 
 	private static String SLASH = "/";
 
@@ -54,8 +64,8 @@ public class RegistrationUpdate {
 
 	// TODO move to application.properties
 	private String backUpPath = "D://mosip/AutoBackUp";
-	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
+	private static String serverRegClientURL ;
+	private String serverMosipXmlFileUrl ;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";

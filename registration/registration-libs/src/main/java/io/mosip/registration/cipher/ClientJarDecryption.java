@@ -126,12 +126,13 @@ public class ClientJarDecryption extends Application {
 			return true;
 
 		} else if (isToBeDownloaded) {
+			System.out.println("Jars Dowloading Starts");
 			registrationUpdate.getWithLatestJars();
 
 			return checkForJars(false);
 		}
 
-		return false;
+		return true;
 
 	}
 

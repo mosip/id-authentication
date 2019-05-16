@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.NoRouteToHostException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,12 @@ import io.mosip.kernel.core.util.HMACUtils;
 public class RegistrationUpdate {
 
 	public RegistrationUpdate() throws IOException {
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		Properties properties = new Properties();
+		properties.load(fileInputStream);
+		serverRegClientURL = properties.getProperty("mosip.client.url");
+		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
 		getLocalManifest();
 
 		if (localManifest != null) {
@@ -50,9 +58,9 @@ public class RegistrationUpdate {
 
 	private static String manifestFile = "MANIFEST.MF";
 
-	// TODO move to application.properties
-	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private static String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
+
+	private static String serverRegClientURL;
+	private static String serverMosipXmlFileUrl;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";
@@ -75,19 +83,27 @@ public class RegistrationUpdate {
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 
-		// Get latest version using meta-inf.xml
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
+		try {
+			// Get latest version using meta-inf.xml
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+			URL url = new URL(serverMosipXmlFileUrl);
+			URLConnection con = url.openConnection();
+			con.setConnectTimeout(10000);
+			org.w3c.dom.Document metaInfXmlDocument = db.parse(con.getInputStream());
 
-		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-		if (list != null && list.getLength() > 0) {
-			NodeList subList = list.item(0).getChildNodes();
+			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
+			if (list != null && list.getLength() > 0) {
+				NodeList subList = list.item(0).getChildNodes();
 
-			if (subList != null && subList.getLength() > 0) {
-				// Latest Version
-				setLatestVersion(subList.item(0).getNodeValue());
+				if (subList != null && subList.getLength() > 0) {
+					// Latest Version
+					setLatestVersion(subList.item(0).getNodeValue());
+				}
 			}
+		} catch (NoRouteToHostException e) {
+			System.out.println("Error in connection");
+			throw e;
 		}
 
 		return latestVersion;
@@ -109,10 +125,10 @@ public class RegistrationUpdate {
 
 		// Get Latest Version
 		getLatestVersion();
-
+		System.out.println("Current Version fetch finished");
 		// Get Server Manifest
 		getServerManifest();
-
+		System.out.println("Server Manifet fetch finished");
 		// replace local manifest with Server manifest
 		serverManifest.write(new FileOutputStream(new File(manifestFile)));
 
@@ -171,6 +187,7 @@ public class RegistrationUpdate {
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 		Long t1 = System.currentTimeMillis();
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		String errorMsg="";
 		for (String jarFile : checkableJars) {
 			// String folder = jarFile.contains(mosip) ? binFolder : libFolder;
 			//
@@ -336,15 +353,23 @@ public class RegistrationUpdate {
 	}
 
 	private InputStream getInputStreamOf(String url) throws IOException {
-		URLConnection connection = new URL(url).openConnection();
-
-		// Space Check
-		if (hasSpace(connection.getContentLength())) {
-			return connection.getInputStream();
-		} else {
-			throw new IOException("No Disk Space");
+		InputStream is = null;
+		try {
+			System.out.println("Inside Url connnection");
+			URLConnection connection = new URL(url).openConnection();
+			connection.setConnectTimeout(10000);
+			System.out.println("End Url connnection");
+			// Space Check
+			if (hasSpace(connection.getContentLength())) {
+				is = connection.getInputStream();
+			} else {
+				throw new IOException("No Disk Space");
+			}
+		} catch (NoRouteToHostException e) {
+			System.out.println("Error in connection");
+			throw e;
 		}
-
+		return is;
 	}
 
 	private void deleteUnNecessaryJars() {
