@@ -16,25 +16,20 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -653,7 +648,8 @@ public class DemographicDetailController extends BaseController {
 	@Autowired
 	private Transliteration<String> transliteration;
 	@Autowired
-	private JsonValidator jsonValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
@@ -1419,13 +1415,7 @@ public class DemographicDetailController extends BaseController {
 			demographicInfoDTO = buildDemographicInfo();
 
 			try {
-				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO));
-			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
-					| JsonProcessingException exception) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-				throw exception;
+				idObjectValidator.validateIdObject(demographicInfoDTO);
 			} catch (RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
 				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,

@@ -274,12 +274,6 @@
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-jsonvalidator</artifactId>
-				<version>${mosip.core.kernel.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>com.cronutils</groupId>
 				<artifactId>cron-utils</artifactId>
 				<version>8.0.0</version>
@@ -313,6 +307,11 @@
 				<version>${tss.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idobjectvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
