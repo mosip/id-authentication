@@ -24,9 +24,11 @@ import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.impl.MachineMappingDAOImpl;
 import io.mosip.registration.entity.MachineMaster;
+import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.id.RegMachineSpecId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -80,25 +82,27 @@ public class UserClientMachineMappingDAOTest {
 	public void getStationID() throws RegBaseCheckedException {
 		MachineMaster machineMaster = new MachineMaster();
 		machineMaster.setMacAddress("8C-16-45-88-E7-0C");
-		RegMachineSpecId specId=new RegMachineSpecId();
+		RegMachineSpecId specId = new RegMachineSpecId();
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machineMaster.setRegMachineSpecId(specId);
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString())).thenReturn(machineMaster);
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+				.thenReturn(machineMaster);
 		String stationId = machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("100131", stationId);
 	}
 
 	@Test
 	public void getStationIDNullTest() {
-		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		Mockito.when(centerMachineRepository.findByIsActiveTrueAndCenterMachineIdId(Mockito.anyString()))
+				.thenReturn(null);
 		try {
 			machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
 	}
-	
+
 	@Test
 	public void isValidDeviceTest() {
 		Mockito.when(deviceMasterRepository.countBySerialNumAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(
@@ -120,12 +124,45 @@ public class UserClientMachineMappingDAOTest {
 		Assert.assertEquals(userMachineMapping.getUserDetail().getId(),
 				machineMappingDAOImpl.getUserMappingDetails("machineId").get(0).getUserDetail().getId());
 	}
+
+	@Test
+	public void isExistsNullTest() {
+		UserMachineMapping machineMapping = null;
+		Mockito.when(
+				machineMappingRepository.findByUserMachineMappingIdUserID(RegistrationConstants.JOB_TRIGGER_POINT_USER))
+				.thenReturn(machineMapping);
+		Assert.assertFalse(machineMappingDAOImpl.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER));
+	}
 	
 	@Test
-	public void isExistsTest() {		
-		UserMachineMapping machineMapping=null;
-		Mockito.when(machineMappingRepository.findByUserMachineMappingIdUserID(RegistrationConstants.JOB_TRIGGER_POINT_USER)).thenReturn(machineMapping);
-		Assert.assertFalse(machineMappingDAOImpl.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER));
+	public void isExistsTest() {
+		UserMachineMapping machineMapping = new UserMachineMapping();		
+		UserMachineMappingID machineMapId=new UserMachineMappingID();
+		machineMapId.setUserID("1234");				
+		machineMapping.setUserMachineMappingId(machineMapId);
+		List<UserMachineMapping> deviceList = new ArrayList<>();
+		deviceList.add(machineMapping);
+		Mockito.when(
+				machineMappingRepository.findByUserMachineMappingIdUserID(RegistrationConstants.JOB_TRIGGER_POINT_USER))
+				.thenReturn(machineMapping);
+		Assert.assertTrue(machineMappingDAOImpl.isExists(RegistrationConstants.JOB_TRIGGER_POINT_USER));
+	}
+
+	@Test
+	public void findByRegMachineSpecIdLangCodeTest() {
+		RegDeviceMaster deviceMaster = new RegDeviceMaster();
+		deviceMaster.setName("Lenovo");
+		deviceMaster.setSerialNum("QWAS9087");
+		deviceMaster.setDeviceSpecId("1234");
+		RegMachineSpecId machineSpecId = new RegMachineSpecId();
+		machineSpecId.setLangCode("eng");
+		machineSpecId.setId("1");
+		deviceMaster.setRegMachineSpecId(machineSpecId);
+
+		List<RegDeviceMaster> deviceList = new ArrayList<>();
+		deviceList.add(deviceMaster);
+		Mockito.when(deviceMasterRepository.findByRegMachineSpecIdLangCode("eng")).thenReturn(deviceList);
+		Assert.assertNotNull((machineMappingDAOImpl.getDevicesMappedToRegCenter("eng")));
 	}
 
 }
