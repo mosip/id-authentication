@@ -27,7 +27,7 @@ public interface RegistrationRepositary<T extends BaseRegistrationEntity, E> ext
 	public List<T> getTransactionByRegIdAndStatusCode(@Param("regId") String regId,
 			@Param("statusCode") String statusCode);
 	
-	@Query("SELECT registration.id FROM RegistrationStatusEntity registration WHERE registration.id in :regIds and registration.statusCode=:statusCode")
+	@Query("SELECT registration.id FROM RegistrationStatusEntity registration WHERE registration.id in :regIds and registration.latestTransactionStatusCode =:statusCode")
 	public List<String> getProcessedOrProcessingRegIds(@Param("regIds") List<String> regIds,
 			@Param("statusCode") String statusCode);
 
