@@ -22,7 +22,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.vid.dto.VidPolicy;
+import io.mosip.idrepository.core.dto.VidPolicy;
 import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;

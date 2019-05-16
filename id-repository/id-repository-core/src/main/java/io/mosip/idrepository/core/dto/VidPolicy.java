@@ -1,4 +1,4 @@
-package io.mosip.idrepository.vid.dto;
+package io.mosip.idrepository.core.dto;
 
 import lombok.Data;
 

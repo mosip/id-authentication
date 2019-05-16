@@ -17,12 +17,12 @@ import org.springframework.validation.Validator;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.dto.VidRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
-import io.mosip.idrepository.vid.dto.RequestDTO;
-import io.mosip.idrepository.vid.dto.VidRequestDTO;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
@@ -97,7 +97,7 @@ public class VidRequestValidator implements Validator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return clazz.isAssignableFrom(VidRequestDTO.class);
+		return clazz.isAssignableFrom(RequestWrapper.class);
 	}
 
 	/*
@@ -106,9 +106,10 @@ public class VidRequestValidator implements Validator {
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 * org.springframework.validation.Errors)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void validate(Object target, Errors errors) {
-		VidRequestDTO request = (VidRequestDTO) target;
+		RequestWrapper<VidRequestDTO> request = (RequestWrapper<VidRequestDTO>) target;
 		validateReqTime(request.getRequesttime(), errors);
 		validateVersion(request.getVersion(), errors);
 		validateRequest(request.getRequest(), errors);
@@ -149,7 +150,7 @@ public class VidRequestValidator implements Validator {
 		}
 	}
 
-	private void validateRequest(RequestDTO request, Errors errors) {
+	private void validateRequest(VidRequestDTO request, Errors errors) {
 		if (Objects.isNull(request)) {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));

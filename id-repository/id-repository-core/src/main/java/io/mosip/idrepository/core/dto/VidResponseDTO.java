@@ -1,4 +1,4 @@
-package io.mosip.idrepository.vid.dto;
+package io.mosip.idrepository.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,7 +11,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ResponseDTO {
+public class VidResponseDTO {
 
 	/** The Value Of UIN in Decrypted value */
 	@JsonProperty("UIN")
