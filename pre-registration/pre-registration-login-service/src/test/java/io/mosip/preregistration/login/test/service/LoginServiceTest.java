@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -148,14 +149,23 @@ public class LoginServiceTest {
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
 		spyAuthService.sendOTP(otpRequest);
 	}
+	
+	@Mock
+	private HttpHeaders headers;
 	@Test
 	public void validateWithUserIdOtp() {
+		list.add("Token");
 		requestMap.put("id",userIdOtpId);
 		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);
+		Mockito.when(authNResposne.getStatus()).thenReturn("success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.when(responseEntity.getHeaders()).thenReturn(headers);
+		Mockito.when(headers.get(Mockito.any())).thenReturn(list);
 		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		assertNotNull(spyAuthService.validateWithUserIdOtp(userRequest));
 	}

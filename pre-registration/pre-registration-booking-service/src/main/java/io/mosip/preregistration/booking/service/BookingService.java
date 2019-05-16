@@ -873,8 +873,13 @@ public class BookingService {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
 		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
-		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		}
+		else {
+			inputValidation.put(RequestCodes.requesttime.getCode(),null);
+		}
 		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}
