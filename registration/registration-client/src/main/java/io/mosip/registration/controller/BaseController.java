@@ -313,7 +313,8 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		label.setText(context);
+		if(!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
+			label.setText(context);
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);

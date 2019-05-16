@@ -714,7 +714,7 @@ public class DemographicDetailController extends BaseController {
 			switchedOnParentUinOrRid = new SimpleBooleanProperty(true);
 			toggleFunction();
 			toggleFunctionForParentUinOrRid();
-			ageFieldValidations();
+			ageBasedOperation();
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
@@ -1089,7 +1089,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-	private void ageFieldValidations() {
+	private void ageBasedOperation() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
