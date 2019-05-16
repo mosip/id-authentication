@@ -101,7 +101,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 
 	/** The json validator. */
 	@Autowired
-	private IdObjectValidator jsonValidator;
+	private IdObjectValidator idObjectValidator;
 
 	/** The mapper. */
 	@Autowired
@@ -224,7 +224,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 							.filter(key -> !key.contentEquals(IdRepoConstants.ROOT_PATH.getValue()))
 							.forEach(requestMap::remove);
 					if (!errors.hasErrors()) {
-						jsonValidator.validateIdObject(requestMap);
+						idObjectValidator.validateIdObject(requestMap);
 					}
 				}
 			} else if (method.equals(CREATE)) {
