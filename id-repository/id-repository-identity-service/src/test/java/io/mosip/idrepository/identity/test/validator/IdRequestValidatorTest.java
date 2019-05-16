@@ -44,7 +44,6 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
-import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
@@ -73,14 +72,14 @@ public class IdRequestValidatorTest {
 
 	@InjectMocks
 	IdRequestValidator validator;
-	
+
 	@Autowired
 	private Environment env;
 
 	private Map<String, String> id;
 
 	List<String> status;
-	
+
 	List<String> allowedTypes;
 
 	public List<String> getAllowedTypes() {
@@ -198,30 +197,6 @@ public class IdRequestValidatorTest {
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "registrationId"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateVerNullVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVersion", null, errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "version"),
-					error.getDefaultMessage());
-			assertEquals("version", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateVerInvalidVer() {
-		ReflectionTestUtils.invokeMethod(validator, "validateVersion", "1234.a", errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "version"),
-					error.getDefaultMessage());
-			assertEquals("version", ((FieldError) error).getField());
 		});
 	}
 
@@ -400,31 +375,6 @@ public class IdRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateReqTimeNullReqTime() {
-		ReflectionTestUtils.invokeMethod(validator, "validateReqTime", null, errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
-					error.getDefaultMessage());
-			assertEquals("requesttime", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
-	public void testValidateReqTimeFutureReqTime() {
-		ReflectionTestUtils.invokeMethod(validator, "validateReqTime",
-				DateUtils.parseToLocalDateTime("9999-12-31T15:28:28.610Z"), errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"),
-					error.getDefaultMessage());
-			assertEquals("requesttime", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
 	public void testValidateCreate() throws JsonParseException, JsonMappingException, JsonProcessingException,
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ValidationReport value = new ValidationReport(true, null);
@@ -473,37 +423,12 @@ public class IdRequestValidatorTest {
 		validator.validate(request, errors);
 		assertFalse(errors.hasErrors());
 	}
-	
-	@Test
-	public void testValidateIdNullId() {
-		ReflectionTestUtils.invokeMethod(validator, "validateId", null, errors, "read");
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
-	}
 
-	@Test
-	public void testValidateIdInvalidId() {
-		ReflectionTestUtils.invokeMethod(validator, "validateId", "abc", errors, "read");
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
-	}
-	
 	@Test(expected = IdRepoAppException.class)
 	public void testInvalidUin() throws IdRepoAppException {
 		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		validator.validateUin("1234","read");
+		validator.validateUin("1234", "read");
 	}
-	
 
 	/**
 	 * Test retrieve identity null id.
@@ -513,8 +438,7 @@ public class IdRequestValidatorTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testValidateNullId() throws IdRepoAppException {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
-		validator.validateUin(null,"create");
+		validator.validateUin(null, "create");
 	}
-	
 
 }

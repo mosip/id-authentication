@@ -23,7 +23,7 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Component
-@ConfigurationProperties("mosip.id")
+@ConfigurationProperties("mosip.idrepo.id")
 public abstract class BaseIdRepoValidator {
 
 	/** The Constant TIMESTAMP. */
