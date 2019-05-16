@@ -32,16 +32,15 @@ public class AuditAsyncExceptionHandler implements AsyncUncaughtExceptionHandler
 	 */
 	@Override
 	public void handleUncaughtException(final Throwable throwable, final Method method, final Object... obj) {
-
 		AuditManagerLogger.consoleLoggerError("", "", "", "Exception message - " + throwable.getMessage());
-		AuditManagerLogger.consoleLoggerError("", "", "", "Method name - " + method.getName());
 		for (final Object param : obj) {
 			try {
 				AuditManagerLogger.fileLoggerError("", "", "", MAPPER.writeValueAsString(param));
+				AuditManagerLogger.consoleLoggerError("", "", "",
+						"Method name - " + method.getName() + "\n\n" + MAPPER.writeValueAsString(param));
 			} catch (JsonProcessingException e) {
 				AuditManagerLogger.consoleLoggerError("", "", "", e.getMessage());
 			}
 		}
 	}
-
 }
