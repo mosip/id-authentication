@@ -303,14 +303,14 @@ export class DataStorageService {
     return this.httpClient.get(url);
   }
 
-  getGuidelineTemplate() {
+  getGuidelineTemplate(templateType : string) {
     const url =
       this.BASE_URL +
       appConstants.APPEND_URL.master_data +
       'templates/' +
       localStorage.getItem('langCode') +
       '/' +
-      'Onscreen-Acknowledgement';
+      templateType;
     return this.httpClient.get(url);
   }
 

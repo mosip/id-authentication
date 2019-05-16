@@ -101,6 +101,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   residenceStatus: any;
   message = {};
   config = {};
+  consentMessage :any;
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -194,6 +195,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.config = this.configService.getConfig();
     this.setConfig();
     await this.getPrimaryLabels();
+    await this.getConsentMessage();
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
@@ -236,6 +238,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+private getConsentMessage() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGuidelineTemplate('consent').subscribe(response => {
+        console.log(response);
+        this.consentMessage = response['response']['templates'][0].fileText;
+        resolve(true);
+      });
+    });
+  }
   /**
    * @description This method do the basic initialization,
    * if user is opt for updation or creating the new applicaton
@@ -270,7 +281,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         case: 'CONSENTPOPUP',
         title: this.demographiclabels.consent.title,
         subtitle: this.demographiclabels.consent.subtitle,
-        message: this.demographiclabels.consent.message,
+        message: this.consentMessage,
         checkCondition: this.demographiclabels.consent.checkCondition,
         acceptButton: this.demographiclabels.consent.acceptButton,
         alertMessageFirst: this.demographiclabels.consent.alertMessageFirst,
