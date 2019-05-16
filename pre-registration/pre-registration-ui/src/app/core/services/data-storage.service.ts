@@ -120,7 +120,7 @@ export class DataStorageService {
     console.log('formData', formdata);
 
     return this.httpClient.post(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId,
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + preRegId,
       formdata
     );
     // console.log('servvice called', formdata);
@@ -236,7 +236,7 @@ export class DataStorageService {
     const url =
       this.BASE_URL +
       this.PRE_REG_URL +
-      appConstants.APPEND_URL.document +
+      appConstants.APPEND_URL.post_document +
       destinationId +
       '?catCode=' +
       appConstants.PARAMS_KEYS.POA +
@@ -250,6 +250,15 @@ export class DataStorageService {
       observe: 'body',
       responseType: 'json'
     });
+  }
+
+  getFileData(fileDocumentId, preId) {
+    return this.httpClient.get(
+      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + fileDocumentId,
+      {
+        params: new HttpParams().append(appConstants.PARAMS_KEYS.preRegistrationId, preId)
+      }
+    );
   }
 
   generateQRCode(data: string) {
@@ -334,7 +343,7 @@ export class DataStorageService {
     console.log(userId);
 
     const req = {
-      langCode: localStorage.getItem('langCode'),
+      // langCode: localStorage.getItem('langCode'),
       userId: userId
     };
 

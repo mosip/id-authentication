@@ -58,6 +58,8 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.translate.use('fra');
+    localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
   }
@@ -99,17 +101,12 @@ export class LoginComponent implements OnInit {
         this.loadLanguagesWithConfig();
       },
       error => {
-        this.router.navigate(['error']);
+        this.showErrorMessage();
       }
     );
   }
 
   loadLanguagesWithConfig() {
-    console.log(
-      'mosip.id.validation.identity.fullName.[*].value',
-      this.configService.getConfigByKey('mosip.id.validation.identity.fullName.[*].value')
-    );
-
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
 
@@ -231,12 +228,10 @@ export class LoginComponent implements OnInit {
             this.showOTP = false;
             this.showVerify = false;
             document.getElementById('minutesSpan').innerText = this.minutes;
-
             document.getElementById('timer').style.visibility = 'hidden';
             clearInterval(this.timer);
             return;
           }
-
           document.getElementById('minutesSpan').innerText = '0' + (minValue - 1);
         }
 
@@ -259,6 +254,14 @@ export class LoginComponent implements OnInit {
 
       this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
         console.log(response);
+        // if (response['errors']) {
+        // this.showError();
+        // }
+        //////user blocked case///////////
+        // if (response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.userBlocked) {
+        //   this.showUserBlocked();
+        //   return;
+        // }
       });
 
       // dynamic update of button text for Resend and Verify
@@ -270,15 +273,20 @@ export class LoginComponent implements OnInit {
             clearInterval(this.timer);
             localStorage.setItem('loggedIn', 'true');
             this.authService.setToken();
-
             this.regService.setLoginId(this.inputContactDetails);
             this.router.navigate(['dashboard']);
-          } else {
+          }
+          ///////USER BLOCKED CASE///////
+          // if (
+          //   response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.userBlocked
+          // ) {
+          //   this.showUserBlocked();
+          // }
+          else {
             console.log(response['error']);
             this.showOtpMessage();
           }
         },
-
         error => {
           this.showOtpMessage();
           // clearInterval(this.timer);
@@ -292,11 +300,37 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  showUserBlocked() {
+    console.log('user blocked', this.validationMessages['userBlocked']);
+    // const message = {
+    //   case: 'MESSAGE',
+    //   message: this.validationMessages['userBlocked']
+    // };
+    // const dialogRef = this.dialog.open(DialougComponent, {
+    //   width: '350px',
+    //   data: message
+    // });
+  }
+
   showOtpMessage() {
+    this.inputOTP = '';
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       const message = {
         case: 'MESSAGE',
         message: response['message']['login']['msg3']
+      };
+      const dialogRef = this.dialog.open(DialougComponent, {
+        width: '350px',
+        data: message
+      });
+    });
+  }
+
+  showErrorMessage() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      const message = {
+        case: 'MESSAGE',
+        message: response['error']['error']
       };
       const dialogRef = this.dialog.open(DialougComponent, {
         width: '350px',

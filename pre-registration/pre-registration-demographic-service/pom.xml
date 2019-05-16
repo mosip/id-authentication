@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.2</version>
 	</parent>
 
 
@@ -50,19 +50,14 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency> 
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>${modelmapper.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.interceptor</groupId>
-			<artifactId>javax.interceptor-api</artifactId>
-			<version>${java.interceptor.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -79,13 +74,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-		</dependency>
-		 <dependency>
-		    <groupId>io.mosip.kernel</groupId>
-		    <artifactId>kernel-auth-adapter</artifactId>
-		    <version>${kernel.core.version}</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -98,7 +89,7 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-	
+
 	</dependencies>
 
 	<build>
@@ -120,3 +111,4 @@
 
 
 </project>
+

@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,7 @@ import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 public class RegistrationPacketVirusScanServiceImpl extends BaseService implements RegistrationPacketVirusScanService {
 
 	@Autowired
-	private VirusScanner<Boolean, String> virusScanner;
+	private VirusScanner<Boolean, InputStream> virusScanner;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationPacketVirusScanServiceImpl.class);
 

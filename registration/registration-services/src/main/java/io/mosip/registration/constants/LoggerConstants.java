@@ -65,11 +65,18 @@ public class LoggerConstants {
 	public static final String LOG_REG_BIOMETRIC_SCAN_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER = USER_REGISTRATION
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
+	public static final String MDM_REQUEST_RESPONSE_BUILDER = USER_REGISTRATION
+			+ "MDM_REQUEST_RESPONSE_BUILDER";
+	public static final String MOSIP_BIO_DEVICE_INTEGERATOR = USER_REGISTRATION
+			+ "MOSIP_BIO_DEVICE_INTEGERATOR";
+	public static final String MOSIP_BIO_DEVICE_MANAGER = USER_REGISTRATION
+			+ "MOSIP BIO DEVICE MANAGER";
 	public static final String LOG_REG_REGISTRATION_CONTROLLER = USER_REGISTRATION + "REGISTRATION_CONTROLLER";
 	public static final String LOG_REG_SCAN_CONTROLLER = USER_REGISTRATION + "SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
 	public static final String LOG_REG_IRIS_FACADE = USER_REGISTRATION + "IRIS_FACADE";
 	public static final String LOG_REG_MASTER_SYNC = MASTER_SYNC + "MASTER_SYNC_CONTROLLER";
+	public static final String LOG_REG_USER_SALT_SYNC = "USER_SALT_SYNC";
 	public static final String LOG_REG_UIN_UPDATE = UIN_UPDATE + "UIN_UPDATE_CONTROLLER";
 	public static final String LOG_TEMPLATE_GENERATOR = PKT_CREATION + "TEMPLATE_GENERATOR";
 	public static final String LOG_REG_DOC_SCAN_CONTROLLER = USER_REGISTRATION + "DOCUMENT_SCAN_CONTROLLER";
@@ -107,7 +114,7 @@ public class LoggerConstants {
 	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = SYNC + "Registration_Deletion_Job";
 	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = SYNC + "Sync_Config_Data Job";
 	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = SYNC + "GLOBAL_PARAMS_SERVICE";
-	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_SERVICE";
+	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_MANAGER_SERVICE";
 	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
 	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
 	public static final String REG_PACKET_SYNC_STATUS_JOB = SYNC + "Packet_Sync Status_Job";
@@ -128,31 +135,39 @@ public class LoggerConstants {
 	public static final String RESPONSE_SIGNATURE_VALIDATION = "RESPONSE_SIGNATURE_VALIDATION";
 	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
 	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
+    public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";   
 
+	// Util
+	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME
+			+ "PUBLIC_KEY_GENRATION_UTIL - GENERATE_PUBLIC_KEY";
+	
+	//Registration Update
+	public static final String LOG_REG_UPDATE = HEADER + "REGISTARTION_UPDATE";
+	
 	// TPM
 	private static final String TPM_SIGNATURE = APP_NAME + "SIGNATURE_SERVICE - ";
 	private static final String TPM_SIGN_VALIDATION = APP_NAME + "SIGNATURE_VALIDATION_SERVICE - ";
-	private static final String TPM_FILE_UTILS = APP_NAME + "TPM_FILE_UTILS - ";
 	private static final String TPM_ASYMMETRIC_KEY_CREATION = APP_NAME + "ASYMMETRIC_KEY_CREATION - ";
 	private static final String TPM_ASYMMETRIC_ENCRYPTION = APP_NAME + "ASYMMETRIC_ENCRYPTION_SERVICE - ";
 	private static final String TPM_ASYMMETRIC_DECRYPTION = APP_NAME + "ASYMMETRIC_DECRYPTION_SERVICE - ";
 	private static final String TPM_SERVICE = APP_NAME + "TPM_SERVICE - ";
+	private static final String LOG_MODULE = APP_NAME + "TPM - ";
 
+	public static final String LOG_TPM_INITIALIZATION = LOG_MODULE + "PLATFORM_TPM_INITIALIZATION";
+	public static final String LOG_PUBLIC_KEY = LOG_MODULE + "SIGN_KEY_CREATION_SERVICE";
 	public static final String TPM_SIGN_DATA = TPM_SIGNATURE + "SIGN_DATA";
-	public static final String TPM_SIGN_VALIDATE_BY_TEMPTLATE = TPM_SIGN_VALIDATION
-			+ "VALIDATE_SIGNATURE_USING_PUBLIC_PART";
 	public static final String TPM_SIGN_VALIDATE_BY_KEY = TPM_SIGN_VALIDATION + "VALIDATE_SIGNATURE_USING_PUBLIC_KEY";
-	public static final String TPM_FILE_UTILS_WRITE = TPM_FILE_UTILS + "WRITE_TO_FILE";
-	public static final String TPM_FILE_UTILS_READ = TPM_FILE_UTILS + "READ_TO_FILE";
 	public static final String TPM_ASYM_KEY_CREATION = TPM_ASYMMETRIC_KEY_CREATION + "CREATE_PERSISTENT_KEY";
 	public static final String TPM_ASYM_ENCRYPTION = TPM_ASYMMETRIC_ENCRYPTION + "ENCRYPT_USING_TPM";
 	public static final String TPM_ASYM_DECRYPTION = TPM_ASYMMETRIC_DECRYPTION + "DECRYPT_USING_TPM";
 	public static final String TPM_SERVICE_SIGN = TPM_SERVICE + "SIGN_DATA";
 	public static final String TPM_SERVICE_VALIDATE_SIGN_BY_PUBLIC_PART = TPM_SERVICE
 			+ "VALIDATING_SIGNATURE_USING_PUBLIC_PART";
-	public static final String TPM_SERVICE_VALIDATE_SIGN_BY_PUBLIC_KEY = TPM_SERVICE
-			+ "VALIDATING_SIGNATURE_USING_PUBLIC_KEY";
 	public static final String TPM_SERVICE_ASYMMETRIC_ENCRYPTION = TPM_SERVICE + "ASYMMETRIC_ENCRYPT";
 	public static final String TPM_SERVICE_ASYMMETRIC_DECRYPTION = TPM_SERVICE + "ASYMMETRIC_DECRYPT";
+	public static final String TPM_SERVICE_GET_SIGN_PUBLIC = TPM_SERVICE + "GET_SIGNING_PUBLIC_PART";
+	
+	public static final String LOG_REG_MAC_ADDRESS = "MAC_ADDRESS_UTILL";
+	
 
 }

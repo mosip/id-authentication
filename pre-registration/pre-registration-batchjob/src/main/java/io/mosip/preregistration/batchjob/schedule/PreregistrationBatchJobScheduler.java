@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjob.schedule;
 
 import org.slf4j.Logger;
@@ -18,7 +22,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * @author M1043008
+ * This class is a job scheduler of batch in which jobs are getting executed
+ * based on cron expressions.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @RefreshScope
@@ -34,13 +42,13 @@ public class PreregistrationBatchJobScheduler {
 
 	@Autowired
 	private JobLauncher jobLauncher;
-	
+
 	@Autowired
 	private Job bookingJob;
-	
+
 	@Autowired
 	private Job consumedStatusJob;
-	
+
 	@Autowired
 	private Job expiredStatusJob;
 
@@ -60,43 +68,43 @@ public class PreregistrationBatchJobScheduler {
 			LOGGER.error(LOGDISPLAY, "UpdateTableJob failed to read Processed_pre_registration_list", e);
 		}
 	}
-	
-	@Scheduled(cron="${preregistration.job.schedule.cron.slotavailability}")
+
+	@Scheduled(cron = "${preregistration.job.schedule.cron.slotavailability}")
 	public void bookingJobScheduler() {
-		
-		JobParameters jobParam= new JobParametersBuilder().addLong("bookingJobTime", System.currentTimeMillis())
-								.toJobParameters();
+
+		JobParameters jobParam = new JobParametersBuilder().addLong("bookingJobTime", System.currentTimeMillis())
+				.toJobParameters();
 		try {
-			
-			JobExecution jobExecution=jobLauncher.run(bookingJob, jobParam);
-			
+
+			JobExecution jobExecution = jobLauncher.run(bookingJob, jobParam);
+
 			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
-			
+
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 
 			LOGGER.error(LOGDISPLAY, "Booking Job failed to read data from master data service", e);
 		}
-		
+
 	}
-	
-	@Scheduled(cron="${preregistration.job.schedule.cron.expiredStatusJob}")
+
+	@Scheduled(cron = "${preregistration.job.schedule.cron.expiredStatusJob}")
 	public void expiredStatusScheduler() {
-		
-		JobParameters jobParam= new JobParametersBuilder().addLong("expiredStatusJobTime", System.currentTimeMillis())
-								.toJobParameters();
+
+		JobParameters jobParam = new JobParametersBuilder().addLong("expiredStatusJobTime", System.currentTimeMillis())
+				.toJobParameters();
 		try {
-			
-			JobExecution jobExecution=jobLauncher.run(expiredStatusJob, jobParam);
-			
+
+			JobExecution jobExecution = jobLauncher.run(expiredStatusJob, jobParam);
+
 			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
-			
+
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 
 			LOGGER.error(LOGDISPLAY, "Expired Status Job failed to read data from service", e);
 		}
-		
+
 	}
 
 }

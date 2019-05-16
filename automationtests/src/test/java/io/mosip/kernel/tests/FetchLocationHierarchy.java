@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -31,8 +32,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -47,24 +50,27 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchLocationHierarchy.class);
-	private static final String jiraID = "MOS-8234,MOS-8233";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "fetchLocationHierarchy";
-	private static final String requestJsonName = "fetchLocationHierarchyRequest";
-	private static final String outputJsonName = "fetchLocationHierarchyOutput";
-	private static final String service_URI_withlangCode = "/v1/masterdata/locations/{langcode}";
-	private static final String service_URI_locationcode = "/v1/masterdata/locations/{locationcode}/{langcode}";
-	private static final String service_URI_hierarchyname = "/v1/masterdata/locations/locationhierarchy/{hierarchyname}";
+	private final String jiraID = "MOS-8234,MOS-8233";
+	private final String moduleName = "kernel";
+	private final String apiName = "fetchLocationHierarchy";
+	private final String requestJsonName = "fetchLocationHierarchyRequest";
+	private final String outputJsonName = "fetchLocationHierarchyOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String FetchLocationHierarchy_URI_withlangCode = props.get("FetchLocationHierarchy_URI_withlangCode").toString();
+	private final String FetchLocationHierarchy_URI_locationcode = props.get("FetchLocationHierarchy_URI_locationcode").toString();
+	private final String FetchLocationHierarchy_URI_hierarchyname = props.get("FetchLocationHierarchy_URI_hierarchyname").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -73,11 +79,11 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
-
+		cookie=auth.getAuthForIndividual();
 	}
 
 	/**
@@ -140,11 +146,11 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 				if (objectData.containsKey("hierarchyname"))
-					response = applicationLibrary.getRequestPathPara(service_URI_hierarchyname, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_hierarchyname, objectData,cookie);
 				else if (objectData.containsKey("locationcode"))
-					response = applicationLibrary.getRequestPathPara(service_URI_locationcode, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_locationcode, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(service_URI_withlangCode, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_withlangCode, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -182,6 +188,7 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

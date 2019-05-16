@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.2</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -91,6 +90,11 @@
 			<artifactId>powermock-core</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+		<dependency>
+			<groupId>com.github.microsoft</groupId>
+			<artifactId>TSS.Java</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -114,6 +118,16 @@
 							<goal>java</goal>
 						</goals>
 						<configuration>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
@@ -142,9 +156,14 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>io.mosip.registration.cipher:ClientJarEncryption</exclude>
+								</excludes>
+							</artifactSet>
 							<filters>
 								<filter>
-									<artifact>org.bouncycastle:*</artifact>
+									<artifact>*:*</artifact>
 									<excludes>
 										<exclude>META-INF/*.SF</exclude>
 										<exclude>META-INF/*.DSA</exclude>
@@ -174,6 +193,9 @@
 							<mainClass>io.mosip.registration.cipher.CilentJarDecryption</mainClass>
 						</manifest>
 					</archive>
+					<excludes>
+						<exclude>**/cipher/ClientJarEncryption</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 

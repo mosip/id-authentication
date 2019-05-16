@@ -25,6 +25,7 @@ public class RequestHTTPDTO {
 	private HttpHeaders httpHeaders;
 	private Object requestBody;
 	private Boolean isSignRequired;
+	private boolean isRequestSignRequired; 
 	
 	/**
 	 * @return the isSignRequired
@@ -126,6 +127,14 @@ public class RequestHTTPDTO {
 
 	public void setRequestBody(Object requestBody) {
 		this.requestBody = requestBody;
+	}
+
+	public boolean isRequestSignRequired() {
+		return isRequestSignRequired;
+	}
+
+	public void setRequestSignRequired(boolean isRequestSignRequired) {
+		this.isRequestSignRequired = isRequestSignRequired;
 	}
 
 }

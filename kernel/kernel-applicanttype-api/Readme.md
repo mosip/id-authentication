@@ -1,7 +1,7 @@
 ## kernel-applicanttype-api
 
 
- [Background & Design](../../docs/design/kernel/kernel-applicanttype-api.md)
+ [Background & Design](../../docs/design/kernel/kernel-applicanttype.md)
 
 This api can be used to get applicant type code.
 
@@ -34,8 +34,6 @@ individualTypeCode: FR,NFR
 dateofbirth: must be in this pattern yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 genderCode: MLE,FLE
 biometricAvailable: true,false
-
-**The response will be true is audit request is successful, otherwise false** 
 
 
 **Exceptions to be handled while using this functionality:**

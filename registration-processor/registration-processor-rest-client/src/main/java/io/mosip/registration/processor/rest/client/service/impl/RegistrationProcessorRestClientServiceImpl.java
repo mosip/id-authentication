@@ -274,7 +274,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	public Object putApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
-			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
+			Object requestedData, Class<?> responseType,MediaType mediaType) throws ApisResourceAccessException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationProcessorRestClientServiceImpl::putApi()::entry");
@@ -303,7 +303,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 			try {
-				obj = restApiClient.putApi(builder.toUriString(), requestedData, responseType);
+				obj = restApiClient.putApi(builder.toUriString(), requestedData, responseType,mediaType);
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

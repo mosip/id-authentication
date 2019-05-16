@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.2</version>
 	</parent>
 
 	<artifactId>pre-registration-notification-service</artifactId>
@@ -114,3 +114,4 @@
 		</plugins>
 	</build>
 </project>
+

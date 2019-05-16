@@ -2,7 +2,7 @@
 
 [Background & Design](../../docs/design/kernel/kernel-emailnotification.md)
  
-[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#6-email-notification)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#email-notification)
 
 Default Port and Context Path
  

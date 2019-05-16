@@ -13,6 +13,12 @@ public class SyncResponseFailureDto extends SyncResponseDto {
 	/** The errorCode. */
 	private String errorCode;
 
+	/** The message. */
+	private String message;
+
+	/** The registration id. */
+	private String registrationId;
+
 	/**
 	 * Instantiates a new sync response failure dto.
 	 */
@@ -37,6 +43,33 @@ public class SyncResponseFailureDto extends SyncResponseDto {
 	 */
 	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	/**
+	 * Gets the registration id.
+	 *
+	 * @return the registration id
+	 */
+	public String getRegistrationId() {
+		return registrationId;
+	}
+
+	/**
+	 * Sets the registration id.
+	 *
+	 * @param registrationId
+	 *            the new registration id
+	 */
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
 
 }

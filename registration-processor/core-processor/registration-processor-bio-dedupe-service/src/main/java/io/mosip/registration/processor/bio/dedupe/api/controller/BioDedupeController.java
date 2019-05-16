@@ -24,7 +24,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/v0.1/registration-processor/bio-dedupe")
 @Api(tags = "Biodedupe")
 public class BioDedupeController {
 
@@ -42,7 +41,8 @@ public class BioDedupeController {
 	 * @param regId the reg id
 	 * @return the file
 	 */
-	@GetMapping(path = "/{regId}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+
+	@GetMapping(path = "/biometricfile/{regId}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	@ApiOperation(value = "Get the CBEF XML file  of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "CBEF Xml file is successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the CBEF XML file"),
@@ -50,7 +50,7 @@ public class BioDedupeController {
 	public ResponseEntity<byte[]> getFile(@PathVariable("regId") String regId,
 			@CookieValue(value = "Authorization", required = true) String token) {
 
-		tokenValidator.validate(token, "packetgenerator");
+		tokenValidator.validate("Authorization=" + token, "packetgenerator");
 		byte[] file = bioDedupeService.getFile(regId);
 		return ResponseEntity.status(HttpStatus.OK).body(file);
 

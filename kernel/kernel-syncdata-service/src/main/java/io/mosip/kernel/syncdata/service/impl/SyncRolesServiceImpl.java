@@ -84,7 +84,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(authBaseUrl).append(authServiceName);
 			HttpEntity<RequestWrapper<?>> httpRequest = getHttpRequest();
-			response = restTemplate.exchange(uriBuilder.toString()+"/registrationclient", HttpMethod.GET, httpRequest,
+			response = restTemplate.exchange(uriBuilder.toString() + "/registrationclient", HttpMethod.GET, httpRequest,
 					String.class);
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
@@ -99,9 +99,9 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AuthManager");
 				}
-			} else {
-				throw new AccessDeniedException("Access denied from AuthManager");
 			}
 			throw new SyncDataServiceException(RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorCode(),
 					RolesErrorCode.ROLES_FETCH_EXCEPTION.getErrorMessage());
@@ -130,8 +130,7 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	/**
 	 * Gets the roles from response.
 	 *
-	 * @param response
-	 *            the response
+	 * @param response the response
 	 * @return {@link RolesResponseDto}
 	 */
 	private RolesResponseDto getRolesFromResponse(ResponseEntity<String> response) {

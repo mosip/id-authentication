@@ -35,7 +35,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -44,7 +46,6 @@ import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
 import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
-import io.mosip.kernel.auth.adapter.exception.ParseResponseException;
 import io.mosip.kernel.auth.adapter.model.AuthToken;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.auth.adapter.model.MosipUserDto;
@@ -90,6 +91,49 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 	}
 
+	@Override
+	protected UserDetails retrieveUser(String userName,
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+		ResponseEntity<String> response = null;
+		String token = null;
+		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
+		token = authToken.getToken();
+		MosipUserDto mosipUserDto = null;
+		try {
+			response = getValidatedUserResponse(token);
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+		}
+		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+		if (!validationErrorsList.isEmpty()) {
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
+		}
+		try {
+			ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+					MosipUserDto.class);
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+		}
+		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
+		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
+		authUserDetails.setAuthorities(grantedAuthorities);
+		return authUserDetails;
+
+	}
+
+	private ResponseEntity<String> getValidatedUserResponse(String token)
+			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		HttpHeaders headers = new HttpHeaders();
+		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
+		System.out.println("Validate Url " + validateUrl);
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+		return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
+
+	}
+
 	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
@@ -102,147 +146,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
-	private ResponseEntity<String> getResponseEntity(String token) {
-		HttpHeaders headers = new HttpHeaders();
-		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
-		System.out.println("Validate Url " + validateUrl);
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
-		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		try {
-			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			LOGGER.error("", "", "", e.getMessage());
-		}
-		return null;
-	}
-
-	@Override
-	protected UserDetails retrieveUser(String userName,
-			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-		ResponseEntity<String> response = null;
-		String token = null;
-		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
-		token = authToken.getToken();
-		MosipUserDto mosipUserDto = null;
-
-		response = getResponseEntity(token);
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-
-		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
-		}
-
-		ResponseWrapper<?> responseObject;
-		try {
-			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
-					MosipUserDto.class);
-		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
-		}
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
-		String responseToken = response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
-				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
-		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, responseToken);
-		authUserDetails.setAuthorities(grantedAuthorities);
-		return authUserDetails;
-
-	}
-
-	private String validateToken(RoutingContext routingContext, String[] roles) {
-		boolean isAuthorized = false;
-		HttpServerRequest httpRequest = routingContext.request();
-		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
-		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
-				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
-					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.NOTAUTHENTICATED);
-			return "";
-		}
-		token = token.split(";")[0];
-		ResponseEntity<String> response = getResponseEntity(token);
-		if (response == null) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
-					AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.INTERNEL_SERVER_ERROR);
-			return "";
-		}
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			sendErrors(routingContext, validationErrorsList, AuthAdapterConstant.NOTAUTHENTICATED);
-			return "";
-		}
-		ResponseWrapper<?> responseObject = null;
-		MosipUserDto mosipUserDto = null;
-		try {
-			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
-					MosipUserDto.class);
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					AuthAdapterErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), exception);
-		}
-		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
-		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,authUserDetails.getPassword(), null);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String[] authorities = mosipUserDto.getRole().split(",");
-		for (String role : roles) {
-			for (String authority : authorities) {
-				if (role.equals(authority)) {
-					isAuthorized = true;
-					break;
-				}
-			}
-		}
-		if (!isAuthorized) {
-			List<ServiceError> errors = new ArrayList<>();
-			ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
-					AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
-			errors.add(error);
-			sendErrors(routingContext, errors, AuthAdapterConstant.UNAUTHORIZED);
-			return "";
-		}
-		return response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
-				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
-	}
-
-	private void sendErrors(RoutingContext routingContext, List<ServiceError> errors, int statusCode) {
-
-		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
-		errorResponse.getErrors().addAll(errors);
-		objectMapper.registerModule(new JavaTimeModule());
-		JsonNode reqNode;
-		if (routingContext.getBodyAsJson() != null) {
-			try {
-				reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
-				errorResponse.setId(reqNode.path("id").asText());
-				errorResponse.setVersion(reqNode.path("version").asText());
-			} catch (IOException exception) {
-				LOGGER.error("", "", "", exception.getMessage());
-			}
-		}
-
-		try {
-			routingContext.response().putHeader("content-type", "application/json").setStatusCode(statusCode)
-					.end(objectMapper.writeValueAsString(errorResponse));
-
-		} catch (JsonProcessingException exception) {
-			LOGGER.error("", "", "", exception.getMessage());
-		}
-
-	}
-
 	public void addCorsFilter(HttpServer httpServer, Vertx vertx) {
 		Router router = Router.router(vertx);
-
-		// CORS filters
 		/*
 		 * router.route().handler(routingContext -> { HttpServerRequest
 		 * httpServerRequest = routingContext.request();
@@ -284,16 +189,104 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		}
 		String[] roles = commaSepratedRoles.split(",");
 		Route filterRoute = router.route(httpMethod, path);
-
 		filterRoute.handler(routingContext -> {
-			String token = validateToken(routingContext, roles);
-			if (token.isEmpty()) {
-				return;
+			String token;
+			try {
+				token = validateToken(routingContext, roles);
+				if (token.isEmpty()) {
+					return;
+				}
+				HttpServerResponse httpServerResponse = routingContext.response();
+				httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
+				routingContext.next();
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
 			}
-
-			HttpServerResponse httpServerResponse = routingContext.response();
-			httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
-			routingContext.next();
 		});
+	}
+
+	private String validateToken(RoutingContext routingContext, String[] roles)
+			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
+			JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+		boolean isAuthorized = false;
+		HttpServerRequest httpRequest = routingContext.request();
+		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
+				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.NOTAUTHENTICATED);
+			return "";
+		}
+		token = token.split(";")[0];
+		ResponseEntity<String> response = getValidatedUserResponse(token);
+		if (response == null) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
+					AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.INTERNEL_SERVER_ERROR);
+			return "";
+		}
+		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+		if (!validationErrorsList.isEmpty()) {
+			sendErrors(routingContext, validationErrorsList, AuthAdapterConstant.NOTAUTHENTICATED);
+			return "";
+		}
+		ResponseWrapper<?> responseObject = null;
+		MosipUserDto mosipUserDto = null;
+
+		responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+		mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+				MosipUserDto.class);
+
+		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(authUserDetails,
+				authUserDetails.getPassword(), null);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String[] authorities = mosipUserDto.getRole().split(",");
+		for (String role : roles) {
+			for (String authority : authorities) {
+				if (role.equals(authority)) {
+					isAuthorized = true;
+					break;
+				}
+			}
+		}
+		if (!isAuthorized) {
+			List<ServiceError> errors = new ArrayList<>();
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
+					AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
+			errors.add(error);
+			sendErrors(routingContext, errors, AuthAdapterConstant.UNAUTHORIZED);
+			return "";
+		}
+		return response.getHeaders().get(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE).get(0)
+				.replaceAll(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "");
+	}
+
+	private void sendErrors(RoutingContext routingContext, List<ServiceError> errors, int statusCode) {
+		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
+		errorResponse.getErrors().addAll(errors);
+		objectMapper.registerModule(new JavaTimeModule());
+		JsonNode reqNode;
+		if (routingContext.getBodyAsJson() != null) {
+			try {
+				reqNode = objectMapper.readTree(routingContext.getBodyAsJson().toString());
+				errorResponse.setId(reqNode.path("id").asText());
+				errorResponse.setVersion(reqNode.path("version").asText());
+			} catch (IOException exception) {
+				LOGGER.error("", "", "", exception.getMessage());
+			}
+		}
+		try {
+			routingContext.response().putHeader("content-type", "application/json").setStatusCode(statusCode)
+					.end(objectMapper.writeValueAsString(errorResponse));
+
+		} catch (JsonProcessingException exception) {
+			LOGGER.error("", "", "", exception.getMessage());
+		}
 	}
 }

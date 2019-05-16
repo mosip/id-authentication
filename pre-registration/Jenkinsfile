@@ -15,7 +15,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'dev-k8-cluster'
+ def k8DevContext = 'mosip-dev-cluster'
 
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
@@ -113,6 +113,7 @@ stage ('---------- build ---------------') {
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
  
+	  
    /*
      Checking if there is any Dockerfile present to build, if not, returning from this stage
    */

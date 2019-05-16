@@ -3,12 +3,6 @@
 -- table 		: user_role	- Registration user Roles
 -- table alias  : usrrol		
 
--- schemas section -------------------------------------------------
-
--- create schema if reg schema for Registration Module is not exists
-create schema if not exists reg
-;
- 
 -- table section -------------------------------------------------
 create table reg.user_role (
 
@@ -32,12 +26,4 @@ create table reg.user_role (
 -- keys section -------------------------------------------------
  alter table reg.user_role add constraint pk_usrrol_usr_id primary key (usr_id, role_code)
  ;
-
--- indexes section -------------------------------------------------
--- create index idx_usrrol_<colX> on reg.user_role (colX )
--- ;
-
--- comments section ------------------------------------------------- 
-comment on table reg.user_role is 'Table to store all MOSIP Application users and their mapped roles'
-;
 

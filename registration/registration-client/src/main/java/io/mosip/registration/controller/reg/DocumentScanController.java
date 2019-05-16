@@ -31,13 +31,14 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.entity.DocumentCategory;
-import io.mosip.registration.service.MasterSyncService;
-import io.mosip.registration.service.impl.DocumentCategoryService;
+import io.mosip.registration.service.doc.category.DocumentCategoryService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -146,7 +147,10 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
-
+	
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
+	
 	@Autowired
 	private MasterSyncService masterSyncService;
 
@@ -308,6 +312,10 @@ public class DocumentScanController extends BaseController {
 				ComboBox<DocumentCategoryDto> comboBox = new ComboBox<>();
 				comboBox.setPrefWidth(docScanVbox.getWidth() / 2);
 				comboBox.setId(docCategoryCode);
+				
+				comboBox.valueProperty().addListener((v,oldValue,newValue)->{
+					validateDocumentsPane();
+				});
 				ImageView indicatorImage = new ImageView(
 						new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 								true, true));
@@ -363,7 +371,7 @@ public class DocumentScanController extends BaseController {
 										+ documentCategory.getCode() + " " + RegistrationUIConstants.DOCUMENT);
 					}
 				});
-				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
+				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
@@ -411,7 +419,7 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void scanWindow() {
 		if (RegistrationConstants.YES
-				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 			scanPopUpViewController.setDocumentScan(true);
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
@@ -430,7 +438,7 @@ public class DocumentScanController extends BaseController {
 			// TODO this check has to removed after when the stubbed data is no
 			// more needed
 			if (RegistrationConstants.YES
-					.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.DOC_SCANNER_ENABLED))) {
+					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.DOC_SCANNER_ENABLED))) {
 				scanFromScanner();
 			} else {
 				scanFromStubbed(popupStage);
@@ -610,8 +618,9 @@ public class DocumentScanController extends BaseController {
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
+		
 
-		((ImageView) (((HBox) vboxElement.getParent()).getChildren().get(0))).setImage(new Image(
+		((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -741,7 +750,7 @@ public class DocumentScanController extends BaseController {
 					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
+			((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
 			initializePreviewSection();		
@@ -755,7 +764,6 @@ public class DocumentScanController extends BaseController {
 				if(node instanceof ComboBox<?>) {
 					ComboBox<?> document  = (ComboBox<?>) node;
 					document.setValue(null);
-					document.setPromptText(getDocumentName(key));
 				}
 			}	
 
@@ -973,6 +981,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		fingerPrintCaptureController.clearImage();
 		irisCaptureController.clearIrisBasedOnExceptions();
+		guardianBiometricsController.manageBiometricsListBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);
@@ -994,19 +1003,6 @@ public class DocumentScanController extends BaseController {
 			}
 		}
 
-	}
-	
-	private String getDocumentName(String documentCode) {
-		if(documentCode.equals(RegistrationConstants.POR_DOCUMENT)) {
-			return "Proof of Relationship";
-		} else if(documentCode.equals(RegistrationConstants.POI_DOCUMENT)) {
-			return "Proof of Identity";
-		} else if(documentCode.equals(RegistrationConstants.POA_DOCUMENT)) {
-			return "Proof of Address";
-		} else if(documentCode.equals(RegistrationConstants.DOB_DOCUMENT)) {
-			return "Proof of Birth";
-		}
-		return documentCode;
 	}
 	
 	private void validateDocumentsPane() {

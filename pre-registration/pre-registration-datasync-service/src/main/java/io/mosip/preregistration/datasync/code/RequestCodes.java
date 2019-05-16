@@ -27,7 +27,13 @@ public enum RequestCodes {
 	REGISTARTION_CLIENT_ID("regClientId"), 
 	FROM_DATE("fromDate"), 
 	TO_DATE("toDate"), 
-	USER_ID("userId");
+	USER_ID("userId"),
+	IDENTITY("identity"),
+	POA("POA"),
+	POI("POI"),
+	POR("POR"),
+	POD("POD"),
+	POB("POB");
 	
 	/**
 	 * @param code

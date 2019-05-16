@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.11.0</version>
+		<version>0.11.2</version>
 	</parent>
 	<artifactId>kernel-idvalidator-vid</artifactId>
 	<name>kernel-idvalidator-vid</name>
@@ -15,11 +15,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

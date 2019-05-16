@@ -101,7 +101,7 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 				errorResponseDTO.setCode(RegistrationConstants.ERROR);
 				errorResponseDTO
 						.setMessage(((List<LinkedHashMap<String, String>>) response.get(RegistrationConstants.ERRORS))
-								.get(0).get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE));
+								.get(0).get("message"));
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
 			}

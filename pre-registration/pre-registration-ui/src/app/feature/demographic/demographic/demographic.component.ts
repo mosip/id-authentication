@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { SharedService } from '../../booking/booking.service';
+import { BookingService } from '../../booking/booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
@@ -21,6 +21,9 @@ import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { AttributeModel } from 'src/app/shared/models/demographic-model/attribute.modal';
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
+import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
+import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
+// import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This component takes care of the demographic page.
@@ -47,10 +50,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
 
-  // YEAR_PATTERN = appConstants.YEAR_PATTERN;
-  // MONTH_PATTERN = appConstants.MONTH_PATTERN;
-  // DATE_PATTERN = appConstants.DATE_PATTERN;
-
+  files: FilesModel;
   agePattern: string;
   MOBILE_PATTERN: string;
   MOBILE_LENGTH: string;
@@ -74,10 +74,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
   // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
+  dataIncomingSuccessful = false;
 
   step: number = 0;
   id: number;
   oldAge: number;
+  oldKeyBoardIndex: number;
   numberOfApplicants: number;
   userForm: FormGroup;
   transUserForm: FormGroup;
@@ -87,7 +89,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   user: UserModel;
   demodata: string[];
   secondaryLanguagelabels: any;
-  primaryLanguagelabels: any;
+  demographiclabels: any;
+  errorlabels: any;
   uppermostLocationHierarchy: any;
   primaryGender = [];
   secondaryGender = [];
@@ -103,20 +106,24 @@ export class DemographicComponent implements OnInit, OnDestroy {
   @ViewChild('yyyy') yyyy: ElementRef;
   @ViewChild('age') age: ElementRef;
 
-  regions1: CodeValueModal[] = [];
-  regions2: CodeValueModal[] = [];
-  regions: CodeValueModal[][] = [this.regions1, this.regions2];
-  provinces1: CodeValueModal[] = [];
-  provinces2: CodeValueModal[] = [];
-  provinces: CodeValueModal[][] = [this.provinces1, this.provinces2];
-  cities1: CodeValueModal[] = [];
-  cities2: CodeValueModal[] = [];
-  cities: CodeValueModal[][] = [this.cities1, this.cities2];
-  localAdministrativeAuthorities1: CodeValueModal[] = [];
-  localAdministrativeAuthorities2: CodeValueModal[] = [];
+  private _keyboardRef: MatKeyboardRef<MatKeyboardComponent>;
+  @ViewChildren('keyboardRef', { read: ElementRef })
+  private _attachToElementMesOne: any;
+
+  regions_in_primary_lang: CodeValueModal[] = [];
+  regions_in_secondary_lang: CodeValueModal[] = [];
+  regions: CodeValueModal[][] = [this.regions_in_primary_lang, this.regions_in_secondary_lang];
+  provinces_in_primary_lang: CodeValueModal[] = [];
+  provinces_in_secondary_lang: CodeValueModal[] = [];
+  provinces: CodeValueModal[][] = [this.provinces_in_primary_lang, this.provinces_in_secondary_lang];
+  cities_in_primary_lang: CodeValueModal[] = [];
+  cities_in_secondary_lang: CodeValueModal[] = [];
+  cities: CodeValueModal[][] = [this.cities_in_primary_lang, this.cities_in_secondary_lang];
+  localAdministrativeAuthorities_in_primary_lang: CodeValueModal[] = [];
+  localAdministrativeAuthorities_in_secondary_lang: CodeValueModal[] = [];
   localAdministrativeAuthorities: CodeValueModal[][] = [
-    this.localAdministrativeAuthorities1,
-    this.localAdministrativeAuthorities2
+    this.localAdministrativeAuthorities_in_primary_lang,
+    this.localAdministrativeAuthorities_in_secondary_lang
   ];
   locations = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
   selectedLocationCode = [];
@@ -124,26 +131,26 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   formControlValues: FormControlModal;
   formControlNames: FormControlModal = {
-    fullName: 'fullNamee',
-    gender: 'gendere',
-    dateOfBirth: 'dobe',
+    fullName: 'fullName',
+    gender: 'gender',
+    dateOfBirth: 'dob',
     residenceStatus: 'residenceStatus',
-    addressLine1: 'addressLine1e',
-    addressLine2: 'addressLine2e',
-    addressLine3: 'addressLine3e',
-    region: 'regione',
-    province: 'provincee',
-    city: 'citye',
-    localAdministrativeAuthority: 'localAdministrativeAuthoritye',
-    email: 'emaile',
-    postalCode: 'postalCodee',
-    phone: 'mobilePhonee',
-    CNIENumber: 'pine',
+    addressLine1: 'addressLine1',
+    addressLine2: 'addressLine2',
+    addressLine3: 'addressLine3',
+    region: 'region',
+    province: 'province',
+    city: 'city',
+    localAdministrativeAuthority: 'localAdministrativeAuthority',
+    email: 'email',
+    postalCode: 'postalCode',
+    phone: 'mobilePhone',
+    CNIENumber: 'pin',
 
-    age: 'agee',
-    date: 'datee',
-    month: 'monthe',
-    year: 'yeare',
+    age: 'age',
+    date: 'date',
+    month: 'month',
+    year: 'year',
     fullNameSecondary: 'secondaryFullName',
     addressLine1Secondary: 'secondaryAddressLine1',
     addressLine2Secondary: 'secondaryAddressLine2',
@@ -155,7 +162,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @param {Router} router
    * @param {RegistrationService} regService
    * @param {DataStorageService} dataStorageService
-   * @param {SharedService} sharedService
+   * @param {BookingService} bookingService
    * @param {ConfigService} configService
    * @param {TranslateService} translate
    * @param {MatDialog} dialog
@@ -165,10 +172,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private router: Router,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
-    private sharedService: SharedService,
+    private bookingService: BookingService,
     private configService: ConfigService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private matKeyboardService: MatKeyboardService // private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -176,11 +184,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description This is the anular life cycle hook called upon loading the component.
+   * @description This is the angular life cycle hook called upon loading the component.
    *
    * @memberof DemographicComponent
    */
   async ngOnInit() {
+    // this.loggerService.info('IN DEMOGRAPHIC');
     console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
@@ -220,7 +229,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
   private getPrimaryLabels() {
     return new Promise(resolve => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
-        this.primaryLanguagelabels = response['demographic'];
+        this.demographiclabels = response['demographic'];
+        this.errorlabels = response['error'];
         resolve(true);
       });
     });
@@ -255,17 +265,17 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private consentDeclaration() {
-    if (this.primaryLanguagelabels) {
+    if (this.demographiclabels) {
       const data = {
         case: 'CONSENTPOPUP',
-        title: this.primaryLanguagelabels.consent.title,
-        subtitle: this.primaryLanguagelabels.consent.subtitle,
-        message: this.primaryLanguagelabels.consent.message,
-        checkCondition: this.primaryLanguagelabels.consent.checkCondition,
-        acceptButton: this.primaryLanguagelabels.consent.acceptButton,
-        alertMessageFirst: this.primaryLanguagelabels.consent.alertMessageFirst,
-        alertMessageSecond: this.primaryLanguagelabels.consent.alertMessageSecond,
-        alertMessageThird: this.primaryLanguagelabels.consent.alertMessageThird
+        title: this.demographiclabels.consent.title,
+        subtitle: this.demographiclabels.consent.subtitle,
+        message: this.demographiclabels.consent.message,
+        checkCondition: this.demographiclabels.consent.checkCondition,
+        acceptButton: this.demographiclabels.consent.acceptButton,
+        alertMessageFirst: this.demographiclabels.consent.alertMessageFirst,
+        alertMessageSecond: this.demographiclabels.consent.alertMessageSecond,
+        alertMessageThird: this.demographiclabels.consent.alertMessageThird
       };
       this.dialog.open(DialougComponent, {
         width: '550px',
@@ -373,7 +383,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private async setLocations() {
-    await this.getLocationMetadataHirearchy();
+    await this.getLocationMetadataHirearchy(); //MOR
     console.log('this.uppermostLocationHierarchy', this.uppermostLocationHierarchy);
 
     this.selectedLocationCode = [
@@ -395,6 +405,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         const element = elements[elementsIndex];
         const language = this.languages[elementsIndex];
         await this.getLocationImmediateHierearchy(language, parentLocationCode, element, currentLocationCode);
+        console.log('IMMEDIATE HIER AFTER AWAIT : ', element);
       }
     }
   }
@@ -414,10 +425,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   /**
    * @description This set the initial values for the form attributes.
    *
-   * @private
    * @memberof DemographicComponent
    */
-  private setFormControlValues() {
+  setFormControlValues() {
     if (!this.dataModification) {
       this.formControlValues = {
         fullName: '',
@@ -445,6 +455,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: '',
         addressLine3Secondary: ''
       };
+      this.dataIncomingSuccessful = true;
     } else {
       let index = 0;
       let secondaryIndex = 1;
@@ -480,6 +491,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
+      this.dataIncomingSuccessful = true;
     }
   }
 
@@ -575,12 +587,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
         if (formControlName) this.userForm.controls[formControlName].setValue('');
         this.getLocationImmediateHierearchy(languageCode, event.value, element);
       }
+    } else {
+      this.dataIncomingSuccessful = true;
     }
 
     if (currentLocationHierarchies) {
       for (let index = 0; index < currentLocationHierarchies.length; index++) {
         const currentLocationHierarchy = currentLocationHierarchies[index];
         currentLocationHierarchy.filter(currentLocationHierarchy => {
+          console.log('currentLocationHierarchy', currentLocationHierarchy);
           if (currentLocationHierarchy.valueCode === event.value) {
             this.addCodeValue(currentLocationHierarchy);
           }
@@ -601,6 +616,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       valueName: element.valueName,
       languageCode: element.languageCode
     });
+    console.log('code value', this.codeValue);
   }
 
   /**
@@ -623,7 +639,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
-          console.log('IMMEDIATE', response);
           if (response[appConstants.NESTED_ERROR]) {
             this.onError();
           } else {
@@ -635,7 +650,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
               };
               childLocations.push(codeValueModal);
               if (currentLocationCode && codeValueModal.valueCode === currentLocationCode) {
-                this.codeValue.push(codeValueModal);
+                // this.codeValue.push(codeValueModal);
+                this.addCodeValue(codeValueModal);
               }
             });
             return resolve(true);
@@ -670,6 +686,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
       entity.forEach(element => {
+        console.log('GENDER ELEMENT', element);
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -711,34 +728,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description This is to change the focus in date of birth field.
-   *
-   * @memberof DemographicComponent
-   */
-  nextElementFocus() {
-    console.log('AAYA');
-
-    const dayMaxLength = 2;
-    const monthMaxLength = 2;
-    const date = this.dd.nativeElement.value;
-    const month = this.mm.nativeElement.value;
-    console.log(this.mm);
-    console.log(date.length);
-    console.log(dayMaxLength);
-
-    if (!this.dataModification) {
-      if (date.length == dayMaxLength) {
-        console.log('aaya date');
-        this.mm.nativeElement.focus();
-      }
-      if (month.length == monthMaxLength) {
-        console.log('aaya month');
-        this.yyyy.nativeElement.focus();
-      }
-    }
-  }
-
-  /**
    * @description This is called whenever there is a change in Date of birth field and accordingly age
    * will get calculate.
    *
@@ -752,25 +741,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
     const newDate = year + '/' + month + '/' + date;
     const dobRegex = new RegExp(this.DOB_PATTERN);
     if (dobRegex.test(newDate)) {
-      // if (date.length == 2 && month.length == 2 && year.length == 4) {
       const dateform = new Date(newDate);
-      // const _month = dateform.getMonth() + 1;
-      // if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
-      // const pipe = new DatePipe('en-US');
-      // const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
       this.userForm.controls[this.formControlNames.dateOfBirth].patchValue(newDate);
       this.userForm.controls[this.formControlNames.age].patchValue(this.calculateAge(dateform));
-      // }
-      // else {
-      //   console.log('INSIDE DATE CHANGE ERROR');
-
-      //   this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
-      //   this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
-      //     incorrect: true
-      //   });
-      // this.userForm.controls[this.formControlNames.age].patchValue('');
-    } else {
-      console.log('INSIDE DATE CHANGE ERROR');
+    } else if (date && month && year) {
       this.userForm.controls[this.formControlNames.dateOfBirth].markAsTouched();
       this.userForm.controls[this.formControlNames.dateOfBirth].setErrors({
         incorrect: true
@@ -831,11 +805,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
       this.dataStorageService.getTransliteration(request).subscribe(
         response => {
-          console.log('TRANSLITERATION', response);
-
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
-          else this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+          else {
+            this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+            this.onError();
+          }
         },
         error => {
           // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
@@ -870,7 +845,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    if (this.userForm.valid && this.transUserForm.valid) {
+    console.log('this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+
+    if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
       const request = this.createRequestJSON(identity);
       const responseJSON = this.createResponseJSON(identity);
@@ -929,19 +906,27 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onModification(request: ResponseModel) {
-    this.regService.updateUser(
-      this.step,
-      new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
-    );
-    this.sharedService.updateNameList(this.step, {
-      fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
-      preRegId: this.preRegId,
-      postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
-      regDto: this.sharedService.getNameList()[0].regDto
-    });
+    console.log(' && this.dataIncomingSuccessful before if', this.dataIncomingSuccessful);
 
-    console.log('GET NAME LIST on Modification', this.sharedService.getNameList());
+    if (this.dataIncomingSuccessful) {
+      console.log(' && this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+
+      this.regService.updateUser(
+        this.step,
+        new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
+      );
+      this.bookingService.updateNameList(this.step, {
+        fullName: this.userForm.controls[this.formControlNames.fullName].value,
+        fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
+        preRegId: this.preRegId,
+        postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
+        regDto: this.bookingService.getNameList()[0].regDto
+      });
+
+      console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
+      console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
+      console.log('GET User Array On UPDATIOn', this.regService.getUsers());
+    }
   }
 
   /**
@@ -953,15 +938,16 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onAddition(response: any, request: ResponseModel) {
-    this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
-    this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
-    this.sharedService.addNameList({
+    this.preRegId = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
+    this.regService.addUser(new UserModel(this.preRegId, request, this.files, this.codeValue));
+    this.bookingService.addNameList({
       fullName: this.userForm.controls[this.formControlNames.fullName].value,
       fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
       preRegId: this.preRegId,
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
-    console.log('GET NAME LIST On ADDITON', this.sharedService.getNameList());
+    console.log('GET NAME LIST On ADDITON', this.bookingService.getNameList());
+    console.log('CODE VALUE ON ADDITON', this.codeValue);
     console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
@@ -1105,6 +1091,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // this.message$
   }
+
   /**
    * @description This is a dialoug box whenever an erroe comes from the server, it will appear.
    *
@@ -1112,19 +1099,54 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onError() {
-    console.log(this.primaryLanguagelabels);
-    console.log(this.dialog.openDialogs);
-
     this.dataUploadComplete = true;
     const body = {
       case: 'ERROR',
       title: 'ERROR',
-      message: this.primaryLanguagelabels.error.error,
-      yesButtonText: this.primaryLanguagelabels.error.button_ok
+      message: this.errorlabels.error,
+      yesButtonText: this.errorlabels.button_ok
     };
     this.dialog.open(DialougComponent, {
       width: '250px',
       data: body
     });
+  }
+
+  /**
+   * @description This method is called to open a virtual keyvboard in the specified languaged.
+   *
+   * @param {string} formControlName
+   * @param {number} index
+   * @memberof DemographicComponent
+   */
+  onKeyboardDisplay(formControlName: string, index: number) {
+    let control: AbstractControl;
+    let lang: string;
+    if (this.userForm.controls[formControlName]) {
+      control = this.userForm.controls[formControlName];
+      lang = appConstants.virtual_keyboard_languages[this.primaryLang];
+    } else {
+      control = this.transUserForm.controls[formControlName];
+      lang = appConstants.virtual_keyboard_languages[this.secondaryLang];
+    }
+    if (this.oldKeyBoardIndex == index && this.matKeyboardService.isOpened) {
+      this.matKeyboardService.dismiss();
+    } else {
+      let el: ElementRef;
+      this.oldKeyBoardIndex = index;
+      el = this._attachToElementMesOne._results[index];
+      el.nativeElement.focus();
+      this._keyboardRef = this.matKeyboardService.open(lang);
+      this._keyboardRef.instance.setInputInstance(el);
+      this._keyboardRef.instance.attachControl(control);
+    }
+  }
+
+  @HostListener('blur', ['$event'])
+  @HostListener('focusout', ['$event'])
+  private _hideKeyboard() {
+    if (this.matKeyboardService.isOpened) {
+      this.matKeyboardService.dismiss();
+    }
   }
 }

@@ -12,7 +12,7 @@
       <!-- search container -->
       <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
         <div *ngIf="REGISTRATION_CENTRES" class="center_selection-center_recommendation-display">
-         <span><b>{{ 'centerSelection.display_recommended' | translate }}</b>&nbsp;&nbsp;
+         <span (click)="getRecommendedCenters()"><b>{{ 'centerSelection.display_recommended' | translate }}</b>&nbsp;&nbsp;
           <span class="center_selection-center-available-text">( {{ 'centerSelection.text_found' | translate }} {{ REGISTRATION_CENTRES.length }} {{ 'centerSelection.text_centers' | translate }} )
           </span>
           <mat-icon matTooltip="{{ 'helpText.recommended_centers' | translate}}" [inline]="true">help_outline</mat-icon>
@@ -60,8 +60,8 @@
 
       <div class="centers-list" *ngIf="REGISTRATION_CENTRES">
           <span *ngIf="showMessage && !searchClick" style="margin-left:24px;" class="center_selection-center-available-text">
-            {{ 'centerSelection.text_found' | translate }} 
-            {{ REGISTRATION_CENTRES.length }} 
+            {{ 'centerSelection.text_found' | translate }}
+            {{ REGISTRATION_CENTRES.length }}
             {{ 'centerSelection.text_centers' | translate }}
           </span>
         <ul>
@@ -122,14 +122,14 @@
   <!-- Footer navigation -->
   <div>
     <mat-card class="center-selection__button-container">
-      <button mat-button (click)="routeBack()" class="user-back-btn">
+      <button  (click)="routeBack()" class="user-back-btn">
         {{ 'centerSelection.action_back' | translate }}
       </button>
       <span class="spacer"></span>
-      <button mat-button (click)="routeDashboard()" class="user-book_later-btn">
+      <button  (click)="routeDashboard()" class="user-book_later-btn">
         {{ 'centerSelection.action_book_later' | translate }}
       </button>
-      <button (click)="routeNext()" mat-button [disabled]="selectedCentre === null" class="user-continue-btn">
+      <button (click)="routeNext()" [disabled]="selectedCentre === null" class="user-continue-btn">
         {{ 'centerSelection.action_continue' | translate }}
       </button>
     </mat-card>
