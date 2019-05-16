@@ -64,10 +64,10 @@ MOS-23722|Update Masterdata Sync Service - Add input parameter for Key Index|Spr
 
 
 ### 1.9 DB Changes :
-|DB Script Name|Description|
+|DB|Description|
 |---------------|-------------|
-|         |Template data to be updated for latest sendOtp changes|
-|         |Template type data to be updated for latest sendOtp changes|
+| mosip_master/template|Template data to be updated for latest sendOtp changes|
+| mosip_master/template_type|Template type data to be updated for latest sendOtp changes|
 
 
 
