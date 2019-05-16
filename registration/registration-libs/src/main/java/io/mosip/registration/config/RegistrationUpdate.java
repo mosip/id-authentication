@@ -74,40 +74,33 @@ public class RegistrationUpdate {
 	}
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-		if (latestVersion != null) {
-			return latestVersion;
-		} else {
 
-			// Get latest version using meta-inf.xml
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-			org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
+		// Get latest version using meta-inf.xml
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
 
-			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-			if (list != null && list.getLength() > 0) {
-				NodeList subList = list.item(0).getChildNodes();
+		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
+		if (list != null && list.getLength() > 0) {
+			NodeList subList = list.item(0).getChildNodes();
 
-				if (subList != null && subList.getLength() > 0) {
-					// Latest Version
-					setLatestVersion(subList.item(0).getNodeValue());
-				}
+			if (subList != null && subList.getLength() > 0) {
+				// Latest Version
+				setLatestVersion(subList.item(0).getNodeValue());
 			}
-
 		}
 
 		return latestVersion;
 	}
 
 	public String getCurrentVersion() throws IOException {
-		if (currentVersion != null) {
-			return currentVersion;
-		} else {
+		
 			// Get Local manifest file
 			getLocalManifest();
 			if (localManifest != null) {
 				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 			}
-		}
+		
 		return currentVersion;
 	}
 
@@ -160,6 +153,8 @@ public class RegistrationUpdate {
 			downloadJars.add(jar.getKey());
 		}
 
+		getServerManifest();
+
 		deleteJars(deletableJars);
 
 		checkableJars.removeAll(deletableJars);
@@ -177,6 +172,9 @@ public class RegistrationUpdate {
 		Long t1 = System.currentTimeMillis();
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		for (String jarFile : checkableJars) {
+			// String folder = jarFile.contains(mosip) ? binFolder : libFolder;
+			//
+			// checkForJarFile(version, folder, jarFile);
 
 			executorService.execute(new Runnable() {
 				public void run() {
@@ -245,9 +243,7 @@ public class RegistrationUpdate {
 	}
 
 	private Manifest getLocalManifest() throws IOException {
-		if (localManifest != null) {
-			return localManifest;
-		}
+
 		File localManifestFile = new File(manifestFile);
 
 		if (localManifestFile.exists()) {
@@ -260,10 +256,6 @@ public class RegistrationUpdate {
 	}
 
 	private Manifest getServerManifest() throws IOException, ParserConfigurationException, SAXException {
-
-		if (serverManifest != null) {
-			return serverManifest;
-		}
 
 		// Get latest Manifest from server
 
@@ -356,14 +348,14 @@ public class RegistrationUpdate {
 	}
 
 	private void deleteUnNecessaryJars() {
-		
-		//Bin Folder
+
+		// Bin Folder
 		File bin = new File(binFolder);
-		
-		//Lib Folder
+
+		// Lib Folder
 		File lib = new File(libFolder);
 
-		//Manifest's Attributes
+		// Manifest's Attributes
 		Map<String, Attributes> localManifestAttributes = null;
 		if (localManifest != null) {
 			localManifestAttributes = localManifest.getEntries();

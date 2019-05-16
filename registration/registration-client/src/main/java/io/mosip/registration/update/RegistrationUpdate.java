@@ -126,14 +126,12 @@ public class RegistrationUpdate {
 	public String getCurrentVersion() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for current version started");
-		if (currentVersion != null) {
-			return currentVersion;
-		} else {
-			// Get Local manifest file
-			if (getLocalManifest() != null) {
-				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
-			}
+
+		// Get Local manifest file
+		if (getLocalManifest() != null) {
+			setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 		}
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for current version completed");
 		return currentVersion;
@@ -332,9 +330,7 @@ public class RegistrationUpdate {
 	private Manifest getLocalManifest() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Geting  of local manifest started");
-		if (localManifest != null) {
-			return localManifest;
-		}
+
 		File localManifestFile = new File(manifestFile);
 
 		if (localManifestFile.exists()) {
