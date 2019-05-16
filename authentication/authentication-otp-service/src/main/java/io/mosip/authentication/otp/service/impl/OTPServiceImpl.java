@@ -13,16 +13,20 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.MaskUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.NotificationType;
@@ -65,13 +69,17 @@ public class OTPServiceImpl implements OTPService {
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
-	
+
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
 	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
+
+	/** The AuditHelper */
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
@@ -136,6 +144,11 @@ public class OTPServiceImpl implements OTPService {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 			}
 		}
+
+		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE,
+				otpRequestDto.getId(),
+				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), AuditModules.OTP_REQUEST.getDesc());
+		
 		return otpResponseDTO;
 
 	}
@@ -144,7 +157,8 @@ public class OTPServiceImpl implements OTPService {
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -239,7 +253,8 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Get Mail.
 	 * 
-	 * @param idInfo List of IdentityInfoDTO
+	 * @param idInfo
+	 *            List of IdentityInfoDTO
 	 * @return mail
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -250,7 +265,8 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Get Mobile number.
 	 * 
-	 * @param idInfo List of IdentityInfoDTO
+	 * @param idInfo
+	 *            List of IdentityInfoDTO
 	 * @return Mobile number
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -263,8 +279,10 @@ public class OTPServiceImpl implements OTPService {
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
 	 *
-	 * @param date   the date
-	 * @param minute the minute
+	 * @param date
+	 *            the date
+	 * @param minute
+	 *            the minute
 	 * @return the date
 	 */
 	private Date addMinutes(Date date, int minute) {
@@ -274,8 +292,10 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Formate date.
 	 *
-	 * @param date   the date
-	 * @param format the formate
+	 * @param date
+	 *            the date
+	 * @param format
+	 *            the formate
 	 * @return the date
 	 */
 	private String formatDate(Date date, String format) {
