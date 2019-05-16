@@ -170,7 +170,7 @@ public class VidServiceImplTest {
 			try {
 				impl.retrieveUinByVid("12345678");
 			} catch (IdRepoAppException e) {
-				assertEquals("IDR-VID-006 --> No Record(s) found", e.getMessage());
+				assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
 			}
 	}
 	
@@ -263,7 +263,7 @@ public class VidServiceImplTest {
 		try {
 			impl.updateVid("12345678", req);
 		} catch (IdRepoAppException e) {
-		assertEquals("IDR-VID-006 --> No Record(s) found",e.getMessage());
+		assertEquals("IDR-IDC-007 --> No Record(s) found",e.getMessage());
 		}
 	}
 }

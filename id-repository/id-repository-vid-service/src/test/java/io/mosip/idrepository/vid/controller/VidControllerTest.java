@@ -104,7 +104,7 @@ public class VidControllerTest {
 							IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage()));
 			controller.retrieveUinByVid("12345");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-006 --> No Record(s) found", e.getCause().getMessage());
+			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getCause().getMessage());
 		}
 	}
 
@@ -158,7 +158,7 @@ public class VidControllerTest {
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "VidRequestDTO");
 			controller.updateVidStatus("123456", req, errors);
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-006 --> No Record(s) found", e.getCause().getMessage());
+			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getCause().getMessage());
 		}
 	}
 }
