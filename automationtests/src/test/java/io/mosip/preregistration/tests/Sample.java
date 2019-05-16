@@ -70,7 +70,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 	}
 
 	/**
@@ -79,7 +79,9 @@ public class Sample extends BaseTestCase implements ITest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForDemographicCreate() {
-	dao.setDate("56073873527340");
+		/*String preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
+		System.out.println("============"+preReg_syncAvailability);*/
+		lib.syncAvailability();
 		
 		
 	}

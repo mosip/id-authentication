@@ -147,7 +147,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
 		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),"No data found for the requested pre-registration id");
 	}
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void getAuthToken()
 	{
 		authToken=lib.getToken();

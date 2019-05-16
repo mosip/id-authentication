@@ -50,14 +50,14 @@ import io.restassured.response.Response;
 
 public class FetchAllApplicationCreatedByUser extends BaseTestCase implements ITest {
 
-	static String preId = "";
+	public String preId = "";
 	private static String preReg_URI;
 	protected static String testCaseName = "";
-	static Response Actualresponse = null;
+	public Response Actualresponse = null;
 	private static Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
-	boolean status = false;
+	public boolean status = false;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	FetchAllApplicationCreatedByUser() {
 		super();
@@ -79,7 +79,7 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 		lib.logOut();
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName() {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
 		authToken = lib.getToken();

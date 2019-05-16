@@ -10,6 +10,7 @@ import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.google.gson.JsonObject;
@@ -23,16 +24,15 @@ import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 public class SendOtp extends BaseTestCase implements ITest {
-	Logger logger = Logger.getLogger(BatchJob.class);
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	String preID = null;
+	public Logger logger = Logger.getLogger(BatchJob.class);
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public String preID = null;
 	protected static String testCaseName = "";
-	static String folder = "preReg";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
+	public String folder = "preReg";
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 
 	@BeforeClass
@@ -129,6 +129,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
+	@BeforeMethod(alwaysRun=true)
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {

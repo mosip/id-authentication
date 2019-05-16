@@ -10,6 +10,7 @@ import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import io.mosip.dbaccess.prereg_dbread;
@@ -20,12 +21,12 @@ import io.restassured.response.Response;
 
 public class ValidateOtp extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
-	Logger logger = Logger.getLogger(BatchJob.class);
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public Logger logger = Logger.getLogger(BatchJob.class);
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -153,7 +154,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
-
+@BeforeMethod(alwaysRun=true)
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
