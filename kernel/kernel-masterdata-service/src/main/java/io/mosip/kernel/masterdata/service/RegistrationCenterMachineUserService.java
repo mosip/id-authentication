@@ -51,6 +51,6 @@ public interface RegistrationCenterMachineUserService {
 	 * @return {@link RegCenterMachineUserResponseDto}
 	 */
 	RegCenterMachineUserResponseDto createOrUpdateRegistrationCentersMachineUserMapping(
-			RegistrationCenterUserMachineMappingDto regCenterMachineUserReqDto);
+			RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto);
 
 }

@@ -142,33 +142,37 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 	 */
 	@Override
 	public RegCenterMachineUserResponseDto createOrUpdateRegistrationCentersMachineUserMapping(
-			RegistrationCenterUserMachineMappingDto regCenterMachineUserReqDto) {
+			RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
 		RegistrationCenterMachineUserID registrationCenterMachineUserID = null;
 		RegCenterMachineUserResponseDto regCenterMachineUserResponseDto = null;
 		List<RegistrationCenterMachineUserID> mapped = new ArrayList<>();
 		List<RegistrationCenterMachineUserID> notmapped = new ArrayList<>();
-		try {
+		for (RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto : regCenterMachineUserReqDto
+				.getRequest()) {
+			try {
 
-			Optional<RegistrationCenterUserMachine> registrationCenterUserMachine = registrationCenterMachineUserRepository
-					.findAllNondeletedMappings(regCenterMachineUserReqDto.getCntrId(),
-							regCenterMachineUserReqDto.getMachineId(), regCenterMachineUserReqDto.getUsrId());
-			if (!registrationCenterUserMachine.isPresent()) {
-				registrationCenterMachineUserID = createRegistrationCentersMachineUserMapping(
-						regCenterMachineUserReqDto);
-				mapped.add(registrationCenterMachineUserID);
+				Optional<RegistrationCenterUserMachine> registrationCenterUserMachine = registrationCenterMachineUserRepository
+						.findAllNondeletedMappings(registrationCenterUserMachineMappingDto.getCntrId(),
+								registrationCenterUserMachineMappingDto.getMachineId(),
+								registrationCenterUserMachineMappingDto.getUsrId());
+				if (!registrationCenterUserMachine.isPresent()) {
+					registrationCenterMachineUserID = createRegistrationCentersMachineUserMapping(
+							registrationCenterUserMachineMappingDto);
+					mapped.add(registrationCenterMachineUserID);
 
-			} else {
-				RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
-				MetaDataUtils.setUpdateMetaData(regCenterMachineUserReqDto, centerUserMachine, false);
-				registrationCenterMachineUserID = updateRegistrationCentersMachineUserMapping(centerUserMachine);
-				mapped.add(registrationCenterMachineUserID);
+				} else {
+					RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
+					MetaDataUtils.setUpdateMetaData(registrationCenterUserMachineMappingDto, centerUserMachine, false);
+					registrationCenterMachineUserID = updateRegistrationCentersMachineUserMapping(centerUserMachine);
+					mapped.add(registrationCenterMachineUserID);
+				}
+			} catch (DataAccessLayerException | DataAccessException e) {
+				registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
+				registrationCenterMachineUserID.setCntrId(registrationCenterUserMachineMappingDto.getCntrId());
+				registrationCenterMachineUserID.setMachineId(registrationCenterUserMachineMappingDto.getMachineId());
+				registrationCenterMachineUserID.setUsrId(registrationCenterUserMachineMappingDto.getUsrId());
+				notmapped.add(registrationCenterMachineUserID);
 			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
-			registrationCenterMachineUserID.setCntrId(regCenterMachineUserReqDto.getCntrId());
-			registrationCenterMachineUserID.setMachineId(regCenterMachineUserReqDto.getMachineId());
-			registrationCenterMachineUserID.setUsrId(regCenterMachineUserReqDto.getUsrId());
-			notmapped.add(registrationCenterMachineUserID);
 		}
 		regCenterMachineUserResponseDto = new RegCenterMachineUserResponseDto();
 		regCenterMachineUserResponseDto.setMapped(mapped);
