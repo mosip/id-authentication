@@ -263,10 +263,10 @@ public class AbisServiceImpl implements AbisService {
 		CandidateListDto cd = new CandidateListDto();
 		CandidatesDto[] candidatesDto = null;
 		if(identifyRequest.getGallery() == null ||identifyRequest.getGallery()!=null&& identifyRequest.getGallery().getReferenceIds().isEmpty()) {
-			candidatesDto = new CandidatesDto[4];
+			candidatesDto = new CandidatesDto[3];
 			for (int i = 0; i <candidatesDto.length; i++) {
 				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId(RegistrationUtility.generateId());
+				candidatesDto[i].setReferenceId("e06ddbf7-7354-400c-b815-06c37f22aa4"+(i+1));
 				candidatesDto[i].setScaledScore(100 - i + "");
 				count++;
 			}					
