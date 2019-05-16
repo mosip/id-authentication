@@ -48,25 +48,25 @@ ZIP|Fat Jar + DB|Latest version|The ZIP contains the both fat jar and required t
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
 mosip-sw-0.11.0.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
-kernel-core|NA|NA|Basic core kernel packages.
-kernel-logger-logback|NA|NA|Use for the logging.
-kernel-dataaccess-hibernate|NA|NA|Used for the communicating to the DB.
-kernel-auditmanager-api|NA|NA|Used to audit the reocrds into the DB
-kernel-idvalidator-rid|NA|NA|Used to validate the RID format.
-kernel-idvalidator-uin|NA|NA|Used to validate the UIN format
-kernel-idvalidator-prid|NA|NA|Used to validate the PRID format
-kernel-idgenerator-rid|NA|NA|Used to Generate the RID.
-kernel-crypto-signature|NA|NA|Used to validate the signature response from server.
-kernel-keygenerator-bouncycastle|NA|NA|Used to generate the key pair for AES -256.
-kernel-templatemanager-velocity|NA|NA|Used to generate the template manager using the velocity
-kernel-qrcodegenerator-zxing|NA|NA|Used to generate the QR code in acknowledgment page.
-kernel-pdfgenerator-itext|NA|NA|Used to scan the document in PDF format.
-kernel-crypto-jce|NA|NA|Used to encrypt the packet information
-kernel-jsonvalidator|NA|NA|Used to validate the JSON.
-kernel-virusscanner-clamav|NA|NA|Used to communicate to the Antivirus Clam AV
-kernel-transliteration-icu4j|NA|NA|Used to transliterate the Arabic to French and vice versa.
-kernel-applicanttype-api|NA|NA|Used to get the applicant types 
-kernel-cbeffutil-api|NA|NA|Used to generate the CBEFF file and validate against the schema also.
+kernel-core|NA|0.11.1|Basic core kernel packages.
+kernel-logger-logback|NA|0.11.1|Use for the logging.
+kernel-dataaccess-hibernate|NA|0.11.1|Used for the communicating to the DB.
+kernel-auditmanager-api|NA|0.11.1|Used to audit the reocrds into the DB
+kernel-idvalidator-rid|NA|0.11.1|Used to validate the RID format.
+kernel-idvalidator-uin|NA|0.11.1|Used to validate the UIN format
+kernel-idvalidator-prid|NA|0.11.1|Used to validate the PRID format
+kernel-idgenerator-rid|NA|0.11.1|Used to Generate the RID.
+kernel-crypto-signature|NA|0.11.1|Used to validate the signature response from server.
+kernel-keygenerator-bouncycastle|NA|0.11.1|Used to generate the key pair for AES -256.
+kernel-templatemanager-velocity|NA|0.11.1|Used to generate the template manager using the velocity
+kernel-qrcodegenerator-zxing|NA|0.11.1|Used to generate the QR code in acknowledgment page.
+kernel-pdfgenerator-itext|NA|0.11.1|Used to scan the document in PDF format.
+kernel-crypto-jce|NA|0.11.1|Used to encrypt the packet information
+kernel-jsonvalidator|NA|0.11.1|Used to validate the JSON.
+kernel-virusscanner-clamav|NA|0.11.1|Used to communicate to the Antivirus Clam AV
+kernel-transliteration-icu4j|NA|0.11.1|Used to transliterate the Arabic to French and vice versa.
+kernel-applicanttype-api|NA|0.11.1|Used to get the applicant types 
+kernel-cbeffutil-api|NA|0.11.1|Used to generate the CBEFF file and validate against the schema also.
 
 #### 2.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
