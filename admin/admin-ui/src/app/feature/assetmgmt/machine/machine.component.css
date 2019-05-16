@@ -1,0 +1,31 @@
+.container{
+    overflow: auto;
+    margin-left: -2em;
+}
+.search-row{
+    display: inline-flex;
+    width:800px;
+    align-items: center;
+}
+.totalNumber-text{
+    font-family: sans-serif;
+    font-size: 15px;
+    color: rgb(43, 43, 43);
+}
+.spacer{
+    flex:1 1 auto;
+}
+.input{
+    font-size: 14px;
+}
+img{
+height: 20px;
+width:18px;
+}
+.assign-btn{
+   background-color: rgb(43, 43, 43);
+   color: rgb(240, 240, 240);
+   padding-left: 10px;
+   padding-right:10px;
+   margin-left:15px;
+}

@@ -18,6 +18,6 @@
     </div> -->
   <button mat-button [matMenuTriggerFor]="menu"><mat-icon class="icon">account_circle</mat-icon>&nbsp;<span>John Doe</span></button>
   <mat-menu [overlapTrigger]="false" #menu="matMenu">
-    <button mat-menu-item>Logout</button>
+    <button mat-menu-item (click)="logOut()">Logout</button>
   </mat-menu>
 </mat-toolbar>
