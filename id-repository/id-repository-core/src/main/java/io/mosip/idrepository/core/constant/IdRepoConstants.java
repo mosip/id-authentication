@@ -15,6 +15,10 @@ public enum IdRepoConstants {
 
 	/** The identity file name key. */
 	FILE_NAME_ATTRIBUTE("value"),
+	
+	VID_TYPE_PATH("vidPolicies.*.vidType"),
+	
+	VID_POLICY_PATH("vidPolicies.*.vidPolicy"),
 
 	/** The root path. */
 	ROOT_PATH("identity"),
@@ -59,7 +63,9 @@ public enum IdRepoConstants {
 	
 	VID_DB_PASSWORD("mosip.idrepo.vid.db.password"),
 	
-	VID_DB_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName");
+	VID_DB_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName"),
+	
+	VID_POLICY_FILE_LOCATION("mosip.idrepo.vid.policy-file-location");
 	/** The value. */
 	private final String value;
 
