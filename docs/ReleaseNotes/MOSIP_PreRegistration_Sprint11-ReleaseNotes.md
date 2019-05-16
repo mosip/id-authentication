@@ -53,6 +53,7 @@ kernel-notification-api|NA|0.11.0|Used to notify the user.
 #### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
+Demographic Service | Demographic master data validation
 Audit login and logout| After login and logout system is not audit anything in audit table.  MOS-23793
 langCode validation | Invalid HTTP Status code,error code,error message when user tries to send request  by passing invalid value for langCode key of Create Pre-Registration API. MOS-12023
 File Upload Bug	| Same as is coming for the first applicant also. View File index is coming as 2, only 1 file is uploaded. OR is not displaying in French. MOS-24028 , When Same as is selected in document upload user should be able to view uploaded file, Names without POA displaying in same as, When name selected without POA automatically next name is selected. MOS-23912
