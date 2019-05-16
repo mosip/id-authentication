@@ -48,7 +48,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -308,50 +307,6 @@ public class HeaderController extends BaseController {
 			}
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-		}
-	}
-
-	/**
-	 * Redirects to Device On-Boarding UI Page.
-	 * 
-	 * @param actionEvent
-	 *            is an action event
-	 */
-	public void onBoardDevice(ActionEvent actionEvent) {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-				"Navigating to Device Onboarding Page");
-
-		try {
-			auditFactory.audit(AuditEvent.NAV_ON_BOARD_DEVICES, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			AnchorPane onBoardRoot = BaseController
-					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
-
-			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				VBox pane = (VBox) menu.getParent().getParent().getParent();
-				Object parent = pane.getChildren().get(0);
-				pane.getChildren().clear();
-				pane.getChildren().add((Node) parent);
-				pane.getChildren().add(onBoardRoot);
-			}
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
-							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
-		} finally {
-			LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					"Navigation to Device Onboarding page completed");
 		}
 	}
 

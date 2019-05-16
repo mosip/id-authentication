@@ -222,8 +222,7 @@ public class BaseController {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static <T> T load(URL url) throws IOException {
-		clearDeviceOnboardingContext();
+	public static <T> T load(URL url) throws IOException {		
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
@@ -553,16 +552,6 @@ public class BaseController {
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
-	}
-
-	/**
-	 * Clear device onboarding context.
-	 */
-	private static void clearDeviceOnboardingContext() {
-		if (SessionContext.isSessionContextAvailable()) {
-			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
-			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
-		}
 	}
 
 	/**
