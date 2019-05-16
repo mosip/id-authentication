@@ -113,7 +113,7 @@ public class ABISHandlerUtil {
 
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
 				Number packetUin = utilities.getUIn(registrationId);
-				if (matchedUin != null && packetUin != matchedUin) {
+				if (matchedUin != null && !packetUin.equals(matchedUin)) {
 					filteredRegMap.put(matchedUin.toString(), machedRegId);
 				}
 			}
