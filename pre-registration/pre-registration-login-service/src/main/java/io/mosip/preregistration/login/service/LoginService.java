@@ -28,6 +28,9 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.code.EventId;
+import io.mosip.preregistration.core.code.EventName;
+import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -145,7 +148,6 @@ public class LoginService {
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
-				//response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
@@ -183,9 +185,12 @@ public class LoginService {
 		MainResponseDTO<ResponseEntity<String>> response  = null;
 		response  =	(MainResponseDTO<ResponseEntity<String>>) loginCommonUtil.getMainResponseDto(userIdOtpRequest);
 		requiredRequestMap.put("id",userIdOtpId);
+		String userid=null;
+		boolean isSuccess = false;
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
+				userid=user.getUserId();
 				loginCommonUtil.validateOtpAndUserid(user);
 				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
 				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
@@ -211,6 +216,7 @@ public class LoginService {
 				
 				response.setResponse(responseEntity);
 			}
+			isSuccess = true;
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -219,8 +225,19 @@ public class LoginService {
 		}
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
-		}
 		
+				if (isSuccess) {
+					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
+							" User sucessfully logedin    ",
+							AuditLogVariables.NO_ID.toString(), userid,
+							userid);
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+							" User failed to logedin ", AuditLogVariables.NO_ID.toString(),
+							userid, userid);
+		}
+			
+		}
 		return response;
 	}
 	
@@ -239,11 +256,14 @@ public class LoginService {
 		MainResponseDTO<AuthNResponse> response  = new MainResponseDTO<>();
 		response.setId(invalidateTokenId);
 		response.setVersion(version);
-		
+		boolean isSuccess = false;
+		String userId=null;
 		try {
+			
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
 			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
+			userId=loginCommonUtil.getUserDetailsFromToken(headersMap);
 			responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
@@ -253,15 +273,26 @@ public class LoginService {
 			ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 			authNResponse = (AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()), AuthNResponse.class);
 			response.setResponse(authNResponse);
-			
+			isSuccess = true;
 		}
 		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
 					"In call invalidateToken method of kernel service- " + ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"invalidateToken",null);	
+			new LoginExceptionCatcher().handle(ex,"invalidateToken",response);	
 		}
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
+			if (isSuccess) {
+				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
+						"User sucessfully logedin ",
+						AuditLogVariables.NO_ID.toString(),userId,
+						userId);
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"User failed to logedin", AuditLogVariables.NO_ID.toString(),
+						userId, userId);
+	}
+		
 		}
 		return response;
 	}
@@ -284,8 +315,8 @@ public class LoginService {
 		auditRequestDto.setId(idType);
 		auditRequestDto.setSessionUserId(userId);
 		auditRequestDto.setSessionUserName(userName);
-		auditRequestDto.setModuleId(AuditLogVariables.DEM.toString());
-		auditRequestDto.setModuleName(AuditLogVariables.DEMOGRAPHY_SERVICE.toString());
+		auditRequestDto.setModuleId(AuditLogVariables.AUTHENTICATION.toString());
+		auditRequestDto.setModuleName(AuditLogVariables.AUTHENTICATION_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 	

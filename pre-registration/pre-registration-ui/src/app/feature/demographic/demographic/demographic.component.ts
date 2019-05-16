@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgModel, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -23,6 +23,7 @@ import { AttributeModel } from 'src/app/shared/models/demographic-model/attribut
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
+// import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This component takes care of the demographic page.
@@ -49,9 +50,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
 
-  // YEAR_PATTERN = appConstants.YEAR_PATTERN;
-  // MONTH_PATTERN = appConstants.MONTH_PATTERN;
-  // DATE_PATTERN = appConstants.DATE_PATTERN;
   files: FilesModel;
   agePattern: string;
   MOBILE_PATTERN: string;
@@ -76,6 +74,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
+  dataIncomingSuccessful = false;
 
   step: number = 0;
   id: number;
@@ -178,7 +177,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private matKeyboardService: MatKeyboardService
+    private matKeyboardService: MatKeyboardService // private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -191,6 +190,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   async ngOnInit() {
+    // this.loggerService.info('IN DEMOGRAPHIC');
     console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
@@ -395,7 +395,6 @@ private getConsentMessage() {
    */
   private async setLocations() {
     await this.getLocationMetadataHirearchy(); //MOR
-    console.log('this.uppermostLocationHierarchy', this.uppermostLocationHierarchy);
 
     this.selectedLocationCode = [
       this.uppermostLocationHierarchy,
@@ -419,6 +418,8 @@ private getConsentMessage() {
         console.log('IMMEDIATE HIER AFTER AWAIT : ', element);
       }
     }
+
+    this.dataIncomingSuccessful = true;
   }
 
   /**
@@ -466,6 +467,7 @@ private getConsentMessage() {
         addressLine2Secondary: '',
         addressLine3Secondary: ''
       };
+      // this.dataIncomingSuccessful = true;
     } else {
       let index = 0;
       let secondaryIndex = 1;
@@ -501,6 +503,7 @@ private getConsentMessage() {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
+      // this.dataIncomingSuccessful = true;
     }
   }
 
@@ -596,13 +599,14 @@ private getConsentMessage() {
         if (formControlName) this.userForm.controls[formControlName].setValue('');
         this.getLocationImmediateHierearchy(languageCode, event.value, element);
       }
+    } else {
+      this.dataIncomingSuccessful = true;
     }
 
     if (currentLocationHierarchies) {
       for (let index = 0; index < currentLocationHierarchies.length; index++) {
         const currentLocationHierarchy = currentLocationHierarchies[index];
         currentLocationHierarchy.filter(currentLocationHierarchy => {
-          console.log('currentLocationHierarchy', currentLocationHierarchy);
           if (currentLocationHierarchy.valueCode === event.value) {
             this.addCodeValue(currentLocationHierarchy);
           }
@@ -623,7 +627,6 @@ private getConsentMessage() {
       valueName: element.valueName,
       languageCode: element.languageCode
     });
-    console.log('code value', this.codeValue);
   }
 
   /**
@@ -693,7 +696,6 @@ private getConsentMessage() {
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
       entity.forEach(element => {
-        console.log('GENDER ELEMENT', element);
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -815,7 +817,7 @@ private getConsentMessage() {
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
-            this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+            // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
             this.onError();
           }
         },
@@ -852,7 +854,9 @@ private getConsentMessage() {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    if (this.userForm.valid && this.transUserForm.valid) {
+    console.log('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
+
+    if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
       const request = this.createRequestJSON(identity);
       const responseJSON = this.createResponseJSON(identity);
@@ -911,6 +915,11 @@ private getConsentMessage() {
    * @memberof DemographicComponent
    */
   private onModification(request: ResponseModel) {
+    // console.log(' && this.dataIncomingSuccessful before if', this.dataIncomingSuccessful);
+
+    // if (this.dataIncomingSuccessful) {
+    //   console.log(' && this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+
     this.regService.updateUser(
       this.step,
       new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
@@ -926,6 +935,7 @@ private getConsentMessage() {
     console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
     console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
     console.log('GET User Array On UPDATIOn', this.regService.getUsers());
+    // }
   }
 
   /**

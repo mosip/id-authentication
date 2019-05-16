@@ -124,12 +124,11 @@ public class DemographicController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved") })
 	public ResponseEntity<MainResponseDTO<DemographicResponseDTO>> getApplication(
 			@PathVariable("preRegistrationId") String preRegistraionId) {
-		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all demographic data with preregistartionId"
 						+ preRegistraionId);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.getDemographicData(preRegistraionId, userId));
+				.body(preRegistrationService.getDemographicData(preRegistraionId));
 	}
 
 	/**

@@ -16,7 +16,7 @@ public class MandatoryFieldException extends BaseUncheckedException{
 	 * 
 	 */
 	private static final long serialVersionUID = 1298682891599963309L;
-	private MainResponseDTO<?> mainResponseDTO;
+	private final MainResponseDTO<?> mainResponseDTO;
 
 	public MandatoryFieldException(String msg,MainResponseDTO<?> response) {
 		super("", msg);
@@ -38,7 +38,5 @@ public class MandatoryFieldException extends BaseUncheckedException{
 		this.mainResponseDTO=response;
 	}
 
-	public MandatoryFieldException() {
-		super();
-	}
+	
 }

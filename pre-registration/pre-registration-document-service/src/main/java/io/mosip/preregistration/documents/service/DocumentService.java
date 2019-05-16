@@ -191,7 +191,7 @@ public class DocumentService {
 			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
-		MainRequestDTO<DocumentRequestDTO> docReqDto = new MainRequestDTO<>();
+		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
 
 		try {
