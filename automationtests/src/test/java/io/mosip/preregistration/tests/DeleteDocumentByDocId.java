@@ -129,19 +129,20 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		// Document Upload for created application
 
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
-        logger.info("Doc upload res::"+docUploadResponse.asString());
+       // logger.info("Doc upload res::"+docUploadResponse.asString());
 		// Get PreId from Document upload response
 		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.documentId").toString();
-
+		docId = docUploadResponse.jsonPath().get("response.docId").toString();
+		 
 		if (testCaseName.contains("smoke")) {
 
 			// Delete All Document by Document Id
 			Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId, preId);
 			outerKeys.add("responsetime");
 			innerKeys.add("multipartFile");
+			  
              logger.info("Del Doc res:"+delAllDocByPreId.asString());
 			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
 
