@@ -137,7 +137,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 			// Book An Appointment for the available data
 			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-
+			logger.info("bookAppointmentResponse:"+bookAppointmentResponse.asString());
 			// Fetch Appointment Details
 			Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
              

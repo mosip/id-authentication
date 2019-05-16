@@ -151,7 +151,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
-			docId = actualRequest.get("documentId").toString();
+			docId = actualRequest.get("docId").toString();
 
 			parm.put("preRegistrationId", preId);
 

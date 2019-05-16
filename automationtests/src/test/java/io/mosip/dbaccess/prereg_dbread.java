@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.entity.DemographicEntity;
+import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
 import io.mosip.service.BaseTestCase;
 
 
@@ -25,7 +26,7 @@ public class prereg_dbread {
 	static Session session;
 	private static Logger logger = Logger.getLogger(prereg_dbread.class);
 	
-
+	public PreRegistartionDataBaseAccess dbAccess=new PreRegistartionDataBaseAccess();
 	
 	@SuppressWarnings("deprecation")
 	public static boolean prereg_dbconnectivityCheck()
@@ -373,7 +374,7 @@ public class prereg_dbread {
 		List<?> flag;
 		
 		//factory = new Configuration().configure("preregqa.cfg.xml")
-		factory = new Configuration().configure("preregdev.cfg.xml")
+		factory = new Configuration().configure("preregint.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
@@ -388,7 +389,7 @@ public class prereg_dbread {
 		int flag;
 		
 		//factory = new Configuration().configure("preregqa.cfg.xml")
-		factory = new Configuration().configure("preregdev.cfg.xml")
+		factory = new Configuration().configure("preregint.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		/*factory = new Configuration().configure("prereg.cfg.xml")
 				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/

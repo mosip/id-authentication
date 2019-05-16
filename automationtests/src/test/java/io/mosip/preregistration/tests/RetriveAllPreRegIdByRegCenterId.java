@@ -141,13 +141,13 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-
+		logger.info("jhhiudshcusducduc::");
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-
+		
 		Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId);
 		String fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		logger.info("Fetch App Res::" + fetchAppStr);

@@ -20,7 +20,7 @@ public class PreregistrationDAO
 		String hql = "SELECT preRegistrationId,statusCode FROM DemographicEntity E WHERE E.preRegistrationId = '"+preRegId+"'";
 		
 		List<? extends Object> result = prereg_dbread.validateDB(hql);
-		
+		//List<? extends Object> result = dbAccess.updateDbData(hql, "prereg");
 		return result;
 		
 	}
@@ -28,7 +28,7 @@ public class PreregistrationDAO
 	public int updateStatusCode(String statusCode,String preRegId)
 	{
 		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
-		System.out.println("My info::"+hql);
+		
 		int result = prereg_dbread.validateDBUpdate(hql);
 		return result;
 	}

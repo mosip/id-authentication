@@ -137,7 +137,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
 			logger.info("CancelBookingApp" + CancelBookingApp.asString());
 			List<? extends Object> val = preRegLib.preregFetchPreregDetails(preId);
-
+			logger.info("Vall" + val);
 			Object[] TestData = null;
 
 			for (Object obj : val) {

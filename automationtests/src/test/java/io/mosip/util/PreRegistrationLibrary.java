@@ -1302,18 +1302,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public Response FetchAppointmentDetails(String preID) {
-		testSuite = "FetchAppointmentDetails/preReg_FetchAppointmentDetails_smoke";
-		request = getRequest(testSuite);
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		request.put("preRegistrationId", preID);
-		response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsuri, request);
+
+		
+		String preRegFetchAppDet = preReg_FecthAppointmentDetailsURI+preID;
+		response = applnLib.getRequestWithoutParm(preRegFetchAppDet);
 		return response;
 	}
 
@@ -2047,7 +2039,6 @@ System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
 		preReg_FecthAppointmentDetailsuri = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsuri");
 
 		qrCode_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
-		
 		
 		preReg_RetriveBookedPreIdsByRegId = preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		QRCodeFilePath=preRegUtil.fetchPreregProp().get("QRCodeFilePath");

@@ -157,7 +157,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			HashMap<String, String> parm = new HashMap<>();
 			parm.put("preRegistrationId", preId);
 			Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
-			System.out.println(
+			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("docId");
