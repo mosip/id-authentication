@@ -1,5 +1,8 @@
 <div class="otp-authentication-container">
   <mat-card class="otp-authentication-card">
+    <div *ngIf="active">
+      <mat-progress-bar mode="buffer"></mat-progress-bar>
+    </div>
       <mat-card-title>
           <div class="forgot-password-title"><span>Forgot Password</span></div>
           <mat-divider [inset]="true"></mat-divider>

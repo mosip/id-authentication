@@ -12,6 +12,7 @@ import { RequestModel } from '../../shared/models/request-model';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
+  active: boolean;
   resetPasswordForm: FormGroup;
   passwordPattern = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$';
   resetPasswordModel = {} as ResetPasswordModel;
@@ -33,6 +34,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSave() {
+    this.active = true;
     this.resetPasswordModel.newPassword = this.resetPasswordForm.get('password').value;
     this.resetPasswordModel.userId = this.facadeService.getUserID();
     this.requestModel = new RequestModel('id', 'v1', this.resetPasswordModel, null);

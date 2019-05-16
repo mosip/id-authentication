@@ -63,7 +63,7 @@
   font-family: 'Lucida Sans', 'Lucida Sans Regular';
   font-size: 12px;
   word-spacing: 1px;
-  color: rgb(255, 85, 85);
+  color: rgb(206, 14, 14);
   animation: 0.5s valAnim  forwards ;
 }
 @keyframes valAnim {

@@ -20,6 +20,7 @@
           </mat-form-field>
         </div>
         <div class="validation" *ngIf="!loginForm.controls['username'].valid && loginForm.controls['username'].touched" >{{usernameValidity}}</div>
+        <div class="validation" *ngIf="invaildUserName" >Invaild Username</div>
         <div class="forgot-username-link">
           <a>Forgot User Name</a>
         </div>

@@ -21,6 +21,7 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   seconds: number;
   counter: number;
   interval: any;
+  active: boolean;
   otpValidationStatus: string;
   resendOTPResponse: string;
   otpValidateModel = {} as OtpValidateModel;
@@ -44,6 +45,7 @@ export class OtpAuthenticationComponent implements OnInit, OnDestroy {
   }
 
   onVerify() {
+    this.active = true;
     this.otpValidateModel.appId = 'admin';
     this.otpValidateModel.otp = this.otpAuthenticationForm.get('otp').value;
     this.otpValidateModel.userId = this.facadeService.getUserID();

@@ -11,6 +11,7 @@ import { RequestModel } from '../../shared/models/request-model';
   styleUrls: ['./forgot-password.component.css']
 })
 export class ForgotPasswordComponent implements OnInit {
+  active: boolean;
   mobileNumber: number;
   errorMessage: string;
   userId: any;
@@ -28,6 +29,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   onSubmit() {
+    this.active = true;
     this.facadeService.setContact(this.mobileNumber);
     this.facadeService.getUserNameFromPhoneNumber(this.mobileNumber).subscribe(result => {
       this.userId = result['response']['userName'];
