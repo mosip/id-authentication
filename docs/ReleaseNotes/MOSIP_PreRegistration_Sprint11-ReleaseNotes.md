@@ -41,7 +41,7 @@ kernel-idgenerator-prid|NA|0.11.0|Used to generate the PRID format.
 kernel-idvalidator-prid|NA|0.11.0|Used to validate the PRID format.
 kernel-crypto-signature|NA|0.11.0|Used to validate the signature response from server.
 kernel-templatemanager|NA|0.11.0|Used to generate the template manager.
-kernel-qrcodegenerator-zxing|0.11.0|NA|Used to generate the QR code in acknowledgment page.
+kernel-qrcodegenerator-zxing|NA|0.11.0|Used to generate the QR code in acknowledgment page.
 kernel-pdfgenerator-itext|NA|0.11.0|Used to scan the document in PDF format.
 kernel-crypto-jce|NA|0.11.0|Used to encrypt the pre-redistaion data information.
 kernel-jsonvalidator|NA|0.11.0|Used to validate the JSON.
