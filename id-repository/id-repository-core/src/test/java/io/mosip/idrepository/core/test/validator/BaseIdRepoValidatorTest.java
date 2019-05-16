@@ -1,19 +1,13 @@
-package io.mosip.idrepository.vid.validator;
+package io.mosip.idrepository.core.test.validator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.time.ZoneId;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,12 +22,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
-import io.mosip.idrepository.vid.dto.RequestDTO;
-import io.mosip.idrepository.vid.dto.VidRequestDTO;
-import io.mosip.kernel.core.idvalidator.spi.VidValidator;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -44,56 +35,34 @@ import io.mosip.kernel.core.util.DateUtils;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ConfigurationProperties("mosip.idrepo.vid")
 @ActiveProfiles("test")
-public class VidRequestValidatorTest {
+@ConfigurationProperties("mosip.idrepo")
+public class BaseIdRepoValidatorTest {
 
-	@InjectMocks
-	private VidRequestValidator requestValidator;
-	
-	@Mock
-	private VidValidator<String> vidValidator;
+	BaseIdRepoValidator requestValidator=new BaseIdRepoValidator() {
+		
+	};
 	
 	@Autowired
 	Environment env;
 	
-	List<String> allowedStatus;
-	
+	/** The id. */
 	private Map<String, String> id;
-	
+
 	public Map<String, String> getId() {
 		return id;
 	}
 	public void setId(Map<String, String> id) {
 		this.id = id;
 	}
-	public List<String> getAllowedStatus() {
-		return allowedStatus;
-	}
-	public void setAllowedStatus(List<String> allowedStatus) {
-		this.allowedStatus = allowedStatus;
-	}
-	Errors errors;
 
+	Errors errors;
 	@Before
 	public void before() {
-		errors = new BeanPropertyBindingResult(new VidRequestDTO(), "vidRequestDto");
-		ReflectionTestUtils.setField(requestValidator, "allowedStatus", allowedStatus);
-		ReflectionTestUtils.setField(requestValidator, "id", id);
 		ReflectionTestUtils.setField(requestValidator, "env", env);
-		ReflectionTestUtils.setField(requestValidator, "vidValidator", vidValidator);
+		ReflectionTestUtils.setField(requestValidator, "id", id);
+		errors = new BeanPropertyBindingResult(new IdRequestDTO(), "idRequestDto");
 	}
-
-	@Test
-	public void testSupport() {
-		assertTrue(requestValidator.supports(VidRequestDTO.class));
-	}
-	
-	@Test
-	public void testSupport_Invalid() {
-		assertFalse(requestValidator.supports(IdRequestDTO.class));
-	}
-	
 	@Test
 	public void testValidateReqTimeNullReqTime() {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateReqTime", null, errors);
@@ -105,7 +74,7 @@ public class VidRequestValidatorTest {
 			assertEquals("requesttime", ((FieldError) error).getField());
 		});
 	}
-
+	
 	@Test
 	public void testValidateReqTimeFutureReqTime() {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateReqTime",
@@ -142,64 +111,28 @@ public class VidRequestValidatorTest {
 			assertEquals("version", ((FieldError) error).getField());
 		});
 	}
+	
 	@Test
-	public void testValidateStatus_Invalid_Status() {
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateStatus", "ACTIVAT", errors);
+	public void testValidateIdNullId() {
+		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", null, errors, "read");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage(), "vidStatus"),
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
 					error.getDefaultMessage());
-			assertEquals("request", ((FieldError) error).getField());
+			assertEquals("id", ((FieldError) error).getField());
 		});
 	}
-	
+
 	@Test
-	public void testValidateStatus_Null_Status() {
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateStatus", null, errors);
+	public void testValidateIdInvalidId() {
+		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", "abc", errors, "read");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "vidStatus"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
 					error.getDefaultMessage());
-			assertEquals("request", ((FieldError) error).getField());
+			assertEquals("id", ((FieldError) error).getField());
 		});
-	}
-	
-	@Test
-	public void testValidateRequest() {
-		VidRequestDTO req=new VidRequestDTO();
-		req.setId("mosip.vid.update");
-		RequestDTO request=new RequestDTO();
-		request.setVidStatus("ACTIVE");
-		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
-		req.setRequest(request);
-		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req,errors);
-	}
-	
-	@Test
-	public void testValidateRequest_NullRequest() {
-		VidRequestDTO req=new VidRequestDTO();
-		req.setId("mosip.vid.update");
-		req.setRequest(null);
-		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
-		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req,errors);
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER_VID.getErrorMessage(), "request"),
-					error.getDefaultMessage());
-			assertEquals("request", ((FieldError) error).getField());
-		});
-	}
-	
-	@Test
-	public void testValidateVid_Valid() {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateVid", "2015642902372692");
 	}
 }
