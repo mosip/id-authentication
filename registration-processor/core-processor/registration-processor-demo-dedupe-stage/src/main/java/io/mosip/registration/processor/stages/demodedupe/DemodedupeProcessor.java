@@ -431,16 +431,26 @@ public class DemodedupeProcessor {
 	/**
 	 * Save manual adjudication data.
 	 *
-	 * @param registrationStatusDto the registration status dto
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private void saveManualAdjudicationData(InternalRegistrationStatusDto registrationStatusDto)
 			throws ApisResourceAccessException, IOException {
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				SyncTypeDto.NEW.toString());
-		packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
-				DedupeSourceName.DEMO);
+		if (!matchedRegIds.isEmpty()) {
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
+					DedupeSourceName.DEMO);
+		} else {
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"No matched RegistrationId's found. Hence data is not inserting in manual adjudication table");
+		}
+
 	}
 
 }
