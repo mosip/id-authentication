@@ -42,6 +42,7 @@ import io.mosip.idrepository.core.dto.VidResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.AuditHelper;
 import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.vid.entity.Vid;
@@ -76,6 +77,9 @@ public class VidServiceImplTest {
 
 	@Mock
 	private RestRequestBuilder restBuilder;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Mock
 	private RestHelper restHelper;
