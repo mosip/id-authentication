@@ -7,10 +7,12 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.admin.configvalidator.constant.ConfigValidatorErrorCode;
 import io.mosip.admin.configvalidator.exception.ConfigValidationException;
+import io.mosip.admin.configvalidator.exception.PropertyNotFoundException;
 
 /**
  * @author Sidhant Agarwal
@@ -33,8 +35,20 @@ public class ProcessFlowConfigValidator {
 	 * @return true if validation successfull
 	 */
 	public boolean validateDocumentProcess() {
-		String regClientProp = restTemplate.getForObject(regUrl, String.class);
-		String regProcProp = restTemplate.getForObject(regProcessorUrl, String.class);
+		String regClientProp = null;
+		String regProcProp = null;
+		try {
+			regClientProp = restTemplate.getForObject(regUrl, String.class);
+		} catch (RestClientException e) {
+			throw new PropertyNotFoundException(ConfigValidatorErrorCode.REG_CLIENT_PROPERTY_NOT_FOUND.errorCode(),
+					ConfigValidatorErrorCode.REG_CLIENT_PROPERTY_NOT_FOUND.errorMessage());
+		}
+		try {
+			regProcProp = restTemplate.getForObject(regProcessorUrl, String.class);
+		} catch (RestClientException e) {
+			throw new PropertyNotFoundException(ConfigValidatorErrorCode.REG_PROC_PROPERTY_NOT_FOUND.errorCode(),
+					ConfigValidatorErrorCode.REG_PROC_PROPERTY_NOT_FOUND.errorMessage());
+		}
 
 		boolean result = false;
 		Properties props = new Properties();
