@@ -96,7 +96,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -139,7 +139,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.documentId").toString();
+		docId = docUploadResponse.jsonPath().get("response.docId").toString();
 
 		if (testCaseName.contains("smoke")) {
 

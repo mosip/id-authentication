@@ -73,7 +73,7 @@ public class QRCode extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	Response Actualresponse = null;
 	JSONObject Expectedresponse = null;
-	String preReg_URI;
+    
 	//ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	PreRegistrationUtil preregUtil=new PreRegistrationUtil();
 	QRCodeUtil qrCodeUtil=new QRCodeUtil();
@@ -82,7 +82,10 @@ public class QRCode extends BaseTestCase implements ITest {
 	String folderPath = "preReg/QRCode";
 	String outputFile = "QRCodeRequestOutput.json";
 	String requestKeyFile = "QRCodeRequest.json";
-
+	String preReg_URI;
+	//String preReg_URI=preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
+	//String qrCode_URI=preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
+	
 	// implement,IInvokedMethodListener
 	public QRCode() {
 
@@ -102,7 +105,7 @@ public class QRCode extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -127,7 +130,7 @@ public class QRCode extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-
+		logger.info("TSSSSS::"+testCaseName+"PreReg URI:"+preReg_URI);
 		if (testCaseName.contains("smoke")) {
 			// Get All Document For PreID
 			Response qrCoderes = qrCodeUtil.QRCode();
@@ -137,8 +140,9 @@ public class QRCode extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
+			System.out.println("iuiuiuiu");
 			Response qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
-			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString());
+			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString()+"preRegURI:::"+preReg_URI);
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(qrCodeResponse, Expectedresponse, outerKeys, innerKeys);
 		}
@@ -174,7 +178,7 @@ public class QRCode extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 		
 		//QR Code Resource URI
-		preReg_URI = preregUtil.fetchPreregProp().get("qrCode_URI");
+		preReg_URI = preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

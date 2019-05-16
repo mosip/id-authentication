@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
+import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -74,6 +74,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
 	String preReg_URI;
 
 	// implement,IInvokedMethodListener
@@ -93,7 +94,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -133,8 +134,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			val = testCaseName;
 		} else {
 			String[] parts = testCaseName.split("_");
-			val = parts[0];
-			name = parts[1];
+			val = parts[0]+parts[1]+parts[2];
+			name = parts[3];
 		}
 
 		// Creating the Pre-Registration Application
@@ -157,11 +158,11 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		switch (val) {
 
-		case "RetrivePreIdByRegCenterId_smoke":
+		case "preReg_RetrivePreIdByRegCenterId_smoke":
 
 			// Retrieve all pre-registration ids by registration center id
 			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
-			logger.info("REEEEE::" + retrivePreIDFromRegCenId.asString());
+			logger.info("preReg_RetrivePreIdByRegCenterId_smoke::" + retrivePreIDFromRegCenId.asString());
 			
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
@@ -172,7 +173,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			break;
 
-		case "RetrivePreIdByRegCenterIdByPassingInvalidRegCenId":
+		case "prereg_RetrivePreIdByRegCenterId_registrationCenterId":
 			String registartionCenterId = actualRequest.get("registartion_center_id").toString();
 
 			HashMap<String, String> parm = new HashMap<>();
@@ -194,7 +195,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			break;
 
-		case "RetrivePreIdByRegCenterIdByPassingInvalidFromDate":
+		case "prereg_RetrivePreIdByRegCenterId_fromDate":
 			String frmDate = actualRequest.get("from_date").toString();
 
 			HashMap<String, String> invPreIdParm = new HashMap<>();
@@ -216,7 +217,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			break;
 			
-		case "RetrivePreIdByRegCenterIdByPassingInvalidToDate":
+		case "prereg_RetrivePreIdByRegCenterId_toDate":
 			LocalDate curFrmDate = currentTime.toLocalDate();
 			
 			String invToDate = actualRequest.get("to_date").toString();
@@ -278,7 +279,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		testCaseName = object.get("testCaseName").toString();
 		//Retrive All PreRegId by Registration Center Id Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_RetriveBookedPreIdsByRegId");
+		preReg_URI =preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

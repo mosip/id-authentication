@@ -127,7 +127,7 @@ public SoftAssert softAssert = new SoftAssert();
 		try {
 
 			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
-			System.out.println("Actual res::"+Actualresponse.asString());
+			System.out.println("Actual res::"+Actualresponse.asString()+"Prereg URI:"+preReg_URI);
 		} catch (Exception e) {
 			logger.info(e);
 		}

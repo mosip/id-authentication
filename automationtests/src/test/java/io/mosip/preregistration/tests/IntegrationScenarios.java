@@ -117,7 +117,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		// Upload document
 
 		response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 
 		// Delete document by document Id
 
@@ -148,7 +148,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Delete document by PreReg Id
@@ -214,7 +214,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -244,7 +244,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -295,7 +295,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			preRegID = response.jsonPath().get("response.preRegistrationId").toString();
 		// Upload document
 			response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -655,7 +655,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			logger.error(e.getMessage());
 		}
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -734,7 +734,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response getPreRegistrationStatus = lib.getPreRegistrationStatus(preID);
 		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response.statusCode"), "Booked");
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
+		lib.CancelBookingAppointment(preID);
 		Response getPreRegistrationStatusAfterCancel = lib.getPreRegistrationStatus(preID);
 		Assert.assertEquals(getPreRegistrationStatusAfterCancel.jsonPath().get("response.statusCode"),
 				"Pending_Appointment");
@@ -1002,7 +1002,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1027,7 +1027,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1077,7 +1077,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1433,7 +1433,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 			createdBy = createApplicationResponse.jsonPath().get("response.createdBy").toString();
 			Response uploadDoc = lib.documentUpload(createApplicationResponse);
-			String docId = uploadDoc.jsonPath().get("response.documentId").toString();
+			String docId = uploadDoc.jsonPath().get("response.docId").toString();
 			Response discardApp = lib.discardApplication(preRegID);
 			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId,preRegID);
 			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");

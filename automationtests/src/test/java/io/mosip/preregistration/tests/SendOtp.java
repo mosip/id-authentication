@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -34,6 +35,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
 	public String folder = "preReg";
 	ApplicationLibrary applnLib = new ApplicationLibrary();
+	PreregistrationDAO dao = new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -50,9 +52,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		lib.compareValues(response.jsonPath().get("response.message").toString(), "Email Request submitted");
 	}
 	@Test
@@ -62,9 +62,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		lib.compareValues(response.jsonPath().get("response.message").toString(), "Sms Request Sent");
 	}
 	@Test
@@ -77,9 +75,9 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
 		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
-		lib.compareValues(message, "Invlaid Request userId recieved");
+		lib.compareValues(message, "Invalid Request userId recieved");
 	}
-	@Test
+@Test
 	public void sendOtpToInvalidMobileNo() {
 		testSuite = "SendOtp/SendOtpToInvalidMobileNo";
 		JSONObject sendOtpRequest = lib.getOtpRequest(testSuite);
@@ -89,7 +87,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
 		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
-		lib.compareValues(message, "Invlaid Request userId recieved");
+		lib.compareValues(message, "Invalid Request userId recieved");
 	}
 	@Test
 	public void sendOtpWithoutGivingUserId() {
@@ -101,7 +99,7 @@ public class SendOtp extends BaseTestCase implements ITest {
 		String errorCode=generateOTPResponse.jsonPath().get("errors[0].errorCode").toString();
 		String message=generateOTPResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "PRG_PAM_LGN_008");
-		lib.compareValues(message, "Invlaid Request userId recieved");
+		lib.compareValues(message, "Invalid Request userId recieved");
 	}
 	@Test
 	public void sendOtpToBlockedUser() {
@@ -112,11 +110,9 @@ public class SendOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, "236578");
-		for(int i=1;i<=3;i++)
+		for(int i=1;i<=10;i++)
 		{
 			lib.validateOTP(validateOTPRequest);
 		}
@@ -130,6 +126,10 @@ public class SendOtp extends BaseTestCase implements ITest {
 
 	}
 	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {

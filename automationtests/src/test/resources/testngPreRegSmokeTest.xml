@@ -13,11 +13,11 @@
 
 		<classes>
 
-			<class name="io.mosip.preregistration.tests.DocumentUpload" />
-            <class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
-            <class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
-            <class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
-            <class name="io.mosip.preregistration.tests.GetAllDocumentForDocId" />
+			<!-- <class name="io.mosip.preregistration.tests.DocumentUpload" /> 
+             <class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
+            <class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />-->
+             <class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
+           <!-- <class name="io.mosip.preregistration.tests.GetAllDocumentForDocId" />
             <class name="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" />
             
              <class name="io.mosip.preregistration.tests.BookingAppointment" />
@@ -30,7 +30,7 @@
                
                <class name="io.mosip.preregistration.tests.TriggerNotification" />
                
-                <class name="io.mosip.preregistration.tests.QRCode" />
+                <class name="io.mosip.preregistration.tests.QRCode" />  -->
 		</classes>
 		
 

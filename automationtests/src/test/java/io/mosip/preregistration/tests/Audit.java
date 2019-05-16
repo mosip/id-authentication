@@ -226,6 +226,10 @@ public class Audit extends BaseTestCase implements ITest {
 
 	}
 	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {

@@ -70,19 +70,33 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
 	 */
-	@SuppressWarnings("unchecked")
-	@Test
-	public void getAuditDataForDemographicCreate() {
-		/*String preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
-		System.out.println("============"+preReg_syncAvailability);*/
-		lib.syncAvailability();
-		
+	@Test(groups = { "IntegrationScenarios" })
+	public void retrivePreRegistrationDataOfDiscardedApplication() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response discardResponse = lib.discardApplication(preID);
+		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].message"),
+				"No data found for the requested pre-registration id");
+		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].errorCode"), "PRG_PAM_APP_005");
+	}
+
+
+
+	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
 		
 	}
 	@Override

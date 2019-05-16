@@ -92,7 +92,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -135,7 +135,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 			// Asserting actual and expected response
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
-			innerKeys.add("documentId");
+			innerKeys.add("docId");
 			preRegLib.compareValues(preId, preRegIdCreateAPI);
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(docUploadResponse, Expectedresponse, outerKeys, innerKeys);

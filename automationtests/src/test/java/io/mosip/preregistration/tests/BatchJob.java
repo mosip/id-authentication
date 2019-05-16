@@ -121,6 +121,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+		logger.info("method name:" + result.getMethod().getMethodName());
 	}
 }

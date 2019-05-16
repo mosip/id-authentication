@@ -35,7 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
+import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.preregistration.util.SyncMasterDataUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -78,7 +79,8 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	String outputFile = "SyncMasterDataOutput.json";
 	String requestKeyFile = "SyncMasterDataRequest.json";
     PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-
+    PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+    SyncMasterDataUtil syncUtil=new SyncMasterDataUtil();
 	// implement,IInvokedMethodListener
 	public SyncMasterData() {
 
@@ -98,7 +100,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -127,7 +129,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		Response syncMsterData = preRegLib.syncMasterData();
+		Response syncMsterData = syncUtil.syncMasterData();
 		logger.info("Get All Doc Res:" + syncMsterData.asString());
 
 		//Removing the dynamic value from Sync Master data response
@@ -170,7 +172,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 		 * Get All Document by Document Id Resource URI
 		 */
 
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
+		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
 		authToken = preRegLib.preRegAdminToken();
 	}
 

@@ -104,6 +104,10 @@ public class Translitration extends BaseTestCase implements ITest {
 
 	}
 	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
 	
 
 	@AfterMethod

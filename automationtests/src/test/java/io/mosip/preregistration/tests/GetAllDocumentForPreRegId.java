@@ -95,7 +95,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context) throws Exception {
 
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -140,7 +140,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		if (testCaseName.contains("smoke")) {
 			// Get All Document For PreID
 			Response getAllDocRes = preRegLib.getAllDocumentForPreId(preId);
-			getAllDocRes.jsonPath().get("response.documentsMetaData[0].documentId").toString();
+			getAllDocRes.jsonPath().get("response.documentsMetaData[0].docId").toString();
 			outerKeys.add("responsetime");
 			innerKeys.add("documentsMetaData");
 			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docName").toString(),
@@ -160,7 +160,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			System.out.println(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			outerKeys.add("responsetime");
-			innerKeys.add("documentId");
+			innerKeys.add("docId");
 			innerKeys.add("multipartFile");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
