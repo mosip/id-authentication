@@ -36,19 +36,19 @@ import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.dto.ResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
+import io.mosip.idrepository.core.dto.VidPolicy;
+import io.mosip.idrepository.core.dto.VidRequestDTO;
+import io.mosip.idrepository.core.dto.VidResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
-import io.mosip.idrepository.vid.dto.RequestDTO;
-import io.mosip.idrepository.vid.dto.VidPolicy;
-import io.mosip.idrepository.vid.dto.VidRequestDTO;
-import io.mosip.idrepository.vid.dto.VidResponseDTO;
 import io.mosip.idrepository.vid.entity.Vid;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 import io.mosip.idrepository.vid.repository.VidRepo;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.idgenerator.vid.exception.VidException;
@@ -93,7 +93,7 @@ public class VidServiceImplTest {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	Environment environment;
 
@@ -129,11 +129,9 @@ public class VidServiceImplTest {
 		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setUin("123");
-		vidRequest.setRequest(request);
-		VidResponseDTO vidResponse = service.createVid(vidRequest);
+		ResponseWrapper<VidResponseDTO> vidResponse = service.createVid(request);
 		assertEquals(vidResponse.getResponse().getVid(), vid.getVid());
 		assertEquals(vidResponse.getResponse().getVidStatus(), vid.getStatusCode());
 	}
@@ -157,12 +155,10 @@ public class VidServiceImplTest {
 		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setUin("123");
-		vidRequest.setRequest(request);
 		try {
-			service.createVid(vidRequest);
+			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
@@ -188,13 +184,11 @@ public class VidServiceImplTest {
 		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setUin("123");
-		vidRequest.setRequest(request);
 		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
 		try {
-			service.createVid(vidRequest);
+			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.VID_POLICY_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.VID_POLICY_FAILED.getErrorMessage(), e.getErrorText());
@@ -220,12 +214,10 @@ public class VidServiceImplTest {
 		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setUin("123");
-		vidRequest.setRequest(request);
 		try {
-			service.createVid(vidRequest);
+			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrorCode());
 			assertEquals(String.format(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), "DEACTIVATED"),
@@ -245,8 +237,8 @@ public class VidServiceImplTest {
 		identityResponse.setErrors(
 				Collections.singletonList(new ServiceError(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
 						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage())));
-		RestServiceException exception = new RestServiceException(
-				IdRepoErrorConstants.NO_RECORD_FOUND, mapper.writeValueAsString(identityResponse), null);
+		RestServiceException exception = new RestServiceException(IdRepoErrorConstants.NO_RECORD_FOUND,
+				mapper.writeValueAsString(identityResponse), null);
 		when(restHelper.requestSync(Mockito.any())).thenThrow(exception);
 		VidPolicy policy = new VidPolicy();
 		policy.setAllowedInstances(2);
@@ -258,9 +250,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
-		request.setUin("123");
-		vidRequest.setRequest(request);
+		vidRequest.setUin("123");
 		try {
 			service.createVid(vidRequest);
 		} catch (IdRepoAppException e) {
@@ -268,7 +258,7 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testCreateVidFailedUinRetrieval() throws IdRepoAppException, JsonProcessingException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
@@ -293,9 +283,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
-		request.setUin("123");
-		vidRequest.setRequest(request);
+		vidRequest.setUin("123");
 		try {
 			service.createVid(vidRequest);
 		} catch (IdRepoAppException e) {
@@ -303,7 +291,7 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.UIN_RETRIEVAL_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testCreateVidRestDataValidationFailed() throws IdRepoAppException, JsonProcessingException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
@@ -327,12 +315,10 @@ public class VidServiceImplTest {
 		when(vidRepo.findByUinHashAndStatusCodeAndVidTypeCode(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
-		VidRequestDTO vidRequest = new VidRequestDTO();
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setUin("123");
-		vidRequest.setRequest(request);
 		try {
-			service.createVid(vidRequest);
+			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
 			assertEquals("", e.getErrorText());
@@ -414,18 +400,9 @@ public class VidServiceImplTest {
 		policy.setRestoreOnAction("REVOKE");
 		policy.setValidForInMinutes(null);
 		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
-		VidRequestDTO req = new VidRequestDTO();
-		req.setId("mosip.vid.update");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
-		req.setRequest(request);
-		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-				.toLocalDateTime());
-		req.setRequest(request);
-
-		service.updateVid("12345678", req);
+		service.updateVid("12345678", request);
 	}
 
 	@Test
@@ -445,7 +422,6 @@ public class VidServiceImplTest {
 		policy.setRestoreOnAction("REVOKE");
 		policy.setValidForInMinutes(null);
 		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
-		VidRequestDTO req = new VidRequestDTO();
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
 		IdResponseDTO idResponse = new IdResponseDTO();
 		ResponseDTO resDTO = new ResponseDTO();
@@ -457,38 +433,19 @@ public class VidServiceImplTest {
 		Mockito.when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		Mockito.when(securityManager.hash(Mockito.any()))
 				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
-
-		req.setId("mosip.vid.update");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("REVOKE");
-		req.setRequest(request);
-		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-				.toLocalDateTime());
-		req.setRequest(request);
-
-		service.updateVid("12345678", req);
+		service.updateVid("12345678", request);
 	}
 
 	@Test
 	public void testUpdateVid_Invalid() {
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
-
-		VidRequestDTO req = new VidRequestDTO();
-		req.setId("mosip.vid.update");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
-		req.setRequest(request);
-		req.setVersion("v1");
-		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-				.toLocalDateTime());
-		req.setRequest(request);
-
 		try {
-			service.updateVid("12345678", req);
+			service.updateVid("12345678", request);
 		} catch (IdRepoAppException e) {
 			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
 		}

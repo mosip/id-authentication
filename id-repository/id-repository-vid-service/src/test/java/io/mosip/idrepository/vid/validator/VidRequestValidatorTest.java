@@ -32,9 +32,9 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
-import io.mosip.idrepository.vid.dto.RequestDTO;
-import io.mosip.idrepository.vid.dto.VidRequestDTO;
+import io.mosip.idrepository.core.dto.VidRequestDTO;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
@@ -91,7 +91,7 @@ public class VidRequestValidatorTest {
 
 	@Before
 	public void before() {
-		errors = new BeanPropertyBindingResult(new VidRequestDTO(), "vidRequestDto");
+		errors = new BeanPropertyBindingResult(new RequestWrapper<VidRequestDTO>(), "vidRequestDto");
 		ReflectionTestUtils.setField(requestValidator, "allowedStatus", allowedStatus);
 		ReflectionTestUtils.setField(requestValidator, "id", id);
 		ReflectionTestUtils.setField(requestValidator, "env", env);
@@ -102,7 +102,7 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testSupport() {
-		assertTrue(requestValidator.supports(VidRequestDTO.class));
+		assertTrue(requestValidator.supports(RequestWrapper.class));
 	}
 
 	@Test
@@ -185,9 +185,9 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testValidateRequest() {
-		VidRequestDTO req = new VidRequestDTO();
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		req.setId("mosip.vid.update");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -198,7 +198,7 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testValidateRequest_NullRequest() {
-		VidRequestDTO req = new VidRequestDTO();
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		req.setId("mosip.vid.update");
 		req.setRequest(null);
 		req.setVersion("v1");
@@ -222,9 +222,9 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testValidateRequest_validateVidType_Valid() {
-		VidRequestDTO req = new VidRequestDTO();
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		req.setId("mosip.vid.create");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		request.setVidType("Perpetual");
 		req.setVersion("v1");
@@ -241,9 +241,9 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testValidateRequest_validateVidType_InValid() {
-		VidRequestDTO req = new VidRequestDTO();
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		req.setId("mosip.vid.create");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		request.setVidType("Temp");
 		req.setVersion("v1");
@@ -266,9 +266,9 @@ public class VidRequestValidatorTest {
 
 	@Test
 	public void testValidateRequest_validateVidType_Null() {
-		VidRequestDTO req = new VidRequestDTO();
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
 		req.setId("mosip.vid.create");
-		RequestDTO request = new RequestDTO();
+		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		request.setVidType(null);
 		req.setVersion("v1");
