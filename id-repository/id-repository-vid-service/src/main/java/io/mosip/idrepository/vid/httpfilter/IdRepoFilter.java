@@ -13,16 +13,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.idrepository.core.httpfilter.CharResponseWrapper;
-import io.mosip.idrepository.core.httpfilter.ResettableStreamHttpServletRequest;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -91,17 +85,12 @@ public class IdRepoFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		Instant requestTime = Instant.now();
-		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
 
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
 
-		CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-
-		filterChain.doFilter(requestWrapper, responseWrapper);
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response body : \n" + responseWrapper.toString());
-		response.getWriter().write(responseWrapper.toString());
+		filterChain.doFilter(request, response);
 
 		Instant responseTime = Instant.now();
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
