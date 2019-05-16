@@ -9,22 +9,29 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
+import io.mosip.idrepository.core.constant.AuditEvents;
+import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
+import io.mosip.idrepository.core.helper.AuditHelper;
 import io.mosip.idrepository.core.helper.RestHelper;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
@@ -54,6 +61,12 @@ import io.mosip.kernel.idgenerator.vid.exception.VidException;
 @Component
 @Transactional
 public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO> {
+
+	private static final String UPDATE_VID = "updateVid";
+
+	private static final String CREATE_VID = "createVid";
+
+	private static final String RETRIEVE_UIN_BY_VID = "retrieveUinByVid";
 
 	/** The mosip logger. */
 	private Logger mosipLogger = IdRepoLogger.getLogger(VidServiceImpl.class);
@@ -91,6 +104,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	/** The security manager. */
 	@Autowired
 	private IdRepoSecurityManager securityManager;
+	
+	@Autowired
+	private AuditHelper auditHelper;
 
 	/** The id. */
 	@Resource
@@ -132,13 +148,23 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 				responseDTO.setVidStatus(vid.getStatusCode());
 				return buildResponse(responseDTO, id.get("create"));
 			} else {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "createVid",
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID,
 						"throwing vid creation failed");
 				throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
 			}
 		} catch (VidException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "createVid", e.getErrorText());
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID, e.getErrorText());
 			throw new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED, e);
+		} catch (IdRepoAppUncheckedException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} finally {
+			auditHelper.audit(AuditModules.CREATE_VID, AuditEvents.CREATE_VID_REQUEST_RESPONSE,
+					vidRequest.getRequest().getUin(), "Create VID requested");
 		}
 	}
 
@@ -191,18 +217,29 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	 */
 	@Override
 	public VidResponseDTO retrieveUinByVid(String vid) throws IdRepoAppException {
-
-		Vid vidObject = retrieveVidEntity(vid);
-		if (vidObject != null) {
-			checkExpiry(vidObject.getExpiryDTimes());
-			checkStatus(vidObject.getStatusCode());
-			ResponseDTO resDTO = new ResponseDTO();
-			resDTO.setUin(vidObject.getUin());
-			return buildResponse(resDTO, id.get("read"));
-		} else {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "retrieveUinByVid",
-					"throwing NO_RECORD_FOUND_VID");
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+		try {
+			Vid vidObject = retrieveVidEntity(vid);
+			if (vidObject != null) {
+				checkExpiry(vidObject.getExpiryDTimes());
+				checkStatus(vidObject.getStatusCode());
+				ResponseDTO resDTO = new ResponseDTO();
+				resDTO.setUin(vidObject.getUin());
+				return buildResponse(resDTO, id.get("read"));
+			} else {
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID,
+						"throwing NO_RECORD_FOUND_VID");
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+			}
+		} catch (IdRepoAppUncheckedException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} finally {
+			auditHelper.audit(AuditModules.CREATE_VID, AuditEvents.RETRIEVE_UIN_BY_VID_REQUEST_RESPONSE, vid,
+					"Retrieve Uin By VID requested");
 		}
 	}
 
@@ -214,33 +251,43 @@ public class VidServiceImpl implements VidService<VidRequestDTO, VidResponseDTO>
 	 */
 	@Override
 	public VidResponseDTO updateVid(String vid, VidRequestDTO request) throws IdRepoAppException {
-		Vid vidObject = retrieveVidEntity(vid);
-		String vidStatus = request.getRequest().getVidStatus();
-		if (Objects.isNull(vidObject)) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "updateVid", "throwing NO_RECORD_FOUND_VID");
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+		try {
+			Vid vidObject = retrieveVidEntity(vid);
+			String vidStatus = request.getRequest().getVidStatus();
+			if (Objects.isNull(vidObject)) {
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID, "throwing NO_RECORD_FOUND_VID");
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+			}
+			checkStatus(vidObject.getStatusCode());
+			checkExpiry(vidObject.getExpiryDTimes());
+			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
+			vidObject.setStatusCode(vidStatus);
+			vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime()
+					.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+			vidRepo.save(vidObject);
+			ResponseDTO response = new ResponseDTO();
+			response.setVidStatus(vidStatus);
+			if (policy.getAutoRestoreAllowed() && policy.getRestoreOnAction().equals(vidStatus)) {
+				RequestDTO reqDTO = new RequestDTO();
+				reqDTO.setUin(vidObject.getUin());
+				reqDTO.setVidType(vidObject.getVidTypeCode());
+				request.setRequest(reqDTO);
+				VidResponseDTO createVidResponse = createVid(request);
+				response.setUpdatedVid(createVidResponse.getResponse().getVid());
+				response.setUpdatedVidStatus(createVidResponse.getResponse().getVidStatus());
+			}
+			return buildResponse(response, id.get("update"));
+		} catch (IdRepoAppUncheckedException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID, e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} finally {
+			auditHelper.audit(AuditModules.UPDATE_VID, AuditEvents.UPDATE_VID_REQUEST_RESPONSE,
+					vid, "Update VID requested");
 		}
-		checkStatus(vidObject.getStatusCode());
-		checkExpiry(vidObject.getExpiryDTimes());
-		VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
-		vidObject.setStatusCode(vidStatus);
-		vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
-		vidRepo.save(vidObject);
-		ResponseDTO response = new ResponseDTO();
-		response.setVidStatus(vidStatus);
-		if (policy.getAutoRestoreAllowed() && policy.getRestoreOnAction().equals(vidStatus)) {
-			// create
-			RequestDTO reqDTO = new RequestDTO();
-			reqDTO.setUin(vidObject.getUin());
-			reqDTO.setVidType(vidObject.getVidTypeCode());
-			request.setRequest(reqDTO);
-			VidResponseDTO createVidResponse = createVid(request);
-			response.setUpdatedVid(createVidResponse.getResponse().getVid());
-			response.setUpdatedVidStatus(createVidResponse.getResponse().getVidStatus());
-		}
-
-		return buildResponse(response, id.get("update"));
 	}
 
 	/**
