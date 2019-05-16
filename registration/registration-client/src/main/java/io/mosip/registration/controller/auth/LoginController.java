@@ -313,7 +313,7 @@ public class LoginController extends BaseController implements Initializable {
 			if (hasUpdate) {
 
 				// Update Application
-				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER);
+				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,true);
 
 			}
 			if (!isInitialSetUp) {
@@ -1169,7 +1169,7 @@ public class LoginController extends BaseController implements Initializable {
 						- loginTime.getTime()) > invalidLoginTime);
 	}
 
-	private void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
+	public void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
 		pane.setDisable(true);

@@ -26,6 +26,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -134,6 +135,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService statusValidatorService;
+
+	@Autowired
+	private LoginController loginController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -411,7 +415,7 @@ public class HeaderController extends BaseController {
 		if (hasUpdate()) {
 
 			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
-					RegistrationUIConstants.UPDATE_LATER);
+					RegistrationUIConstants.UPDATE_LATER, false);
 
 		}
 
@@ -447,7 +451,7 @@ public class HeaderController extends BaseController {
 			registrationUpdate.getWithLatestJars();
 			return RegistrationConstants.ALERT_INFORMATION;
 
-		} catch (Exception  exception) {
+		} catch (Exception exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			return RegistrationConstants.ERROR;
@@ -568,7 +572,7 @@ public class HeaderController extends BaseController {
 				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
 					// generateAlert(RegistrationConstants.ERROR,
 					// RegistrationUIConstants.UNABLE_TO_UPDATE);
-					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE);
+					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, false);
 				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
@@ -582,7 +586,8 @@ public class HeaderController extends BaseController {
 
 	}
 
-	public void update(Pane pane, ProgressIndicator progressIndicator, String context) {
+	public void update(Pane pane, ProgressIndicator progressIndicator, String context,
+			boolean isPreLaunchTaskToBeExecuted) {
 
 		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
 				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
@@ -600,7 +605,7 @@ public class HeaderController extends BaseController {
 					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
 
 			alert.showAndWait();
-			
+
 			/* Get Option from user */
 			ButtonType alertResult = alert.getResult();
 
@@ -610,6 +615,9 @@ public class HeaderController extends BaseController {
 			}
 		} else {
 			pane.setDisable(false);
+			if (isPreLaunchTaskToBeExecuted) {
+				loginController.executePreLaunchTask(pane, progressIndicator);
+			}
 		}
 
 	}
