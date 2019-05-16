@@ -50,13 +50,15 @@ MOS-21757|As the MOSIP system, I should be able to implement digital signature f
 
 ### 1.8 DB Changes :
 Table modified: regprc.registration_list
-|Column Name|Description|
-|---------------|-------------|
-|Packet_checksum |Datatype : varchar(128)|
-|Packet_size |Datatype : Datatype : bigint|
-|Client_status_code |Datatype : varchar(36)|
-|Client_status_comment |Datatype : varchar(256)|
-|Additional_info |Datatype : bytearray|
+
+
+Column Name|Description
+-----------------|----------------------
+Packet_checksum |Datatype : varchar(128)
+Packet_size |Datatype : Datatype : bigint
+Client_status_code |Datatype : varchar(36)
+Client_status_comment |Datatype : varchar(256)
+Additional_info |Datatype : bytearray
 
 
 
