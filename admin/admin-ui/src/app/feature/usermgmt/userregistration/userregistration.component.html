@@ -50,10 +50,16 @@
           </mat-form-field>
 
           <mat-radio-group aria-label="Select an option" formControlName="gender">
+              <div class="gender-radio">
+              <mat-radio-button  value=MLE>Male</mat-radio-button>
+              <mat-radio-button  value=FLE>FeMale</mat-radio-button>
+              </div>  
+            </mat-radio-group>
+          <!-- <mat-radio-group aria-label="Select an option" formControlName="gender">
               <div class="gender-radio" *ngFor="let x of genderResponseObject">
               <mat-radio-button  value={{x.code}} *ngIf="isValid(x.langCode)">{{x.genderName}}</mat-radio-button>
               </div>  
-            </mat-radio-group>
+            </mat-radio-group> -->
     </div>
       
     <div class="button-container">

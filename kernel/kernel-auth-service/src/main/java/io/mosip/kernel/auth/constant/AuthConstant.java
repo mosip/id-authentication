@@ -55,5 +55,13 @@ public class AuthConstant {
 
 	public static final String FAILURE_STATUS = "failure";
 	
+    public static final String LDAP_INITAL_CONTEXT_FACTORY="com.sun.jndi.ldap.LdapCtxFactory";
+	
+	public static final String PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE="pwdAccountLockedTime";
+	
+	public static final String PWD_FAILURE_TIME_ATTRIBUTE="pwdFailureTime";
+	
 	public static final String INVALID_REQUEST = "should not be null or empty";
+
+	public static final String WHITESPACE = " ";
 }

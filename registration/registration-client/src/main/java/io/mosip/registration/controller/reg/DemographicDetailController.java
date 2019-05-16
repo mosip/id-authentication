@@ -2135,8 +2135,26 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean validateDateOfBirth(boolean isValid) {
 		int age;
-		LocalDate date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+				.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
+				&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+			return true;
+		}
+		LocalDate date = null;
+		try {
+		date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 				Integer.parseInt(dd.getText()));
+		}catch(NumberFormatException exception) {
+			if(dd.getText().isEmpty()) {
+				dobMessage.setText(dd.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(mm.getText().isEmpty()) {
+				dobMessage.setText(mm.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(yyyy.getText().isEmpty()){
+				dobMessage.setText(yyyy.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}
+			dobMessage.setVisible(true);
+			return false;
+		}
 		LocalDate localDate = LocalDate.now();
 
 		if (localDate.compareTo(date) != -1) {
@@ -2152,11 +2170,6 @@ public class DemographicDetailController extends BaseController {
 					isValid = false;
 				}
 			} catch (DateTimeException exception) {
-				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-						.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
-						&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
-					isValid = true;
-				} else {
 					if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
 						dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
 					} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
@@ -2166,7 +2179,6 @@ public class DemographicDetailController extends BaseController {
 					}
 					dobMessage.setVisible(true);
 					isValid = false;
-				}
 			}
 		} else {
 			ageField.clear();

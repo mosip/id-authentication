@@ -58,12 +58,6 @@ insert into reg.global_param values ('mosip.kernel.keygenerator.asymmetric-algor
 
 insert into reg.global_param values ('mosip.kernel.keygenerator.symmetric-algorithm-name','mosip.kernel.keygenerator.symmetric-algorithm-name','RSA','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
-insert into reg.global_param values ('mosip.kernel.keygenerator.symmetric-algorithm-length','mosip.kernel.keygenerator.symmetric-algorithm-length','256','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
-
-insert into reg.global_param values ('mosip.kernel.crypto.symmetric-algorithm-name','mosip.kernel.crypto.symmetric-algorithm-name','AES','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
-
-insert into reg.global_param values ('mosip.kernel.crypto.asymmetric-algorithm-name','mosip.kernel.crypto.asymmetric-algorithm-name','RSA','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
-
 insert into reg.global_param values ('mosip.kernel.signature.signature-request-id','mosip.kernel.signature.signature-request-id','SIGNATURE.REQUEST','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 
 
 insert into reg.global_param values ('mosip.kernel.signature.signature-version-id','mosip.kernel.signature.signature-version-id','v1.0','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp); 

@@ -58,5 +58,7 @@ public interface DataStore  {
 	
 	public MosipUserDto getUserRoleByUserId(String username)throws Exception;
 	
+	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception;
+	
 
 }

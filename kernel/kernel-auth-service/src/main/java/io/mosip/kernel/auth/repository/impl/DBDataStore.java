@@ -283,4 +283,10 @@ public class DBDataStore implements DataStore {
 		return null;
 	}
 
+@Override
+public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }
