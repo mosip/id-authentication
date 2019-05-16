@@ -127,7 +127,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		try {
 
 			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
-			System.out.println("Actual res::"+Actualresponse.asString()+"Prereg URI:"+preReg_URI);
+			logger.info("Actual res::"+Actualresponse.asString()+"Prereg URI:"+preReg_URI);
 		} catch (Exception e) {
 			logger.info(e);
 		}

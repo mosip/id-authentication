@@ -142,27 +142,32 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-		
+		logger.info("bookAppointmentResponse::"+bookAppointmentResponse.asString());
 		
 		switch (val) {
 
 		case "BookingAppointment_smoke":
 
 			outerKeys.add("responsetime");
-			innerKeys.add("preRegistrationId");
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 
 		case "ReBookingAppointment_smoke":
+			
+			Response rebookAppointmentRes = null;
 			try {
 				fetchCenter = preRegLib.FetchCentre();
-				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
+				 rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
 				break;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(rebookAppointmentRes, Expectedresponse, outerKeys, innerKeys);
+
+			break;
 
 		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
 			String preRegBookingAppointmentURI = preReg_URI + preId;

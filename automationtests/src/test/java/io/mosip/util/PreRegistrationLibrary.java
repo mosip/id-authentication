@@ -1322,10 +1322,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public Response FetchAppointmentDetails(String preID) {
-		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
-		request = getRequest(testSuite);
-		request.put("preRegistrationId", preID);
-		response = applnLib.getRequestParm(preReg_FecthAppointmentDetailsuri, request);
+		
+		String preRegFetchAppDet = preReg_FecthAppointmentDetailsURI+preID;
+		response = applnLib.getRequestWithoutParm(preRegFetchAppDet);
 		return response;
 	}
 
@@ -2067,7 +2066,6 @@ System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
 		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
 		preReg_FecthAppointmentDetailsuri = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsuri");
 		qrCode_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
-		
 		
 		preReg_RetriveBookedPreIdsByRegId = preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		QRCodeFilePath=preRegUtil.fetchPreregProp().get("QRCodeFilePath");

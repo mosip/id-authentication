@@ -139,7 +139,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.documentId").toString();
+		docId = docUploadResponse.jsonPath().get("response.docId").toString();
 
 		if (testCaseName.contains("smoke")) {
 
@@ -151,7 +151,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
-			docId = actualRequest.get("documentId").toString();
+			docId = actualRequest.get("docId").toString();
 
 			parm.put("preRegistrationId", preId);
 
