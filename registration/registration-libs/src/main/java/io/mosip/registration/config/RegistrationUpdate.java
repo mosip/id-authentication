@@ -94,13 +94,13 @@ public class RegistrationUpdate {
 	}
 
 	public String getCurrentVersion() throws IOException {
-		
-			// Get Local manifest file
-			getLocalManifest();
-			if (localManifest != null) {
-				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
-			}
-		
+
+		// Get Local manifest file
+		getLocalManifest();
+		if (localManifest != null) {
+			setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
+		}
+
 		return currentVersion;
 	}
 
@@ -361,29 +361,41 @@ public class RegistrationUpdate {
 			localManifestAttributes = localManifest.getEntries();
 		}
 
-		List<String> deletableJars = new LinkedList<>();
+		List<File> deletableJars = new LinkedList<>();
 
 		if (bin.listFiles().length != 0) {
-			addDeletableJars(bin.listFiles(), deletableJars, localManifestAttributes);
+			addDeletableJars(bin.listFiles(), deletableJars, localManifestAttributes, binFolder);
 		}
 		if (lib.listFiles().length != 0) {
-			addDeletableJars(lib.listFiles(), deletableJars, localManifestAttributes);
+			addDeletableJars(lib.listFiles(), deletableJars, localManifestAttributes, libFolder);
 		}
 
 		if (!deletableJars.isEmpty()) {
 			try {
-				deleteJars(deletableJars);
+				deleteFiles(deletableJars);
 			} catch (io.mosip.kernel.core.exception.IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void addDeletableJars(File[] jarFiles, List<String> deletableJars,
-			Map<String, Attributes> localManifestAttributes) {
+	private void deleteFiles(List<File> deletableJars) throws io.mosip.kernel.core.exception.IOException {
+		for (File jar : deletableJars) {
+			// Delete Jar
+			FileUtils.forceDelete(jar);
+		}
+
+	}
+
+	private void addDeletableJars(File[] jarFiles, List<File> deletableJars,
+			Map<String, Attributes> localManifestAttributes, String folder) {
 		for (File jar : jarFiles) {
-			if (localManifestAttributes == null || !localManifestAttributes.containsKey(jar.getName())) {
-				deletableJars.add(jar.getName());
+
+			if ((jar.getName().contains(mosip) && folder.equals(libFolder))
+					|| (!jar.getName().contains(mosip) && folder.equals(binFolder)) || localManifestAttributes == null
+					|| !localManifestAttributes.containsKey(jar.getName())) {
+
+				deletableJars.add(jar);
 			}
 		}
 	}
