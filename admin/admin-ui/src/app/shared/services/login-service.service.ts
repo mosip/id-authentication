@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpHeaders,
   HttpErrorResponse
-} from "@angular/common/http";
-import { Observable } from "rxjs/Observable";
-import { loginURL } from "../../app.constants";
-import { RequestModel } from "../models/request-model";
+} from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { loginURL } from '../../app.constants';
+import { RequestModel } from '../models/request-model';
 const httpOptions = {
   headers: new HttpHeaders({
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json'
   })
 };
 @Injectable()
@@ -53,7 +53,7 @@ export class LoginServiceService {
       .catch(this.errorHandler);
   }
   errorHandler(error: HttpErrorResponse): Observable<any> {
-    return Observable.throw(error.message || "Server Error").catch(
+    return Observable.throw(error.message || 'Server Error').catch(
       this.errorHandler
     );
   }
