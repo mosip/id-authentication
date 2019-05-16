@@ -36,7 +36,7 @@ export class AuthenticationComponent implements OnInit {
     
   };
   errorMessage: boolean;
-  otpStatus: boolean;
+  otpStatus: boolean = false;
   passwordStatus: boolean;
 
   constructor(
@@ -155,6 +155,8 @@ export class AuthenticationComponent implements OnInit {
             } else {
               this.passwordStatus = false;
             }
+          }else{
+            this.errorMessage = true; 
           }
         });
       this.otpValidation.userId = this.userId;
