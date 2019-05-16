@@ -31,6 +31,29 @@ MOS-21711|New|As Registration Processor, I should be able to Receive Encrypted S
 MOS-21754|New|As Registration Processor, I should be able to Digitally Sign all Responses sent using a MOSIP Private Key.
 MOS-21753|New|As Registration Processor, I should be able to Decrypt a Packet using Center ID and Machine ID.
 
+#### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
+Module/Files|Component|Version|Description (If any)
+-----|-------------|----------------|--------------
+Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine.
+kernel-core|NA|NA|Basic core kernel packages.
+kernel-logger-logback|NA|0.11.0|Use for the logging.
+kernel-dataaccess-hibernate|NA|0.11.0|Used for the communicating to the DB.
+kernel-auditmanager-api|NA|0.11.0|Used to audit the reocrds into the DB.
+kernel-idgenerator-rid|NA|0.11.0|Used to generate the PRID format.
+kernel-idvalidator-uin|NA|0.11.0|Used to validate the PRID format.
+kernel-crypto-signature|NA|0.11.0|Used to validate the signature response from server.
+kernel-templatemanager|NA|0.11.0|Used to generate the template manager.
+kernel-qrcodegenerator-zxing|NA|0.11.0|Used to generate the QR code in acknowledgment page.
+kernel-pdfgenerator-itext|NA|0.11.0|Used to scan the document in PDF format.
+kernel-crypto-jce|NA|0.11.0|Used to encrypt the pre-redistaion data information.
+kernel-jsonvalidator|NA|0.11.0|Used to validate the JSON.
+kernel-virusscanner-clamav|NA|0.11.0|Used to communicate to the Antivirus Clam AV.
+kernel-applicanttype-api|NA|0.11.0|Used to get the applicant types. 
+kernel-masterdat-api|NA|0.11.0|Used to get the master data. 
+kernel-notification-api|NA|0.11.0|Used to notify the user.
+idrepo-service|NA|0.11.0|Used to save user details and uin in idrepository
+pre-registration-datasync-api|NA|0.11.0|used to reverse datasync
+
 
 ### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
