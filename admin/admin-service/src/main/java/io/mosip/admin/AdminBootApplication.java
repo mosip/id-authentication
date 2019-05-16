@@ -39,9 +39,6 @@ public class AdminBootApplication {
 			service.validateDocumentProcess();
 		};
 	}
-	@Bean
-	public RestTemplate template() {
-		return new RestTemplate();
-	}
+	
 
 }
