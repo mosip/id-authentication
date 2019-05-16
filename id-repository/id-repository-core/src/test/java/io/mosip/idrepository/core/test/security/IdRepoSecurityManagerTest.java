@@ -138,4 +138,22 @@ public class IdRepoSecurityManagerTest {
 			assertEquals(e.getErrorText(), IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorMessage());
 		}
 	}
+
+	@Test
+	public void testDecryptNoResponseData()
+			throws IdRepoAppException, JsonParseException, JsonMappingException, JsonProcessingException, IOException {
+		try {
+			ResponseWrapper<ObjectNode> response = new ResponseWrapper<>();
+			ObjectNode responseNode = mapper.createObjectNode();
+			response.setResponse(responseNode);
+			when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
+					.thenReturn(new RestRequestDTO());
+			when(restHelper.requestSync(Mockito.any()))
+					.thenReturn(mapper.readValue(mapper.writeValueAsString(response), ObjectNode.class));
+			assertEquals("data", new String(securityManager.decrypt("1".getBytes())));
+		} catch (IdRepoAppException e) {
+			assertEquals(e.getErrorCode(), IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorCode());
+			assertEquals(e.getErrorText(), IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED.getErrorMessage());
+		}
+	}
 }
