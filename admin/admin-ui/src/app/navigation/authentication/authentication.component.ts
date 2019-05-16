@@ -38,6 +38,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   errorMessage: boolean;
   otpStatus = false;
   passwordStatus: boolean;
+  otpErrorMessage: boolean;
 
   constructor(
     private router: Router,
@@ -171,11 +172,12 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         console.log(response);
         if (response['errors'] === null) {
           if (response['response'].status === 'success') {
-            console.log(response);
             this.otpStatus = true;
           } else {
             this.otpStatus = false;
           }
+        } else {
+          this.otpErrorMessage = true;
         }
       });
     }

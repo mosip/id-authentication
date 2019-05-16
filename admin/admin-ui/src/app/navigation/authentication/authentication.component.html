@@ -30,7 +30,7 @@
           <mat-form-field class="input-full-width">
             <input matInput placeholder="ENTER OTP" formControlName="otp" />
           </mat-form-field>
-          <div class="validation" *ngIf="otpStatus">Invaild OTP</div>
+          <div class="validation" *ngIf="otpErrorMessage">Invaild OTP</div>
           <div
             class="validation"
             *ngIf="
