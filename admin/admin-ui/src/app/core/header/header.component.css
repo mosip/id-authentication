@@ -2,6 +2,9 @@
 border-bottom: 0.3px solid;
 border-bottom-color: rgb(136, 136, 136);
 background-color: white;
+position: fixed;
+top: 0;
+left: 0;
 }
 
 .image {
