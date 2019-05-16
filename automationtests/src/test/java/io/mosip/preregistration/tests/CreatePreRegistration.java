@@ -53,25 +53,25 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 	/**
 	 * Declaration of all variables
 	 **/
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(CreatePreRegistration.class);
-	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
+public String preId = "";
+public SoftAssert softAssert = new SoftAssert();
+	protected static  String testCaseName = "";
+	private  Logger logger = Logger.getLogger(CreatePreRegistration.class);
+	public static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	boolean status = false;
-	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-    static String preReg_URI;
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg\\Create_PreRegistration";
-	static String outputFile = "Create_PreRegistrationOutput.json";
-	static String requestKeyFile = "Create_PreRegistrationRequest.json";
+	public String finalStatus = "";
+	public JSONArray arr = new JSONArray();
+	public ObjectMapper mapper = new ObjectMapper();
+	public Response Actualresponse = null;
+	public JSONObject Expectedresponse = null;
+	private  ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private static  CommonLibrary commonLibrary = new CommonLibrary();
+	private static  String preReg_URI;
+	public String dest = "";
+	public String configPaths = "";
+	public String folderPath = "preReg\\Create_PreRegistration";
+	public String outputFile = "Create_PreRegistrationOutput.json";
+	public String requestKeyFile = "Create_PreRegistrationRequest.json";
 
 	CreatePreRegistration() {
 		super();
@@ -93,7 +93,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 
 		
-		switch ("smoke") {
+		switch (testParam) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -192,7 +192,7 @@ public class CreatePreRegistration extends BaseTestCase implements ITest {
 		lib.logOut();
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();

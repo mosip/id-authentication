@@ -184,7 +184,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
           }
           lib.logOut();
     }
-    @BeforeMethod
+    @BeforeMethod(alwaysRun=true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();

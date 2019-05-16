@@ -55,24 +55,24 @@ import io.restassured.response.Response;
 * @author Ashish Rastogi
 */
 public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
+	public String preId = "";
+	public SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(FetchTheStatusOfApplication.class);
 	boolean status = false;
 	String finalStatus = "";
 	public static JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
+	public Response Actualresponse = null;
+	public JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static String preReg_URI ;
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg/Fetch_the_status_of_a_application";
-	static String outputFile = "Fetch_the_status_of_a_applicationOutput.json";
-	static String requestKeyFile = "Fetch_the_status_of_a_applicationRequest.json";
-	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String dest = "";
+	public String configPaths = "";
+	public String folderPath = "preReg/Fetch_the_status_of_a_application";
+	public String outputFile = "Fetch_the_status_of_a_applicationOutput.json";
+	public String requestKeyFile = "Fetch_the_status_of_a_applicationRequest.json";
+	public static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	FetchTheStatusOfApplication() {
 		super();

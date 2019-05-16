@@ -160,7 +160,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			outerKeys.add("responsetime");
-			innerKeys.add("documentId");
+			innerKeys.add("docId");
 			innerKeys.add("multipartFile");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 

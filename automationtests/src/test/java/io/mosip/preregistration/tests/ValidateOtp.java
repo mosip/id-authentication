@@ -10,22 +10,25 @@ import org.testng.ITest;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 public class ValidateOtp extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
-	Logger logger = Logger.getLogger(BatchJob.class);
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public Logger logger = Logger.getLogger(BatchJob.class);
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	PreregistrationDAO dao = new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -39,9 +42,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
@@ -57,15 +58,13 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
 	}
-	@Test
+	/*@Test
 	public void validateExpired() {
 		testSuite = "SendOtp/SendOtpMobile";
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
@@ -74,19 +73,17 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
 		try {
-			Thread.sleep(120000);
+			Thread.sleep(180000);
 		} catch (InterruptedException e) {
 			logger.info(e);
 		}
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "OTP_EXPIRED");
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_LGN_013");
-	}
+	}*/
 	@Test
 	public void validateWithoutGeneratingOtp(){
 		
@@ -106,11 +103,9 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, "236578");
-		for(int i=1;i<=3;i++)
+		for(int i=1;i<=10;i++)
 		{
 			lib.validateOTP(validateOTPRequest);
 		}
@@ -140,9 +135,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Map request = (Map) sendOtpRequest.get("request");
 		String userId = request.get("userId").toString();
 		response = lib.generateOTP(sendOtpRequest);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='" + userId + "'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		String otp = otpData.get(0).toString();
+		String otp = dao.getOTP(userId).get(0);
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "Ashish", otp);
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
 		String message = validateOTP.jsonPath().get("errors[0].message").toString();
@@ -153,7 +146,11 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
-
+@BeforeMethod(alwaysRun=true)
+public void run()
+{
+	
+}
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());

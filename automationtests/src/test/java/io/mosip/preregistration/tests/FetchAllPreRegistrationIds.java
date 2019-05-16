@@ -54,23 +54,23 @@ import io.restassured.response.Response;
 
 public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
+	public 	String preId="";
+	public SoftAssert softAssert=new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(FetchAllPreRegistrationIds.class);
 	boolean status = false;
-	String finalStatus = "";
+	public String finalStatus = "";
 	public static JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
+	public Response Actualresponse = null;
+	public JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static  String preReg_URI;
-	static String dest = "";
-	static String configPaths="";
-	static String folderPath = "preReg/Fetch_all_PreRegistration_Ids";
-	static String outputFile = "Fetch_all_PreRegistration_IdsOutput.json";
-	static String requestKeyFile = "Fetch_all_PreRegistration_IdsRequest.json";
+	public String dest = "";
+	public String configPaths="";
+	public String folderPath = "preReg/Fetch_all_PreRegistration_Ids";
+	public String outputFile = "Fetch_all_PreRegistration_IdsOutput.json";
+	public String requestKeyFile = "Fetch_all_PreRegistration_IdsRequest.json";
 	
 	public FetchAllPreRegistrationIds() {
 		super();	

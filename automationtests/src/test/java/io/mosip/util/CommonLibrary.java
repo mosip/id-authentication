@@ -739,7 +739,6 @@ public class CommonLibrary extends BaseTestCase {
 		} catch (IOException e) {
 			logger.info("Check %APPDATA%");
 		}
-
 	}
 
 	public Response get_request_pathParam(String url, String id, String keyId, java.lang.String timestamp,
@@ -766,7 +765,6 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
 		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
 		return getResponse;
-
 	}
 
 	public Response post_Request_WithQueryParams(String url, Object body, String contentHeader, String acceptHeader,
@@ -842,7 +840,6 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
 		return putResponse;
-
 	}
 
 	/*

@@ -39,34 +39,34 @@ import io.restassured.response.Response;
 public class IntegrationScenarios extends BaseTestCase {
 	Logger logger = Logger.getLogger(IntegrationScenarios.class);
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
-	String docMissingMessage = "DOCUMENT_IS_MISSING";
-	String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
-	String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
-	String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
-	String expectedErrMessageDocGreaterThanFileSize = "DOCUMENT_EXCEEDING_PREMITTED_SIZE";
-	String expectedErrCodeDocGreaterThanFileSize = "PRG_PAM_DOC_007";
-	String filepathPOA = "IntegrationScenario/DocumentUpload_POA";
-	String filepathPOB = "IntegrationScenario/DocumentUpload_POB";
-	String filepathPOI = "IntegrationScenario/DocumentUpload_POI";
-	String filepathDocGreaterThanFileSize = "IntegrationScenario/DocumentUploadGreaterThanFileSize";
-	String POADocName = "AadhaarCard_POA.pdf";
-	String POBDocName = "ProofOfBirth_POB.pdf";
-	String POIDocName = "LicenseCertification_POI.pdf";
-	String ExceedingSizeDocName = "ProofOfAddress.pdf";
-	String regCenterId;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
+	public String testSuite;
+	public String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
+	public String docMissingMessage = "DOCUMENT_IS_MISSING";
+	public String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
+	public String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
+	public String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
+	public String expectedErrMessageDocGreaterThanFileSize = "DOCUMENT_EXCEEDING_PREMITTED_SIZE";
+	public String expectedErrCodeDocGreaterThanFileSize = "PRG_PAM_DOC_007";
+	public String filepathPOA = "IntegrationScenario/DocumentUpload_POA";
+	public String filepathPOB = "IntegrationScenario/DocumentUpload_POB";
+	public String filepathPOI = "IntegrationScenario/DocumentUpload_POI";
+	public String filepathDocGreaterThanFileSize = "IntegrationScenario/DocumentUploadGreaterThanFileSize";
+	public String POADocName = "AadhaarCard_POA.pdf";
+	public String POBDocName = "ProofOfBirth_POB.pdf";
+	public String POIDocName = "LicenseCertification_POI.pdf";
+	public String ExceedingSizeDocName = "ProofOfAddress.pdf";
+	public String regCenterId;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
 	String preID = null;
-	static String folder = "preReg";
-	PreregistrationDAO dao=new PreregistrationDAO();
+	public static String folder = "preReg";
+	public PreregistrationDAO dao=new PreregistrationDAO();
 	@BeforeTest
 	public void readPropertiesFile() {
 		initialize();
 	}
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void getAuthToken()
 	{
 		  authToken=lib.getToken(); 
@@ -77,7 +77,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		lib.logOut();
 	}
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppUpdateGetPreRegData() {
+	public void preReg_IntTst_createAppUpdateDemoGetData() {
 
 		// Create PreReg
 		try {
@@ -109,7 +109,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppUploadDocDeleteDocByDocId() {
+	public void preReg_IntTst_createAppUploadDocDeleteDocByDocId() {
 
 		// Create PreReg
 		response = lib.CreatePreReg();
@@ -117,7 +117,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		// Upload document
 
 		response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 
 		// Delete document by document Id
 
@@ -137,7 +137,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppUploadDocDeleteDocByPreRegId() {
+	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
 
 		// Create PreReg
 
@@ -148,7 +148,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Delete document by PreReg Id
@@ -167,7 +167,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppDiscardUploadDoc()  {
+	public void preReg_IntTst_createAppDiscardUploadDoc()  {
 
 		// Create PreReg
 
@@ -189,7 +189,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 	}
 	@Test(groups = { "IntegrationScenarios" })
-	public void createAppUpdateDiscard() {
+	public void preReg_IntTst_createAppUpdateDiscard() {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
@@ -214,7 +214,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -244,7 +244,7 @@ public class IntegrationScenarios extends BaseTestCase {
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -295,7 +295,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			preRegID = response.jsonPath().get("response.preRegistrationId").toString();
 		// Upload document
 			response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -655,7 +655,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			logger.error(e.getMessage());
 		}
 
-		String documentId = response.jsonPath().get("response.documentId").toString();
+		String documentId = response.jsonPath().get("response.docId").toString();
 		logger.info("Document ID: " + documentId);
 
 		// Fetch Center
@@ -734,7 +734,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response getPreRegistrationStatus = lib.getPreRegistrationStatus(preID);
 		Assert.assertEquals(getPreRegistrationStatus.jsonPath().get("response.statusCode"), "Booked");
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
+		lib.CancelBookingAppointment(preID);
 		Response getPreRegistrationStatusAfterCancel = lib.getPreRegistrationStatus(preID);
 		Assert.assertEquals(getPreRegistrationStatusAfterCancel.jsonPath().get("response.statusCode"),
 				"Pending_Appointment");
@@ -1002,7 +1002,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1027,7 +1027,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1077,7 +1077,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			Response createPregResponse = lib.CreatePreReg(createPregRequest);
 			String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentUploadResponse = lib.documentUpload(createPregResponse);
-			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+			String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 			Response fetchCentreResponse = lib.FetchCentre();
 			 String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 			lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
@@ -1433,7 +1433,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 			createdBy = createApplicationResponse.jsonPath().get("response.createdBy").toString();
 			Response uploadDoc = lib.documentUpload(createApplicationResponse);
-			String docId = uploadDoc.jsonPath().get("response.documentId").toString();
+			String docId = uploadDoc.jsonPath().get("response.docId").toString();
 			Response discardApp = lib.discardApplication(preRegID);
 			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId,preRegID);
 			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");

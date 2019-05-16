@@ -54,25 +54,25 @@ import io.restassured.response.Response;
 
 public class RetrivePreRegistration extends BaseTestCase implements ITest {
 
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
+	public String preId = "";
+	public SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(RetrivePreRegistration.class);
+	private Logger logger = Logger.getLogger(RetrivePreRegistration.class);
 	boolean status = false;
-	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI;
-	static String dest = "";
-	static String configPaths="";
-	static String folderPath = "preReg/Retrive_PreRegistration";
-	static String outputFile = "Retrive_PreRegistrationOutput.json";
-	static String requestKeyFile = "Retrive_PreRegistrationRequest.json";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	static PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	public String finalStatus = "";
+	public JSONArray arr = new JSONArray();
+	public ObjectMapper mapper = new ObjectMapper();
+	public Response Actualresponse = null;
+	public JSONObject Expectedresponse = null;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private String preReg_URI;
+	public String dest = "";
+	public String configPaths="";
+	public String folderPath = "preReg/Retrive_PreRegistration";
+	public String outputFile = "Retrive_PreRegistrationOutput.json";
+	public String requestKeyFile = "Retrive_PreRegistrationRequest.json";
+	private CommonLibrary commonLibrary = new CommonLibrary();
+	public static PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	public RetrivePreRegistration() {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		
@@ -190,7 +190,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 		}
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();

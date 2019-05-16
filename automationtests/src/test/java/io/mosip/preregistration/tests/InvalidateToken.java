@@ -15,16 +15,15 @@ import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 public class InvalidateToken extends BaseTestCase implements ITest {
-	Logger logger = Logger.getLogger(BatchJob.class);
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	String preID = null;
-	protected static String testCaseName = "";
-	static String folder = "preReg";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
+	public Logger logger = Logger.getLogger(BatchJob.class);
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public String preID = null;
+	protected String testCaseName = "";
+	public String folder = "preReg";
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 
 	@BeforeClass
@@ -46,7 +45,7 @@ public class InvalidateToken extends BaseTestCase implements ITest {
 		lib.compareValues(errorMessage, "Auth token has been changed,Please try with new login");
 		
 	}
-	@BeforeMethod
+	@BeforeMethod(alwaysRun=true)
 	public void login()
 	{
 		authToken=lib.getToken();
