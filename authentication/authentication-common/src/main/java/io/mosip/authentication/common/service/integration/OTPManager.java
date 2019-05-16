@@ -52,7 +52,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
-	private static final String MESSAGE = "message";
 	/** The Constant NAME. */
 	private static final String NAME = "name";
 	/** The Constant TIME. */
@@ -77,6 +76,9 @@ public class OTPManager {
 
 	/** The Constant STATUS_FAILURE. */
 	private static final String STATUS_FAILURE = "failure";
+	
+	/** The Constant Message. */
+	private static final String MESSAGE = "message";
 
 	/** The Constant USER_BLOCKED. */
 	private static final String USER_BLOCKED = "USER_BLOCKED";
@@ -226,9 +228,11 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-		values.put(NAME, valueMap.get("namePri"));
-		values.put(NAME + "_" + valueMap.get("primaryLang"), valueMap.get("namePri"));
-		values.put(NAME + "_" + valueMap.get("secondayLang"), valueMap.get("nameSec"));
+		values.put(NAME, valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.PRIMARY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.SECONDAY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_SEC));
 		return values;
 	}
 

@@ -105,10 +105,10 @@ public class OTPServiceImpl implements OTPService {
 			String namePri = getName(priLang, idInfo);
 			String nameSec = getName(secLang, idInfo);
 			Map<String, String> valueMap = new HashMap<>();
-			valueMap.put("primaryLang", priLang);
-			valueMap.put("secondayLang", secLang);
-			valueMap.put("namePri", namePri);
-			valueMap.put("nameSec", nameSec);
+			valueMap.put(IdAuthCommonConstants.PRIMARY_LANG, priLang);
+			valueMap.put(IdAuthCommonConstants.SECONDAY_LANG, secLang);
+			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
+			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, valueMap);
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
