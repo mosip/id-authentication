@@ -16,6 +16,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
@@ -36,9 +38,12 @@ import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.EntityValueFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -63,7 +68,7 @@ public class IdInfoHelperTest {
 	@Autowired
 	private Environment environment;
 
-	@Autowired
+	@Mock
 	private IDAMappingConfig idMappingConfig;
 
 	@Before
@@ -113,6 +118,21 @@ public class IdInfoHelperTest {
 	}
 
 	@Test
+	public void TestValidgetIdentityValuefromMapwithEmpty() {
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		String key = "FINGER_Left IndexFinger_2";
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
+		map.put(key, new SimpleEntry<>("leftIndex", identityList));
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map);
+
+		List<IdentityInfoDTO> identityList1 = null;
+		Map<String, Entry<String, List<IdentityInfoDTO>>> map1 = new HashMap<>();
+		map1.put(key, new SimpleEntry<>("leftIndex", identityList1));
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map1);
+
+	}
+
+	@Test
 	public void TestInvalidtIdentityValuefromMap() {
 		String language = "ara";
 		String key = "FINGER_Left IndexFinger_2";
@@ -139,6 +159,13 @@ public class IdInfoHelperTest {
 		Map<String, List<IdentityInfoDTO>> demoInfo = new HashMap<>();
 		demoInfo.put(key, identityInfoList);
 		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "getIdentityValue", key, "ara", demoInfo);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestgetIdMappingValue() throws IdAuthenticationBusinessException {
+		MatchType matchType = DemoMatchType.ADDR;
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(null);
+		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
 	@Test
@@ -198,6 +225,9 @@ public class IdInfoHelperTest {
 		identityInfoDTO.setValue("test@test.com");
 		identityInfoList.add(identityInfoDTO);
 		idInfo.put("phoneNumber", identityInfoList);
+		List<String> value = new ArrayList<>();
+		value.add("fullAddress");
+		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(value);
 		idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, idInfo);
 	}
 
@@ -292,14 +322,43 @@ public class IdInfoHelperTest {
 	@Test
 	public void TestmatchIdentityData() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setDemo(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIndividualId("426789089018");
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identityDTO = new IdentityDTO();
+		List<IdentityInfoDTO> infoList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setValue("Test");
+		infoList.add(identityInfoDTO);
+		identityDTO.setFullAddress(infoList);
+		requestDTO.setDemographics(identityDTO);
+		authRequestDTO.setRequestHMAC("string");
+		authRequestDTO.setRequestTime("2018-10-30T11:02:22.778+0000");
+		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
+		identityinfo.setLanguage("fre");
+		identityinfo.setValue("exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3");
+		List<IdentityInfoDTO> addresslist = new ArrayList<>();
+		addresslist.add(identityinfo);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setRequest(request);
+		identity.setFullAddress(addresslist);
+		request.setDemographics(identity);
+		authRequestDTO.setRequest(request);
+		authRequestDTO.setTransactionID("1234567890");
 		Map<String, List<IdentityInfoDTO>> identityEntity = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setValue("test@test.com");
-		identityInfoList.add(identityInfoDTO);
+		IdentityInfoDTO maildto = new IdentityInfoDTO();
+		maildto.setValue("12121212121212");
+		identityInfoList.add(maildto);
 		identityEntity.put("phoneNumber", identityInfoList);
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
-		AuthType demoAuthType = null;
+		AuthType demoAuthType = DemoAuthType.PERSONAL_IDENTITY;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, "fra"));
