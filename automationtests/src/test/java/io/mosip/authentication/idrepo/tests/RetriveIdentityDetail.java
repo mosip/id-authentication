@@ -1,6 +1,8 @@
 package io.mosip.authentication.idrepo.tests;
 
-import java.io.FileWriter; 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,32 +34,29 @@ import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.authentication.idrepo.fw.util.PropertyFileLoader;
 import io.mosip.authentication.idrepo.fw.util.RidGenerator;
 import io.mosip.authentication.idrepo.fw.util.TestDataGenerator;
-import io.mosip.authentication.testdata.Precondtion;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
-public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
-	StoreIdDataPositiveScenario() {
+public class RetriveIdentityDetail extends BaseTestCase implements ITest {
+	RetriveIdentityDetail() {
 		super();
 	}
 
-	private static Logger logger = Logger.getLogger(StoreIdDataPositiveScenario.class);
-	private static final String jiraID = "MOS-1423,MOS-12231";
+	private static Logger logger = Logger.getLogger(RetriveIdentityDetail.class);
+	private static final String jiraID = "MOS-12231";
 	private static final String moduleName = "IdRepo";
-	private static final String apiName = "store-id-data-postive-scenario";
+	private static final String apiName = "RetriveIdentityDetail";
 	private static final String requestJsonStructure = "RequestMasterJsonStructure";
-	private static final String outputJsonName = "PostiveScenerioOutput";
-	private static final String service_base_URI = "/idrepo/identity/v1.0/";
+	private static final String outputJsonName = "RetriveIdentityDetailOutput";
+	private static final String service_URI = "/idrepo/identity/v1.0/";
 	private static final String service_URI_uin = "/uingenerator/v1.0/uin";
 	private static final String testDataFileName = "TestData";
 
@@ -65,8 +64,8 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 	static SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	private JSONObject responseObject = null;
-	private Response response = null;
+	private JSONObject expectedResponse = null;
+	private Response actualResponse = null;
 	public static JSONArray arr = new JSONArray();
 	private static AssertKernel assertions = new AssertKernel();
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
@@ -97,7 +96,7 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("regression") {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 
@@ -131,72 +130,30 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 		object.put("Jira ID", jiraID);
 
 		/**
-		 * calling the uin generator rest api and storing as JSON object
-		 */
-		JSONObject uin = (JSONObject) new JSONParser()
-				.parse(applicationLibrary.getRequestNoParameter(service_URI_uin).asString());
-		logger.info("Uin generated:" + uin);
-
-		/**
-		 * reading the master request Json
+		 *  reading the master request Json
 		 */
 		Object requestJsonStruct = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonStructure);
 
 		/**
-		 * getting all the keys of the master json
+		 *  getting all the keys of the master json
 		 */
 		Set<Object> propertyFileKeys = prop.keySet();
-		String testDataProperty = "valid";
+		String testDataProperty = "";
 		String testDataValue = "";
 		JSONObject inputJson = null;
 		inputJson = (JSONObject) new JSONParser().parse(requestJsonStruct.toString());
+		
 		/**
-		 * generating test data for each key
+		 *  generating test data for each key or removing the element if not required
 		 */
-
 		for (Object key : propertyFileKeys) {
-			/**
-			 * calling registration id
-			 */
-			if ((key.toString().equalsIgnoreCase("registrationId")))
-				testDataValue = new RidGenerator().generateRID(testDataProperty);
-
-			else if ((key.toString().equalsIgnoreCase("individualBiometrics.format")))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"BiometricsFormat" + "_" + testDataProperty);
-
-			else if ((key.toString().equalsIgnoreCase("IDSchemaVersion"))
-					|| (key.toString().equalsIgnoreCase("version"))
-					|| (key.toString().split(Pattern.quote("."))[(key.toString().split(Pattern.quote(".")).length - 1)]
-							.equalsIgnoreCase("version")))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"version" + "_" + testDataProperty);
-
-			else if ((key.toString().contains("0.language")))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"language-1" + "_" + testDataProperty);
-
-			else if ((key.toString().contains("1.language")))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"language-2" + "_" + testDataProperty);
-
-			else if (key.toString().equalsIgnoreCase("documents.0.value"))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"individualBiometrics-value" + "_" + testDataProperty);
-
-			else if (key.toString().equalsIgnoreCase("documents.1.value")
-					|| key.toString().equalsIgnoreCase("documents.2.value"))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"encoded-value" + "_" + testDataProperty);
-
-			else if (key.toString().contains(".value") || key.toString().contains(".type")
-					|| key.toString().contains(".format"))
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						"stringType" + "_" + testDataProperty);
-
+			if (testcaseName.split("_")[1].equalsIgnoreCase(key.toString()))
+				testDataProperty = "invalid";
 			else
-				testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
-						key.toString() + "_" + testDataProperty);
+				testDataProperty = "valid";
+
+			testDataValue = new TestDataGenerator().getYamlData(moduleName, apiName, testDataFileName,
+					key.toString() + "_" + testDataProperty);
 
 			if (!testDataValue.isEmpty()) {
 				if (testDataValue.contains("BOOLEAN"))
@@ -216,73 +173,43 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 			}
 
 		}
+		
 		/**
-		 * sending request to the post method
+		 *  getting new uin 
 		 */
+		JSONObject uinObject = (JSONObject) new JSONParser()
+				.parse(applicationLibrary.GetRequestNoParameter(service_URI_uin).asString());
+		
+		
+		String uin="";
+		if(testcaseName.split("_")[1].equalsIgnoreCase("noRecordFound"))
+			uin=(String) uinObject.get("uin");
+		else
+		uin=inputJson.get("uin").toString();
 
-		logger.info("Input Json:" + inputJson.toString());
-		response = applicationLibrary.postRequest(inputJson.toString(), service_base_URI + uin.get("uin"));
-		switch (testcaseName.split("_")[1]) {
-		case "bio":
-			PropertyUtils.setProperty(inputJson, "request.(documents)[1].value", "$REMOVE$");
-			PropertyUtils.setProperty(inputJson, "request.(documents)[1].category", "$REMOVE$");
-			PropertyUtils.setProperty(inputJson, "request.(documents)[2].value", "$REMOVE$");
-			PropertyUtils.setProperty(inputJson, "request.(documents)[2].category", "$REMOVE$");
-			PropertyUtils.setProperty(inputJson, "request.(documents)[0].value","");
-			break;
-		case "demo":
-			PropertyUtils.setProperty(inputJson, "request.(documents)[0].value", "$REMOVE$");
-			PropertyUtils.setProperty(inputJson, "request.(documents)[0].category", "$REMOVE$");
-			break;
-		case "all":
-			PropertyUtils.setProperty(inputJson, "request.(documents)[0].value","");
-		default:
-			break;
-		}
-
-		/**
-		 * remove the elements bases on testcase bio - remove demographic documents demo
-		 * - remove biometric documents all - keep all the data
-		 */
-		String responseAfterKeyRemovel = new Precondtion().removeObject(new org.json.JSONObject(inputJson.toString()));
-
-		logger.info("Json After Clean Up:" + responseAfterKeyRemovel);
-
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode requestJsonToCompare = mapper.readTree(responseAfterKeyRemovel.toString());
 		HashMap<String, String> inputParameters = new HashMap<>();
-		inputParameters.put("type", testcaseName.split("_")[1].toLowerCase());
-		/**
-		 * calling get request
-		 */
-		responseObject = (JSONObject) new JSONParser().parse(applicationLibrary
-				.getRequestAsQueryParam(service_base_URI + uin.get("uin"), inputParameters).asString());
-		
-		if(testcaseName.split("_")[1].equals("bio") || testcaseName.split("_")[1].equals("all"))
-			PropertyUtils.setProperty(responseObject, "response.(documents)[0].value","");
+		inputParameters.put("type", inputJson.get("type").toString());
+		actualResponse = applicationLibrary.getRequestAsQueryParam(service_URI + uin, inputParameters);
 
-		logger.info("Output of get Request" + responseObject.toString());
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
+		File folder = new File(configPath);
+		File[] listofFiles = folder.listFiles();
+
+		for (int k = 0; k < listofFiles.length; k++) {
+			if (listofFiles[k].getName().toLowerCase().contains("response"))
+				expectedResponse = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
+		}
+		logger.info("Input uin:" + inputJson.get("uin").toString());
+		logger.info("Input type:" + inputJson.get("type").toString());
+		logger.info("Actual Response:" + actualResponse.asString());
+		logger.info("Expected Response:" + expectedResponse.toJSONString());
+
+		/**
+		 *  add parameters to remove in response before comparison like time stamp
+		 */
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-
-		JsonNode responseJsonToCompare = mapper.readTree(responseObject.toString());
-		/**
-		 * asserting post request "request body" and get request "response body"
-		 */
-		logger.info("Request object to compare:" + requestJsonToCompare.get("request"));
-		logger.info("Response object to compare:" + responseJsonToCompare.get("response").toString());
-		
-		/**
-		 * comparing input json for post request and json response from get request
-		 */
-		status = assertions.assertIdRepo(requestJsonToCompare.get("request"), responseJsonToCompare.get("response").toString(),
-				listOfElementToRemove);
-
-		/**
-		 * add parameters to remove in response before comparison like time stamp
-		 */
-
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
+		listOfElementToRemove.add("timestamp");
+			status = assertions.assertKernel(actualResponse, expectedResponse, listOfElementToRemove);
 
 		if (status)
 			finalStatus = "Pass";
@@ -295,7 +222,7 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 		boolean setFinalStatus = false;
 		if (finalStatus.equals("Fail")) {
 			setFinalStatus = false;
-			logger.debug(response);
+			logger.debug(actualResponse);
 		} else if (finalStatus.equals("Pass"))
 			setFinalStatus = true;
 		Verify.verify(setFinalStatus);
@@ -323,7 +250,7 @@ public class StoreIdDataPositiveScenario extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * this method write the output to corressponding json
+	 * this method write the output to corresponding json
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {

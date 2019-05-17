@@ -29,6 +29,7 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -51,7 +52,7 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 	@Parameters({"testType"})
 	@BeforeClass
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		RunConfigUtil.objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
 		TestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
@@ -77,8 +78,8 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
 		return DataProviderClass.getDataProvider(
-				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				System.getProperty("user.dir") + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 	
 	@Override
@@ -113,10 +114,10 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 		logger.info("*************Otp generation request ******************");
 		Reporter.log("<b><u>Otp generation request</u></b>");
 		displayContentInFile(testCaseName.listFiles(),"otp-generate");
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getOtpPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath()
 				+ " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getOtpPath(), "otp-generate", "output-1-actual-res",200), true);
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath(), "otp-generate", "output-1-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -127,10 +128,10 @@ public class StaticTokenIdGenerationForOTPAuth extends IdaScriptsUtil implements
 		tempMap.put("pinInfovalue", getOtpValue(FileUtil.getFilePath(testCaseName,"request").getAbsolutePath(),mapping,"pinInfovalue"));
 		Reporter.log("<b><u>Modification of otp Authentication request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "request"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
 				+ " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-2-actual-res",200), true);
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath(), "request", "output-2-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid2 = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-2-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-2-expected").toString());

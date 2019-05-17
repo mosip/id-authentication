@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.io.DataOutputStream;
@@ -52,6 +51,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	private static int testCaseId;
 	private static File testFolder;
 	private static File demoAppBatchFilePath;
+	public static final String AUTHORIZATHION_COOKIENAME="Authorization";
 	
 	/**
 	 * The method will get current test execution folder
@@ -191,7 +191,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @return true or false
 	 */
 	protected boolean postRequestAndGenerateOuputFileForUINGeneration(File[] listOfFiles, String urlPath,
-			String keywordToFind, String generateOutputFileKeyword, int code) {
+			String keywordToFind, String generateOutputFileKeyword,String cookieName,String cookieValue,int code) {
 		try {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				if (listOfFiles[j].getName().contains(keywordToFind)) {
@@ -199,9 +199,9 @@ public class IdaScriptsUtil extends BaseTestCase {
 							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
 					String responseJson = "";
 					if (code == 0)
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath);
-					else
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath,cookieName,cookieValue);
+					/*else
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code);*/
 					if (responseJson.contains("Invalid UIN")) {
 						fos.flush();
 						fos.close();
@@ -234,7 +234,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @return true or false
 	 */
 	protected boolean postRequestAndGenerateOuputFileForUINUpdate(File[] listOfFiles, String urlPath, String keywordToFind,
-			String generateOutputFileKeyword, int code) {
+			String generateOutputFileKeyword, String cookieName,String cookieValue,int code) {
 		try {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				if (listOfFiles[j].getName().contains(keywordToFind)) {
@@ -242,9 +242,9 @@ public class IdaScriptsUtil extends BaseTestCase {
 							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
 					String responseJson = "";
 					if (code == 0)
-						responseJson = patchRequest(listOfFiles[j].getAbsolutePath(), urlPath);
-					else
-						responseJson = patchRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+						responseJson = patchRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath,cookieName,cookieValue);
+					/*else
+						responseJson = patchRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code);*/
 					Reporter.log("<b><u>Actual Patch Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
 							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
 					fos.write(responseJson.getBytes());
@@ -383,10 +383,10 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @param type, BIO,DEMO,ALL
 	 * @return String, Response
 	 */
-	protected static String getResponse(String url,String type) {
+	protected static String getResponseWithCookie(String url, String type, String cookieName) {
 		try {
-			return RestClient.getRequest(url, MediaType.APPLICATION_JSON,
-					MediaType.APPLICATION_JSON,type).asString();
+			return RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, type,
+					cookieName, getAuthorizationCookie(getCookieRequestFilePath(), getCookieUrlPath(), cookieName)).asString();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e);
 			return e.toString();
@@ -564,7 +564,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @param key
 	 * @return string
 	 */
-	protected static String getPropertyValue(String key) {
+	public static String getPropertyValue(String key) {
 		return getRunConfigData().getProperty(key);
 	}
 	
@@ -577,8 +577,8 @@ public class IdaScriptsUtil extends BaseTestCase {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			RunConfig.setUserDirectory();
-			input = new FileInputStream(new File(RunConfig.getUserDirectory()+"src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath());
+			RunConfigUtil.objRunConfig.setUserDirectory();
+			input = new FileInputStream(new File(RunConfigUtil.objRunConfig.getUserDirectory()+"src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath());
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
@@ -770,7 +770,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = new FileInputStream(new File("./" + RunConfig.getSrcPath() + path).getAbsolutePath());
+			input = new FileInputStream(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + path).getAbsolutePath());
 			prop.load(input);
 			return prop;
 		} catch (Exception e) {
@@ -830,8 +830,8 @@ public class IdaScriptsUtil extends BaseTestCase {
 			String content = null;
 			if (getOSType().toString().equals("WINDOWS")) {
 				demoAppJarPath = new File("C:/Users/" + System.getProperty("user.name")
-						+ "/.m2/repository/io/mosip/authentication/authentication-demo/" + getDemoAppVersion()
-						+ "/authentication-demo-" + getDemoAppVersion() + ".jar").getAbsolutePath();
+						+ "/.m2/repository/io/mosip/authentication/authentication-partnerdemo-service/" + getDemoAppVersion()
+						+ "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar").getAbsolutePath();
 				demoAppBatchFilePath = new File("./src/test/resources/demoApp.bat");
 				content = '"' + javaHome + "/bin/java" + '"'
 						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
@@ -841,11 +841,11 @@ public class IdaScriptsUtil extends BaseTestCase {
 				String mavenPath = System.getenv("MAVEN_HOME");
 				String settingXmlPath = mavenPath + "/conf/settings.xml";
 				String repoPath = XmlPrecondtion.getValueFromXmlFile(settingXmlPath, "//localRepository");
-				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-demo/"
-						+ getDemoAppVersion() + "/authentication-demo-" + getDemoAppVersion() + ".jar")
+				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"
+						+ getDemoAppVersion() + "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar")
 								.getAbsolutePath();
-				RunConfig.setUserDirectory();
-				demoAppBatchFilePath = new File(RunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
+				RunConfigUtil.objRunConfig.setUserDirectory();
+				demoAppBatchFilePath = new File(RunConfigUtil.objRunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
 				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test -Djava.net.useSystemProxies=true -jar "
 						+ '"' + demoAppJarPath.toString() + '"' +" &";
 				fileDemoAppJarPath = new File(demoAppJarPath.toString());
@@ -900,7 +900,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
-			Thread.sleep(30000);
+			//Thread.sleep(60000);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Execption in launching demoApp application: " + e.getMessage());
 		}
@@ -968,7 +968,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @return version of demoApp as string
 	 */
 	public static String getDemoAppVersion() {
-		String expression = "//dependency/artifactId[text()='authentication-demo']//following::version";
+		String expression = "//dependency/artifactId[text()='authentication-partnerdemo-service']//following::version";
 		return XmlPrecondtion.getValueFromXmlFile(new File("./pom.xml").getAbsolutePath().toString(), expression);
 	}
 	
@@ -1028,5 +1028,50 @@ public class IdaScriptsUtil extends BaseTestCase {
 		return getPropertyAsMap(new File("./" + getRunConfigFile()).getAbsolutePath().toString())
 				.get(className + ".testDataFileName[" + index + "]");
 	}
+	
+	protected static String getAuthorizationCookie(String filename, String urlPath,String cookieName) {
+		JSONObject objectData = null;
+		try {
+			objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception Occured :" + e.getMessage());
+		}
+		return RestClient.getCookie(urlPath, objectData.toJSONString(), MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON,cookieName);
+	}
+	
+	protected String postRequestWithCookie(String filename, String url,String cookieName, String cookieValue) {
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			return RestClient
+					.postRequestWithCookie(url, objectData.toJSONString(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,cookieName,cookieValue)
+					.asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
+	protected static String getCookieRequestFilePath() {
+		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
+				+ "ida/TestData/Security/GetCookie/getCookieRequest.json".toString();
+	}
+	
+	protected String patchRequestWithCookie(String filename, String url,String cookieName,String cookieValue) {
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			return RestClient.patchRequestWithCookie(url, objectData.toJSONString(), MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON,cookieName, cookieValue).asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
+	protected static String getCookieUrlPath()
+	{
+		return RunConfigUtil.objRunConfig.getEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey();
+	}
 } 
+
 

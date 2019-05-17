@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.sql.Connection;    
@@ -31,8 +30,8 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbKernelUrl() + "/" + RunConfig.getDbKernelTableName(), RunConfig.getDbKernelUserName(),
-					RunConfig.getDbKernelPwd());
+					RunConfigUtil.objRunConfig.getDbKernelUrl() + "/" + RunConfigUtil.objRunConfig.getDbKernelTableName(), RunConfigUtil.objRunConfig.getDbKernelUserName(),
+					RunConfigUtil.objRunConfig.getDbKernelPwd());
 			return connection;
 		} catch (Exception e) {
 			DBCONNECTION_LOGGER.error("Execption in db connection: " + e);
@@ -49,8 +48,8 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbIdaUrl() + "/" + RunConfig.getDbIdaTableName(), RunConfig.getDbIdaUserName(),
-					RunConfig.getDbIdaPwd());
+					RunConfigUtil.objRunConfig.getDbIdaUrl() + "/" + RunConfigUtil.objRunConfig.getDbIdaTableName(), RunConfigUtil.objRunConfig.getDbIdaUserName(),
+					RunConfigUtil.objRunConfig.getDbIdaPwd());
 			return connection;
 		} catch (Exception e) {
 			DBCONNECTION_LOGGER.error("Execption in db connection: " + e);
@@ -67,8 +66,8 @@ public class DbConnection {
 		try {
 			Class.forName("org.postgresql.Driver");
 			Connection connection = DriverManager.getConnection(
-					RunConfig.getDbAuditUrl() + "/" + RunConfig.getDbAuditTableName(), RunConfig.getDbAuditUserName(),
-					RunConfig.getDbAuditPwd());
+					RunConfigUtil.objRunConfig.getDbAuditUrl() + "/" + RunConfigUtil.objRunConfig.getDbAuditTableName(), RunConfigUtil.objRunConfig.getDbAuditUserName(),
+					RunConfigUtil.objRunConfig.getDbAuditPwd());
 			return connection;
 		} catch (Exception e) {
 			DBCONNECTION_LOGGER.error("Execption in db connection: " + e);
@@ -117,4 +116,3 @@ public class DbConnection {
 		}
 	}
 }
-

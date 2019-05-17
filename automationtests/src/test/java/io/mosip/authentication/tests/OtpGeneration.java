@@ -1,4 +1,3 @@
-/*
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -27,6 +26,7 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -34,12 +34,12 @@ import io.mosip.util.EmailUtil;
 
 import org.testng.Reporter;
 
-*//**
+/**
  * Tests to execute otp generation
  * 
  * @author Vignesh
  *
- *//*
+ */
 public class OtpGeneration extends IdaScriptsUtil implements ITest {
 
 	private static final Logger logger = Logger.getLogger(OtpGeneration.class);
@@ -49,43 +49,44 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 	private String testType;
 	private int invocationCount = 0;
 
-	*//**
+	/**
 	 * Set Test Type - Smoke, Regression or Integration
 	 * 
 	 * @param testType
-	 *//*
+	 */
 	@Parameters({ "testType" })
 	@BeforeClass
 	public void setTestType(String testType) {
 		this.testType = testType;
 	}
 
-	*//**
+	/**
 	 * Method set Test data path and its filename
 	 * 
 	 * @param index
-	 *//*
+	 */
 	public void setTestDataPathsAndFileNames(int index) {
 		this.TESTDATA_PATH = getTestDataPath(this.getClass().getSimpleName().toString(), index);
 		this.TESTDATA_FILENAME = getTestDataFileName(this.getClass().getSimpleName().toString(), index);
 	}
 
-	*//**
+	/**
 	 * Method set configuration
 	 * 
 	 * @param testType
-	 *//*
+	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 
-	*//**
+	/**
 	 * The method set test case name
 	 * 
 	 * @param method
 	 * @param testData
-	 *//*
+	 */
 	@BeforeMethod
 	public void testData(Method method, Object[] testData) {
 		String testCase = "";
@@ -105,34 +106,34 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 		this.testCaseName = String.format(testCase);
 	}
 
-	*//**
+	/**
 	 * Data provider class provides test case list
 	 * 
 	 * @return object of data provider
-	 *//*
+	 */
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
 		invocationCount++;
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
 		return DataProviderClass.getDataProvider(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 
-	*//**
+	/**
 	 * Set current testcaseName
-	 *//*
+	 */
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
 
-	*//**
+	/**
 	 * The method ser current test name to result
 	 * 
 	 * @param result
-	 *//*
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -143,18 +144,19 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, OtpGeneration.testCaseName);
+			test=extent.createTest(OtpGeneration.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
 
-	*//**
+	/**
 	 * Test method for OTP Generation execution
 	 * 
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
-	 *//*
+	 */
 	@Test(dataProvider = "testcaselist")
 	public void otpGenerationTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
@@ -168,10 +170,10 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 		logger.info("************* Otp generation request ******************");
 		Reporter.log("<b><u>Otp generation request</u></b>");
 		displayContentInFile(testCaseName.listFiles(), "request");
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getOtpPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath()
 				+ extUrl + " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getOtpPath() + extUrl, "request", "output-1-actual-res", 200),
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath() + extUrl, "request", "output-1-actual-res", 200),
 				true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
@@ -198,7 +200,7 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 		}
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "emailNotification")) {
 			Map<String, String> templates = getPropertyAsMap(
-					new File("./" + RunConfig.getSrcPath() + "ida/TestData/RunConfig/emailNotification.properties")
+					new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/TestData/RunConfig/emailNotification.properties")
 							.getAbsolutePath().toString());
 			String emailAddress = templates.get("emailAddress").toString();
 			String emailPwd = templates.get("emailPwd").toString();
@@ -230,5 +232,3 @@ public class OtpGeneration extends IdaScriptsUtil implements ITest {
 	}
 
 }
-
-*/

@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.precon;
 
 import static io.mosip.authentication.fw.util.IdaScriptsUtil.*; 
@@ -353,4 +352,3 @@ public class JsonPrecondtion{
 	}
 	
 }
-

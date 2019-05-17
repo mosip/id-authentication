@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.dto;
 
 import java.util.Map;
@@ -31,4 +30,3 @@ public class TokenIdDto {
 		TokenIdDto.tokenId = tokenId;
 	}
 }
-

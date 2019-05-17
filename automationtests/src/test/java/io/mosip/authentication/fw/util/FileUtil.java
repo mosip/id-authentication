@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.io.BufferedReader; 
@@ -133,7 +132,7 @@ public class FileUtil{
 	public static boolean createAndWriteFileForIdRepo(String fileName, String content) {
 		try {
 			Path path = Paths
-					.get(new File("./" + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath() + "/" + fileName)
+					.get(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/" + fileName)
 							.getAbsolutePath());
 			if (!path.toFile().exists()) {
 				Charset charset = Charset.forName("UTF-8");
@@ -157,7 +156,7 @@ public class FileUtil{
 	 * @return true or false
 	 */
 	public static boolean checkFileExistForIdRepo(String fileName) {
-		Path path = Paths.get(new File("./"+RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath()
+		Path path = Paths.get(new File("./"+RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath()
 				+ "/" + fileName).getAbsolutePath());
 		return path.toFile().exists();
 	}
@@ -252,4 +251,3 @@ public class FileUtil{
 	}
 
 }
-

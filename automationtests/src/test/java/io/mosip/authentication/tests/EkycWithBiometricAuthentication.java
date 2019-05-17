@@ -27,6 +27,7 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -75,7 +76,8 @@ public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements I
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 
@@ -115,8 +117,8 @@ public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements I
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
 		return DataProviderClass.getDataProvider(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 
 	/**
@@ -142,6 +144,7 @@ public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements I
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, EkycWithBiometricAuthentication.testCaseName);
+			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -169,10 +172,10 @@ public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements I
 		logger.info("************* Modification of bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getEkycPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl + " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getEkycPath() + extUrl, "request", "output-1-actual-res", 200),
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath() + extUrl, "request", "output-1-actual-res", 200),
 				true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),

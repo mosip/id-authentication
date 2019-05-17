@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.tests;
 
 import java.io.File; 
@@ -28,6 +27,7 @@ import io.mosip.authentication.fw.util.IdaScriptsUtil;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -74,7 +74,8 @@ public class VidGeneration extends IdaScriptsUtil implements ITest {
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 
@@ -114,8 +115,8 @@ public class VidGeneration extends IdaScriptsUtil implements ITest {
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
 		return DataProviderClass.getDataProvider(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 
 	/**
@@ -140,7 +141,8 @@ public class VidGeneration extends IdaScriptsUtil implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, VidGeneration.testCaseName);
+			f.set(baseTestMethod, VidGeneration.testCaseName);			
+			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -166,9 +168,9 @@ public class VidGeneration extends IdaScriptsUtil implements ITest {
 		Reporter.log("<b><u>VID generation request</u></b>");
 		displayContentInFile(testCaseName.listFiles(), "uin");
 		String uin = getValueFromJson(testCaseName.listFiles(), mapping, "uin", "uin");
-		logger.info("******GET request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getVidGenPath()
+		logger.info("******GET request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getVidGenPath()
 				+ " *******");
-		String url = RunConfig.getEndPointUrl() + RunConfig.getVidGenPath();
+		String url = RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getVidGenPath();
 		url = url.replace("$uin$", uin);
 		String response = getResponse(url);
 		File outputFile = FileUtil.getFilePath(testCaseName, "output-1-expected");
@@ -180,4 +182,3 @@ public class VidGeneration extends IdaScriptsUtil implements ITest {
 		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid));
 	}
 }
-

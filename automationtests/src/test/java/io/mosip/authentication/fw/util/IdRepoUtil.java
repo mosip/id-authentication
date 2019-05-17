@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.util;
 
-import java.io.File;
+import java.io.File; 
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -29,10 +29,10 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * @return true or false
 	 */
 	public static boolean retrieveIdRepo(String uinNumber) {
-		String retrievePath = RunConfig.getIdRepoRetrieveDataPath().replace("$uin$", uinNumber);
-		String url = RunConfig.getIdRepoEndPointUrl() + retrievePath;
+		String retrievePath = RunConfigUtil.objRunConfig.getIdRepoRetrieveDataPath().replace("$uin$", uinNumber);
+		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + retrievePath;
 		if (!FileUtil.checkFileExistForIdRepo(uinNumber + ".json")) {
-			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponse(url, "type=all")))
+			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponseWithCookie(url, "type=all",IdaScriptsUtil.AUTHORIZATHION_COOKIENAME)))
 				return true;
 			else
 				return false;
@@ -55,10 +55,10 @@ public class IdRepoUtil extends IdaScriptsUtil{
 			}
 			if (retrieveIdRepo(uinNumber)) {
 				String value = XmlPrecondtion.getValueFromXmlUsingMapping(
-						Paths.get(new File("./" + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath() + "/"
+						Paths.get(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/"
 								+ uinNumber + ".json").getAbsolutePath()).toString(),
 						new File(
-								"./" + RunConfig.getSrcPath() + RunConfig.getStoreUINDataPath() + "/mapping.properties")
+								"./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/mapping.properties")
 										.getAbsolutePath(),
 						mapping);
 				if(mapping.contains("dateOfBirth") && mapping.contains("input"))
@@ -100,7 +100,7 @@ public class IdRepoUtil extends IdaScriptsUtil{
 		String uin;
 		do {
 			uin = JsonPrecondtion.getValueFromJson(
-					getResponse(RunConfig.getEndPointUrl() + RunConfig.getGenerateUINPath()), "response.uin");
+					getResponse("https://qa.mosip.io/v1" + RunConfigUtil.objRunConfig.getGenerateUINPath()), "response.uin");
 			if (uin.startsWith("1") || uin.startsWith("2") || uin.startsWith("3") || uin.startsWith("4")) {
 				flag = true;
 			}
@@ -114,10 +114,8 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * @param UinNumber
 	 * @return create uin path
 	 */
-	public static String getCreateUinPath(String UinNumber) {
-		String url = RunConfig.getIdRepoEndPointUrl() + RunConfig.getIdRepoCreateUINRecordPath();
-		url = url.replace("$uin$", UinNumber);
-		return url;
+	public static String getCreateUinPath() {
+		return RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoCreateUINRecordPath();
 	}
 	
 	/**
@@ -135,4 +133,3 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	}
 
 }
-

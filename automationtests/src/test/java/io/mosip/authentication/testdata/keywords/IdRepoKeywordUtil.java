@@ -1,7 +1,7 @@
 package io.mosip.authentication.testdata.keywords;
 
-import java.io.File;   
-import java.text.DateFormat;   
+import java.io.File; 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,24 +18,17 @@ import java.util.regex.Pattern;
 import io.mosip.authentication.fw.dto.ErrorsDto;
 import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidStaticPinDto;
+import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
-import io.mosip.util.CustomTestNgReporterDto;
 
-/**
- * The class is to implementation of keyword as per ida test execution
- * 
- * @author Vignesh
- *
- */
-public class IdaKeywordUtil extends KeywordUtil{
-	
+public class IdRepoKeywordUtil extends KeywordUtil{
+
 	private static Map<String,String> currentTestData = new HashMap<String,String>();
 	/**
 	 * The method return precondtion message or keyword from yml test data file
@@ -57,29 +50,10 @@ public class IdaKeywordUtil extends KeywordUtil{
 				if (pid.contains("/"))
 					pid = pid.substring(0, pid.indexOf("/"));
 				returnMap.put(entry.getKey(), RunConfigUtil.getTokenId(dic.get("uin"), pid));
-			} else if (entry.getValue().contains("otp.generate.email.fra.message.body")
-					|| entry.getValue().contains("otp.generate.email.fra.message.address")) {
-				if (returnMap.get("email.uin").contains("$")) {
-					Map<String, String> tempmap = new HashMap<String, String>();
-					tempmap.put("email.uin", returnMap.get("email.uin"));
-					returnMap.put("email.uin", precondtionKeywords(tempmap).get("email.uin").toString());
-				}
-				if (returnMap.get("email.fullname").contains("$")) {
-					Map<String, String> tempmap = new HashMap<String, String>();
-					tempmap.put("email.fullname", returnMap.get("email.fullname"));
-					returnMap.put("email.fullname", precondtionKeywords(tempmap).get("email.fullname").toString());
-				}
-				if (returnMap.get("email.otp").contains("$")) {
-					Map<String, String> tempmap = new HashMap<String, String>();
-					tempmap.put("email.otp", returnMap.get("email.otp"));
-					returnMap.put("email.otp", precondtionKeywords(tempmap).get("email.otp").toString());
-				}
-				returnMap.put(entry.getKey(), entry.getValue() + "|" + getModifiedOtpEmailTemplate(entry.getValue(),
-						returnMap.get("email.uin"), returnMap.get("email.fullname")));
 			} else if (entry.getValue().contains("TestData:") && !entry.getValue().contains("+")
 					&& entry.getValue().startsWith("$TestData:")) {
 				String dataParam = entry.getValue().replace("$", "").replace("TestData:", "");
-				returnMap.put(entry.getKey(), TestDataProcessor.getYamlData("ida", "TestData",
+				returnMap.put(entry.getKey(), TestDataProcessor.getYamlData("idRepository", "TestData",
 						"RunConfig/authenitcationTestdata", dataParam));
 			} else if (entry.getValue().contains("$errors:") && entry.getValue().startsWith("$errors:")) {
 				String value = entry.getValue().replace("$", "");
@@ -189,18 +163,6 @@ public class IdaKeywordUtil extends KeywordUtil{
 					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
 				if (type.equals("AN"))
 					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
-			} else if (entry.getValue().contains("%") && entry.getValue().contains(":")
-					&& entry.getValue().startsWith("%$")) {
-				Map<String, String> tempMap = new HashMap<String, String>();
-				String temp = entry.getValue().replaceAll("%", "");
-				String[] getValue = temp.split("_");
-				tempMap.put("txnID", getValue[0]);
-				tempMap.put("tspId", getValue[1]);
-				Map<String, String> tempOut = precondtionKeywords(tempMap);
-				String baseQuery = "select otp from kernel.otp_transaction where id like ";
-				String otpId = "%" + tempOut.get("txnID") + "_" + tempOut.get("tspId") + "%";
-				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[2];
-				returnMap.put(entry.getKey(), OtpFindQuery);
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
 				IdaScriptsUtil.wait(5000);
 				String[] tempArray = entry.getValue().split(Pattern.quote("+"));
@@ -237,10 +199,6 @@ public class IdaKeywordUtil extends KeywordUtil{
 					returnMap.put(entry.getKey(), RunConfigUtil.getVidKey(tempOut.get("uin").toString()));
 				} else
 					returnMap.put(entry.getKey(), getVidNumber());
-			} else if (entry.getValue().contains("UIN-PIN")) {
-				returnMap.put(entry.getKey(), getStaticPinUinNumber());
-			} else if (entry.getValue().contains("VID-PIN")) {
-				returnMap.put(entry.getKey(), getStaticPinVidNumber());
 			} else if (entry.getValue().contains("$") && (entry.getValue().startsWith("$audit")
 					|| entry.getValue().startsWith("$input") || entry.getValue().startsWith("$output"))) {
 				String keyword = entry.getValue().replace("$", "");
@@ -250,25 +208,6 @@ public class IdaKeywordUtil extends KeywordUtil{
 					returnMap.put(entry.getKey(), entry.getValue());
 				} else
 					returnMap.put(entry.getKey(), value);
-			} else if (entry.getValue().startsWith("$staticPin")) {
-				String[] array = entry.getValue().split(Pattern.quote("~"));
-				String uinKeyword = array[1];
-				String tempValue = uinKeyword.replace("$", "");
-				String value = returnMap.get(tempValue);
-				if (value.contains("~") || value.contains("$")) {
-					flag = true;
-					returnMap.put(entry.getKey(), entry.getValue());
-				} else {
-					if (value.length() == 16) {
-						RunConfigUtil.getStaticPinVidPropertyValue(RunConfigUtil.getStaticPinVidPropertyPath());
-						String pin = VidStaticPinDto.getVidStaticPin().get(value).toString();
-						returnMap.put(entry.getKey(), pin);
-					} else {
-						RunConfigUtil.getStaticPinUinPropertyValue(RunConfigUtil.getStaticPinUinPropertyPath());
-						String pin = UinStaticPinDto.getUinStaticPin().get(value).toString();
-						returnMap.put(entry.getKey(), pin);
-					}
-				}
 			} else if (entry.getValue().contains("ENCODEFILE")) {
 				String value = entry.getValue().replace("$", "");
 				String[] actVal = value.split(":");

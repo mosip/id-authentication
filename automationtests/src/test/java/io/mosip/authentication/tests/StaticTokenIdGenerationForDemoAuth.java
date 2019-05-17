@@ -30,6 +30,7 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -53,7 +54,7 @@ public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implement
 	@Parameters({"testType"})
 	@BeforeClass
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
+		RunConfigUtil.objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
 		TestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
 	}
 	
@@ -79,8 +80,8 @@ public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implement
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
 		return DataProviderClass.getDataProvider(
-				System.getProperty("user.dir") + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				System.getProperty("user.dir") + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 	
 	@Override
@@ -121,10 +122,10 @@ public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implement
 		logger.info("************* Modification of demo auth request ******************");
 		Reporter.log("<b><u>Modification of demo auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "staticTokenId-generation"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getAuthPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
 				+ " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath(), "request", "output-1-actual-res",200), true);
 		String request=getContentFromFile(testCaseName.listFiles(),"staticTokenId-generation");
 		String response=getContentFromFile(testCaseName.listFiles(),"output-1-actual-res");
 		String uin=JsonPrecondtion.getValueFromJson(request, "idvId");
@@ -156,8 +157,8 @@ public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implement
 	}
 	
 	public void performTokenIdOper(String uin, String tspId, String tokenId) {
-		File file = new File(new File("./"+RunConfig.getSrcPath() + "/ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties").getAbsolutePath());
+		File file = new File(new File("./"+RunConfigUtil.objRunConfig.getSrcPath() + "/ida/"
+				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/tokenId.properties").getAbsolutePath());
 		if (file.exists()) {
 			if (!getPropertyFromFilePath(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
 				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());

@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata;
 
 import java.io.File; 
@@ -159,6 +158,7 @@ public class TestDataUtil {
 				TESTDATAUTILITY_LOGGER.info("TestCaseName : " + getTestCaseName());
 				Map<String, Map<String, String>> currentTestDatajsonFile = new HashMap<String, Map<String, String>>();
 				Map<String, String> fieldValue = new HashMap<String, String>();
+				TestDataUtil.setCurrTestDataDic(null);
 				for (Entry<String, Map<String, Object>> jsonFile : testCase.getValue().entrySet()) {
 					flag=true;
 					String[] file = jsonFile.getKey().toString().split(Pattern.quote("."));
@@ -230,4 +230,3 @@ public class TestDataUtil {
 	}
 
 }
-

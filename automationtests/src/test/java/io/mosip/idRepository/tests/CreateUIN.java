@@ -1,6 +1,6 @@
-package io.mosip.authentication.tests;
+package io.mosip.idRepository.tests;
 
-import java.io.File;
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -27,11 +27,12 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
-import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
+import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.idRepositoty.fw.util.IdRepoRunConfig;
 
 import org.testng.Reporter;
 
@@ -41,9 +42,9 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class CreateUinRecord extends IdaScriptsUtil implements ITest {
+public class CreateUIN extends IdRepoTestsUtil implements ITest {
 
-	private static final Logger logger = Logger.getLogger(CreateUinRecord.class);
+	private static final Logger logger = Logger.getLogger(CreateUIN.class);
 	protected static String testCaseName = "";
 	private Map<String, String> storeUinData = new HashMap<String, String>();
 	private String TESTDATA_PATH;
@@ -79,9 +80,9 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.getRunConfigObject("idrepo");
 		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
-		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
+		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "idrepo");
 	}
 
 	/**
@@ -149,8 +150,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, CreateUinRecord.testCaseName);
-			test=extent.createTest(testCaseName);
+			f.set(baseTestMethod, CreateUIN.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -176,7 +176,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 		tempMap.put("UIN", "LONG:" + uin);
 		logger.info("************* IdRepo UIN request ******************");
 		Reporter.log("<b><u>UIN create request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "createUIN"), true);
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
 		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
 				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
@@ -195,7 +195,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Genereated UIN: " + UinDto.getUinData());
-		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getTestDataFolderName()+"/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
 				+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
 
