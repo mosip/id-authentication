@@ -55,7 +55,20 @@ public enum RegistrationExceptionConstants {
 	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while adding authorization token to web-service request"),
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
-	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body");
+	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
+	
+	// TPM
+	TPM_UTIL_SIGN_ERROR("TPM-UTL-001", "Exception while signing the data using TPM"),
+	TPM_UTIL_VALIDATE_SIGN_ERROR("TPM-UTL-002",
+			"Exception while validating the signature provided by TPM"),
+	TPM_UTIL_ASYMMETRIC_ENCRYPT_ERROR("TPM-UTL-003",
+			"Exception while encrypting the data using asymmetric crypto-algorithm through TPM"),
+	TPM_UTIL_ASYMMETRIC_DECRYPT_ERROR("TPM-UTL-004",
+			"Exception while encrypting the data using asymmetric crypto-algorithm through TPM"),
+	TPM_UTIL_GET_SIGN_KEY_ERROR("TPM-UTL-005", "Exception while getting the public part of the TPM signing key"),
+	TPM_UTIL_GET_TPM_INSTANCE_ERROR("TPM-UTL-006", "Exception while getting the TPM instance"),
+	TPM_UTIL_CLOSE_TPM_INSTANCE_ERROR("TPM-UTL-007", "Exception while closing the TPM instance"),
+	TPM_INIT_CLOSE_TPM_INSTANCE_ERROR("TPM-INT-001", "Exception while closing the TPM instance");
 
 	/**
 	 * The constructor

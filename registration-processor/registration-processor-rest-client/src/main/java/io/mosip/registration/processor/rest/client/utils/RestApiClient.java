@@ -182,12 +182,13 @@ public class RestApiClient {
 	 *            the request type
 	 * @param responseClass
 	 *            the response class
+	 * @param mediaType 
 	 * @return the t
 	 * @throws Exception
 	 *             the exception
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T putApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
+	public <T> T putApi(String uri, Object requestType, Class<?> responseClass, MediaType mediaType) throws Exception {
 
 		RestTemplate restTemplate;
 		T result = null;
@@ -200,7 +201,7 @@ public class RestApiClient {
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 
 			response = (ResponseEntity<T>) restTemplate.exchange(uri, HttpMethod.PUT,
-					setRequestHeader(requestType.toString(), null), responseClass);
+					setRequestHeader(requestType.toString(), mediaType), responseClass);
 			result = response.getBody();
 		} catch (Exception e) {
 

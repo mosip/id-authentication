@@ -139,6 +139,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 					}
 				}
 				updateSyncStatus(synchedPackets);
+			} else {
+				syncErrorStatus=RegistrationConstants.SYNC_FAILURE;
 			}
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
@@ -173,6 +175,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketPath(reg.getAckFilename());
 			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
+			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
+			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;
@@ -206,6 +210,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				}
 				successResponseDTO.setOtherAttributes(statusMap);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
+			} else if(response.get("errors") != null) {
+				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						response.get("errors").toString());
 			}
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,

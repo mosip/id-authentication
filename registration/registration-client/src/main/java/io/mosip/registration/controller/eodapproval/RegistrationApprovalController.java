@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -161,6 +162,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private ObservableList<RegistrationApprovalVO> observableList;
 
+	private Map<String, Integer> packetIds = new HashMap<>();
+	private int rowNum;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -282,22 +286,26 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
 		List<RegistrationApprovalVO> registrationApprovalVO = new ArrayList<>();
-		
-		
-		
+
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO(approvalDTO.getId(), approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)) );
-			
+			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO(approvalDTO.getId(),
+					approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)));
+			rowNum = 0;
+			listData.forEach(approvalDTO -> {
+				packetIds.put(approvalDTO.getId(), rowNum++);
+			});
 			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-			observableList = FXCollections.observableArrayList(registrationApprovalVO);			
+			observableList = FXCollections.observableArrayList(registrationApprovalVO);
 			wrapListAndAddFiltering(observableList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			table.getItems().clear();
+			observableList.clear();
+			filterField.clear();
+			wrapListAndAddFiltering(observableList);
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
@@ -308,31 +316,38 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredData.setPredicate(reg -> {
-				// If filter text is empty, display all ID's.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-				// Compare every ID with filter text.
-				String lowerCaseFilter = newValue.toLowerCase();
-				if (reg.getId().contains(lowerCaseFilter)) {
-					// Filter matches first name.
-					table.getSelectionModel().selectFirst();
-					return true;
-				}
-				return false; // Does not match.
-			});
-			table.getSelectionModel().selectFirst();
-			if (table.getSelectionModel().getSelectedItem() != null) {
-				viewAck();
-			}
+			filterData(newValue, filteredData);
 		});
+		if (!filterField.getText().isEmpty()) {
+			filterData(filterField.getText(), filteredData);
+		}
 		// 3. Wrap the FilteredList in a SortedList.
 		SortedList<RegistrationApprovalVO> sortedList = new SortedList<>(filteredData);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
 		table.setItems(sortedList);
+	}
+
+	private void filterData(String newValue, FilteredList<RegistrationApprovalVO> filteredData) {
+		filteredData.setPredicate(reg -> {
+			// If filter text is empty, display all ID's.
+			if (newValue == null || newValue.isEmpty()) {
+				return true;
+			}
+			// Compare every ID with filter text.
+			String lowerCaseFilter = newValue.toLowerCase();
+			if (reg.getId().contains(lowerCaseFilter)) {
+				// Filter matches first name.
+				table.getSelectionModel().selectFirst();
+				return true;
+			}
+			return false; // Does not match.
+		});
+		table.getSelectionModel().selectFirst();
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			viewAck();
+		}
 	}
 
 	/**
@@ -354,8 +369,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			for (Map<String, String> registrationMap : approvalmapList) {
 
-				if (registrationMap
-						.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
+				if (registrationMap.containsValue(table.getSelectionModel().getSelectedItem().getId())) {
 
 					approvalmapList.remove(registrationMap);
 
@@ -364,23 +378,26 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 			Map<String, String> map = new WeakHashMap<>();
-			map.put(RegistrationConstants.REGISTRATIONID,
-					observableList.get(table.getSelectionModel().getFocusedIndex()).getId());
+			map.put(RegistrationConstants.REGISTRATIONID, table.getSelectionModel().getSelectedItem().getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
 
 			authenticateBtn.setDisable(false);
 
-			int rowNum = table.getSelectionModel().getFocusedIndex();
+			int focusedIndex = table.getSelectionModel().getFocusedIndex();
+
+			int row = packetIds.get(table.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
-					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
-					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
+					table.getSelectionModel().getSelectedItem().getId(),
+					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);
-			observableList.set(rowNum, approvalDTO);
+			observableList.set(row, approvalDTO);
 			wrapListAndAddFiltering(observableList);
 			table.requestFocus();
-			table.getFocusModel().focus(rowNum);
+			table.getFocusModel().focus(focusedIndex);
+			table.getSelectionModel().select(focusedIndex);
+			// filterField.clear();
 
 		} else {
 			Stage primarystage = new Stage();
@@ -388,8 +405,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(observableList.get(table.getSelectionModel().getFocusedIndex()),
-							primarystage, approvalmapList, observableList, table,
+					rejectionController.initData(table.getSelectionModel().getSelectedItem(), packetIds, primarystage,
+							approvalmapList, observableList, table,
 							RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER);
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
@@ -516,40 +533,46 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		new Thread(upload).start();
 	}
-	
+
 	/**
 	 * Export data.
 	 */
-	public void exportData(){
+	public void exportData() {
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Exporting Registration status details has been started");
-		
-			Stage stage = new Stage();
-			DirectoryChooser destinationSelector = new DirectoryChooser();
-			destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
-			Path currentRelativePath = Paths.get("");
-			File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
-			destinationSelector.setInitialDirectory(defaultDirectory);
-			File destinationPath = destinationSelector.showDialog(stage);
-			if (destinationPath != null) {
 
-				String fileData = table.getItems().stream().map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE).concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE).concat(approvaldto.getStatusComment()))
-								.collect(Collectors.joining("\n"));
-				
-						try (Writer writer = new BufferedWriter(new FileWriter(destinationPath+"/"+RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))){
-							writer.write(fileData);
-							
-							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_SUCCESS);
-						
-						} catch (IOException ioException) {
-							LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));						
+		Stage stage = new Stage();
+		DirectoryChooser destinationSelector = new DirectoryChooser();
+		destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
+		Path currentRelativePath = Paths.get("");
+		File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
+		destinationSelector.setInitialDirectory(defaultDirectory);
+		File destinationPath = destinationSelector.showDialog(stage);
+		if (destinationPath != null) {
 
-							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.EOD_DETAILS_EXPORT_FAILURE);
+			String fileData = table.getItems().stream()
+					.map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE)
+							.concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE)
+							.concat(approvaldto.getStatusComment()))
+					.collect(Collectors.joining("\n"));
 
-						}	
+			try (Writer writer = new BufferedWriter(new FileWriter(destinationPath + "/"
+					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
+				writer.write(fileData);
+
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.EOD_DETAILS_EXPORT_SUCCESS);
+
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.EOD_DETAILS_EXPORT_FAILURE);
+
 			}
-			LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
-					"Exporting Registration status details has been ended");
-	}	
+		}
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+				"Exporting Registration status details has been ended");
+	}
 }

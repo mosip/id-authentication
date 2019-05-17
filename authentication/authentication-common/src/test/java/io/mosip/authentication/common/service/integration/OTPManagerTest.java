@@ -47,6 +47,7 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.vertx.core.net.impl.ServerID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
@@ -103,9 +104,12 @@ public class OTPManagerTest {
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
 
 	}
 
@@ -128,9 +132,12 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
 
 	}
 
@@ -153,9 +160,12 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
 
 	}
 
@@ -178,9 +188,12 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
 
 	}
 
@@ -236,9 +249,12 @@ public class OTPManagerTest {
 
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "123456", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valuesMap = new HashMap<>();
+		valuesMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valuesMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valuesMap.put("namePri", "Name in PrimaryLang");
+		valuesMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "123456", valuesMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -414,25 +430,42 @@ public class OTPManagerTest {
 				.thenThrow(new IDDataValidationException(
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage()));
-		otpManager.sendOtp(otpRequestDTO, "123456", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "123456", valueMap);
 	}
 
 	@Ignore
-
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestDataValidationExceptiononGenerateOtp()
 			throws IdAuthenticationBusinessException, RestServiceException {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException());
+		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsedto = new ResponseWrapper<>();
+		List<ServiceError> errors = new ArrayList<>();
+		ServiceError serviceError = new ServiceError();
+		serviceError.setErrorCode(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode());
+		serviceError.setMessage(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode());
+		errors.add(serviceError);
+		otpGeneratorResponsedto.setErrors(errors);
+		OtpGeneratorResponseDto response = new OtpGeneratorResponseDto();
+		response.setStatus("failure");
+		response.setMessage(USER_BLOCKED);
+		otpGeneratorResponsedto.setResponse(response);
 		RestServiceException restServiceException = new RestServiceException(
-				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, null, null);
+				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, otpGeneratorResponsedto.toString(),
+				otpGeneratorResponsedto);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "Test123", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "Test123", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -467,9 +500,12 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "123456", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "123456", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -603,7 +639,12 @@ public class OTPManagerTest {
 		otpGeneratorResponsetDto.setResponse(response);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "426789089018", "ida-otp-auth", "ida-otp-auth", "fra", "ara");
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", "fra");
+		valueMap.put("secondayLang", "ara");
+		valueMap.put("namePri", "ida-otp-auth");
+		valueMap.put("nameSec", "ida-otp-auth");
+		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -614,9 +655,12 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE, null, null));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
-		otpManager.sendOtp(otpRequestDTO, "Test123", "Name in PrimaryLang", "Name in SecondaryLang",
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE),
-				environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put("primaryLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+		valueMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
+		valueMap.put("namePri", "Name in PrimaryLang");
+		valueMap.put("nameSec", "Name in SecondaryLang");
+		otpManager.sendOtp(otpRequestDTO, "Test123", valueMap);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

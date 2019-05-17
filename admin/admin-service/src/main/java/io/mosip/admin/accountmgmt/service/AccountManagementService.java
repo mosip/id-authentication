@@ -1,7 +1,9 @@
 package io.mosip.admin.accountmgmt.service;
 
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
+import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 
 // TODO: Auto-generated Javadoc
@@ -47,7 +49,7 @@ public interface AccountManagementService {
 	 *            the user id
 	 * @return the status response dto
 	 */
-	public StatusResponseDto resetPassword(PasswordDto passworddto);
+	public StatusResponseDto resetPassword(ResetPasswordDto resetPasswordDto);
 
 	/**
 	 * Gets the user name based on mobile number.
@@ -56,4 +58,12 @@ public interface AccountManagementService {
 	 * @return the user name based on mobile number
 	 */
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile);
+	
+	/**
+	 * Gets the user detail based on mobile number.
+	 *
+	 * @param mobile the mobile
+	 * @return the user detail based on mobile number
+	 */
+	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile);
 }

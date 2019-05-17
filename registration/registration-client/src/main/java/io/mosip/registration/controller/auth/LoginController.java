@@ -67,7 +67,6 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
-import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
@@ -232,8 +231,9 @@ public class LoginController extends BaseController implements Initializable {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 				hasUpdate = registrationUpdate.hasUpdate();
-				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate,timestamp);
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
@@ -1181,8 +1181,8 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						List<String> val = new LinkedList<>();
-						publicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
+						ResponseDTO publicKeySyncResponse = publicKeySyncImpl
+								.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
@@ -1201,7 +1201,8 @@ public class LoginController extends BaseController implements Initializable {
 						if (((masterResponseDTO.getErrorResponseDTOs() != null
 								|| userResponseDTO.getErrorResponseDTOs() != null
 								|| userSaltResponse.getErrorResponseDTOs() != null)
-								|| responseDTO.getErrorResponseDTOs() != null)) {
+								|| responseDTO.getErrorResponseDTOs() != null
+								|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
 							val.add(RegistrationConstants.FAILURE);
 						} else {
 							val.add(RegistrationConstants.SUCCESS);

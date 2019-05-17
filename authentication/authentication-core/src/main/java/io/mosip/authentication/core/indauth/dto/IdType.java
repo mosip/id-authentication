@@ -59,4 +59,9 @@ public enum IdType {
 		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type)).findAny();
 
 	}
+	
+	public static IdType getIDTypeOrDefault(String type) {
+		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type)).findAny().orElse(DEFAULT_ID_TYPE);
+
+	}
 }

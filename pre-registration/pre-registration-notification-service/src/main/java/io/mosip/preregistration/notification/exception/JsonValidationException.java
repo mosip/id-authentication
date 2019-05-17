@@ -1,7 +1,4 @@
-/* 
- * Copyright
- * 
- */
+
 package io.mosip.preregistration.notification.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
@@ -19,7 +16,7 @@ import lombok.Getter;
 public class JsonValidationException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	private MainResponseDTO<?> mainResponseDTO;
+	private final MainResponseDTO<?> mainResponseDTO;
 
 	/**
 	 * @param msg
