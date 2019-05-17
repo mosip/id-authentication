@@ -260,7 +260,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			checkStatus(vidObject.getStatusCode());
 			checkExpiry(vidObject.getExpiryDTimes());
 			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
-			if (!(vidStatus.equals(IdRepoConstants.VID_UNLIMITED_TRANSATION_STATUS.getValue())
+			if (!(vidStatus.equals(env.getProperty(IdRepoConstants.VID_UNLIMITED_TRANSATION_STATUS.getValue()))
 					&& Objects.isNull(policy.getAllowedTransactions()))) {
 				vidObject.setStatusCode(vidStatus);
 				vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime()
