@@ -23,12 +23,14 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -59,7 +61,7 @@ public class PreRegZipHandlingServiceTest {
 	private KeyGenerator keyGenerator;
 
 	@Mock
-	private JsonValidator jsonValidator;
+	private IdObjectValidator idObjectValidator;
 	
 	@Mock
 	private DocumentTypeDAO documentTypeDAO;
@@ -89,9 +91,11 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test
-	public void extractPreRegZipFileTest() throws RegBaseCheckedException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport());
+	public void extractPreRegZipFileTest()
+			throws RegBaseCheckedException, IOException, JsonValidationProcessingException, JsonIOException,
+			JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException,
+			IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		
 		
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
@@ -107,9 +111,12 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException, IOException,
-			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		Mockito.when(jsonValidator.validateJson(Mockito.anyString())).thenThrow(new JsonValidationProcessingException("", ""));
+	public void extractPreRegZipFileTestNegative()
+			throws RegBaseCheckedException, IOException, JsonValidationProcessingException, JsonIOException,
+			JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException,
+			IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any()))
+				.thenThrow(new IdObjectValidationProcessingException("", ""));
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 		preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 

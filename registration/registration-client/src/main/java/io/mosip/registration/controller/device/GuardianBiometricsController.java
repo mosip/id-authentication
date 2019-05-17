@@ -186,7 +186,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			@Override
 			public void changed(ObservableValue<? extends String> arg0, String previousValue, String currentValue) {
-
+				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
 				if (previousValue != null && !previousValue.equalsIgnoreCase(currentValue)) {
 					continueBtn.setDisable(true);
 				}

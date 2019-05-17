@@ -25,21 +25,6 @@ public interface UserDetailRepository extends BaseRepository<UserDetail, String>
 	List<UserDetail> findByIdIgnoreCaseAndIsActiveTrue(String userId);
 
 	/**
-	 * To get the list of {@link UserDetail} based on the center id
-	 * 
-	 * @param cntrId
-	 *            id of the center
-	 * @param statusCode
-	 *            status code
-	 * @param userId
-	 *            id of the user
-	 * 
-	 * @return the list of {@link UserDetail}
-	 */
-	List<UserDetail> findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-			String cntrId, String statusCode, String userId);
-
-	/**
 	 * To get the list of {@link UserDetail} based on the isActive statuc
 	 * 
 	 * @return the list of {@link UserDetail}
