@@ -234,23 +234,23 @@ public class LoginController extends BaseController implements Initializable {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 				hasUpdate = registrationUpdate.hasUpdate();
-				
-				String dateString = registrationUpdate.getLatestVersionReleaseTimestamp();
-				
-				Calendar calendar=Calendar.getInstance();
-				
 
-				int year = Integer.valueOf(dateString.charAt(0)+""+dateString.charAt(1)+""+dateString.charAt(2)+""+dateString.charAt(3));
-				int month = Integer.valueOf(dateString.charAt(4)+""+dateString.charAt(5));
-				int date=Integer.valueOf(dateString.charAt(6)+""+dateString.charAt(7));
-				int hourOfDay = Integer.valueOf(dateString.charAt(8)+""+dateString.charAt(9));
-				int minute=Integer.valueOf(dateString.charAt(10)+""+dateString.charAt(11));
-				int second=Integer.valueOf(dateString.charAt(12)+""+dateString.charAt(13));
-				
-				calendar.set(year, month-1, date, hourOfDay, minute, second);
-				
-				timestamp=new Timestamp(calendar.getTime().getTime());
-				
+				String dateString = registrationUpdate.getLatestVersionReleaseTimestamp();
+
+				Calendar calendar = Calendar.getInstance();
+
+				int year = Integer.valueOf(dateString.charAt(0) + "" + dateString.charAt(1) + "" + dateString.charAt(2)
+						+ "" + dateString.charAt(3));
+				int month = Integer.valueOf(dateString.charAt(4) + "" + dateString.charAt(5));
+				int date = Integer.valueOf(dateString.charAt(6) + "" + dateString.charAt(7));
+				int hourOfDay = Integer.valueOf(dateString.charAt(8) + "" + dateString.charAt(9));
+				int minute = Integer.valueOf(dateString.charAt(10) + "" + dateString.charAt(11));
+				int second = Integer.valueOf(dateString.charAt(12) + "" + dateString.charAt(13));
+
+				calendar.set(year, month - 1, date, hourOfDay, minute, second);
+
+				timestamp = new Timestamp(calendar.getTime().getTime());
+
 				globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
 			}
 
@@ -313,10 +313,10 @@ public class LoginController extends BaseController implements Initializable {
 			if (hasUpdate) {
 
 				// Update Application
-				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,true);
+				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,
+						!isInitialSetUp);
 
-			}
-			if (!isInitialSetUp) {
+			} else if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
