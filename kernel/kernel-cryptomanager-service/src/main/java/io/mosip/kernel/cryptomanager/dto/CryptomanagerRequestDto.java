@@ -61,7 +61,7 @@ public class CryptomanagerRequestDto {
 	 *  Salt to be passed as IV
 	 */
 	@Pattern(regexp=CryptomanagerConstant.EMPTY_REGEX,message=CryptomanagerConstant.EMPTY_ATTRIBUTE)
-	@ApiModelProperty(notes = " Base64 Encoded Salt to be send as IV")
+	@ApiModelProperty(notes = " Base64 Encoded Salt to be send as IV", example = "LA7YcvP9DdLIVI5CwFt1SQ")
 	private String salt;
 	
 	@Override
