@@ -58,6 +58,9 @@ public enum ApiName {
 	/** The idrepository. */
 	IDREPOSITORY,
 
+	/** The idrepository get id by uin. */
+	IDREPOGETIDBYUIN,
+
 	/** The uingenerator. */
 	UINGENERATOR,
 
