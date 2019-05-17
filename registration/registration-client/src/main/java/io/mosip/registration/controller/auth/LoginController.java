@@ -342,8 +342,8 @@ public class LoginController extends BaseController implements Initializable {
 				jobConfigurationService.startScheduler();
 			}
 
-		} catch (IOException|RuntimeException runtimeException) {
-			
+		} catch (IOException | RuntimeException runtimeException) {
+
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -511,32 +511,38 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials entered through UI");
 
 		if (isInitialSetUp || isUserNewToMachine) {
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			loginUserDTO.setUserId(userId.getText());
-			loginUserDTO.setPassword(password.getText());
 
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 
-			try {
-				// Get Auth Token
-				getAuthToken(loginUserDTO, LoginMode.PASSWORD);
-				if (isInitialSetUp) {
-					executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+			} else {
+				LoginUserDTO loginUserDTO = new LoginUserDTO();
+				loginUserDTO.setUserId(userId.getText());
+				loginUserDTO.setPassword(password.getText());
 
-				} else {
-					validateUserCredentialsInLocal();
+				ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+
+				try {
+					// Get Auth Token
+					getAuthToken(loginUserDTO, LoginMode.PASSWORD);
+					if (isInitialSetUp) {
+						executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+					} else {
+						validateUserCredentialsInLocal();
+					}
+
+					// // Execute Sync
+					// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
+
+					loadInitialScreen(Initialization.getPrimaryStage());
 				}
-
-				// // Execute Sync
-				// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
-
-			} catch (Exception exception) {
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
-						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
-
-				loadInitialScreen(Initialization.getPrimaryStage());
 			}
 		} else {
 			validateUserCredentialsInLocal();
