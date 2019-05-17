@@ -253,6 +253,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
 	
 	/**
+	 * Gets the abis response det records.
+	 *
+	 * @param List abisResponseDto the abis response dto
+	 * @return the abis response det records
+	 */
+	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto);
+	
+	/**
 	 * Gets the abis response details.
 	 *
 	 * @param abisResponseId the abis response id

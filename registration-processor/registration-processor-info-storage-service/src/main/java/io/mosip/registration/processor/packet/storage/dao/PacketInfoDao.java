@@ -513,4 +513,12 @@ public class PacketInfoDao {
 	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds,String statusCode) {
 		return registrationRepositary.getProcessedOrProcessingRegIds(matchedRegIds, statusCode);
 	}
+
+	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
+		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
+		List<AbisResponseDetEntity> abisResEntity = abisRequestRepository
+				.getAbisResponseDetailsList(abisResponseDto);
+		abisResponseDetDtoList.addAll(PacketInfoMapper.convertAbisResponseDetEntityListToDto(abisResEntity));
+		return abisResponseDetDtoList;
+	}
 }

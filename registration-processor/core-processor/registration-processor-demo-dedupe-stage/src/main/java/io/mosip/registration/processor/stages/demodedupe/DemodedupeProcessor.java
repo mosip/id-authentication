@@ -145,10 +145,11 @@ public class DemodedupeProcessor {
 	 * @return the message DTO
 	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
-
+		
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		object.setIsValid(Boolean.FALSE);
+		isMatchFound = false;
 
 		boolean isTransactionSuccessful = false;
 
@@ -335,11 +336,62 @@ public class DemodedupeProcessor {
 	private boolean processDemoDedupeRequesthandler(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object) throws ApisResourceAccessException, IOException {
 		boolean isTransactionSuccessful = false;
+		List<String> responsIds = new ArrayList<>();
+
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 
 		List<AbisResponseDto> abisResponseDto = packetInfoManager.getAbisResponseRecords(latestTransactionId, IDENTIFY);
-
+		
 		for (AbisResponseDto responseDto : abisResponseDto) {
+			if (responseDto.getStatusCode().equalsIgnoreCase(AbisStatusCode.SUCCESS.toString())) {
+				responsIds.add(responseDto.getId());
+			} else {
+				isTransactionSuccessful = true;
+				int retryCount = registrationStatusDto.getRetryCount() != null
+						? registrationStatusDto.getRetryCount() + 1
+						: 1;
+				description = "Failed in Abis. Hence sending to Reprocess" + " -- "
+						+ registrationStatusDto.getRegistrationId();
+				registrationStatusDto.setRetryCount(retryCount);
+
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND));
+				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
+						"Failed in Abis. Hence sending to Reprocess");
+			}
+		}
+
+		if (!responsIds.isEmpty()) {
+			List<AbisResponseDetDto> abisResponseDetDto = packetInfoManager.getAbisResponseDetRecordsList(responsIds);
+			if (abisResponseDetDto.isEmpty()) {
+				object.setIsValid(Boolean.TRUE);
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
+						"ABIS response Details null, hence no duplicates found");
+				isTransactionSuccessful = true;
+			} else {
+				object.setIsValid(Boolean.FALSE);
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+				registrationStatusDto
+						.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
+				registrationStatusDto.setStatusComment(
+						StatusMessage.POTENTIAL_MATCH_FOUND_IN_ABIS + registrationStatusDto.getRegistrationId());
+				saveManualAdjudicationData(registrationStatusDto);
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
+						"ABIS response Details found. Hence sending to manual adjudication");
+			}
+		}
+
+/*		for (AbisResponseDto responseDto : abisResponseDto) {
 			if (responseDto.getStatusCode().equalsIgnoreCase(AbisStatusCode.SUCCESS.toString())) {
 				List<AbisResponseDetDto> abisResponseDetDto = packetInfoManager.getAbisResponseDetRecords(responseDto);
 				if (abisResponseDetDto.isEmpty()) {
@@ -382,7 +434,7 @@ public class DemodedupeProcessor {
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"Failed in Abis. Hence sending to Reprocess");
 			}
-		}
+		}*/
 
 		return isTransactionSuccessful;
 	}

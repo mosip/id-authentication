@@ -843,4 +843,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntityList);
 	}
 
+	@Override
+	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
+		return packetInfoDao.getAbisResponseDetRecordsList(abisResponseDto);
+	}
+
 }
