@@ -31,6 +31,8 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
@@ -83,7 +85,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * @author Rishabh Keshari
  */
 @Service
-public class UinGeneratorStage extends MosipVerticleManager {
+public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinGeneratorStage.class);
@@ -114,6 +116,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Value("${registration.processor.id.repo.update}")
 	private String idRepoUpdate;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
@@ -122,6 +128,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
@@ -732,6 +742,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
+	}
+
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 	
 	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {

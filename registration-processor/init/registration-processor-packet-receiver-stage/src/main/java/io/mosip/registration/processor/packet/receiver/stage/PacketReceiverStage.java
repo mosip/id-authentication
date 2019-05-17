@@ -80,6 +80,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	MosipRouter router;
 	File file = null;
 
+	@Autowired
+	SignatureUtil signatureUtil;
+
 	/**
 	 * deploys this verticle.
 	 */
@@ -107,7 +110,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, null, MessageBusAddress.PACKET_RECEIVER_OUT));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -121,11 +124,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private void routes(MosipRouter router) {
 
 		router.post(contextPath + "/registrationpackets");
-
 		router.handler(this::processURL, this::processPacket, this::failure);
-
-		router.get(contextPath + "/health");
-		router.handler(this::health);
 	};
 
 	/**
@@ -139,14 +138,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		this.setResponse(routingContext, exceptionError, APPLICATION_JSON);
 	}
 
-	/**
-	 * This is for health check up
-	 *
-	 * @param routingContext
-	 */
-	private void health(RoutingContext routingContext) {
-		this.setResponse(routingContext, "Server is up and running");
-	}
 
 	private void processPacket(RoutingContext ctx) {
 
