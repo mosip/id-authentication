@@ -1007,7 +1007,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 
 	public Response FetchCentre(String regCenterID) {
-		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
+		testSuite = "FetchAvailabilityDataOfRegCenters/prereg_FetchAvailabilityDataOfRegCenters_smoke";
 		request = getRequest(testSuite);
 		request.put("registrationCenterId", regCenterID);
 		try {

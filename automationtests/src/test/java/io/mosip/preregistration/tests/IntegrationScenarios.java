@@ -430,8 +430,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
-				preID);
+		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
 		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
 				"Appointment cancelled successfully");
 		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();

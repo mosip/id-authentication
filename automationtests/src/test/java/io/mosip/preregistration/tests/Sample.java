@@ -77,7 +77,7 @@ public class Sample extends BaseTestCase implements ITest {
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void retrivePreRegistrationDataOfDiscardedApplication() {
+	public void fetchCanceledAppointmentCreatedByUser() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
@@ -85,13 +85,18 @@ public class Sample extends BaseTestCase implements ITest {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response discardResponse = lib.discardApplication(preID);
-		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].message"),
-				"No data found for the requested pre-registration id");
-		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].errorCode"), "PRG_PAM_APP_005");
-	}
+		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
+		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
+				"Appointment cancelled successfully");
+		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
+		Assert.assertEquals(
+				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(),
+				preID);
+		Assert.assertNull(
+				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO"));
 
+	}
 
 
 	@BeforeMethod(alwaysRun=true)
