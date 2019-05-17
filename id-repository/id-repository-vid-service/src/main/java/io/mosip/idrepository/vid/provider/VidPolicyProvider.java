@@ -1,6 +1,7 @@
 package io.mosip.idrepository.vid.provider;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -11,23 +12,23 @@ import java.util.stream.IntStream;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.dto.VidPolicy;
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 
 /**
  * The Class VidPolicyProvider.
@@ -35,6 +36,7 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
  * @author Manoj SP
  */
 @Component
+@RefreshScope
 public class VidPolicyProvider {
 
 	/** The Constant READ_LIST_OPTIONS. */
@@ -48,28 +50,26 @@ public class VidPolicyProvider {
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
-	
-	@Autowired
-	@Qualifier("schema")
-	private IdObjectValidator schemaValidator;
 
 	/** The vid policies. */
 	private Map<String, VidPolicy> vidPolicies;
 
 	/**
 	 * Policy details.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws FileIOException 
-	 * @throws IdObjectSchemaIOException 
-	 * @throws IdObjectIOException 
-	 * @throws IdObjectValidationProcessingException 
+	 * 
+	 * @throws MalformedURLException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 * @throws ProcessingException
 	 */
 	@PostConstruct
-	public void loadPolicyDetails() throws IOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, FileIOException {
-		JsonNode policyJson = mapper.readValue(
-				new URL(env.getProperty(IdRepoConstants.VID_POLICY_FILE_URL.getValue())), JsonNode.class);
-		schemaValidator.validateIdObject(policyJson);
+	public void loadPolicyDetails() throws IOException, ProcessingException {
+		JsonNode policyJson = mapper.readValue(new URL(env.getProperty(IdRepoConstants.VID_POLICY_FILE_URL.getValue())),
+				JsonNode.class);
+		JsonNode schema = mapper.readValue(new URL(env.getProperty(IdRepoConstants.VID_POLICY_SCHEMA_URL.getValue())),
+				JsonNode.class);
+		final JsonSchema jsonSchema = JsonSchemaFactory.byDefault().getJsonSchema(schema);
+		jsonSchema.validate(policyJson);
 		List<String> vidType = JsonPath.compile(IdRepoConstants.VID_TYPE_PATH.getValue()).read(policyJson.toString(),
 				READ_LIST_OPTIONS);
 		List<Object> vidPolicy = JsonPath.compile(IdRepoConstants.VID_POLICY_PATH.getValue())
@@ -81,7 +81,8 @@ public class VidPolicyProvider {
 	/**
 	 * Gets the policy.
 	 *
-	 * @param vidType the vid type
+	 * @param vidType
+	 *            the vid type
 	 * @return the policy
 	 */
 	public VidPolicy getPolicy(String vidType) {

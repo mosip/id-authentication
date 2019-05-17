@@ -65,7 +65,9 @@ public enum IdRepoConstants {
 	
 	VID_DB_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName"),
 	
-	VID_POLICY_FILE_URL("mosip.idrepo.vid.policy-file-url");
+	VID_POLICY_FILE_URL("mosip.idrepo.vid.policy-file-url"),
+	
+	VID_POLICY_SCHEMA_URL("mosip.idrepo.vid.policy-schema-url");
 	/** The value. */
 	private final String value;
 
