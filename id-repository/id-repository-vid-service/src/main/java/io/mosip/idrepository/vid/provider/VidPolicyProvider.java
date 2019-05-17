@@ -68,7 +68,7 @@ public class VidPolicyProvider {
 	@PostConstruct
 	public void loadPolicyDetails() throws IOException, IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, FileIOException {
 		JsonNode policyJson = mapper.readValue(
-				new URL(env.getProperty(IdRepoConstants.VID_POLICY_FILE_LOCATION.getValue())), JsonNode.class);
+				new URL(env.getProperty(IdRepoConstants.VID_POLICY_FILE_URL.getValue())), JsonNode.class);
 		schemaValidator.validateIdObject(policyJson);
 		List<String> vidType = JsonPath.compile(IdRepoConstants.VID_TYPE_PATH.getValue()).read(policyJson.toString(),
 				READ_LIST_OPTIONS);

@@ -1,25 +1,22 @@
 package io.mosip.idrepository.vid.validator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -27,7 +24,6 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * This class will validate the Vid Request.
@@ -38,7 +34,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 @ConfigurationProperties("mosip.idrepo.vid")
-public class VidRequestValidator implements Validator {
+public class VidRequestValidator extends BaseIdRepoValidator implements Validator {
 	
 	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
 	
@@ -48,17 +44,9 @@ public class VidRequestValidator implements Validator {
 
 	private static final String CREATE = "create";
 
-	/** The Constant ID. */
-	private static final String ID = "id";
-
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
 
-	/** The Constant VER. */
-	private static final String VER = "version";
-
-	/** The Constant TIMESTAMP. */
-	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -67,10 +55,6 @@ public class VidRequestValidator implements Validator {
 	private static final String STATUS_FIELD = "vidStatus";
 
 	private static final String UIN = "UIN";
-
-	/** The Environment */
-	@Autowired
-	private Environment env;
 	
 	@Autowired
 	private VidPolicyProvider policyProvider;
@@ -175,41 +159,6 @@ public class VidRequestValidator implements Validator {
 	}
 
 	/**
-	 * Validate req time.
-	 *
-	 * @param reqTime the timestamp
-	 * @param errors  the errors
-	 */
-	private void validateReqTime(LocalDateTime reqTime, Errors errors) {
-		if (Objects.isNull(reqTime)) {
-			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-		} else {
-			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-						.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-			}
-		}
-	}
-
-	/**
-	 * Validate ver.
-	 *
-	 * @param ver    the ver
-	 * @param errors the errors
-	 */
-	private void validateVersion(String ver, Errors errors) {
-		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
-				.matches())) {
-			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
-		}
-	}
-
-	/**
 	 * This method will validate the Vid value.
 	 * 
 	 * @param vid
@@ -219,13 +168,4 @@ public class VidRequestValidator implements Validator {
 		vidValidator.validateId(vid);
 	}
 
-	public void validateId(String id, Errors errors, String operation) {
-		if (Objects.isNull(id)) {
-			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
-		} else if (!this.id.get(operation).equals(id)) {
-			errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID));
-		}
-	}
 }

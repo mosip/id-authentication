@@ -62,7 +62,7 @@ public class VidRequestValidatorTest {
 	private UinValidator<String> uinValidator;
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@Mock
 	private VidPolicyProvider policyProvider;
