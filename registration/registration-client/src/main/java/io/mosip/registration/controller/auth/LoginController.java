@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +67,7 @@ import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.sql.JdbcSqlService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
@@ -227,6 +227,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private HeaderController headerController;
 
+	@Autowired
+	private JdbcSqlService jdbcSqlService;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -309,6 +312,24 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+
+			String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
+			if (!registrationUpdate.getCurrentVersion().equals(version)) {
+				loginRoot.setDisable(true);
+				ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(registrationUpdate.getCurrentVersion(),
+						version);
+				loginRoot.setDisable(false);
+
+				if (responseDTO.getErrorResponseDTOs() != null) {
+					if (version.equals("0")) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+					} else {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED);
+					}
+					System.exit(0);
+				}
+			}
 
 			if (hasUpdate) {
 
