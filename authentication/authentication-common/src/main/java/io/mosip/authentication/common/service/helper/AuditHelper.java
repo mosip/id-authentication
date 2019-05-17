@@ -91,52 +91,6 @@ public class AuditHelper {
 	}
 
 	/**
-	 * sets AuthTxn entity values
-	 * 
-	 * @param authRequestDTO
-	 * @param uin
-	 * @param status
-	 * @param comment
-	 * @param requestType
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
-	public AutnTxn createAuthTxn(AuthRequestDTO authRequestDTO, String uin, RequestType requestType,
-			String staticTokenId, boolean isStatus) throws IdAuthenticationBusinessException {
-		try {
-			String status = isStatus ? SUCCESS_STATUS : FAILED;
-			String comment = isStatus ? requestType.getMessage() + " Success" : requestType.getMessage() + " Failed";
-			String idvId = idInfoFetcher.getUinOrVid(authRequestDTO).get();
-			String reqTime = authRequestDTO.getRequestTime();
-			String idvIdType = idInfoFetcher.getUinOrVidType(authRequestDTO).getType();
-			String txnID = authRequestDTO.getTransactionID();
-			AutnTxn autnTxn = new AutnTxn();
-			autnTxn.setRefId(idvId);
-			autnTxn.setRefIdType(idvIdType);
-			String id = createId(uin);
-			autnTxn.setId(id); // FIXME
-			autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
-			autnTxn.setStaticTknId(staticTokenId);
-			autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
-			String strUTCDate = DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
-			autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-			autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
-			autnTxn.setAuthTypeCode(requestType.getRequestType());
-			autnTxn.setRequestTrnId(txnID);
-			autnTxn.setStatusCode(status);
-			autnTxn.setStatusComment(comment);
-			// FIXME
-			autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
-			return autnTxn;
-		} catch (ParseException e) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
-					e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-		}
-	}
-
-	/**
 	 * Creates UUID
 	 * 
 	 * @param uin
