@@ -3,7 +3,10 @@ package io.mosip.registration.processor.abis.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -39,7 +42,6 @@ import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 
 /**
  * The Class AbisServiceImpl.
@@ -65,6 +67,8 @@ public class AbisServiceImpl implements AbisService {
 	/** The Constant IDENTIFY. */
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
+	private static Set<String> storedRefId = new HashSet<>();
+
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
 	private String testFingerPrint;
@@ -85,9 +89,11 @@ public class AbisServiceImpl implements AbisService {
 	{
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				"", "AbisServiceImpl::insert()::entry");
-
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
+
+		if(storedRefId.size() <100)
+			storedRefId.add(referenceId);
 
 		response.setId(ABIS_INSERT);
 		response.setRequestId(abisInsertRequestDto.getRequestId());
@@ -260,66 +266,89 @@ public class AbisServiceImpl implements AbisService {
 	private void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
 		int count = 0;
 
+		ArrayList<String> storedRefIdList =new ArrayList<>(storedRefId);
 		CandidateListDto cd = new CandidateListDto();
-		CandidatesDto[] candidatesDto = null;
-		if(identifyRequest.getGallery() == null ||identifyRequest.getGallery()!=null&& identifyRequest.getGallery().getReferenceIds().isEmpty()) {
-			candidatesDto = new CandidatesDto[3];
-			for (int i = 0; i <candidatesDto.length; i++) {
-				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId("e06ddbf7-7354-400c-b815-06c37f22aa4"+(i+1));
+		CandidatesDto[] candidatesDto ;
+
+		
+		HashSet<String> storedRefIdSet=new HashSet<>();
+		int listSize =storedRefId.size()%4;
+		if(listSize == 0)
+			listSize=3;
+		for (int i = 0; i <listSize; i++) {
+			Random r=new Random();
+			int low=0;
+			int high=storedRefId.size();
+			int value=high-1;
+			int result=1;
+			
+			
+			 	
+			if(value>1) {
+				result = r.nextInt(value);
+				
+			 String str=storedRefIdList.get(result);
+				storedRefIdSet.add(str);
+			
+			}else {
+				String str=storedRefIdList.get(0);
+				storedRefIdSet.add(str);
+			}
+			
+		}
+		ArrayList<String> refIdList =new ArrayList<>(storedRefIdSet);
+
+		candidatesDto = new CandidatesDto[refIdList.size()];
+		for (int i = 0; i <candidatesDto.length; i++) {
+			candidatesDto[i] = new CandidatesDto();
+			if(!(identifyRequest.getReferenceId().equalsIgnoreCase(storedRefIdList.get(i)))){
+
+				candidatesDto[i].setReferenceId(refIdList.get(i));
 				candidatesDto[i].setScaledScore(100 - i + "");
 				count++;
-			}					
-		}
-		else{
-
-			candidatesDto = new CandidatesDto[identifyRequest.getGallery().getReferenceIds().size() ];
-			for (int i = 0; i <candidatesDto.length; i++) {
-				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId(identifyRequest.getGallery().getReferenceIds().get(i).getReferenceId());
-				candidatesDto[i].setScaledScore(100 - i + "");
-				count++;
-			}				
+			}
 
 		}
-	
-	cd.setCount(count + "");
-	cd.setCandidates(candidatesDto);
-	response.setCandidateList(cd);
 
-}
 
-/**
- * Check duplicate.
- *
- * @param duplicate
- *            the duplicate
- * @param nodeList
- *            the node list
- * @return true, if successful
- */
-private boolean checkDuplicate(boolean duplicate, NodeList nodeList) {
-	for (int i = 0; i < nodeList.getLength(); i++) {
-		String value = nodeList.item(i).getTextContent();
-		if (value.equalsIgnoreCase(DUPLICATE)) {
-			duplicate = true;
-			break;
+		cd.setCount(count + "");
+		if(count !=0 ) {
+		cd.setCandidates(candidatesDto);
+		response.setCandidateList(cd);
 		}
 	}
-	return duplicate;
-}
 
-/* (non-Javadoc)
- * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
- */
-@Override
-public void delete() {
-	// Delete should be implemented in future
-}
+	/**
+	 * Check duplicate.
+	 *
+	 * @param duplicate
+	 *            the duplicate
+	 * @param nodeList
+	 *            the node list
+	 * @return true, if successful
+	 */
+	private boolean checkDuplicate(boolean duplicate, NodeList nodeList) {
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			String value = nodeList.item(i).getTextContent();
+			if (value.equalsIgnoreCase(DUPLICATE)) {
+				duplicate = true;
+				break;
+			}
+		}
+		return duplicate;
+	}
 
-@Override
-public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
-	// Ping should be implemented in future
-	return null;
-}
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
+	 */
+	@Override
+	public void delete() {
+		// Delete should be implemented in future
+	}
+
+	@Override
+	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
+		// Ping should be implemented in future
+		return null;
+	}
 }
