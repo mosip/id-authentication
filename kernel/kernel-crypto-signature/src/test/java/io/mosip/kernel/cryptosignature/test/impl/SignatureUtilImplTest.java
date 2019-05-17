@@ -205,10 +205,10 @@ public class SignatureUtilImplTest {
 	public void validateWithPublicKeyTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		PrivateKey privateKey = keyPair.getPrivate();
-		byte[] hashedData = HMACUtils.generateHash("signedData".getBytes());
+		byte[] hashedData = HMACUtils.generateHash("admin".getBytes());
 		String hashedString = CryptoUtil.encodeBase64(hashedData);
 		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedString.getBytes());
-		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "signedData",
+		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "admin",
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()));
 		assertTrue(isVerfied);
 	}
