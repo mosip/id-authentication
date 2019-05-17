@@ -216,7 +216,7 @@ public class ApplicationLibrary extends BaseTestCase {
 	        return commonLibrary.get_Request_Path_queryParamString(ApplnURI + Resource_URI , path_value,query_value);
 	    } 
 	  //Notify
-	    public Response putFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
+	    public Response postFileAndJsonParam(String Resource_Uri,Object body,File file,String langCodeKey,String value) {
 	    	
 	    	return commonLibrary.Post_JSONwithFileParam(body, file, ApplnURI+Resource_Uri, MediaType.MULTIPART_FORM_DATA,langCodeKey,value);
 	        

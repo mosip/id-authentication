@@ -130,7 +130,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		Response syncMsterData = syncUtil.syncMasterData();
-		logger.info("Get All Doc Res:" + syncMsterData.asString());
+		logger.info("Sync Master data Res:" + syncMsterData.asString());
 
 		//Removing the dynamic value from Sync Master data response
 		outerKeys.add("responsetime");

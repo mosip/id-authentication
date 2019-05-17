@@ -36,11 +36,11 @@ public class TriggerNotificationUtil {
 	 * 
 	 */
 
-	public Response TriggerNotification() {
-		testSuite = triggerNotificationFilePath;
+	public Response TriggerNotification(String fileName) {
+		testSuite = triggerNotificationFilePath+fileName;
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + docFilePath);
-
+       
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 		for (File f : listOfFiles) {
@@ -63,7 +63,7 @@ public class TriggerNotificationUtil {
 			}
 		}
 		request.put("requesttime", preregUtil.getCurrentDate());
-		response = applnLib.putFileAndJsonParam(notification_URI, request, file, langCodeKey, value);
+		response = applnLib.postFileAndJsonParam(notification_URI, request, file, langCodeKey, value);
 
 		return response;
 	}

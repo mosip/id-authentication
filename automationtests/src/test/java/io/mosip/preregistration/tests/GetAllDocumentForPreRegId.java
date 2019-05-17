@@ -140,7 +140,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		if (testCaseName.contains("smoke")) {
 			// Get All Document For PreID
 			Response getAllDocRes = preRegLib.getAllDocumentForPreId(preId);
-			getAllDocRes.jsonPath().get("response.documentsMetaData[0].docId").toString();
+			logger.info("getAllDocRes::"+getAllDocRes.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("documentsMetaData");
 			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docName").toString(),

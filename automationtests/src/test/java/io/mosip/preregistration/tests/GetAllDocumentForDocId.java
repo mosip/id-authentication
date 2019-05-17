@@ -147,7 +147,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			Response getAllDocRes = preRegLib.getAllDocumentForDocId(preId, docId);
 			logger.info("Get All Doc Res:" + getAllDocRes.asString());
 			outerKeys.add("responsetime");
-			innerKeys.add("multipartFile");
+			innerKeys.add("document");
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
