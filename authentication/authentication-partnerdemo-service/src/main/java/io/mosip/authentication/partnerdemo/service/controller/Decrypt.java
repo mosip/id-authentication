@@ -32,8 +32,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.partnerdemo.service.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;;
 
@@ -63,6 +65,10 @@ public class Decrypt {
 	/** The encrypt URL. */
 	@Value("${mosip.kernel.decrypt-url}")
 	private String decryptURL;
+	
+	
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(Decrypt.class);
 
 	/**
 	 * Decrypt.
@@ -134,7 +140,7 @@ public class Decrypt {
 		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri")).post()
 				.syncBody(request)
 				.exchange().block();
-		System.out.println("AuthResponse :" +  response.toEntity(String.class).block().getBody());
+		logger.info("sessionID", "IDA", "DECRYPT", "AuthResponse :" +  response.toEntity(String.class).block().getBody());
 		List<ResponseCookie> list = response.cookies().get("Authorization");
 		if(list != null && !list.isEmpty()) {
 			ResponseCookie responseCookie = list.get(0);

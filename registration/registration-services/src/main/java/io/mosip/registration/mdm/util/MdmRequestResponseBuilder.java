@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
@@ -30,7 +32,8 @@ public class MdmRequestResponseBuilder {
 	
 	private static final Logger LOGGER = AppConfig.getLogger(MdmRequestResponseBuilder.class);
 
-	
+	private static Random rnd = new Random();
+
 	private MdmRequestResponseBuilder() {
 		
 	}
@@ -50,10 +53,10 @@ public class MdmRequestResponseBuilder {
 
 		CaptureRequestDto bioCaptureRequestDto = new CaptureRequestDto();
 
-		bioCaptureRequestDto.setEnv("");
-		bioCaptureRequestDto.setTimeout(1000);
-		bioCaptureRequestDto.setVersion("");
-		bioCaptureRequestDto.setTransactionId("");
+		bioCaptureRequestDto.setEnv(RegistrationConstants.MDM_ENVIRONMENT);
+		bioCaptureRequestDto.setTimeout(RegistrationConstants.MDM_TIMEOUT);
+		bioCaptureRequestDto.setVersion(RegistrationConstants.MDM_VERSION);
+		bioCaptureRequestDto.setTransactionId(String.valueOf(generateID()));
 
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
 		mosipBioRequest.setCount(1);
@@ -72,6 +75,15 @@ public class MdmRequestResponseBuilder {
 
 	}
 
+	private static long generateID() { 
+	    char [] digits = new char[10];
+	    digits[0] = (char) (rnd.nextInt(9) + '1');
+	    for(int i=1; i<digits.length; i++) {
+	        digits[i] = (char) (rnd.nextInt(10) + '0');
+	    }
+	    return Long.parseLong(new String(digits));
+	}
+	
 	/**
 	 * Returns the map for captured byte
 	 * @param CaptureResponseDto

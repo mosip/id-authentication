@@ -6,6 +6,7 @@ import { UserregistrationComponent } from './userregistration/userregistration.c
 import { MaterialModule } from '../../material.module';
 import { RidverificationComponent } from './ridverification/ridverification.component';
 import { OtpvalidatorComponent } from './otpvalidator/otpvalidator.component';
+import { UserpasswordComponent } from './userpassword/userpassword.component';
 
 @NgModule({
   imports: [
@@ -14,6 +15,6 @@ import { OtpvalidatorComponent } from './otpvalidator/otpvalidator.component';
     MaterialModule,
     ReactiveFormsModule
   ],
-  declarations: [UserregistrationComponent, RidverificationComponent, OtpvalidatorComponent]
+  declarations: [UserregistrationComponent, RidverificationComponent, OtpvalidatorComponent, UserpasswordComponent]
 })
 export class UsermgmtModule { }

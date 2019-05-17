@@ -31,7 +31,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -81,7 +80,6 @@ public class RejectionController extends BaseController implements Initializable
 	
 	private ObservableList<RegistrationApprovalVO> observableList;
 	private Map<String, Integer> packetIds = new HashMap<>();
-	private TextField filterField;
 
 	private String controllerName;
 	
@@ -119,7 +117,7 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param filterField 
 	 */
 	public void initData(RegistrationApprovalVO regData, Map<String, Integer> packets, Stage stage, List<Map<String, String>> mapList, ObservableList<RegistrationApprovalVO> oList,
-			TableView<RegistrationApprovalVO> table, String controller, TextField filter) {
+			TableView<RegistrationApprovalVO> table, String controller) {
 		rejRegData = regData;
 		packetIds = packets;
 		rejPrimarystage = stage;
@@ -127,7 +125,6 @@ public class RejectionController extends BaseController implements Initializable
 		observableList = oList;
 		regRejectionTable = table;
 		controllerName = controller;
-		filterField = filter;
 	}
 
 	/**
@@ -158,6 +155,8 @@ public class RejectionController extends BaseController implements Initializable
 
 		if (controllerName.equals(RegistrationConstants.EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER)) {
 
+			int focusedIndex = regRejectionTable.getSelectionModel().getFocusedIndex();
+			
 			int rowNum=packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
 					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
@@ -167,8 +166,8 @@ public class RejectionController extends BaseController implements Initializable
 			observableList.set(rowNum, approvalDTO);
 			registrationApprovalController.wrapListAndAddFiltering(observableList);
 			regRejectionTable.requestFocus();
-			regRejectionTable.getFocusModel().focus(rowNum);
-			filterField.clear();
+			regRejectionTable.getFocusModel().focus(focusedIndex);
+			regRejectionTable.getSelectionModel().select(focusedIndex);
 			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
 		}

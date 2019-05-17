@@ -16,25 +16,20 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -653,7 +648,8 @@ public class DemographicDetailController extends BaseController {
 	@Autowired
 	private Transliteration<String> transliteration;
 	@Autowired
-	private JsonValidator jsonValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 
 	private FXUtils fxUtils;
 	private Date dateOfBirth;
@@ -714,7 +710,7 @@ public class DemographicDetailController extends BaseController {
 			switchedOnParentUinOrRid = new SimpleBooleanProperty(true);
 			toggleFunction();
 			toggleFunctionForParentUinOrRid();
-			ageFieldValidations();
+			ageBasedOperation();
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
@@ -1089,7 +1085,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-	private void ageFieldValidations() {
+	private void ageBasedOperation() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
@@ -1419,13 +1415,7 @@ public class DemographicDetailController extends BaseController {
 			demographicInfoDTO = buildDemographicInfo();
 
 			try {
-				jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO));
-			} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
-					| JsonProcessingException exception) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-				throw exception;
+				idObjectValidator.validateIdObject(demographicInfoDTO);
 			} catch (RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
 				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -2135,8 +2125,26 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean validateDateOfBirth(boolean isValid) {
 		int age;
-		LocalDate date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+				.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
+				&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+			return true;
+		}
+		LocalDate date = null;
+		try {
+		date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 				Integer.parseInt(dd.getText()));
+		}catch(NumberFormatException exception) {
+			if(dd.getText().isEmpty()) {
+				dobMessage.setText(dd.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(mm.getText().isEmpty()) {
+				dobMessage.setText(mm.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}else if(yyyy.getText().isEmpty()){
+				dobMessage.setText(yyyy.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			}
+			dobMessage.setVisible(true);
+			return false;
+		}
 		LocalDate localDate = LocalDate.now();
 
 		if (localDate.compareTo(date) != -1) {
@@ -2152,11 +2160,6 @@ public class DemographicDetailController extends BaseController {
 					isValid = false;
 				}
 			} catch (DateTimeException exception) {
-				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-						.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
-						&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
-					isValid = true;
-				} else {
 					if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
 						dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
 					} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
@@ -2166,7 +2169,6 @@ public class DemographicDetailController extends BaseController {
 					}
 					dobMessage.setVisible(true);
 					isValid = false;
-				}
 			}
 		} else {
 			ageField.clear();

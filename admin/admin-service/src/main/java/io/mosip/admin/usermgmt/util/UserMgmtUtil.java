@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.admin.usermgmt.constant.UserMgmtErrorCode;
-import io.mosip.admin.usermgmt.exception.AdminServiceResponseException;
-import io.mosip.admin.usermgmt.exception.ServiceException;
+import io.mosip.admin.usermgmt.exception.UsermanagementServiceResponseException;
+import io.mosip.admin.usermgmt.exception.UsermanagementServiceException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 
@@ -26,7 +26,7 @@ public class UserMgmtUtil {
 		String responseBody = response.getBody();
 		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseBody);
 		if (!validationErrorList.isEmpty()) {
-			throw new AdminServiceResponseException(validationErrorList);
+			throw new UsermanagementServiceResponseException(validationErrorList);
 		}
 	}
 	
@@ -35,7 +35,7 @@ public class UserMgmtUtil {
 			JsonNode res =objectMapper.readTree(response.getBody());
 			return objectMapper.readValue(res.get("response").toString(), clazz);
 		} catch (IOException e) {
-			throw new ServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+			throw new UsermanagementServiceException(UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					UserMgmtErrorCode.INTERNAL_SERVER_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}

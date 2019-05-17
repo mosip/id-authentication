@@ -427,6 +427,8 @@ public class BiometricExceptionController extends BaseController implements Init
 
 		}else {
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
+			((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+			.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 		}
 
 		LOGGER.info("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,

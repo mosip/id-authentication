@@ -3,7 +3,6 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -265,7 +264,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
-		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 				"getCenterID() stationID --> " + stationId);
 
 		try {

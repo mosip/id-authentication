@@ -45,7 +45,9 @@ public enum AuditLogVariables {
 	BOOK,
 	NOTIFICATION_SERVICE,
 	
-	NOTIFY
+	NOTIFY,
 	
-
+	AUTHENTICATION_SERVICE,
+	
+	AUTHENTICATION
 }

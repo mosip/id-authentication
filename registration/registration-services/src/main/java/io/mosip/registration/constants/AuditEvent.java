@@ -189,12 +189,7 @@ public enum AuditEvent {
 	
 	//Packet Upload
 	PACKET_UPLOAD("REG-EVT-133", USER_EVENT.getCode(), "PACKET_UPLOAD", "Upload the local packets to the server"),
-	
-	// Device Onboarding
-	GET_ONBOARDING_DEVICES_TYPES("REG-EVT-134", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES_TYPES", "Get the types of devices for device onboarding"),
-	GET_ONBOARDING_DEVICES("REG-EVT-135", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES", "Get the available and mapped devices for the requested device type"),
-	UPDATE_DEVICES_ONBOARDING("REG-EVT-136", USER_EVENT.getCode(), "UPDATE_DEVICES_ONBOARDING", "Devices onboarding updated for the registration client"),
-
+		
 	// Notification Service
 	NOTIFICATION_STATUS("REG-EVT-137", USER_EVENT.getCode(), "NOTIFICATION_SERVICE", "Notification request status"),
 	

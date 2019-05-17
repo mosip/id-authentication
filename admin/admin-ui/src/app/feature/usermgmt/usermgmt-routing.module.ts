@@ -1,3 +1,4 @@
+import { UserpasswordComponent } from './userpassword/userpassword.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { UserregistrationComponent } from './userregistration/userregistration.component';
@@ -9,7 +10,8 @@ const routes: Routes = [
   { path: '', redirectTo: 'userregistration', pathMatch: 'full' },
   { path: 'userregistration', component: UserregistrationComponent },
   { path: 'ridverification', component: RidverificationComponent },
-  { path: 'validateotp', component: OtpvalidatorComponent }
+  { path: 'validateotp', component: OtpvalidatorComponent },
+  { path: 'createpassword', component: UserpasswordComponent }
 ];
 
 @NgModule({
