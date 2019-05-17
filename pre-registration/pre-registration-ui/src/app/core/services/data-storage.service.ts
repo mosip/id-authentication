@@ -37,7 +37,8 @@ export class DataStorageService {
   // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
 
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
-  // BASE_URL = 'https://dev.mosip.io/';
+  // BASE_URL = 'https://devops.mosip.io/';
+  // BASE_URL = 'https://qa.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
   getUsers(userId: string) {
@@ -303,7 +304,7 @@ export class DataStorageService {
     return this.httpClient.get(url);
   }
 
-  getGuidelineTemplate(templateType : string) {
+  getGuidelineTemplate(templateType: string) {
     const url =
       this.BASE_URL +
       appConstants.APPEND_URL.master_data +

@@ -572,7 +572,9 @@ public class DocumentService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
-				deleteRes = deleteFile(documentEntityList, preregId);
+				DocumentDeleteResponseDTO deleteDTO = deleteFile(documentEntityList, preregId);
+				deleteRes.setResponse(deleteDTO);
+				deleteRes.setResponsetime(serviceUtil.getCurrentResponseTime());
 			}
 
 			isDeleteSuccess = true;
@@ -595,22 +597,19 @@ public class DocumentService {
 		return deleteRes;
 	}
 
-	public MainResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList,
+	public DocumentDeleteResponseDTO deleteFile(List<DocumentEntity> documentEntityList,
 			String preregId) {
 		log.info("sessionId", "idType", "id", "In pre-registration service inside delete File method " + preregId);
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-		MainResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainResponseDTO<>();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
 			for (DocumentEntity documentEntity : documentEntityList) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				fs.deleteFile(documentEntity.getPreregId(), key);
 			}
 			deleteDTO.setMessage(DocumentStatusMessages.ALL_DOCUMENT_DELETE_SUCCESSFUL.getMessage());
-			delResponseDto.setResponse(deleteDTO);
-			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 		}
 
-		return delResponseDto;
+		return deleteDTO;
 	}
 
 	/**

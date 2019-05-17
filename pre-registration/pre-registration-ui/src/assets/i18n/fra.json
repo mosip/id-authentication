@@ -354,7 +354,8 @@
     "action_continue": "CONTINUER",
     "label_sameas": "Pareil que",
     "text_or": "OU",
-    "action_view": "VUE"
+    "action_view": "VUE",
+    "OR":"GOLD"
   },
   "acknowledgement": {
     "title": "Rendez-vous confirmé",
