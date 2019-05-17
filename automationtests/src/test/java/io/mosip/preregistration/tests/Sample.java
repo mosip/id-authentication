@@ -70,32 +70,17 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void fetchCanceledAppointmentCreatedByUser() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
-		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
-				"Appointment cancelled successfully");
-		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		Assert.assertEquals(
-				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(),
-				preID);
-		Assert.assertNull(
-				fetchAllPreRegistrationCreatedByUserResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO"));
+	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
 
+		lib.expiredStatus();
+		
 	}
 
 

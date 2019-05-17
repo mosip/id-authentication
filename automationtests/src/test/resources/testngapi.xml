@@ -11,7 +11,7 @@
 
 	<test name="PreRegistration Tests">
 
-		<parameter name="testType" value="smokeandregression" />
+		<parameter name="testType" value="smoke" />
 
 		<classes>
 		<class name="io.mosip.preregistration.tests.BatchJob" />
