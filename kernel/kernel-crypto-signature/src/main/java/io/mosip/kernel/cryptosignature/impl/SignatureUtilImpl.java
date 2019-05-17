@@ -169,7 +169,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 					});
 
 			SignatureResponse = responseObject.getResponse();
-			SignatureResponse.setResponseTime(DateUtils.parseUTCToLocalDateTime(signTime));
+			SignatureResponse.setResponseTime(DateUtils.convertUTCToLocalDateTime(signTime));
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 					SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorMessage());
