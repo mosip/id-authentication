@@ -30,21 +30,44 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 
+/**
+ * The Class ABISHandlerUtil.
+ * 
+ * @author Nagalakshmi
+ * @author Horteppa
+ */
 @Component
 public class ABISHandlerUtil {
 
+	/** The utilities. */
 	@Autowired
 	Utilities utilities;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The packet info dao. */
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
+	/**
+	 * Gets the unique reg ids.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @param registrationType
+	 *            the registration type
+	 * @return the unique reg ids
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public List<String> getUniqueRegIds(String registrationId, String registrationType)
 			throws ApisResourceAccessException, IOException {
 
@@ -80,6 +103,13 @@ public class ABISHandlerUtil {
 
 	}
 
+	/**
+	 * Gets the packet status.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @return the packet status
+	 */
 	public String getPacketStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		if (getMatchedRegIds(registrationStatusDto.getRegistrationId()).isEmpty()) {
 			return AbisConstant.PRE_ABIS_IDENTIFICATION;
@@ -87,6 +117,13 @@ public class ABISHandlerUtil {
 		return AbisConstant.POST_ABIS_IDENTIFICATION;
 	}
 
+	/**
+	 * Gets the matched reg ids.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return the matched reg ids
+	 */
 	private List<AbisRequestDto> getMatchedRegIds(String registrationId) {
 		String latestTransactionId = utilities.getLatestTransactionId(registrationId);
 
@@ -101,8 +138,23 @@ public class ABISHandlerUtil {
 		return abisRequestDtoList;
 	}
 
-	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId, String registrationType)
-			throws ApisResourceAccessException, IOException {
+	/**
+	 * Gets the unique reg ids.
+	 *
+	 * @param matchedRegistrationIds
+	 *            the matched registration ids
+	 * @param registrationId
+	 *            the registration id
+	 * @param registrationType
+	 *            the registration type
+	 * @return the unique reg ids
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId,
+			String registrationType) throws ApisResourceAccessException, IOException {
 
 		Map<String, String> filteredRegMap = new LinkedHashMap<>();
 		List<String> filteredRIds = new ArrayList<>();
@@ -131,6 +183,17 @@ public class ABISHandlerUtil {
 
 	}
 
+	/**
+	 * Gets the uin from ID repo.
+	 *
+	 * @param machedRegId
+	 *            the mached reg id
+	 * @return the uin from ID repo
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@SuppressWarnings("unchecked")
 	private Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();

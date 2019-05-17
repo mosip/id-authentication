@@ -63,10 +63,13 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @PrepareForTest({ Utilities.class })
 public class BioDedupeProcessorTest {
 
+	/** The Constant ERROR. */
 	private static final String ERROR = "ERROR";
 
+	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
+	/** The Constant ABIS_HANDLER_BUS_IN. */
 	private static final String ABIS_HANDLER_BUS_IN = "abis-handler-bus-in";
 
 	/** The registration status service. */
@@ -81,9 +84,11 @@ public class BioDedupeProcessorTest {
 	@Mock
 	private BioDedupeService bioDedupeService;
 
+	/** The registration status dao. */
 	@Mock
 	private RegistrationStatusDao registrationStatusDao;
 
+	/** The packet info dao. */
 	@Mock
 	private PacketInfoDao packetInfoDao;
 
@@ -100,34 +105,45 @@ public class BioDedupeProcessorTest {
 	/** The matched reg ids. */
 	List<String> matchedRegIds = new ArrayList<String>();
 
+	/** The registration status mapper util. */
 	@Mock
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
+	/** The bio dedupe processor. */
 	@InjectMocks
 	private BioDedupeProcessor bioDedupeProcessor;
 
+	/** The adapter. */
 	@Mock
 	private FileSystemAdapter adapter;
 
+	/** The stage name. */
 	private String stageName = "BioDedupeStage";
 
+	/** The utilities. */
 	@Mock
 	Utilities utilities;
 
+	/** The rest client service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The entity. */
 	@Mock
 	RegistrationStatusEntity entity = new RegistrationStatusEntity();
 
+	/** The abis handler util. */
 	@Mock
 	private ABISHandlerUtil abisHandlerUtil;
 
+	/** The Constant NEW. */
 	private static final String NEW = "NEW";
 
+	/** The reg processor identity json. */
 	@Mock
 	RegistrationProcessorIdentity regProcessorIdentityJson = new RegistrationProcessorIdentity();
 
+	/** The map identity json string to object. */
 	@Mock
 	ObjectMapper mapIdentityJsonStringToObject;
 
@@ -156,7 +172,7 @@ public class BioDedupeProcessorTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn("1233445566".getBytes("UTF-16"));
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn(ERROR);
-
+		Mockito.doNothing().when(packetInfoManager).saveManualAdjudicationData(any(), any(), any());
 		Identity identity = new Identity();
 		regProcessorIdentityJson.setIdentity(identity);
 
@@ -177,6 +193,12 @@ public class BioDedupeProcessorTest {
 
 	}
 
+	/**
+	 * Test new insertion to uin success.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewInsertionToUinSuccess() throws Exception {
 
@@ -188,6 +210,12 @@ public class BioDedupeProcessorTest {
 
 	}
 
+	/**
+	 * Test new insertion adult CBEFF not found exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewInsertionAdultCBEFFNotFoundException() throws Exception {
 
@@ -197,6 +225,12 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test new exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewException() throws Exception {
 		ReflectionTestUtils.setField(bioDedupeProcessor, "ageLimit", "age");
@@ -206,6 +240,12 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test new insertion IO exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewInsertionIOException() throws Exception {
 
@@ -215,6 +255,9 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test data access exception.
+	 */
 	@Test
 	public void testDataAccessException() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any()))
@@ -224,6 +267,12 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test new insertion API resourse exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewInsertionAPIResourseException() throws Exception {
 
@@ -234,6 +283,12 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test new identify to UIN stage.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewIdentifyToUINStage() throws Exception {
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.POST_ABIS_IDENTIFICATION);
@@ -243,6 +298,12 @@ public class BioDedupeProcessorTest {
 
 	}
 
+	/**
+	 * Test new identify to manual stage.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testNewIdentifyToManualStage() throws Exception {
 
@@ -257,6 +318,12 @@ public class BioDedupeProcessorTest {
 
 	}
 
+	/**
+	 * Test update insertion to handler.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testUpdateInsertionToHandler() throws Exception {
 
@@ -275,6 +342,12 @@ public class BioDedupeProcessorTest {
 		assertEquals(messageDto.getMessageBusAddress().getAddress(), ABIS_HANDLER_BUS_IN);
 	}
 
+	/**
+	 * Test update insertion to UIN.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testUpdateInsertionToUIN() throws Exception {
 
@@ -293,6 +366,12 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test identity not found exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testIdentityNotFoundException() throws Exception {
 
@@ -311,6 +390,14 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getInternalError());
 	}
 
+	/**
+	 * Test bio de dup update packet handler processing success.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void testBioDeDupUpdatePacketHandlerProcessingSuccess() throws ApisResourceAccessException, IOException {
 
@@ -325,6 +412,14 @@ public class BioDedupeProcessorTest {
 		assertTrue(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test bio de dup update packet handler processing failure.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void testBioDeDupUpdatePacketHandlerProcessingFailure() throws ApisResourceAccessException, IOException {
 		registrationStatusDto.setRegistrationId("reg1234");
