@@ -37,6 +37,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -52,7 +53,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
-	private static final String MESSAGE = "message";
 	/** The Constant NAME. */
 	private static final String NAME = "name";
 	/** The Constant TIME. */
@@ -77,6 +77,9 @@ public class OTPManager {
 
 	/** The Constant STATUS_FAILURE. */
 	private static final String STATUS_FAILURE = "failure";
+	
+	/** The Constant Message. */
+	private static final String MESSAGE = "message";
 
 	/** The Constant USER_BLOCKED. */
 	private static final String USER_BLOCKED = "USER_BLOCKED";
@@ -111,8 +114,8 @@ public class OTPManager {
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang,
-			String secLang) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, Map<String, String> valueMap)
+			throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
@@ -124,13 +127,12 @@ public class OTPManager {
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
 			otpGeneratorRequestDto.setUserId(uin);
-			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, namePri, nameSec, priLang,
-					secLang);
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, valueMap);
 			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
 			List<String> otpChannel = new ArrayList<>();
 			for (String channel : otpRequestDTO.getOtpChannel()) {
-				otpChannel.add(channel.toLowerCase());
+				NotificationType.getNotificationTypeForChannel(channel).ifPresent(type -> otpChannel.add(type.getApiChannel().toLowerCase()));
 			}
 			otpGeneratorRequestDto.setOtpChannel(otpChannel);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
@@ -172,7 +174,8 @@ public class OTPManager {
 	 * Handle otp error response.
 	 *
 	 * @param responseBody the response body
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleOtpErrorResponse(Object responseBody) throws IdAuthenticationBusinessException {
@@ -205,8 +208,8 @@ public class OTPManager {
 	 * Send Otp Notification
 	 * 
 	 */
-	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri,
-			String nameSec, String priLang, String secLang) {
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin,
+			Map<String, String> valueMap) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -226,10 +229,11 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-
-		values.put(NAME, namePri);
-		values.put(NAME + "_" + priLang, namePri);
-		values.put(NAME + "_" + secLang, nameSec);
+		values.put(NAME, valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.PRIMARY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.SECONDAY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_SEC));
 		return values;
 	}
 
