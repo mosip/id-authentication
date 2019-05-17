@@ -327,7 +327,7 @@ public class DemographicService {
 		log.info("sessionId", "idType", "id", "In updatePreRegistration method of pre-registration service ");
 		log.info("sessionId", "idType", "id",
 				"Pre Registration start time : " + DateUtils.getUTCCurrentDateTimeString());
-		MainResponseDTO<DemographicUpdateResponseDTO> mainResponseDTO = new MainResponseDTO<>();
+		MainResponseDTO<DemographicUpdateResponseDTO> mainResponseDTO = null;
 		mainResponseDTO = (MainResponseDTO<DemographicUpdateResponseDTO>) serviceUtil.getMainResponseDto(request);
 		requiredRequestMap.put("id", updateId);
 		boolean isSuccess = false;

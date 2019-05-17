@@ -191,7 +191,7 @@ public class DocumentService {
 			String preRegistrationId) {
 		log.info("sessionId", "idType", "id", "In uploadDocument method of document service");
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
-		MainRequestDTO<DocumentRequestDTO> docReqDto = new MainRequestDTO<>();
+		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
 
 		try {
@@ -649,8 +649,13 @@ public class DocumentService {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID, requestDTO.getId());
 		inputValidation.put(RequestCodes.VER, requestDTO.getVersion());
-		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		inputValidation.put(RequestCodes.REQ_TIME, date.toString());
+		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			inputValidation.put(RequestCodes.REQ_TIME, date.toString());
+		}
+		else {
+			inputValidation.put(RequestCodes.REQ_TIME,null);
+		}
 		inputValidation.put(RequestCodes.REQUEST, requestDTO.getRequest().toString());
 		return inputValidation;
 	}

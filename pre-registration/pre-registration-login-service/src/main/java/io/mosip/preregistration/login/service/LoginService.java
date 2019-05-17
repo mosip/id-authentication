@@ -148,7 +148,6 @@ public class LoginService {
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
-				//response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
@@ -260,9 +259,11 @@ public class LoginService {
 		boolean isSuccess = false;
 		String userId=null;
 		try {
+			
 			Map<String,String> headersMap=new HashMap<>();
 			headersMap.put("Cookie",authHeader);
 			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
+			userId=loginCommonUtil.getUserDetailsFromToken(headersMap);
 			responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
@@ -277,7 +278,7 @@ public class LoginService {
 		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
 					"In call invalidateToken method of kernel service- " + ex.getMessage());
-			new LoginExceptionCatcher().handle(ex,"invalidateToken",null);	
+			new LoginExceptionCatcher().handle(ex,"invalidateToken",response);	
 		}
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());

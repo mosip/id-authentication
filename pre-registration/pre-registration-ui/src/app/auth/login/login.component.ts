@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
+    if (this.authService.isAuthenticated()) this.authService.onLogout();
   }
 
   loadValidationMessages() {
