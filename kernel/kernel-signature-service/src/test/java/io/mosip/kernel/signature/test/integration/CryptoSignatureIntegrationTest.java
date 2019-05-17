@@ -65,7 +65,7 @@ public class CryptoSignatureIntegrationTest {
 	public void signResponseSuccessValidation() throws Exception {
 		when(signatureUtil.validateWithPublicKey(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(true);
-		mockMvc.perform(post("/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHPUBLICKEY))
+		mockMvc.perform(post("/public/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHPUBLICKEY))
 				.andExpect(status().isOk());
 	}
 

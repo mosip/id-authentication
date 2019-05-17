@@ -16,8 +16,10 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
+import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
 import io.mosip.kernel.signature.dto.SignResponseRequestDto;
-import io.mosip.kernel.signature.dto.ValidateWithPublicKeyRequestDto;
+import io.mosip.kernel.signature.dto.TimestampRequestDto;
+import io.mosip.kernel.signature.dto.ValidatorResponseDto;
 import io.mosip.kernel.signature.service.CryptoSignatureService;
 
 /**
@@ -38,13 +40,12 @@ public class CryptoSignatureController {
 	/**
 	 * Function to sign response
 	 * 
-	 * @param requestDto
-	 *            {@link SignResponseRequestDto} having required fields.
+	 * @param requestDto {@link SignResponseRequestDto} having required fields.
 	 * @return The {@link SignatureResponse}
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
-	@PostMapping(value ="/sign")
+	@PostMapping(value = "/sign")
 	public ResponseWrapper<SignatureResponse> signResponse(
 			@RequestBody @Valid RequestWrapper<SignResponseRequestDto> requestDto) {
 		ResponseWrapper<SignatureResponse> response = new ResponseWrapper<>();
@@ -55,21 +56,31 @@ public class CryptoSignatureController {
 	/**
 	 * Function to validate with public key
 	 * 
-	 * @param validateWithPublicKeyRequestDto
-	 *            {@link AuditRequestDto} having required fields for auditing
+	 * @param validateWithPublicKeyRequestDto {@link AuditRequestDto} having
+	 *                                        required fields for auditing
 	 * @return The {@link Boolean} having the value
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
 	@ResponseFilter
-	@PostMapping(value = "/validate")
-	public ResponseWrapper<Boolean> validateWithPublicKey(
-			@RequestBody @Valid RequestWrapper<ValidateWithPublicKeyRequestDto> validateWithPublicKeyRequestDto)
+	@PostMapping(value = "/public/validate")
+	public ResponseWrapper<ValidatorResponseDto> validateWithPublicKey(
+			@RequestBody @Valid RequestWrapper<PublicKeyRequestDto> validateWithPublicKeyRequestDto)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
-		ResponseWrapper<Boolean> response = new ResponseWrapper<>();
+		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(service.validateWithPublicKey(validateWithPublicKeyRequestDto.getRequest()));
 		return response;
 	}
 
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@ResponseFilter
+	@PostMapping(value = "/validate")
+	public ResponseWrapper<ValidatorResponseDto> validate(
+			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto)
+			throws InvalidKeySpecException, NoSuchAlgorithmException {
+		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(service.validate(timestampRequestDto.getRequest()));
+		return response;
+	}
 }

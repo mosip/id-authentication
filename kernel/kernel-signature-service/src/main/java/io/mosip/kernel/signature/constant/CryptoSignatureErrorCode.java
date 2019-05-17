@@ -9,7 +9,8 @@ package io.mosip.kernel.signature.constant;
  */
 public enum CryptoSignatureErrorCode {
 	
-	INTERNAL_SERVER_ERROR("KER-CSS-500", "Internal server error");
+	INTERNAL_SERVER_ERROR("KER-CSS-500", "Internal server error"),
+	NOT_VALID("KER-CSS-101", "Validation Unsuccessful");
 
 	private final String errorCode;
 	private final String errorMessage;
