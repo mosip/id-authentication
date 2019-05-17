@@ -79,7 +79,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test(groups = { "IntegrationScenarios" })
 	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
 
-		lib.expiredStatus();
+		lib.syncAvailability();
 		
 	}
 
