@@ -41,6 +41,7 @@ public class CommonLibrary extends BaseTestCase{
 
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
 	PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	String authToken;
 
 	public static void configFileWriter(String folderPath,String requestKeyFile,String generationType,String baseFileName)
 				throws Exception {
@@ -671,7 +672,8 @@ public class CommonLibrary extends BaseTestCase{
 
 	public Response getRequestWithoutBody(String url,String contentHeader,String acceptHeader) {
         logger.info("REST-ASSURED: Sending a Get request to " + url);
-               Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
+               
+			Cookie.Builder builder = new Cookie.Builder("Authorization",authToken);
                Response getResponse= given().cookie(builder.build()).relaxedHTTPSValidation().contentType(MediaType.APPLICATION_JSON).log().all().when().get(url).then().log().all().extract().response();
                logger.info("REST-ASSURED: The response from the request is: "+getResponse.asString());
                logger.info("REST-ASSURED: the response Time is: "+  getResponse.time());

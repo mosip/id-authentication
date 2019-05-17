@@ -18,12 +18,20 @@ import java.util.Properties;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
 import io.mosip.authentication.fw.util.IdaScriptsUtil;
-
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
@@ -34,19 +42,22 @@ import io.restassured.RestAssured;
  *
  */
 
-public class BaseTestCase  {
+public class BaseTestCase {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();
+	public ExtentHtmlReporter htmlReporter;
+	public ExtentReports extent;
+	public ExtentTest test;
 		
 	/**
 	 * Method that will take care of framework setup
 	 */
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
-	public static String ApplnURI;	
-	public static String authToken;
+	public static String ApplnURI;
 	public static String environment;
+	
 	public static String SEPRATOR="";
 	public  static String getOSType(){
 		String type=System.getProperty("os.name");
@@ -86,9 +97,14 @@ public class BaseTestCase  {
 		//	ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
-			ApplnURI=System.getProperty("env.endpoint");
-			logger.info("Application URI ======" +ApplnURI);
-
+			if (environment.equalsIgnoreCase("integration"))
+				ApplnURI="https://integ.mosip.io";
+			if (environment.equalsIgnoreCase("qa"))
+				ApplnURI="https://integ.mosip.io";
+			else
+				ApplnURI="https://integ.mosip.io";
+			/*environment ="integration";
+			ApplnURI="https://integ.mosip.io";*/
 			logger.info("Configs from properties file are set.");
 			
 
@@ -112,13 +128,16 @@ public class BaseTestCase  {
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
-
-
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
-
-			//IdaScriptsUtil.wakeDemoApp();
-
+			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
+			extent=new ExtentReports();
+			extent.attachReporter(htmlReporter);
+			
+			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
+			htmlReporter.config().setReportName("Mosip Automation Report");
+			htmlReporter.config().setTheme(Theme.STANDARD);
+			IdaScriptsUtil.wakeDemoApp();
 			
 		} // End suiteSetup
 
@@ -157,9 +176,27 @@ public class BaseTestCase  {
 			logger.info("\n\n");
 			logger.info("Rest Assured framework has been reset because all tests have been executed.");
 			logger.info("TESTING COMPLETE: SHUTTING DOWN FRAMEWORK!!");
+			extent.flush();
 		} // end testTearDown
 		
-
+ 
+		/*@AfterMethod
+		public void getResult(ITestResult result) {
+			if(result.getStatus()==ITestResult.FAILURE) {
+				test.fail(MarkupHelper.createLabel(result.getName()+"  Test Case Failed", ExtentColor.RED));
+				test.fail(result.getThrowable());
+			}
+			else if(result.getStatus()==ITestResult.SUCCESS) {
+				test.pass(MarkupHelper.createLabel(result.getName()+"  Test Case Passed", ExtentColor.GREEN));
+				//test.pass(result.getThrowable());
+				
+			}
+			else if(result.getStatus() == ITestResult.SKIP) {
+				test.skip(MarkupHelper.createLabel(result.getName()+"  Test Case Skipped", ExtentColor.YELLOW));
+				test.skip(result.getThrowable());
+			}
+		}*/
+		
 		public void reportMove(String currentModule)
 		{
 			
@@ -175,7 +212,14 @@ public class BaseTestCase  {
 			String date = sdf.format(c.getTime());
 			try {
 				Path sourcePath = Paths.get(System.getProperty("user.dir")+"/test-output/" + "emailable-report.html");
+				//Path sourcePath = Paths.get("target/surefire-reports/" + "emailable-report.html");
+				Path DesPath = Paths.get("src/test/resources/" + "Reports" + "/" 
+				+ currentModule+"-emailable-report-"+date+".html");
+				
 				boolean createCurrentPathStatus = new File("src/test/resources/Reports/current-build-reports").mkdirs();
+				boolean createBackupPathStatus = new File("src/test/resources/Reports/backup-build-reports").mkdirs();
+				
+				
 				Path currentPathWithFileName = Paths.get("src/test/resources/Reports/current-build-reports/"+ currentModule+"-emailable-report.html");
 				Path backupPathWithFileName = Paths.get("src/test/resources/Reports/backup-build-reports/"+ currentModule+"-emailable-report-"+date+".html");
 				
@@ -185,7 +229,7 @@ public class BaseTestCase  {
 				temp = Files.copy(sourcePath,currentPathWithFileName,java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 				temp = Files.copy(sourcePath,backupPathWithFileName);
 			} catch (IOException e) {
-				
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 			

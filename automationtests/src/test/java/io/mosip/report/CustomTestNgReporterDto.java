@@ -1,4 +1,4 @@
-package io.mosip.util;
+package io.mosip.report;
 
 /**
  * The Dto class to hold current test ClassName, MethodName and execution
