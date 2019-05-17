@@ -96,6 +96,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	static JSONObject request1;
 	static String preReg_Id = "";
 	JSONParser parser = new JSONParser();
+	static String preReg_MultipleBookAppURI;
 	static ApplicationLibrary applnLib = new ApplicationLibrary();
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
@@ -180,6 +181,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	static String preReg_FecthAppointmentDetailsuri;
 	static String qrCode_URI;
 	static String QRCodeFilePath;
+	static String preReg_GetDocByPreId;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -970,9 +972,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 
 	public Response getAllDocumentForPreId(String preId) {
-		HashMap<String, String> parm = new HashMap<>();
-		parm.put("preRegistrationId", preId);
-		response = applnLib.getRequestPathParam(preReg_FetchAllDocumentURI, parm);
+		String preRegGetDocByPreIdURI = preReg_GetDocByPreId+preId;
+		response = applnLib.getRequestWithoutParm(preRegGetDocByPreIdURI);
 		return response;
 	}
 
@@ -1575,7 +1576,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	@SuppressWarnings("unchecked")
 	public Response TriggerNotification() {
-		testSuite = "TriggerNotification/TriggerNotification_smoke";
+		testSuite = "TriggerNotification/preReg_TriggerNotification_emailId_outlookAccount_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
 
@@ -1602,8 +1603,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.remove(langCodeKey);
 			}
 		}
-
-		response = applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.postFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
 
 		return response;
 	}
@@ -1991,7 +1992,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response syncMasterData() {
 		Response syncMasterDataRes = null;
 		try {
-System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
+
 			//syncMasterDataRes = applnLib.get_RequestWithoutBody(preReg_SyncMasterDataURI);
 			syncMasterDataRes = applnLib.postRequestWithoutBody(preReg_SyncMasterDataURI);
 		} catch (Exception e) {
@@ -2001,6 +2002,95 @@ System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
 		return syncMasterDataRes;
 	}
 
+	
+	
+	
+	/*
+	 * Generic method to Book An Appointment
+	 * 
+	 */
+	public Response multipleBookApp(Response FetchCentreResponseOne,Response FetchCentreResponseTwo,String preIDFirstUsr,String preIDSecondUsr) {
+		List<String> appointmentDetailsFirstUsr = new ArrayList<>();
+		List<String> appointmentDetailsSecondUsr = new ArrayList<>();
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "MultipleBookingAppointment/MultipleBookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		
+		appointmentDetailsFirstUsr=getAppointmentDetails(FetchCentreResponseOne);
+		appointmentDetailsSecondUsr=getAppointmentDetails(FetchCentreResponseTwo);
+		
+		logger.info("My multiple book App::"+request);
+		ObjectNode mutBookPreIdFirstUsr = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.bookingRequest[0].preRegistrationId", preIDFirstUsr).json();
+		
+		ObjectNode mutBookAppDateFirstUsr = JsonPath.using(config).parse(mutBookPreIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.json();
+		ObjectNode mutBookRegCenterIdFirstUsr = JsonPath.using(config).parse(mutBookAppDateFirstUsr.toString())
+				.set("$.request.bookingRequest[0].registration_center_id", appointmentDetailsFirstUsr.get(0))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotFromFirstUsr = JsonPath.using(config).parse(mutBookRegCenterIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_from", appointmentDetailsFirstUsr.get(2))
+				.json();
+		ObjectNode mutBookAppTimeSlotToFirstUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_to", appointmentDetailsFirstUsr.get(3))
+				.json();
+		
+		
+		
+		
+		
+		ObjectNode mutBookPreIdSecondUsr = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.bookingRequest[1].preRegistrationId", preIDSecondUsr).json();
+		ObjectNode mutBookAppDateSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.json();
+		
+		ObjectNode mutBookRegCenterIdSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].registration_center_id", appointmentDetailsSecondUsr.get(0))
+				.json();
+		
+		
+		ObjectNode mutBookAppTimeSlotFromSecondUsr = JsonPath.using(config).parse(mutBookRegCenterIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_from", appointmentDetailsSecondUsr.get(1))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotToSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_to", appointmentDetailsSecondUsr.get(4))
+				.json();
+		
+		
+		String multiplBookAppDetStr = mutBookAppTimeSlotToSecondUsr.toString();
+		JSONObject multipleBookAppjson = null;
+		try {
+			multipleBookAppjson = (JSONObject) parser.parse(multiplBookAppDetStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("Request::Value Of book App::" + multipleBookAppjson);
+		logger.info("Request::Json value::" + request.toString());
+		String preReg_BookingAppURI = preReg_BookingAppointmentURI;
+		response = applnLib.postRequest(request, preReg_BookingAppURI);
+		return response;
+	}
+	
+	
+	
+	@Test
+	void myTest()
+	{
+		
+		//multipleBookApp("090909");
+	}
+	
+	
+	
 	@BeforeClass
 	public void PreRegistrationResourceIntialize() {
 		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
@@ -2037,7 +2127,7 @@ System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
 		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
 		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
 		preReg_FecthAppointmentDetailsuri = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsuri");
-
+		preReg_GetDocByPreId= commonLibrary.fetch_IDRepo().get("preReg_GetDocByPreId");
 		qrCode_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
 		
 		preReg_RetriveBookedPreIdsByRegId = preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
@@ -2045,6 +2135,7 @@ System.out.println("Sync Master data::"+preReg_SyncMasterDataURI);
 		preReg_NotifyURI = preRegUtil.fetchPreregProp().get("preReg_NotifyURI");
 		preReg_SyncMasterDataURI = preRegUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
 		preReg_FetchCenterIDURI = preRegUtil.fetchPreregProp().get("preReg_FetchCenterIDURI");
+		preReg_MultipleBookAppURI = preRegUtil.fetchPreregProp().get("preReg_MultipleBooking");
 		}
 
 }

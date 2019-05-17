@@ -37,8 +37,8 @@ public class SyncMasterDataUtil
 	public Response syncMasterData() {
 		Response syncMasterDataRes = null;
 		try {
-
-			syncMasterDataRes = applnLib.postRequestWithoutBody(syncMasterData_URI);
+			syncMasterDataRes = applnLib.getRequestWithoutParm(syncMasterData_URI);
+			//syncMasterDataRes = applnLib.postRequestWithoutBody(syncMasterData_URI);
 		} catch (Exception e) {
 			logger.info(e);
 		}

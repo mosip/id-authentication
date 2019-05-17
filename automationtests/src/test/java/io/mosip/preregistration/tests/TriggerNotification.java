@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.preregistration.util.TriggerNotificationUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -72,6 +74,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	String testParam = null;
 	boolean status_val = false;
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	TriggerNotificationUtil triggerNotUtil=new TriggerNotificationUtil();
 
 	public TriggerNotification() {
 
@@ -122,13 +125,13 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		if (testCase.contains("smoke")) {
+		if (testCaseName.contains("smoke")) {
 
 			/* Creating the Pre-Registration Application */
 			Response createApplicationResponse = preRegLib.CreatePreReg();
-
-			Response triggerNotifyResponse = preRegLib.TriggerNotification();
-
+			logger.info("triggerNotifyResponsuyuyuyuyuye:"+testCaseName);
+			//Response triggerNotifyResponse = preRegLib.TriggerNotification();
+			Response triggerNotifyResponse =triggerNotUtil.TriggerNotification(testCaseName);
 			logger.info("triggerNotifyResponse:" + triggerNotifyResponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
@@ -136,10 +139,12 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(triggerNotifyResponse, Expectedresponse, outerKeys, innerKeys);
 
 
-		} else {
+		} 
+		else if(testCaseName.contains("preReg_TriggerNotification_id"))
+		{
 
 			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/TriggerNotificationInvalidId_Alphabets";
+			testSuite = "TriggerNotification/"+testCase;
 			String configPath = "src/test/resources/" + folder + "/" + testSuite;
 			File file = new File(configPath + "/AadhaarCard_POA.pdf");
 			String value = null;
@@ -148,16 +153,70 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 				if (key.equals("request")) {
 					object1 = (JSONObject) actualRequest.get(key);
 					value = (String) object1.get(langCodeKey);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
 					// object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
 					// request.replace(key, object);
 					object1.remove(langCodeKey);
 				}
 			}
 
-			Response response = applicationLibrary.putFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
+			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
 					value);
 
+			innerKeys.add("responsetime");
 			logger.info("Response::" + response.asString());
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+		}
+		
+		else if(testCaseName.contains("preReg_TriggerNotification_requesttime"))
+		{
+			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
+			testSuite = "TriggerNotification/"+testCase;
+			String configPath = "src/test/resources/" + folder + "/" + testSuite;
+			File file = new File(configPath + "/AadhaarCard_POA.pdf");
+			String value = null;
+			JSONObject object1 = null;
+			for (Object key : actualRequest.keySet()) {
+				if (key.equals("request")) {
+					object1 = (JSONObject) actualRequest.get(key);
+					value = (String) object1.get(langCodeKey);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
+					object1.remove(langCodeKey);
+				}
+			}
+
+			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
+					value);
+
+			innerKeys.add("responsetime");
+			logger.info("Response::" + response.asString());
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+		}
+		else if(testCaseName.contains("preReg_TriggerNotification_version"))
+		{
+			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
+			testSuite = "TriggerNotification/"+testCase;
+			String configPath = "src/test/resources/" + folder + "/" + testSuite;
+			File file = new File(configPath + "/AadhaarCard_POA.pdf");
+			String value = null;
+			JSONObject object1 = null;
+			for (Object key : actualRequest.keySet()) {
+				if (key.equals("request")) {
+					object1 = (JSONObject) actualRequest.get(key);
+					value = (String) object1.get(langCodeKey);
+					
+					object1.remove(langCodeKey);
+				}
+			}
+
+			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
+					value);
+
+			innerKeys.add("responsetime");
+			logger.info("Response::" + response.asString());
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
 		}
 
