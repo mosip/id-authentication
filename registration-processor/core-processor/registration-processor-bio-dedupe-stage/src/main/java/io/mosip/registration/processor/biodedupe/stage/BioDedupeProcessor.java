@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -51,26 +52,32 @@ import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
+ * The Class BioDedupeProcessor.
+ *
  * @author Nagalakshmi
  * @author Sowmya
- *
  */
 /*
  * @Transactional removed temporarily since the refid is not getting saved
  * immediately in abisref table. TODO : need to fix this.
  */
 @Service
+@Transactional
 public class BioDedupeProcessor {
 
+	/** The utilities. */
 	@Autowired
 	Utilities utilities;
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -78,33 +85,58 @@ public class BioDedupeProcessor {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The abis handler util. */
 	@Autowired
 	private ABISHandlerUtil abisHandlerUtil;
 
+	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
 
+	/** The get reg processor identity json. */
 	@Value("${registration.processor.identityjson}")
 	private String getRegProcessorIdentityJson;
 
+	/** The age limit. */
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
+	/** The description. */
 	private String description = "";
+
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
+
+	/** The code. */
 	private String code = "";
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeProcessor.class);
+
+	/** The demographic identity. */
 	JSONObject demographicIdentity = null;
+
+	/** The registration exception mapper util. */
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
+	/** The mached ref ids. */
 	List<String> machedRefIds = new ArrayList<>();
 
+	/**
+	 * Process.
+	 *
+	 * @param object
+	 *            the object
+	 * @param stageName
+	 *            the stage name
+	 * @return the message DTO
+	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
@@ -219,6 +251,18 @@ public class BioDedupeProcessor {
 		return object;
 	}
 
+	/**
+	 * New packet pre abis identification.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @param object
+	 *            the object
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void newPacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
 			throws ApisResourceAccessException, IOException {
 		if (isValidCbeff(registrationStatusDto.getRegistrationId())) {
@@ -238,6 +282,16 @@ public class BioDedupeProcessor {
 		}
 	}
 
+	/**
+	 * Update packet pre abis identification.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @param object
+	 *            the object
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void updatePacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
 			MessageDTO object) throws IOException {
 
@@ -270,6 +324,20 @@ public class BioDedupeProcessor {
 		}
 	}
 
+	/**
+	 * Post abis identification.
+	 *
+	 * @param registrationStatusDto
+	 *            the registration status dto
+	 * @param object
+	 *            the object
+	 * @param registrationType
+	 *            the registration type
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void postAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object,
 			String registrationType) throws ApisResourceAccessException, IOException {
 
@@ -293,6 +361,17 @@ public class BioDedupeProcessor {
 		}
 	}
 
+	/**
+	 * Checks if is valid cbeff.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return the boolean
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private Boolean isValidCbeff(String registrationId) throws ApisResourceAccessException, IOException {
 
 		List<String> pathSegments = new ArrayList<>();
