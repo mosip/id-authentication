@@ -98,7 +98,6 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(otpController, "env", env);
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 

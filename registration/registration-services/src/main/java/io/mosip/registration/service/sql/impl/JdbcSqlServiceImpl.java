@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.jobs.BaseJob;
@@ -46,6 +47,12 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 
 	@Autowired
 	private JobConfigurationService jobConfigurationService;
+
+	// TODO move to application.properties
+	private String backUpPath = "D://mosip/AutoBackUp";
+
+	private static String libFolder = "lib/";
+	private String binFolder = "bin/";
 
 	@Override
 	public ResponseDTO executeSqlFile(String version) {
@@ -134,7 +141,7 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 
 					for (String stat : statments) {
 						if (!stat.trim().equals("")) {
-							prepStmt= derbyRegConnection.prepareStatement(stat);
+							prepStmt = derbyRegConnection.prepareStatement(stat);
 							prepStmt.executeUpdate();
 						}
 					}
@@ -142,7 +149,7 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				} catch (Exception exception) {
 					exception.printStackTrace();
 				} finally {
-					if(prepStmt != null) {
+					if (prepStmt != null) {
 						prepStmt.close();
 					}
 				}
@@ -172,6 +179,26 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 			} catch (RuntimeException | IOException | SQLException runtimeException) {
 				File rollBackFile = getSqlFile(this.getClass().getResource("/sql/" + version + "_rollback/").getPath());
 
+				File file = new File(backUpPath);
+
+				for (File backUpFolder : file.listFiles()) {
+					if (backUpFolder.getName().contains(version)) {
+
+						try {
+							FileUtils.copyDirectory(
+									new File(backUpFolder.getAbsolutePath() + File.separator + binFolder),
+									new File(binFolder));
+							FileUtils.copyDirectory(
+									new File(backUpFolder.getAbsolutePath() + File.separator + libFolder),
+									new File(libFolder));
+
+						} catch (io.mosip.kernel.core.exception.IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				}
 				try {
 					if (rollBackFile.exists()) {
 						runSqlFile(rollBackFile);
@@ -196,14 +223,15 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 			this.derbyRegConnection = connection;
 
 			if (derbyRegConnection != null) {
-				try(Statement stmt = derbyRegConnection.createStatement()){
-					stmt.executeUpdate("update reg.global_param set VAL='"+version+"' where code='mosip.reg.db.current.version'");
+				try (Statement stmt = derbyRegConnection.createStatement()) {
+					stmt.executeUpdate("update reg.global_param set VAL='" + version
+							+ "' where code='mosip.reg.db.current.version'");
 				}
 			}
-		} catch(SQLException sqlException) {
+		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();
 		}
-	
+
 	}
 
 }

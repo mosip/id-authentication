@@ -74,15 +74,6 @@ public class AuditHelperTest {
 	}
 
 	@Test
-	public void TestcreateAuthTxn() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = createAuthRequestDto();
-		RequestType requestType = RequestType.DEMO_AUTH;
-		Mockito.when(idFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("426789089018"));
-		Mockito.when(idFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
-		auditHelper.createAuthTxn(authRequestDTO, "426789089018", requestType, "test134", false);
-	}
-	
-	@Test
 	public void TestCreateId() {
 		ReflectionTestUtils.invokeMethod(auditHelper, "createId", "426789089018");
 	}

@@ -56,11 +56,13 @@ Open Items|Description
 MOS-24006|Kernel OTP Manager- Negative Scenarios in send OTP
 MOS-24012|Kernel OTP Validator - error format is not per standard
 MOS-24060|Kernel Services - 500 error code in response
+MOS-24110|Kernel Send OTP - Notification channel names should be standardized in Send OTP service
 
 ### 1.6 Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
-||
+MOS-24093|DONE|YES
+MOS-24109|DONE|YES
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason

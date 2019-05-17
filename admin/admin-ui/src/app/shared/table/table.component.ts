@@ -16,5 +16,5 @@ export class TableComponent implements OnInit {
   ngOnInit() {
     this.keys = Object.keys(this.data[0]);
   }
-
+  
 }

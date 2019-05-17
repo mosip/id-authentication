@@ -88,11 +88,11 @@
 			<artifactId>kernel-fsadapter-hdfs</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-crypto-signature</artifactId>
 			<version>${kernel.core.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>

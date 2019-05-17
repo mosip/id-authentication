@@ -1,0 +1,23 @@
+ a{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding-left:10px;
+    padding-right:10px; 
+    padding-bottom: 7px;
+    color: rgb(37, 37, 37);
+    text-decoration: none;
+    color:rgb(184, 183, 183);
+    margin-right:15px;
+}
+.nav-tabs{
+    margin-top: 3em;
+    margin-left:-2em;
+}
+.router-container{
+    margin-top: 2em;
+}
+a.active{
+    border-bottom: 2px solid black; 
+    border-radius: 2px;
+    color:rgb(43, 43, 43);
+}
