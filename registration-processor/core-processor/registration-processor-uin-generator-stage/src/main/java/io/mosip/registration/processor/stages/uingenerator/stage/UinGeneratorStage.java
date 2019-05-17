@@ -90,7 +90,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
-
+	private static final String UIN_SEGMENT="uin";
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
@@ -645,6 +645,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		IdResponseDTO response;
 
 		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(UIN_SEGMENT);
 		pathsegments.add(Long.toString(uin));
 		try {
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
