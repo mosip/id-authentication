@@ -56,11 +56,9 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  *
  * @author Nagalakshmi
  * @author Sowmya
+ * @author Horteppa
  */
-/*
- * @Transactional removed temporarily since the refid is not getting saved
- * immediately in abisref table. TODO : need to fix this.
- */
+
 @Service
 @Transactional
 public class BioDedupeProcessor {
