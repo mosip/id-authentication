@@ -49,6 +49,12 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Service
 public class AbisHandlerStage extends MosipVerticleManager {
 
+	/** The Constant BIO_DEDUPE_STAGE. */
+	private static final String BIO_DEDUPE_STAGE = "BioDedupeStage";
+
+	/** The Constant DEMO_DEDUPE_STAGE. */
+	private static final String DEMO_DEDUPE_STAGE = "DemoDedupeStage";
+
 	/** The Constant MOSIP_ABIS_INSERT. */
 	public static final String MOSIP_ABIS_INSERT = "mosip.abis.insert";
 
@@ -113,6 +119,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/** The description. */
 	private String description = "";
 
+	/** The transaction type code. */
 	private String transactionTypeCode = null;
 
 	/**
@@ -138,8 +145,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 		String regId = object.getRid();
 		InternalRegistrationStatusDto registrationStatusDto = null;
 		String bioRefId = null;
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-                "AbisHandlerStage::process()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"AbisHandlerStage::process()::entry");
 		try {
 			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			transactionTypeCode = registrationStatusDto.getLatestTransactionTypeCode();
@@ -150,18 +157,16 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			if (!isIdentifyRequestPresent) {
 				List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
 				List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
+
 				if (bioRefDtos.isEmpty()) {
 					bioRefId = getUUID();
 					insertInBioRef(regId, bioRefId);
-					createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
-					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
-					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				} else {
 					bioRefId = bioRefDtos.get(0).getBioRefId();
-					createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
-					createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
-					object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 				}
+				createInsertRequest(abisApplicationDtoList, transactionId, bioRefId, regId);
+				createIdentifyRequest(abisApplicationDtoList, transactionId, bioRefId, transactionTypeCode);
+				object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			} else {
 				if (transactionTypeCode.equalsIgnoreCase(DEMOGRAPHIC_VERIFICATION)) {
 					object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
@@ -176,11 +181,12 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId, ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
-			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+			registrationStatusDto
+					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			if (transactionTypeCode.equalsIgnoreCase(DEMOGRAPHIC_VERIFICATION)) {
-				registrationStatusDto.setRegistrationStageName("DemoDedupeStage");
+				registrationStatusDto.setRegistrationStageName(DEMO_DEDUPE_STAGE);
 			} else if (transactionTypeCode.equalsIgnoreCase(BIOGRAPHIC_VERIFICATION)) {
-				registrationStatusDto.setRegistrationStageName("BioDedupeStage");
+				registrationStatusDto.setRegistrationStageName(BIO_DEDUPE_STAGE);
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} finally {
@@ -193,8 +199,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, regId);
-            regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-                    "AbisHandlerStage::process()::exit");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+					"AbisHandlerStage::process()::exit");
 		}
 
 		return object;
@@ -214,8 +220,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	private void createIdentifyRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String transactionTypeCode) {
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-                "AbisHandlerStage::createIdentifyRequest()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisHandlerStage::createIdentifyRequest()::entry");
 		String batchId = getUUID();
 		for (AbisApplicationDto applicationDto : abisApplicationDtoList) {
 			AbisRequestDto abisRequestDto = new AbisRequestDto();
@@ -226,10 +232,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setRequestType(IDENTIFY);
 			abisRequestDto.setReqBatchId(batchId);
 			abisRequestDto.setRefRegtrnId(transactionId);
-			
+
 			byte[] abisIdentifyRequestBytes = getIdentifyRequestBytes(transactionId, bioRefId, transactionTypeCode, id);
 			abisRequestDto.setReqText(abisIdentifyRequestBytes);
-			
+
 			abisRequestDto.setStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			abisRequestDto.setStatusComment(null);
 			abisRequestDto.setLangCode(ENG);
@@ -238,8 +244,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setIsDeleted(Boolean.FALSE);
 			packetInfoManager.saveAbisRequest(abisRequestDto);
 		}
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-                "AbisHandlerStage::createIdentifyRequest()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisHandlerStage::createIdentifyRequest()::exit");
 	}
 
 	/**
@@ -252,6 +258,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 * @param transactionTypeCode
 	 *            the transaction type code
 	 * @param id
+	 *            the id
 	 * @return the identify request bytes
 	 */
 	private byte[] getIdentifyRequestBytes(String transactionId, String bioRefId, String transactionTypeCode,
@@ -330,8 +337,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	private void createInsertRequest(List<AbisApplicationDto> abisApplicationDtoList, String transactionId,
 			String bioRefId, String regId) {
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-                "AbisHandlerStage::createInsertRequest()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisHandlerStage::createInsertRequest()::entry");
 		String batchId = getUUID();
 		List<AbisRequestDto> abisRequestDtoList = packetInfoManager.getAbisRequestsByBioRefId(bioRefId);
 		for (AbisApplicationDto applicationDto : abisApplicationDtoList) {
@@ -365,8 +372,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			}
 
 		}
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-                "AbisHandlerStage::createInsertRequest()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisHandlerStage::createInsertRequest()::exit");
 	}
 
 	/**
@@ -375,7 +382,9 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 * @param regId
 	 *            the reg id
 	 * @param id
+	 *            the id
 	 * @param bioRefId
+	 *            the bio ref id
 	 * @return the insert request bytes
 	 */
 	private byte[] getInsertRequestBytes(String regId, String id, String bioRefId) {
