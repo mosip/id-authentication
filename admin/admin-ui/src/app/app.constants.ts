@@ -5,6 +5,15 @@ export const menuItems = [
   'UIN',
   'Configuration'
 ];
+
+export const appId = 'admin';
+export const applicationVersion = 'v1';
+export const userIdType = 'USERID';
+export const loginOtpContext = 'auth-otp';
+
+
+
+
 export const base_url = 'dev.mosip.io';
 export const code_url_mapping = {
   centers: `https://${base_url}/v1/masterdata/registrationcenters`
@@ -16,3 +25,4 @@ export const loginURL = {
   sendOtp: `https://${base_url}/v1/authmanager/authenticate/sendotp`,
   verifyOtp: `https://${base_url}/v1/authmanager/authenticate/useridOTP`
 };
+
