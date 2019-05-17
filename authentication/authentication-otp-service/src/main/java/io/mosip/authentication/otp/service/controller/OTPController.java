@@ -3,7 +3,6 @@ package io.mosip.authentication.otp.service.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
@@ -13,21 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.helper.AuditHelper;
-import io.mosip.authentication.core.constant.AuditEvents;
-import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.authentication.otp.service.validator.OTPRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -50,20 +43,6 @@ public class OTPController {
 
 	@Autowired
 	private OTPRequestValidator otpRequestValidator;
-
-	@Autowired
-	private Environment env;
-
-	/** The Id Info Fetcher */
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
-
-	/** The AuditHelper */
-	@Autowired
-	private AuditHelper auditHelper;
-
-	/** The Constant AUTH_FACADE. */
-	private static final String AUTH_FACADE = "AuthFacade";
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -98,19 +77,6 @@ public class OTPController {
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-		} finally {
-			boolean isStatus = otpResponseDTO != null && otpResponseDTO.getErrors() != null
-					&& !otpResponseDTO.getErrors().isEmpty();
-			IdType actualidType = null;
-			String idType = otpRequestDto.getIndividualIdType();
-			if (idType != null && !idType.isEmpty()) {
-				actualidType = IdType.getIDTypeOrDefault(idType);
-			}
-			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
-					AUTH_FACADE, "OTP Request status : " + isStatus);
-			auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE,
-					otpRequestDto.getId() != null && !otpRequestDto.getId().isEmpty() ? otpRequestDto.getId() : "",
-					actualidType, AuditModules.OTP_REQUEST.getDesc());
 		}
 	}
 

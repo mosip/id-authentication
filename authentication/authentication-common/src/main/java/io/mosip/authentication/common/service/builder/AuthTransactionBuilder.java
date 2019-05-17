@@ -159,7 +159,7 @@ public class AuthTransactionBuilder {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 			}
 			
-			if (uin != null && staticTokenId != null && requestType != null) {
+			if (uin != null && requestType != null) {
 				String status = isStatus ? SUCCESS_STATUS : FAILED;
 				String comment = isStatus ? requestType.getMessage() + " Success"
 						: requestType.getMessage() + " Failed";
