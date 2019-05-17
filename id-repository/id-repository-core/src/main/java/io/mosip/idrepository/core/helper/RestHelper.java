@@ -100,15 +100,13 @@ public class RestHelper {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
 			} else {
 				response = request(request).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
 			}
+			checkErrorResponse(response, request.getResponseType());
+			return (T) response;
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
