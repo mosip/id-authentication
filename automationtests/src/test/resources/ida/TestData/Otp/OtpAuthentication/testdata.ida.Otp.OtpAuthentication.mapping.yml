@@ -1,6 +1,5 @@
-
 testdata:
-  Otp_authentication_UIN_1_smoke_Pos:
+  Authentication_OTP_IntegrationTest_UIN_1_smoke_Pos:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -36,7 +35,7 @@ testdata:
       output.2.response.y.staticToken: $IGNORE$
       output.2.response.y.version: $version$
   
-  Otp_authentication_Invalid UIN_Neg_02:
+  Authentication_OTP_Invalid UIN_Neg_02:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -74,7 +73,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid TransactionID_Neg_03:
+  Authentication_OTP_Invalid TransactionID_Neg_03:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -113,7 +112,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid reqTime_for UIN_Neg_04:
+  Authentication_OTP_Invalid reqTime_for UIN_Neg_04:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -150,7 +149,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid individualIdType_for UIN_Neg_05:
+  Authentication_OTP_Invalid individualIdType_for UIN_Neg_05:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -189,7 +188,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid version_for UIN_Neg_06:
+  Authentication_OTP_Invalid version_for UIN_Neg_06:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -228,7 +227,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid_reqTime_greaterthan24hrs_for UIN_Neg_07:
+  Authentication_OTP_Invalid_reqTime_greaterthan24hrs_for UIN_Neg_07:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -265,7 +264,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid_reqTime_Lessthan24hrs_for UIN_Neg_08:
+  Authentication_OTP_Invalid_reqTime_Lessthan24hrs_for UIN_Neg_08:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -302,7 +301,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid UIN which is not as per defenition_Neg_09:
+  Authentication_OTP_Invalid UIN which is not as per defenition_Neg_09:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -340,7 +339,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid TransactionID which is not as per defenition_Neg_10:
+  Authentication_OTP_Invalid TransactionID which is not as per defenition_Neg_10:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -379,7 +378,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid reqTime which is not as per defenition_for UIN_Neg_11:
+  Authentication_OTP_Invalid reqTime which is not as per defenition_for UIN_Neg_11:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -416,7 +415,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid individualIdType which is not as per defenition_for UIN_Neg_12:
+  Authentication_OTP_Invalid individualIdType which is not as per defenition_for UIN_Neg_12:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -455,7 +454,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid version which is not as per defenition_for UIN_Neg_13:
+  Authentication_OTP_Invalid version which is not as per defenition_for UIN_Neg_13:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -493,7 +492,7 @@ testdata:
       output.2.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       
-  Otp_authentication_Missing UIN_Neg_14:
+  Authentication_OTP_Missing UIN_Neg_14:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -531,7 +530,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Missing TransactionID_Neg_15:
+  Authentication_OTP_Missing TransactionID_Neg_15:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -570,7 +569,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Missing reqTime_for UIN_Neg_16:
+  Authentication_OTP_Missing reqTime_for IntegrationTest_UIN_Neg_16:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -607,7 +606,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Missing individualIdType_for UIN_Neg_17:
+  Authentication_OTP_Missing individualIdType_for UIN_Neg_17:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -646,7 +645,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Missing version_for UIN_Neg_18:
+  Authentication_OTP_Missing version_for UIN_Neg_18:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -685,7 +684,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_For VID_smoke_Pos_19:
+  Authentication_OTP_For VID_smoke_Pos_19:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -722,7 +721,7 @@ testdata:
       output.2.response.y.staticToken: $IGNORE$
       output.2.response.y.version: $version$
   
-  Otp_authentication_Invalid VID_Neg_20:
+  Authentication_OTP_Invalid VID_Neg_20:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -761,7 +760,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid TransactionID_For VID_Neg_21:
+  Authentication_OTP_Invalid TransactionID_For VID_Neg_21:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -800,7 +799,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid reqTime_for VID_Neg_22:
+  Authentication_OTP_Invalid reqTime_for VID_Neg_22:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -838,7 +837,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid individualIdType_for VID_Neg_23:
+  Authentication_OTP_Invalid individualIdType_for VID_Neg_23:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -877,7 +876,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid version_for VID_Neg_24:
+  Authentication_OTP_Invalid version_for VID_Neg_24:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -916,7 +915,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid_reqTime_greaterthan24hrs_for VID_Neg_25:
+  Authentication_OTP_Invalid_reqTime_greaterthan24hrs_for VID_Neg_25:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -954,7 +953,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid_reqTime_Lessthan24hrs_for VID_Neg_26:
+  Authentication_OTP_Invalid_reqTime_Lessthan24hrs_for VID_Neg_26:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -992,7 +991,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid VID which is not as per defenition_Neg_27:
+  Authentication_OTP_Invalid VID which is not as per defenition_Neg_27:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1030,7 +1029,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid TransactionID which is not as per defenition_For VID_Neg_28:
+  Authentication_OTP_Invalid TransactionID which is not as per defenition_For VID_Neg_28:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1069,7 +1068,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid reqTime which is not as per defenition_for VID_Neg_29:
+  Authentication_OTP_Invalid reqTime which is not as per defenition_for VID_Neg_29:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1107,7 +1106,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Invalid individualIdType which is not as per defenition_for VID_Neg_30:
+  Authentication_OTP_Invalid individualIdType which is not as per defenition_for VID_Neg_30:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1146,7 +1145,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Invalid version which is not as per defenition_for VID_Neg_31:
+  Authentication_OTP_Invalid version which is not as per defenition_for VID_Neg_31:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1184,7 +1183,7 @@ testdata:
       output.2.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       
-  Otp_authentication_Missing VID_Neg_32:
+  Authentication_OTP_Missing VID_Neg_32:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1222,7 +1221,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Missing TransactionID_for VID_Neg_33:
+  Authentication_OTP_Missing TransactionID_for VID_Neg_33:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1261,7 +1260,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Missing reqTime_for VID_Neg_34:
+  Authentication_OTP_Missing reqTime_for VID_Neg_34:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1299,7 +1298,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
       
-  Otp_authentication_Missing individualIdType_for UIN_Neg_35:
+  Authentication_OTP_Missing individualIdType_for UIN_Neg_35:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
@@ -1338,7 +1337,7 @@ testdata:
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
   
-  Otp_authentication_Missing version_for UIN_Neg_36:
+  Authentication_OTP_Missing version_for UIN_Neg_36:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$

@@ -1,4 +1,3 @@
-
 {
 	"id": "mosip.id.create",
 	"request": {
@@ -8,15 +7,15 @@
 			"UIN": 6738521981,
 			"fullName": [
 				{
+					"language": "eng",
+					"value": "Abd al Hakim"
+				},
+				{
 					"language": "ara",
 					"value": "مثقل بن أسامة"
 				},
 				{
 					"language": "fra",
-					"value": "Abd al Hakim"
-				},
-				{
-					"language": "eng",
 					"value": "Abd al Hakim"
 				}
 			],
@@ -38,19 +37,23 @@
 			],
 			"addressLine1": [
 				{
+					"language": "eng",
+					"value": "25 RUE PASTEUR"
+				},
+				{
 					"language": "ara",
 					"value": "25 أسف باستور"
 				},
 				{
 					"language": "fra",
 					"value": "25 RUE PASTEUR"
-				},
-				{
-					"language": "eng",
-					"value": "25 RUE PASTEUR"
 				}
 			],
 			"addressLine2": [
+				{
+					"language": "eng",
+					"value": "14391 CABOURG Street"
+				},
 				{
 					"language": "ara",
 					"value": "14391 كابور شارع"
@@ -58,13 +61,13 @@
 				{
 					"language": "fra",
 					"value": "14391 CABOURG Street"
-				},
-				{
-					"language": "eng",
-					"value": "14391 CABOURG Street"
 				}
 			],
 			"addressLine3": [
+				{
+					"language": "eng",
+					"value": "MOROCCO"
+				},
 				{
 					"language": "ara",
 					"value": "المغرب"
@@ -72,13 +75,13 @@
 				{
 					"language": "fra",
 					"value": "MOROCCO"
-				},
-				{
-					"language": "eng",
-					"value": "MOROCCO"
 				}
 			],
 			"region": [
+				{
+					"language": "eng",
+					"value": "SAUDI ARABIA"
+				},
 				{
 					"language": "ara",
 					"value": "شمال أفريقيا"
@@ -86,13 +89,13 @@
 				{
 					"language": "fra",
 					"value": "SAUDI ARABIA"
-				},
-				{
-					"language": "eng",
-					"value": "SAUDI ARABIA"
 				}
 			],
 			"province": [
+				{
+					"language": "eng",
+					"value": "Fès-Meknès"
+				},
 				{
 					"language": "ara",
 					"value": "فاس-مكناس"
@@ -100,13 +103,13 @@
 				{
 					"language": "fra",
 					"value": "Fès-Meknès"
-				},
-				{
-					"language": "eng",
-					"value": "Fès-Meknès"
 				}
 			],
 			"city": [
+				{
+					"language": "eng",
+					"value": "MOROCCO"
+				},
 				{
 					"language": "ara",
 					"value": "المغرب"
@@ -114,38 +117,34 @@
 				{
 					"language": "fra",
 					"value": "MOROCCO"
-				},
-				{
-					"language": "eng",
-					"value": "MOROCCO"
 				}
 			],
 			"localAdministrativeAuthority": [
+				{
+					"language": "eng",
+					"value": "salma"
+				},
 				{
 					"language": "ara",
 					"value": "سلمى"
 				},
 				{
 					"language": "fra",
-					"value": "salma"
-				},
-				{
-					"language": "eng",
 					"value": "salma"
 				}
 			],
 			"CNIENumber": "6789545678909",
 			"parentOrGuardianName": [
 				{
+					"language": "eng",
+					"value": "salma"
+				},
+				{
 					"language": "ara",
 					"value": "سلمى"
 				},
 				{
 					"language": "fra",
-					"value": "salma"
-				},
-				{
-					"language": "eng",
 					"value": "salma"
 				}
 			],
@@ -165,6 +164,5 @@
 		]
 	},
 	"requesttime": "2018-02-05T06:12:25.288Z",
-	"version": "1.0"
-
+	"version": "v1"
 }

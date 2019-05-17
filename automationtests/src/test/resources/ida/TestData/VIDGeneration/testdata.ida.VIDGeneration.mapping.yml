@@ -1,4 +1,3 @@
-
 testdata:
   Generate_VID_for UIN_Pos_01:
     input.uin:
@@ -40,3 +39,4 @@ testdata:
       output.1.response.n.err.errorCode: $errors:GenVidForDeactivatedUIN:errorCode$
       output.1.response.n.err.errorMessage: $errors:GenVidForDeactivatedUIN:errorMessage$
       output.1.response.n.version: $version$
+  

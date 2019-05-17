@@ -1,25 +1,9 @@
-<<<<<<< HEAD
-{
-	"identityRequest": {
-		"identity": {
-			"phoneNumber": [
-				{
-					"value": "9994909747"
-				}
-			]
-		}
-	},
-	"tspID": "TSP00001"
-}
-=======
 {
 	"identityRequest": {
 		"demographics": {
 			"phoneNumber": "9446817347"
 		},
-		"timestamp": "2019-03-16T10:01:57.086+05:30",
-		"transactionID": "1234567890"
+		"timestamp": "2019-03-16T10:01:57.086+05:30"
 	}
 }
 
->>>>>>> QA_IDA

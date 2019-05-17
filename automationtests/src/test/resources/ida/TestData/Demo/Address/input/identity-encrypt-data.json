@@ -31,7 +31,7 @@
 					"value": "Bangalore"
 				}
 			],
-			"city": [
+			"location1": [
 				{
 					"language": "ara",
 					"value": "َفرِكَ"
@@ -41,8 +41,7 @@
 					"value": "LONDON"
 				}
 			],
-			"postalCode": "600067",
-			"province": [
+			"location3": [
 				{
 					"language": "ara",
 					"value": "نَڤَلُر"
@@ -52,18 +51,17 @@
 					"value": "AbuDhabi"
 				}
 			],
-			"region": [
-        {
-          "language": "ara",
-          "value": "نَڤَلُر"
-        },
-        {
-          "language": "fra",
-          "value": "Taramani"
-        }
-      ]
+			"location2": [
+				{
+					"language": "ara",
+					"value": "نَڤَلُر"
+				},
+				{
+					"language": "fra",
+					"value": "Taramani"
+				}
+			]
 		},
-		"timestamp": "2019-03-16T10:01:57.086+05:30",
-		"transactionID": "1234567890"
+		"timestamp": "2019-03-16T10:01:57.086+05:30"
 	}
 }
