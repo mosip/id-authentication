@@ -19,7 +19,7 @@ TRUNCATE TABLE iam.user_detail cascade ;
 
 TRUNCATE TABLE iam.user_detail_h cascade ;
 
-\COPY iam.user_detail_h (id,reg_id,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes) FROM './dml/iam-user_detail_h.csv' delimiter ',' HEADER  csv;
+\COPY iam.user_detail_h (id,reg_id,name,email,mobile,status_code,lang_code,last_login_method,is_active,cr_by,cr_dtimes,eff_dtimes) FROM './dml/iam-user_detail_h.csv' delimiter ',' HEADER  csv;
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------

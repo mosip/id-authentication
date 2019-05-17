@@ -55,16 +55,20 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.REGISTRATION_CENTRES = [];
-    // this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
-    //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['response']['locations'];
-      this.errorlabels = response['error'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
     this.getRecommendedCenters();
+    this.getErrorLabels();
+  }
+
+  getErrorLabels() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.errorlabels = response['error'];
+    });
   }
 
   getRecommendedCenters() {
@@ -126,6 +130,7 @@ export class CenterSelectionComponent implements OnInit {
               this.displayResults(response['response']);
             } else {
               this.showMessage = true;
+              this.selectedCentre = null;
             }
           },
           error => {
@@ -251,5 +256,4 @@ export class CenterSelectionComponent implements OnInit {
     });
     return dialogRef;
   }
-
 }

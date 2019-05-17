@@ -31,6 +31,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -146,7 +147,10 @@ public class DocumentScanController extends BaseController {
 
 	@Autowired
 	private IrisCaptureController irisCaptureController;
-
+	
+	@Autowired
+	private GuardianBiometricsController guardianBiometricsController;
+	
 	@Autowired
 	private MasterSyncService masterSyncService;
 
@@ -367,7 +371,7 @@ public class DocumentScanController extends BaseController {
 										+ documentCategory.getCode() + " " + RegistrationUIConstants.DOCUMENT);
 					}
 				});
-				hBox.getChildren().addAll(indicatorImage, comboBox, documentVBox, scanButton);
+				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
@@ -614,8 +618,9 @@ public class DocumentScanController extends BaseController {
 		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
+		
 
-		((ImageView) (((HBox) vboxElement.getParent()).getChildren().get(0))).setImage(new Image(
+		((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 				this.getClass().getResourceAsStream(RegistrationConstants.DONE_IMAGE_PATH), 15, 15, true, true));
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -745,7 +750,7 @@ public class DocumentScanController extends BaseController {
 					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-			((ImageView) ((HBox) vboxElement.getParent()).getChildren().get(0)).setImage(new Image(
+			((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
 			initializePreviewSection();		
@@ -976,6 +981,7 @@ public class DocumentScanController extends BaseController {
 		biometricExceptionController.disableNextBtn();
 		fingerPrintCaptureController.clearImage();
 		irisCaptureController.clearIrisBasedOnExceptions();
+		guardianBiometricsController.manageBiometricsListBasedOnExceptions();
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			if (registrationController.validateDemographicPane(documentScanPane)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DOCUMENTSCAN, false);

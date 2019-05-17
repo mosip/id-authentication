@@ -49,10 +49,6 @@ import io.mosip.preregistration.login.exception.ParseResponseException;
 @Component
 public class LoginCommonUtil {
 	
-	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
-	
 	/**
 	 * Environment instance
 	 */
@@ -146,17 +142,7 @@ public class LoginCommonUtil {
 		
 		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 	}
-	
-	/**
-	 * This method provides current response time
-	 * @return String
-	 */
-
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-
-	}
-	
+		
 	/**
 	 * This method will validate the null check for incoming request
 	 * @param mainRequest

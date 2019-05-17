@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgModel, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -23,6 +23,7 @@ import { AttributeModel } from 'src/app/shared/models/demographic-model/attribut
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
+// import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This component takes care of the demographic page.
@@ -49,9 +50,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
   keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
 
-  // YEAR_PATTERN = appConstants.YEAR_PATTERN;
-  // MONTH_PATTERN = appConstants.MONTH_PATTERN;
-  // DATE_PATTERN = appConstants.DATE_PATTERN;
   files: FilesModel;
   agePattern: string;
   MOBILE_PATTERN: string;
@@ -76,6 +74,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
+  dataIncomingSuccessful = false;
 
   step: number = 0;
   id: number;
@@ -177,7 +176,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private matKeyboardService: MatKeyboardService
+    private matKeyboardService: MatKeyboardService // private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -190,6 +189,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   async ngOnInit() {
+    // this.loggerService.info('IN DEMOGRAPHIC');
     console.log('IN DEMOGRAPHIC');
     this.config = this.configService.getConfig();
     this.setConfig();
@@ -455,6 +455,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: '',
         addressLine3Secondary: ''
       };
+      this.dataIncomingSuccessful = true;
     } else {
       let index = 0;
       let secondaryIndex = 1;
@@ -490,6 +491,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
+      this.dataIncomingSuccessful = true;
     }
   }
 
@@ -585,6 +587,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
         if (formControlName) this.userForm.controls[formControlName].setValue('');
         this.getLocationImmediateHierearchy(languageCode, event.value, element);
       }
+    } else {
+      this.dataIncomingSuccessful = true;
     }
 
     if (currentLocationHierarchies) {
@@ -841,7 +845,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    if (this.userForm.valid && this.transUserForm.valid) {
+    console.log('this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+
+    if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
       const request = this.createRequestJSON(identity);
       const responseJSON = this.createResponseJSON(identity);
@@ -900,21 +906,27 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onModification(request: ResponseModel) {
-    this.regService.updateUser(
-      this.step,
-      new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
-    );
-    this.bookingService.updateNameList(this.step, {
-      fullName: this.userForm.controls[this.formControlNames.fullName].value,
-      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
-      preRegId: this.preRegId,
-      postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
-      regDto: this.bookingService.getNameList()[0].regDto
-    });
+    console.log(' && this.dataIncomingSuccessful before if', this.dataIncomingSuccessful);
 
-    console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
-    console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
-    console.log('GET User Array On UPDATIOn', this.regService.getUsers());
+    if (this.dataIncomingSuccessful) {
+      console.log(' && this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+
+      this.regService.updateUser(
+        this.step,
+        new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
+      );
+      this.bookingService.updateNameList(this.step, {
+        fullName: this.userForm.controls[this.formControlNames.fullName].value,
+        fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
+        preRegId: this.preRegId,
+        postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
+        regDto: this.bookingService.getNameList()[0].regDto
+      });
+
+      console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
+      console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
+      console.log('GET User Array On UPDATIOn', this.regService.getUsers());
+    }
   }
 
   /**

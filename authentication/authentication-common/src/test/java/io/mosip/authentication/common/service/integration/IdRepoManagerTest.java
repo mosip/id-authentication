@@ -30,6 +30,8 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
+import io.mosip.authentication.core.dto.vid.ResponseDTO;
+import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -407,6 +409,72 @@ public class IdRepoManagerTest {
 	}
 	
 	
+	/**
+	 * Tests the positive scenario for VID Generation
+	 *
+	 * @throws RestServiceException the rest service exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	@Test
+	public void testGetVID() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restReq=new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restReq);
+		ResponseDTO response=new ResponseDTO();
+		response.setVid("12123234432243");
+		VIDResponseDTO vidResponse=new VIDResponseDTO();
+		vidResponse.setResponse(response);
+		Map<String,Object> vidResponseMap=new HashMap<>();
+		Map<String,Object> vidMap=new HashMap<>();
+		vidMap.put("UIN", "12123234432243");
+		vidResponseMap.put("response", vidMap);
+		Mockito.when(restHelper.requestSync(restReq)).thenReturn(vidResponseMap);
+		String actualVidResponse=idReposerviceImpl.getUINByVID("234433356");
+		assertEquals("12123234432243", actualVidResponse);
+		}
+	
+	/**
+	 * Tests the negative scenario when VID Generation gets failed.
+	 *
+	 * @throws RestServiceException the rest service exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testRestServiceException() throws RestServiceException, IdAuthenticationBusinessException {
+	  RestRequestDTO restReq=new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(restReq);
+		ResponseDTO response=new ResponseDTO();
+		response.setVid("12123234432243");
+		VIDResponseDTO vidResponse=new VIDResponseDTO();
+		vidResponse.setResponse(response);
+		Map<String,Object> vidResponseMap=new HashMap<>();
+		Map<String,Object> vidMap=new HashMap<>();
+		vidMap.put("UIN", "12123234432243");
+		vidResponseMap.put("response", vidMap);
+		Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+		String actualVidResponse=idReposerviceImpl.getUINByVID("234433356");
+		assertEquals("12123234432243", actualVidResponse);
+		
+		}
 	
 	
+	
+	/**
+	 * Tests the negative scenario when VID Generation gets failed because of rest request(RestRequestDTO).
+	 *
+	 * @throws RestServiceException the rest service exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void testIDDataValaidationException() throws RestServiceException, IdAuthenticationBusinessException {
+		RestRequestDTO restReq=new RestRequestDTO();
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(IDDataValidationException.class);
+		idReposerviceImpl.getUINByVID("234433356");
+		}
+	
+
 }
+	
+	
+	
+	
+

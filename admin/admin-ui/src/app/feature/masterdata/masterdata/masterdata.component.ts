@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+import * as appConstants from '../../../app.constants';
+import { DataStorageService } from '../../../shared/services/data-storage.service';
 
 @Component({
   selector: 'app-masterdata',
@@ -7,33 +11,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MasterdataComponent implements OnInit {
 
-  constructor() { }
+  tableData = [];
 
-  data = [
-    {
-      code: 'CIN',
-      name: 'CNIE Card',
-      description: 'Rental Agreement of address',
-      languagecode: 'eng',
-      status: 'TRUE'
-    },
-    {
-      code: 'CIN',
-      name: 'Passport',
-      description: 'Rental agreement of address',
-      languagecode: 'eng',
-      status: 'TRUE'
-    },
-    {
-      code: 'CIN',
-      name: 'Certificate of Relationship',
-      description: 'Proof relationship of a person',
-      languagecode: 'eng',
-      status: 'TRUE'
-    }
-  ];
+  constructor(private activatedRoute: ActivatedRoute, private dataStorageService: DataStorageService) {}
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      console.log(params);
+      this.getData(params['id']);
+    });
+  }
+
+  getData(id: string) {
+    console.log(appConstants.code_url_mapping[id]);
+    this.dataStorageService.getMasterData(appConstants.code_url_mapping[id]).subscribe(response => {
+      console.log(response);
+      this.tableData = response['response']['registrationCenters'];
+    });
   }
 
 }

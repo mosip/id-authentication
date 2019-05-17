@@ -65,7 +65,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr rgs invalid synctype. */
 	RPR_RGS_INVALID_SYNCTYPE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
-			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
+			"Invalid syncType. Available types are NEW,UPDATE, LOST,ACTIVATED, DEACTIVATED, RES_UPDATE"),
 
 	/** The rpr rgs invalid languagecode. */
 	RPR_RGS_INVALID_LANGUAGECODE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
@@ -156,7 +156,7 @@ public enum PlatformErrorMessages {
 
 	/** The rpr rgs invalid supervisor status. */
 	RPR_RGS_INVALID_SUPERVISOR_STATUS(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "026",
-			"Invalid SupervisorStatus. Available types APPROVED,REJECT"),
+			"Invalid SupervisorStatus. Available types APPROVED,REJECTED"),
 
 	/** The rpr rgs invalid hashvalue. */
 	RPR_RGS_INVALID_HASHVALUE(PlatformConstants.RPR_REGISTRATION_STATUS_MODULE + "027",
@@ -178,7 +178,7 @@ public enum PlatformErrorMessages {
 	/** The rpr pis file not found in Packet Store. */
 	RPR_PIS_FILE_NOT_FOUND_IN_PACKET_STORE(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
 			"File not found in Packet Store"),
-	
+
 	/** The rpr pis abis queue connection null. */
 	RPR_PIS_ABIS_QUEUE_CONNECTION_NULL(PlatformConstants.RPR_PACKET_INFO_STORAGE_MODULE + "005",
 			"Abis Queue Connection null "),
@@ -326,16 +326,16 @@ public enum PlatformErrorMessages {
 	/** The abis reference id not found. */
 	//stages - Abis Middleware
 	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001"," Abis ReferenceId not found for given registrationId"),
-	
+
 	/** The latest transaction id not found. */
 	LATEST_TRANSACTION_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "002"," latest transactionId not found for given registrationId"),
-	
+
 	/** The identify requests not found. */
 	IDENTIFY_REQUESTS_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "003"," no identify requests found for given registrationId"),
-    
+
     /** The abis queue json validation failed. */
     ABIS_QUEUE_JSON_VALIDATION_FAILED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "004"," value not found for given key in abis json"),
-	
+
 	/** The unknown exception occured. */
 	UNKNOWN_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "005"," unknown exception occured"),
     /** The packet bio dedupe failed. */

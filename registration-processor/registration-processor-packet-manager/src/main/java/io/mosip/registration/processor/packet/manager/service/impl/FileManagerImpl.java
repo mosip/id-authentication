@@ -2,8 +2,11 @@ package io.mosip.registration.processor.packet.manager.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -48,6 +52,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	/** The extention. */
 	@Value("${registration.processor.packet.ext}")
 	private String extension;
+
+	/** The config server file storage URL. */
+	@Value("${config.server.file.storage.uri}")
+	private String configServerFileStorageURL;
+
+
+	@Value("${registration.processor.vm.ppk}")
+	private String regProcPPK; 
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
@@ -364,9 +376,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			JSch jsch = new JSch();
 			ClassLoader classLoader = getClass().getClassLoader();
-			// jsch.addIdentity(new
-			// File(classLoader.getResource("Mosip_Private_key.ppk").getFile()));
-			jsch.addIdentity(new File(classLoader.getResource("Mosip_Private_key.ppk").getFile()).getAbsolutePath());
+			jsch.addIdentity(getPPKPath());
 			session = jsch.getSession(sftpConnectionDto.getUser(), sftpConnectionDto.getHost(),
 					sftpConnectionDto.getPort());
 			Properties config = new Properties();
@@ -391,7 +401,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Override
 	public boolean copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
-			throws IOException, JschConnectionException, SftpFileOperationException {
+					throws IOException, JschConnectionException, SftpFileOperationException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
 
@@ -444,7 +454,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Override
 	public boolean cleanUp(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
-			throws IOException, JschConnectionException, SftpFileOperationException {
+					throws IOException, JschConnectionException, SftpFileOperationException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
@@ -496,4 +506,23 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		return extension;
 	}
 
+	public String getPPKPath() throws JschConnectionException {
+		RestTemplate restTemplate = new RestTemplate();
+		String data= restTemplate.getForObject(configServerFileStorageURL + regProcPPK, String.class);
+		File file = new File(regProcPPK);
+		FileOutputStream out;
+		try {
+			out = new FileOutputStream(file);
+			out.write(data.getBytes());
+			out.close();
+			
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "",
+					e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());		
+		}
+		return file.getPath();
+
+	} 
 }

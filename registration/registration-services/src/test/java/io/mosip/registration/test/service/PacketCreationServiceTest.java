@@ -25,9 +25,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -54,7 +53,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ApplicationContext.class, SessionContext.class})
+@PrepareForTest({ ApplicationContext.class, SessionContext.class })
 public class PacketCreationServiceTest {
 
 	@Rule
@@ -72,7 +71,7 @@ public class PacketCreationServiceTest {
 	@Mock
 	private CbeffImpl cbeffI;
 	@Mock
-	private JsonValidator jsonValidator;
+	private IdObjectValidator idObjectValidator;
 	@Mock
 	private AuditLogControlDAO auditLogControlDAO;
 	@Mock
@@ -101,9 +100,10 @@ public class PacketCreationServiceTest {
 	public void intializeForTest() throws Exception {
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
-		
+
 		Map<String, Object> sessionMap = new HashMap<>();
 		sessionMap.put(RegistrationConstants.IS_Child, true);
+		sessionMap.put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN, RegistrationConstants.DISABLE);
 
 		PowerMockito.mockStatic(SessionContext.class, ApplicationContext.class);
 		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");
@@ -131,7 +131,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString())).thenReturn(new ValidationReport());
+		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(devices);
@@ -153,22 +153,22 @@ public class PacketCreationServiceTest {
 	public void testCBEFFException() throws Exception {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
-		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenThrow(new Exception("Invalid BIR"));
-		when(jsonValidator.validateJson(Mockito.anyString()))
-				.thenReturn(new ValidationReport());
+		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes()))
+				.thenThrow(new Exception("Invalid BIR"));
+		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected =  RegBaseCheckedException.class)
+	@Test(expected = RegBaseCheckedException.class)
 	public void testJsonValidationException() throws Exception {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString()))
-				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
+		when(idObjectValidator.validateIdObject(Mockito.any()))
+				.thenThrow(new IdObjectValidationProcessingException("errorCode", "errorMessage"));
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -186,8 +186,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString()))
-				.thenReturn(new ValidationReport());
+		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
@@ -201,12 +200,12 @@ public class PacketCreationServiceTest {
 		Timestamp auditStartTime = Timestamp.valueOf(LocalDateTime.now().minusDays(1).minusHours(2));
 		Timestamp auditEndTime = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
 		RegistrationAuditDates registrationAuditDates = new RegistrationAuditDates() {
-			
+
 			@Override
 			public Timestamp getAuditLogFromDateTime() {
 				return auditStartTime;
 			}
-			
+
 			@Override
 			public Timestamp getAuditLogToDateTime() {
 				return auditEndTime;
@@ -216,8 +215,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(jsonValidator.validateJson(Mockito.anyString()))
-				.thenReturn(new ValidationReport());
+		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 
@@ -237,8 +235,7 @@ public class PacketCreationServiceTest {
 		return audits;
 	}
 
-	private void addAuditDTOToList(List<Audit> audits, String eventName, String eventType,
-			String description) {
+	private void addAuditDTOToList(List<Audit> audits, String eventName, String eventType, String description) {
 		LocalDateTime dateTime = LocalDateTime.now();
 
 		Audit audit = new Audit();

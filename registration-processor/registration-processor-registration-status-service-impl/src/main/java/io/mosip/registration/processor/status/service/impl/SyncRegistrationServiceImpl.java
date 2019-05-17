@@ -202,7 +202,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		String value = registrationDto.getSupervisorStatus();
 		if (SupervisorStatus.APPROVED.toString().equals(value)) {
 			return true;
-		} else if (SupervisorStatus.REJECT.toString().equals(value)) {
+		} else if (SupervisorStatus.REJECTED.toString().equals(value)) {
 			return true;
 
 		} else {
@@ -249,17 +249,15 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		String value = registrationDto.getRegistrationType();
 		if (SyncTypeDto.NEW.getValue().equals(value)) {
 			return true;
-		} else if (SyncTypeDto.CORRECTION.getValue().equals(value)) {
-			return true;
 		} else if (SyncTypeDto.UPDATE.getValue().equals(value)) {
 			return true;
-		} else if (SyncTypeDto.LOST_UIN.getValue().equals(value)) {
+		} else if (SyncTypeDto.LOST.getValue().equals(value)) {
 			return true;
-		} else if (SyncTypeDto.UPDATE_UIN.getValue().equals(value)) {
+		}else if (SyncTypeDto.ACTIVATED.getValue().equals(value)) {
 			return true;
-		} else if (SyncTypeDto.ACTIVATE_UIN.getValue().equals(value)) {
+		} else if (SyncTypeDto.DEACTIVATED.getValue().equals(value)) {
 			return true;
-		} else if (SyncTypeDto.DEACTIVATE_UIN.getValue().equals(value)) {
+		}  else if (SyncTypeDto.RES_UPDATE.getValue().equals(value)) {
 			return true;
 		} else {
 			SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
