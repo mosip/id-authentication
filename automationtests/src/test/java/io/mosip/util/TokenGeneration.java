@@ -36,7 +36,7 @@ public TokenGenerationEntity createTokenGeneratorDto(String tokenGenerationFileP
 		prop.load(reader);
 		generateTokenRequest.setId(prop.getProperty("token.request.id"));
 		generateTokenRequest.setMetadata("");
-		tokenRequestDto.setAppId(prop.getProperty("token.request.username"));
+		tokenRequestDto.setAppId(prop.getProperty("token.request.appid"));
 		tokenRequestDto.setUserName(prop.getProperty("token.request.username"));
 		tokenRequestDto.setPassword(prop.getProperty("token.request.password"));
 		generateTokenRequest.setRequest(tokenRequestDto);
@@ -66,7 +66,7 @@ public String getToken(TokenGenerationEntity tokenGenerateEntity) {
 	Response response=applnMethods.postRequest(requestToBeSent, "/v1/authmanager/authenticate/useridPwd");
 	return response.getCookie("Authorization");
 }
-public String readPropertyFile() {
+public String readPropertyFile(String tokenGenerationFilePath) {
 	Properties prop=new Properties();
 	String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
  	FileReader reader;
@@ -76,7 +76,7 @@ public String readPropertyFile() {
 	} catch ( IOException e) {
 		logger.error("Propert File Was Not Found",e);
 	}
-	return prop.getProperty("tokenGenerationFilePath");
+	return prop.getProperty(tokenGenerationFilePath);
 }
 
 }

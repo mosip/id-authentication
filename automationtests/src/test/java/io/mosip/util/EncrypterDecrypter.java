@@ -56,7 +56,7 @@ public class EncrypterDecrypter {
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
 	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
 			"";
-	private final String encrypterURL="https://dev.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
 	public void generateHash(byte[] fileByte) {
@@ -394,7 +394,7 @@ public class EncrypterDecrypter {
 		}
 	}
 		@SuppressWarnings("unchecked")
-		public JSONObject generateCryptographicDataEncryption(JSONObject requestJson) {
+		public JSONObject generateCryptographicDataEncryption(JSONObject requestJson) throws IOException {
 			JSONObject encryptRequest=new JSONObject();
 			CryptomanagerDto request=new CryptomanagerDto();
 			JSONObject cryptographicRequest=new JSONObject();
@@ -407,8 +407,8 @@ public class EncrypterDecrypter {
 				//encryptedPacket=new FileInputStream(file);
 				byte [] fileInBytes= requestJson.toString().getBytes();
 				String encryptedPacketString= Base64.getEncoder().encodeToString(fileInBytes);
-				//String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
-				encryptedPacketString=encryptedPacketString.replaceAll("\\s+","");
+
+				logger.info("encryptedPacketString : "+encryptedPacketString);
 				JSONArray requestData = (JSONArray) requestJson.get("request");
 				JSONObject obj = (JSONObject) requestData.get(0);
 				registrationId = obj.get("registrationId").toString();
@@ -431,14 +431,15 @@ public class EncrypterDecrypter {
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.registerModule(new JavaTimeModule());
 				cryptographicRequest.put("applicationId", applicationId);
-				cryptographicRequest.put("data", encryptedPacketString);
+				cryptographicRequest.put("data", "ew0KCSJpZCI6ICJtb3NpcC5yZWdpc3RyYXRpb24uc3luYyIsDQoJInJlcXVlc3R0aW1lIjogIjIwMTktMDMtMDJUMDY6Mjk6NDEuMDExWiIsDQoJInZlcnNpb24iOiAiMS4wIiwNCgkicmVxdWVzdCI6IFt7DQoJCSJsYW5nQ29kZSI6ICJlbmciLA0KCQkicmVnaXN0cmF0aW9uSWQiOiAiMTAwMTExMDAxMTAwMDE5MjAxOTAzMjUxMjAzMTAiLA0KCQkicmVnaXN0cmF0aW9uVHlwZSI6ICJORVciLA0KCQkicGFja2V0SGFzaFZhbHVlIjogIkQ3Qzg3REM1RDNBNzU5RDc3NDMzQjAyQjgwNDM1Q0ZBQjUwODdGMUE5NDI1NDNGNTFBNTA3NUJDNDQxQkY3RUIiLA0KCQkicGFja2V0U2l6ZSI6IDUyNDI4ODAsDQoJCSJzdXBlcnZpc29yU3RhdHVzIjogIkFQUFJPVkVEIiwNCgkJInN1cGVydmlzb3JDb21tZW50IjogIkFwcHJvdmVkLCBhbGwgZ29vZCIsDQoJCSJvcHRpb25hbFZhbHVlcyI6IFt7DQoJCQkia2V5IjogIkNOSUUiLA0KCQkJInZhbHVlIjogIjEyMjIyMzQ1NiINCgkJfV0NCgl9XQ0KfQ==");
 				cryptographicRequest.put("referenceId", refId);
-				cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+				//cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+				cryptographicRequest.put("timeStamp",request.getRequesttime().atOffset(ZoneOffset.UTC).toString());
 				encryptRequest.put("id","");
 				encryptRequest.put("metadata","");
 				encryptRequest.put("request",cryptographicRequest);
 				encryptRequest.put("requesttime", request.getRequesttime().atOffset(ZoneOffset.UTC).toString());
-				encryptRequest.put("version","");
+				encryptRequest.put("version","1.0");
 			} catch (java.text.ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -446,7 +447,7 @@ public class EncrypterDecrypter {
 			return encryptRequest;
 		}
 		
-		public Map<String,Object> encryptJson(JSONObject  requestJson) {
+		public Map<String,Object> encryptJson(JSONObject  requestJson) throws IOException {
 			String encryptedPacket =null;
 			String responseTime = null;
 			Map<String,Object> demo = new HashMap<>();

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import io.mosip.dbaccess.RegProcDBCleanUp;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
+import io.mosip.util.EncrypterDecrypter;
 import io.restassured.response.Response;
 
 
@@ -57,6 +59,7 @@ public class IntegMethods extends BaseTestCase {
 		JSONObject expectedResponse=null;
 		String component="SyncList";
 		String configPath= "src/test/resources/" + folder+"/"+testCase+"/SyncPacket";
+		EncrypterDecrypter encrypter = new EncrypterDecrypter();
 		System.out.println(configPath);
 		File file=new File(configPath);
 		File[] folder=file.listFiles();
@@ -69,7 +72,14 @@ public class IntegMethods extends BaseTestCase {
 			}
 		}
 		try {
-			Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
+			JSONArray requestBody=(JSONArray) actualRequest.get("request");
+			JSONObject insideRequest=(JSONObject) requestBody.get(0);
+			String regId=(String) insideRequest.get("registrationId");
+			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+			Map<String,Object> resp = encrypter.encryptJson(actualRequest);
+			String encryptedData = resp.get("data").toString();
+			String timeStamp = resp.get("responsetime").toString();
+			Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"),center_machine_refID,timeStamp);
 			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
 			logger.info("Actual Response is :: "+ actualResponse.asString());
 			outerKeys.add("responsetime");
