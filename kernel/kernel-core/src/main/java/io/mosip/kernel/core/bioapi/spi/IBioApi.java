@@ -1,5 +1,6 @@
 package io.mosip.kernel.core.bioapi.spi;
 
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.BiometricRecord;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
@@ -19,8 +20,9 @@ public interface IBioApi {
 	 * @param sample the sample
 	 * @param flags the flags
 	 * @return the quality score
+	 * @throws BiometricException 
 	 */
-	QualityScore checkQuality(BiometricRecord sample, KeyValuePair[] flags);
+	QualityScore checkQuality(BiometricRecord sample, KeyValuePair[] flags) throws BiometricException;
 	
 	/**
 	 * It compares the biometrics and provide the respective matching scores.
@@ -30,7 +32,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the score[]
 	 */
-	Score[] match(BiometricRecord sample, BiometricRecord[] gallery, KeyValuePair[] flags);
+	Score[] match(BiometricRecord sample, BiometricRecord[] gallery, KeyValuePair[] flags) throws BiometricException;
 
 	/**
 	 * It uses the composite logic while comparing the biometrics and provide the composite matching score. 
@@ -40,7 +42,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the composite score
 	 */
-	CompositeScore compositeMatch ( BiometricRecord [] sampleList ,BiometricRecord [] recordList , KeyValuePair [] flags );
+	CompositeScore compositeMatch ( BiometricRecord [] sampleList ,BiometricRecord [] recordList , KeyValuePair [] flags ) throws BiometricException;
 
 	/**
 	 * Extract template.
@@ -49,7 +51,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the biometric record
 	 */
-	BiometricRecord extractTemplate(BiometricRecord sample, KeyValuePair[] flags);
+	BiometricRecord extractTemplate(BiometricRecord sample, KeyValuePair[] flags) throws BiometricException;
 
 	/**
 	 * It segment the single biometric image into multiple biometric images.
@@ -59,5 +61,5 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the biometric record[]
 	 */
-	BiometricRecord[] segment(BiometricRecord sample, KeyValuePair[] flags);
+	BiometricRecord[] segment(BiometricRecord sample, KeyValuePair[] flags) throws BiometricException;
 }
