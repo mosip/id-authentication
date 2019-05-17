@@ -3,6 +3,7 @@ package io.mosip.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,6 +18,9 @@ import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -50,6 +54,7 @@ public class BaseTestCase extends KernelMasterDataR {
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
+	
 		
 	/**
 	 * Method that will take care of framework setup
@@ -62,6 +67,7 @@ public class BaseTestCase extends KernelMasterDataR {
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
 	public static String SEPRATOR="";
+	public static String buildNumber="";
 	public  static String getOSType(){
 		String type=System.getProperty("os.name");
 		if(type.toLowerCase().contains("windows")){
@@ -122,6 +128,7 @@ public class BaseTestCase extends KernelMasterDataR {
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
+			buildNumber=getBuildTag();
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
@@ -134,6 +141,7 @@ public class BaseTestCase extends KernelMasterDataR {
 			//authToken=pil.getToken();
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
+			extent.setSystemInfo("Build Number", buildNumber);
 			extent.attachReporter(htmlReporter);
 			
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
@@ -253,11 +261,24 @@ public class BaseTestCase extends KernelMasterDataR {
 			        { 
 			            logger.info("Failed to move the file"); 
 			        } 
+			        
+			        
 		}
-
 		
-		
-
+		public String getBuildTag() {
+			MavenXpp3Reader reader = new MavenXpp3Reader();
+	        Model model=null;
+			
+				try {
+					model = reader.read(new FileReader("pom.xml"));
+				} catch (IOException | XmlPullParserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			return model.getParent().getVersion();
+			
+		}
 
 	}
 
