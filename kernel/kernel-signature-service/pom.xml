@@ -8,6 +8,9 @@
 		<version>0.11.2</version>
 	</parent>
 	<artifactId>kernel-signature-service</artifactId>
+		<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

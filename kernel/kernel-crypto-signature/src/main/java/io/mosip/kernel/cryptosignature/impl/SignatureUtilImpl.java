@@ -120,7 +120,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 		cryptoManagerRequestDto.setApplicationId(signApplicationid);
 		cryptoManagerRequestDto.setReferenceId(signRefid);
 		cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(responseByteArray));
-		cryptoManagerRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTimeString());
+		String signTime = DateUtils.getUTCCurrentDateTimeString();
+		cryptoManagerRequestDto.setTimeStamp(signTime);
 		RequestWrapper<CryptoManagerRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(syncDataRequestId);
 		requestWrapper.setVersion(syncDataVersionId);
@@ -168,7 +169,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 					});
 
 			SignatureResponse = responseObject.getResponse();
-			SignatureResponse.setResponseTime(responseObject.getResponsetime());
+			SignatureResponse.setResponseTime(DateUtils.parseUTCToLocalDateTime(signTime));
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 					SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorMessage());

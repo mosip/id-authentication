@@ -17,6 +17,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
+import io.mosip.kernel.signature.dto.SignResponse;
 import io.mosip.kernel.signature.dto.SignResponseRequestDto;
 import io.mosip.kernel.signature.dto.TimestampRequestDto;
 import io.mosip.kernel.signature.dto.ValidatorResponseDto;
@@ -43,13 +44,17 @@ public class CryptoSignatureController {
 	 * @param requestDto {@link SignResponseRequestDto} having required fields.
 	 * @return The {@link SignatureResponse}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/sign")
-	public ResponseWrapper<SignatureResponse> signResponse(
+	public ResponseWrapper<SignResponse> signResponse(
 			@RequestBody @Valid RequestWrapper<SignResponseRequestDto> requestDto) {
-		ResponseWrapper<SignatureResponse> response = new ResponseWrapper<>();
-		response.setResponse(service.signResponse(requestDto.getRequest()));
+		ResponseWrapper<SignResponse> response = new ResponseWrapper<>();
+		SignatureResponse signatureResponse = service.signResponse(requestDto.getRequest());
+		SignResponse signResponse = new SignResponse();
+		signResponse.setTimestamp(signatureResponse.getResponseTime());
+		signResponse.setData(signatureResponse.getData());
+		response.setResponse(signResponse);
 		return response;
 	}
 
@@ -62,7 +67,7 @@ public class CryptoSignatureController {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/public/validate")
 	public ResponseWrapper<ValidatorResponseDto> validateWithPublicKey(
@@ -73,7 +78,7 @@ public class CryptoSignatureController {
 		return response;
 	}
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','TEST')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/validate")
 	public ResponseWrapper<ValidatorResponseDto> validate(
