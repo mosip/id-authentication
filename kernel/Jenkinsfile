@@ -17,7 +17,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'dev-k8-cluster'
+ k8DevContext = 'mosip-dev-cluster'
 
 
  stage('------- Checkout --------') {
