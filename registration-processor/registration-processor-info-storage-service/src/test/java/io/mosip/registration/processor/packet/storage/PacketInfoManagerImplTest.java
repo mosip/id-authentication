@@ -19,11 +19,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
-import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
-import io.mosip.registration.processor.packet.storage.entity.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,14 +46,32 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisApplicationPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
+import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -68,7 +81,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
  * The Class PacketInfoManagerImplTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utilities.class })
+@PrepareForTest({ Utilities.class, PacketInfoMapper.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketInfoManagerImplTest {
 
@@ -135,6 +148,9 @@ public class PacketInfoManagerImplTest {
 	/** The abis application entity. */
 	@Mock
 	private AbisApplicationEntity abisApplicationEntity;
+
+	@Mock
+	PacketInfoMapper packetInfoMapper;
 
 	/** The byte array. */
 	byte[] byteArray = null;
@@ -901,4 +917,38 @@ public class PacketInfoManagerImplTest {
 
 		assertTrue(packetInfoManagerImpl.getIdentifyByTransactionId("abc-efg", "IDENTIFY"));
 	}
+
+	@Test
+	public void testgetAbisResponseRecords() {
+		List<AbisResponseDto> list = new ArrayList<>();
+		AbisResponseDto abisEntity = new AbisResponseDto();
+		list.add(abisEntity);
+		Mockito.when(packetInfoDao.getAbisResponseRecords(any(), any(), any())).thenReturn(list);
+		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseRecords("", "", "");
+		assertEquals(output, list);
+	}
+
+	@Test
+	public void testgetAbisResponseDetails() {
+		List<AbisResponseDetDto> list = new ArrayList<>();
+		AbisResponseDetDto abisEntity = new AbisResponseDetDto();
+		list.add(abisEntity);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisResponseDetEntityListToDto(any())).thenReturn(list);
+		List<AbisResponseDetDto> output = packetInfoManagerImpl.getAbisResponseDetails("");
+		assertEquals(output, list);
+	}
+
+	@Test
+	public void testgetInsertOrIdentifyRequest() {
+		List<AbisRequestDto> list = new ArrayList<>();
+		AbisRequestDto abisEntity = new AbisRequestDto();
+		list.add(abisEntity);
+		Mockito.when(packetInfoDao.getInsertOrIdentifyRequest(any(), any())).thenReturn(null);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisRequestEntityListToDto(any())).thenReturn(list);
+		List<AbisRequestDto> output = packetInfoManagerImpl.getInsertOrIdentifyRequest("", "");
+		assertEquals(output, list);
+	}
+
 }
