@@ -305,6 +305,8 @@ public class BioDedupeProcessor {
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
 		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUAL_BIOMETRICS);
 		if (!json.isEmpty()) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_INPROGRESS.toString());
+			registrationStatusDto.setStatusComment("Bio dedupe Inprogress");
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
@@ -313,6 +315,8 @@ public class BioDedupeProcessor {
 					registrationStatusDto.getRegistrationId(),
 					"Update packet individual biometric not null, destination stage is abis_handler");
 		} else {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.name());
+			registrationStatusDto.setStatusComment("Bio-dedupe success moving to uin");
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
 
@@ -344,11 +348,14 @@ public class BioDedupeProcessor {
 		if (matchedRegIds.isEmpty()) {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
-
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.name());
+			registrationStatusDto.setStatusComment("Bio-dedupe success moving to uin");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(), "ABIS response Details null, destination stage is UIN");
 
 		} else {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+			registrationStatusDto.setStatusComment("Found matched RegIds, saving data in manual verification");
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
 					DedupeSourceName.BIO);
