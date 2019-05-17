@@ -435,7 +435,7 @@ public class DataSyncServiceUtil {
 	public PreRegArchiveDTO archivingFiles(DemographicResponseDTO preRegistrationDTO,
 			BookingRegistrationDTO bookingRegistrationDTO, DocumentsMetaData documentEntityList) {
 		log.info("sessionId", "idType", "id", "In archivingFiles method of datasync service util");
-		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		PreRegArchiveDTO preRegArchiveDTO = null;
 		try {
 			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
 			Map<String, byte[]> inputFile = new HashMap<>();
@@ -595,7 +595,7 @@ public class DataSyncServiceUtil {
 	public Map<String, String> getPreregistrationUpdatedTime(PreRegIdsByRegCenterIdDTO preRegIdsDTO) {
 		log.info("sessionId", "idType", "id",
 				"In callGetPreRegInfoRestService method of datasync service util " + preRegIdsDTO);
-		Map<String, String> response = new HashMap<>();
+		Map<String, String> response = null;
 		try {
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> mainRequestDTO = new MainRequestDTO<>();
 			mainRequestDTO.setRequest(preRegIdsDTO);
@@ -720,8 +720,13 @@ public class DataSyncServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime", date.toString());
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			requestMap.put("requesttime", date.toString());
+		}
+		else {
+		requestMap.put("requesttime",null);
+		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
