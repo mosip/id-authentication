@@ -150,9 +150,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
-//			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
-//			internalRegDto.setStatusComment("Unknown exception occured while consuming message from Abis");
-//			registrationStatusService.updateRegistrationStatus(internalRegDto);
+			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
+					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 
 		}
 	}
@@ -210,7 +209,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
 							abisInboundAddresses.get(i));
 
-					updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
+					updateAbisRequest(isAddedToQueue, abisIdentifyRequestList.get(i));
 				}
 			}
 			for (int i = 0; i < abisInsertRequestList.size(); i++) {

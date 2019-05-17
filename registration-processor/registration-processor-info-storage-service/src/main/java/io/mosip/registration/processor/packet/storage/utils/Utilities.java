@@ -154,6 +154,8 @@ public class Utilities {
 			pathSegments.add(String.valueOf(uin));
 			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
 					pathSegments, "", "", IdResponseDTO1.class);
+			if (idResponseDto == null)
+				return null;
 			if (!idResponseDto.getErrors().isEmpty())
 				throw new IdRepoAppException(
 						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
