@@ -62,9 +62,6 @@ public class PacketGeneratorController {
 	@Autowired
 	TokenValidator tokenValidator;
 
-	@Autowired
-	SignatureUtil signatureUtil;
-
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 
@@ -109,9 +106,9 @@ public class PacketGeneratorController {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildPacketGeneratorResponse(packerGeneratorResDto)).getData());
-			return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
+			//HttpHeaders headers = new HttpHeaders();
+			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildPacketGeneratorResponse(packerGeneratorResDto)).getData());
+			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
 		} catch (PacketGeneratorValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
