@@ -153,13 +153,13 @@ public class RegProcDataRead {
 			TestData = (Object[]) obj;
 			//status_code = (String) (TestData[3]);
 			syncregistrationDto.setRegistrationId((String)TestData[1]);
-			syncregistrationDto.setSyncType((String)TestData[2]);
+			/*syncregistrationDto.setSyncType((String)TestData[2]);
 			syncregistrationDto.setParentRegistrationId((String)TestData[3]);
 			syncregistrationDto.setSyncStatus(SyncStatusDto.valueOf((String)TestData[4]));
 			syncregistrationDto.setStatusComment((String)TestData[5]);
 			syncregistrationDto.setLangCode((String)TestData[6]);
 			syncregistrationDto.setIsActive((boolean)TestData[7]);
-			syncregistrationDto.setIsDeleted((boolean)TestData[12]);
+			syncregistrationDto.setIsDeleted((boolean)TestData[12]);*/
 
 			logger.info("Status is : " +status_code);
 			session.getTransaction().commit();

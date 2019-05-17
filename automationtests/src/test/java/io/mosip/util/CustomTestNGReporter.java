@@ -158,10 +158,6 @@ public class CustomTestNGReporter  implements IReporter {
 					retBuf.append("<td>");
 					retBuf.append(testObj.getName());
 					retBuf.append("</td>");
-					/* Build Tag Number */
-					retBuf.append("<td>");
-					retBuf.append(buildNumber);
-					retBuf.append("</td>");
 
 					/* Total test case count. */
 					retBuf.append("<td>");
@@ -218,6 +214,12 @@ public class CustomTestNGReporter  implements IReporter {
 					retBuf.append("<td>");
 					retBuf.append(deltaTimeStr);
 					retBuf.append("</td>");
+					
+					/*Build Number*/
+					retBuf.append("<td>");
+					retBuf.append(buildNumber);
+					retBuf.append("</td>");
+
 
 					/*
 					 * Include groups. retBuf.append("<td>");

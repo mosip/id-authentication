@@ -18,7 +18,7 @@
 
           		
 			<test name="RegistrationProcessor Tests">
-		<parameter name="testType" value="smoke" />
+		<parameter name="testType" value="smokeAndRegression" />
 		<classes>
 		<class name="io.mosip.registrationProcessor.tests.Sync" />
 			<!--  <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
