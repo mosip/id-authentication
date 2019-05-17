@@ -4,8 +4,8 @@
       "vidType": "Perpetual",
       "vidPolicy": {
         "validForInMinutes": null,
-        "allowedTransactions": null,
-        "allowedInstances": 1,
+        "transactionsAllowed": null,
+        "instancesAllowed": 1,
 		"autoRestoreAllowed": true,
 		"restoreOnAction": "REVOKE"
       }
@@ -14,8 +14,8 @@
       "vidType": "Temporary",
       "vidPolicy": {
         "validForInMinutes": 30,
-        "allowedTransactions": 1,
-        "allowedInstances": 5,
+        "transactionsAllowed": 1,
+        "instancesAllowed": 5,
         "autoRestoreAllowed": false,
 		"restoreOnAction": "REGENERATE"
       }
