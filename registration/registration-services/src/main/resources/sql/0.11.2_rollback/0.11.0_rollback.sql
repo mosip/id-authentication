@@ -1,1 +1,0 @@
-delete from reg.global_param where code='HELLOWORLD';
