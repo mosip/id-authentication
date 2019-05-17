@@ -570,7 +570,7 @@ public class HeaderController extends BaseController {
 			}
 		} else {
 			pane.setDisable(false);
-			if (!isPreLaunchTaskToBeExecuted) {
+			if (!isPreLaunchTaskToBeStopped) {
 				loginController.executePreLaunchTask(pane, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
