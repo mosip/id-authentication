@@ -109,7 +109,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 
 
 	 	 	 //generation of actual response
-	 	 	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
+	 	 //	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
 	 	 	 	 finalStatus="Pass";

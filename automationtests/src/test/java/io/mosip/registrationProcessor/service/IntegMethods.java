@@ -69,7 +69,8 @@ public class IntegMethods extends BaseTestCase {
 			}
 		}
 		try {
-			Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
+			Response actualResponse=null;
+			//Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
 			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
 			logger.info("Actual Response is :: "+ actualResponse.asString());
 			outerKeys.add("responsetime");

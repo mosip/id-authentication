@@ -109,7 +109,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 		
 
 	 	 	 //generation of actual response
-	 	 	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
+	 	 //	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
 	 	 	 if(object.get("testCaseName").toString().equals("invalid_deactivatedUin")) {
 		 		
 		 	 }
