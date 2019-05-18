@@ -78,6 +78,23 @@ public class CryptomanagerController {
 		return response;
 	}
 
+	
+	/**
+	 * Compute signature
+	 * 
+	 * @param cryptomanagerRequestDto
+	 * @return {@link ResponseWrapper<CryptoEncryptResponseDto> }
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Compute signature", response = CryptoEncryptResponseDto.class)
+	@PostMapping(value = "/signature", produces = "application/json")
+	public ResponseWrapper<CryptoEncryptResponseDto> computeSignature(
+			@ApiParam("Data to compute signature") @RequestBody @Valid RequestWrapper<CryptoEncryptRequestDto> cryptomanagerRequestDto) {
+		ResponseWrapper<CryptoEncryptResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.computeSignature(cryptomanagerRequestDto.getRequest()));
+		return response;
+	}
+	
 	/**
 	 * Controller for Decrypt the data
 	 * 
