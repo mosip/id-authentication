@@ -51,4 +51,10 @@ public interface CryptomanagerService {
 	 */
 	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto );
 
+	/** Compute signature
+	 * @param cryptoEncryptRequestDto {@link CryptoEncryptRequestDto}
+	 * @return {@link CryptoEncryptResponseDto} 
+	 */
+	public CryptoEncryptResponseDto computeSignature(CryptoEncryptRequestDto cryptoEncryptRequestDto);
+
 }
