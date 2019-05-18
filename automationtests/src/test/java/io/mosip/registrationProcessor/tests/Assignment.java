@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
+import io.mosip.dbdto.AuditRequestDto;
+import io.mosip.dbdto.ManualVerificationDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
@@ -54,6 +57,8 @@ public class Assignment extends BaseTestCase implements ITest{
 	JSONObject actualRequest=null;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	String regIds="";
+	String matchedRegIds = "";
+	String statusCodeRes = "";
 	SoftAssert softAssert=new SoftAssert();
 	static String dest = "";
 	static String folderPath = "regProc/Assignment";
@@ -76,7 +81,7 @@ public class Assignment extends BaseTestCase implements ITest{
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch ("smoke") {
+			switch (testParam) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -133,38 +138,46 @@ public class Assignment extends BaseTestCase implements ITest{
 				logger.info("isError ========= : "+isError);
 
 				if(!isError){
-					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+					Map<String,String>response = actualResponse.jsonPath().get("response"); 
 					logger.info("response : "+response );
-					JSONArray expected = (JSONArray) expectedResponse.get("response");
+					JSONObject expected = (JSONObject) expectedResponse.get("response");
 					List<String> expectedRegIds = new ArrayList<>();
+					List<String> expectedMatchedRegIds = new ArrayList<>();
 					String expectedRegId = null;
+					String expectedMatchedRegId = null;
+					String statusCode = null;
 					logger.info("expected: "+expected);
-					Iterator<Object> iterator = expected.iterator();
+					
 					//extracting reg ids from the expected response
-					while(iterator.hasNext()){
-						JSONObject jsonObject = (JSONObject) iterator.next();
-						expectedRegId = jsonObject.get("registrationId").toString().trim();
-						logger.info("expectedRegId: "+expectedRegId);
+					
+			
+						expectedRegId = expected.get("regId").toString().trim();
+						expectedMatchedRegId = expected.get("matchedRefId").toString().trim();
 						expectedRegIds.add(expectedRegId);
-					}
+						expectedMatchedRegIds.add(expectedMatchedRegId);
+						statusCode = expected.get("statusCode").toString().trim();
+					
 
-					for(Map<String,String> res : response){
-						regIds=res.get("registrationId").toString();
-						logger.info("Reg Id is : " +regIds);
+					/*for(Map<String,String> res : response){*/
+						regIds=response.get("regId").toString();
+						matchedRegIds = response.get("matchedRefId").toString();
+						statusCodeRes = response.get("statusCode").toString();
+						
 
-						SyncRegistrationDto dbDto = readDataFromDb.regproc_dbDataInRegistrationList(regIds);	
-						List<Object> count = readDataFromDb.countRegIdInRegistrationList(regIds);
+						ManualVerificationDTO dbDto = readDataFromDb.regproc_dbDataInManualVerification(regIds,matchedRegIds,statusCodeRes);	
+						//List<Object> count = readDataFromDb.countRegIdInRegistrationList(regIds);
 						logger.info("dbDto :" +dbDto);
 
 						//Checking audit logs (not yet implemented)
-						/*	LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
+							/*LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
 							logger.info("log time : "+logTime);
 							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-							logger.info("AUDIT DTO : "+auditDto.getApplicationName());*/
-
-						if(dbDto != null && count.isEmpty()/*&& auditDto != null*/) {
+							logger.info("AUDIT DTO : "+auditDto.getApplicationName());
+*/
+						if(dbDto != null /*&& count.isEmpty()*//*&& auditDto != null*/) {
 							//if reg id present in response and reg id fetched from table matches, then it is validated
-							if (expectedRegIds.contains(dbDto.getRegistrationId())/*&& expectedRegIds.contains(auditDto.getId())*/){
+							if ((expectedRegId.matches(dbDto.getRegId())&& (expectedMatchedRegId.matches(dbDto.getMatchedRefId()))) 
+									&& statusCode.matches(dbDto.getStatusCode())){
 
 								logger.info("Validated in DB.......");
 								finalStatus = "Pass";
@@ -172,20 +185,20 @@ public class Assignment extends BaseTestCase implements ITest{
 							} 
 						}
 
-					}
+					
 				}else{
 					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
 					String expectedErrorCode = null;
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
+						String errorCode = err.get("errorCode").toString();
 						logger.info("errorCode : "+errorCode);
 						Iterator<Object> iterator1 = expectedError.iterator();
 
 						while(iterator1.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
 							logger.info("expectedErrorCode: "+expectedErrorCode);
 						}
 						if(expectedErrorCode.matches(errorCode)){
