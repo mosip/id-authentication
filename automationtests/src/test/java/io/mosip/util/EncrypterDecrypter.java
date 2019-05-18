@@ -18,31 +18,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.zip.ZipInputStream;
-
 
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.mortbay.util.ajax.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import io.mosip.dbdto.CryptomanagerDto;
 import io.mosip.dbdto.CryptomanagerRequestDto;
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-import javassist.bytecode.ByteArray;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 /**
@@ -51,7 +45,7 @@ import net.lingala.zip4j.exception.ZipException;
  *
  */
 
-public class EncrypterDecrypter {
+public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
 	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 

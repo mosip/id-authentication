@@ -1,6 +1,7 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -20,8 +21,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -30,7 +33,7 @@ import net.lingala.zip4j.exception.ZipException;
  * @author M1047227
  *
  */
-public class TweakRegProcPackets {
+public class TweakRegProcPackets extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(TweakRegProcPackets.class);
 	StringBuilder osiValidatorStageString = new StringBuilder();
 
@@ -531,5 +534,27 @@ public class TweakRegProcPackets {
 
 		return metaData;
 	}
-
+	@Test
+public void (String[] args) {
+	TweakRegProcPackets e=new TweakRegProcPackets();
+	Properties property = new Properties();
+	String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
+	FileReader reader = null;
+	try {
+		reader = new FileReader(new File(propertyFilePath));
+	} catch (FileNotFoundException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	try {
+		property.load(reader);
+		reader.close();
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	String validPacketPath = property.getProperty("validPacketForPacketGeneration");
+	String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
+e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+}
 }

@@ -318,6 +318,7 @@ public class Sync extends BaseTestCase implements ITest {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
 			test=extent.createTest(testCaseName);
+			
 	/*		if(result.getStatus()==ITestResult.SUCCESS) {
 				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
 				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());

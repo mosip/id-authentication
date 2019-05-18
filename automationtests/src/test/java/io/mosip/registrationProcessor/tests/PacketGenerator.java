@@ -117,8 +117,9 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 	 	Map<String,Object> resp = encrypter.encryptJson(actualRequest);
 			String encryptedData = resp.get("data").toString();
 			String timeStamp = resp.get("responsetime").toString();
-	 	 	 //generation of actual response
+
 	 	 	 actualResponse=applicationLibrary.regProcSync(encryptedData, prop.getProperty("packetGeneratorApi"), center_machine_refID, timeStamp);
+
 	 	 	 if(object.get("testCaseName").toString().equals("invalid_deactivatedUin")) {
 		 		
 		 	 }

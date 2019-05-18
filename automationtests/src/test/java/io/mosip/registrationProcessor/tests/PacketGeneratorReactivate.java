@@ -118,7 +118,9 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 			String timeStamp = resp.get("responsetime").toString();
 
 	 	 	 //generation of actual response
-	 	 	 actualResponse=applicationLibrary.regProcSync(encryptedData, prop.getProperty("packetGeneratorApi"),center_machine_refID,timeStamp);
+
+	 	 //	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
+
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
 	 	 	 	 finalStatus="Pass";

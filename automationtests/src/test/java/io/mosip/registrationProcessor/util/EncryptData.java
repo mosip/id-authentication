@@ -31,10 +31,10 @@ public class EncryptData {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		JSONArray requestDataArray = (JSONArray) request.get("request");
-		JSONObject syncDto = (JSONObject) requestDataArray.get(0);
+		JSONArray syncDto = (JSONArray) requestDataArray;
 		
 		Gson g = new Gson();
-		SyncRegistrationDto d=g.fromJson(syncDto.toString(),SyncRegistrationDto.class);
+		SyncRegistrationDto[] d=g.fromJson(syncDto.toString(),SyncRegistrationDto[].class);
 		RegistrationPacketSyncDTO p = g.fromJson(request.toString(), RegistrationPacketSyncDTO.class);
 		p.setSyncRegistrationDTOs(d);
 		String outputJson="";
@@ -79,7 +79,7 @@ public class EncryptData {
 			cryptographicRequest.put("data", encryptedString);
 			cryptographicRequest.put("referenceId", referenceId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
-			encryptRequest.put("id","");
+			encryptRequest.put("id","mosip.registration.sync");
 			encryptRequest.put("metadata","");
 			encryptRequest.put("request",cryptographicRequest);
 			encryptRequest.put("requesttime", cryptoReq.getRequesttime().atOffset(ZoneOffset.UTC).toString());
@@ -93,11 +93,11 @@ public class EncryptData {
 	public static void main(String[] args) {
 		String useMe="{\r\n" + 
 				"	\"id\": \"mosip.registration.sync\",\r\n" + 
-				"	\"requesttime\": \"2019-03-02T06:29:41.011Z\",\r\n" + 
+				"	\"requesttime\": \"2019-05-17T06:29:41.011Z\",\r\n" + 
 				"	\"version\": \"1.0\",\r\n" + 
 				"	\"request\": [{\r\n" + 
 				"		\"langCode\": \"eng\",\r\n" + 
-				"		\"registrationId\": \"10011100110001920190325120310\",\r\n" + 
+				"		\"registrationId\": \"10011100110001920190517120310\",\r\n" + 
 				"		\"registrationType\": \"NEW\",\r\n" + 
 				"		\"packetHashValue\": \"D7C87DC5D3A759D77433B02B80435CFAB5087F1A942543F51A5075BC441BF7EB\",\r\n" + 
 				"		\"packetSize\": 5242880,\r\n" + 
