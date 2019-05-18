@@ -257,5 +257,25 @@ public class AbisMiddleWareStageTest {
 		abisCommonRequestDto.setRequestType("INSERT");
 		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto);
 		stage.consumerListener(amq, "abis1_inboundAddress", queue, evenBus);
+
+	}
+
+	@Test
+	public void testIdentifyConsumerListener() throws RegistrationProcessorCheckedException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
+		Mockito.when(packetInfoManager.getBatchStatusbyBatchId(Mockito.anyString())).thenReturn(null);
+
+		String identifyResponse = "{\"id\":\"mosip.abis.identify\",\"requestId\":\"8a3effd4-5fba-44e0-8cbb-3083ba098209\",\"timestamp\":\"1558001992\",\"returnValue\":1,\"failureReason\":null,\"candidateList\":null}";
+		ActiveMQBytesMessage amq1 = new ActiveMQBytesMessage();
+		ByteSequence byteSeq1 = new ByteSequence();
+		byteSeq1.setData(identifyResponse.getBytes());
+		amq1.setContent(byteSeq1);
+		Vertx vertx1 = Mockito.mock(Vertx.class);
+		MosipEventBus evenBus1 = new MosipEventBus(vertx1);
+		MosipQueue queue1 = Mockito.mock(MosipQueue.class);
+		AbisRequestDto abisCommonRequestDto1 = new AbisRequestDto();
+		abisCommonRequestDto1.setRequestType("IDENTIFY");
+		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto1);
+		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, evenBus1);
 	}
 }

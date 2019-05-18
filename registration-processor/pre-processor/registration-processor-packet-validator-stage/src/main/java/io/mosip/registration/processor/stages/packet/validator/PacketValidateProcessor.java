@@ -531,9 +531,14 @@ public class PacketValidateProcessor {
 					isTransactionSuccessful = false;
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage();
 
-				} else {
+				} else if (mainResponseDto == null) {
+					isTransactionSuccessful = false;
 					description = PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
-							+ " as parent registration id is not present";
+							+ " null response from rest client ";
+				} else {
+					isTransactionSuccessful = false;
+					regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId.toString(),
+							PlatformErrorMessages.REVERSE_DATA_SYNC_SUCCESS.getMessage(), "");
 				}
 
 			}
