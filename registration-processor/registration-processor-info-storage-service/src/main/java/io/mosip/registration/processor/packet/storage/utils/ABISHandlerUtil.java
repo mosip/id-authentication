@@ -195,7 +195,7 @@ public class ABISHandlerUtil {
 	 *             the apis resource access exception
 	 */
 	@SuppressWarnings("unchecked")
-	private Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
+	public Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add("rid");
 		pathSegments.add(machedRegId);
@@ -205,7 +205,7 @@ public class ABISHandlerUtil {
 		ResponseWrapper<IdResponseDTO> response;
 
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
-				AbisConstant.TYPE, AbisConstant.ALL, ResponseWrapper.class);
+				"", "", ResponseWrapper.class);
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -106,6 +108,9 @@ public class MessageNotificationServiceImpl
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
+
+	@Autowired
+	private ABISHandlerUtil abisHandlerUtil;
 
 	/** The rest client service. */
 	@Autowired
@@ -284,17 +289,11 @@ public class MessageNotificationServiceImpl
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
-			throws IOException {
+			throws IOException, ApisResourceAccessException {
 		InputStream demographicInfoStream = null;
 		Long uin = null;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
-			InputStream idJsonStream = adapter.getFile(id,
-					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-			String getJsonStringFromBytes = IOUtils.toString(idJsonStream, ENCODING);
-			JSONObject identityJson = JsonUtil.objectMapperReadValue(getJsonStringFromBytes, JSONObject.class);
-			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
-					utility.getGetRegProcessorDemographicIdentity());
-			Number num = JsonUtil.getJSONValue(demographicIdentity, UIN);
+			Number num = abisHandlerUtil.getUinFromIDRepo(id);
 			uin = num.longValue();
 			attributes.put("RID", id);
 			attributes.put("UIN", uin);
