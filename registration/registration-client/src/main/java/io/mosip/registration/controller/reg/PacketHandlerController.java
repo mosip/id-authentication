@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,27 +51,25 @@ import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.PolicySyncService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
+import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -122,9 +119,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private AckReceiptController ackReceiptController;
 
 	@Autowired
-	private HomeController homeController;
-
-	@Autowired
 	private TemplateService templateService;
 
 	@Autowired
@@ -170,6 +164,19 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	ProgressIndicator progressIndicator;
+	
+	@FXML
+	public GridPane progressPane;
+	
+	@FXML
+	public ProgressBar syncProgressBar;
+	
+	@FXML
+	private Label eodLabel;
+	
+	@Autowired
+	HeaderController headerController;
+
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -177,7 +184,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
 				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
 			eodProcessGridPane.setVisible(false);
+			eodLabel.setVisible(false);
 		}
+		
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
@@ -522,30 +531,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * Sync data through batch jobs.
 	 */
 	public void syncData() {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info("REGISTRATION - SYNC_DATA - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen started.");
-		AnchorPane syncData;
-		try {
-			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
-			ObservableList<Node> nodes = homeController.getMainBox().getChildren();
-			IntStream.range(1, nodes.size()).forEach(index -> {
-				nodes.get(index).setVisible(false);
-				nodes.get(index).setManaged(false);
-			});
-			nodes.add(syncData);
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Sync Data screen ended.");
+		headerController.syncData(null);
 	}
 
 	/**
@@ -643,14 +629,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 					.getDemographicInfoDTO().getIdentity();
 
 			try {
-
-				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
-				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
-						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
-					updatePacketStatus();
-					syncAndUploadPacket();
-				}
-
 				// Deletes the pre registration Data after creation of registration Packet.
 				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
 						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
@@ -676,6 +654,16 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
+				
+				sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
+						registrationDTO.getRegistrationId());
+				
+				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
+				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
+						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
+					updatePacketStatus();
+					syncAndUploadPacket();
+				}
 
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
@@ -687,9 +675,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
 			}
-
-			sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
-					registrationDTO.getRegistrationId());
 
 			if (registrationDTO.getSelectionListDTO() == null) {
 
@@ -790,6 +775,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (response.equals(RegistrationConstants.EMPTY)) {
 
 				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+			} else {
+				generateAlert("ERROR", RegistrationUIConstants.UPLOAD_FAILED);
 			}
 
 		}

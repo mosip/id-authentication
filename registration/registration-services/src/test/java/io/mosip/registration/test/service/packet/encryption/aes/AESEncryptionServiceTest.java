@@ -29,13 +29,13 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.RSAEncryptionService;
-import io.mosip.registration.service.impl.AESEncryptionServiceImpl;
+import io.mosip.registration.service.security.RSAEncryptionService;
+import io.mosip.registration.service.security.impl.AESEncryptionServiceImpl;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
@@ -50,7 +50,7 @@ public class AESEncryptionServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@Mock
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 

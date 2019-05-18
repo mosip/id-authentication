@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,17 +26,21 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
+import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import javafx.application.Platform;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -43,10 +48,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -56,6 +60,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -69,8 +74,8 @@ import javafx.scene.layout.VBox;
 @Controller
 public class HeaderController extends BaseController {
 
-	/**o
-	 * Instance of {@link Logger}
+	/**
+	 * o Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(HeaderController.class);
 
@@ -108,6 +113,9 @@ public class HeaderController extends BaseController {
 	MasterSyncService masterSyncService;
 
 	@Autowired
+	MasterSyncDao masterSyncDao;
+
+	@Autowired
 	PacketHandlerController packetHandlerController;
 
 	@Autowired
@@ -119,7 +127,16 @@ public class HeaderController extends BaseController {
 	@Autowired
 	private HomeController homeController;
 
+	@Autowired
+	private ServiceDelegateUtil serviceDelegateUtil;
+
 	ProgressIndicator progressIndicator;
+
+	@Autowired
+	private SyncStatusValidatorService statusValidatorService;
+
+	@Autowired
+	private LoginController loginController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -239,10 +256,9 @@ public class HeaderController extends BaseController {
 			 * BaseController.load(getClass().getResource(RegistrationConstants.
 			 * SYNC_DATA));
 			 * 
-			 * VBox pane = (VBox) menu.getParent().getParent().getParent();
-			 * Object parent = pane.getChildren().get(0);
-			 * pane.getChildren().clear(); pane.getChildren().add((Node)
-			 * parent); pane.getChildren().add(syncData); }
+			 * VBox pane = (VBox) menu.getParent().getParent().getParent(); Object parent =
+			 * pane.getChildren().get(0); pane.getChildren().clear();
+			 * pane.getChildren().add((Node) parent); pane.getChildren().add(syncData); }
 			 */
 
 		} /*
@@ -291,50 +307,6 @@ public class HeaderController extends BaseController {
 			}
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-		}
-	}
-
-	/**
-	 * Redirects to Device On-Boarding UI Page.
-	 * 
-	 * @param actionEvent
-	 *            is an action event
-	 */
-	public void onBoardDevice(ActionEvent actionEvent) {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-				"Navigating to Device Onboarding Page");
-
-		try {
-			auditFactory.audit(AuditEvent.NAV_ON_BOARD_DEVICES, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			AnchorPane onBoardRoot = BaseController
-					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
-
-			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				VBox pane = (VBox) menu.getParent().getParent().getParent();
-				Object parent = pane.getChildren().get(0);
-				pane.getChildren().clear();
-				pane.getChildren().add((Node) parent);
-				pane.getChildren().add(onBoardRoot);
-			}
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
-							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
-		} finally {
-			LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					"Navigation to Device Onboarding page completed");
 		}
 	}
 
@@ -397,8 +369,9 @@ public class HeaderController extends BaseController {
 		// Check for updates
 		if (hasUpdate()) {
 
-			// Update the application
-			update();
+			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
+					RegistrationUIConstants.UPDATE_LATER, false);
+
 		}
 
 	}
@@ -427,39 +400,27 @@ public class HeaderController extends BaseController {
 		return hasUpdate;
 	}
 
-	private void update() {
+	private String update() {
 		try {
-			Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
-					RegistrationConstants.EMPTY, RegistrationUIConstants.CONFIRM_UPDATE);
 
-			updateAlert.showAndWait();
+			registrationUpdate.getWithLatestJars();
+			return RegistrationConstants.ALERT_INFORMATION;
 
-			/* Get Option from user */
-			ButtonType result = updateAlert.getResult();
-			if (result == ButtonType.OK) {
-
-				registrationUpdate.getWithLatestJars();
-
-				// Update completed Re-Launch application
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
-
-				System.exit(0);
-			}
-		} catch (RuntimeException | io.mosip.kernel.core.exception.IOException | IOException
-				| ParserConfigurationException | SAXException exception) {
+		} catch (Exception exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_UPDATE);
+			return RegistrationConstants.ERROR;
+
 		}
 	}
 
 	private void executeSyncDataTask() {
 		progressIndicator = packetHandlerController.getProgressIndicator();
 		GridPane gridPane = homeController.getMainBox();
-
+		List<SyncJobDef> syncJobs = masterSyncDao.getSyncJobs();
+		double totalJobs = syncJobs.size();
 		gridPane.setDisable(true);
 		progressIndicator.setVisible(true);
-
 		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
 			@Override
 			protected Task<ResponseDTO> createTask() {
@@ -479,7 +440,16 @@ public class HeaderController extends BaseController {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						return jobConfigurationService.executeAllJobs();
+						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
+						double success = 1;
+						if (responseDto.getErrorResponseDTOs() == null
+								|| responseDto.getErrorResponseDTOs().size() == 0) {
+							packetHandlerController.syncProgressBar.setProgress(1);
+						} else {
+							success = totalJobs - responseDto.getErrorResponseDTOs().size();
+							packetHandlerController.syncProgressBar.setProgress(success / totalJobs);
+						}
+						return responseDto;
 					}
 				};
 			}
@@ -507,4 +477,103 @@ public class HeaderController extends BaseController {
 
 	}
 
+	public void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
+
+		progressIndicator.setVisible(true);
+		pane.setDisable(true);
+
+		/**
+		 * This anonymous service class will do the pre application launch task
+		 * progress.
+		 * 
+		 */
+		Service<String> taskService = new Service<String>() {
+			@Override
+			protected Task<String> createTask() {
+				return /**
+						 * @author SaravanaKumar
+						 *
+						 */
+				new Task<String>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected String call() {
+
+						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+
+						progressIndicator.setVisible(true);
+						pane.setDisable(true);
+						return update();
+
+					}
+				};
+			}
+		};
+
+		progressIndicator.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+
+				pane.setDisable(false);
+				progressIndicator.setVisible(false);
+
+				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
+					// generateAlert(RegistrationConstants.ERROR,
+					// RegistrationUIConstants.UNABLE_TO_UPDATE);
+					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, false);
+				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
+					// Update completed Re-Launch application
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
+
+					restartApplication();
+				}
+
+			}
+
+		});
+
+	}
+
+	public void update(Pane pane, ProgressIndicator progressIndicator, String context,
+			boolean isPreLaunchTaskToBeExecuted) {
+
+		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
+				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+
+		pane.setDisable(true);
+		updateAlert.showAndWait();
+
+		/* Get Option from user */
+		ButtonType result = updateAlert.getResult();
+		if (result == ButtonType.OK) {
+
+			executeUpdateTask(pane, progressIndicator);
+		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
+			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
+					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
+
+			alert.showAndWait();
+
+			/* Get Option from user */
+			ButtonType alertResult = alert.getResult();
+
+			if (alertResult == ButtonType.OK) {
+
+				executeUpdateTask(pane, progressIndicator);
+			}
+		} else {
+			pane.setDisable(false);
+			if (isPreLaunchTaskToBeExecuted) {
+				loginController.executePreLaunchTask(pane, progressIndicator);
+			}
+		}
+
+	}
 }

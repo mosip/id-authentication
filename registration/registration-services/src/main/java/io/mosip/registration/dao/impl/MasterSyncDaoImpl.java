@@ -51,7 +51,6 @@ import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDeviceDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterMachineDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterTypeDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterUserDto;
-import io.mosip.registration.dto.mastersync.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.mastersync.ScreenAuthorizationDto;
 import io.mosip.registration.dto.mastersync.ScreenDetailDto;
 import io.mosip.registration.dto.mastersync.SyncJobDefDto;
@@ -98,13 +97,11 @@ import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.entity.Title;
-import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.entity.id.RegCenterUserId;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.id.RegistartionCenterId;
-import io.mosip.registration.entity.id.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.AppDetailRepository;
@@ -143,7 +140,6 @@ import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
 import io.mosip.registration.repositories.TitleRepository;
-import io.mosip.registration.repositories.UserMachineMappingRepository;
 import io.mosip.registration.repositories.ValidDocumentRepository;
 import io.mosip.registration.util.mastersync.MetaDataUtils;
 
@@ -260,10 +256,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync language Repository. */
 	@Autowired
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
-
-	/** Object for Sync language Repository. */
-	@Autowired
-	private UserMachineMappingRepository userMachineMappingRepository;
 
 	/** Object for Sync language Repository. */
 	@Autowired
@@ -386,8 +378,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<RegistrationCenterDeviceDto> registrationCenterDevices = masterSyncDto.getRegistrationCenterDevices();
 		List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices = masterSyncDto
 				.getRegistrationCenterMachineDevices();
-		List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachines = masterSyncDto
-				.getRegistrationCenterUserMachines();
 		List<RegistrationCenterUserDto> registrationCenterUsers = masterSyncDto.getRegistrationCenterUsers();
 		List<RegistrationCenterDto> registrationCenter = masterSyncDto.getRegistrationCenter();
 		List<RegistrationCenterTypeDto> registrationCenterType = masterSyncDto.getRegistrationCenterTypes();
@@ -682,32 +672,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterRegCenterMachineDeviceEntity.add(regMachDev);
 			});
 			registrationCenterMachineDeviceRepository.saveAll(masterRegCenterMachineDeviceEntity);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"User Machine Mapping details syncing....");
-			List<UserMachineMapping> masterRegCenterUserMachineEntity = new ArrayList<>();
-			registrationCenterUserMachines.forEach(centerUserMac -> {
-				UserMachineMappingID idMapping = new UserMachineMappingID();
-				idMapping.setCentreID(centerUserMac.getCntrId());
-				idMapping.setMachineID(centerUserMac.getMachineId());
-				idMapping.setUserID(centerUserMac.getUsrId());
-				UserMachineMapping userMachine = new UserMachineMapping();
-				userMachine.setUserMachineMappingId(idMapping);
-				if (SessionContext.isSessionContextAvailable()) {
-					userMachine.setCrBy(SessionContext.userContext().getUserId());
-				} else {
-					userMachine.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-				}
-				userMachine.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userMachine.setIsActive(true);
-				userMachine.setLangCode(centerUserMac.getLangCode());
-				masterRegCenterUserMachineEntity.add(userMachine);
-			});
-
-			userMachineMappingRepository.saveAll(masterRegCenterUserMachineEntity);
-
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Registartion Center User Mapping details syncing....");
+			
 			List<RegCenterUser> masterRegCenterUserEntity = new ArrayList<>();
 			registrationCenterUsers.forEach(centerUser -> {
 				RegCenterUser centerUsr = new RegCenterUser();
@@ -726,6 +691,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterRegCenterUserEntity.add(centerUsr);
 			});
 			registrationCenterUserRepository.saveAll(masterRegCenterUserEntity);
+			
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Center Machine Mapping details syncing....");
@@ -920,4 +886,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				langCode);
 	}
 
+	
+	public List<SyncJobDef> getSyncJobs(){
+		return syncJobDefRepository.findAllByIsActiveTrue();
+	}
 }

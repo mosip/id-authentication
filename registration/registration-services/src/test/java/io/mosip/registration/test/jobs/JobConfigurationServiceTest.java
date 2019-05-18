@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,10 +48,11 @@ import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class , io.mosip.registration.jobs.BaseJob.class })
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, io.mosip.registration.jobs.BaseJob.class })
 public class JobConfigurationServiceTest {
 
 	@Mock
@@ -90,10 +90,13 @@ public class JobConfigurationServiceTest {
 
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
-	
+
 	@Mock
 	GlobalParamDAO globalParamDAO;
-	
+
+	@Mock
+	GlobalParamService globalParamService;
+
 	List<SyncJobDef> syncJobList;
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
@@ -108,7 +111,7 @@ public class JobConfigurationServiceTest {
 		syncJob.setSyncFrequency("0/5 * * * * ?");
 		syncJob.setIsActive(true);
 		syncJobList.add(syncJob);
-		
+
 		SyncJobDef mdsJob = new SyncJobDef();
 		mdsJob.setId("SCD_J00011");
 
@@ -124,13 +127,22 @@ public class JobConfigurationServiceTest {
 		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(syncJobList);
-		
-		
-		Map<String,Object> applicationMap =new HashMap<>();
+
+		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		applicationMap.put(RegistrationConstants.SYNC_DATA_FREQ, "0 0 11 * * ?");
+		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
+		
+		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		
+		jobConfigurationService.setBaseGlobalMap(applicationMap);
+		//context.setApplicationMap(applicationMap);
 	}
 
 	@Test
@@ -227,7 +239,7 @@ public class JobConfigurationServiceTest {
 
 	@Test
 	public void getCurrentRunningJobDetailsTest() throws SchedulerException {
-		initiateJobTest();
+		startJobs();
 		List<JobExecutionContext> jobExecutionContexts = new ArrayList<>();
 		jobExecutionContexts.add(jobExecutionContext);
 
@@ -253,6 +265,7 @@ public class JobConfigurationServiceTest {
 	public void getCurrentRunningJobDetailsExceptionTest() throws SchedulerException {
 		List<JobExecutionContext> jobExecutionContexts = new ArrayList<>();
 
+		startJobs();
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
 		Assert.assertSame(RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE,
 				jobConfigurationService.getCurrentRunningJobDetails().getErrorResponseDTOs().get(0).getMessage());
@@ -270,7 +283,8 @@ public class JobConfigurationServiceTest {
 	@Test
 	public void executeJobExceptionJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
-	Assert.assertNotNull(jobConfigurationService.executeJob("packetSyncStatusJob", RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM));
+		Assert.assertNotNull(jobConfigurationService.executeJob("packetSyncStatusJob",
+				RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM));
 	}
 
 	@Test
@@ -313,6 +327,8 @@ public class JobConfigurationServiceTest {
 		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 		syncTransactions.add(syncTransaction);
+		
+		
 
 		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(), Mockito.anyString()))
 				.thenReturn(syncTransactions);

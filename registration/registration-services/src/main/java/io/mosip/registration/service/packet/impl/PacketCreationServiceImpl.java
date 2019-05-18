@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -36,15 +37,15 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -62,7 +63,6 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValue;
@@ -93,10 +93,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@Autowired
 	private CbeffImpl cbeffI;
 	@Autowired
-	private JsonValidator jsonValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 	private static SecureRandom random = new SecureRandom(String.valueOf(5000).getBytes());
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
 	@Autowired
@@ -135,17 +136,44 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
+			
+			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
+			if (cbeffInBytes != null) {
+				if (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+						.equals(RegistrationConstants.ENABLE)) {
+					filesGeneratedForPacket.put(RegistrationConstants.PARENT
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				} else {
+					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				}
+			}
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
 
 				if (cbeffInBytes != null) {
-					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+					
+					filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
 					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
-							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));
+							String.format(loggerMessageForCBEFF, RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+				}
+
+				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+						.getFace();
+				if (cbeffInBytes != null) {
+					if (registrationDTO.isUpdateUINChild()
+							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+									.equals(RegistrationConstants.ENABLE)) {
+						filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					} else {
+						filesGeneratedForPacket.put(RegistrationConstants.PARENT
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					}
 				}
 			}
 
@@ -176,9 +204,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			// Generating Demographic JSON as byte array
-			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString);
-			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
+			idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
+			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
+					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
@@ -229,7 +257,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			packetInfo.getIdentity().setCapturedNonRegisteredDevices(null);
 
 			// Add HashSequence
-			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+			packetInfo.getIdentity().setHashSequence1(buildHashSequence(hashSequence));
 
 			// Add HashSequence for packet_osi_data
 			packetInfo.getIdentity()
@@ -259,15 +287,17 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
-		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException jsonValidationException) {
+		} catch (IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
+				| FileIOException idSchemaValidationException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
-					jsonValidationException);
+					idSchemaValidationException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
+		} finally {
+			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
 		}
 	}
 
@@ -324,24 +354,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				}
 
 				// Add Face
-				if (personType.equals(RegistrationConstants.INDIVIDUAL)) {
-					ApplicantDocumentDTO applicantDocumentDTO = registrationDTO.getDemographicDTO()
-							.getApplicantDocumentDTO();
-
-					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getPhoto(),
-							(int) Math.round(applicantDocumentDTO.getQualityScore()),
-							RegistrationConstants.VALIDATION_TYPE_FACE);
-
-					createFaceBIR(personType, birUUIDs, birs, applicantDocumentDTO.getExceptionPhoto(),
-							(int) Math.round(applicantDocumentDTO.getQualityScore()),
-							RegistrationConstants.FACE_EXCEPTION);
-				} else {
-					if(!(boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-						createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFaceDetailsDTO().getFace(),
-								(int) Math.round(biometricInfoDTO.getFaceDetailsDTO().getQualityScore()),
-								RegistrationConstants.VALIDATION_TYPE_FACE);
-					}
-				}
+				createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFace().getFace(),
+						(int) Math.round(biometricInfoDTO.getFace().getQualityScore()),
+						RegistrationConstants.VALIDATION_TYPE_FACE);
+					
 			}
 
 			byte[] cbeffXMLInBytes = null;

@@ -2,6 +2,7 @@ package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ public class ValidationUtil {
 
 	private static String phoneRegex;
 
+	private static String langCodes;
+
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
 
 	private ValidationUtil() {
@@ -36,22 +39,27 @@ public class ValidationUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	public void setDateTime(String value) {
-		this.utcDateTimePattern = value;
+		ValidationUtil.utcDateTimePattern = value;
 	}
 
 	@Value("${mosip.kernel.prid.length}")
 	public void setLength(String value) {
-		this.preIdLength = value;
+		ValidationUtil.preIdLength = value;
 	}
 
 	@Value("${mosip.id.validation.identity.email}")
 	public void setEmailRegex(String value) {
-		this.emailRegex = value;
+		ValidationUtil.emailRegex = value;
 	}
 
 	@Value("${mosip.id.validation.identity.phone}")
 	public void setPhoneRegex(String value) {
-		this.phoneRegex = value;
+		ValidationUtil.phoneRegex = value;
+	}
+
+	@Value("${mosip.supported-languages}")
+	public void setLanCode(String value) {
+		ValidationUtil.langCodes = value;
 	}
 
 	public static boolean emailValidator(String email) {
@@ -65,8 +73,8 @@ public class ValidationUtil {
 	public static boolean idValidation(String value, String regex) {
 		if (!isNull(value)) {
 			return value.matches(regex);
-		} 
-			return false;
+		}
+		return false;
 	}
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {
@@ -74,38 +82,43 @@ public class ValidationUtil {
 				"In requestValidator method of pre-registration core with mainRequest " + mainRequest);
 		if (mainRequest.getId() == null) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-					ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
+					ErrorMessages.INVALID_REQUEST_ID.getMessage(), null);
 		} else if (mainRequest.getRequest() == null) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
-					ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
+					ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
 		} else if (mainRequest.getRequesttime() == null) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-					ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
+					ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), null);
 		} else if (mainRequest.getVersion() == null) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
-					ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
+					ErrorMessages.INVALID_REQUEST_VERSION.getMessage(), null);
 		}
 		return true;
 	}
 
-//	public static boolean requestValidator(MainListRequestDTO<?> mainRequest) {
-//		log.info("sessionId", "idType", "id",
-//				"In requestValidator method of pre-registration core with mainRequest " + mainRequest);
-//		if (mainRequest.getId() == null) {
-//			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-//					ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
-//		} else if (mainRequest.getRequest() == null) {
-//			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
-//					ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
-//		} else if (mainRequest.getRequesttime() == null) {
-//			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-//					ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
-//		} else if (mainRequest.getVersion() == null) {
-//			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
-//					ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
-//		}
-//		return true;
-//	}
+	// public static boolean requestValidator(MainListRequestDTO<?> mainRequest) {
+	// log.info("sessionId", "idType", "id",
+	// "In requestValidator method of pre-registration core with mainRequest " +
+	// mainRequest);
+	// if (mainRequest.getId() == null) {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
+	// ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
+	// } else if (mainRequest.getRequest() == null) {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
+	// ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
+	// } else if (mainRequest.getRequesttime() == null) {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
+	// ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
+	// } else if (mainRequest.getVersion() == null) {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
+	// ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
+	// }
+	// return true;
+	// }
 
 	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
 		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
@@ -114,29 +127,30 @@ public class ValidationUtil {
 			if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
 					|| !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.INVALID_REQUEST_ID.getMessage(),null);
+						ErrorMessages.INVALID_REQUEST_ID.getMessage(), null);
 			} else if (key.equals(RequestCodes.VER) && (requestMap.get(RequestCodes.VER) == null
 					|| !requestMap.get(RequestCodes.VER).equals(requiredRequestMap.get(RequestCodes.VER)))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_002.getCode(),
-						ErrorMessages.INVALID_REQUEST_VERSION.getMessage(),null);
+						ErrorMessages.INVALID_REQUEST_VERSION.getMessage(), null);
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-						ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),null);
+						ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), null);
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
 					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
 					if (localDate.isBefore(LocalDate.now()) || localDate.isAfter(LocalDate.now())) {
-						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(), ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
+								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
 					}
 
 				} catch (Exception ex) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
-								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+							ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
 				}
 			} else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
 					|| requestMap.get(RequestCodes.REQUEST).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
-						ErrorMessages.INVALID_REQUEST_BODY.getMessage(),null);
+						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
 			}
 		}
 		return true;
@@ -149,37 +163,39 @@ public class ValidationUtil {
 			if (key.equals(RequestCodes.USER_ID) && (requestMap.get(RequestCodes.USER_ID) == null
 					|| requestMap.get(RequestCodes.USER_ID).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage(),null);
+						ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage(), null);
 			} else if (key.equals(RequestCodes.PRE_REGISTRATION_ID)
 					&& (requestMap.get(RequestCodes.PRE_REGISTRATION_ID) == null
 							|| requestMap.get(RequestCodes.PRE_REGISTRATION_ID).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage(),null);
+						ErrorMessages.MISSING_REQUEST_PARAMETER.getMessage(), null);
 			} else if (key.equals(RequestCodes.STATUS_CODE) && (requestMap.get(RequestCodes.STATUS_CODE) == null
 					|| requestMap.get(RequestCodes.STATUS_CODE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.INVALID_STATUS_CODE.getMessage(),null);
+						ErrorMessages.INVALID_STATUS_CODE.getMessage(), null);
 			} else if (key.equals(RequestCodes.FROM_DATE) && (requestMap.get(RequestCodes.FROM_DATE) == null
 					|| requestMap.get(RequestCodes.FROM_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.INVALID_DATE.getMessage(),null);
+						ErrorMessages.INVALID_DATE.getMessage(), null);
 			} else if (key.equals(RequestCodes.FROM_DATE) && requestMap.get(RequestCodes.FROM_DATE) != null) {
 				try {
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(requestMap.get(RequestCodes.FROM_DATE));
 				} catch (Exception ex) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-							ErrorMessages.INVALID_REQUEST_DATETIME.getMessage() + "_FORMAT --> yyyy-MM-dd HH:mm:ss",null);
+							ErrorMessages.INVALID_REQUEST_DATETIME.getMessage() + "_FORMAT --> yyyy-MM-dd HH:mm:ss",
+							null);
 				}
 			} else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
 					|| requestMap.get(RequestCodes.TO_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.getCode(),
-						ErrorMessages.INVALID_DATE.getMessage(),null);
+						ErrorMessages.INVALID_DATE.getMessage(), null);
 			} else if (key.equals(RequestCodes.TO_DATE) && requestMap.get(RequestCodes.TO_DATE) != null) {
 				try {
 					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(requestMap.get(RequestCodes.TO_DATE));
 				} catch (Exception ex) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
-							ErrorMessages.INVALID_REQUEST_DATETIME.getMessage() + "_FORMAT --> yyyy-MM-dd HH:mm:ss",null);
+							ErrorMessages.INVALID_REQUEST_DATETIME.getMessage() + "_FORMAT --> yyyy-MM-dd HH:mm:ss",
+							null);
 				}
 			}
 
@@ -207,6 +223,21 @@ public class ValidationUtil {
 		}
 		return false;
 
+	}
+
+	public static boolean langvalidation(String langCode) {
+		List<String> reqParams = new ArrayList<>();
+		String[] langList = langCodes.split(",");
+		for (int i = 0; i < langList.length; i++) {
+			reqParams.add(langList[i]);
+		}
+
+		if (reqParams.contains(langCode)) {
+			return true;
+		} else {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_014.getCode(),
+					ErrorMessages.INVALID_LANG_CODE.getMessage(), null);
+		}
 	}
 
 }

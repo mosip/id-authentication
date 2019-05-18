@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.dto;
 
+
 /**	
  * The Enum SyncTypeDto.
  *
@@ -10,23 +11,21 @@ public enum SyncTypeDto {
 	/** The new registration. */
 	NEW("NEW"),
 
-	/** The correction. */
-	CORRECTION("CORRECTION"),
-
-	/** The update uin. */
+    /** The update uin. */
 	UPDATE("UPDATE"),
 
 	/** The lost uin. */
-	LOST_UIN("LOST UIN"),
+	LOST("LOST"),
 
-	/** The update uin. */
-	UPDATE_UIN("UPDATE UIN"),
 
 	/** The activate uin. */
-	ACTIVATE_UIN("ACTIVATED"),
+	ACTIVATED("ACTIVATED"),
 
 	/** The deactivate uin. */
-	DEACTIVATE_UIN("DEACTIVATED");
+	DEACTIVATED("DEACTIVATED"),
+	
+	/** The res update. */
+	RES_UPDATE("RES_UPDATE");
 
 	/** The value. */
 	private String value;

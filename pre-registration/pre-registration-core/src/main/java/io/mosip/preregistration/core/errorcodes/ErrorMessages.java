@@ -14,6 +14,7 @@ public enum ErrorMessages {
 	INVALID_REQUEST_DATETIME("Request timestamp is invalid"), // PRG_CORE_REQ_003
 	INVALID_REQUEST_BODY("Request body is invalid"), // PRG_CORE_REQ_004
 	INVALID_STATUS_CODE("status code is invalid"), 
+	INVALID_LANG_CODE("Lang code is invalid"),// PRG_CORE_REQ_014
 	INVALID_DATE("date is invalid"), 
 	APPOINTMENT_CANNOT_BE_BOOKED("appointment cannot be booked"), 
 	APPONIMENT_CANNOT_BE_CANCELED("appointment cannot be cancelled"), 

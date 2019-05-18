@@ -9,6 +9,8 @@ import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class FingerprintProvider - An Abstract class which contains default
@@ -20,6 +22,10 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
  */
 public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
+	
+	
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(FingerprintProvider.class);
 	
 
 	/*
@@ -34,7 +40,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().convert(isoImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().convert(isoImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
-			System.err.println("Threshold Value >>>" + matcher.index(template1).match(template2));
+			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException e) {
 			throw e;
@@ -54,6 +60,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().deserialize(fingerImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().deserialize(fingerImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
+			logger.info(IdAuthCommonConstants.SESSION_ID,"IDA", "matchScoreCalculator", "Threshold Value >>>" + matcher.index(template1).match(template2));
 			System.err.println("Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException | JsonSyntaxException e) {

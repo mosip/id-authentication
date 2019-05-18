@@ -1,23 +1,11 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.common.service.integration.dto.EncryptDataRequestDto;
-import io.mosip.authentication.common.service.integration.dto.SymmetricKeyRequestDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -45,7 +33,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
  * The Class KeyManager is used to decipher the request
@@ -57,28 +44,14 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @Component
 public class KeyManager {
 	
+	
+
 	/** The Constant ERROR_CODE. */
 	private static final String ERROR_CODE = "errorCode";
 
-	/** The Constant SECRET_KEY. */
-	private static final String SECRET_KEY = "secretKey";
-
-	/** The Constant AESPADDING. */
-	private static final String AESPADDING = "AES/CBC/PKCS5Padding";
-
-	/** The Constant SYMMETRIC_ALGORITHM_NAME. */
-	private static final String SYMMETRIC_ALGORITHM_NAME = "AES";
-
-
 	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
-
 	
-	/** The secure random. */
-	private static  SecureRandom secureRandom;
-
-
-
 	/** The app id. */
 	@Value("${" +IdAuthConfigKeyConstants.APPLICATION_ID+ "}")
 	private String appId;
@@ -86,7 +59,11 @@ public class KeyManager {
 	/** The partner id. */
 	@Value("${" +IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID+ "}")
 	private String partnerId;
-
+	
+	/** The key splitter. */
+	@Value("${" +IdAuthConfigKeyConstants.KEY_SPLITTER+ "}")
+	private String keySplitter;
+	
 	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
@@ -94,10 +71,6 @@ public class KeyManager {
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
-
-	/** The key generator. */
-	@Autowired
-	private KeyGenerator keyGenerator;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -117,11 +90,8 @@ public class KeyManager {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
-			Optional<String> encryptedSessionKey = Optional.ofNullable(requestBody.get(SESSION_KEY))
-					.map(String::valueOf);
-			if (encryptedSessionKey.isPresent()) {
-				request = decipherData(mapper, encryptedRequest, encryptedSessionKey.get());
-			}
+			byte[] encryptedSessionkey = Base64.decodeBase64((String)requestBody.get(SESSION_KEY));
+			request = decipherData(mapper, encryptedRequest, encryptedSessionkey);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -142,28 +112,39 @@ public class KeyManager {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, String encryptedSessionKey)
+	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException, IOException {
-		SecretKey secretKey=null;
-		byte[] decryptedData=null;
-		Map<String, Object> request;
-		RestRequestDTO restRequestDTO = null;
-		SymmetricKeyRequestDto symmetricKeyRequestDto = new SymmetricKeyRequestDto();
-		Map<String,Object> symmetricKeyResponseDto = null;
-		byte[] decryptedSymmetricKey = null;
+		String decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
+		Map<String, Object> request = mapper.readValue(decodedIdentity,Map.class);
+		return request;
+	}
+
+	/**
+	 * Kernel decrypt.
+	 *
+	 * @param encryptedRequest the encrypted request
+	 * @param encryptedSessionKey the encrypted session key
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@SuppressWarnings("unchecked")
+	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
+			throws IdAuthenticationAppException {
+		String decryptedRequest=null;
+		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
-			symmetricKeyRequestDto.setApplicationId(appId);
-			symmetricKeyRequestDto.setReferenceId(partnerId);
-			symmetricKeyRequestDto.setTimeStamp(
+			cryptoManagerRequestDto.setApplicationId(appId);
+			cryptoManagerRequestDto.setReferenceId(partnerId);
+			cryptoManagerRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
-			symmetricKeyRequestDto.setEncryptedSymmetricKey(encryptedSessionKey);
-			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
-					RestRequestFactory.createRequest(symmetricKeyRequestDto), Map.class);
-			symmetricKeyResponseDto = restHelper.requestSync(restRequestDTO);
-			Object symmetricKeyValue = ((Map<String,Object>) symmetricKeyResponseDto.get("response")).get("symmetricKey");
-			decryptedSymmetricKey = Base64.decodeBase64(symmetricKeyValue instanceof String ? (String) symmetricKeyValue : "");
-			secretKey=new SecretKeySpec(decryptedSymmetricKey, 0, decryptedSymmetricKey.length, SYMMETRIC_ALGORITHM_NAME);
-				decryptedData=symmetricDecrypt(secretKey, encryptedRequest);
+			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
+					CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)));
+			RestRequestDTO restRequestDTO= restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
+					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
+			Map<String,Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);
+			Object encodedIdentity= ((Map<String,Object>) cryptoResponseMap.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
+			decryptedRequest = new String(Base64.decodeBase64((String)encodedIdentity),
+					StandardCharsets.UTF_8);
 		}
 		catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
@@ -178,10 +159,7 @@ public class KeyManager {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
-
-		request = mapper.readValue(decryptedData,Map.class);
-		request.put(SECRET_KEY, secretKey);
-		return request;
+		return decryptedRequest;
 	}
 
 	/**
@@ -214,38 +192,13 @@ public class KeyManager {
 		}
 	}
 	
-	
 	/**
-	 * symmetricDecrypt method used to decrypt the session key present.
+	 * This method is used to encrypt the KYC identity response
 	 *
-	 * @param secretKey the secret key
-	 * @param encryptedDataByteArr the encrypted data byte arr
-	 * @return the byte[]
+	 * @param responseBody the response body
+	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	public byte[] symmetricDecrypt(SecretKey secretKey, byte[] encryptedDataByteArr) throws IdAuthenticationAppException  {
-		  Cipher cipher=null;
-		try {
-			cipher = Cipher.getInstance(AESPADDING);
-			 cipher.init(Cipher.DECRYPT_MODE, secretKey,
-						new IvParameterSpec(Arrays.copyOfRange(encryptedDataByteArr, encryptedDataByteArr.length - cipher.getBlockSize(), encryptedDataByteArr.length)),secureRandom);
-			 return cipher.doFinal(Arrays.copyOf(encryptedDataByteArr, encryptedDataByteArr.length - cipher.getBlockSize()));
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
-		}
-		 
-		}
-
-	/**
-	 * getSymmetricKey method used to generate a 
-	 * symmetric key
-	 *
-	 * @return the symmetric key
-	 */
-	public SecretKey getSymmetricKey() {
-		return keyGenerator.getSymmetricKey();
-	}
-	
 	@SuppressWarnings("unchecked")
 	public String encryptData(Map<String, Object> responseBody) throws IdAuthenticationAppException {
 		Optional<String> identity = Optional.ofNullable(responseBody.get("identity"))
@@ -262,9 +215,10 @@ public class KeyManager {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
-				return (String)((Map<String,Object>) response.get("response")).get("data");
+				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			} catch (IDDataValidationException | RestServiceException e) {
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION,e);
+				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
 			}
 		}
 		return null;

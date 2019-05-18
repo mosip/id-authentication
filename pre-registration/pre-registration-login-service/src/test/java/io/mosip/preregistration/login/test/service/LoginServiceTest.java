@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -103,7 +104,7 @@ public class LoginServiceTest {
 	public void sendOtpTest() throws Exception {
 		list.add("mobile");
 		requestMap.put("id",sendOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
 		Mockito.when(authCommonUtil.validateUserId(Mockito.any())).thenReturn(list);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any());
@@ -122,7 +123,7 @@ public class LoginServiceTest {
 	@Test(expected=InvalidRequestParameterException.class)
 	public void sendOtpTest_Exception() throws Exception {
 		requestMap.put("id",sendOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
 		Mockito.when(authCommonUtil.validateUserId(Mockito.any())).thenReturn(list);
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode", "errorMessage",null)).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
@@ -137,7 +138,7 @@ public class LoginServiceTest {
 	@Test(expected=InvalidRequestParameterException.class)
 	public void sendOtpTest_AuthException() throws Exception {
 		requestMap.put("id",sendOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
 		Mockito.when(authCommonUtil.validateUserId(Mockito.any())).thenReturn(list);
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage",null)).when(authCommonUtil).getResponseEntity(Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any());
@@ -148,14 +149,23 @@ public class LoginServiceTest {
 		Mockito.doNothing().when(mainResponseDTO).setResponse(Mockito.any());
 		spyAuthService.sendOTP(otpRequest);
 	}
+	
+	@Mock
+	private HttpHeaders headers;
 	@Test
 	public void validateWithUserIdOtp() {
+		list.add("Token");
 		requestMap.put("id",userIdOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);
+		Mockito.when(authNResposne.getStatus()).thenReturn("success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
+		Mockito.when(responseEntity.getHeaders()).thenReturn(headers);
+		Mockito.when(headers.get(Mockito.any())).thenReturn(list);
 		Mockito.doNothing().when(spyAuthService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		assertNotNull(spyAuthService.validateWithUserIdOtp(userRequest));
 	}
@@ -163,7 +173,7 @@ public class LoginServiceTest {
 	@Test(expected=InvalidOtpOrUseridException.class)
 	public void validateWithUserIdOtpException() {
 		requestMap.put("id",userIdOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
@@ -178,7 +188,7 @@ public class LoginServiceTest {
 	@Test(expected=InvalidRequestParameterException.class)
 	public void validateWithUserIdOtp_Exception()  {
 		requestMap.put("id",userIdOtpId);
-		Mockito.when(authCommonUtil.prepareRequestMap(otpRequest)).thenReturn(requestMap);
+		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(userRequest.getRequest()).thenReturn(user);
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(userRequest);
 		Mockito.doThrow(new InvalidRequestParameterException("errorCode","errorMessage",null)).when(authCommonUtil).getResponseEntity(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
@@ -195,6 +205,7 @@ public class LoginServiceTest {
 		authNResposne.setMessage("Success");
 		Mockito.when(responseEntity.getBody()).thenReturn("authNResposne");
 		Mockito.when(authCommonUtil.requestBodyExchange(Mockito.any())).thenReturn(responseWrapped);
+		Mockito.when(authCommonUtil.getUserDetailsFromToken(Mockito.any())).thenReturn("userid");
 		Mockito.when(responseWrapped.getResponse()).thenReturn(authNResposne);
 		//Mockito.when(authCommonUtil.responseToString(Mockito.any())).thenReturn(authNResposne.toString());
 		Mockito.when(authCommonUtil.requestBodyExchangeObject(Mockito.any(), Mockito.any())).thenReturn(authNResposne);
@@ -231,7 +242,7 @@ public class LoginServiceTest {
 	  MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
 	  Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
 	  Mockito.eq(String.class))).thenReturn(res); 
-	  Mockito.when(authCommonUtil.configRestCall(Mockito.any())).thenReturn("fileReturn");
+	  Mockito.when(authCommonUtil.getConfig(Mockito.any())).thenReturn("fileReturn");
 	  Mockito.doNothing().when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
 	  Mockito.when(authCommonUtil.parsePropertiesString(Mockito.any())).thenReturn(prop);
 	  response = authService.getConfig();
@@ -252,7 +263,7 @@ public class LoginServiceTest {
 		  Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
 		  Mockito.eq(String.class))).thenReturn(res); 
 		  Mockito.doThrow(new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
-					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name(),null)).when(authCommonUtil).configRestCall(Mockito.any());
+					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name(),null)).when(authCommonUtil).getConfig(Mockito.any());
 		  Mockito.doNothing().when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
 		  Mockito.when(authCommonUtil.parsePropertiesString(Mockito.any())).thenReturn(prop);
 		  response = authService.getConfig();

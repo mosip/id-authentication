@@ -15,8 +15,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.vid.VIDResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.vid.service.controller.VIDController;
-import io.mosip.authentication.vid.service.impl.VIDServiceImpl;
+import io.mosip.authentication.vid.service.integration.VIDManager;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
@@ -29,7 +28,7 @@ public class VIDControllerTest {
 	private VIDController vidController;
 
 	@Mock
-	private VIDServiceImpl vidService;
+	private VIDManager vidManager;
 
 	@Mock
 	private UinValidatorImpl uinValidator;
@@ -37,7 +36,7 @@ public class VIDControllerTest {
 	@Test
 	public void generateVIDTest() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		VIDResponseDTO vidResponseDTO = new VIDResponseDTO();
-		Mockito.when(vidService.generateVID(Mockito.anyString())).thenReturn(vidResponseDTO);
+		Mockito.when(vidManager.getVIDByUIN(Mockito.anyString())).thenReturn(vidResponseDTO);
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		vidController.generateVID(Mockito.anyString());
 
@@ -45,7 +44,7 @@ public class VIDControllerTest {
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void generateVIDTestFail() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
-		Mockito.when(vidService.generateVID(Mockito.anyString())).thenThrow(
+		Mockito.when(vidManager.getVIDByUIN(Mockito.anyString())).thenThrow(
 				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_REGENERATION_FAILED));
 		Mockito.when(uinValidator.validateId(Mockito.any())).thenReturn(true);
 		vidController.generateVID(Mockito.anyString());

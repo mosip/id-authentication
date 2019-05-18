@@ -94,6 +94,7 @@ public class KycAuthController {
 					e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
+		
 		return kycAuthResponseDTO;
 	}
 

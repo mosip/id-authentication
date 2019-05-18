@@ -19,7 +19,7 @@ import lombok.Getter;
 public class MissingRequestParameterException extends BaseUncheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	private MainResponseDTO<?> mainResponseDTO;
+	private final MainResponseDTO<?> mainResponseDTO;
 
 	/**
 	 * @param msg

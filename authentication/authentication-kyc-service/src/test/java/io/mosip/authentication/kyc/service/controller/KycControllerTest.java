@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -40,6 +43,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
@@ -52,7 +56,7 @@ import io.mosip.authentication.kyc.service.impl.KycServiceImpl;
 import io.mosip.authentication.kyc.service.validator.KycAuthRequestValidator;
 
 /**
- * @author M1047697
+ * @author Dinesh Karuppiah.T
  *
  */
 @RunWith(SpringRunner.class)
@@ -69,8 +73,14 @@ public class KycControllerTest {
 	@InjectMocks
 	private RestRequestFactory restFactory;
 
+	@Mock
+	AuditHelper auditHelper;
+
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
+
+	@Mock
+	private IdInfoFetcherImpl idInfoFetcherImpl;
 
 	@Mock
 	private KycFacadeImpl kycFacade;
@@ -98,15 +108,22 @@ public class KycControllerTest {
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoFetcher", idInfoFetcherImpl);
+
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
 	public void showProcessKycValidator()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
+		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
 		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789");
+		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
+		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
 	}
 
@@ -115,6 +132,7 @@ public class KycControllerTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setVersion("1.1");
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
@@ -122,6 +140,8 @@ public class KycControllerTest {
 		kycAuthReqDTO.setId("id");
 		kycAuthReqDTO.setTransactionID("1234567890");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(false);
+		authTypeDTO.setBio(false);
 		authTypeDTO.setDemo(false);
 		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -150,7 +170,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()
@@ -177,6 +196,8 @@ public class KycControllerTest {
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycAuthResponseDTO);
+		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
+		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 //		Mockito.when(kycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
 //				.thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
@@ -187,6 +208,7 @@ public class KycControllerTest {
 	public void processKycFailure()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -222,7 +244,6 @@ public class KycControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setTransactionID("34567");
 		kycAuthResponseDTO.setErrors(null);
-		kycResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		kycResponseDTO.setStaticToken("2345678");
 		kycResponseDTO.setKycStatus(Boolean.TRUE);
 
@@ -250,6 +271,8 @@ public class KycControllerTest {
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
+		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 //		Mockito.when(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 //				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		kycAuthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");

@@ -33,9 +33,9 @@ import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
-import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentReBookingFailedException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
 import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNotFoundException;
@@ -337,7 +337,7 @@ public class BookingServiceUtilTest {
 
 	
 	@SuppressWarnings("unchecked")
-	@Test(expected=AppointmentCannotBeCanceledException.class)
+	@Test(expected=BookingDataNotFoundException.class)
 	public void callGetStatusRestServiceforCancelTest() {
 		
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();

@@ -33,9 +33,6 @@ public enum RegistrationExceptionConstants {
 	REG_RSA_INVALID_DATA(PACKET_CREATION_EXP_CODE + "REM-001", "Invalid data for RSA encryption"),
 	REG_RSA_INVALID_KEY(PACKET_CREATION_EXP_CODE + "REM-002", "Invalid key for RSA encryption"),
 	REG_SERVICE_DUPLICATE_KEY_EXCEPTION_CODE("IDC-FRA-PAC-023","Tried to insert Duplicate key in MAchine Mapping table"),
-	REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE("IDC-FRA-UMM-024","No Record Found in the Machine Master table"),
-	REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center Machine table"),
-	REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center USER Machine table"),
 	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-003", "Unable to load the screen"),
 	REG_UI_LOGIN_IO_EXCEPTION("LGN-UI-SHE-004", "IO Exception"),
 	REG_UI_LOGIN_RESOURCE_EXCEPTION("LGN-UI-SHE-005", "Unable to load the Resource"),
@@ -54,7 +51,21 @@ public enum RegistrationExceptionConstants {
 	REG_PACKET_JSON_VALIDATOR_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-003", "Exception while validating ID json file"),
 	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while adding authorization token to web-service request"),
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
-	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected");
+	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
+	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
+	
+	// TPM
+	TPM_UTIL_SIGN_ERROR("TPM-UTL-001", "Exception while signing the data using TPM"),
+	TPM_UTIL_VALIDATE_SIGN_ERROR("TPM-UTL-002",
+			"Exception while validating the signature provided by TPM"),
+	TPM_UTIL_ASYMMETRIC_ENCRYPT_ERROR("TPM-UTL-003",
+			"Exception while encrypting the data using asymmetric crypto-algorithm through TPM"),
+	TPM_UTIL_ASYMMETRIC_DECRYPT_ERROR("TPM-UTL-004",
+			"Exception while encrypting the data using asymmetric crypto-algorithm through TPM"),
+	TPM_UTIL_GET_SIGN_KEY_ERROR("TPM-UTL-005", "Exception while getting the public part of the TPM signing key"),
+	TPM_UTIL_GET_TPM_INSTANCE_ERROR("TPM-UTL-006", "Exception while getting the TPM instance"),
+	TPM_UTIL_CLOSE_TPM_INSTANCE_ERROR("TPM-UTL-007", "Exception while closing the TPM instance"),
+	TPM_INIT_CLOSE_TPM_INSTANCE_ERROR("TPM-INT-001", "Exception while closing the TPM instance");
 
 	/**
 	 * The constructor

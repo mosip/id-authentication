@@ -184,6 +184,8 @@ export class TimeSelectionComponent implements OnInit {
         console.log(response);
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
+        } else if (response[appConstants.NESTED_ERROR]) {
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       error => {
@@ -226,8 +228,12 @@ export class TimeSelectionComponent implements OnInit {
       this.disableContinueButton = false;
       return;
     }
-    const request = new RequestModel(appConstants.IDS.booking, this.bookingDataList);
+    const obj = {
+      bookingRequest: this.bookingDataList
+    };
+    const request = new RequestModel(appConstants.IDS.booking, obj);
     console.log('request being sent from time selection', request);
+
     this.dataService.makeBooking(request).subscribe(
       response => {
         console.log(response);

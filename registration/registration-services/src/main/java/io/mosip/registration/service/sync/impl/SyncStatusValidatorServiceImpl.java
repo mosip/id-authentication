@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -43,8 +43,9 @@ import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 /**
  * {@code SyncStatusValidatorServiceImpl} is the sync status validate service
- * class which validates all the sync happened,count of packets on machine,geo location of system,etc... 
- * are within the configured limits before going to new registration/update UIN.
+ * class which validates all the sync happened,count of packets on machine,geo
+ * location of system,etc... are within the configured limits before going to
+ * new registration/update UIN.
  *
  * @author Chukka Sreekar
  * @author Mahesh Kumar
@@ -66,14 +67,14 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
-	
+
 	private static final Logger LOGGER = AppConfig.getLogger(SyncStatusValidatorServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -92,8 +93,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
 			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
-			validatingLastSoftwareUpdateDuration (errorResponseDTOList);
-			
+			validatingLastSoftwareUpdateDuration(errorResponseDTOList);
+
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
 
@@ -115,39 +116,32 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	/**
 	 * Validating last software update duration.
 	 *
-	 * @param errorResponseDTOList 
-	 * 				the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
-	private void validatingLastSoftwareUpdateDuration (List<ErrorResponseDTO> errorResponseDTOList) {
+	public void validatingLastSoftwareUpdateDuration(List<ErrorResponseDTO> errorResponseDTOList) {
 
-		GlobalParamId globalParamId=new GlobalParamId();
-		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
-		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
-		GlobalParam globalParam = globalParamDAO.get(globalParamId);
-		
-		String isSoftwareAvailable = globalParam.getVal();
-		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
-		
-		if (isSoftwareAvailable!=null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE) && Double.parseDouble(
-				getGlobalConfigValueOf(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ)) <= getActualDays(
-						lastSoftwareUpdatedTime)) {
-
-			getErrorResponse(RegistrationConstants.REG_REC_SEVEN, RegistrationConstants.OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK,
-					RegistrationConstants.ERROR, errorResponseDTOList);
+		if (isToBeForceUpdate()) {
+			getErrorResponse(RegistrationConstants.REG_REC_SEVEN,
+					RegistrationConstants.OPT_TO_REG_LAST_SOFTWAREUPDATE_CHECK, RegistrationConstants.ERROR,
+					errorResponseDTOList);
 		}
+
 	}
 
 	/**
 	 * Validating center to machine distance.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
 	private void validatingCenterToMachineDistance(List<ErrorResponseDTO> errorResponseDTOList) {
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GEO_CAP_FREQ)))) {
 			if (!isCapturedForTheDay()) {
 				captureGeoLocation(errorResponseDTOList);
 			}
-		} else if (RegistrationConstants.DISABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GEO_CAP_FREQ))) {
+		} else if (RegistrationConstants.DISABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GEO_CAP_FREQ)))) {
 			captureGeoLocation(errorResponseDTOList);
 		}
 	}
@@ -156,7 +150,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * Validating last successful sync jobs config days and yet to export packet
 	 * count.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
 	private void validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(
 			List<ErrorResponseDTO> errorResponseDTOList) {
@@ -199,8 +194,10 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	/**
 	 * Validating last export duration and yet to export count.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
-	 * @param syncJobInfo          the sync job info
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
+	 * @param syncJobInfo
+	 *            the sync job info
 	 */
 	private void validatingLastExportDurationAndYetToExportCount(List<ErrorResponseDTO> errorResponseDTOList,
 			SyncJobInfo syncJobInfo) {
@@ -208,9 +205,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		if (!lastExportedRegistrations.isEmpty()) {
 			Date lastSyncDate = new Date(
 					lastExportedRegistrations.get(RegistrationConstants.PARAM_ZERO).getUpdDtimes().getTime());
-			if (getGlobalConfigValueOf(RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME) != null
-					&& Integer.parseInt(getGlobalConfigValueOf(
-							RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME)) <= getActualDays(
+			if (ApplicationContext.map().get(RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME) != null
+					&& Integer.parseInt(String.valueOf(ApplicationContext.map().get(
+							RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME))) <= getActualDays(
 									lastSyncDate)) {
 				getErrorResponse(RegistrationConstants.ICS_CODE_TWO,
 						RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
@@ -219,7 +216,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		}
 
 		if (syncJobInfo.getYetToExportCount() >= Double
-				.parseDouble(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
+				.parseDouble(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ)))) {
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Checking the yet to export packets frequency with the configured limit count");
@@ -235,7 +232,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	/**
 	 * Validating registered packet count and duration.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
 	private void validatingRegisteredPacketCountAndDuration(List<ErrorResponseDTO> errorResponseDTOList) {
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
@@ -250,7 +248,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 		if (registrationDetails.size() >= Integer
-				.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 			getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT, RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED,
 					RegistrationConstants.ERROR, errorResponseDTOList);
@@ -304,16 +302,17 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * {@code captureGeoLocation} is to capture the Geo location and calculate and
 	 * validate the distance between the registration center and machine.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
-
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG))) {
-			
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG)))) {
+
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the geo location of machine w.r.t registration center started");
 
@@ -329,7 +328,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 
-				if (Double.parseDouble(getGlobalConfigValueOf(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER)) <= Double
+				if (Double.parseDouble(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER))) <= Double
 						.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
 					getErrorResponse(RegistrationConstants.ICS_CODE_FOUR,
@@ -368,7 +367,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * {@code getActualDays} will calculate the difference of days between the given
 	 * date and present date.
 	 *
-	 * @param lastSyncDate date
+	 * @param lastSyncDate
+	 *            date
 	 * @return the number of days
 	 */
 	private int getActualDays(Date lastSyncDate) {
@@ -389,7 +389,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 			/* This will subtract configured number of days from current Date */
 			Date differDate = new Date(new Date().getTime() - (Long.parseLong(
-					String.valueOf(getGlobalConfigValueOf(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24
+					String.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT)))) * 24
 					* 3600 * 1000));
 
 			/* This will convert timestamp to Date */
@@ -404,10 +404,14 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	/**
 	 * Gets the error response.
 	 *
-	 * @param code                 the code
-	 * @param message              the message
-	 * @param infoType             the info type
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param code
+	 *            the code
+	 * @param message
+	 *            the message
+	 * @param infoType
+	 *            the info type
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 * @return the error response
 	 */
 	private void getErrorResponse(String code, String message, String infoType,
@@ -433,10 +437,10 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		List<SyncJobDef> syncJobDefs = jobConfigDAO.getAll();
 		for (SyncJobDef syncJobDef : syncJobDefs) {
 			if (syncJobDef.getApiName() != null) {
-				String configuredValue = getGlobalConfigValueOf(
+				String configuredValue = String.valueOf(ApplicationContext.map().get(
 						RegistrationConstants.MOSIP_REGISTRATION.concat(syncJobDef.getApiName())
-								.concat(RegistrationConstants.DOT).concat(RegistrationConstants.FREQUENCY));
-				if (configuredValue != null) {
+								.concat(RegistrationConstants.DOT).concat(RegistrationConstants.FREQUENCY)));
+				if (configuredValue != null && !configuredValue.equalsIgnoreCase("null")) {
 					jobsMap.put(syncJobDef.getId(), configuredValue.trim());
 				}
 			}
@@ -445,5 +449,25 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 				"Fetching Job ID's from sync_job_def table using API name ended");
 
 		return jobsMap;
+	}
+
+	@Override
+	public boolean isToBeForceUpdate() {
+		GlobalParamId globalParamId = new GlobalParamId();
+		globalParamId.setCode(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE);
+		globalParamId.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+		GlobalParam globalParam = globalParamDAO.get(globalParamId);
+
+		String isSoftwareAvailable = globalParam.getVal();
+		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
+
+		if (isSoftwareAvailable != null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE)
+				&& Double.parseDouble(String.valueOf(ApplicationContext.map().get(
+						RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ))) <= getActualDays(
+								lastSoftwareUpdatedTime)) {
+			return true;
+		}
+		
+		return false;
 	}
 }

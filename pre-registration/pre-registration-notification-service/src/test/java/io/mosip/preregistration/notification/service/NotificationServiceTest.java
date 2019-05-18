@@ -129,7 +129,8 @@ public class NotificationServiceTest {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
 //2019-04-8T07:22:57.186Z
-		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
+//		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
+		
 		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
@@ -311,24 +312,6 @@ public class NotificationServiceTest {
 
 
 
-	/**
-	 * This test method is for succes case of getConfig
-	 * 
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws java.io.IOException
-	 */
-	/*
-	 * @Test public void getConfigSuccessTest() throws Exception {
-	 * ResponseEntity<String> res = new
-	 * ResponseEntity<String>("mosip.secondary-language=fra", HttpStatus.OK);
-	 * Map<String, String> configParams = new HashMap<>();
-	 * MainResponseDTO<Map<String, String>> response = new MainResponseDTO<>();
-	 * Mockito.when(restTemplate.getForEntity(Mockito.anyString(),
-	 * Mockito.eq(String.class))).thenReturn(res); response = service.getConfig();
-	 * assertEquals(response.getResponse().get("mosip.secondary-language"), "fra");
-	 * }
-	 */
+	
 
 }

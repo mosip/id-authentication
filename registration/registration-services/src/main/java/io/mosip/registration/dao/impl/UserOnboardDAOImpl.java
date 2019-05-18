@@ -3,7 +3,6 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -144,7 +143,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			});
 
-			biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
+			biometricDTO.getOperatorBiometricDTO().getFace();
 
 			UserBiometric bioMetrics = new UserBiometric();
 			UserBiometricId biometricId = new UserBiometricId();
@@ -152,10 +151,10 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			biometricId.setBioAttributeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 			biometricId.setBioTypeCode(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
 			biometricId.setUsrId(SessionContext.userContext().getUserId());
-			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace());
-			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getNumOfRetries());
+			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFace().getFace());
+			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFace().getNumOfRetries());
 			bioMetrics.setUserBiometricId(biometricId);
-			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
+			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFace().getQualityScore();
 			bioMetrics.setQualityScore(qualitySocre.intValue());
 			bioMetrics.setCrBy(SessionContext.userContext().getUserId());
 			bioMetrics.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
@@ -265,7 +264,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
-		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 				"getCenterID() stationID --> " + stationId);
 
 		try {

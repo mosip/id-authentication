@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -52,7 +51,6 @@ import io.mosip.preregistration.core.util.GenericUtil;
  * 
  * @author Kishan Rathore
  * @author Jagadishwari
- * @author Ravi C. Balaji
  * @since 1.0.0
  *
  */
@@ -65,7 +63,7 @@ public class BookingExceptionHandler {
 	@Value("${version}")
 	String versionUrl;
 
-	@Value("${id}")
+	@Value("${mosip.preregistration.booking.exception.id}")
 	String idUrl;
 
 	/**

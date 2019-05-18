@@ -147,6 +147,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.printpostaladdress}")
 	private String printPostalAddress;
+	
+	@Value("${server.servlet.path}")
+	private String contextPath;
 
 	/** The packet info manager. */
 	@Autowired
@@ -364,11 +367,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 *            the router
 	 */
 	private void routes(MosipRouter router) {
-		router.post("/v0.1/registration-processor/print-stage/resend");
+		router.post(contextPath+"/resend");
 		router.handler(this::reSendPrintPdf, this::failure);
-
-		router.get("/print-stage/health");
+		
+		router.get(contextPath+"/health");
 		router.handler(this::health);
+
 
 	}
 

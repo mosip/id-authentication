@@ -6,7 +6,6 @@ package io.mosip.preregistration.batchjobservices.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +13,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
  * @author Kishan Rathore
@@ -35,8 +34,6 @@ public class ExpiredStatusService {
 	private Logger log = LoggerConfiguration.logConfig(ExpiredStatusService.class);
 
 	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
 	
 	@Value("${ver}")
 	String versionUrl;
@@ -55,7 +52,9 @@ public class ExpiredStatusService {
 
 		LocalDate currentDate = LocalDate.now();
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
+		List<RegistrationBookingEntity> bookedPreIdList = null;
 		try {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
 
@@ -73,17 +72,13 @@ public class ExpiredStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
-		response.setResponsetime(getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
+		response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		response.setResponse("Registration appointment status updated to expired successfully");
 		return response;
 	}
 
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-	}
+
 
 }

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -77,7 +78,8 @@ public class TranslitrationSwagConfig {
 	 * 
 	 * @return Docket docket
 	 */
-	public Docket registrationStatusBean() {
+	@Bean
+	public Docket api() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
 			try {
@@ -97,8 +99,7 @@ public class TranslitrationSwagConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-translitrator").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.transliteration.controller"))
-				.paths(PathSelectors.ant("/*")).build();
+				.apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error).*).*")).build();
 		
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);

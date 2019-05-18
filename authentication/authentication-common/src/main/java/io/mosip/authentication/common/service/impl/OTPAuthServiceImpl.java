@@ -17,13 +17,11 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.common.service.repository.VIDRepository;
- import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
-import io.mosip.authentication.core.dto.OTPUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -61,6 +59,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	/** The MatchInputBuilder. */
+	@Autowired
+	private IdRepoManager idRepo;
 
 	/** The IdInfoHelper. */
 	@Autowired
@@ -70,9 +72,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private MatchInputBuilder matchInputBuilder;
 
-	/** The Vid Repository. */
-	@Autowired
-	private VIDRepository vidrepository;
 
 	/** The IdaMappingconfig. */
 	@Autowired
@@ -97,12 +96,14 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIndividualIdType())) {
 				vid = authRequestDTO.getIndividualId();
 			} else {
-				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
-						.findFirst();
-				if (findVidByUin.isPresent()) {
-					vid = findVidByUin.get().trim();
-				}
+				//FIXME handle scenario of OTP sent using VID and then OTP auth invoked using UIN
+//				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
+//						.findFirst();
+//				if (findVidByUin.isPresent()) {
+//					vid = findVidByUin.get().trim();
+//				}
 			}
+			
 
 			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
 			if (isValidRequest) {
@@ -138,10 +139,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
 			throws IdAuthenticationBusinessException {
 		Map<String, String> map = new HashMap<>();
-		String txnID = authReq.getTransactionID();
-		String tspID = partnerId;
-		String otpKey = OTPUtil.generateKey(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID), uin, txnID, tspID);
-		String key = Optional.ofNullable(otpKey).orElseThrow(
+		String key = Optional.ofNullable(uin).orElseThrow(
 				() -> new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		map.put("value", key);
 		return map;

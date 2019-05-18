@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -48,6 +49,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
+
+	/** server context Path. */
+	@Value("${server.servlet.path}")
+	private String contextPath;
 
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
@@ -91,6 +96,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Autowired
 	private Environment env;
 
+	private String digitallySignedResponse="";
+
+	private String responseData="";
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -111,11 +120,11 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(MosipRouter router) {
 
-		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0");
+		router.post(contextPath + "/registrationpackets");
 
 		router.handler(this::processURL, this::processPacket, this::failure);
 
-		router.get("/packetreceiver/health");
+		router.get(contextPath + "/health");
 		router.handler(this::health);
 	};
 
@@ -125,7 +134,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param routingContext
 	 */
 	private void failure(RoutingContext routingContext) {
-		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
+		String exceptionError=globalExceptionHandler.handler(routingContext.failure());
+		//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
+		this.setResponse(routingContext, exceptionError, APPLICATION_JSON);
 	}
 
 	/**
@@ -175,9 +186,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
-				this.setResponse(ctx, PacketReceiverResponseBuilder.buildPacketReceiverResponse(
-						StatusMessage.PACKET_RECEIVED.toString(), listObj), APPLICATION_JSON);
-
+				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
+				//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
+				this.setResponse(ctx, responseData, APPLICATION_JSON);
+				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
