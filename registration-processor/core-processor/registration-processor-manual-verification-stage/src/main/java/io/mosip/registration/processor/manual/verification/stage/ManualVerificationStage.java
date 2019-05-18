@@ -80,10 +80,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	@Autowired
 	MosipRouter router;
 
-	private String digitallySignedResponse="";
-
-	private String exceptionError="";
-
 	private String responseData="";
 
 	/**
@@ -118,9 +114,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		router.handler(this::processBiometric, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(BIOMETRIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
-			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
-			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 		});
 
 
@@ -128,9 +122,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		router.handler(this::processDemographic, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DEMOGRAPHIC_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationBioDemoResponseDTO());
-			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
-			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 
 		});
 
@@ -139,9 +131,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		router.handler(this::processAssignment, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(ASSIGNMENT_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
-			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 
 
 		});
@@ -151,9 +141,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		router.handler(this::processDecision, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(DECISION_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
-			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 
 		});
 
@@ -162,9 +150,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		router.handler(this::processPacketInfo, handlerObj -> {
 			manualVerificationExceptionHandler.setId(env.getProperty(PACKETINFO_SERVICE_ID));
 			manualVerificationExceptionHandler.setResponseDtoType(new ManualVerificationAssignResponseDTO());
-			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
-			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+			this.setResponse(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 
 		});
 
@@ -196,7 +182,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		if (packetInfo != null) {
 			String byteAsString = new String(packetInfo);
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,	env.getProperty(BIOMETRIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
-			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
 		}
 
@@ -212,7 +197,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		if (packetInfo != null) {
 			String byteAsString = new String(packetInfo);
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,	env.getProperty(DEMOGRAPHIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION), env.getProperty(DATETIME_PATTERN));
-			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
 		}
 
@@ -227,7 +211,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 				pojo.getMatchType());
 		if (manualVerificationDTO != null) {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
-			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
 
 		}
@@ -243,7 +226,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 				.updatePacketStatus(pojo.getRequest(), this.getClass().getSimpleName());
 		if (updatedManualVerificationDTO != null) {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(updatedManualVerificationDTO, env.getProperty(DECISION_SERVICE_ID),env.getProperty(MVS_APPLICATION_VERSION), env.getProperty(DATETIME_PATTERN));
-			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
 		}
 
@@ -257,7 +239,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		PacketMetaInfo packetInfo = manualAdjudicationService.getApplicantPacketInfo(pojo.getRequest().getRegId());
 		if (packetInfo != null) {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(packetInfo,env.getProperty(PACKETINFO_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
-			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
 		}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,7 @@ import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -72,6 +74,13 @@ public class RegistrationStatusController {
 
 	Gson gson = new GsonBuilder().create();
 
+	@Value("${registration.processor.signature.isEnabled}")
+	Boolean isEnabled;
+
+	@Autowired
+	DigitalSignatureUtility digitalSignatureUtility;
+
+
 
 	/**
 	 * Search.
@@ -85,15 +94,18 @@ public class RegistrationStatusController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest,
-		@CookieValue(value = "Authorization") String token
+			@CookieValue(value = "Authorization") String token
 			)throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,RegistrationStatusRequestDTO.class);
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
-		//	HttpHeaders headers = new HttpHeaders();
-			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());
+			if(isEnabled) {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildRegistrationStatusResponse(registrations)));
+				return ResponseEntity.status(HttpStatus.OK).headers(headers).body(buildRegistrationStatusResponse(registrations));
+			}
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
