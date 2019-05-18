@@ -109,8 +109,8 @@ public class TokenValidator {
 				if (role.contains(assignedRole))
 					return true;
 			}
-		} else if (url.contains("connector")) {
-			for (String assignedRole : APIAuthorityList.CONNECTORSTAGE.getList()) {
+		} else if (url.contains("biodedupe")) {
+			for (String assignedRole : APIAuthorityList.BIODEDUPE.getList()) {
 				if (role.contains(assignedRole))
 					return true;
 			}

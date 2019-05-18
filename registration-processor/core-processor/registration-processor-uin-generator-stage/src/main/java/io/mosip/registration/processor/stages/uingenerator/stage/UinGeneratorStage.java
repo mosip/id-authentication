@@ -648,7 +648,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		pathsegments.add(UIN_SEGMENT);
 		pathsegments.add(Long.toString(uin));
 		try {
-			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
 					"", "", IdResponseDTO.class);
 			
 		} catch (ApisResourceAccessException e) {

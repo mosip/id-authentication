@@ -80,9 +80,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	MosipRouter router;
 	File file = null;
 
-	@Autowired
-	SignatureUtil signatureUtil;
-
 	/**
 	 * deploys this verticle.
 	 */
@@ -138,8 +135,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void failure(RoutingContext routingContext) {
 		String exceptionError=globalExceptionHandler.handler(routingContext.failure());
-		digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-		this.setResponse(routingContext, exceptionError, APPLICATION_JSON, digitallySignedResponse);
+		//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
+		this.setResponse(routingContext, exceptionError, APPLICATION_JSON);
 	}
 
 	/**
@@ -191,8 +188,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
-				digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
-				this.setResponse(ctx, responseData, APPLICATION_JSON, digitallySignedResponse);
+				//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
+				this.setResponse(ctx, responseData, APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {

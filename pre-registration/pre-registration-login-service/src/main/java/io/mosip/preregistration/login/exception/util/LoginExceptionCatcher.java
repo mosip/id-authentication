@@ -41,7 +41,7 @@ public class LoginExceptionCatcher {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException)ex).getErrorCode(),((InvalidRequestParameterException) ex).getErrorText(),mainResponsedto);
 		}
 		else if (ex instanceof LoginServiceException) {
-			throw new LoginServiceException(((LoginServiceException) ex).getValidationErrorList(),((LoginServiceException) ex).getMainResposneDTO());
+			throw new LoginServiceException(((LoginServiceException) ex).getValidationErrorList(),mainResponsedto);
 		}
 		else if (ex instanceof ParseResponseException) {
 			throw new ParseResponseException(((ParseResponseException) ex).getErrorCode(),((ParseResponseException) ex).getErrorText(),mainResponsedto);

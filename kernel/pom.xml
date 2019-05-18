@@ -115,8 +115,8 @@
 		<byte.buddy.version>1.9.12</byte.buddy.version>
 		<io.jsonwebtoken.jjwt.version>0.6.0</io.jsonwebtoken.jjwt.version>
 		<apache.directory.api.version>2.0.0.AM2</apache.directory.api.version>
-		
-		
+
+
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -175,6 +175,7 @@
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-syncjob-service</module>
+		<module>kernel-signature-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-idobjectvalidator</module>
 	</modules>

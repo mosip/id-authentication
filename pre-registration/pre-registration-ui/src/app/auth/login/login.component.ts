@@ -62,6 +62,7 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
+    if (this.authService.isAuthenticated()) this.authService.onLogout();
   }
 
   loadValidationMessages() {
@@ -273,16 +274,10 @@ export class LoginComponent implements OnInit {
             clearInterval(this.timer);
             localStorage.setItem('loggedIn', 'true');
             this.authService.setToken();
+
             this.regService.setLoginId(this.inputContactDetails);
             this.router.navigate(['dashboard']);
-          }
-          ///////USER BLOCKED CASE///////
-          // if (
-          //   response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.userBlocked
-          // ) {
-          //   this.showUserBlocked();
-          // }
-          else {
+          } else {
             console.log(response['error']);
             this.showOtpMessage();
           }

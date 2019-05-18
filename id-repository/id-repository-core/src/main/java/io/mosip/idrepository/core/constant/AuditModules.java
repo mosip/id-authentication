@@ -15,7 +15,13 @@ public enum AuditModules {
 	UPDATE_IDENTITY("IDR-MOD-102"),
 
 	/** The retrieve identity. */
-	RETRIEVE_IDENTITY("IDR-MOD-103");
+	RETRIEVE_IDENTITY("IDR-MOD-103"),
+	
+	CREATE_VID("IDR-MOD-104"),
+	
+	UPDATE_VID("IDR-MOD-105"),
+	
+	RETRIEVE_VID("IDR-MOD-106");
 
 	/** The module id. */
 	private final String moduleId;

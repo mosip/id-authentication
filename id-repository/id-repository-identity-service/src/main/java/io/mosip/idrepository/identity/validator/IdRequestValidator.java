@@ -1,54 +1,45 @@
 package io.mosip.idrepository.identity.validator;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
-import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import net.minidev.json.JSONArray;
 
 /**
  * The Class IdRequestValidator.
@@ -57,13 +48,14 @@ import net.minidev.json.JSONArray;
  */
 @Component
 @ConfigurationProperties("mosip.id")
-public class IdRequestValidator implements Validator {
+public class IdRequestValidator extends BaseIdRepoValidator implements Validator {
+
+	private static final String UIN = "uin";
+
+	private static final String READ = "read";
 
 	/** The Constant DOC_VALUE. */
 	private static final String DOC_VALUE = "value";
-
-	/** The Constant VER. */
-	private static final String VER = "version";
 
 	/** The Constant DOC_TYPE. */
 	private static final String DOC_CAT = "category";
@@ -85,15 +77,10 @@ public class IdRequestValidator implements Validator {
 
 	/** The Constant ID_REPO. */
 	private static final String ID_REPO = "IdRepo";
-
-	/** The Constant ID_FIELD. */
-	private static final String ID_FIELD = "id";
+	
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRequestValidator.class);
-
-	/** The Constant TIMESTAMP. */
-	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
@@ -103,13 +90,6 @@ public class IdRequestValidator implements Validator {
 
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "status";
-
-	/** The id. */
-	@Resource
-	private Map<String, String> id;
-
-	/** The validation. */
-	private Map<String, String> validation;
 
 	/** The status. */
 	@Resource
@@ -121,7 +101,7 @@ public class IdRequestValidator implements Validator {
 
 	/** The json validator. */
 	@Autowired
-	private JsonValidator jsonValidator;
+	private IdObjectValidator idObjectValidator;
 
 	/** The mapper. */
 	@Autowired
@@ -134,18 +114,6 @@ public class IdRequestValidator implements Validator {
 	/** The uin validator. */
 	@Autowired
 	private UinValidator<String> uinValidator;
-
-	@Autowired
-	Environment env;
-
-	/**
-	 * Sets the validation.
-	 *
-	 * @param validation the validation to set
-	 */
-	public void setValidation(Map<String, String> validation) {
-		this.validation = validation;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -176,11 +144,7 @@ public class IdRequestValidator implements Validator {
 		if (!errors.hasErrors() && Objects.nonNull(request.getId())) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getRequest().getStatus(), errors, CREATE);
-				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				validateRequest(request.getRequest(), errors, CREATE);
-				mosipLogger.debug(IdRepoLogger.getUin(), "IdRequestValidator", "validateRequest",
-						"Time taken for execution - "
-								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis());
 			} else if (request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getRequest().getStatus(), errors, UPDATE);
 				validateRequest(request.getRequest(), errors, UPDATE);
@@ -189,23 +153,6 @@ public class IdRequestValidator implements Validator {
 			validateRegId(request.getRequest().getRegistrationId(), errors);
 		}
 
-	}
-
-	/**
-	 * Validate ver.
-	 *
-	 * @param ver    the ver
-	 * @param errors the errors
-	 */
-	private void validateVersion(String ver, Errors errors) {
-		if (Objects.isNull(ver)) {
-			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if ((!Pattern.compile(env.getProperty(IdRepoConstants.VERSION_PATTERN.getValue())).matcher(ver)
-				.matches())) {
-			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
-		}
 	}
 
 	/**
@@ -277,34 +224,45 @@ public class IdRequestValidator implements Validator {
 							.filter(key -> !key.contentEquals(IdRepoConstants.ROOT_PATH.getValue()))
 							.forEach(requestMap::remove);
 					if (!errors.hasErrors()) {
-						jsonValidator.validateJson(mapper.writeValueAsString(requestMap));
-						validateJsonAttributes(mapper.writeValueAsString(request), errors);
+						idObjectValidator.validateIdObject(requestMap);
 					}
 				}
 			} else if (method.equals(CREATE)) {
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			}
-		} catch (IdRepoAppException | UnidentifiedJsonException | IOException | JsonValidationProcessingException
-				| JsonIOException e) {
+		} catch (UnidentifiedJsonException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
 					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-					IdRepoConstants.ROOT_PATH.getValue() + " - "
-							+ (StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
-									? "/" + IdRepoConstants.ROOT_PATH.getValue()
-									: StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""))));
-		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
+					(StringUtils.isEmpty(StringUtils.substringAfter(e.getMessage(), " at "))
+							? IdRepoConstants.ROOT_PATH.getValue()
+							: StringUtils.strip(
+									StringUtils.remove(StringUtils.substringAfter(e.getMessage(), " at "), "\""),
+									"/"))));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
+					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							IdRepoConstants.ROOT_PATH.getValue()));
+		} catch (IdObjectValidationProcessingException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
+					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
+			e.getErrorTexts().parallelStream().forEach(errorText -> errors.rejectValue(REQUEST,
+					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), errorText));
+		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | IdObjectSchemaIOException
+				| IdObjectIOException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(),
-					IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorMessage());
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorCode(),
+					IdRepoErrorConstants.ID_OBJECT_SCHEMA_PROCESSING_FAILED.getErrorMessage());
 		} catch (ConfigServerConnectionException | HttpRequestException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorCode(),
-					IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorMessage());
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorCode(),
+					IdRepoErrorConstants.ID_OBJECT_SCHEMA_RETRIEVAL_FAILED.getErrorMessage());
 		}
 	}
 
@@ -322,7 +280,14 @@ public class IdRequestValidator implements Validator {
 				Map<String, Object> identityMap = convertToMap(requestMap.get(IdRepoConstants.ROOT_PATH.getValue()));
 				if (Objects.nonNull(requestMap.get(DOCUMENTS)) && requestMap.get(DOCUMENTS) instanceof List
 						&& !((List<Map<String, String>>) requestMap.get(DOCUMENTS)).isEmpty()) {
-					checkForDuplicates(requestMap, errors);
+					if (!((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream()
+							.allMatch(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT))
+									&& doc.containsKey(DOC_VALUE) && Objects.nonNull(doc.get(DOC_VALUE)))) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), DOCUMENTS));
+					} else {
+						checkForDuplicates(requestMap, errors);
+					}
 					((List<Map<String, String>>) requestMap.get(DOCUMENTS)).parallelStream().filter(
 							doc -> !errors.hasErrors() && doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
 							.forEach(doc -> {
@@ -333,7 +298,7 @@ public class IdRequestValidator implements Validator {
 											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 											String.format(
 													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-													"Documents - " + doc.get(DOC_CAT)));
+													doc.get(DOC_CAT)));
 								}
 								if (StringUtils.isEmpty(doc.get(DOC_VALUE))) {
 									mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
@@ -342,7 +307,7 @@ public class IdRequestValidator implements Validator {
 											IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 											String.format(
 													IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-													"Documents - " + doc.get(DOC_CAT)));
+													doc.get(DOC_CAT)));
 								}
 							});
 				}
@@ -354,37 +319,6 @@ public class IdRequestValidator implements Validator {
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 							IdRepoConstants.ROOT_PATH.getValue()));
 		}
-	}
-
-	/**
-	 * Validate json attributes.
-	 *
-	 * @param request the request
-	 * @param errors  the errors
-	 */
-	private void validateJsonAttributes(String request, Errors errors) {
-		validation.entrySet().parallelStream().forEach(entry -> {
-			JsonPath jsonPath = JsonPath.compile(entry.getKey());
-			Pattern pattern = Pattern.compile(entry.getValue());
-			JSONArray data = jsonPath.read(request,
-					Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST));
-			if (Objects.nonNull(data) && !data.isEmpty()) {
-				IntStream.range(0, data.size())
-						.filter(index -> !pattern.matcher(String.valueOf(data.get(index))).matches())
-						.forEach(index -> {
-							JSONArray pathList = jsonPath.read(request,
-									Configuration.defaultConfiguration()
-									.addOptions(Option.SUPPRESS_EXCEPTIONS, Option.ALWAYS_RETURN_LIST, Option.AS_PATH_LIST));
-							String path = String.valueOf(pathList.get(index)).replaceAll("[$']", "");
-							path = path.substring(1, path.length() - 1).replace("][", "/");
-							errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-									String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-											"/" + path));
-							mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REQUEST_VALIDATOR,
-									(VALIDATE_REQUEST + entry.getValue() + " -> " + data + "  path -> " + path));
-						});
-			}
-		});
 	}
 
 	/**
@@ -407,23 +341,7 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
-	/**
-	 * Validate req time.
-	 *
-	 * @param reqTime the timestamp
-	 * @param errors  the errors
-	 */
-	private void validateReqTime(LocalDateTime reqTime, Errors errors) {
-		if (Objects.isNull(reqTime)) {
-			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-		} else {
-			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
-			}
-		}
-	}
+	
 
 	/**
 	 * Convert to map.
@@ -443,26 +361,24 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
-	public void validateId(String id, Errors errors, String operation) {
-		if (Objects.isNull(id)) {
-			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
-		} else if (!this.id.get(operation).equals(id)) {
-			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
-		}
-	}
-
-	public void validateUin(String uin) throws IdRepoAppException {
+	public void validateUin(String uin,String idType) throws IdRepoAppException {
 		try {
 			uinValidator.validateId(uin);
 		} catch (InvalidIDException e) {
+			if(!idType.equals(READ)) {
 			mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateUin",
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 							"/" + env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
 							.replace(".", "/"));
+			}
+			else {
+				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateUin",
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e);
+			}
 		}
 	}
 
