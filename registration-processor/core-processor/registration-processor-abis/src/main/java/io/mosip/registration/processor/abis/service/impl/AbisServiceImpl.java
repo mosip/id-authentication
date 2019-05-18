@@ -273,7 +273,7 @@ public class AbisServiceImpl implements AbisService {
 		CandidatesDto[] candidatesDto;
 		if(storedRefId.size()>1) {
 			for(String refId :storedRefId) {
-				if(!identifyRequest.getReferenceId().equalsIgnoreCase(refId)) {
+				if(!identifyRequest.getReferenceId().equals(refId)) {
 					actualStoredRefId.add(identifyRequest.getReferenceId());
 				}
 			}
@@ -286,7 +286,7 @@ public class AbisServiceImpl implements AbisService {
 		candidatesDto = new CandidatesDto[loopLimit];
 		for (int i = 0; i < candidatesDto.length; i++) {
 			candidatesDto[i] = new CandidatesDto();
-			if (!(identifyRequest.getReferenceId().equalsIgnoreCase(storedRefIdList.get(i)))) {
+			if (!(identifyRequest.getReferenceId().equals(storedRefIdList.get(i)))) {
 
 				candidatesDto[i].setReferenceId(storedRefIdList.get(i));
 				candidatesDto[i].setScaledScore(100 - i + "");
