@@ -4,6 +4,9 @@ import static java.util.Arrays.copyOfRange;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -17,8 +20,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
+import io.mosip.kernel.keymanagerservice.dto.CertificateEntry;
 import io.mosip.kernel.keymanagerservice.entity.BaseEntity;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 
@@ -161,6 +167,16 @@ public class KeymanagerUtil {
 	 */
 	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+	}
+	
+
+	public void isCertificateValid(CertificateEntry<X509Certificate, PrivateKey> certificateEntry) {
+		try {
+			certificateEntry.getChain()[0].checkValidity();
+		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
+			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+		}
 	}
 
 }
