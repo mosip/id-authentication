@@ -14,6 +14,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.mosip.dbentity.OtpEntity;
+import io.mosip.preregistration.entity.DemographicEntity;
+import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
 import io.mosip.service.BaseTestCase;
 
 
@@ -23,14 +25,15 @@ public class prereg_dbread {
 	public static SessionFactory factory;
 	static Session session;
 	private static Logger logger = Logger.getLogger(prereg_dbread.class);
-
+	
+	public PreRegistartionDataBaseAccess dbAccess=new PreRegistartionDataBaseAccess();
 	
 	@SuppressWarnings("deprecation")
 	public static boolean prereg_dbconnectivityCheck()
 	{
 		boolean flag=false;
 		try {	
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
 				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
@@ -68,7 +71,7 @@ public class prereg_dbread {
 		{
 			boolean flag=false;
 		
-			if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
 				factory = new Configuration().configure("preregdev.cfg.xml")
 			.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 					else
@@ -154,6 +157,7 @@ public class prereg_dbread {
 		}
 	
 	}
+	
 	
 
 	public static boolean prereg_db_CleanUp(List<String> preIds)
@@ -301,8 +305,8 @@ public class prereg_dbread {
 	public static List<Object> fetchOTPFromDB(String queryStr, Class dtoClass)
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure("kernelinteg.cfg.xml")
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure("kerneldev.cfg.xml")
 		.addAnnotatedClass(OtpEntity.class).buildSessionFactory();	
 				else
 				{
@@ -319,11 +323,11 @@ public class prereg_dbread {
 
 	}
 	@SuppressWarnings("deprecation")
-	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String intdbConfig,String qadbConfig )
+	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("integration"))
-			factory = new Configuration().configure(intdbConfig)
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure(devdbConfig)
 		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else
 				{
@@ -364,6 +368,162 @@ public class prereg_dbread {
 	
 	}
 	
+	
+	public static List<?> validateDB(String queryStr)
+	{
+		List<?> flag;
+		
+		//factory = new Configuration().configure("preregqa.cfg.xml")
+		factory = new Configuration().configure("preregint.cfg.xml")
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdata(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
+
+	}
+	public static int validateDBUpdate(String queryStr)
+	{
+		int flag;
+		
+		//factory = new Configuration().configure("preregqa.cfg.xml")
+		factory = new Configuration().configure("preregint.cfg.xml")
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		/*factory = new Configuration().configure("prereg.cfg.xml")
+				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdataUpdate(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
+
+	}
+	@SuppressWarnings("deprecation")
+	public static List<Object> dbConnection(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure(devdbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+			
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		objs=getData(session, queryStr);
+		
+		return objs;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static List<Object> getData(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		
+		Query query = session.createSQLQuery(queryString);
+	
+		List<Object> objs = (List<Object>) query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		
+			return objs;
+		
+	
+	}
+	@SuppressWarnings("deprecation")
+	public static void  dbConnectionUpdate(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
+	{
+		List<Object> objs =null;
+		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+			factory = new Configuration().configure(devdbConfig)
+		.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				else
+				{
+					if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+						factory = new Configuration().configure(qadbConfig)
+					.addAnnotatedClass(dtoClass).buildSessionFactory();	
+				}
+		
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		UpdateData(session, queryStr);
+	}
+	private static void UpdateData(Session session, String queryStr)
+	{
+		int size;		
+		String queryString=queryStr;
+		Query query = session.createSQLQuery(queryString);
+		int res = query.executeUpdate();
+		session.getTransaction().commit();	
+			factory.close();
+	}
+	
+	
+	
+	public static List<Object> validateDBdata(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		org.hibernate.query.Query query= session.createQuery(queryStr);
+		
+		//Query query = session.createSQLQuery(queryString);
+	
+		//List<Object> objs = (List<Object>) query.list();
+		List<Object> objs = query.list();
+		size=objs.size();
+		logger.info("Size is : " +size);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		return objs;
+		
+	
+	}
+
+	
+	
+	public static  int validateDBdataUpdate(Session session, String queryStr)
+	{
+		int size;
+				
+		String queryString=queryStr;
+		org.hibernate.query.Query query= session.createQuery(queryStr);
+		
+		//Query query = session.createSQLQuery(queryString);
+	
+		//List<Object> objs = (List<Object>) query.list();
+		int result = query.executeUpdate();
+		
+		logger.info("Size is : " +result);
+		
+		// commit the transaction
+		session.getTransaction().commit();
+			
+			factory.close();
+		
+		return result;
+		
+	
+	}
 
 
 }

@@ -1,7 +1,16 @@
 {
-      "DeleteAllDocumentByPassingInvalidDocumentId_Alphabets":"",
-      "DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumeric": " ",
-      "DeleteAllDocumentByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"",
-      "DeleteAllDocumentByPassingInvalidDocumentId_EmptyValue":"",
-      "DeleteAllDocumentByPassingInvalidDocumentId_SpecialCharacters":""
+      "DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"",
+      "DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric": " ",
+      "DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"",
+      "DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"",
+      "DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"",
+      "DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"",
+      
+      "DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"",
+      "DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric": " ",
+      "DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
+      "DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"",
+      "DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"",
+      "DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":""
+      
 }

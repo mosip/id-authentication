@@ -2,8 +2,8 @@
   "id": "string",
   "request": {
     "appId": "registrationclient",
-    "password": "registration_supervisor",
-    "userName": "registration_supervisor"
+    "password": "mosip",
+    "userName": "registration_officer"
   },
   "timestamp": "string",
   "version": "string"

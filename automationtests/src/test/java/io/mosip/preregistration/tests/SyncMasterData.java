@@ -5,18 +5,23 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,6 +34,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.dbaccess.PreRegDbread;
+import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.preregistration.util.SyncMasterDataUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -39,48 +47,48 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Sync Master data related Positive and Negative test cases
+ * Test Class to perform Sync Master Data For PreRegId related Positive and
+ * Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
 
 public class SyncMasterData extends BaseTestCase implements ITest {
+
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	 
-	
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
+	String preId = "";
+	String docId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(SyncMasterData.class);
 	boolean status = false;
-	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI ;
-	static String dest = "";
-	static String configPaths="";
-	static String folderPath = "preReg/SyncMasterData";
-	static String outputFile = "SyncMasterDataOutput.json";
-	static String requestKeyFile = "SyncMasterDataRequest.json";
-	String testParam=null;
-	boolean status_val = false;
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	
-	/*implement,IInvokedMethodListener*/
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	CommonLibrary commonLibrary = new CommonLibrary();
+	String preReg_URI;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	HashMap<String, String> parm = new HashMap<>();
+	String dest = "";
+	String folderPath = "preReg/SyncMasterData";
+	String outputFile = "SyncMasterDataOutput.json";
+	String requestKeyFile = "SyncMasterDataRequest.json";
+    PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+    PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+    SyncMasterDataUtil syncUtil=new SyncMasterDataUtil();
+	// implement,IInvokedMethodListener
 	public SyncMasterData() {
 
 	}
-	
+
 	/**
 	 * Data Providers to read the input json files from the folders
+	 * 
 	 * @param context
 	 * @return input request file
 	 * @throws JsonParseException
@@ -89,131 +97,125 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	 * @throws ParseException
 	 */
 	@DataProvider(name = "SyncMasterData")
-	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		  testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smoke") {
+	public Object[][] readData(ITestContext context) throws Exception {
+
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
-			
-		case "regression":	
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"regression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
 		default:
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-		
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	/*
+	 * Given Document Upload valid request when I Send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/sync
+	 * Then I should get success
+	 * response with elements defined as per specifications Given Invalid
+	 * request when I send GET request to
+	 * https://mosip.io/preregistration/v1/appointment/availability/sync
+	 * Then I should get Error
+	 * response along with Error Code and Error messages as per Specification
+	 */
 	@Test(dataProvider = "SyncMasterData")
-	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+	public void syncMasterData(String testSuite, Integer i, JSONObject object) throws Exception {
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
-		
-		String testCase = object.get("testCaseName").toString();
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
-		
-			/*Sync Masterdata*/			
-			Response syncMasterDataRes = preRegLib.syncMasterData();
-			
-			
-			/*removing the keys for assertion*/
-			outerKeys.add("resTime");
-			status = AssertResponses.assertResponses(syncMasterDataRes, Expectedresponse, outerKeys, innerKeys);
-		
-		
-		
-		
-		if (status) {
-			finalStatus="Pass";		
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-		
-		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
-		
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
-		
-		
-	}
-	/**
-	 * Writing output into configpath
-	 * @throws IOException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
 
+		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+
+		Response syncMsterData = syncUtil.syncMasterData();
+		logger.info("Sync Master data Res:" + syncMsterData.asString());
+
+		//Removing the dynamic value from Sync Master data response
+		outerKeys.add("responsetime");
+		innerKeys.add("documentId");
+		innerKeys.add("multipartFile");
+		//Asserting actual and expected response
+		status = AssertResponses.assertResponses(syncMsterData, Expectedresponse, outerKeys, innerKeys);
+
+		if (status) {
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
+
+	}
+
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
+	@BeforeMethod(alwaysRun = true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+
+		testCaseName = object.get("testCaseName").toString();
+		/**
+		 * Get All Document by Document Id Resource URI
+		 */
+
+		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
+		authToken = preRegLib.preRegAdminToken();
+	}
+
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
+	@AfterMethod(alwaysRun = true)
+	public void setResultTestName(ITestResult result) {
+		try {
+			Field method = TestResult.class.getDeclaredField("m_method");
+			method.setAccessible(true);
+			method.set(result, result.getMethod().clone());
+			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(baseTestMethod, SyncMasterData.testCaseName);
+		} catch (Exception e) {
+			Reporter.log("Exception : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		
-		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
-		
+		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		
-		
 		String source = "src/test/resources/" + folderPath + "/";
-		CommonLibrary.backUpFiles(source, folderPath);
-		
-		/*Add generated PreRegistrationId to list to be Deleted from DB AfterSuite */
-		
-		preIds.add(preId);
-		
+
+		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		// preIds.add(preId);
 	}
-	/**
-	 * Writing test case name into testng
-	 * @param result
-	 */
-	@AfterMethod(alwaysRun = true)
-    public void setResultTestName(ITestResult result) {
-          try {
-                Field method = TestResult.class.getDeclaredField("m_method");
-                method.setAccessible(true);
-                method.set(result, result.getMethod().clone());
-                BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-                Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-                f.setAccessible(true);
-                f.set(baseTestMethod, SyncMasterData.testCaseName);
-          } catch (Exception e) {
-                Reporter.log("Exception : " + e.getMessage());
-          }
-    }
-	
-	/**
-	 * Declaring the Booking Appointment Resource URI and getting the test case name
-	 * @param result
-	 */
-    @BeforeMethod
-    public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-          JSONObject object = (JSONObject) testdata[2];
-          testCaseName = object.get("testCaseName").toString();
-          
-          /**
-           * Booking Appointment Resource URI            
-           */
-          
-          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
-          
-          
-    }
+
 	@Override
-    public String getTestName() {
-          return this.testCaseName;
-    }
+	public String getTestName() {
+		return this.testCaseName;
+	}
+
 }
