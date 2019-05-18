@@ -26,7 +26,8 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 	@Autowired
 	BioDedupeProcessor bioDedupeProcessor;
-
+	
+	
 	/** The Constant INTERNAL_ERROR. */
 	private static final String INTERNAL_ERROR = "Internal error occurred in bio-dedupe stage while processing for registrationId ";
 
@@ -47,7 +48,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		return bioDedupeProcessor.process(object, this.getClass().getSimpleName());
+			return bioDedupeProcessor.process(object, this.getClass().getSimpleName());
+		}
 	}
 
-}

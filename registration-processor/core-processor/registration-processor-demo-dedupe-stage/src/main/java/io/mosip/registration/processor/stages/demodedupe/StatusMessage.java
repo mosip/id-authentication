@@ -19,4 +19,9 @@ public final class StatusMessage {
 	/** The Constant PACKET_STRUCTURAL_VALIDATION_SUCCESS. */
 	public static final String DEMO_DEDUPE_FAILED ="Packet demo dedupe failed";
 	
+	public static final String POTENTIAL_MATCH_FOUND_IN_ABIS="Potential match found in abis response for registration id :";
+	
+	public static final String DEMO_DEDUPE_FAILED_IN_ABIS ="Packet demo dedupe failed in abis";
+
+	
 }

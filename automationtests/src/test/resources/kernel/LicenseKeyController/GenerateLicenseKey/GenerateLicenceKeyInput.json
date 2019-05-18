@@ -1,7 +1,8 @@
 {
   "licenseExpiryTime": "string",
   "tspId": "string",
-  "invalid_timeFormat2":"string",
-  "response_time":"string"
+  "Kernel_GenerateLicenseKey_invalid_timeFormat2":"string",
+  "Kernel_GenerateLicenseKey_response_time":"string"
+
   
 }

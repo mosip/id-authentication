@@ -110,6 +110,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		JsonObject obj = ctx.getBodyAsJson();
 
 		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_UPLOADER_IN);
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));

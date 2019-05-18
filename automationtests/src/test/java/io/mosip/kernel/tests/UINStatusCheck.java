@@ -99,7 +99,9 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		//Getting all UIN from Database whose status is UNUSED
 		String query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
 
-		List<String>list=dbConnection.getDbData( query);
+
+		List<String>list=dbConnection.getDbData( query,"kernel");
+
 		
 		// Calling the GET method with no parameters 
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
@@ -107,16 +109,20 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
 		//Getting the status of the UIN 
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
-		List<String> status_list = dbConnection.getDbData( query1);
+
+		List<String> status_list = dbConnection.getDbData( query1,"kernel");
+
 		String status=status_list.get(0);
 		//Checking the UIN's status is Unused before calling the get method and and Issued after calling the Get method
 		for(String uin:list)
 		{
 			if(uin.equals(uin_number))
+
 			{
 				finalStatus="Pass";
 				
 			
+
 				if(status.equals("ISSUED"))
 				{
 					finalStatus="Pass";
@@ -124,8 +130,10 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 				else {
 					finalStatus="Fail";
 				}
+
 			}else {
 				finalStatus="Fail";
+
 			}
 		}
 		

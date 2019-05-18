@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.tests;
 
 import java.io.File; 
@@ -101,3 +102,4 @@ public class IntegrationTesting implements ITest{
 		String currentModule = ctx.getCurrentXmlTest().getClasses().get(0).getName().split("\\.")[2];
 	}
 }
+

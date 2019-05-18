@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.code;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum RegistrationExceptionTypeCode.
  */
@@ -14,7 +13,7 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The packet not found exception. */
 	PACKET_NOT_FOUND_EXCEPTION,
-	
+
 	/** The packet uploaded to landing zone. */
 	PACKET_UPLOADED_TO_LANDING_ZONE,
 
@@ -25,7 +24,7 @@ public enum RegistrationExceptionTypeCode {
 	FSADAPTER_EXCEPTION,
 
 	JSCH_CONNECTION,
-	
+
 	SFTP_OPERATION_EXCEPTION,
 
 	/** The unsupported encoding exception. */
@@ -153,7 +152,7 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The virus scan failed exception. */
 	VIRUS_SCAN_FAILED_EXCEPTION,
-	
+
 	/** The virus scanner service failed. */
 	VIRUS_SCANNER_SERVICE_FAILED,
 
@@ -185,6 +184,10 @@ public enum RegistrationExceptionTypeCode {
 	BASE_UNCHECKED_EXCEPTION,
 
 	/** The external integration failed. */
-	EXTERNAL_INTEGRATION_FAILED
+	EXTERNAL_INTEGRATION_FAILED,
+
+	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+	
+	DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 
 }

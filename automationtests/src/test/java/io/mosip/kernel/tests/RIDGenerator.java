@@ -33,9 +33,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -69,6 +71,9 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
+
 
 	/**
 	 * method to set the test case name to the report
@@ -81,7 +86,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 
 	}
 
@@ -146,7 +152,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-					response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData);
+
+					response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -172,7 +179,9 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			int intRidPre = Integer.parseInt(rid.substring(10,15));
 			for(int i =0; i<ridGenerationCount; i++)
 			{
-				response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData);
+
+				response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData,cookie);
+
 				int intRidPost = Integer.parseInt(((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString().substring(10, 15));
 				if(intRidPost-intRidPre!=1)
 				{

@@ -73,11 +73,11 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	}
 
 	public String getDob() {
-		return dob; //new Date(dob.getTime());
+		return dob; // new Date(dob.getTime());
 	}
 
 	public void setDob(String dob) {
-		this.dob = dob; //new Date(dob.getTime());
+		this.dob = dob; // new Date(dob.getTime());
 	}
 
 	public String getGender() {
@@ -143,7 +143,6 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	public void setDelDtimes(LocalDateTime delDtimes) {
 		this.delDtimes = delDtimes;
 	}
-
 
 	public String getUin() {
 		return uin;
