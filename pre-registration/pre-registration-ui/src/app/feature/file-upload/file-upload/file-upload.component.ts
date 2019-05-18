@@ -459,10 +459,9 @@ export class FileUploadComponent implements OnInit {
             break;
           }
         }
-        if (this.firstFile) {
-          this.fileIndex = i;
-          this.firstFile = false;
-        }
+
+        this.fileIndex = i;
+
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         if (this.fileByteArray) {
           // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
@@ -706,6 +705,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   sameAsChange(event) {
+    this.disableNavigation = true;
     if (event.value == '') {
       this.sameAsselected = false;
     } else {
@@ -714,6 +714,7 @@ export class FileUploadComponent implements OnInit {
           if (response['errors'] == null) {
             this.registration.setSameAs(event.value);
             this.removePOADocument();
+            this.updateUsers(response);
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
@@ -728,6 +729,7 @@ export class FileUploadComponent implements OnInit {
       );
       this.sameAsselected = true;
     }
+    this.disableNavigation = false;
   }
   /**
    *@description method to remove the POA document from users array when same as option has been selected.

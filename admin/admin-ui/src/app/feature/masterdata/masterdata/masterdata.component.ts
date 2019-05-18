@@ -24,9 +24,9 @@ export class MasterdataComponent implements OnInit {
 
   getData(id: string) {
     console.log(appConstants.code_url_mapping[id]);
-    this.dataStorageService.getMasterData(appConstants.code_url_mapping[id]).subscribe(response => {
+    this.dataStorageService.getMasterData(appConstants.code_url_mapping[id].appendURL).subscribe(response => {
       console.log(response);
-      this.tableData = response['response']['registrationCenters'];
+      this.tableData = response['response'][appConstants.code_url_mapping[id].parameterName];
     });
   }
 

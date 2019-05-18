@@ -11,7 +11,7 @@ Date Raised | 16-MAY-2019
 Impact of Release|NA
 Implementation Start Date |26-APR-2019
 Implementation end date	|17-MAY-2019
-Jenkins Build #	|Min Version : 142  [Any later version also]
+Jenkins Build #	|Min Version : 156  [Any later version also]
 Objective & Scope of Release| Sprint11 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Module Lead
@@ -24,6 +24,8 @@ Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Descript
 MOS-23506|Enhancement|ID Validator and IdRepo Changes
 MOS-23408|New|As the MOSIP system, I should be able to maintain the appropriate status of a VID based on the attribute value of a VID
 MOS-23409|New|As the MOSIP system, I should be able to retrieve the UIN corresponding to a VID
+MOS-23405|New|As the MOSIP system, I should be able to create VID in the defined policy
+MOS-23406|New|As the MOSIP system, I should be able to revoke a VID based on the type
 
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
@@ -45,20 +47,18 @@ Kernel|Kernel logger logback|0.11.1|Java API
 Open Items|Description
 -----------------|----------------------
 MOS-23506|kernel IdObjectValidator API validations against masterdata is not yet completed
-MOS-23408|Records needs to be manually inserted in DB to be updated
-MOS-23409|Records needs to be manually inserted in DB to be retrieved
+
 
 ### 1.6 Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
-||
+MOS-22802|Reopened|YES
+
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
 --------------|-----------|-----------|-------------
 MOS-23506|Enhancement|ID Validator and IdRepo Changes
-MOS-23405|New|As the MOSIP system, I should be able to create VID in the defined policy
-MOS-23406|New|As the MOSIP system, I should be able to revoke a VID based on the type
 
 
 ### 1.8 DB Changes :

@@ -12,6 +12,8 @@ public enum APIAuthorityList {
 
 	PRINTSTAGE(new String[] {"REGISTRATION_PROCESSOR"}),
 
+	BIODEDUPE(new String[] {"REGISTRATION_PROCESSOR"}),
+
 	CONNECTORSTAGE(new String[] {"REGISTRATION_PROCESSOR"}),
 
 	BIO(new String[] {"REGISTRATION_PROCESSOR"}),

@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "vid_seq", schema = "ida")
+@Table(name = "vid_seq", schema = "idmap")
 public class VidSequence {
 	/**
 	 * The sequence number.

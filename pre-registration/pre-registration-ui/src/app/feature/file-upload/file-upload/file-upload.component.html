@@ -1,4 +1,4 @@
-<img src="assets/ajax-loader.gif" *ngIf="start" class="loader" />
+<img src="assets/ajax-loader.gif" *ngIf="disableNavigation" class="loader" />
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
   <div class="file-upload__message">
@@ -42,8 +42,8 @@
           />
         </span>
         <span *ngIf="document.code === 'POA'">
-          <span *ngIf="allApplicants.length > 0">OR</span>
-          <span *ngIf="allApplicants.length > 0">
+          <span *ngIf="allApplicants.length > 1"> {{ 'documents.OR' | translate }}</span>
+          <span *ngIf="allApplicants.length > 1">
             <mat-form-field class="file-upload__or">
               <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [(value)]="sameAs">
                 <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">

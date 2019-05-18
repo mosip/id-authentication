@@ -35,6 +35,7 @@ import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -103,6 +104,9 @@ public class AuthFacadeImplTest {
 	/** The KycService **/
 	@Mock
 	private KycService kycService;
+
+	@Mock
+	private AuditHelper auditHelper;
 
 	/** The IdInfoHelper **/
 	@Mock
@@ -765,9 +769,15 @@ public class AuthFacadeImplTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
+		Optional<String> value = Optional.of("12345678");
+		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
+		IdType values = IdType.UIN;
+		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 
@@ -778,10 +788,17 @@ public class AuthFacadeImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
+		authRequestDTO.setIndividualId("426789089018");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequestedAuth(requestedAuth);
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN));
+		Mockito.when(idInfoFetcher.getUinOrVid(Mockito.any())).thenReturn(Optional.of("426789089018"));
+		Mockito.when(idInfoFetcher.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 

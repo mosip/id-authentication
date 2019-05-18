@@ -335,7 +335,7 @@ public class MessageNotificationServiceImpl
 		pathsegments.add(uin.toString());
 		IdResponseDTO response = null;
 		try {
-			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "", "",
+			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, "", "",
 					IdResponseDTO.class);
 
 			if (response == null || response.getResponse() == null) {

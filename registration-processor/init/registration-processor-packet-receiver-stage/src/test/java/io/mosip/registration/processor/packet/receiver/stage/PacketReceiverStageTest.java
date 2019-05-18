@@ -88,9 +88,7 @@ public class PacketReceiverStageTest {
 	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
 	@Mock
 	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
-	@Mock
-	SignatureUtil signatureUtil;
-
+	
 	@InjectMocks
 	PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
 

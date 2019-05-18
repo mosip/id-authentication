@@ -41,7 +41,7 @@ public class DocumentDAO {
 	private static Logger log = LoggerConfiguration.logConfig(DocumentDAO.class);
 
 	public List<DocumentEntity> findBypreregId(String preId) {
-		List<DocumentEntity> entityList = new ArrayList<>();
+		List<DocumentEntity> entityList = null;
 		try {
 			entityList = documentRepository.findBypreregId(preId);
 			if (serviceUtil.isNull(entityList)) {
@@ -57,7 +57,7 @@ public class DocumentDAO {
 	}
 
 	public DocumentEntity findBydocumentId(String documentId) {
-		DocumentEntity entity = new DocumentEntity();
+		DocumentEntity entity = null;
 		try {
 			entity = documentRepository.findBydocumentId(documentId);
 			if (entity == null) {
@@ -72,7 +72,7 @@ public class DocumentDAO {
 	}
 
 	public DocumentEntity findSingleDocument(String preId, String catCode) {
-		DocumentEntity entity = new DocumentEntity();
+		DocumentEntity entity = null;
 		try {
 			entity = documentRepository.findSingleDocument(preId, catCode);
 		} catch (DataAccessLayerException ex) {

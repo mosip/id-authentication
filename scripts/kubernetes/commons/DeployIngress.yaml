@@ -58,6 +58,10 @@ spec:
         backend:
           serviceName: kernel-auth-service
           servicePort: 8091
+      - path: /v1/signature
+        backend:
+          serviceName: kernel-signature-service
+          servicePort: 8092
       - path: /v1/licensekeymanager
         backend:
           serviceName: kernel-licensekeymanager-service
