@@ -89,7 +89,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	/**
 	 * Batch Job service Consumed Application
 	 */
-/*	@Test
+	/*@Test
 	public void batchJobForConsumedApplication() {
 		List preRegistrationId = new ArrayList();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -101,14 +101,14 @@ public class BatchJob extends BaseTestCase implements ITest {
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
-	Response consumedResponse = lib.consumedStatus();
+		Response consumedResponse = lib.consumedStatus();
 		String message = consumedResponse.jsonPath().get("response").toString();
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
 		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
-	}*/
-	
+	}
+	*/
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
