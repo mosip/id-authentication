@@ -25,7 +25,7 @@ import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.signature.constant.CryptoSignatureErrorCode;
+import io.mosip.kernel.signature.constant.SignatureErrorCode;
 
 /**
  * Rest Controller Advice for Crypto signature
@@ -71,7 +71,7 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultServiceErrorHandler(HttpServletRequest request,
 			Exception e) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
-		ServiceError error = new ServiceError(CryptoSignatureErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
+		ServiceError error = new ServiceError(SignatureErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 				e.getMessage());
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);

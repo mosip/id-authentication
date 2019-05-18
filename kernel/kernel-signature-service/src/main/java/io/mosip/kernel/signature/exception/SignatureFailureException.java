@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  *
  */
-public class CryptoFailureException extends BaseUncheckedException {
+public class SignatureFailureException extends BaseUncheckedException {
 
 	/**
 	 * Serializable version ID.
@@ -23,7 +23,7 @@ public class CryptoFailureException extends BaseUncheckedException {
 	 * @param errorMessage the error message.
 	 * @param rootCause    the cause.
 	 */
-	public CryptoFailureException(String errorCode, String errorMessage, Throwable rootCause) {
+	public SignatureFailureException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 

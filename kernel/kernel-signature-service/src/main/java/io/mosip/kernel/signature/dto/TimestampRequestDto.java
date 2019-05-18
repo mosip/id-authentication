@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TimestampRequestDto {
 	@NotBlank
-	private String responseSignature;
+	private String signature;
 	@NotBlank
-	private String responseBody;
+	private String data;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@NotBlank
 	private LocalDateTime timestamp;
