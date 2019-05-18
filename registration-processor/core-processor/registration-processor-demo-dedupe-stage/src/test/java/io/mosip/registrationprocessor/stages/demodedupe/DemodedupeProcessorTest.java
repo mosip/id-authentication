@@ -426,7 +426,7 @@ public class DemodedupeProcessorTest {
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(entity);
 		Mockito.when(packetInfoManager.getAbisResponseRecords(anyString(), anyString())).thenReturn(abisResponseDtos);
-		Mockito.when(packetInfoManager.getAbisResponseDetRecords(any())).thenReturn(abisResponseDetDtos);
+		Mockito.when(packetInfoManager.getAbisResponseDetRecordsList(any())).thenReturn(abisResponseDetDtos);
 		Mockito.when(abisHandlerUtil.getUniqueRegIds(any(), any())).thenReturn(matchedRegIds);
 		doNothing().when(packetInfoManager).saveManualAdjudicationData(anyList(), anyString(), any());
 		MessageDTO messageDto = demodedupeProcessor.process(dto, stageName);
