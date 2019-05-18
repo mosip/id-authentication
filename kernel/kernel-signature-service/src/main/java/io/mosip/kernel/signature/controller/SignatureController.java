@@ -17,12 +17,11 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
-import io.mosip.kernel.signature.dto.SignResponseDto;
 import io.mosip.kernel.signature.dto.SignRequestDto;
+import io.mosip.kernel.signature.dto.SignResponseDto;
 import io.mosip.kernel.signature.dto.TimestampRequestDto;
 import io.mosip.kernel.signature.dto.ValidatorResponseDto;
 import io.mosip.kernel.signature.service.SignatureService;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 
@@ -48,13 +47,12 @@ public class SignatureController {
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/sign")
-	public ResponseWrapper<SignResponseDto> sign(
-			@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
-		ResponseWrapper<SignResponseDto> response = new ResponseWrapper<>();
+	public ResponseWrapper<SignResponseDto> sign(@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
 		SignatureResponse signatureResponse = service.signResponse(requestDto.getRequest());
 		SignResponseDto signResponse = new SignResponseDto();
 		signResponse.setTimestamp(signatureResponse.getResponseTime());
 		signResponse.setSignature(signatureResponse.getData());
+		ResponseWrapper<SignResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(signResponse);
 		return response;
 	}
@@ -68,7 +66,7 @@ public class SignatureController {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	//@ApiIgnore
+	// @ApiIgnore
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@PostMapping(value = "/public/validate")
