@@ -39,10 +39,8 @@ public class KernelMasterDataR {
 		switch(env) 
 		{
 		case "dev": 
-			/*factory = new Configuration().configure("kerneldev.cfg.xml")
-					.addAnnotatedClass(UinEntity.class).buildSessionFactory();*/
-			factory = new Configuration().configure("kernelqa.cfg.xml")
-			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
+			factory = new Configuration().configure("kerneldev.cfg.xml")
+					.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		break;
 		
 		case "qa":
@@ -50,6 +48,11 @@ public class KernelMasterDataR {
 			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		
 		break;
+
+		case "int":
+				factory = new Configuration().configure("kernelqa.cfg.xml")
+			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
+		
 		}
 		session1 = factory.getCurrentSession();
 		session1.beginTransaction();

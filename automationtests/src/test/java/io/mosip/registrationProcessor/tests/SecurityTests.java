@@ -18,7 +18,7 @@ public class SecurityTests extends BaseTestCase {
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
 	StageValidationMethods apiRequest=new StageValidationMethods();
 	public String getToken() {
-		String tokenGenerationProperties=generateToken.readPropertyFile();
+		String tokenGenerationProperties=generateToken.readPropertyFile("");
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 		String token=generateToken.getToken(tokenEntity);
 		return token;

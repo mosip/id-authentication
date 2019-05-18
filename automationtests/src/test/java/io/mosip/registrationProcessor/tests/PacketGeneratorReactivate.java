@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -34,6 +35,7 @@ import io.mosip.dbaccess.RegProcTransactionDb;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
+import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
@@ -97,6 +99,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 public void packetGenerator(String testSuite, Integer i, JSONObject object){
 	 	 List<String> outerKeys = new ArrayList<String>();
 	 	 List<String> innerKeys = new ArrayList<String>();
+	 	 EncrypterDecrypter encrypter = new EncrypterDecrypter();
 	 	 
 
 	 	 try {
@@ -106,10 +109,18 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 	 	 //outer and inner keys which are dynamic in the actual response
 	 	 	 outerKeys.add("responsetime");
 	 	 	 innerKeys.add("registrationId");
-
+	 	 	JSONArray requestBody=(JSONArray) actualRequest.get("request");
+			JSONObject insideRequest=(JSONObject) requestBody.get(0);
+			String regId=(String) insideRequest.get("registrationId");
+			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+	 	 	Map<String,Object> resp = encrypter.encryptJson(actualRequest);
+			String encryptedData = resp.get("data").toString();
+			String timeStamp = resp.get("responsetime").toString();
 
 	 	 	 //generation of actual response
+
 	 	 //	 actualResponse=applicationLibrary.regProcSync(actualRequest, prop.getProperty("packetGeneratorApi"));
+
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
 	 	 	 	 finalStatus="Pass";

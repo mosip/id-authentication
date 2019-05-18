@@ -64,6 +64,7 @@ public class BaseTestCase extends KernelMasterDataR {
 	public static String ApplnURI;	
 	public static String authToken;
 	public static String regProcAuthToken;
+	public static String getStatusRegProcAuthToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public static String buildNumber="";
@@ -148,9 +149,13 @@ public class BaseTestCase extends KernelMasterDataR {
 			htmlReporter.config().setTheme(Theme.STANDARD);
 			TokenGeneration generateToken = new TokenGeneration();
 			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
-			String tokenGenerationProperties = generateToken.readPropertyFile();
+			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
 			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 			regProcAuthToken = generateToken.getToken(tokenEntity);
+			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
+			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
+			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
+			getStatusRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
 			//authToken=pil.getToken();
 			

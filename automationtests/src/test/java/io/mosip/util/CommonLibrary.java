@@ -796,7 +796,7 @@ public class CommonLibrary extends BaseTestCase{
     public Response regProcGetRequest(String url,HashMap<String, String> valueMap) {
         logger.info("REST-ASSURED: Sending a GET request to " + url);
      
-        Cookie.Builder builder = new Cookie.Builder("Authorization",regProcAuthToken);
+        Cookie.Builder builder = new Cookie.Builder("Authorization",getStatusRegProcAuthToken);
    	 Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap)
                           .log().all().when().get(url).then().log().all().extract().response();
         // log then response
