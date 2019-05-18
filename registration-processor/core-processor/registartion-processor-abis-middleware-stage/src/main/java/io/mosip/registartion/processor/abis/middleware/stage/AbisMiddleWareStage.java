@@ -99,9 +99,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 	/** The url. */
-	@Value("${registration.processor.queue.url}")
-
-	private String url;
 	private static final String SYSTEM = "SYSTEM";
 	private Map<Integer, String> failureReason = new HashMap<>();
 	private List<String> abisInboundAddresses;
