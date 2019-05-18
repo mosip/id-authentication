@@ -29,7 +29,6 @@ public class CryptoEncryptRequestDto {
 	 * Timestamp
 	 */
 	@ApiModelProperty(notes = "Timestamp as metadata", example = "2018-12-10T06:12:52.994Z", required = true)
-
 	@NotNull
 	private String timeStamp;
 	/**
