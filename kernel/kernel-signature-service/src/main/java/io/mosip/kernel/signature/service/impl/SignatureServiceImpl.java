@@ -34,7 +34,7 @@ public class SignatureServiceImpl implements SignatureService {
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		boolean status = signatureUtil.validateWithPublicKey(validateWithPublicKeyRequestDto.getSignature(),
-				validateWithPublicKeyRequestDto.getData(), validateWithPublicKeyRequestDto.getPublicKey());
+				validateWithPublicKeyRequestDto.getData(), validateWithPublicKeyRequestDto.getPublickey());
 
 		if (status) {
 			ValidatorResponseDto response = new ValidatorResponseDto();

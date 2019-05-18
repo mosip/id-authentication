@@ -15,6 +15,6 @@ public class PublicKeyRequestDto {
 	@NotBlank
 	private String data;
 	@NotBlank
-	private String publicKey;
+	private String publickey;
 
 }
