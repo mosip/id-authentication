@@ -1,12 +1,14 @@
 {
   "id":"string",
   "timestamp":"2019-01-25T12:01:00.000Z",
-  "invalid_timestamp_closingTime":"string",
-  "invalid_TimeStamp_less_than_openingTime":"string",
-  "invalid_TimeStamp_morethan_closingTime":"string",
-  "invalid_TimeStamp_onHoliday":"string",
-  "invalid_timestamp_openeningTime":"string",
-  "invalid_timestamp2":"string",
-  "invalid_timestamp3":"string",
-  "langCode":"string"
+
+  "Kernel_GetRegCenterByID_timestamp_closingTime":"string",
+  "Kernel_GetRegCenterByID_timestamp_lessThan_openeningTime":"string",
+  "Kernel_GetRegCenterByID_TimeStamp_morethan_closingTime":"string",
+  "Kernel_GetRegCenterByID_TimeStamp_onHoliday":"string",
+  "Kernel_GetRegCenterByID_timestamp_openeningTime":"string",
+  "Kernel_GetRegCenterByID_timestamp_format_2":"string",
+  "Kernel_GetRegCenterByID_timestamp_format_3":"string",
+  "langCode":"string",
+  "Kernel_GetRegCenterByID_timestamp_response_time":"string"
 }

@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -27,8 +28,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
@@ -41,46 +44,39 @@ import io.restassured.response.Response;
 public class GetListOfRoles extends BaseTestCase implements ITest{
 
 	public GetListOfRoles() {
-		// TODO Auto-generated constructor stub
+		
 		super();
 	}
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetListOfRoles.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
+	private SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String getRoles = "/v1/syncdata/roles";
-	
-	static String dest = "";
-	static String folderPath = "kernel/GetListOfRoles";
-	static String outputFile = "GetListOfRolesOutput.json";
-	static String requestKeyFile = "GetListOfRolesInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	private boolean status = false;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String getRoles = props.get("getRoles");
+	private String folderPath = "kernel/GetListOfRoles";
+	private String outputFile = "GetListOfRolesOutput.json";
+	private String requestKeyFile = "GetListOfRolesInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
+
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		// testName.set(object.get("testCaseName").toString());
+		
 		testCaseName = object.get("testCaseName").toString();
+		
+		cookie=auth.getAuthForRegistrationAdmin();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetListOfRoles")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
-		 testParam = context.getCurrentXmlTest().getParameter("testType");
+	public Object[][] readData1(ITestContext context) throws Exception {
 		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -100,21 +96,16 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When GET request is sent to /syncdata/v1.0/configuration/{registrationCenterId}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="GetListOfRoles")
-	public void getAllConfiguration(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void getListOfRoles(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-	
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
-		Response res=applicationLibrary.getRequestNoParameter(getRoles);
-		/*
-		 * Removing the unstable attributes from response	
-		 */
+		// Calling the get method 
+		Response res=applicationLibrary.getRequestNoParameter(getRoles,cookie);
+
+		// Removing of unstable attributes from response
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		outerKeys.add("responsetime");
@@ -123,9 +114,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("$response.lastSyncTime");
 		listOfElementToRemove.add("responsetime");
-		/*
-		 * Comparing expected and actual response
-		 */
+
+		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
 	            
@@ -135,10 +125,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
-		softAssert.assertAll();
+
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -150,6 +138,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		softAssert.assertAll();
 
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

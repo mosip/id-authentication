@@ -25,9 +25,9 @@ import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.service.login.LoginService;
 
 public class IntegrationScenario01_LastCompletedSyncJobs extends BaseIntegrationTest {
 

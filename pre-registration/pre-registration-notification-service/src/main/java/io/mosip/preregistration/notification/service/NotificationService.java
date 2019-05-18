@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,14 +22,21 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.code.EventId;
+import io.mosip.preregistration.core.code.EventName;
+import io.mosip.preregistration.core.code.EventType;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.notification.code.RequestCodes;
@@ -101,11 +109,21 @@ public class NotificationService {
 	private String phone;
 
 	MainResponseDTO<ResponseDTO> response;
+	
+	/**
+	 * Autowired reference for {@link #AuditLogUtil}
+	 */
+	@Autowired
+	private AuditLogUtil auditLogUtil;
 
 
 	@PostConstruct
 	public void setupBookingService() {
 		requiredRequestMap.put("version", version);
+	}
+	
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 
 	/**
@@ -127,12 +145,13 @@ public class NotificationService {
 		log.info("sessionId", "idType", "id", "In notification service of sendNotification ");
 		requiredRequestMap.put("id", Id);
 		String resp = null;
+		boolean isSuccess = false;
 		try {
 			MainRequestDTO<NotificationDTO> notificationReqDTO = serviceUtil.createNotificationDetails(jsonString);
 			response.setId(notificationReqDTO.getId());
 			response.setVersion(notificationReqDTO.getVersion());
 			NotificationDTO notificationDto = notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(notificationReqDTO),
+			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO),
 					requiredRequestMap)) {
 				if (notificationDto.isAdditionalRecipient()) {
 					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
@@ -154,12 +173,22 @@ public class NotificationService {
 			}
 
 			response.setResponse(notificationResponse);
-
+			isSuccess = true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In notification service of sendNotification " + ex.getMessage());
 			new NotificationExceptionCatcher().handle(ex, response);
 		} finally {
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
+				if (isSuccess) {
+					setAuditValues(EventId.PRE_411.toString(), EventName.NOTIFICATION.toString(), EventType.SYSTEM.toString(),
+							"Pre-Registration data is sucessfully trigger notification to the user",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+							"Failed to trigger notification to the user ", AuditLogVariables.NO_ID.toString(),
+							authUserDetails().getUserId(), authUserDetails().getUsername());
+		}
 		}
 		return response;
 	}
@@ -219,4 +248,28 @@ public class NotificationService {
 		return RequestCodes.MESSAGE.getCode();
 	}
 
+	
+	/**
+	 * This method is used to audit all the trigger notification events
+	 * 
+	 * @param eventId
+	 * @param eventName
+	 * @param eventType
+	 * @param description
+	 * @param idType
+	 */
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		auditRequestDto.setEventId(eventId);
+		auditRequestDto.setEventName(eventName);
+		auditRequestDto.setEventType(eventType);
+		auditRequestDto.setDescription(description);
+		auditRequestDto.setSessionUserId(userId);
+		auditRequestDto.setSessionUserName(userName);
+		auditRequestDto.setId(idType);
+		auditRequestDto.setModuleId(AuditLogVariables.NOTIFY.toString());
+		auditRequestDto.setModuleName(AuditLogVariables.NOTIFICATION_SERVICE.toString());
+		auditLogUtil.saveAuditDetails(auditRequestDto);
+	}
 }

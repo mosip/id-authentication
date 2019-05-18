@@ -25,7 +25,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 
 /**
- * builder implementation for the PIN based authentication.
+ * This class is used to give the implementation for the
+ * pin based authentication service which receives the pin
+ * from the request and compares it the pin stored in the DB.
  * 
  * @author Sanjay Murali
  */

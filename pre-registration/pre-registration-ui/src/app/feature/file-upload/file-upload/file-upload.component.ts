@@ -325,7 +325,7 @@ export class FileUploadComponent implements OnInit {
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      if (response['error'] == null) {
+      if (response['errors'] == null) {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
@@ -351,7 +351,7 @@ export class FileUploadComponent implements OnInit {
    */
   async getDocumentCategories(applicantcode) {
     await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      if (res['error'] == null) {
+      if (res['errors'] == null) {
         // console.log('document Categories', res);
 
         this.LOD = res['response'].documentCategories;
@@ -414,7 +414,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFileByIndex(i: number) {
-    this.viewFile(this.users[0].files[0].documentsMetaData[i]);
+    this.viewFile(this.users[0].files.documentsMetaData[i]);
   }
 
   setByteArray(fileByteArray) {
@@ -429,7 +429,8 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
-    // console.log('file', file);
+    console.log('file', fileMeta);
+    // console.log('file any', test);
     this.start = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
@@ -438,7 +439,9 @@ export class FileUploadComponent implements OnInit {
         if (!res['errors']) {
           this.setByteArray(res['response'].document);
         } else {
-          this.displayMessage('Error', 'Servers unavailable');
+          console.log('ELSE ');
+
+          // this.displayMessage('Error', this.errorlabels.error);
           this.start = false;
         }
       },
@@ -450,16 +453,15 @@ export class FileUploadComponent implements OnInit {
         this.fileName = fileMeta.docName;
         // this.fileByteArray = file;
         let i = 0;
-        for (let x of this.users[0].files[0].documentsMetaData) {
-          if (this.fileName === x.doc_name) {
+        for (let x of this.users[0].files.documentsMetaData) {
+          if (this.fileName === x.docName) {
             i++;
             break;
           }
         }
-        if (this.firstFile) {
-          this.fileIndex = i;
-          this.firstFile = false;
-        }
+
+        this.fileIndex = i;
+
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         if (this.fileByteArray) {
           // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
@@ -703,6 +705,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   sameAsChange(event) {
+    this.disableNavigation = true;
     if (event.value == '') {
       this.sameAsselected = false;
     } else {
@@ -711,6 +714,7 @@ export class FileUploadComponent implements OnInit {
           if (response['errors'] == null) {
             this.registration.setSameAs(event.value);
             this.removePOADocument();
+            this.updateUsers(response);
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
@@ -725,6 +729,7 @@ export class FileUploadComponent implements OnInit {
       );
       this.sameAsselected = true;
     }
+    this.disableNavigation = false;
   }
   /**
    *@description method to remove the POA document from users array when same as option has been selected.
@@ -734,12 +739,14 @@ export class FileUploadComponent implements OnInit {
   removePOADocument() {
     this.userFiles = new FilesModel();
     let i = 0;
-    for (let file of this.users[0].files[0].documentsMetaData) {
-      if (file.docCatCode == 'POA') {
-        // this.users[0].files[0][i] = this.userFiles;
-        this.users[0].files[0].documentsMetaData.splice(i, 1);
+    if (this.users[0].files.documentsMetaData) {
+      for (let file of this.users[0].files.documentsMetaData) {
+        if (file.docCatCode == 'POA') {
+          // this.users[0].files[0][i] = this.userFiles;
+          this.users[0].files.documentsMetaData.splice(i, 1);
+        }
+        i++;
       }
-      i++;
     }
   }
 

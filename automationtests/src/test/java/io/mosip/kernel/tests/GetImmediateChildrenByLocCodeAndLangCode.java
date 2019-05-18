@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -26,11 +26,11 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
-
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.LocationDto;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -42,49 +42,44 @@ import io.restassured.response.Response;
  */
 public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase implements ITest{
 
-	public GetImmediateChildrenByLocCodeAndLangCode() 
-	{
+	public GetImmediateChildrenByLocCodeAndLangCode(){
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
-	/**
-	 *  Declaration of all variables
-	 */
+
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetImmediateChildrenByLocCodeAndLangCode.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
 	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchImmediateChildLocation = "/v1/masterdata/locations/immediatechildren/{locationcode}/{langcode}";
-	static String dest = "";
-	static String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
-	static String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
-	static String requestKeyFile = "GetImmediateChildrenByLocCodeAndLCInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private AssertKernel assertKernel = new AssertKernel();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String fetchImmediateChildLocation = props.get("fetchImmediateChildLocation");
+	private String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
+	private String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
+	private String requestKeyFile = "GetImmediateChildrenByLocCodeAndLCInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
+	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
+
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
+		 cookie=auth.getAuthForIndividual();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetImmediateChildrenByLocCodeAndLangCode")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+	public Object[][] readData1(ITestContext context) throws Exception {
+		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -94,7 +89,6 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		}
 	}
 	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -103,51 +97,48 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	 * Given input Json as per defined folders When GET request is sent to /masterdata/v1.0/locations/immediatechildren/{locationcode}/{langcode}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="GetImmediateChildrenByLocCodeAndLangCode")
 	public void getImmediateChildrenByLocCodeAndLangCode(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
+
+		// Calling the get method 
+		Response res=applicationLibrary.getRequestPathPara(fetchImmediateChildLocation, actualRequest,cookie);
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
-		Response res=applicationLibrary.getRequestPathPara(fetchImmediateChildLocation, actualRequest);
-		
-		/*
-		   Removing of unstable attributes from response
-		*/
-		
-		outerKeys.add("responsetime");
-		innerKeys.add("errorMessage");
-		
-		/*
-		  Comparing expected and actual response
-		 */
+		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
+		
+		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
     	  
     	  if(testCaseName.contains("smoke"))
     	  {
-    		  String locationcode= (actualRequest.get("locationcode").toString());
+    		 /* String locationcode= (actualRequest.get("locationcode").toString());
     		  String langCode=actualRequest.get("langcode").toString();
-	            
+	        
 	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
-					boolean valid = KernelMasterDataR.masterDataDBConnection(LocationDto.class,queryStr); 
+<<<<<<< HEAD
+					boolean valid = kernelDB.validateDataInDb(queryStr);
+=======
+					boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");
+>>>>>>> origin/0.11.0_automationtests_kernel
 	            
-			if(valid)
+			
+
+	            */
+			if(status)
+
 					{
 						finalStatus ="Pass";
 					}
 					else
 					{
 		 				finalStatus ="Fail";
-						//break;
+						
 					}
     	  }else
 				finalStatus = "Pass";
@@ -156,9 +147,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
 		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
@@ -170,6 +159,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

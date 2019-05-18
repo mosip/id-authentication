@@ -1,3 +1,14 @@
+<<<<<<< HEAD
 {
   "key": "String"
+=======
+{
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "key": "otpKey"
+  },
+  "requesttime": "2018-12-12T11:11:11.256Z",
+  "version": "string"
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

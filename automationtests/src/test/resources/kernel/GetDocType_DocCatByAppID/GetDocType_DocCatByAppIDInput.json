@@ -3,9 +3,9 @@
 	"languages": [
 		 "eng"
 	],
-	"invalid_for_two_lang":"string",
-	"invalid_three_langcode":"string",
-	"responsetime":"string",
-	"validateingRequest":"string",
-	"validatingResponse":"string"
+	"Kernel_GetDocType_DocCatByAppID_langcode_twoLanguageCodes":"string",
+	"Kernel_GetDocType_DocCatByAppID_langcode_threeLanguageCodes":"string",
+	"Kernel_GetDocType_DocCatByAppID_responsetime":"string",
+	"Kernel_GetDocType_DocCatByAppID_validatingRequest":"string",
+	"Kernel_GetDocType_DocCatByAppID_validatingResponse":"string"
 }

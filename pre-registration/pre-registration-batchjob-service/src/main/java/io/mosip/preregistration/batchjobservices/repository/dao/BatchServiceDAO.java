@@ -16,7 +16,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -31,6 +30,7 @@ import io.mosip.preregistration.batchjobservices.repository.DocumentRespository;
 import io.mosip.preregistration.batchjobservices.repository.ProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentConsumedRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -123,7 +123,7 @@ public class BatchServiceDAO {
 	 * @return List of ProcessedPreRegEntity for given statusComment
 	 */
 	public List<ProcessedPreRegEntity> getAllConsumedPreIds(String statusComment) {
-		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
+		List<ProcessedPreRegEntity> entityList = null;
 		try {
 			entityList = processedPreIdRepository.findBystatusComments(statusComment);
 			if (entityList == null || entityList.isEmpty() ) {
@@ -144,7 +144,7 @@ public class BatchServiceDAO {
 	 * @return List of RegistrationBookingEntity based date less then currentDate
 	 */
 	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate) {
-		List<RegistrationBookingEntity> entityList = new ArrayList<>();
+		List<RegistrationBookingEntity> entityList = null;
 		try {
 			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
 			if (entityList == null ||entityList.isEmpty() )  {

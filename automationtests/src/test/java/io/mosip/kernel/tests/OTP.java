@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
@@ -32,8 +33,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
+
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -48,23 +53,26 @@ public class OTP extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(OTP.class);
-	private static final String jiraID = "MOS-33/34/35/36/423/5486/991";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "OTP";
-	private static final String requestJsonName = "OTPRequest";
-	private static final String outputJsonName = "OTPOutput";
-	private static final String service_URI_OTPGeneration = "/v1/otpmanager/otp/generate";
-	private static final String service_URI_OTPValidation = "/v1/otpmanager/otp/validate";
+	private  final String jiraID = "MOS-33/34/35/36/423/5486/991";
+	private final String moduleName = "kernel";
+	private final String apiName = "OTP";
+	private final String requestJsonName = "OTPRequest";
+	private final String outputJsonName = "OTPOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String OTPGeneration = props.get("OTPGeneration").toString();
+	private final String OTPValidation = props.get("OTPValidation").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
-	static boolean status = true;
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
+	boolean status = true;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
 
 	/**
 	 * method to set the test case name to the report
@@ -73,11 +81,11 @@ public class OTP extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForIndividual();
 	}
 
 	/**
@@ -135,95 +143,109 @@ public class OTP extends BaseTestCase implements ITest {
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
+		String otpCase = null;
 		for (int k = 0; k < listofFiles.length; k++) {
 
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				JSONObject objectDataToSent = new JSONObject();
-				objectDataToSent.put("key", objectData.get("key"));
-				logger.info("Json Request Is : " + objectDataToSent.toJSONString());
-				response = applicationLibrary.postRequest(objectDataToSent.toJSONString(), service_URI_OTPGeneration);
+				if(objectData.containsKey("case"))
+				{
+					otpCase = objectData.get("case").toString();
+					objectData.remove("case");
+				}
+				logger.info("Json Request Is : " + objectData.toJSONString());
+
+				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
 
-		logger.info("Expected Response:" + responseObject.toJSONString());
-
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
 
-		if (objectData.containsKey("case")) {
+		if (otpCase!=null && !otpCase.equals("blocked")) {
 			if (statusCode == 200) {
 				
-				String otp = (response.jsonPath().get("otp")).toString();
+				String otp = ((HashMap<String, String>)response.jsonPath().get("response")).get("otp").toString();
 				logger.info("otp is : " + otp);
-				String value = objectData.get("case").toString();
-				objectData.remove("case");
-				
-				switch(value) {
+				JSONObject reqJson = (JSONObject) objectData.get("request");
+				switch(otpCase) {
 				
 				case "blockUser":
-					objectData.put("otp", "000000");
-					for(int i=0;i<3;i++)
+					reqJson.put("otp", "000000");
+
+					// reading validation attempt from property
+					int attempt = Integer.parseInt(props.get("attempt").toString());
+					for(int i=0;i<attempt;i++)
 					{
-						response = applicationLibrary.getRequestAsQueryParam(service_URI_OTPValidation, objectData);
+						response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+
 					}
 					break;
 				case "otherKey":
-					objectData.put("otp", otp);
-					objectData.put("key", "otherKey");
+					reqJson.put("otp", otp);
+					reqJson.put("key", "otherKey");
 					break;
 				case "alphanumeric":
-					objectData.put("otp", "12ad23");
+					reqJson.put("otp", "12ad23");
 					break;
 				case "otpEmpty":
-					objectData.put("otp", "");
+					reqJson.put("otp", "");
 					break;
 				case "keyEmpty":
-					objectData.put("key", "");
-					objectData.put("otp", otp);
+					reqJson.put("key", "");
+					reqJson.put("otp", otp);
 					break;
 				case "expired":
 					try {
-						TimeUnit.SECONDS.sleep(121);
+						// reading validation timeout from property
+						TimeUnit.SECONDS.sleep(Integer.parseInt(props.get("OTPTimeOut").toString()));
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					objectData.put("otp", otp);
+					reqJson.put("otp", otp);
 					break;
 				case "incorrect":
-					objectData.put("otp", "000000");
+					reqJson.put("otp", "000000");
 					break;
 				default:
-					objectData.put("otp", otp);
+					reqJson.put("otp", otp);
 				}
 				
-					
-				response = applicationLibrary.getRequestAsQueryParam(service_URI_OTPValidation, objectData);
+				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
 
-				logger.info("Validation Response is : " + response);
+
+				logger.info("Obtained Response: " + response);
+				logger.info("Expected Response:" + responseObject.toJSONString());
 				status = assertions.assertKernel( response, responseObject, listOfElementToRemove);
 
 			}
 		} else {
-			
-			if (objectData.get("key").equals("Blocked"))
+			if (otpCase!=null && otpCase.equals("blocked"))
 			{
-				objectData.put("otp", "000000");
-				for(int i=0;i<4;i++)
+				
+				JSONObject reqJson = (JSONObject) objectData.get("request");
+				reqJson.put("otp", "000000");
+
+				int attempt = Integer.parseInt(props.get("attempt").toString());
+				for(int i=0;i<=attempt;i++)
 				{
-					response = applicationLibrary.getRequestAsQueryParam(service_URI_OTPValidation, objectData);
+					response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
 				}
-				objectData.remove("otp");
-				response = applicationLibrary.postRequest(objectData.toJSONString(), service_URI_OTPGeneration);
+				reqJson.remove("otp");
+				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
 			}
 			listOfElementToRemove.add("otp");
+			logger.info("Obtained Response: " + response);
+			logger.info("Expected Response:" + responseObject.toJSONString());
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
 		}

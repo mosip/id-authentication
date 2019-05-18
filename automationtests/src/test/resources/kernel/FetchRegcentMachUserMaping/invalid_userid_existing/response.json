@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "timestamp": 1549605130428,
   "status": 200,
@@ -7,4 +8,18 @@
       "errorMessage": "Registration Center, Machine, User not found"
     }
   ]
+=======
+{
+    "id": null,
+    "version": null,
+    "responsetime": "2019-04-17T11:35:17.807Z",
+    "metadata": null,
+    "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-038",
+      "errorMessage": "Registration Center, Machine, User not found"
+    }
+  ]
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

@@ -11,10 +11,13 @@ import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 /**
  * Extent Report Listener
  * 

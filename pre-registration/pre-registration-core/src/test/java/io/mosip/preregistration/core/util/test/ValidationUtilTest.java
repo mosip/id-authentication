@@ -238,4 +238,16 @@ public class ValidationUtilTest {
 //		String preId="12345678901";
 //		assertThat(ValidationUtil.isvalidPreRegId(preId), is(false));
 //	}
+	
+	@Test
+	public void isValidLangCodeSuccessTest() {
+		String langCode="fra";
+		assertThat(ValidationUtil.langvalidation(langCode), is(true));
+	}
+	
+	@Test(expected=InvalidRequestParameterException.class)
+	public void isValidLangCodeFailureTest() {
+		String langCode="fraaa";
+		ValidationUtil.langvalidation(langCode);
+	}
 }

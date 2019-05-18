@@ -1,0 +1,10 @@
+{
+  "emailBodyTemplate": "string",
+  "emailId": "string",
+  "emailSubjectTemplate": "string",
+  "mobileNumber": "",
+  "notificationTypes": [
+    "sms"
+  ],
+  "smsTemplate": "your otp is $otp"
+}

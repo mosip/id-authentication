@@ -84,7 +84,8 @@ public class RestartController extends BaseController {
 
 			/* Generate alert */
 			Alert restartAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.SYNC_SUCCESS,
-					successResponseDTO.getMessage(), RegistrationUIConstants.RESTART_APPLICATION);
+					successResponseDTO.getMessage(), RegistrationUIConstants.RESTART_APPLICATION,
+					RegistrationConstants.OK_MSG, RegistrationConstants.CANCEL_MSG);
 
 			generatedAlerts.add(restartAlert);
 
@@ -114,21 +115,22 @@ public class RestartController extends BaseController {
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Restart started");
 
-		//Registration-Client Termination
+		// Registration-Client Termination
 		System.exit(0);
-		
-		//Need to check with application context
-		/* Close the current application context 
-		((AbstractApplicationContext) Initialization.getApplicationContext()).close();
 
-		 Close the current java fx stage 
-		Initialization.getPrimaryStage().close();
-
-		 Create and Set newly created application context 
-		Initialization.setApplicationContext(new AnnotationConfigApplicationContext(AppConfig.class));
-
-		 create and set new java fx stage 
-		new Initialization().start(new Stage());*/
+		// Need to check with application context
+		/*
+		 * Close the current application context ((AbstractApplicationContext)
+		 * Initialization.getApplicationContext()).close();
+		 * 
+		 * Close the current java fx stage Initialization.getPrimaryStage().close();
+		 * 
+		 * Create and Set newly created application context
+		 * Initialization.setApplicationContext(new
+		 * AnnotationConfigApplicationContext(AppConfig.class));
+		 * 
+		 * create and set new java fx stage new Initialization().start(new Stage());
+		 */
 
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Restart completed");

@@ -1,4 +1,17 @@
+<<<<<<< HEAD
 {
   "status": "failure",
   "message": "VALIDATION_UNSUCCESSFUL"
+=======
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-22T12:04:53.739Z",
+  "metadata": null,
+  "response": {
+    "status": "failure",
+    "message": "VALIDATION_UNSUCCESSFUL"
+  },
+  "errors": null
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

@@ -15,15 +15,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.preregistration.application.DemographicTestApplication;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.code.StatusCodes;
-import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
 
@@ -44,6 +44,9 @@ public class DemographicServiceUtilTest {
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
 
+	@MockBean
+	private IdObjectSchemaValidator jsonValidator;
+	
 	private DemographicRequestDTO saveDemographicRequest = null;
 	private DemographicRequestDTO updateDemographicRequest = null;
 	private DemographicEntity demographicEntity = null;
@@ -96,24 +99,6 @@ public class DemographicServiceUtilTest {
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
-	// @Test(expected = DateParseException.class)
-	// public void dateSetterEncodingTest2() throws Exception{
-	// Map<String, String> dateMap = new HashMap<>();
-	// dateMap.put(RequestCodes.FROM_DATE.getCode(),"2018-10-10");
-	// String format = "yyyy-MM-dd HH:mm:ss";
-	// demographicServiceUtil.dateSetter(dateMap, format);
-	// }
-
-	// @Test
-	// public void dateSetterEncodingSuccess() {
-	// Map<String, String> dateMap = new HashMap<>();
-	// Map<String, LocalDateTime> response = new HashMap<>();
-	// dateMap.put(RequestCodes.FROM_DATE.getCode(), "2018-10-10 12:12:12");
-	// dateMap.put(RequestCodes.TO_DATE.getCode(),"");
-	// String format = "yyyy-MM-dd HH:mm:ss";
-	// response=demographicServiceUtil.dateSetter(dateMap, format);
-	// assertEquals("2018-10-10T12:12:12",response.get(RequestCodes.FROM_DATE.getCode()).toString());
-	// }
 
 	@Test(expected = DateParseException.class)
 	public void getDateFromStringFailureTest() throws Exception {

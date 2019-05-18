@@ -1,0 +1,11 @@
+{
+  
+  "langcode":"string",
+  "locationcode":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_country":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_provinace":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_region":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_city":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_localAuthority":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_response_time":"string"
+}

@@ -36,7 +36,7 @@ import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.PolicySyncServiceImpl;
+import io.mosip.registration.service.sync.impl.PolicySyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -106,6 +106,7 @@ public class PolicySyncServiceTest {
 	@Test
 	public void testKeyStore()
 			throws ParseException, RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		Date date = dateFormat.parse("2019-4-5");
 		Timestamp timestamp = new Timestamp(date.getTime());
@@ -129,10 +130,16 @@ public class PolicySyncServiceTest {
 		publicKeyResponse.setIssuedAt(LocalDateTime.now());
 		publicKeyResponse.setPublicKey("MY_PUBLIC_KEY");
 		// publicKeyResponse.setErrors(errorKey);
+
 		String machineId = "machineId";
 		String centerId = "centerId";
+		String refId = centerId + "_" + machineId;
+
 		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn(machineId);
-		Mockito.when(userOnboardDAO.getCenterID(Mockito.anyString())).thenReturn(centerId);
+		Mockito.when(userOnboardDAO.getCenterID(machineId)).thenReturn(centerId);
+
+		Mockito.when(policySyncDAO.getPublicKey(refId)).thenReturn(keyStore);
+
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(publicKeyResponse);
 
@@ -162,18 +169,31 @@ public class PolicySyncServiceTest {
 	}
 
 	@Test
-	public void checkKeyValidationExpiryTest() {
+	public void checkKeyValidationExpiryTest() throws RegBaseCheckedException {
+
+		String machineId = "machineId";
+		String centerId = "centerId";
+		String refId = centerId + "_" + machineId;
 		KeyStore keyStore = new KeyStore();
+
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn(machineId);
+		Mockito.when(userOnboardDAO.getCenterID(machineId)).thenReturn(centerId);
 		keyStore.setValidTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		Mockito.when(policySyncDAO.getPublicKey(refId)).thenReturn(keyStore);
 		policySyncServiceImpl.checkKeyValidation();
 	}
 
 	@Test
-	public void checkKeyValidationTest() {
+	public void checkKeyValidationTest() throws RegBaseCheckedException {
+
+		String machineId = "machineId";
+		String centerId = "centerId";
+		String refId = centerId + "_" + machineId;
 		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(Timestamp.valueOf(("2019-03-28 13:00:57.172")));
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
+		Mockito.when(userOnboardDAO.getStationID(Mockito.anyString())).thenReturn(machineId);
+		Mockito.when(userOnboardDAO.getCenterID(machineId)).thenReturn(centerId);
+		Mockito.when(policySyncDAO.getPublicKey(refId)).thenReturn(keyStore);
 		policySyncServiceImpl.checkKeyValidation();
 	}
 

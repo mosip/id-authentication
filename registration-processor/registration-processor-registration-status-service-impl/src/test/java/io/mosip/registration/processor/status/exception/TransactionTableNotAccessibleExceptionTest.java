@@ -6,14 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.TransactionService;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TransactionTableNotAccessibleExceptionTest {
 
 	@Mock
@@ -28,7 +28,8 @@ public class TransactionTableNotAccessibleExceptionTest {
 		TransactionTableNotAccessibleException ex = new TransactionTableNotAccessibleException(
 				PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage());
 
-		Mockito.when(registrationTransactionService.addRegistrationTransaction(registrationTransactionDto)).thenThrow(ex);
+		Mockito.when(registrationTransactionService.addRegistrationTransaction(registrationTransactionDto))
+				.thenThrow(ex);
 		try {
 
 			registrationTransactionService.addRegistrationTransaction(registrationTransactionDto);
@@ -36,8 +37,8 @@ public class TransactionTableNotAccessibleExceptionTest {
 		} catch (TransactionTableNotAccessibleException e) {
 			assertThat("Should throw TransactionTableNotAccessibleException with correct error codes", e.getErrorCode()
 					.equalsIgnoreCase(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getCode()));
-			assertThat("Should throw TransactionTableNotAccessibleException  with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage()));
+			assertThat("Should throw TransactionTableNotAccessibleException  with correct messages", e.getErrorText()
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage()));
 
 		}
 

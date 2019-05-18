@@ -1,0 +1,8 @@
+{
+	"locationname" : "string",
+	"Kernel_ValidateLocationByName_city":"string",
+	"Kernel_ValidateLocationByName_localAuthority":"string",
+	"Kernel_ValidateLocationByName_province":"String",
+	"Kernel_ValidateLocationByName_Region":"string",
+	"Kernel_ValidateLocationByName_response_time":"string"
+}

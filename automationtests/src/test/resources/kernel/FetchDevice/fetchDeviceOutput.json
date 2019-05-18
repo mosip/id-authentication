@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 []
 =======
 [{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"valid","Test case Name":"allValid_smoke_with_lang","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"valid","Test case Name":"allValid_smoke_with_lang_and_deviceType","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"invalid","languagecode":"valid","Test case Name":"invalid_deviceType_unexisting","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"invalid","Test case Name":"invalid_languagecode_blank_with_deviceType","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"invalid","Test case Name":"invalid_languagecode_unexisting","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"invalid","Test case Name":"invalid_languagecode_unexisting_with_deviceType","status":"Pass"}]
 >>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
+=======
+[{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"valid","Test case Name":"allValid_smoke_with_lang","status":"Pass"},{"Jira ID":"MOS-8263","deviceType":"valid","languagecode":"valid","Test case Name":"allValid_smoke_with_lang_and_deviceType","status":"Pass"}]
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -27,10 +27,11 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.dbdto.RegistrationCenterDto;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -44,44 +45,39 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 
 	public GetRegCenterByIDTimestamp() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 	
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetRegCenterByIDTimestamp.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String fetchRegCenter = "/v1/masterdata/registrationcenters/validate/{id}/{langCode}/{timestamp}";
-	static String dest = "";
-	static String folderPath = "kernel/GetRegCenterByID_timestamp";
-	static String outputFile = "GetRegCenterByreg_timeOutput.json";
-	static String requestKeyFile = "GetRegCenterByreg_timeInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
+	private boolean status = false;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private AssertKernel assertKernel = new AssertKernel();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String fetchRegCenter = props.get("fetchRegCenter");
+	private String folderPath = "kernel/GetRegCenterByID_timestamp";
+	private String outputFile = "GetRegCenterByreg_timeOutput.json";
+	private String requestKeyFile = "GetRegCenterByreg_timeInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
+	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
+
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
+		cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetRegCenterByIDTimestamp")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-		//CommonLibrary.configFileWriter(folderPath,requestKeyFile,"DemographicCreate","smokePreReg");
+	public Object[][] readData1(ITestContext context) throws Exception {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -102,45 +98,33 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When GET request is sent to /masterdata/v1.0/registrationcenters/validate/{id}/{timestamp}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="GetRegCenterByIDTimestamp")
-	public void getRegCenterByID_Timestamp(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
-    {
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
+	public void getRegCenterByIDTimestamp(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+    {		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
+		 
+		// Calling the get method 
+		Response res=applicationLibrary.getRequestPathPara(fetchRegCenter, actualRequest,cookie);
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
-		Response res=applicationLibrary.getRequestPathPara(fetchRegCenter, actualRequest);
-		
-		/*
-		   Removing of unstable attributes from response
-		*/
-		
-		outerKeys.add("timestamp");
-		innerKeys.add("errorMessage");
-		
-		/*
-		 * Comparing expected and actual response
-		 */
-		
+		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
 		listOfElementToRemove.add("responsetime");
 		
-		
+		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
     	  
-    	  if(testCaseName.contains("smoke"))
+    	  if(testCaseName.contains("Kernel_GetRegCenterByID_timestamp_smoke"))
     	  {
-//    		  String id= (actualRequest.get("id").toString());
-//	             String queryStr = "SELECT master.registration_center.* FROM master.registration_center WHERE id='"+id+"'";
-//				boolean valid = KernelMasterDataR.masterDataDBConnection(RegistrationCenterDto.class,queryStr);
-//				System.out.println("status------>"+valid);
+
+    		    /*String id= (actualRequest.get("id").toString());
+
+	            String queryStr = "SELECT master.registration_center.* FROM master.registration_center WHERE id='"+id+"'";
+				boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");*/
+
 			if(status)
 					{
 						finalStatus ="Pass";
@@ -148,7 +132,6 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 					else
 					{
 		 				finalStatus ="Fail";
-						//break;
 					}
     	  }else	            
 				finalStatus = "Pass";
@@ -157,10 +140,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -171,6 +151,7 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

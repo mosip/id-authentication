@@ -18,6 +18,7 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,6 +108,13 @@ public class PreRegistrationDataSyncServiceTest {
 		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "5");
+		
+		//Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+		
+		preRegistrationDataSyncServiceImpl.setBaseGlobalMap(applicationMap);
+
 	}
 
 	@AfterClass
@@ -127,6 +135,16 @@ public class PreRegistrationDataSyncServiceTest {
 		responseData.put("preRegistrationIds", map);
 
 		postResponse.put("response", responseData);
+		mockPreRegServices(postResponse);
+
+		mockEncryptedPacket();
+
+		preRegistrationDataSyncServiceImpl.getPreRegistrationIds("System");
+
+	}
+
+	protected void mockPreRegServices(LinkedHashMap<String, Object> postResponse)
+			throws RegBaseCheckedException, SocketTimeoutException {
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(),Mockito.anyString())).thenReturn(postResponse);
 		// Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
@@ -138,6 +156,15 @@ public class PreRegistrationDataSyncServiceTest {
 		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+	}
+	
+	@Test
+	public void getPreRegistrationsAlternateFlowTest()
+			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+
+		LinkedHashMap<String, Object> postResponse = new LinkedHashMap<>();
+
+		mockPreRegServices(postResponse);
 
 		mockEncryptedPacket();
 
@@ -169,6 +196,26 @@ public class PreRegistrationDataSyncServiceTest {
 		// PreRegistrationList());
 
 		mockEncryptedPacket();
+
+		ResponseDTO responseDTO = preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
+		assertNotNull(responseDTO);
+
+	}
+	
+	@Test
+	public void getPreRegistrationAlternateTest()
+			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
+				.thenReturn(getTestPacketData());
+		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(syncTransaction);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
+
+		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
+		// PreRegistrationList());
+
 
 		ResponseDTO responseDTO = preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 		assertNotNull(responseDTO);
@@ -226,6 +273,23 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegistrationList.setPacketPath(file.getAbsolutePath());
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
+		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
+		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
+
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+	
+	@Test
+	public void fetchAndDeleteRecordsAlternateTest() throws java.io.IOException {
+		File file = new File("testDeletePac.txt");
+		file.createNewFile();
+		List<PreRegistrationList> preRegList = new ArrayList<>();
+		PreRegistrationList preRegistrationList = new PreRegistrationList();
+		preRegistrationList.setPacketPath(file.getAbsolutePath());
+		preRegList.add(preRegistrationList);
+		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(null);
 		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
 		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
 

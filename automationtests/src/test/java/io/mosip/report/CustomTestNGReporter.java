@@ -614,6 +614,10 @@ public class CustomTestNGReporter implements IReporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+<<<<<<< HEAD
 		return model.getParent().getVersion();
+=======
+		return "0.11.2";
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 	}
 }

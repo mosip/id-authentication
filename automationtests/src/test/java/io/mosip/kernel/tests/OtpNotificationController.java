@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -14,7 +15,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
-import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
@@ -28,8 +28,9 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
@@ -43,44 +44,37 @@ import io.restassured.response.Response;
 public class OtpNotificationController extends BaseTestCase implements ITest{
 
 	public OtpNotificationController() {
-		// TODO Auto-generated constructor stub
+		
 		super();
 	}
-	/**
-	 *  Declaration of all variables
-	 */
+	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(OtpNotificationController.class);
 	protected static String testCaseName = "";
-	static SoftAssert softAssert=new SoftAssert();
-	public static JSONArray arr = new JSONArray();
-	boolean status = false;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static AssertKernel assertKernel = new AssertKernel();
-	private static final String otpNotifier = "/v1/otpnotifier/otp/send";
-	static String dest = "";
-	static String folderPath = "kernel/OtpNotificationController";
-	static String outputFile = "OtpNotificationControllerOutput.json";
-	static String requestKeyFile = "OtpNotificationControllerInput.json";
-	static JSONObject Expectedresponse = null;
-	String finalStatus = "";
-	static String testParam="";
-	/*
-	 * Data Providers to read the input json files from the folders
-	 */
+	private SoftAssert softAssert=new SoftAssert();
+	public JSONArray arr = new JSONArray();
+	private boolean status = false;
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String otpNotifier =props.get("otpNotifier");
+	private String folderPath = "kernel/OtpNotificationController";
+	private String outputFile = "OtpNotificationControllerOutput.json";
+	private String requestKeyFile = "OtpNotificationControllerInput.json";
+	private JSONObject Expectedresponse = null;
+	private String finalStatus = "";
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
+
+	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
+		 cookie=auth.getAuthForRegistrationAdmin();
 	} 
 	
-	/**
-	 * @return input jsons folders
-	 * @throws Exception
-	 */
+	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "OtpNotificationController")
-	public static Object[][] readData1(ITestContext context) throws Exception {
-	
+	public Object[][] readData1(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		switch (testParam) {
 		case "smoke":
@@ -92,42 +86,31 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 		}
 	}
 	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * otpNotificationController
 	 * Given input Json as per defined folders When GET request is sent to /otpnotifier/v1.0/otp/send
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider="OtpNotificationController")
 	public void otpNotificationController(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
+		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		@SuppressWarnings("unchecked")
 		
-		/*
-		 * Calling POST mathod 
-		 */
-		Response res=applicationLibrary.postRequest(actualRequest, otpNotifier);
+		//Calling POST method 
+		Response res=applicationLibrary.postRequest(actualRequest, otpNotifier,cookie);
 		
-		/*
-		 *  Removing of unstable attributes from response
-		 */
-		
+		// Removing of unstable attributes from response
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
 		outerKeys.add("timestamp");
-		//innerKeys.add("errorMessage");
 		
-		/*
-		 * Comparing expected and actual response
-		 */
-		
-		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
+		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
             
@@ -137,10 +120,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -151,6 +131,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 }
+		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
@@ -158,7 +139,6 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {
-			
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -166,9 +146,7 @@ public class OtpNotificationController extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
 				f.set(baseTestMethod, OtpNotificationController.testCaseName);
-
 				
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());

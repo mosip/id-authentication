@@ -39,7 +39,6 @@ public class RegistrationConstants {
 	public static final String SYNC_STATUS = "/fxml/RegPacketStatus.fxml";
 	public static final String ONHOLD_PAGE = "/fxml/OnholdComment.fxml";
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
-	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
 	public static final String USER_AUTHENTICATION = "/fxml/Authentication.fxml";
 	public static final String WEB_CAMERA_PAGE = "/fxml/WebCamera.fxml";
 	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
@@ -63,7 +62,15 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_PANE = "exceptionPane";
 	public static final String BIOMETRIC_EXCEPTION = "biometricException";
 	public static final String FINGER_PANE = "fingerPane";
+	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
+	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
+	public static final String MDM_ENVIRONMENT = "DEV";
+	public static final int MDM_TIMEOUT = 1000;
+	public static final String MDM_VERSION="0.1";
+	
 	public static final String IRIS_PANE = "irisPane";
+	public static final String IRIS_SINGLE = "IRIS_SINGLE";
+	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
 	public static final String IRIS_CAPTURE = "irisCapture";
 	public static final String FACE_CAPTURE = "faceCapture";
@@ -215,10 +222,9 @@ public class RegistrationConstants {
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
 	public static final String AGE_DATEPICKER_CONTENT = "ageDatePickerContent";
-
-	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
-	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
+	
 	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
+	public static final String IS_LOW_QUALITY_BIOMETRICS = "Low Quality Biometrics";
 
 	// Reasons for Exception
 	public static final String MISSING_BIOMETRICS = "Missing biometrics";
@@ -258,10 +264,21 @@ public class RegistrationConstants {
 	public static final String UIN_UPDATE_OPERATORAUTHENTICATIONPANE = "operatorAuthenticationPane";
 	public static final String UIN_UPDATE_UINUPDATENAVLBL = "uinUpdateNavLbl";
 	public static final String LOSTUINLBL = "/lostuin";
-	public static final String PUBLIC_KEY_REF_ID = "packet-encryption-key"; 
+	public static final String UIN_UPDATE_NAME_LBL = "Name";
+	public static final String UIN_UPDATE_AGE_LBL = "Age/DOB";
+	public static final String UIN_UPDATE_ADDRESS_LBL = "Address";
+	public static final String UIN_UPDATE_PHONE_LBL = "Phone";
+	public static final String UIN_UPDATE_EMAIL_LBL = "Email";
+	public static final String UIN_UPDATE_FOREIGNER_LBL = "Foreigner/National";
+	public static final String UIN_UPDATE_GENDER_LBL = "Gender";
+	public static final String MALE_CODE = "MLE";
+	public static final String FEMALE_CODE = "FLE";
 
-	// onBoard User
-	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
+	public static final String UIN_UPDATE_PARENT_DETAILS_LBL = "Parent/Guardian details";
+	public static final String UIN_UPDATE_CNIE_NUMBER_LBL = "CNIE/PIN/Residence Card Number";
+	public static final String UIN_UPDATE_BIOMETRICS_LBL = "Biometrics";
+
+	// onBoard User	
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
 	public static final String ONBOARD_IMG_PATH = "images/tick.png";
 
@@ -283,6 +300,8 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_STATUSCOMMENT = "statusComment";
 	public static final String EOD_PROCESS_ACKNOWLEDGEMENTFORMPATH = "acknowledgementFormPath";
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
+	public static final String EXPORT_FILE_NAME = "PendingApprovalList";
+	public static final String EXPORT_FILE_TYPE = ".csv";
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
@@ -294,6 +313,8 @@ public class RegistrationConstants {
 	public static final String PACKET_META_JSON_NAME = "packet_meta_info.json";
 	public static final String PACKET_DATA_HASH_FILE_NAME = "packet_data_hash.txt";
 	public static final String PACKET_OSI_HASH_FILE_NAME = "packet_osi_hash.txt";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO_NAME = "_exception_photo.jpg";
+	public static final String PACKET_INTRODUCER_EXCEP_PHOTO = "_exception_photo";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
@@ -301,6 +322,7 @@ public class RegistrationConstants {
 	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
 	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
+	public static final String AUTHENTICATION_BIO_CBEFF_FILE_NAME = "authentication_bio_CBEFF.xml";
 	public static final String INDIVIDUAL = "INDIVIDUAL";
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String PARENT = "PARENT";
@@ -365,6 +387,7 @@ public class RegistrationConstants {
 	public static final String AUTH_REQUIRED = "service.authrequired";
 	public static final String SIGN_REQUIRED = "service.signrequired";
 	public static final String AUTH_TYPE = "BASIC";
+	public static final String REQUEST_SIGN_REQUIRED = "service.requestsignrequired";
 
 	// OTP Related Details
 	public static final String OTP_GENERATOR_SERVICE_NAME = "otp_generator";
@@ -618,10 +641,7 @@ public class RegistrationConstants {
 	public static final String USER_REG_SCAN_EXP_CODE = "SCN-";
 
 	// USER CLIENT MACHINE MAPPING
-	public static final String MACHINE_MAPPING_CREATED = "created";
-	public static final String MACHINE_MAPPING_UPDATED = "updated";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
-	public static final String DEVICE_MAPPING_LOGGER_TITLE = "REGISTRATION - CENTER MACHINE DEVICE MAPPING";
 	public static final String SYNC_TRANSACTION_DAO_LOGGER_TITLE = "REGISTRATION-SYNC-TRANSACTION DAO";
 	public static final String SYNC_JOB_CONTROL_DAO_LOGGER_TITLE = "REGISTRATION-SYNC-JOB_CONTROL DAO";
 
@@ -629,12 +649,7 @@ public class RegistrationConstants {
 	public static final String DEVICE_MAPPING_SUCCESS_CODE = "REG-DVO‌-001";
 	public static final String DEVICE_MAPPING_ERROR_CODE = "REG-DVO‌-002";
 
-	// MAP ID
-	public static final String USER_MACHINE_MAPID = "ListOfUserDTO";
 
-	// ACTIVE INACTIVE USER
-	public static final String USER_ACTIVE = "Active";
-	public static final String USER_IN_ACTIVE = "In-Active";
 
 	// Upload Packet
 
@@ -686,6 +701,7 @@ public class RegistrationConstants {
 	public static final String SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ = "mosip.registration.softwareUpdateCheck_configured_frequency";
 
 	/** Packet Status Sync Constants */
+	public static final String SYNC_PROGRESS_BAR_VALUE = "syncProgressVlaue";
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
 	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
 	public static final String PACKET_STATUS_READER_URL_PARAMETER = "request";
@@ -710,25 +726,17 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_PRE_SYNC = "PRE_SYNC";
 	public static final String PACKET_STATUS_SYNC_TYPE = "NEW";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
+	public static final String ACKNOWLEDGEMENT_FILE_EXTENSION = "_Ack.html";
 	public static final String PACKET_SYNC_ERROR = "Error";
 	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 
 	// Device On-boarding
-	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
-	public static final String DEVICE_MODEL_NAME = "modelName";
-	public static final String DEVICE_SERIAL_NO = "serialNo";
-	public static final String ONBOARD_AVAILABLE_DEVICES = "availableDevices";
-	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
-	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
-	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
 	public static final String MAC_ADDRESS = "macaddress";
-	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
-	public static final String DEVICE_TYPES_ALL_OPTION = "All";
-	public static final String DEVICE_TYPE = "deviceType";
 	public static final String DONGLE_SERIAL_NUMBER = "dongleSerialNumber";
-
+	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
+	
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_1 = "reg-ack-template-part1";
@@ -782,9 +790,10 @@ public class RegistrationConstants {
 	public static final String DOC_SCAN_CONTRAST = "mosip.registration.document_scanner_contrast";
 	public static final String DOC_SCAN_BRIGHTNESS = "mosip.registration.document_scanner_brightness";
 	public static final String DOC_SCANNER_ENABLED = "mosip.registration.document_scanner_enabled";
+	public static final String SCANNER_IMG_TYPE = "jpg";
 	public static final String IDENTITY_CLASS_NAME = "mosip.registration.identity_class_name";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
-	public static final String ASYMMETRIC_ALG_NAME = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
+	public static final String ASYMMETRIC_ALG_NAME = "RSA";
 	public static final String CBEFF_UNQ_TAG = "mosip.registration.cbeff_only_unique_tags";
 	public static final String REG_PKT_SIZE = "mosip.registration.max_reg_packet_size";
 	public static final String LOGS_PATH = "mosip.registration.logs_path";
@@ -929,8 +938,13 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
-	public static final Set<String> BIO_TYPE = new HashSet<>(Arrays.asList(RegistrationConstants.HAND,RegistrationConstants.THUMB));
+	public static final Set<String> BIO_TYPE = new HashSet<>(
+			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
+	public static final String LEFTSLAPCOUNT = "leftSlapCount";
+	public static final String RIGHTSLAPCOUNT = "rightSlapCount";
+	public static final String THUMBCOUNT = "thumbCount";
 
+	
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
 
@@ -958,8 +972,6 @@ public class RegistrationConstants {
 	public static final String PACKET_RETRIVE_STATUS = REG_SERVICE_CODE + "RPS-218";
 	public static final String MACHINE_MAPPING_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "RDI-219";
 	public static final String MACHINE_MAPPING_STATIONID_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "UMM-220";
-	public static final String MACHINE_MAPPING_CENTERID_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "UMM-221";
-	public static final String MACHINE_MAPPING_USERLIST_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "UMM-222";
 	public static final String SYNC_STATUS_VALIDATE = REG_SERVICE_CODE + "SSV-223";
 	public static final String MACHINE_MASTER_RECORD_NOT_FOUND = REG_SERVICE_CODE + "MMD-224";
 	public static final String PACKET_META_CONVERTOR = REG_SERVICE_CODE + "PMC-225";
@@ -973,8 +985,6 @@ public class RegistrationConstants {
 
 	// Device Onboarding Service
 	private static final String DEVICE_ONBOARDING_SERVICE = REG_SERVICE_CODE + "DVO-";
-	public static final String FETCH_DEVICE_TYPES_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-230";
-	public static final String FETCH_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-231";
 	public static final String UPDATE_DEVICE_MAPPING_EXCEPTION = DEVICE_ONBOARDING_SERVICE + "MMS-232";
 
 	// Exceptions
@@ -985,23 +995,6 @@ public class RegistrationConstants {
 	public static final String REG_UI_HOMEPAGE_LOADER_EXCEPTION = REG_UI_CODE + "ROC-003";
 	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE + "BAS-004";
 	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE + "VAF-005";
-
-	// Exceptions for Device Onboarding
-	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
-	public static final String DEVICE_ONBOARD_INITIALIZATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-001";
-	public static final String DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-002";
-	public static final String DEVICE_ONBOARD_MAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-003";
-	public static final String DEVICE_ONBOARD_UNMAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-004";
-	public static final String DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-005";
-	public static final String DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-006";
-	public static final String DEVICE_ONBOARD_DEVICE_UPDATING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-007";
-	public static final String DEVICE_ONBOARD_DEVICE_FILTERING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-008";
-	public static final String DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-009";
-	public static final String DEVICE_ONBOARD_DEVICE_FETCHING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-010";
-	public static final String DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-011";
-	public static final String DEVICE_ONBOARD_FILTER_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-012";
-	public static final String DEVICE_ONBOARD_FILTER_LIST_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-013";
-	public static final String DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-014";
 
 	// Exceptions for User Registration - Iris & FingerPrint Capture
 	public static final String USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP = USER_REG_IRIS_CAPTURE_EXP_CODE + "ICC-001";
@@ -1031,12 +1024,13 @@ public class RegistrationConstants {
 
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
-
+	
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
 	public static final String ADDRESS_LINE1_REGEX = "^.{1,50}$";
 	public static final String NUMBER_REGEX = "\\d+";
+	public static final String NUMBER_OR_NOTHING_REGEX = "^\\d*$";
 	public static final String FOUR_NUMBER_REGEX = "\\d{4}";
 	public static final String NUMBER_REGEX_ZERO_TO_THREE = "\\d{0,3}";
 	public static final int MOBILE_NUMBER_LENGTH = 9;
@@ -1062,6 +1056,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
+	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
 	public static final String MASTER_SYNC_LOGGER_INFO = "Entering into Master Sync Dao Impl...";
@@ -1104,14 +1099,6 @@ public class RegistrationConstants {
 	public static final String NO_JOBS_RUNNING = "NO_JOBS_RUNNING";
 	public static final String JOB_UNKNOWN = "UNKNOWN";
 
-	// Machine Mapping
-	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "MACHINE_MAPPING_SUCCESS_MESSAGE";
-	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "MACHINE_MAPPING_ERROR_MESSAGE";
-	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE";
-	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS";
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = "DEVICE_MAPPING_SUCCESS_MESSAGE";
-	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "DEVICE_MAPPING_ERROR_MESSAGE";
-
 	// PACKET
 	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "PACKET_STATUS_SYNC_ERROR_RESPONSE";
 	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "PACKET_STATUS_SYNC_SUCCESS_MESSAGE";
@@ -1127,7 +1114,7 @@ public class RegistrationConstants {
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "REG_PKT_APPRVL_CNT_EXCEED";
 	public static final String REG_PKT_APPRVL_TIME_EXCEED = "REG_PKT_APPRVL_TIME_EXCEED";
-	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
+	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "OPT_TO_REG_TIME_EXPORT_EXCEED";
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "OPT_TO_REG_TIME_SYNC_EXCEED";
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "OPT_TO_REG_REACH_MAX_LIMIT";
 	public static final String OPT_TO_REG_OUTSIDE_LOCATION = "OPT_TO_REG_OUTSIDE_LOCATION";
@@ -1190,6 +1177,7 @@ public class RegistrationConstants {
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
 	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
 	public static final String USER_ID_CODE = "USERID";
@@ -1240,6 +1228,8 @@ public class RegistrationConstants {
 			.concat("addressLine3.[*].value");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
+	public static String CNI_MANDATORY = String.valueOf(false);
+
 	public static final String REGEX = "regex";
 	public static final String IS_MANDATORY = "isMandatory";
 	public static final String IS_FIXED = "isFixed";
@@ -1283,7 +1273,7 @@ public class RegistrationConstants {
 	public static final String ERRORS = "errors";
 	public static final String ERROR_MSG = "message";
 	public static final String OK_MSG = "ok";
-	public static final String NEW_LINE = "\\n";
+	public static final String NEW_LINE = "\n";
 
 	public static final String ATTR_INDIVIDUAL_TYPE = "individualTypeCode";
 	public static final String ATTR_DATE_OF_BIRTH = "dateofbirth";
@@ -1311,15 +1301,29 @@ public class RegistrationConstants {
 
 	// TODO Need to discuss with Sravya about code
 	public static String INITIAL_SETUP = "mosip.registration.initial_setup";
-	
-	public static final String SIGNED_KEY="signed-key";
-	public static final String TIME_STAMP="timeStamp";
-	public static final String REF_ID="referenceId";
-	public static final String PUBLIC_KEY_ISSUES_DATE="issuedAt";
-	public static final String PUBLIC_KEY_EXPIRE_DATE="expiryAt";
-	public static final String PUBLIC_KEY="publicKey";
-	public static final String PUBLIC_KEY_REST="public_key";
-	public static final String KER="KER";
-	public static final String DTAE_MONTH_YEAR_REGEX="dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage";
 
+	public static final String SIGNED_KEY = "signed-key";
+	public static final String TIME_STAMP = "timeStamp";
+	public static final String REF_ID = "referenceId";
+	public static final String PUBLIC_KEY_ISSUES_DATE = "issuedAt";
+	public static final String PUBLIC_KEY_EXPIRE_DATE = "expiryAt";
+	public static final String PUBLIC_KEY = "publicKey";
+	public static final String PUBLIC_KEY_REST = "public_key";
+	public static final String KER = "KER";
+	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
+
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
+	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
+
+	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
+	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
+	public static String CANCEL_MSG = "CANCEL_LABEL";
+	public static final String PUBLIC_KEY_REF_ID = "packet-encryption-key";
+	public static final String USER_DETAIL_SALT_SERVICE_NAME = "user_salt_details";
+	public static final String SERVICES_VERSION_KEY = "mosip.reg.services.current.version";
+
+	// TPM
+	public static final byte[] NULL_VECTOR = new byte[0];
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	
 }

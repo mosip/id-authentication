@@ -1,0 +1,10 @@
+{
+  "timestamp": 1548393510894,
+  "status": 400,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-999",
+      "errorMessage": "request.langCode: Language code not supported"
+    }
+  ]
+}

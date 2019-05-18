@@ -147,7 +147,12 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_APP_015
 	 */
-	PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO("Page size must be greater than zero"),;
+	PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO("Page size must be greater than zero"),
+
+	/**
+	 * PRG_PAM_APP_017
+	 */
+	INVALID_PREID_FOR_USER("Requested preregistration id does not belong to the user");
 
 	private ErrorMessages(String message) {
 		this.message = message;

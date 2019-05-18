@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -31,6 +32,7 @@ export class CenterSelectionComponent implements OnInit {
   showMessage = false;
   enableNextButton = false;
   bookingDataList = [];
+  errorlabels: any;
   step = 0;
   showDescription = false;
   mapProvider = 'OSM';
@@ -53,15 +55,20 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.REGISTRATION_CENTRES = [];
-    // this.dataSource.data = REGISTRATION_CENTRES;
     this.selectedCentre = null;
-    //  this.getLocation();
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['response']['locations'];
       console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
     this.getRecommendedCenters();
+    this.getErrorLabels();
+  }
+
+  getErrorLabels() {
+    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.errorlabels = response['error'];
+    });
   }
 
   getRecommendedCenters() {
@@ -123,10 +130,12 @@ export class CenterSelectionComponent implements OnInit {
               this.displayResults(response['response']);
             } else {
               this.showMessage = true;
+              this.selectedCentre = null;
             }
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
     }
@@ -164,6 +173,7 @@ export class CenterSelectionComponent implements OnInit {
           },
           error => {
             this.showMessage = true;
+            this.displayMessageError('Error', this.errorlabels.error);
           }
         );
       });
@@ -230,5 +240,20 @@ export class CenterSelectionComponent implements OnInit {
       this.selectedRow(this.REGISTRATION_CENTRES[0]);
       this.dispatchCenterCoordinatesList();
     }
+  }
+  displayMessageError(title: string, message: string) {
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
   }
 }

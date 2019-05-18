@@ -1,0 +1,10 @@
+{
+  "timestamp": 1549366186816,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-NOT-002",
+      "errorMessage": "Invalid notification type found"
+    }
+  ]
+}

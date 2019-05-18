@@ -2,6 +2,7 @@
 package io.mosip.registration.processor.packet.storage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
@@ -30,6 +31,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -45,27 +47,44 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
+import io.mosip.registration.processor.packet.storage.entity.AbisApplicationEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisApplicationPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
+import io.mosip.registration.processor.packet.storage.entity.AbisRequestPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
+import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class PacketInfoManagerImplTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Utilities.class })
+@PrepareForTest({ Utilities.class, PacketInfoMapper.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketInfoManagerImplTest {
 
@@ -77,11 +96,9 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-
 	/** The applicant demographic repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> applicantDemographicRepository;
-
 
 	/** The demographic dedupe repository. */
 	@Mock
@@ -105,12 +122,41 @@ public class PacketInfoManagerImplTest {
 
 	/** The reg abis ref entity. */
 	@Mock
-	RegAbisRefEntity regAbisRefEntity;
+	private RegAbisRefEntity regAbisRefEntity;
 
 	/** The manual verfication repository. */
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
+	/** The reg bio ref repository. */
+	@Mock
+	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
+
+	/** The reg bio ref entity. */
+	@Mock
+	private RegBioRefEntity regBioRefEntity;
+
+	/** The reg abis request repository. */
+	@Mock
+	private BasePacketRepository<AbisRequestEntity, String> regAbisRequestRepository;
+
+	/** The abis request entity. */
+	@Mock
+	private AbisRequestEntity abisRequestEntity;
+
+	/** The reg abis application repository. */
+	@Mock
+	private BasePacketRepository<AbisApplicationEntity, String> regAbisApplicationRepository;
+
+	/** The abis application entity. */
+	@Mock
+	private AbisApplicationEntity abisApplicationEntity;
+
+	@Mock
+	PacketInfoMapper packetInfoMapper;
+	
+	@Mock
+	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
 	/** The byte array. */
 	byte[] byteArray = null;
 
@@ -132,12 +178,14 @@ public class PacketInfoManagerImplTest {
 	/** The Constant CONFIG_SERVER_URL. */
 	private static final String CONFIG_SERVER_URL = "url";
 
+	/** The identity mappingjson string. */
 	private String identityMappingjsonString;
 
 	/**
 	 * Setup.
 	 *
 	 * @throws Exception
+	 *             the exception
 	 */
 	@Before
 	public void setup() throws Exception {
@@ -489,10 +537,6 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	
-
-	
-
 	/**
 	 * Save demographic info json test.
 	 */
@@ -519,7 +563,7 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229",metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -529,7 +573,7 @@ public class PacketInfoManagerImplTest {
 	public void demographicDedupeUnableToInsertDataTest() {
 
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229", metaDataList);
 
 	}
 
@@ -540,7 +584,7 @@ public class PacketInfoManagerImplTest {
 	public void identityNotFoundExceptionTest() {
 
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn(null);
-		packetInfoManagerImpl.saveDemographicInfoJson(byteArray,"2018782130000224092018121229", metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, "2018782130000224092018121229", metaDataList);
 	}
 
 	/**
@@ -588,8 +632,6 @@ public class PacketInfoManagerImplTest {
 
 	}
 
-	
-
 	/**
 	 * Find demo by id test.
 	 *
@@ -635,24 +677,23 @@ public class PacketInfoManagerImplTest {
 	 *
 	 * @return the applicant finger print image name by id test
 	 */
-	/*@Test
-	public void getApplicantFingerPrintImageNameByIdTest() {
-		List<String> applicantFingerPrintImages = new ArrayList<>();
-		applicantFingerPrintImages.add("LeftThumb");
-		applicantFingerPrintImages.add("RightThumb");
-
-		Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(anyString()))
-				.thenReturn(applicantFingerPrintImages);
-
-		List<String> resultList = packetInfoManagerImpl
-				.getApplicantFingerPrintImageNameById("2018782130000103122018100224");
-		assertEquals(
-				"Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb",
-				"LeftThumb", resultList.get(0));
-
-	}*/
-
-	
+	/*
+	 * @Test public void getApplicantFingerPrintImageNameByIdTest() { List<String>
+	 * applicantFingerPrintImages = new ArrayList<>();
+	 * applicantFingerPrintImages.add("LeftThumb");
+	 * applicantFingerPrintImages.add("RightThumb");
+	 * 
+	 * Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(anyString()))
+	 * .thenReturn(applicantFingerPrintImages);
+	 * 
+	 * List<String> resultList = packetInfoManagerImpl
+	 * .getApplicantFingerPrintImageNameById("2018782130000103122018100224");
+	 * assertEquals(
+	 * "Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb"
+	 * , "LeftThumb", resultList.get(0));
+	 * 
+	 * }
+	 */
 
 	/**
 	 * Test get reg idby UIN.
@@ -695,9 +736,6 @@ public class PacketInfoManagerImplTest {
 		List<String> resultList = packetInfoManagerImpl.getRidByReferenceId(referenceId);
 		assertEquals("27847657360002520181208094056", resultList.get(0));
 	}
-
-
-	
 
 	/**
 	 * Test save manual adjudication data success.
@@ -749,4 +787,293 @@ public class PacketInfoManagerImplTest {
 		regAbisRefDto.setReg_id("1234");
 		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
 	}
+
+	/**
+	 * Test save bio ref success.
+	 */
+	@Test
+	public void testSaveBioRefSuccess() {
+		Mockito.when(regBioRefRepository.save(any())).thenReturn(regBioRefEntity);
+		RegBioRefDto regBioRefDto = new RegBioRefDto();
+		regBioRefDto.setBioRefId("abc-efg-123");
+		regBioRefDto.setRegId("1234567890");
+		packetInfoManagerImpl.saveBioRef(regBioRefDto);
+	}
+
+	/**
+	 * Test save bio ref exception.
+	 */
+	@Test(expected = UnableToInsertData.class)
+	public void testSaveBioRefException() {
+		Mockito.when(regBioRefRepository.save(any())).thenThrow(exp);
+		RegBioRefDto regBioRefDto = new RegBioRefDto();
+		regBioRefDto.setBioRefId("abc-efg-123");
+		regBioRefDto.setRegId("1234567890");
+		packetInfoManagerImpl.saveBioRef(regBioRefDto);
+	}
+
+	/**
+	 * Test save abis request success.
+	 */
+	@Test
+	public void testSaveAbisRequestSuccess() {
+		Mockito.when(regAbisRequestRepository.save(any())).thenReturn(regAbisRefEntity);
+		AbisRequestDto dto = new AbisRequestDto();
+		dto.setBioRefId("abc-efg-123");
+		dto.setRequestType("INSERT");
+		packetInfoManagerImpl.saveAbisRequest(dto);
+	}
+
+	/**
+	 * Test save abis request exception.
+	 */
+	@Test(expected = UnableToInsertData.class)
+	public void testSaveAbisRequestException() {
+		Mockito.when(regAbisRequestRepository.save(any())).thenThrow(exp);
+		AbisRequestDto dto = new AbisRequestDto();
+		dto.setBioRefId("abc-efg-123");
+		dto.setRequestType("INSERT");
+		packetInfoManagerImpl.saveAbisRequest(dto);
+	}
+
+	/**
+	 * Test get demo list by transaction id.
+	 */
+	@Test
+	public void testGetDemoListByTransactionId() {
+		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList = new ArrayList<>();
+		RegDemoDedupeListEntity regDemoDedupeListEntity = new RegDemoDedupeListEntity();
+		regDemoDedupeListEntity.setRegId("1234567890");
+		RegDemoDedupeListPKEntity entity = new RegDemoDedupeListPKEntity();
+		entity.setMatchedRegId("abc-efg");
+		regDemoDedupeListEntity.setId(entity);
+		regDemoDedupeListEntityList.add(regDemoDedupeListEntity);
+
+		Mockito.when(packetInfoDao.getDemoListByTransactionId(any())).thenReturn(regDemoDedupeListEntityList);
+		List<RegDemoDedupeListDto> result = packetInfoManagerImpl.getDemoListByTransactionId("abc-efg-123456");
+		assertEquals("1234567890", result.get(0).getRegId());
+	}
+
+	/**
+	 * Test get abis requests by bio ref id.
+	 */
+	@Test
+	public void testGetAbisRequestsByBioRefId() {
+		List<AbisRequestEntity> abisRequestEntityList = new ArrayList<>();
+		AbisRequestEntity entity = new AbisRequestEntity();
+		entity.setAbisAppCode("code1");
+		AbisRequestPKEntity pkEntity = new AbisRequestPKEntity();
+		pkEntity.setId("12345677");
+		entity.setId(pkEntity);
+		abisRequestEntityList.add(entity);
+		Mockito.when(packetInfoDao.getAbisRequestsByBioRefId(any())).thenReturn(abisRequestEntityList);
+		List<AbisRequestDto> result = packetInfoManagerImpl.getAbisRequestsByBioRefId("abc-efg-12345");
+		assertEquals("code1", result.get(0).getAbisAppCode());
+	}
+
+	/**
+	 * Test get all abis details.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testGetAllAbisDetails() {
+		List<AbisApplicationEntity> abisApplicationEntityList = new ArrayList<>();
+		AbisApplicationEntity abisApplicationEntity = new AbisApplicationEntity();
+		abisApplicationEntity.setName("Abis");
+		AbisApplicationPKEntity pkEntity = new AbisApplicationPKEntity();
+		pkEntity.setCode("abis");
+		abisApplicationEntity.setId(pkEntity);
+		abisApplicationEntityList.add(abisApplicationEntity);
+
+		Mockito.when(regAbisApplicationRepository.findAll(any(Class.class))).thenReturn(abisApplicationEntityList);
+
+		List<AbisApplicationDto> result = packetInfoManagerImpl.getAllAbisDetails();
+		assertEquals("Abis", result.get(0).getName());
+	}
+
+	/**
+	 * Test get bio ref id by reg id.
+	 */
+	@Test
+	public void testGetBioRefIdByRegId() {
+		List<RegBioRefEntity> regBioRefEntityList = new ArrayList<>();
+		RegBioRefEntity regBioRefEntity = new RegBioRefEntity();
+		regBioRefEntity.setBioRefId("abc-efg");
+		RegBioRefPKEntity pkEntity = new RegBioRefPKEntity();
+		pkEntity.setRegId("12345678");
+		regBioRefEntity.setId(pkEntity);
+		regBioRefEntityList.add(regBioRefEntity);
+
+		Mockito.when(packetInfoDao.getBioRefIdByRegId(any())).thenReturn(regBioRefEntityList);
+		List<RegBioRefDto> result = packetInfoManagerImpl.getBioRefIdByRegId("1234567890");
+		assertEquals("abc-efg", result.get(0).getBioRefId());
+	}
+
+	/**
+	 * Testget identify by transaction id.
+	 */
+	@Test
+	public void testgetIdentifyByTransactionId() {
+		List<AbisRequestEntity> abisRequestEntityList = new ArrayList<>();
+		AbisRequestEntity entity = new AbisRequestEntity();
+		abisRequestEntityList.add(entity);
+
+		Mockito.when(packetInfoDao.getIdentifyByTransactionId(any(), any())).thenReturn(abisRequestEntityList);
+
+		assertTrue(packetInfoManagerImpl.getIdentifyByTransactionId("abc-efg", "IDENTIFY"));
+	}
+
+	@Test
+	public void testgetAbisResponseRecords() {
+		List<AbisResponseDto> list = new ArrayList<>();
+		AbisResponseDto abisEntity = new AbisResponseDto();
+		list.add(abisEntity);
+		Mockito.when(packetInfoDao.getAbisResponseRecords(any(), any(), any())).thenReturn(list);
+		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseRecords("", "", "");
+		assertEquals(output, list);
+	}
+
+	@Test
+	public void testgetAbisResponseDetails() {
+		List<AbisResponseDetDto> list = new ArrayList<>();
+		AbisResponseDetDto abisEntity = new AbisResponseDetDto();
+		list.add(abisEntity);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisResponseDetEntityListToDto(any())).thenReturn(list);
+		List<AbisResponseDetDto> output = packetInfoManagerImpl.getAbisResponseDetails("");
+		assertEquals(output, list);
+	}
+
+	@Test
+	public void testgetInsertOrIdentifyRequest() {
+		List<AbisRequestDto> list = new ArrayList<>();
+		AbisRequestDto abisEntity = new AbisRequestDto();
+		list.add(abisEntity);
+		List<AbisRequestEntity> abisRequestEntities=new ArrayList<AbisRequestEntity>();
+		AbisRequestEntity entity=new AbisRequestEntity();
+		abisRequestEntities.add(entity);
+		Mockito.when(packetInfoDao.getInsertOrIdentifyRequest(any(), any())).thenReturn(abisRequestEntities);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisRequestEntityListToDto(any())).thenReturn(list);
+		List<AbisRequestDto> output = packetInfoManagerImpl.getInsertOrIdentifyRequest("", "");
+		assertEquals(output, list);
+	}
+	
+	@Test
+	public void testgetAbisResponseRecordswithoutTransctionId() {
+		List<AbisResponseDto> list = new ArrayList<>();
+		AbisResponseDto abisEntity = new AbisResponseDto();
+		list.add(abisEntity);
+		Mockito.when(packetInfoDao.getAbisResponseRecords(any(), any())).thenReturn(list);
+		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseRecords("", "");
+		assertEquals(output, list);
+	}
+	
+	@Test
+	public void testgetAbisResponseIDs() {
+		List<AbisResponseDto> list = new ArrayList<>();
+		AbisResponseDto abisEntity = new AbisResponseDto();
+		list.add(abisEntity);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisResponseEntityListToDto(any())).thenReturn(list);
+		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseIDs("");
+		assertEquals(output, list);
+	}
+	
+	@Test
+	public void testgetAbisResponseDetRecords() {
+		List<AbisResponseDetDto> list = new ArrayList<>();
+		AbisResponseDetDto abisEntity = new AbisResponseDetDto();
+		list.add(abisEntity);
+		Mockito.when(packetInfoDao.getAbisResponseDetailedRecords( any())).thenReturn(list);
+		List<AbisResponseDetDto> output = packetInfoManagerImpl.getAbisResponseDetRecords(new AbisResponseDto());
+		assertEquals(output, list);
+	}
+	
+	@Test
+	public void testsaveIndividualDemographicDedupe() {
+		
+		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
+		demographicData.setDateOfBirth("2019-03-02T06:29:41.011Z");
+		List<IndividualDemographicDedupeEntity> applicantDemographicEntities=new ArrayList<>();
+		IndividualDemographicDedupeEntity entity=new IndividualDemographicDedupeEntity();
+		entity.setDob("2019-03-02T06:29:41.011Z");
+		applicantDemographicEntities.add(entity);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.converDemographicDedupeDtoToEntity(any(),any())).thenReturn(applicantDemographicEntities);
+		Mockito.when(demographicDedupeRepository.save(any())).thenReturn(entity);
+		packetInfoManagerImpl.saveIndividualDemographicDedupeUpdatePacket(demographicData, "1001");
+		
+	}
+	
+	@Test(expected=UnableToInsertData.class)
+	public void testsaveIndividualDemographicDedupeException() {
+		
+		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
+		demographicData.setDateOfBirth("2019-03-02T06:29:41.011Z");
+		List<IndividualDemographicDedupeEntity> applicantDemographicEntities=new ArrayList<>();
+		IndividualDemographicDedupeEntity entity=new IndividualDemographicDedupeEntity();
+		entity.setDob("2019-03-02T06:29:41.011Z");
+		applicantDemographicEntities.add(entity);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.converDemographicDedupeDtoToEntity(any(),any())).thenReturn(applicantDemographicEntities);
+		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
+		packetInfoManagerImpl.saveIndividualDemographicDedupeUpdatePacket(demographicData, "1001");
+		
+	}
+	
+	@Test
+	public void testsaveDemoDedupePotentialData() {
+		
+		RegDemoDedupeListDto regDemoDedupeListDto=new RegDemoDedupeListDto();
+		RegDemoDedupeListEntity regDemoDedupeListEntity=new RegDemoDedupeListEntity();
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertDemoDedupeEntityToDto(any())).thenReturn(regDemoDedupeListEntity);
+		Mockito.when(regDemoDedupeListRepository.save(any())).thenReturn(new RegDemoDedupeListEntity());
+		packetInfoManagerImpl.saveDemoDedupePotentialData(regDemoDedupeListDto);
+	}
+	
+	@Test(expected=UnableToInsertData.class)
+	public void testsaveDemoDedupePotentialDataException() {
+		
+		RegDemoDedupeListDto regDemoDedupeListDto=new RegDemoDedupeListDto();
+		RegDemoDedupeListEntity regDemoDedupeListEntity=new RegDemoDedupeListEntity();
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertDemoDedupeEntityToDto(any())).thenReturn(regDemoDedupeListEntity);
+		Mockito.when(regDemoDedupeListRepository.save(any())).thenThrow(exp);
+		packetInfoManagerImpl.saveDemoDedupePotentialData(regDemoDedupeListDto);
+	}
+	
+	@Test 
+	public void testgetBatchStatusbyBatchId() {
+		Mockito.when(packetInfoDao.getBatchStatusbyBatchId(any())).thenReturn(Arrays.asList("PROCESSED","PROCESSED","PROCESSED"));
+		List<String> list=packetInfoManagerImpl.getBatchStatusbyBatchId("123312");
+		assertEquals(list.get(0),"PROCESSED");
+	}
+	
+	@Test 
+	public void testgetAbisRequestByRequestId() {
+		AbisRequestEntity entity=new AbisRequestEntity();
+		entity.setLangCode("eng");
+		List<AbisRequestEntity> abisRequestList= new ArrayList<AbisRequestEntity>();
+		abisRequestList.add(entity);
+		List<AbisRequestDto> abisRequestDtoList=new ArrayList<AbisRequestDto>();
+		AbisRequestDto dto=new AbisRequestDto();
+		dto.setLangCode("eng");
+		abisRequestDtoList.add(dto);
+		Mockito.when(packetInfoDao.getAbisRequestByRequestId(any())).thenReturn(abisRequestList);
+		PowerMockito.mockStatic(PacketInfoMapper.class);
+		Mockito.when(PacketInfoMapper.convertAbisRequestEntityListToDto(any())).thenReturn(abisRequestDtoList);
+		AbisRequestDto dt=packetInfoManagerImpl.getAbisRequestByRequestId("123312");
+		assertEquals(dt.getLangCode(),"eng");
+	}
+	
+	@Test 
+	public void testgetBatchIdByRequestId() {
+		Mockito.when(packetInfoDao.getBatchIdByRequestId(any())).thenReturn("123312");
+		String batchId=packetInfoManagerImpl.getBatchIdByRequestId("114");
+		assertEquals(batchId,"123312");
+	}
+	
+	
 }

@@ -119,12 +119,25 @@ public class AssertKernel {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static JSONObject removeElementFromBody(JSONObject responce, ArrayList<String> listOfElementToRemove) throws ParseException {
+	public static JSONObject removeElementFromBody(JSONObject response, ArrayList<String> listOfElementToRemove) throws ParseException {
 		for (String elementToRemove : listOfElementToRemove) {
-			responce.remove(elementToRemove);
+			if(response.containsKey(elementToRemove))
+				response.remove(elementToRemove);
+			else {
+				JSONObject responseJson = null;
+				if(response.containsKey("response"))
+					responseJson = (JSONObject)response.get("response");
+				else if(response.containsKey("request"))
+					responseJson = (JSONObject)response.get("request");
+				if(responseJson!=null)
+				{
+					responseJson.remove(elementToRemove);
+					response.put("response", responseJson);
+				}
+			}
 		}
 		
-		return responce;
+		return response;
 	}
 	
 	/**

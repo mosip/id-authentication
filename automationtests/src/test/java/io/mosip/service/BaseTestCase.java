@@ -1,3 +1,4 @@
+
 package io.mosip.service;
 
 
@@ -36,9 +37,15 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 
 import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
+
 import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.TokenGeneration;
+
+//import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.util.PreRegistrationLibrary;
+//import io.mosip.util.TokenGeneration;
+
 //import io.mosip.prereg.scripts.Create_PreRegistration;
 import io.restassured.RestAssured;
 /**
@@ -48,8 +55,7 @@ import io.restassured.RestAssured;
  */
 
 
-public class BaseTestCase //extends KernelMasterDataR 
-{
+public class BaseTestCase{
 
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
@@ -67,7 +73,11 @@ public class BaseTestCase //extends KernelMasterDataR
 	public static String ApplnURI;	
 	public static String authToken;
 	public static String regProcAuthToken;
+
 	public static String adminRegProcAuthToken;
+
+	
+
 	public static String environment;
 	public static String SEPRATOR="";
 	public static String buildNumber="";
@@ -146,6 +156,7 @@ public class BaseTestCase //extends KernelMasterDataR
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
 			extent.attachReporter(htmlReporter);
+
 			
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
@@ -162,6 +173,7 @@ public class BaseTestCase //extends KernelMasterDataR
 
 			//authToken=pil.getToken();
 			
+
 
 		} // End suiteSetup
 
@@ -279,7 +291,9 @@ public class BaseTestCase //extends KernelMasterDataR
 					e.printStackTrace();
 				}
 			
+
 			return model.getParent().getVersion();
+
 			
 		}
 

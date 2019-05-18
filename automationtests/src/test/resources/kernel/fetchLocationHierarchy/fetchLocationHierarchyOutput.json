@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 []
 =======
 [{"Jira ID":"MOS-8234,MOS-8233","langcode":"invalid","Test case Name":"invalid_langcode_empty","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"invalid","Test case Name":"invalid_langcode_notpresent","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"invalid","Test case Name":"invalid_langcode_withlangcodeOnly_notpresent","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"invalid_locationcode_notpresent","locationcode":"invalid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke_locationHierarchy","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke_withonlylangcode","locationcode":"valid","status":"Pass"}]
 >>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
+=======
+[{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke_locationHierarchy","locationcode":"valid","status":"Pass"},{"Jira ID":"MOS-8234,MOS-8233","langcode":"valid","Test case Name":"valid_smoke_withonlylangcode","locationcode":"valid","status":"Pass"}]
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df

@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -32,8 +34,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
@@ -49,24 +53,27 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchHolidays.class);
-	private static final String jiraID = "MOS-8565";
-	private static final String moduleName = "kernel";
-	private static final String apiName = "FetchHolidays";
-	private static final String requestJsonName = "FetchHolidaysRequest";
-	private static final String outputJsonName = "FetchHolidaysOutput";
-	private static final String service_URI = "/v1/masterdata/holidays";
-	private static final String service_id_URI = "/v1/masterdata/holidays/{holidayid}";
-	private static final String service_id_lang_URI = "/v1/masterdata/holidays/{holidayid}/{langcode}";
+	private final String jiraID = "MOS-8565";
+	private final String moduleName = "kernel";
+	private final String apiName = "FetchHolidays";
+	private final String requestJsonName = "FetchHolidaysRequest";
+	private final String outputJsonName = "FetchHolidaysOutput";
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final String FetchHolidays_URI = props.get("FetchHolidays_URI").toString();
+	private final String FetchHolidays_id_URI = props.get("FetchHolidays_id_URI").toString();
+	private final String FetchHolidays_id_lang_URI = props.get("FetchHolidays_id_lang_URI").toString();
 
-	protected static String testCaseName = "";
-	static SoftAssert softAssert = new SoftAssert();
+	protected String testCaseName = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
-	static Response response = null;
-	static JSONObject responseObject = null;
-	private static AssertKernel assertions = new AssertKernel();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public JSONArray arr = new JSONArray();
+	Response response = null;
+	JSONObject responseObject = null;
+	private AssertKernel assertions = new AssertKernel();
+	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -75,10 +82,11 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun=true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie = auth.getAuthForIndividual();
 
 	}
 
@@ -144,9 +152,9 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if (objectData.containsKey("langcode"))
-					response = applicationLibrary.getRequestPathPara(service_id_lang_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchHolidays_id_lang_URI, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(service_id_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(FetchHolidays_id_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
@@ -159,7 +167,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 		// sending request to get request without param
 		if (response == null) {
 			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(service_URI, objectData);
+			response = applicationLibrary.getRequestPathPara(FetchHolidays_URI, objectData,cookie);
 			objectData = null;
 		}
 
@@ -178,7 +186,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where id = '" + objectData.get("holidayid") + "'";
 			}
-			long obtainedObjectsCount = KernelMasterDataR.validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
@@ -190,7 +198,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 			if (responseArrayFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("id");
 				attributesToValidateExistance.add("holidayDate");
 				attributesToValidateExistance.add("holidayName");
@@ -198,7 +206,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 
 				// key value of the attributes passed to fetch the data, should be same in all
 				// obtained objects
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
 					if (objectData.containsKey("langcode")) {
 						passedAttributesToFetch.put("id", objectData.get("holidayid").toString());
@@ -273,3 +281,4 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 		}
 	}
 }
+

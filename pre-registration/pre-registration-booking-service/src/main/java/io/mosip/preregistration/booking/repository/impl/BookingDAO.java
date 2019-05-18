@@ -26,7 +26,9 @@ import io.mosip.preregistration.booking.exception.CancelAppointmentFailedExcepti
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
+import io.mosip.preregistration.booking.repository.DemographicRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -50,6 +52,10 @@ public class BookingDAO {
 	@Autowired
 	@Qualifier("registrationBookingRepository")
 	private RegistrationBookingRepository registrationBookingRepository;
+	
+	@Autowired
+	@Qualifier("demographicRepository")
+	private DemographicRepository demographicRepository;
 
 	/**
 	 * @param Registration
@@ -59,7 +65,7 @@ public class BookingDAO {
 	 * @return List AvailibityEntity based registration id and registration date.
 	 */
 	public List<AvailibityEntity> availability(String regcntrId, LocalDate regDate) {
-		List<AvailibityEntity> availabilityList = new ArrayList<>();
+		List<AvailibityEntity> availabilityList = null;
 		try {
 			availabilityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId,
 					regDate);
@@ -86,10 +92,10 @@ public class BookingDAO {
 	 * @return List of Local date
 	 */
 	public List<LocalDate> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
-		List<LocalDate> localDatList = new ArrayList<>();
+		List<LocalDate> localDatList = null;
 		try {
 			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
-			if (localDatList.isEmpty()) {
+			if (localDatList == null || localDatList.isEmpty()) {
 				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
 						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
 			}
@@ -233,7 +239,7 @@ public class BookingDAO {
 	 */
 	public List<AvailibityEntity> findByRegcntrIdAndRegDateOrderByFromTimeAsc(String regcntrId, LocalDate regDate) {
 
-		List<AvailibityEntity> entityList = new ArrayList<>();
+		List<AvailibityEntity> entityList = null;
 		try {
 			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId, regDate);
 		} catch (DataAccessLayerException e) {
@@ -252,7 +258,7 @@ public class BookingDAO {
 	}
 
 	public List<RegistrationBookingEntity> findByPreregistrationId(String preId) {
-		List<RegistrationBookingEntity> entityList = new ArrayList<>();
+		List<RegistrationBookingEntity> entityList = null;
 		try {
 			entityList = registrationBookingRepository.findBypreregistrationId(preId);
 			if (entityList.isEmpty()) {
@@ -322,7 +328,7 @@ public class BookingDAO {
 	 * @return list of date
 	 */
 	public List<LocalDate> findDateDistinct(LocalDate regDate) {
-		List<LocalDate> localDatList = new ArrayList<>();
+		List<LocalDate> localDatList = null;
 		try {
 			localDatList = bookingAvailabilityRepository.findAvaialableDate(regDate);
 		} catch (DataAccessLayerException e) {
@@ -330,6 +336,36 @@ public class BookingDAO {
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
 		}
 		return localDatList;
+	}
+	
+	/**
+	 * 
+	 * This method will update the booking status in applicant table.
+	 * 
+	 * @param preRegId
+	 * @param status
+	 * @return
+	 */
+	public DemographicEntity updateDemographicStatus(String preRegId, String status) {
+		DemographicEntity demographicEntity = null;
+
+		try {
+			demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+
+			if (demographicEntity == null) {
+				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.getCode(),
+						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
+		}
+		
+		demographicEntity.setStatusCode(status);
+		demographicRepository.save(demographicEntity);
+		return demographicEntity;
+
+
 	}
 
 }

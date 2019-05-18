@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "timestamp": 1549974782154,
     "status": 200,
@@ -11,4 +12,22 @@
             "errorMessage": "OTP consists of only numeric characters. No other characters is allowed."
         }
     ]
+=======
+{
+    "id": null,
+    "version": null,
+    "responsetime": "2019-04-22T13:13:38.379Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-OTV-003",
+            "message": "OTP can't be empty or null."
+        },
+        {
+            "errorCode": "KER-OTV-004",
+            "message": "OTP consists of only numeric characters. No other characters is allowed."
+        }
+    ]
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

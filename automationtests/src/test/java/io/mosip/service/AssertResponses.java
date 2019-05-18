@@ -23,17 +23,14 @@ public class AssertResponses {
 
 
 	private static Logger logger = Logger.getLogger(AssertResponses.class);
-
-
 	static JSONObject jsonObject = new JSONObject();
 	static JSONArray jsonArray = new JSONArray();
 	static SoftAssert softAssert=new SoftAssert();
+	@SuppressWarnings("serial")
 	public static boolean assertResponses(Response response, JSONObject object, List<String> outerKeys, List<String> innerKeys)
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-//		logger.info(obj1);
-//		logger.info(obj2);
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();
@@ -54,6 +51,7 @@ public class AssertResponses {
 
 	}
 
+	@SuppressWarnings("serial")
 	public static boolean assertArrayResponses(Response response, JSONArray objectArray, List<String> outerKeys, List<String> innerKeys)
 			throws JsonProcessingException, IOException, ParseException {
 		
@@ -140,6 +138,7 @@ public class AssertResponses {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 	private static void recursiveArray(JSONArray parsebleArray, List innerKeys) {
 		Iterator itr = innerKeys.iterator();
 		Iterator arrayItr = parsebleArray.iterator();

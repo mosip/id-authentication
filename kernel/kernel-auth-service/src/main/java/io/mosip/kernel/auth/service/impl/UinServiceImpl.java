@@ -3,12 +3,15 @@
  */
 package io.mosip.kernel.auth.service.impl;
 
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
+import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.OTPErrorCode;
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
-import io.mosip.kernel.auth.entities.otp.idrepo.ResponseDTO;
+import io.mosip.kernel.auth.dto.MosipUserDto;
+import io.mosip.kernel.auth.dto.otp.OtpUser;
+import io.mosip.kernel.auth.dto.otp.idrepo.ResponseDTO;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.TokenGenerationService;
@@ -29,7 +32,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -77,8 +84,11 @@ public class UinServiceImpl implements UinService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
 		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), uin);
+		ResponseEntity<String> response = null;
 		String url = UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString();
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
+		try
+		{
+		response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
 				String.class);
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
 			String responseBody = response.getBody();
@@ -103,28 +113,58 @@ public class UinServiceImpl implements UinService {
 			{
 				mosipDto = new MosipUserDto();
 				mosipDto.setUserId(uin);
+				validate(res);
 				if(res.get("phone")!=null)
 				{
 					mosipDto.setMobile((String) res.get("phone"));
-				}
-				else
-				{
-					throw new AuthManagerException(OTPErrorCode.PHONENOTREGISTERED.getErrorCode(),OTPErrorCode.PHONENOTREGISTERED.getErrorMessage());
 				}
 				if(res.get("email")!=null)
 				{
 					mosipDto.setMail(res.get("email"));
 				}
-				else
-				{
-					throw new AuthManagerException(OTPErrorCode.EMAILNOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILNOTREGISTERED.getErrorMessage());
-				}
-				if((String) res.get("phone")==null && (String) res.get("email")!=null)
-				{
-					throw new AuthManagerException(OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorMessage());
-				}
 			}	
+		}catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from UIN services");
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from UIN services");
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+			}
+		}
+		
 		return mosipDto;
+	}
+
+	private void validate(Map<String, String> res) {
+		if((String) res.get("phone")==null && (String) res.get("email")==null)
+		{
+			throw new AuthManagerException(OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorMessage());
+		}
+		else if(res.get("phone")==null)
+		{
+			throw new AuthManagerException(OTPErrorCode.PHONENOTREGISTERED.getErrorCode(),OTPErrorCode.PHONENOTREGISTERED.getErrorMessage());
+		}
+		else if(res.get("email")==null)
+		{
+			throw new AuthManagerException(OTPErrorCode.EMAILNOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILNOTREGISTERED.getErrorMessage());
+		}
+		
 	}
 
 }

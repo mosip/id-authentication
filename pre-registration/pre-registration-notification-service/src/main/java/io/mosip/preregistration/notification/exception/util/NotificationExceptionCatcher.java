@@ -42,22 +42,15 @@ public class NotificationExceptionCatcher {
 			throw new MandatoryFieldException(ErrorCodes.PRG_ACK_001.getCode(),
 					ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode(),mainResponseDto);
 		}
-		if (ex instanceof IOException) {
+		if (ex instanceof IOException||ex instanceof java.io.IOException) {
 			throw new IOException(ErrorCodes.PRG_ACK_005.getCode(), 
 					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),mainResponseDto);
 		}
-		if (ex instanceof java.io.IOException) {
-			throw new IOException(ErrorCodes.PRG_ACK_005.getCode(), 
-					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),mainResponseDto);
-		}
+		
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_ACK_003.getCode(),
 					ErrorMessages.JSON_HTTP_REQUEST_EXCEPTION.getCode(), ex.getCause(),mainResponseDto);
 		} else if (ex instanceof NullPointerException) {
-			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
-					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause(),mainResponseDto);
-		}
-		else if (ex instanceof QrcodeGenerationException) {
 			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
 					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause(),mainResponseDto);
 		}

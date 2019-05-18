@@ -11,8 +11,6 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 
 public interface NotificationService {
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
-			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException ;
-	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin,
-			String email, String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo);
-	
+			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException;
+
 }

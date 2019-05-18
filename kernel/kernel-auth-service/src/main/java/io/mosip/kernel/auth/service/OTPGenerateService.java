@@ -3,9 +3,9 @@
  */
 package io.mosip.kernel.auth.service;
 
-import io.mosip.kernel.auth.entities.MosipUserDto;
-import io.mosip.kernel.auth.entities.otp.OtpGenerateResponseDto;
-import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.dto.MosipUserDto;
+import io.mosip.kernel.auth.dto.otp.OtpGenerateResponseDto;
+import io.mosip.kernel.auth.dto.otp.OtpUser;
 
 /**
  * @author Ramadurai Pandian

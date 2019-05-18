@@ -1,4 +1,17 @@
+<<<<<<< HEAD
 {
   "otp": "312218",
   "status": "GENERATION_SUCCESSFUL"
+=======
+{
+    "id": "string",
+    "version": "string",
+    "responsetime": "2019-04-23T05:33:51.849Z",
+    "metadata": null,
+    "response": {
+        "otp": "421443",
+        "status": "GENERATION_SUCCESSFUL"
+    },
+    "errors": null
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

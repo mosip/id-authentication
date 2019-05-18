@@ -138,6 +138,16 @@ public class FaceProviderTest {
 	}
 
 	@Test
+	public void TestmatchScoreCalculator() throws Throwable {
+		try {
+			ReflectionTestUtils.invokeMethod(face, "matchScoreCalculator", "test","test");
+		} catch (IllegalArgumentException e) {
+			throw e.getCause();
+		}
+
+	}
+
+	@Test
 	public void TestdecodeValue() {
 		ReflectionTestUtils.invokeMethod(face, "decodeValue", "test");
 	}

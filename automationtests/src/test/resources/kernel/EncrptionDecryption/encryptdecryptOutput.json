@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 []
+=======
+[{"Jira ID":"MOS-9284","timeStamp":"valid","data":"valid","Test case Name":"allValid_smoke","applicationId":"valid","referenceId":"valid","status":"Pass"},{"Jira ID":"MOS-9284","timeStamp":"valid","data":"valid","Test case Name":"smoke_diff_timeStamp_after the encrypt timeStamp","applicationId":"valid","referenceId":"valid","status":"Pass"}]
+>>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df

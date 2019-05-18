@@ -8,13 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.registration.processor.core.constant.IdType;
-import io.mosip.registration.processor.printing.api.dto.PrintRequest;
-import io.mosip.registration.processor.printing.api.dto.RequestDTO;
 import javax.servlet.http.Cookie;
 
 import org.junit.Before;
@@ -34,14 +27,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.Errors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
+import io.mosip.registration.processor.printing.api.dto.PrintRequest;
+import io.mosip.registration.processor.printing.api.dto.RequestDTO;
 import io.mosip.registration.processor.printing.api.util.PrintServiceRequestValidator;
-import org.springframework.validation.Errors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -109,7 +109,7 @@ public class PrintApiControllerTest {
 	public void testpdfSuccess() throws Exception {
 		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
 
-		this.mockMvc.perform(post("/registration-processor/print/v1.0")
+		this.mockMvc.perform(post("/uincard")
 				.cookie(new Cookie("Authorization", json))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json))
@@ -118,7 +118,7 @@ public class PrintApiControllerTest {
 
 	@Test
 	public void testPdfFailure() throws Exception {
-		this.mockMvc.perform(post("/registration-processor/print/v1.0")
+		this.mockMvc.perform(post("/uincard")
 				.cookie(new Cookie("Authorization", json))
 				.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isBadRequest());

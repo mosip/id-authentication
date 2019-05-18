@@ -29,6 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
@@ -114,6 +115,8 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setIsSignRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestHTTPDTO.setTriggerPoint(triggerPoint);
+			requestHTTPDTO.setRequestSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.REQUEST_SIGN_REQUIRED)));
 
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
@@ -176,6 +179,8 @@ public class ServiceDelegateUtil {
 			requestDto.setIsSignRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.SIGN_REQUIRED)));
 			requestDto.setTriggerPoint(triggerPoint);
+			requestDto.setRequestSignRequired(
+					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.REQUEST_SIGN_REQUIRED)));
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
@@ -190,6 +195,85 @@ public class ServiceDelegateUtil {
 		return responseBody;
 	}
 
+	/**
+	 * Builds the request and passess it to REST client util
+	 * 
+	 * @param url
+	 *            - MDM service url
+	 * @param serviceName
+	 *            - MDM service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 * @return
+	 * @throws RegBaseCheckedException
+	 */
+	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
+			throws RegBaseCheckedException {
+
+		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+				"invokeRestService method has been called");
+
+		Map<String, Object> responseMap = null;
+		Object responseBody = null;
+
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+
+		prepareRequest(requestHTTPDTO, serviceName, request, responseType, url);
+
+		try {
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
+		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
+				| SocketTimeoutException exception) {
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage(), exception);
+		}
+		if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
+			responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
+		}
+		LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
+				"invokeRestService method has been ended");
+
+		return responseBody;
+
+	}
+	
+	/**
+	 * prepares the request
+	 * 
+	 * @param requestHTTPDTO
+	 *            - holds the request data for a REST call
+	 * @param serviceName
+	 *            - service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 */
+	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
+			Class<?> responseType, String url) {
+		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
+				"Preparing request");
+
+		requestHTTPDTO.setHttpMethod(
+				HttpMethod.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.HTTPMETHOD)));
+		requestHTTPDTO.setHttpHeaders(new HttpHeaders());
+		requestHTTPDTO.setRequestBody(request);
+		requestHTTPDTO.setClazz(Object.class);
+		requestHTTPDTO.setIsSignRequired(false);
+		try {
+			requestHTTPDTO.setUri(new URI(url));
+		} catch (URISyntaxException e) {
+		}
+		// set timeout
+		setTimeout(requestHTTPDTO);
+		// Headers
+		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
+		requestHTTPDTO.setAuthRequired(false);
+	}
+	
 	/**
 	 * Prepare GET request.
 	 *
@@ -305,9 +389,18 @@ public class ServiceDelegateUtil {
 			for (String subheader : header) {
 				if (subheader != null) {
 					headerValues = subheader.split(":");
+					if(headerValues[0].equalsIgnoreCase("timestamp")) {
+						headerValues[1] = DateUtils.getUTCCurrentDateTimeString();
+					} else if(headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
+						headerValues[1] = String
+								.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID))
+								.concat(RegistrationConstants.UNDER_SCORE).concat(String
+										.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID)));
+					} 
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}
+			httpHeaders.add("Cache-Control", "no-cache,max-age=0");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
@@ -407,6 +500,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setRequestBody(authNRequestDTO);
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
+			requestHTTPDTO.setRequestSignRequired(false);
 			
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
@@ -492,6 +586,7 @@ public class ServiceDelegateUtil {
 
 				isTokenValid = isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY);
 				if (isTokenValid) {
+					@SuppressWarnings("unchecked")
 					Map<String, Object> responseBody = (Map<String, Object>) responseMap
 							.get(RegistrationConstants.REST_RESPONSE_BODY);
 					if (responseBody != null && responseBody.get("errors") != null) {
@@ -572,6 +667,7 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setIsSignRequired(false);
+		requestHTTPDTO.setRequestSignRequired(false);
 
 		// set simple client http request
 		setTimeout(requestHTTPDTO);

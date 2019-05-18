@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.11.1</version>
+		<version>0.11.3</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.11.1</version>
+	<version>0.11.3</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -84,7 +84,6 @@
 			src/main/java/io/mosip/registration/cipher/**/*,
 			src/main/java/io/mosip/registration/update/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
-			src/main/java/io/mosip/registration/tpm/**/*,
 			src/main/java/io/mosip/registration/mdm/**/*,
 			src/main/java/io/mosip/registration/service/mdm/**/*
 		</sonar.exclusions>
@@ -92,7 +91,6 @@
 
 	<modules>
 		<module>registration-services</module>
-		<module>registration-mdm</module>
 		<module>registration-client</module>
 		<module>registration-libs</module>
 	</modules>
@@ -194,6 +192,11 @@
 			</dependency>
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-signature</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
@@ -271,12 +274,6 @@
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-jsonvalidator</artifactId>
-				<version>${mosip.core.kernel.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>com.cronutils</groupId>
 				<artifactId>cron-utils</artifactId>
 				<version>8.0.0</version>
@@ -310,6 +307,11 @@
 				<version>${tss.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idobjectvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

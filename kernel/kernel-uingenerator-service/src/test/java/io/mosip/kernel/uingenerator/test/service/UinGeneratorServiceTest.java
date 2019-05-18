@@ -28,7 +28,7 @@ import io.mosip.kernel.uingenerator.service.UinGeneratorService;
  */
 
 @SpringBootTest
-@TestPropertySource({ "classpath:application.properties", "classpath:bootstrap.properties" })
+@TestPropertySource({ "classpath:application-test.properties", "classpath:bootstrap.properties" })
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = UinGeneratorConfiguration.class, loader = AnnotationConfigContextLoader.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
