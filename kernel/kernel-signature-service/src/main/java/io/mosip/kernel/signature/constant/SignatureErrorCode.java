@@ -8,7 +8,7 @@ package io.mosip.kernel.signature.constant;
  *
  */
 public enum SignatureErrorCode {
-	
+	REQUEST_DATA_NOT_VALID("KER-CSS-999", "Invalid request input"),
 	INTERNAL_SERVER_ERROR("KER-CSS-500", "Internal server error"),
 	NOT_VALID("KER-CSS-101", "Validation Unsuccessful");
 
