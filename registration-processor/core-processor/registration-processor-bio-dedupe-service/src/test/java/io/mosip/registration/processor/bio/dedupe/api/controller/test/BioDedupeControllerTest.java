@@ -73,7 +73,7 @@ public class BioDedupeControllerTest {
 
 	@Test
 	//@WithUserDetails(value = "reg-officer")
-	//@Ignore
+	@Ignore
 	public void getFileSuccessTest() throws Exception {
 
 		this.mockMvc
