@@ -150,6 +150,7 @@ public class LoginService {
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
@@ -163,7 +164,7 @@ public class LoginService {
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In callsendOtp method of kernel service- " + ex.getMessage());
+					"In callsendOtp method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex,"sendOtp",response);	
 		}
 		finally {
@@ -200,6 +201,7 @@ public class LoginService {
 				ResponseEntity<String> responseEntity = null;
 				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
 				responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=null;
 				validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
@@ -220,7 +222,7 @@ public class LoginService {
 		}
 		catch(Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In calluserIdOtp method of kernel service- " + ex.getMessage());
+					"In calluserIdOtp method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex,"userIdOtp",response);	
 		}
 		finally {
@@ -265,6 +267,7 @@ public class LoginService {
 			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
 			userId=loginCommonUtil.getUserDetailsFromToken(headersMap);
 			responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
+			log.info("sessionId", "idType","id","Kernel response: \n"+responseEntity.getBody());
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 			if(!validationErrorList.isEmpty()) {
@@ -277,7 +280,7 @@ public class LoginService {
 		}
 		catch(Exception ex) {	
 			log.error("sessionId", "idType", "id",
-					"In call invalidateToken method of kernel service- " + ex.getMessage());
+					"In call invalidateToken method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex,"invalidateToken",response);	
 		}
 		finally {
