@@ -39,7 +39,7 @@ spec:
         - name: spring_config_url_env
           value: http://kernel-config-server:51000/config
         ports:
-        - containerPort: 8099
+        - containerPort: 8092
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
@@ -50,6 +50,6 @@ metadata:
   name: kernel-signature-service
 spec:
   ports:
-    - port: 8099
+    - port: 8092
   selector:
     app: kernel-signature-service
