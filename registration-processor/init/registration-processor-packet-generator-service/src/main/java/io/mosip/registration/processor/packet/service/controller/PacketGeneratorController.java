@@ -109,6 +109,7 @@ public class PacketGeneratorController {
 			//HttpHeaders headers = new HttpHeaders();
 			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildPacketGeneratorResponse(packerGeneratorResDto)).getData());
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
+
 		} catch (PacketGeneratorValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
