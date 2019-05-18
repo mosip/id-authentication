@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -101,6 +102,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 
 	/** The json validator. */
 	@Autowired
+	@Qualifier("schema")
 	private IdObjectValidator idObjectValidator;
 
 	/** The mapper. */
