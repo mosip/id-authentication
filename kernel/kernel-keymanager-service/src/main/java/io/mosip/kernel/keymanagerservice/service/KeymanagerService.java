@@ -6,6 +6,8 @@ import java.util.Optional;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
+import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 
@@ -48,5 +50,9 @@ public interface KeymanagerService {
 	 * @return {@link EncryptDataResponseDto} encrypted data
 	 */
 	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto);
+
+	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto);
+
+	public SignatureResponseDto validate(SignatureRequestDto signatureRequestDto);
 
 }
