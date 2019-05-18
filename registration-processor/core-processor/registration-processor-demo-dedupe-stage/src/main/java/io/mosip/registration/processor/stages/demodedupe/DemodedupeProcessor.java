@@ -355,7 +355,7 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND));
+						.getStatusCode(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR));
 				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
@@ -390,52 +390,7 @@ public class DemodedupeProcessor {
 						"ABIS response Details found. Hence sending to manual adjudication");
 			}
 		}
-
-/*		for (AbisResponseDto responseDto : abisResponseDto) {
-			if (responseDto.getStatusCode().equalsIgnoreCase(AbisStatusCode.SUCCESS.toString())) {
-				List<AbisResponseDetDto> abisResponseDetDto = packetInfoManager.getAbisResponseDetRecords(responseDto);
-				if (abisResponseDetDto.isEmpty()) {
-					object.setIsValid(Boolean.TRUE);
-					registrationStatusDto
-							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-					registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_SUCCESS.toString());
-					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-							"ABIS response Details null, hence no duplicates found");
-					isTransactionSuccessful = true;
-				} else {
-					object.setIsValid(Boolean.FALSE);
-					registrationStatusDto
-							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_POTENTIAL_MATCH_FOUND.toString());
-					registrationStatusDto.setStatusComment(
-							StatusMessage.POTENTIAL_MATCH_FOUND_IN_ABIS + registrationStatusDto.getRegistrationId());
-					saveManualAdjudicationData(registrationStatusDto);
-					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-							"ABIS response Details found. Hence sending to manual adjudication");
-
-				}
-			} else {
-				isTransactionSuccessful = true;
-				int retryCount = registrationStatusDto.getRetryCount() != null
-						? registrationStatusDto.getRetryCount() + 1
-						: 1;
-				description = "Failed in Abis. Hence sending to Reprocess" + " -- "
-						+ registrationStatusDto.getRegistrationId();
-				registrationStatusDto.setRetryCount(retryCount);
-
-				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND));
-				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
-						"Failed in Abis. Hence sending to Reprocess");
-			}
-		}*/
-
+		
 		return isTransactionSuccessful;
 	}
 

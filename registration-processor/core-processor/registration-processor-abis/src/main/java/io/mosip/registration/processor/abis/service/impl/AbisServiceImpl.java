@@ -69,6 +69,9 @@ public class AbisServiceImpl implements AbisService {
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	private static Set<String> storedRefId = new HashSet<>();
+	
+	private static Set<String> actualStoredRefId = new HashSet<>();
+	
 	private String identifyReqId;
 
 	/** The Constant TESTFINGERPRINT. */
@@ -93,7 +96,7 @@ public class AbisServiceImpl implements AbisService {
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
 
-		if (storedRefId.size() < 100)
+		if (storedRefId.size() < 1000)
 			storedRefId.add(referenceId);
 
 		response.setId(ABIS_INSERT);
@@ -262,12 +265,20 @@ public class AbisServiceImpl implements AbisService {
 		return response;
 	}
 
-	private void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
+	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
+		
 		int count = 0;
 
-		ArrayList<String> storedRefIdList = new ArrayList<>(storedRefId);
 		CandidateListDto cd = new CandidateListDto();
 		CandidatesDto[] candidatesDto;
+		if(storedRefId.size()>1) {
+			for(String refId :storedRefId) {
+				if(!identifyRequest.getReferenceId().equals(refId)) {
+					actualStoredRefId.add(identifyRequest.getReferenceId());
+				}
+			}
+		}
+		ArrayList<String> storedRefIdList = new ArrayList<>(actualStoredRefId);
 		Collections.shuffle(storedRefIdList);
 		int loopLimit = storedRefIdList.size();
 		if (storedRefIdList.size() > 5)
@@ -275,7 +286,7 @@ public class AbisServiceImpl implements AbisService {
 		candidatesDto = new CandidatesDto[loopLimit];
 		for (int i = 0; i < candidatesDto.length; i++) {
 			candidatesDto[i] = new CandidatesDto();
-			if (!(identifyRequest.getReferenceId().equalsIgnoreCase(storedRefIdList.get(i)))) {
+			if (!(identifyRequest.getReferenceId().equals(storedRefIdList.get(i)))) {
 
 				candidatesDto[i].setReferenceId(storedRefIdList.get(i));
 				candidatesDto[i].setScaledScore(100 - i + "");
@@ -289,6 +300,7 @@ public class AbisServiceImpl implements AbisService {
 			cd.setCandidates(candidatesDto);
 			response.setCandidateList(cd);
 		}
+		if(storedRefId.size()<1000)
 		storedRefId.add(identifyReqId);
 
 	}

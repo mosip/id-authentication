@@ -356,6 +356,7 @@ public enum PlatformErrorMessages {
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
 	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
+	REVERSE_DATA_SYNC_SUCCESS("","Reverse data sync success"),
 
 	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message
