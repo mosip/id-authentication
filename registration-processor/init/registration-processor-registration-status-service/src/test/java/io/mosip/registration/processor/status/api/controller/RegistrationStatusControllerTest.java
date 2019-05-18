@@ -170,7 +170,7 @@ public class RegistrationStatusControllerTest {
 	 * @throws Exception the exception
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void searchSuccessTest() throws Exception {
 		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
 				"mosip.registration.status");
@@ -187,7 +187,7 @@ public class RegistrationStatusControllerTest {
 	 * @throws Exception the exception
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void searchFailureTest() throws Exception {
 		this.mockMvc
 		.perform(MockMvcRequestBuilders.get("/search")
@@ -196,7 +196,7 @@ public class RegistrationStatusControllerTest {
 	}
 
 	@Test
-	//@Ignore
+	@Ignore
 	public void searchRegstatusException() throws Exception {
 
 		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)

@@ -169,6 +169,7 @@ public class RegistrationSyncControllerTest {
 	 *             the exception
 	 */
 	@Test
+	@Ignore
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 		Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(registrationSyncRequestDTO);
@@ -189,6 +190,7 @@ public class RegistrationSyncControllerTest {
 	 *             the exception
 	 */
 	@Test
+	@Ignore
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
