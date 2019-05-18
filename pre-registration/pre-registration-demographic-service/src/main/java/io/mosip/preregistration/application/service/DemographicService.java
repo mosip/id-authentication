@@ -572,7 +572,7 @@ public class DemographicService {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						getDocumentServiceToDeleteAllByPreId(preregId);
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
-							callBookingServiceToDeleteAllByPreId(preregId);
+							getBookingServiceToDeleteAllByPreId(preregId);
 						}
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
@@ -856,7 +856,7 @@ public class DemographicService {
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
-	private void callBookingServiceToDeleteAllByPreId(String preregId) {
+	private void getBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> responseEntity = null;
