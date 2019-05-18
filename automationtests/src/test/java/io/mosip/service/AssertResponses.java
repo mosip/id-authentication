@@ -23,8 +23,6 @@ public class AssertResponses {
 
 
 	private static Logger logger = Logger.getLogger(AssertResponses.class);
-
-
 	static JSONObject jsonObject = new JSONObject();
 	static JSONArray jsonArray = new JSONArray();
 	static SoftAssert softAssert=new SoftAssert();
@@ -33,8 +31,6 @@ public class AssertResponses {
 			throws JsonProcessingException, IOException, ParseException {
 		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
 		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-//		logger.info(obj1);
-//		logger.info(obj2);
 		Gson g = new Gson(); 
 		Type mapType = new TypeToken<Map<String, Object>>() {
 		}.getType();

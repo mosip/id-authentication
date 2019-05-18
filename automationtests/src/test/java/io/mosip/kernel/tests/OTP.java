@@ -34,8 +34,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
+
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -68,6 +71,8 @@ public class OTP extends BaseTestCase implements ITest {
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
 
 	/**
 	 * method to set the test case name to the report
@@ -79,8 +84,8 @@ public class OTP extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForIndividual();
 	}
 
 	/**
@@ -149,7 +154,9 @@ public class OTP extends BaseTestCase implements ITest {
 					objectData.remove("case");
 				}
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration);
+
+				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -173,9 +180,13 @@ public class OTP extends BaseTestCase implements ITest {
 				
 				case "blockUser":
 					reqJson.put("otp", "000000");
-					for(int i=0;i<3;i++)
+
+					// reading validation attempt from property
+					int attempt = Integer.parseInt(props.get("attempt").toString());
+					for(int i=0;i<attempt;i++)
 					{
-						response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson);
+						response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+
 					}
 					break;
 				case "otherKey":
@@ -194,7 +205,8 @@ public class OTP extends BaseTestCase implements ITest {
 					break;
 				case "expired":
 					try {
-						TimeUnit.SECONDS.sleep(121);
+						// reading validation timeout from property
+						TimeUnit.SECONDS.sleep(Integer.parseInt(props.get("OTPTimeOut").toString()));
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -208,8 +220,8 @@ public class OTP extends BaseTestCase implements ITest {
 					reqJson.put("otp", otp);
 				}
 				
-					
-				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson);
+				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+
 
 				logger.info("Obtained Response: " + response);
 				logger.info("Expected Response:" + responseObject.toJSONString());
@@ -222,12 +234,14 @@ public class OTP extends BaseTestCase implements ITest {
 				
 				JSONObject reqJson = (JSONObject) objectData.get("request");
 				reqJson.put("otp", "000000");
-				for(int i=0;i<4;i++)
+
+				int attempt = Integer.parseInt(props.get("attempt").toString());
+				for(int i=0;i<=attempt;i++)
 				{
-					response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson);
+					response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
 				}
 				reqJson.remove("otp");
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration);
+				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
 			}
 			listOfElementToRemove.add("otp");
 			logger.info("Obtained Response: " + response);
