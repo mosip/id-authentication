@@ -131,7 +131,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
@@ -657,7 +657,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(Long.toString(uin));
 		try {
-			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
 					"", "", IdResponseDTO.class);
 			
 		} catch (ApisResourceAccessException e) {
@@ -749,7 +749,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT));
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
-	
+
 	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();

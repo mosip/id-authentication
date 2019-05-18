@@ -178,7 +178,7 @@ export class AcknowledgementComponent implements OnInit {
 
   getTemplate() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getGuidelineTemplate().subscribe(response => {
+      this.dataStorageService.getGuidelineTemplate('Onscreen-Acknowledgement').subscribe(response => {
         console.log(response);
         this.guidelines = response['response']['templates'][0].fileText.split('\n');
         resolve(true);

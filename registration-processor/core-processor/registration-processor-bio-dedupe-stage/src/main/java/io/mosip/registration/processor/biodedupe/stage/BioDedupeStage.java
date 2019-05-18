@@ -32,13 +32,13 @@ public class BioDedupeStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
-	
+
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	private MosipEventBus mosipEventBus = null;
-	
+
 	/** The Constant INTERNAL_ERROR. */
 	private static final String INTERNAL_ERROR = "Internal error occurred in bio-dedupe stage while processing for registrationId ";
 
@@ -65,7 +65,6 @@ public class BioDedupeStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		return bioDedupeProcessor.process(object, this.getClass().getSimpleName());
+			return bioDedupeProcessor.process(object, this.getClass().getSimpleName());
+		}
 	}
-
-}

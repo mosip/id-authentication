@@ -123,17 +123,19 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     		  String key = requestArray.get("key").toString();
     		  otp.put("key", key);
     		  otp.put("otp", "123456");
-    		  for(int k=0;k<3;k++)
+    		  for(int k=0;k<10;k++)
     		  {
     			// Calling the get method and making key as frozen
     			  applicationLibrary.getRequestAsQueryParam(OTPValidation, otp,cookie);
     		  }
     		// Calling the post method 
-    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration);  
+
+    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);  
     	  }
     	  else
     		// Calling the post method 
-    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration);
+    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);
+
     	  
     	// Comparing expected and actual response
     	 status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);	

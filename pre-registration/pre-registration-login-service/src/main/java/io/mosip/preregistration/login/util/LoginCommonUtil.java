@@ -30,15 +30,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.login.dto.MosipUserDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
+import io.mosip.preregistration.login.exception.LoginServiceException;
 import io.mosip.preregistration.login.exception.ParseResponseException;
 
 /**
@@ -74,6 +77,9 @@ public class LoginCommonUtil {
 	
 	@Value("${otpChannel.email}")
 	private String emailChannel;
+	
+	@Value("${sendOtp.resource.url}")
+	private String sendOtpResourceUrl;
 	/**
 	 * This method will return the MainResponseDTO with id and version
 	 * 
@@ -113,8 +119,7 @@ public class LoginCommonUtil {
 		else {
 			request = new HttpEntity<>(headers);
 		}
-		
-		//HttpEntity<?> request = new HttpEntity<>(body, headers);
+		log.info("sessionId", "idType", "id", "In call to kernel rest service :"+url);
 		return restTemplate.exchange(url,httpMethodType,request,responseClass);
 		
 	}
@@ -280,11 +285,27 @@ public class LoginCommonUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime",date.toString());
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			requestMap.put("requesttime", date.toString());
+		}
+		else {
+		requestMap.put("requesttime",null);
+		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
 
+	public String getUserDetailsFromToken(Map<String,String> authHeader) {
+		String url=sendOtpResourceUrl+"/authorize/validateToken";
+		ResponseEntity<String> response=(ResponseEntity<String>) getResponseEntity(url, HttpMethod.POST, MediaType.APPLICATION_JSON, null, authHeader,String.class);
+		ResponseWrapper<?> responseKernel=requestBodyExchange(response.getBody());
+		if(! (responseKernel.getErrors()==null)) {
+			throw new  LoginServiceException(responseKernel.getErrors(),null);
+		}
+		MosipUserDTO userDetailsDto=(MosipUserDTO) requestBodyExchangeObject(responseToString(responseKernel.getResponse()), MosipUserDTO.class);
+		
+		return userDetailsDto.getUserId();
+	}
 
 }

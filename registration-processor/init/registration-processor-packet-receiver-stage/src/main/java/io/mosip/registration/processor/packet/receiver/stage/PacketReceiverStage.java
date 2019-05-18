@@ -80,9 +80,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	MosipRouter router;
 	File file = null;
 
-	@Autowired
-	SignatureUtil signatureUtil;
-
 	/**
 	 * deploys this verticle.
 	 */
@@ -144,6 +141,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		try {
 
 			MessageDTO messageDTO = packetReceiverService.processPacket(file);
+			messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_RECEIVER_OUT);
 			if (messageDTO.getIsValid()) {
 				this.sendMessage(messageDTO);
 			}

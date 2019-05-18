@@ -98,7 +98,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * generateLicenseKey
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -112,7 +112,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 Response res = applicationLibrary.postRequest(actualRequest1, licKeyGenerator);
 		 
 		 //Storing the licence key and its corrosponding tspid
-		 if(testCaseName.equals("smoke_generateLicenceKey"))
+
+		 if(testCaseName.equals("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
 			{
 			 tspId=((JSONObject)actualRequest1.get("request")).get("tspId").toString();
 			 licenseKey=res.jsonPath().getMap("response").get("licenseKey").toString();
@@ -129,7 +130,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
      if(status)
      {
-    	  if(testCaseName.equals("smoke_generateLicenceKey"))
+    	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
     	  {     
     		  int length=licenseKey.length();
     		  if(length==16)
@@ -150,8 +151,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -182,7 +181,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * mapLicenceKey
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -192,15 +191,15 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
     {
 		JSONObject actualRequest_map = ResponseRequestMapper.mapRequest(testSuite, object);
 		
-		
 		//Removing of unstable attributes from response
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		 outerKeys.add("responsetime");
 		 
-	    // adding the tspid and corrosponding license key to the request and expected response od smok test case
+
+	    // adding the tspid and corresponding license key to the request and expected response od smok test case
 	    JSONObject request = (JSONObject) actualRequest_map.get("request");
-	    if(testCaseName.equals("smoke_MapLicenseKeyPermission"))
+	    if(testCaseName.contains("Kernel_MapLicenseKeyPermission_smoke_MapLicenseKeyPermission"))
 	    {
 	    	request.put("tspId", tspId);
 	    	request.put("licenseKey", licenseKey);		 
@@ -254,7 +253,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * fetchMapLicenceKeyPermissions
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -269,7 +268,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
   
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		//adding the tspid and corrosponding license key to the smoke request
-		if(testCaseName.equalsIgnoreCase("smoke_FetchLicenseKeyPermissions"))
+
+		if(testCaseName.contains("Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions"))
 		{
 			actualRequest.put("tspId", tspId);
 			actualRequest.put("licenseKey", licenseKey);

@@ -117,13 +117,21 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
     	  
     	  if(testCaseName.contains("smoke"))
     	  {
-    		  String locationcode= (actualRequest.get("locationcode").toString());
+    		 /* String locationcode= (actualRequest.get("locationcode").toString());
     		  String langCode=actualRequest.get("langcode").toString();
-	            
+	        
 	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
+<<<<<<< HEAD
 					boolean valid = kernelDB.validateDataInDb(queryStr);
+=======
+					boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");
+>>>>>>> origin/0.11.0_automationtests_kernel
 	            
-			if(valid)
+			
+
+	            */
+			if(status)
+
 					{
 						finalStatus ="Pass";
 					}

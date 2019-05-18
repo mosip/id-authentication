@@ -82,7 +82,7 @@ describe('DataStorageService', () => {
 
   it('gets guideline template', () => {
     let response = null;
-    service.getGuidelineTemplate().subscribe(value => {
+    service.getGuidelineTemplate('consent').subscribe(value => {
       response = value;
     });
 

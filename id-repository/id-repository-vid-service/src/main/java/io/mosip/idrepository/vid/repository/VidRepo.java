@@ -1,5 +1,7 @@
 package io.mosip.idrepository.vid.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,8 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	 * @return Vid Object
 	 */
 	Vid findByVid(String vid);
+	
+	List<Vid> findByUinHashAndStatusCodeAndVidTypeCode(String uinHash, String statusCode, String vidTypeCode);
 	
 	/**
 	 * The Query to retrieve Uin by passing vid as parameter.

@@ -54,7 +54,7 @@ public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String fetchmasterdata = props.get("fetchmasterdata");
+	private final String fetchmasterdata = props.get("fetchmasterdatawithRID");
 	private String folderPath = "kernel/SyncMasterDataWithRegID";
 	private String outputFile = "SyncMasterDataWithRegIDOutput.json";
 	private String requestKeyFile = "SyncMasterDataWithRegIDInput.json";
@@ -69,7 +69,8 @@ public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		cookie=auth.getAuthForRegistrationSupervisor();
+		cookie=auth.getAuthForRegistrationOfficer();
+
 	} 
 	
 	// Data Providers to read the input json files from the folders

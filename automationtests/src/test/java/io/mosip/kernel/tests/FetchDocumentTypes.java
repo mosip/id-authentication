@@ -1,4 +1,5 @@
 
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -80,7 +81,7 @@ public class FetchDocumentTypes extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIndividual();
 
 	}

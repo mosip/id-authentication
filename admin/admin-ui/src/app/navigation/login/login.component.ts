@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   authTypes: string[] = [];
   usernameValidity = 'Username is required';
-  response: any;
   invaildUserName = false;
   errorCode = 'KER-ATH-003';
   ngOnInit() {
@@ -29,25 +28,18 @@ export class LoginComponent implements OnInit {
     console.log(username);
     this.loginService.setUserName(username);
     this.loginService.setAuthTypes(this.authTypes);
-    this.loginService.login().subscribe(
-      response => {
-        if (response['errors'].length === 0) {
-          console.log(response['response']['authTypes']);
-          this.authTypes = response['response']['authTypes'];
-          this.loginService.setAuthTypes(this.authTypes);
-          this.router.navigate(['authenticate', username]);
-          console.log(response);
-        } else {
-          console.log(response);
-          console.log(response['errors'][0].message);
-          if (this.errorCode === response['errors'][0].errorCode) {
-            this.invaildUserName = true;
-          }
+    this.loginService.login().subscribe(({ response, errors }) => {
+      if (errors.length === 0 || response != null) {
+        console.log(response.authTypes);
+        this.authTypes = response.authTypes;
+        this.loginService.setAuthTypes(this.authTypes);
+        this.router.navigate(['authenticate', username]);
+      } else {
+        console.log(errors[0].message);
+        if (this.errorCode === errors[0].errorCode) {
+          this.invaildUserName = true;
         }
-      },
-      error => {
-        console.log(error);
       }
-    );
+    });
   }
 }

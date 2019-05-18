@@ -3,6 +3,7 @@ package io.mosip.registration.processor.reprocessor.stage;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.core.code.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +14,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.code.ModuleName;
-import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -229,6 +225,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 								? dto.getReProcessRetryCount() + 1
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
+						dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+						dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.REPROCESS.toString());
+						dto.setStatusComment("Reprocess Completed");
 						registrationStatusService.updateRegistrationStatus(dto);
 
 						description = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage();

@@ -7,11 +7,11 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
-Date Raised | 15-MAY-2019
+Date Raised | 17-MAY-2019
 Impact of Release|NA
 Implementation Start Date |26-APR-2019
 Implementation end date	|17-MAY-2019
-Jenkins Build #	|Min Version : 1299  [Any later version also]
+Jenkins Build #	|Min Version : 1330  [Any later version also]
 Objective & Scope of Release| Sprint11 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Technical Lead

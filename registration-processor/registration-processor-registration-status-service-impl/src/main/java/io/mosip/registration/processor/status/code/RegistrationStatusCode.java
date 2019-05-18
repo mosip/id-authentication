@@ -82,6 +82,8 @@ public enum RegistrationStatusCode {
 	/** The packet bio dedupe failed. */
 	PACKET_BIO_DEDUPE_FAILED,
 
+	PACKET_BIO_DEDUPE_INPROGRESS,
+
 	/** The uin generated. */
 	PACKET_UIN_GENERATION_SUCCESS,
 
@@ -100,7 +102,7 @@ public enum RegistrationStatusCode {
 	/** The packet uin updation failure. */
 	PACKET_UIN_UPDATION_FAILURE,
 
-	/**  The document resent to camel queue. */
+	/** The document resent to camel queue. */
 	DOCUMENT_RESENT_TO_CAMEL_QUEUE,
 
 	/** The packet sent for printing. */
@@ -115,10 +117,10 @@ public enum RegistrationStatusCode {
 	/** The notification sent to resident. */
 	NOTIFICATION_SENT_TO_RESIDENT,
 
-	/**  The packet uin printed and posted success. */
+	/** The packet uin printed and posted success. */
 	PRINT_AND_POST_COMPLETED,
 
-	/**  The packet uin printed and posted failure. */
+	/** The packet uin printed and posted failure. */
 	RESEND_UIN_CARD_FOR_PRINTING,
 
 	/** The external stage success */
@@ -148,6 +150,6 @@ public enum RegistrationStatusCode {
 	/** The packet uin updation reprocessing */
 	PACKET_UIN_UPDATION_REPROCESSING,
 
-    /** The external stage reprocessing */
-    EXTERNAL_STAGE_REPROCESSING
+	/** The external stage reprocessing */
+	EXTERNAL_STAGE_REPROCESSING
 }
