@@ -152,7 +152,7 @@ public class Utilities {
 		if (uin != null) {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
+			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN ,
 					pathSegments, "", "", IdResponseDTO1.class);
 			if (idResponseDto == null)
 				return null;
