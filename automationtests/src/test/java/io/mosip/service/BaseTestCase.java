@@ -47,8 +47,10 @@ import io.restassured.RestAssured;
  *
  */
 
+
 public class BaseTestCase //extends KernelMasterDataR 
 {
+
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 	
 	public static List<String> preIds=new ArrayList<String> ();

@@ -72,10 +72,10 @@ public class IntegMethods extends BaseTestCase {
 			}
 		}
 		try {
-<<<<<<< HEAD
+
 			Response actualResponse=null;
 			//Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
-=======
+
 			JSONArray requestBody=(JSONArray) actualRequest.get("request");
 			JSONObject insideRequest=(JSONObject) requestBody.get(0);
 			String regId=(String) insideRequest.get("registrationId");
@@ -83,8 +83,8 @@ public class IntegMethods extends BaseTestCase {
 			Map<String,Object> resp = encrypter.encryptJson(actualRequest);
 			String encryptedData = resp.get("data").toString();
 			String timeStamp = resp.get("responsetime").toString();
-			Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"),center_machine_refID,timeStamp);
->>>>>>> ece6523494fe3449245e7815d188a4f0dc1b0663
+			actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"),center_machine_refID,timeStamp);
+
 			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
 			logger.info("Actual Response is :: "+ actualResponse.asString());
 			outerKeys.add("responsetime");

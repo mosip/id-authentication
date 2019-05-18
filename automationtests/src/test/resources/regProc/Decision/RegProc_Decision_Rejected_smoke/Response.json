@@ -2,12 +2,12 @@
     "response": {
         "regId": "60012783330000520190114162541",
         "mvUsrId": "12355",
-        "statusCode": "ASSIGNED",
+        "statusCode": "REJECTED",
         "matchedRefId": "60012783330000520190114134575",
         "matchedRefType": "uin",
         "reasonCode": "Problem with biometrics"
     },
-    "id": "mosip.manual.verification.assignment",
+    "id": "mosip.manual.verification.decision",
     "version": "1.0",
-    "responsetime": "2019-05-18T06:21:01.740Z"
+    "responsetime": "2019-05-18T10:14:23.458Z"
 }

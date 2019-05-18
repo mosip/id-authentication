@@ -44,7 +44,7 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-public class Assignment extends BaseTestCase implements ITest{
+public class Decision extends BaseTestCase implements ITest{
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(Assignment.class);
 	boolean status = false;
@@ -61,11 +61,11 @@ public class Assignment extends BaseTestCase implements ITest{
 	String statusCodeRes = "";
 	SoftAssert softAssert=new SoftAssert();
 	static String dest = "";
-	static String folderPath = "regProc/Assignment";
-	static String outputFile = "AssignmentOutput.json";
-	static String requestKeyFile = "AssignmentRequest.json";
+	static String folderPath = "regProc/Decision";
+	static String outputFile = "DecisionOutput.json";
+	static String requestKeyFile = "DecisionRequest.json";
 	static String description="";
-	static String apiName="AssignmentApi : ";
+	static String apiName="DecisionApi : ";
 	
 	CommonLibrary common=new CommonLibrary();
 	/**
@@ -74,7 +74,7 @@ public class Assignment extends BaseTestCase implements ITest{
 	 * @param context
 	 * @return Object[][]
 	 */
-	@DataProvider(name = "assignment")
+	@DataProvider(name = "decision")
 	public static Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
@@ -105,7 +105,7 @@ public class Assignment extends BaseTestCase implements ITest{
 	 * @param i
 	 * @param object
 	 */
-	@Test(dataProvider = "assignment")
+	@Test(dataProvider = "decision")
 	public void sync(String testSuite, Integer i, JSONObject object){
 		
 		List<String> outerKeys = new ArrayList<String>();
@@ -119,7 +119,7 @@ public class Assignment extends BaseTestCase implements ITest{
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("assignmentApi"),actualRequest);
+			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("decisionApi"),actualRequest);
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");

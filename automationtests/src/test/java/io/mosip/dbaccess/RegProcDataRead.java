@@ -12,8 +12,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import io.mosip.dbdto.AuditRequestDto;
+import io.mosip.dbdto.ManualVerificationDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbdto.SyncStatusDto;
+import io.mosip.dbentity.ManualVerificationEntity;
 import io.mosip.dbentity.RegistrationStatusEntity;
 
 
@@ -30,7 +32,7 @@ public class RegProcDataRead {
 	String auditLogConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\auditinteg.cfg.xml";
 	File auditLogConfigFile=new File(auditLogConfigFilePath);
 
-	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_int.cfg.xml";
+	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_dev.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 	
 	public SyncRegistrationDto regproc_dbDataInRegistrationList(String regId){
@@ -357,6 +359,77 @@ public class RegProcDataRead {
 		session.getTransaction().commit();
 		return auditDto;
 
+	}
+
+
+
+	public ManualVerificationDTO regproc_dbDataInManualVerification(String regIds, String matchedRegIds,
+			String statusCodeRes) {
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+
+		ManualVerificationDTO dto =validateInManualVerification(session, regIds,matchedRegIds,statusCodeRes);
+		
+		if(dto!=null)
+		{
+			/*session.close();
+			factory.close();*/
+			return dto;
+		}
+		return null;
+	}
+
+
+
+	private ManualVerificationDTO validateInManualVerification(Session session2, String regIds, String matchedRegIds,
+			String statusCodeRes) {
+		logger.info("REg id inside db query :"+regIds);
+		int size ;
+		String status_code = null;
+		ManualVerificationDTO manualVerificationDto = new ManualVerificationDTO();
+
+		String queryString= "Select *"+
+				" From regprc.reg_manual_verification where regprc.reg_manual_verification.reg_id= :regIds AND "
+				+ "regprc.reg_manual_verification.matched_ref_id= :matchedRegIds AND regprc.reg_manual_verification.status_code= :statusCodeRes";
+
+		logger.info("regId is : " +regIds);																																			
+		Query query = session.createSQLQuery(queryString);
+		query.setParameter("regIds", regIds);
+		query.setParameter("matchedRegIds", matchedRegIds);
+		query.setParameter("statusCodeRes", statusCodeRes);
+
+		@SuppressWarnings("unchecked")
+		List<Object> objs = (List<Object>) query.list();
+		//logger.info("First Element of List Elements are : " +objs.get(1));
+		size=objs.size();
+		logger.info("Size is : " +size);
+
+		Object[] TestData = null;
+		// reading data retrieved from query
+		for (Object obj : objs) {
+			TestData = (Object[]) obj;
+			//status_code = (String) (TestData[3]);
+			
+			manualVerificationDto.setRegId((String)TestData[0]);
+			manualVerificationDto.setMatchedRefId((String)TestData[1]);
+			manualVerificationDto.setStatusCode((String)TestData[5]);
+
+			logger.info("Status is : " +status_code);
+			session.getTransaction().commit();
+		}
+		try {
+			if(size==1)
+			{
+				return manualVerificationDto;
+			}
+			else
+				return null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
