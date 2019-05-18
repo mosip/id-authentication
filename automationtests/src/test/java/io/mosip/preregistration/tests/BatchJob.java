@@ -89,7 +89,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	/**
 	 * Batch Job service Consumed Application
 	 */
-	/*@Test
+	@Test
 	public void batchJobForConsumedApplication() {
 		List preRegistrationId = new ArrayList();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -108,7 +108,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-	*/
+	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
