@@ -137,6 +137,7 @@ public class RegistrationStatusExceptionHandler {
 	//	HttpHeaders headers = new HttpHeaders();
 		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
 		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 

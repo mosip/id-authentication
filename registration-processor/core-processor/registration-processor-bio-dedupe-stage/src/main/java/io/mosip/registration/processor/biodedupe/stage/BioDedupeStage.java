@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 
 /**
@@ -18,7 +20,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
  * @author Sowmya
  */
 @Service
-public class BioDedupeStage extends MosipVerticleManager {
+public class BioDedupeStage extends MosipVerticleAPIManager {
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
@@ -26,8 +28,17 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 	@Autowired
 	BioDedupeProcessor bioDedupeProcessor;
-	
-	
+
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
+	private MosipEventBus mosipEventBus = null;
+
 	/** The Constant INTERNAL_ERROR. */
 	private static final String INTERNAL_ERROR = "Internal error occurred in bio-dedupe stage while processing for registrationId ";
 
@@ -35,8 +46,14 @@ public class BioDedupeStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIO_DEDUPE_BUS_IN, MessageBusAddress.BIO_DEDUPE_BUS_OUT);
+	}
+
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.BIO_DEDUPE_BUS_IN, MessageBusAddress.BIO_DEDUPE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*
@@ -51,4 +68,3 @@ public class BioDedupeStage extends MosipVerticleManager {
 			return bioDedupeProcessor.process(object, this.getClass().getSimpleName());
 		}
 	}
-
