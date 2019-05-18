@@ -140,4 +140,10 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		return cryptoPublicResponseDto;
 	}
 
+	@Override
+	public CryptoEncryptResponseDto computeSignature(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
+		
+		return null;
+	}
+
 }
