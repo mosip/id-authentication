@@ -133,7 +133,7 @@ public class Sync extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		EncrypterDecrypter encrypter = new EncrypterDecrypter();
-		description=common.getDescription(testSuite,object);
+		
 		EncryptData encryptData=new EncryptData();
 		File file=ResponseRequestMapper.getPacket(testSuite, object);
 		RegistrationPacketSyncDTO registrationPacketSyncDto=encryptData.createSyncRequest(file);
@@ -258,7 +258,7 @@ public class Sync extends BaseTestCase implements ITest {
 	       
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
-			 //Verify.verify(false);
+			 
 		}
 	}  
 

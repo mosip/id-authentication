@@ -168,12 +168,7 @@ public class Assignment extends BaseTestCase implements ITest{
 						//List<Object> count = readDataFromDb.countRegIdInRegistrationList(regIds);
 						logger.info("dbDto :" +dbDto);
 
-						//Checking audit logs (not yet implemented)
-							/*LocalDateTime logTime = LocalDateTime.of(2019,Month.JANUARY,30,10,15,51,270000000);   //2019-01-30 10:15:51.27					
-							logger.info("log time : "+logTime);
-							AuditRequestDto auditDto = RegProcDataRead.regproc_dbDataInAuditLog(regIds, "REGISTRATION_ID", "REGISTRATION_PROCESSOR", "GET",logTime);
-							logger.info("AUDIT DTO : "+auditDto.getApplicationName());
-*/
+						
 						if(dbDto != null /*&& count.isEmpty()*//*&& auditDto != null*/) {
 							//if reg id present in response and reg id fetched from table matches, then it is validated
 							if ((expectedRegId.matches(dbDto.getRegId())&& (expectedMatchedRegId.matches(dbDto.getMatchedRefId()))) 

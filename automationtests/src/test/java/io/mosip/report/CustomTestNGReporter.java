@@ -402,11 +402,9 @@ public class CustomTestNGReporter implements IReporter {
 		for (ITestResult testResult : testResultSet) {
 			String apiName;
 			if (testResult.getTestName().toString().contains("-")) {
-				apiName = testResult.getTestName().toString().substring(0,
-						testResult.getTestName().toString().indexOf("-"));
+				apiName = testResult.getTestName().toString();
 			} else
-				apiName = testResult.getTestName().toString().substring(0,
-						testResult.getTestName().toString().indexOf(":"));
+				apiName = testResult.getTestName().toString();
 			if (!sortedApiName.contains(apiName))
 				sortedApiName.add(apiName);
 		}
@@ -614,10 +612,9 @@ public class CustomTestNGReporter implements IReporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-<<<<<<< HEAD
+
 		return model.getParent().getVersion();
-=======
-		return "0.11.2";
->>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
+
+
 	}
 }
