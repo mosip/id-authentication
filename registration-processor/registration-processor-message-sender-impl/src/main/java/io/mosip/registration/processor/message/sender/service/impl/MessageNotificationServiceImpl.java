@@ -304,11 +304,11 @@ public class MessageNotificationServiceImpl
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		String demographicInfo = IOUtils.toString(demographicInfoStream, ENCODING);
 
-		if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
-			setAttributes(demographicInfo, attributes, regType);
-		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
+		if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
+		} else{
+			setAttributes(demographicInfo, attributes, regType);
 		}
 
 		return attributes;
