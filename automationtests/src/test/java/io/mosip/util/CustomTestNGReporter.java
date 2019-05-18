@@ -406,12 +406,12 @@ public class CustomTestNGReporter  implements IReporter {
 		}
 		//Sort ApiName
 		SortedSet<String> sortedApiName = new TreeSet<>();
-		for (ITestResult testResult : testResultSet) {
+		/*for (ITestResult testResult : testResultSet) {
 			String apiName = testResult.getTestName().toString().substring(0,
 					testResult.getTestName().toString().indexOf(":"));
 			if (!sortedApiName.contains(apiName))
 				sortedApiName.add(apiName);
-		}
+		}*/
 		// Sorting testMethodName
 		SortedSet<String> sortedTestsMethodName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {

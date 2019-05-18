@@ -172,4 +172,8 @@ public class ApplicationLibrary extends BaseTestCase {
 			return commonLibrary.regProcGetRequest(ApplnURI + Resource_URI , valueMap);
 
 		}
+
+		public Response regProcAssignmentRequest(String Resource_URI, HashMap<String, String> valueMap) {
+			return commonLibrary.regProcPostRequest(ApplnURI + Resource_URI , valueMap, MediaType.APPLICATION_JSON);
+		}
 }

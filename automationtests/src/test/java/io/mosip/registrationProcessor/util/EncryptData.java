@@ -90,7 +90,7 @@ public class EncryptData {
 		}
 		System.out.println(encryptRequest);
 	}
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		String useMe="{\r\n" + 
 				"	\"id\": \"mosip.registration.sync\",\r\n" + 
 				"	\"requesttime\": \"2019-03-02T06:29:41.011Z\",\r\n" + 
@@ -112,5 +112,5 @@ public class EncryptData {
 		JSONObject js=new JSONObject(useMe);
 		EncryptData e=new EncryptData();
 		e.encryptData(js);
-	}*/
+	}
 }

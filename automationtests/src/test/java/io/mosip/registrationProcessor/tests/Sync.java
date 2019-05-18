@@ -45,6 +45,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -130,6 +131,37 @@ public class Sync extends BaseTestCase implements ITest {
 		EncrypterDecrypter encrypter = new EncrypterDecrypter();
 		description=common.getDescription(testSuite,object);
 		//testCaseName =testCaseName +": "+ description;
+		String configPath = "src/test/resources/" + testSuite + "/";
+		File folder = new File(configPath);
+		File[] listOfFolders = folder.listFiles();
+		JSONObject objectData = new JSONObject();
+		HashSequenceUtil hashSeqUtil = new HashSequenceUtil();
+		String packetHash = null;
+		long packetSize = 0;
+		String registrationId = null;
+		
+		for (int j = 0; j < listOfFolders.length; j++) {
+			if (listOfFolders[j].isDirectory()) {
+				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
+					logger.info("Testcase name is" + listOfFolders[j].getName());
+					File[] listOfFiles = listOfFolders[j].listFiles();
+					for (File f : listOfFiles) {
+						if (f.getName().toLowerCase().contains(".zip")) {
+							packetHash = hashSeqUtil.getPacketHashSequence(f);
+							packetSize = hashSeqUtil.getPacketSize(f);
+							registrationId = f.getName().substring(0, f.getName().length()-4);
+							boolean isCreated = createInputJson(packetHash,packetSize,registrationId);
+						}
+					}
+				}
+			}
+		}
+
+	/*	File[] listOfFolders = folder.listFiles();
+		*/
+		
+		
+		
 		try{
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
@@ -137,22 +169,6 @@ public class Sync extends BaseTestCase implements ITest {
 			JSONObject insideRequest=(JSONObject) requestBody.get(0);
 			String regId=(String) insideRequest.get("registrationId");
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			/*String timeStamp=regId.substring(regId.length() - 14);
-			int n = 100 + new Random().nextInt(900);
-			String milliseconds = String.valueOf(n);
-			//encryptedPacket.close();
-			Date date=null;
-			try {
-				date = formatter.parse(timeStamp.substring(0, 8) + "T"
-						+ timeStamp.substring(timeStamp.length() - 6)+milliseconds);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-			ldt.atOffset(ZoneOffset.UTC).toString();
-			logger.info("timestamp in sync request : "+ldt.atOffset(ZoneOffset.UTC).toString());*/
-		//	JSONObject encryptedJson = encrypter.generateCryptographicDataEncryption(actualRequest);
 			Map<String,Object> resp = encrypter.encryptJson(actualRequest);
 			String encryptedData = resp.get("data").toString();
 			String timeStamp = resp.get("responsetime").toString();
@@ -263,6 +279,11 @@ public class Sync extends BaseTestCase implements ITest {
 			 //Verify.verify(false);
 		}
 	}  
+
+	private boolean createInputJson(String packetHash, long packetSize, String regId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	/**
 	 * This method is used for fetching test case name

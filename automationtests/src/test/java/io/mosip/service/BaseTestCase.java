@@ -64,7 +64,7 @@ public class BaseTestCase extends KernelMasterDataR {
 	public static String ApplnURI;	
 	public static String authToken;
 	public static String regProcAuthToken;
-	public static String getStatusRegProcAuthToken;
+	public static String adminRegProcAuthToken;
 	public static String environment;
 	public static String SEPRATOR="";
 	public static String buildNumber="";
@@ -155,7 +155,7 @@ public class BaseTestCase extends KernelMasterDataR {
 			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
 			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			getStatusRegProcAuthToken = generateToken.getToken(adminTokenEntity);
+			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
 			//authToken=pil.getToken();
 			
@@ -199,7 +199,7 @@ public class BaseTestCase extends KernelMasterDataR {
 			extent.flush();
 		} // end testTearDown
 		
-		@AfterMethod
+		/*@AfterMethod
 		public void getResult(ITestResult result) {
 			if(result.getStatus()==ITestResult.FAILURE) {
 				test.fail(MarkupHelper.createLabel(result.getName()+"  Test Case Failed", ExtentColor.RED));
@@ -214,7 +214,7 @@ public class BaseTestCase extends KernelMasterDataR {
 				test.skip(MarkupHelper.createLabel(result.getName()+"  Test Case Skipped", ExtentColor.YELLOW));
 				test.skip(result.getThrowable());
 			}
-		}
+		}*/
 
 		public void reportMove(String currentModule)
 		{

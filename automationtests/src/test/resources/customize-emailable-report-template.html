@@ -16,16 +16,13 @@ function detailedReport() {
 <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
           ['Status', 'Count'],
           ['Passed',  $pass$],
           ['Skipped', $skip$],
           ['Failed',  $fail$]
         ]);
-
        var options = {
           /* title: 'My Daily Activities' */
            legend: 'none',
@@ -34,9 +31,7 @@ function detailedReport() {
           /*  chartArea: {left:'-8%',top:0,right:5,width:'30%',height:'70%'} */
    
         };
-
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
         chart.draw(data, options);
       }
     </script>

@@ -76,7 +76,7 @@ public class Assignment extends BaseTestCase implements ITest{
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			switch ("smoke") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -114,7 +114,7 @@ public class Assignment extends BaseTestCase implements ITest{
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.postRequest(actualRequest.toJSONString(),prop.getProperty("assignmentApi"));
+			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("assignmentApi"),actualRequest);
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
