@@ -355,7 +355,7 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.ABIS_RESPONSE_DUPLICATES_FOUND));
+						.getStatusCode(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR));
 				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.DEMO_DEDUPE_FAILED.toString());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
