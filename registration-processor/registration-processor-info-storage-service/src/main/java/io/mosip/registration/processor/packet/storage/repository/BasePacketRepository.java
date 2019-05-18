@@ -285,7 +285,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
 	
 	
-	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespIds")
+	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId in :abisRespIds")
 	public List<AbisResponseDetEntity> getAbisResponseDetailsList(@Param("abisRespIds") List<String> responseId);
 
 	/**
