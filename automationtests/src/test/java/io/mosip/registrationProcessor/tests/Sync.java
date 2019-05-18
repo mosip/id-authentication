@@ -40,11 +40,14 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
@@ -63,7 +66,7 @@ import io.restassured.response.Response;
  */
 
 public class Sync extends BaseTestCase implements ITest {
-
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(Sync.class);
 	boolean status = false;
@@ -121,66 +124,45 @@ public class Sync extends BaseTestCase implements ITest {
 	 * @param testSuite
 	 * @param i
 	 * @param object
+	 * @throws java.text.ParseException 
 	 */
 	@Test(dataProvider = "syncPacket")
-	public void sync(String testSuite, Integer i, JSONObject object){
-		
+	public void sync(String testSuite, Integer i, JSONObject object) throws java.text.ParseException{
+		ObjectMapper mapper=new ObjectMapper();
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		EncrypterDecrypter encrypter = new EncrypterDecrypter();
 		description=common.getDescription(testSuite,object);
-		//testCaseName =testCaseName +": "+ description;
-		String configPath = "src/test/resources/" + testSuite + "/";
-		File folder = new File(configPath);
-		File[] listOfFolders = folder.listFiles();
-		JSONObject objectData = new JSONObject();
-		HashSequenceUtil hashSeqUtil = new HashSequenceUtil();
-		String packetHash = null;
-		long packetSize = 0;
-		String registrationId = null;
-		
-		for (int j = 0; j < listOfFolders.length; j++) {
-			if (listOfFolders[j].isDirectory()) {
-				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-					logger.info("Testcase name is" + listOfFolders[j].getName());
-					File[] listOfFiles = listOfFolders[j].listFiles();
-					for (File f : listOfFiles) {
-						if (f.getName().toLowerCase().contains(".zip")) {
-							packetHash = hashSeqUtil.getPacketHashSequence(f);
-							packetSize = hashSeqUtil.getPacketSize(f);
-							registrationId = f.getName().substring(0, f.getName().length()-4);
-							boolean isCreated = createInputJson(packetHash,packetSize,registrationId);
-						}
-					}
-				}
-			}
+		EncryptData encryptData=new EncryptData();
+		File file=ResponseRequestMapper.getPacket(testSuite, object);
+		RegistrationPacketSyncDTO registrationPacketSyncDto=encryptData.createSyncRequest(file);
+		try {
+			String json=mapper.writeValueAsString(registrationPacketSyncDto);
+			System.out.println(json);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-
-	/*	File[] listOfFolders = folder.listFiles();
-		*/
-		
-		
-		
+		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+	
+		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
 		try{
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
+			
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-			JSONArray requestBody=(JSONArray) actualRequest.get("request");
-			JSONObject insideRequest=(JSONObject) requestBody.get(0);
-			String regId=(String) insideRequest.get("registrationId");
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			Map<String,Object> resp = encrypter.encryptJson(actualRequest);
-			String encryptedData = resp.get("data").toString();
-			String timeStamp = resp.get("responsetime").toString();
+			Response resp=applicationLibrary.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+			String encryptedData = resp.jsonPath().get("response.data").toString();
+			LocalDateTime timeStamp = encryptData.getTime(regId);
 			
 			System.out.println("encryptedData :" +encryptedData);
-			System.out.println("TimeStamp :" +timeStamp);
+			System.out.println("TimeStamp :" +registrationPacketSyncDto.getRequesttime());
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
 			actualResponse = applicationLibrary.regProcSync(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
-					timeStamp);
+					timeStamp.toString()+"Z");
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");

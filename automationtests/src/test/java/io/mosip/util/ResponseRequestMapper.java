@@ -59,4 +59,25 @@ public class ResponseRequestMapper {
 		}
 		return null;
 	}
+	public static File getPacket(String testSuite,JSONObject object) {
+
+		String configPath = "src/test/resources/" + testSuite + "/";
+
+		File folder = new File(configPath);
+		File[] listOfFolders = folder.listFiles();
+		for (int j = 0; j < listOfFolders.length; j++) {
+			if (listOfFolders[j].isDirectory()) {
+				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
+					logger.info("Testcase name is" + listOfFolders[j].getName());
+					File[] listOfFiles = listOfFolders[j].listFiles();
+					for (File f : listOfFiles) {
+						if(f.getName().contains(".zip")) {
+							return f;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -534,27 +534,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
-	@Test
-public void (String[] args) {
-	TweakRegProcPackets e=new TweakRegProcPackets();
-	Properties property = new Properties();
-	String propertyFilePath = System.getProperty("user.dir") + "/src/config/folderPaths.properties";
-	FileReader reader = null;
-	try {
-		reader = new FileReader(new File(propertyFilePath));
-	} catch (FileNotFoundException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-	try {
-		property.load(reader);
-		reader.close();
-	} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-	String validPacketPath = property.getProperty("validPacketForPacketGeneration");
-	String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
-}
+
+
 }

@@ -27,6 +27,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -48,7 +49,7 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
+	private final String decrypterURL="https://int.mosip.io/v1/cryptomanager/decrypt\r\n" + 
 			"";
 	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
@@ -205,6 +206,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		CryptomanagerRequestDto cryptoRequest=new CryptomanagerRequestDto();
 		CryptomanagerDto request=new CryptomanagerDto();
 		String centerId=file.getName().substring(0,5);
+		String machineId=file.getName().substring(5,10);
 		try {
 			encryptedPacket=new FileInputStream(file);
 			byte [] fileInBytes=FileUtils.readFileToByteArray(file);
@@ -223,7 +225,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
 			
 			decrypterDto.setApplicationId(applicationId);
-			decrypterDto.setReferenceId(centerId);
+			decrypterDto.setReferenceId(centerId+"_"+machineId);
 			decrypterDto.setData(encryptedPacketString);
 			decrypterDto.setTimeStamp(ldt);
 			request.setRequesttime(requestTime);
@@ -231,7 +233,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
-			cryptographicRequest.put("referenceId", centerId);
+			cryptographicRequest.put("referenceId", centerId+"_"+machineId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 			decryptionRequest.put("id","");
 			decryptionRequest.put("metadata","");
@@ -466,6 +468,18 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 			return demo;
 			  
-			  
 		}
+	@Test
+	public void getpackts() throws IOException, ZipException, ParseException {
+		EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();
+		File file=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets");
+		File[] listOfPackets=file.listFiles();
+		for(File f:listOfPackets) {
+			if(f.getName().contains(".zip")) {
+			JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
+			encryptDecrypt.decryptFile(jsonObject, "src/test/resources/regProc/Packets/ValidPackets/packteForInvalidPackets", f.getName());
+			}
+		}
+		
+	}
 }

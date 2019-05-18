@@ -336,11 +336,10 @@ public class CommonLibrary extends BaseTestCase{
 
 	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader) {
 		logger.info("REST:ASSURED:Sending a data packet to" + url);
+		logger.info("REST ASSURRED :: Request To Encrypt Is "+ body);
 		Cookie.Builder builder = new Cookie.Builder("Authorization",regProcAuthToken);
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
-		/*Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
-				.accept(acceptHeader).when().post(url).then().extract().response();*/
 
 		return postResponse;
 	}

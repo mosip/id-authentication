@@ -17,7 +17,7 @@ public class RegistrationPacketSyncDTO {
 	private String version;
 	
 	@JsonProperty("request")
-	private SyncRegistrationDto[] syncRegistrationDTOs;
+	private List<SyncRegistrationDto> syncRegistrationDTOs;
 
 	public String getId() {
 		return id;
@@ -35,11 +35,11 @@ public class RegistrationPacketSyncDTO {
 		this.version = version;
 	}
 
-	public SyncRegistrationDto[] getSyncRegistrationDTOs() {
+	public List<SyncRegistrationDto> getSyncRegistrationDTOs() {
 		return syncRegistrationDTOs;
 	}
 
-	public void setSyncRegistrationDTOs(SyncRegistrationDto[] syncRegistrationDTOs) {
+	public void setSyncRegistrationDTOs(List<SyncRegistrationDto> syncRegistrationDTOs) {
 		this.syncRegistrationDTOs = syncRegistrationDTOs;
 	}
 

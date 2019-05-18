@@ -1,22 +1,25 @@
 package io.mosip.registrationProcessor.util;
 
+import java.io.File;
+import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.codec.binary.Base64;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
 
 import io.mosip.dbdto.CryptomanagerDto;
 import io.mosip.dbdto.DecrypterDto;
@@ -27,19 +30,12 @@ public class EncryptData {
 	private String applicationId="REGISTRATION";
 	ObjectMapper objectMapper=new ObjectMapper();
 	
-	public void encryptData(JSONObject request) {
+	public JSONObject encryptData(RegistrationPacketSyncDTO registrationPacketSyncDto) {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-		JSONArray requestDataArray = (JSONArray) request.get("request");
-		JSONArray syncDto = (JSONArray) requestDataArray;
-		
-		Gson g = new Gson();
-		SyncRegistrationDto[] d=g.fromJson(syncDto.toString(),SyncRegistrationDto[].class);
-		RegistrationPacketSyncDTO p = g.fromJson(request.toString(), RegistrationPacketSyncDTO.class);
-		p.setSyncRegistrationDTOs(d);
 		String outputJson="";
 		try {
-			outputJson=objectMapper.writeValueAsString(p);
+			outputJson=objectMapper.writeValueAsString(registrationPacketSyncDto);
 		} catch (JsonProcessingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -52,9 +48,9 @@ public class EncryptData {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 		
 		DecrypterDto decrypterDto=new DecrypterDto();
-		JSONArray requestData = (JSONArray) request.get("request");
-		JSONObject obj = (JSONObject) requestData.get(0);
-		String registrationId = obj.get("registrationId").toString();
+		
+		String registrationId = registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId().toString();
+		
 		String referenceId=registrationId.substring(0,5)+"_"+registrationId.substring(5,10);
 		
 		try {
@@ -71,8 +67,8 @@ public class EncryptData {
 			decrypterDto.setApplicationId(applicationId);
 			decrypterDto.setReferenceId(referenceId);
 			decrypterDto.setData(encryptedString);
-			decrypterDto.setTimeStamp(ldt);
-			cryptoReq.setRequesttime(requestTime);
+			decrypterDto.setTimeStamp(getTime(registrationId));
+			cryptoReq.setRequesttime(getTime(registrationId));
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
@@ -88,29 +84,48 @@ public class EncryptData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(encryptRequest);
+		return encryptRequest;
 	}
-	public static void main(String[] args) {
-		String useMe="{\r\n" + 
-				"	\"id\": \"mosip.registration.sync\",\r\n" + 
-				"	\"requesttime\": \"2019-05-17T06:29:41.011Z\",\r\n" + 
-				"	\"version\": \"1.0\",\r\n" + 
-				"	\"request\": [{\r\n" + 
-				"		\"langCode\": \"eng\",\r\n" + 
-				"		\"registrationId\": \"10011100110001920190517120310\",\r\n" + 
-				"		\"registrationType\": \"NEW\",\r\n" + 
-				"		\"packetHashValue\": \"D7C87DC5D3A759D77433B02B80435CFAB5087F1A942543F51A5075BC441BF7EB\",\r\n" + 
-				"		\"packetSize\": 5242880,\r\n" + 
-				"		\"supervisorStatus\": \"APPROVED\",\r\n" + 
-				"		\"supervisorComment\": \"Approved, all good\",\r\n" + 
-				"		\"optionalValues\": [{\r\n" + 
-				"			\"key\": \"CNIE\",\r\n" + 
-				"			\"value\": \"122223456\"\r\n" + 
-				"		}]\r\n" + 
-				"	}]\r\n" + 
-				"}";
-		JSONObject js=new JSONObject(useMe);
-		EncryptData e=new EncryptData();
-		e.encryptData(js);
+/*	public static void main(String[] args) {
+	File f=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets\\10011100110001920190514120310.zip");
+	EncryptData e=new EncryptData();
+	RegistrationPacketSyncDTO dto=e.createSyncRequest(f);
+	System.out.println(dto.toString());
+	System.out.println(e.encryptData(dto));
+	}*/
+	public RegistrationPacketSyncDTO createSyncRequest(File f) throws ParseException {
+		String regId=f.getName().substring(0,f.getName().lastIndexOf("."));
+		HashSequenceUtil hashSeqUtil = new HashSequenceUtil();
+		String packetHash=hashSeqUtil.getPacketHashSequence(f);
+		SyncRegistrationDto syncRegistrationDto=new SyncRegistrationDto();
+		syncRegistrationDto.setLangCode("eng");
+		syncRegistrationDto.setPacketHashValue(packetHash);
+		syncRegistrationDto.setPacketSize(BigInteger.valueOf(f.getTotalSpace()));
+		syncRegistrationDto.setRegistrationId(regId);
+		syncRegistrationDto.setRegistrationType("NEW");
+		syncRegistrationDto.setSupervisorComment("APPROVED");
+		syncRegistrationDto.setSupervisorStatus("APPROVED");
+		List<SyncRegistrationDto> syncRegistrationList=new ArrayList<SyncRegistrationDto>();
+		syncRegistrationList.add(syncRegistrationDto);
+		RegistrationPacketSyncDTO registrationPacketSyncDto=new RegistrationPacketSyncDTO();
+		registrationPacketSyncDto.setId("mosip.registration.sync");
+		
+		//LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+		registrationPacketSyncDto.setRequesttime(getTime(regId).toString()+"Z");
+		registrationPacketSyncDto.setVersion("1.0");
+		registrationPacketSyncDto.setSyncRegistrationDTOs(syncRegistrationList);
+		return registrationPacketSyncDto;
+	}
+	public LocalDateTime getTime(String registrationId) throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
+		String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
+		int n = 100 + new Random().nextInt(900);
+		String milliseconds = String.valueOf(n);
+		
+		Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
+				+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
+		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+		
+		return ldt;
 	}
 }
