@@ -163,7 +163,7 @@ public class BookingService {
 		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 		try {
-			LocalDate endDate = LocalDate.now().plusDays(syncDays);
+			LocalDate endDate = LocalDate.now().plusDays(syncDays-1);
 			List<LocalDate> insertedDate = bookingDAO.findDateDistinct(LocalDate.now());
 			List<RegistrationCenterDto> regCenter = serviceUtil.callRegCenterDateRestService();
 			for (RegistrationCenterDto regDto : regCenter) {
