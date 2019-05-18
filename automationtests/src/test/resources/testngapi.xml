@@ -12,7 +12,7 @@
 
 
 
-                      <test name="Kernel Tests">
+                    <!--   <test name="Kernel Tests">
                      <parameter name="testType" value="smokeAndRegression" />
                      <parameter name="module" value="Kernel" />
                      <classes>
@@ -69,13 +69,15 @@
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />     
                           
                      </classes>
-              </test> 
+              </test>  -->
 
  <test name="PreReg Tests">
-		<parameter name="testType" value="smokeAndRegression" />
+		<parameter name="testType" value="smoke" />
 		<classes>
- 	<class name="io.mosip.preregistration.tests.Audit" /> 
-			<!-- <class name="io.mosip.preregistration.tests.BatchJob" />
+		<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
+		
+ 	<!--<class name="io.mosip.preregistration.tests.Audit" /> 
+			 <class name="io.mosip.preregistration.tests.BatchJob" />
 		  <class name="io.mosip.preregistration.tests.BookingAppointment" />
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
@@ -112,5 +114,3 @@
 
 
 </suite>
-	
->>>>>>> 613491cc2970d0c79979ee22c1f4777cd34dba17

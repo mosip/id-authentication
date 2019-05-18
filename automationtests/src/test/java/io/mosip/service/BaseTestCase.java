@@ -42,7 +42,7 @@ import io.restassured.RestAssured;
  *
  */
 
- class BaseTestCase {
+ public class BaseTestCase {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
 
 	public static List<String> preIds = new ArrayList<String>();
