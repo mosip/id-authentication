@@ -8,13 +8,10 @@ package io.mosip.kernel.cryptomanager.dto;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.mosip.kernel.cryptomanager.constant.CryptomanagerConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -37,7 +34,7 @@ public class SignatureRequestDto {
 	 * Application id of decrypting module
 	 */
 	@ApiModelProperty(notes = "Application id of decrypting module", example = "REGISTRATION", required = true)
-	@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
+	//@NotBlank(message = KeymanagerConstant.SIGNATURE_ALGORITHM)
 	private String applicationId;
 	/**
 	 * Refrence Id
@@ -55,7 +52,7 @@ public class SignatureRequestDto {
 	 * Data in BASE64 encoding to encrypt/decrypt
 	 */
 	@ApiModelProperty(notes = "Data to sign", required = true)
-	@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
+	//@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
 	private String data;
 
 }
