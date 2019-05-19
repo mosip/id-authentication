@@ -22,6 +22,8 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,6 +81,34 @@ public class CryptomanagerController {
 		return response;
 	}
 
+	
+	/**
+	 * Compute signature
+	 * 
+	 * @param cryptomanagerRequestDto
+	 * @return {@link ResponseWrapper<CryptoEncryptResponseDto> }
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Sign Data Using Certificate")
+	@PostMapping("signature/encrypt")
+	public ResponseWrapper<SignatureResponseDto> signature(
+			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.sign(signatureResponseDto.getRequest()));
+		return response;
+    }
+	
+	@ResponseFilter
+	@ApiOperation(value = "Validate Signature Data Using Certificate")
+	@PostMapping("signature/decrypt")
+	public ResponseWrapper<SignatureResponseDto> validateSignature(
+			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.validate(signatureResponseDto.getRequest()));
+		return response;
+    }
+	
+	
 	/**
 	 * Controller for Decrypt the data
 	 * 
