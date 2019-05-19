@@ -103,5 +103,9 @@ public interface KeyStore {
 	 * @param alias the alias
 	 */
 	void deleteKey(String alias);
+	
+	
+	
+	void storeCertificate(String alias,Certificate[] chain,PrivateKey privateKey);
 
 }
