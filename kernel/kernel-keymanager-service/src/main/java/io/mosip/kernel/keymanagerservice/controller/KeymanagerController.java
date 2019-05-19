@@ -21,6 +21,8 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
+import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
@@ -109,4 +111,25 @@ public class KeymanagerController {
 		return response;
 
 	}
+	
+	
+	@ResponseFilter
+	@ApiOperation(value = "Sign Data Using Certificate")
+	@PostMapping("signature/encrypt")
+	public ResponseWrapper<SignatureResponseDto> signature(
+			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
+		return response;
+    }
+	
+	@ResponseFilter
+	@ApiOperation(value = "Validate Signature Data Using Certificate")
+	@PostMapping("signature/decrypt")
+	public ResponseWrapper<SignatureResponseDto> validateSignature(
+			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
+		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.validate(signatureResponseDto.getRequest()));
+		return response;
+    }
 }
