@@ -67,7 +67,7 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity {
 	private String createdBy;
 
 	/** The create date time. */
-	@Column(name = "cr_dtimes", nullable = false)
+	@Column(name = "cr_dtimes",updatable=false )
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
