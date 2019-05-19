@@ -143,24 +143,50 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		} else {
 			try {
 
-				if (testCaseName.contains("DocumentUploadInvalidRequesttime")) {
+				if (testCaseName.contains("DocumentUploadInvalidDocType")) {
 					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 					JSONObject parm = preRegLib.getRequest(testSuite);
 					parm.put("preRegistrationId", preRegIdCreateAPI);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
+					testSuite = "DocumentUpload/DocumentUploadInvalidDocType_xlsx";
+					String configPath = "src/test/resources/" + folder + "/" + testSuite;
+					File file = new File(configPath + "/input.xlsx");
+					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					logger.info("DocumentUploadInvalidDocType:"+Actualresponse.asString());
+					outerKeys.add("responsetime");
+					//Asserting actual and expected response
+					status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
+				} 
+				else if(testCaseName.contains("DocumentUploadInvalidRequesttime")){
+					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
+					JSONObject parm = preRegLib.getRequest(testSuite);
+					parm.put("preRegistrationId", preRegIdCreateAPI);
+					
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					logger.info("DocumentUploadInvalidRequesttime:"+Actualresponse.asString());
+					outerKeys.add("responsetime");
+					//Asserting actual and expected response
+					status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
-				} else {
+				}
+				else {
 					testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
 					JSONObject parm = preRegLib.getRequest(testSuite);
 					parm.put("preRegistrationId", preRegIdCreateAPI);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
 					testSuite = "DocumentUpload/DocumentUpload_smoke";
 					String configPath = "src/test/resources/" + folder + "/" + testSuite;
 					File file = new File(configPath + "/AadhaarCard_POI.pdf");
 					Actualresponse = applicationLibrary.putFileAndJsonWithParm(preReg_URI, actualRequest, file, parm);
+					logger.info("DocumentUploadInvalidVersionORId:"+Actualresponse.asString()+"TC nmaw::"+testCaseName);
+					outerKeys.add("responsetime");
+					//Asserting actual and expected response
+					status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
 				}
 
 			} catch (Exception e) {

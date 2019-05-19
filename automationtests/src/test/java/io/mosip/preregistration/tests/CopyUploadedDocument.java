@@ -172,6 +172,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			parmInvalidCatCode.put("catCode", docCatCode);
 			parmInvalidCatCode.put("sourcePreId", srcPreID);
 			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI1, parmInvalidCatCode);
+			logger.info("CopyUploadedDocumentByPassingInvalidCatCode:" + Actualresponse.asString()+"Test casename:"+testCaseName);
 			outerKeys.add("responsetime");
 			
 			//Asserting actual and expected response
@@ -186,6 +187,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			parmInvalidDestId.put("catCode", docCatCode);
 			parmInvalidDestId.put("sourcePreId", srcPreID);
 			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI2, parmInvalidDestId);
+			logger.info("CopyUploadedDocumentByPassingInvalidDestinationPreId:" + Actualresponse.asString()+"Test casename:"+testCaseName);
 			outerKeys.add("responsetime");
 			
 			//Asserting actual and expected response
@@ -200,6 +202,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			parmInvalidSrcId.put("catCode", docCatCode);
 			parmInvalidSrcId.put("sourcePreId", srcPreID);
 			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI3, parmInvalidSrcId);
+			logger.info("CopyUploadedDocumentByPassingInvalidSourcePreId:" + Actualresponse.asString()+"Test casename:"+testCaseName);
 			outerKeys.add("responsetime");
 			
 			//Asserting actual and expected response

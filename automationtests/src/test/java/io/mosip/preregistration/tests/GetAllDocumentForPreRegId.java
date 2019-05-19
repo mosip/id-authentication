@@ -153,10 +153,12 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		} else {
 
-			preId = actualRequest.get("preRegistrationId").toString();
+		String	preIdVal = actualRequest.get("preRegistrationId").toString();
+		String preRegURL=preReg_URI+preIdVal;
 			HashMap<String, String> parm = new HashMap<>();
-			parm.put("preRegistrationId", preId);
-			Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
+			parm.put("preRegistrationId", preIdVal);
+			//Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
+			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURL);
 			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			outerKeys.add("responsetime");
@@ -197,7 +199,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 		
 		//Get All document by PreReg Id Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_GetDocByPreId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

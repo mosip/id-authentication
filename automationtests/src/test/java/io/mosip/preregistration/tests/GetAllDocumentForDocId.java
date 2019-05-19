@@ -150,24 +150,26 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			innerKeys.add("document");
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 
-		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
-			docId = actualRequest.get("docId").toString();
+		} else if (testCaseName.contains("GetAllDocumentByDocIdByPassingInvalidDocumentId")) {
+			docId = actualRequest.get("documentId").toString();
 
 			parm.put("preRegistrationId", preId);
 
-			preReg_URI = preReg_URI + docId;
+			String preRegURL = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURL, parm);
+			logger.info("Dele All Doc By Doc Id:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
-		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId")) {
-			preId = actualRequest.get("preRegistrationId").toString();
-			parm.put("preRegistrationId", preId);
+		} else if (testCaseName.contains("GetAllDocumentByDocIdByPassingInvalidPreRegistrationId")) {
+		String	preIdVal = actualRequest.get("preRegistrationId").toString();
+			parm.put("preRegistrationId", preIdVal);
 
-			preReg_URI = preReg_URI + docId;
+			String preRegURI = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURI, parm);
+			logger.info("Dele All Doc By Doc Id PreId:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
