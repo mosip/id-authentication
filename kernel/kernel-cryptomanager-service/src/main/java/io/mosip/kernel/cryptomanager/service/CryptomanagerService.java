@@ -14,6 +14,8 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 
 
 /**
@@ -50,5 +52,10 @@ public interface CryptomanagerService {
 	 * @return the cryptomanager response dto {@link CryptoEncryptResponseDto}
 	 */
 	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto );
+
+	public SignatureResponseDto validate(SignatureRequestDto request);
+
+	public SignatureResponseDto sign(SignatureRequestDto request);
+
 
 }
