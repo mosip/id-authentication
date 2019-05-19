@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.precon;
 
-import static io.mosip.authentication.fw.util.IdaScriptsUtil.*; 
+import static io.mosip.authentication.fw.util.AuthTestsUtil.*; 
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
  
 /**
@@ -143,7 +143,7 @@ public class JsonPrecondtion{
 			ObjectMapper mapper = new ObjectMapper();
 			Object jsonObj = mapper.readValue(jsonContent, Object.class);
 			return PropertyUtils.getProperty(jsonObj,
-					IdaScriptsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(fieldName)).toString();
+					AuthTestsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(fieldName)).toString();
 		} catch (Exception exp) {
 			JSONPRECONDATION_LOGGER
 					.error("Exception Occured in retrieving the value from json file: " + exp.getMessage());

@@ -24,7 +24,7 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
@@ -44,7 +44,7 @@ import org.testng.Reporter;
  * @param <TestDataProcessor>
  *
  */
-public class StaticTokenIdGenerationForDemoAuth extends IdaScriptsUtil implements ITest{
+public class StaticTokenIdGenerationForDemoAuth extends AuthTestsUtil implements ITest{
 
 	private static final Logger logger = Logger.getLogger(StaticTokenIdGenerationForDemoAuth.class);
 	protected static String testCaseName = "";

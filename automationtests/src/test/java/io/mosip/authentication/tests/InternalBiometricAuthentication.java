@@ -1,16 +1,14 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;   
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.ITest;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -24,40 +22,72 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
-import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
-
 import org.testng.Reporter;
 
 /**
- * Tests to execute internal biometric authentication
+ * Tests to execute biometric authentication for ida
  * 
- * @author Athila
+ * @author Vignesh
  *
  */
-public class InternalBiometricAuthentication extends IdaScriptsUtil implements ITest{
+public class InternalBiometricAuthentication extends AuthTestsUtil implements ITest {
 
-	private static Logger logger = Logger.getLogger(InternalBiometricAuthentication.class);
+	private static final Logger logger = Logger.getLogger(InternalBiometricAuthentication.class);
 	protected static String testCaseName = "";
-	private String TESTDATA_PATH="ida/TestData/InternalBio/Iris/";
-	private String TESTDATA_FILENAME="testdata.ida.InternalBio.AuthWithIris.mapping.yml";
+	private String TESTDATA_PATH;
+	private String TESTDATA_FILENAME;
+	private String testType;
+	private int invocationCount = 0;
+	private String cookieValue;
 
-	@Parameters({"testType"})
+	/**
+	 * Set Test Type - Smoke, Regression or Integration
+	 * 
+	 * @param testType
+	 */
+	@Parameters({ "testType" })
 	@BeforeClass
-	public void setConfigurations(String testType) {
-		RunConfigUtil.objRunConfig.setConfig(TESTDATA_PATH,TESTDATA_FILENAME,testType);
-		TestDataProcessor.initateTestDataProcess(TESTDATA_FILENAME,TESTDATA_PATH,"ida");	
+	public void setTestType(String testType) {
+		this.testType = testType;
 	}
-	
+
+	/**
+	 * Method set Test data path and its filename
+	 * 
+	 * @param index
+	 */
+	public void setTestDataPathsAndFileNames(int index) {
+		this.TESTDATA_PATH = getTestDataPath(this.getClass().getSimpleName().toString(), index);
+		this.TESTDATA_FILENAME = getTestDataFileName(this.getClass().getSimpleName().toString(), index);
+	}
+
+	/**
+	 * Method set configuration
+	 * 
+	 * @param testType
+	 */
+	public void setConfigurations(String testType) {
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
+	}
+
+	/**
+	 * The method set test case name
+	 * 
+	 * @param method
+	 * @param testData
+	 */
 	@BeforeMethod
-	public void testData(Method method, Object[] testData) {
+	public void testData(Method method, Object[] testData, ITestContext c) {
 		String testCase = "";
 		if (testData != null && testData.length > 0) {
 			TestParameters testParams = null;
@@ -73,20 +103,37 @@ public class InternalBiometricAuthentication extends IdaScriptsUtil implements I
 			}
 		}
 		this.testCaseName = String.format(testCase);
+		cookieValue=getAuthorizationCookie(getCookieRequestFilePathForInternalAuth(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 	}
-	
+
+	/**
+	 * Data provider class provides test case list
+	 * 
+	 * @return object of data provider
+	 */
 	@DataProvider(name = "testcaselist")
 	public Object[][] getTestCaseList() {
+		invocationCount++;
+		setTestDataPathsAndFileNames(invocationCount);
+		setConfigurations(this.testType);
 		return DataProviderClass.getDataProvider(
-				System.getProperty("user.dir") + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
-	
+
+	/**
+	 * Set current testcaseName
+	 */
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
-	} 
-	
+	}
+
+	/**
+	 * The method ser current test name to result
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -101,10 +148,18 @@ public class InternalBiometricAuthentication extends IdaScriptsUtil implements I
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-	} 
+	}
 
+	/**
+	 * Test method for biometric authentication execution
+	 * 
+	 * @param objTestParameters
+	 * @param testScenario
+	 * @param testcaseName
+	 */
 	@Test(dataProvider = "testcaselist")
-	public void idaApiBioAuthExecution(TestParameters objTestParameters,String testScenario,String testcaseName) {
+	public void internalBiometricAuthenticationTest(TestParameters objTestParameters, String testScenario,
+			String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -112,25 +167,21 @@ public class InternalBiometricAuthentication extends IdaScriptsUtil implements I
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		Map<String, String> tempMap = new HashMap<String, String>();
-		for (Entry<String, String> entry : getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt")
-				.entrySet()) {
-			tempMap.put("key", entry.getKey());
-			tempMap.put("data", entry.getValue());
-		}
-		logger.info("************* Modification of bio auth request ******************");
+		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
+		logger.info("************* Modification of internal bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getInternalAuthPath()
-				+ " *******");
-		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getInternalAuthPath(), "request", "output-1-actual-res",200), true);
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
+				+" *******");
+		Assert.assertEquals(postRequestAndGenerateOuputFileForIntenalAuth(testCaseName.listFiles(),
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getInternalAuthPath(), "request", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue, 200),
+				true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
 		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid), true);
-		if(FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
+		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
 			Reporter.log("<b><u>Auth Transaction Validation</u></b>");
@@ -138,7 +189,8 @@ public class InternalBiometricAuthentication extends IdaScriptsUtil implements I
 					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
 			Reporter.log(ReportUtil.getOutputValiReport(auditTxnvalidation));
 			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditTxnvalidation), true);
-		}if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
+		}
+		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
 			wait(5000);
 			logger.info("************* Audit Log Validation ******************");
 			Reporter.log("<b><u>Audit Log Validation</u></b>");

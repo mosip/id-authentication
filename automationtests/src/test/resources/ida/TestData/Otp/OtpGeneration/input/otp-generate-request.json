@@ -6,6 +6,7 @@
 	"individualId": "9830872690593682",
 	"individualIdType": "UIN",
 	"otpChannel": [
-		"EMAIL"
+		"EMAIL",
+		"PHONE"
 	]
 }

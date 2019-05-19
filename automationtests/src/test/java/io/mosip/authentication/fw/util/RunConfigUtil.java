@@ -77,7 +77,7 @@ public class RunConfigUtil {
 	 * @return string, value of partner ID and License key
 	 */
 	public static String getPartnerIDMispLKValue(String key) {
-		return IdaScriptsUtil.getPropertyFromRelativeFilePath(getPartnerIDMispLKPropertyPath()).get(key).toString();
+		return AuthTestsUtil.getPropertyFromRelativeFilePath(getPartnerIDMispLKPropertyPath()).get(key).toString();
 	}
 	/**
 	 * The method get token ID for UIN and PartnerID
@@ -217,7 +217,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	protected static void getUinPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -231,7 +231,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getStaticPinUinPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -245,7 +245,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getStaticPinVidPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -259,7 +259,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	protected static void getVidPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -273,7 +273,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getTokenIdPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -290,5 +290,9 @@ public class RunConfigUtil {
 		else if (module.equals("idrepo"))
 			objRunConfig = new IdRepoRunConfig();
 		
+	}
+	
+	public static String getRunEvironment() {
+		return System.getProperty("env.user");
 	}
 }

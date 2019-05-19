@@ -21,7 +21,7 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
@@ -39,7 +39,7 @@ import org.testng.Reporter;
  * @author Athila
  *
  */
-public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
+public class EkycPartnerAuthentication extends AuthTestsUtil implements ITest{
 
 	private static final Logger logger = Logger.getLogger(EkycPartnerAuthentication.class);
 	protected static String testCaseName = "";
@@ -161,8 +161,8 @@ public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
 		String mapping = TestDataUtil.getMappingPath();
 		String extUrl=getExtendedUrl(new File(objTestParameters.getTestCaseFile()+"/url.properties"));
 		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
-		logger.info("************* Modification of demo auth request ******************");
-		Reporter.log("<b><u>Modification of demo auth request</u></b>");
+		logger.info("************* Modification of auth request ******************");
+		Reporter.log("<b><u>Modification of auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "auth-request"), true);
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl+" *******");

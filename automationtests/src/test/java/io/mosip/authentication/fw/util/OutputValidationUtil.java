@@ -26,7 +26,7 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
  * @author Vignesh
  *
  */
-public class OutputValidationUtil extends IdaScriptsUtil{
+public class OutputValidationUtil extends AuthTestsUtil{
 
 	private static final Logger OUTPUTVALIDATION_LOGGER = Logger.getLogger(OutputValidationUtil.class);
 	

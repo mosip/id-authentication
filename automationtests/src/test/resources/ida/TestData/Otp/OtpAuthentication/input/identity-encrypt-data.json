@@ -1,7 +1,6 @@
 {
 	"identityRequest": {
 		"timestamp": "2019-03-25T11:45:57.086+05:30",
-		"transactionID": "1234567890",
 		"otp": "931646"
 	}
 }

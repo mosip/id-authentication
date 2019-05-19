@@ -19,7 +19,7 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class EncryptDecrptUtil extends IdaScriptsUtil{
+public class EncryptDecrptUtil extends AuthTestsUtil{
 	private static final Logger ENCRYPTION_DECRYPTION_LOGGER = Logger.getLogger(EncryptDecrptUtil.class);
 	private static String key="encryptedSessionKey";
 	private static String data="encryptedIdentity";

@@ -35,6 +35,7 @@ import com.ibm.icu.text.Transliterator;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
+import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
  
@@ -44,9 +45,9 @@ import io.restassured.response.Response;
  * @author Vignesh
  *
  */
-public class IdaScriptsUtil extends BaseTestCase {
+public class AuthTestsUtil extends BaseTestCase {
 	
-	private static final Logger IDASCRIPT_LOGGER = Logger.getLogger(IdaScriptsUtil.class);
+	private static final Logger IDASCRIPT_LOGGER = Logger.getLogger(AuthTestsUtil.class);
 	private static String testCaseName;
 	private static int testCaseId;
 	private static File testFolder;
@@ -68,7 +69,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @param testFolder
 	 */
 	public static void setTestFolder(File testFolder) {
-		IdaScriptsUtil.testFolder = testFolder;
+		AuthTestsUtil.testFolder = testFolder;
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @param testCaseName
 	 */
 	public static void setTestCaseName(String testCaseName) {
-		IdaScriptsUtil.testCaseName = testCaseName;
+		AuthTestsUtil.testCaseName = testCaseName;
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @param testCaseId
 	 */
 	public static void setTestCaseId(int testCaseId) {
-		IdaScriptsUtil.testCaseId = testCaseId;
+		AuthTestsUtil.testCaseId = testCaseId;
 	}
 
 	/**
@@ -144,6 +145,42 @@ public class IdaScriptsUtil extends BaseTestCase {
 	}
 	
 	/**
+	 * The method will post request and generate output file
+	 * 
+	 * @param listOfFiles
+	 * @param urlPath
+	 * @param keywordToFind
+	 * @param generateOutputFileKeyword
+	 * @param code
+	 * @return true or false
+	 */
+	protected boolean postRequestAndGenerateOuputFileForIntenalAuth(File[] listOfFiles, String urlPath, String keywordToFind,
+			String generateOutputFileKeyword,String cookieName, String cookieValue,int code) {
+		try {
+			for (int j = 0; j < listOfFiles.length; j++) {
+				if (listOfFiles[j].getName().contains(keywordToFind)) {
+					FileOutputStream fos = new FileOutputStream(
+							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
+					String responseJson = "";
+					if (code == 0)
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath,cookieName,cookieValue);
+					else
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code,cookieName,cookieValue);
+					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
+							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
+					fos.write(responseJson.getBytes());
+					fos.flush();
+					fos.close();
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception " + e);
+			return false;
+		}
+	}
+	
+	/**
 	 * The method will post request and generate output file with return repose
 	 * 
 	 * @param listOfFiles
@@ -154,7 +191,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 	 * @return String , response for post request
 	 */
 	protected String postRequestAndGenerateOuputFileWithResponse(File[] listOfFiles, String urlPath,
-			String keywordToFind, String generateOutputFileKeyword, int code) {
+			String keywordToFind, String generateOutputFileKeyword,String cookieName,String cookieValue, int code) {
 		try {
 			for (int j = 0; j < listOfFiles.length; j++) {
 				if (listOfFiles[j].getName().contains(keywordToFind)) {
@@ -162,9 +199,9 @@ public class IdaScriptsUtil extends BaseTestCase {
 							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
 					String responseJson = "";
 					if (code == 0)
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath);
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath,cookieName,cookieValue);
 					else
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code,cookieName,cookieValue);
 					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
 							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
 					fos.write(responseJson.getBytes());
@@ -177,6 +214,25 @@ public class IdaScriptsUtil extends BaseTestCase {
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception " + e);
 			return e.getMessage();
+		}
+	}
+	
+	protected String postRequestWithCookie(String filename, String url, int expCode,String cookieName,String cookieValue) {
+		Response response=null;
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			response = RestClient.postRequestWithCookie(url, objectData.toJSONString(), MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON,cookieName,cookieValue);
+			Map<String, List<OutputValidationDto>> objMap = new HashMap<String, List<OutputValidationDto>>();
+			List<OutputValidationDto> objList = new ArrayList<OutputValidationDto>();
+			objList.add(verifyStatusCode(response,expCode));
+			objMap.put("Status Code", objList);
+			Reporter.log(ReportUtil.getOutputValiReport(objMap));
+			Verify.verify(OutputValidationUtil.publishOutputResult(objMap));
+			return response.asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return response.asString();
 		}
 	}
 	
@@ -200,8 +256,8 @@ public class IdaScriptsUtil extends BaseTestCase {
 					String responseJson = "";
 					if (code == 0)
 						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath,cookieName,cookieValue);
-					/*else
-						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code);*/
+					else
+						responseJson = postRequestWithCookie(listOfFiles[j].getAbsolutePath(), urlPath, code,cookieName,cookieValue);
 					if (responseJson.contains("Invalid UIN")) {
 						fos.flush();
 						fos.close();
@@ -403,6 +459,39 @@ public class IdaScriptsUtil extends BaseTestCase {
 		try {
 			return RestClient.getRequest(url, MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON).asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
+	/**
+	 * The method will get response for url and type
+	 * 
+	 * @param url, endpoint url
+	 * @param type, BIO,DEMO,ALL
+	 * @return String, Response
+	 */
+	protected static String getResponseWithCookieForIdaUinGenerator(String url, String cookieName) {
+		try {
+			return RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+					cookieName, getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(), getCookieUrlPath(), cookieName)).asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	/**
+	 * The method will get response for url and type
+	 * 
+	 * @param url, endpoint url
+	 * @param type, BIO,DEMO,ALL
+	 * @return String, Response
+	 */
+	protected static String getResponseWithCookieForIdRepoUinGenerator(String url, String cookieName) {
+		try {
+			return RestClient.getRequestWithCookie(url, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+					cookieName, getAuthorizationCookie(IdRepoTestsUtil.getCookieRequestFilePathForUinGenerator(), getCookieUrlPath(), cookieName)).asString();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e);
 			return e.toString();
@@ -834,7 +923,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 						+ "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar").getAbsolutePath();
 				demoAppBatchFilePath = new File("./src/test/resources/demoApp.bat");
 				content = '"' + javaHome + "/bin/java" + '"'
-						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
+						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
 						+ '"' + demoAppJarPath.toString() + '"';
 			} else if (getOSType().toString().equals("OTHERS")) {
 				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv("MAVEN_HOME"));
@@ -846,7 +935,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 								.getAbsolutePath();
 				RunConfigUtil.objRunConfig.setUserDirectory();
 				demoAppBatchFilePath = new File(RunConfigUtil.objRunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
-				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test -Djava.net.useSystemProxies=true -jar "
+				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Djava.net.useSystemProxies=true -jar "
 						+ '"' + demoAppJarPath.toString() + '"' +" &";
 				fileDemoAppJarPath = new File(demoAppJarPath.toString());
 				if (fileDemoAppJarPath.exists())
@@ -900,7 +989,7 @@ public class IdaScriptsUtil extends BaseTestCase {
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
-			//Thread.sleep(60000);
+			Thread.sleep(60000);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Execption in launching demoApp application: " + e.getMessage());
 		}
@@ -1051,10 +1140,31 @@ public class IdaScriptsUtil extends BaseTestCase {
 			return e.toString();
 		}
 	}
+	protected String postRequestWithCookie(String filename, String url,String cookieName, String cookieValue,int code) {
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			return RestClient
+					.postRequestWithCookie(url, objectData.toJSONString(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,cookieName,cookieValue)
+					.asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
 	
 	protected static String getCookieRequestFilePath() {
 		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
 				+ "ida/TestData/Security/GetCookie/getCookieRequest.json".toString();
+	}
+	
+	protected static String getCookieRequestFilePathForUinGenerator() {
+		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
+				+ "ida/TestData/Security/GetCookie/getCookieForUinGenerator.json".toString();
+	}
+	
+	protected static String getCookieRequestFilePathForInternalAuth() {
+		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
+				+ "ida/TestData/Security/GetCookie/getCookieForInternalAuth.json".toString();
 	}
 	
 	protected String patchRequestWithCookie(String filename, String url,String cookieName,String cookieValue) {

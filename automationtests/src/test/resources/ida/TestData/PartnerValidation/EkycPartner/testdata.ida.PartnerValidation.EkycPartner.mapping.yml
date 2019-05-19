@@ -11,6 +11,7 @@ testdata:
       AuthReq.secondaryLangCode: $REMOVE$
     input.identity-encrypt-bio-data:
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       #output.1.response.y.status: true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -67,6 +68,7 @@ testdata:
       AuthReq.requestTime: $INVALIDTIMESTAMPZ$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -82,6 +84,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$HOUR+25
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$ 
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -114,6 +117,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.version: 0.8
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -129,6 +133,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -159,6 +164,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -174,6 +180,7 @@ testdata:
       AuthReq.requestTime: $REMOVE$
       AuthReq.transactionID:  $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -190,6 +197,7 @@ testdata:
       AuthReq.transactionID:  $RANDOM:N:10$
       AuthReq.version: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -206,6 +214,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -221,6 +230,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -236,6 +246,7 @@ testdata:
       AuthReq.requestTime: $TestData:timestamp_invalid$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -252,6 +263,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $TestData:indvId_invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -268,6 +280,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -283,6 +296,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $TestData:txnID_Invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -302,6 +316,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.secondaryLangCode: $TestData:secondary_lang_code$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-y-res:
       #output.1.response.y.status: true
@@ -364,6 +379,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -380,6 +396,7 @@ testdata:
       AuthReq.requestTime: $INVALIDTIMESTAMPZ$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -396,6 +413,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$HOUR+25
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$ 
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -428,8 +446,9 @@ testdata:
       AuthReq.individualIdType: VID
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.version: 0.8
+      AuthReq.version: 0.*
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -446,6 +465,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -462,7 +482,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
-      identityReq.bioValue: "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA"
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.bioValue: Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -478,6 +499,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -494,6 +516,7 @@ testdata:
       AuthReq.requestTime: $REMOVE$
       AuthReq.transactionID:  $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -511,6 +534,7 @@ testdata:
       AuthReq.transactionID:  $RANDOM:N:10$
       AuthReq.version: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -527,6 +551,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $REMOVE$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -543,6 +568,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -559,6 +585,7 @@ testdata:
       AuthReq.requestTime: $TestData:timestamp_invalid$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -576,6 +603,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $TestData:indvId_invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -593,6 +621,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -609,6 +638,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $TestData:txnID_Invalid$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -625,6 +655,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -642,6 +673,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -657,6 +689,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -673,6 +706,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -688,6 +722,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -706,6 +741,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.secondaryLangCode: ara
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.withSecLang-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-y-res:
       #output.1.response.y.status: true
@@ -765,8 +801,9 @@ testdata:
       AuthReq.demo: BOOLEAN:false
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.secondaryLangCode: fre
+      AuthReq.secondaryLangCode: ara
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.withSecLang-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -845,8 +882,9 @@ testdata:
       AuthReq.demo: BOOLEAN:false
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.secondaryLangCode: fre
+      AuthReq.secondaryLangCode: ara
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.withSecLang-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -862,6 +900,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -893,6 +932,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -924,6 +964,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-res:
       output.1.response.n.res.status: 500
@@ -955,6 +996,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-res:
       output.1.response.n.res.status: 500
@@ -987,6 +1029,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.requestSessionKey: MsGZjrxhS3kAzEJIf2xu1R8qIo34M9BUoZlrRKqSW7Z1cy6_2dPwQeylmhxXMaUK-4HXI7uMWwsbBcY1hhXG0Zrs3E17eRi9vj9-wrhvMjGsygIYjCl5TIgI6syNPbEEja6_yiBW85hupXNofOthPZ84ifV8iEkl82ayS5jrve_DQIxhHnAFYVWbpA9quWEwdusrp_U1xx9wU1M2vGt76_NMyDoFuD77cVLGK3CYiTjyVLiXmLMqYhZLIfVgTUGm-oTc5jpUtjNFKXh3ykmH2bMoJLw3m-PM7CUeWWEay
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -1050,6 +1093,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
@@ -1066,6 +1110,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$

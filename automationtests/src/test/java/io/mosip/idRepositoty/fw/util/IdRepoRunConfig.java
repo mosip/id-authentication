@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.dto.ErrorsDto;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 
 /**
@@ -214,41 +214,41 @@ public class IdRepoRunConfig extends RunConfig{
 	 * @param testType
 	 */
 	public  void setConfig(String testDataPath,String testDataFileName,String testType) {
-		setAuthVersion(IdaScriptsUtil.getPropertyValue("authVersion"));
-		setSrcPath(IdaScriptsUtil.getPropertyValue("srcPath"));
-		setEncryptUtilBaseUrl(IdaScriptsUtil.getPropertyValue("encryptUtilBaseUrl"));
-		setEncryptionPath(IdaScriptsUtil.getPropertyValue("encryptionPath"));
-		setEncodePath(IdaScriptsUtil.getPropertyValue("encodePath"));
-		setDecodePath(IdaScriptsUtil.getPropertyValue("decodePath"));
+		setAuthVersion(AuthTestsUtil.getPropertyValue("authVersion"));
+		setSrcPath(AuthTestsUtil.getPropertyValue("srcPath"));
+		setEncryptUtilBaseUrl(AuthTestsUtil.getPropertyValue("encryptUtilBaseUrl"));
+		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
+		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));
+		setDecodePath(AuthTestsUtil.getPropertyValue("decodePath"));
 		setUserDirectory();
 		setTestDataPath(testDataPath);	
-		setIdRepoEndPointUrl(IdaScriptsUtil.getPropertyValue("idRepoEndPointUrl"));
-		setIdRepoRetrieveDataPath(IdaScriptsUtil.getPropertyValue("idRepoRetrieveDataPath"));
-		setDbKernelTableName(IdaScriptsUtil.getPropertyValue("dbKernelTableName"));
-		setDbKernelSchemaName(IdaScriptsUtil.getPropertyValue("dbKernelSchemaName"));
-		setDbKernelUserName(IdaScriptsUtil.getPropertyValue("dbKernelUserName"));
-		setDbKernelPwd(IdaScriptsUtil.getPropertyValue("dbKernelPwd"));
+		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));
+		setIdRepoRetrieveDataPath(AuthTestsUtil.getPropertyValue("idRepoRetrieveDataPath"));
+		setDbKernelTableName(AuthTestsUtil.getPropertyValue("dbKernelTableName"));
+		setDbKernelSchemaName(AuthTestsUtil.getPropertyValue("dbKernelSchemaName"));
+		setDbKernelUserName(AuthTestsUtil.getPropertyValue("dbKernelUserName"));
+		setDbKernelPwd(AuthTestsUtil.getPropertyValue("dbKernelPwd"));
 		File testDataFilePath = new File(/*RunConfig.getUserDirectory() +*/ this.getSrcPath()
 		+ testDataPath + testDataFileName);
 		setFilePathFromTestdataFileName(testDataFilePath,testDataPath);
 		setTestType(testType);
-		setGenerateUINPath(IdaScriptsUtil.getPropertyValue("generateUINPath"));
-		setIdRepoCreateUINRecordPath(IdaScriptsUtil.getPropertyValue("idRepoCreateUINRecordPath"));
-		setStoreUINDataPath(IdaScriptsUtil.getPropertyValue("storeUINDataPath"));
-		setDbIdaTableName(IdaScriptsUtil.getPropertyValue("dbIdaTableName"));
-		setDbIdaSchemaName(IdaScriptsUtil.getPropertyValue("dbIdaSchemaName"));
-		setDbIdaUserName(IdaScriptsUtil.getPropertyValue("dbIdaUserName"));
-		setDbIdaPwd(IdaScriptsUtil.getPropertyValue("dbIdaPwd"));
-		setDbAuditTableName(IdaScriptsUtil.getPropertyValue("dbAuditTableName"));
-		setDbAuditSchemaName(IdaScriptsUtil.getPropertyValue("dbAuditSchemaName"));
-		setDbAuditUserName(IdaScriptsUtil.getPropertyValue("dbAuditUserName"));
-		setDbAuditPwd(IdaScriptsUtil.getPropertyValue("dbAuditPwd"));
-		setEncodeFilePath(IdaScriptsUtil.getPropertyValue("encodeFilePath"));
-		setDecodeFilePath(IdaScriptsUtil.getPropertyValue("decodeFilePath"));
-		setDbKernelUrl(IdaScriptsUtil.getPropertyValue("dbKernelUrl"));
-		setDbIdaUrl(IdaScriptsUtil.getPropertyValue("dbIdaUrl"));
-		setDbAuditUrl(IdaScriptsUtil.getPropertyValue("dbAuditUrl"));
-		setClientidsecretkey(IdaScriptsUtil.getPropertyValue("clientidsecretkey"));
+		setGenerateUINPath(AuthTestsUtil.getPropertyValue("generateUINPath"));
+		setIdRepoCreateUINRecordPath(AuthTestsUtil.getPropertyValue("idRepoCreateUINRecordPath"));
+		setStoreUINDataPath(AuthTestsUtil.getPropertyValue("storeUINDataPath"));
+		setDbIdaTableName(AuthTestsUtil.getPropertyValue("dbIdaTableName"));
+		setDbIdaSchemaName(AuthTestsUtil.getPropertyValue("dbIdaSchemaName"));
+		setDbIdaUserName(AuthTestsUtil.getPropertyValue("dbIdaUserName"));
+		setDbIdaPwd(AuthTestsUtil.getPropertyValue("dbIdaPwd"));
+		setDbAuditTableName(AuthTestsUtil.getPropertyValue("dbAuditTableName"));
+		setDbAuditSchemaName(AuthTestsUtil.getPropertyValue("dbAuditSchemaName"));
+		setDbAuditUserName(AuthTestsUtil.getPropertyValue("dbAuditUserName"));
+		setDbAuditPwd(AuthTestsUtil.getPropertyValue("dbAuditPwd"));
+		setEncodeFilePath(AuthTestsUtil.getPropertyValue("encodeFilePath"));
+		setDecodeFilePath(AuthTestsUtil.getPropertyValue("decodeFilePath"));
+		setDbKernelUrl(AuthTestsUtil.getPropertyValue("dbKernelUrl"));
+		setDbIdaUrl(AuthTestsUtil.getPropertyValue("dbIdaUrl"));
+		setDbAuditUrl(AuthTestsUtil.getPropertyValue("dbAuditUrl"));
+		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
 	}	

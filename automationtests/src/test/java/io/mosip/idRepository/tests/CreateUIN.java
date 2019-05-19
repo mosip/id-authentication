@@ -22,7 +22,7 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
@@ -172,7 +172,7 @@ public class CreateUIN extends IdRepoTestsUtil implements ITest {
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
 		Map<String, String> tempMap = new HashMap<String, String>();
-		String uin = IdRepoUtil.generateUinNumber();
+		String uin = IdRepoUtil.generateUinNumberForIdRepo();
 		tempMap.put("UIN", "LONG:" + uin);
 		logger.info("************* IdRepo UIN request ******************");
 		Reporter.log("<b><u>UIN create request</u></b>");

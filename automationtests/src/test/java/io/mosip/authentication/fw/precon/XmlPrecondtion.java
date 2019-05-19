@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.precon;
 
-import static io.mosip.authentication.fw.util.IdaScriptsUtil.getPropertyFromFilePath;
+import static io.mosip.authentication.fw.util.AuthTestsUtil.getPropertyFromFilePath;
 
 import java.io.ByteArrayInputStream; 
 import java.io.File;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.w3c.dom.Document;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -98,10 +98,10 @@ public class XmlPrecondtion{
 			String xpath;
 			if (mappingFieldName.contains(":")) {
 				String keys[] = mappingFieldName.split(":");
-				String valueFromProperty = IdaScriptsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(keys[0]);
+				String valueFromProperty = AuthTestsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(keys[0]);
 				xpath = valueFromProperty.replace("$" + keys[1] + "$", keys[2]);
 			} else
-				xpath = IdaScriptsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(mappingFieldName);
+				xpath = AuthTestsUtil.getPropertyFromFilePath(mappingFilePath).getProperty(mappingFieldName);
 			return getValueFromXmlContent(new String(Files.readAllBytes(Paths.get(inputFilePath))), xpath.toString());
 		} catch (Exception exception) {
 			XMLPRECONDTION_LOGGER

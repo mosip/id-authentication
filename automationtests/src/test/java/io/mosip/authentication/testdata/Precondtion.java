@@ -26,7 +26,7 @@ import org.testng.Reporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.keywords.IdRepoKeywordUtil;
@@ -65,22 +65,22 @@ public class Precondtion {
 			for (Entry<String, String> map : fieldvalue.entrySet()) {
 				if (map.getValue().contains("LONG:")) {
 					String value = map.getValue().replace("LONG:", "");
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Long.parseLong(value));
 				} else if (map.getValue().contains("DOUBLE:")) {
 					String value = map.getValue().replace("DOUBLE:", "");
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Double.parseDouble(value));
 				} else if (map.getValue().contains("BOOLEAN:")) {
 					String value = map.getValue();
 					if (value.contains("true"))
-						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								true);
 					if (value.contains("false"))
-						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								false);
 				} else
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
@@ -114,7 +114,7 @@ public class Precondtion {
 			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
 			Map<String, String> auditTxnValue = new HashMap<String, String>();
 			for (Entry<String, String> entry : fieldvalue.entrySet()) {
-				String orgKey = IdaScriptsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
+				String orgKey = AuthTestsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
 				auditTxnValue.put(orgKey, entry.getValue());
 			}
 			Properties prop = new Properties();

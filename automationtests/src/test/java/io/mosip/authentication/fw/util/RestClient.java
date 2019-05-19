@@ -155,5 +155,13 @@ public class RestClient {
 		RESTCLIENT_LOGGER.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
+	public static Response getRequestWithCookie(String url, String contentHeader, String acceptHeader,String cookieName,String cookieValue) {
+        RESTCLIENT_LOGGER.info("REST-ASSURED: Sending a GET request to " + url);
+        Response getResponse= given().relaxedHTTPSValidation().cookie(cookieName, cookieValue)
+                    .log().all().when().get(url).then().log().all().extract().response();
+        RESTCLIENT_LOGGER.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+        RESTCLIENT_LOGGER.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+    }
 }
 

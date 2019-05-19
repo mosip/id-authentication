@@ -21,7 +21,7 @@ import io.mosip.authentication.fw.dto.VidStaticPinDto;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
@@ -164,7 +164,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 				if (type.equals("AN"))
 					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
-				IdaScriptsUtil.wait(5000);
+				AuthTestsUtil.wait(5000);
 				String[] tempArray = entry.getValue().split(Pattern.quote("+"));
 				String constantValue = tempArray[0];
 				DateFormat dateFormatter = new SimpleDateFormat("YYYYMMddHHmmss");
@@ -183,7 +183,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 					tempMap.put("text", text);
 				String surceLang = keys[2].replace("$", "");
 				String destLang = keys[3].replace("$", "");
-				String str = IdaScriptsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
+				String str = AuthTestsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
 				returnMap.put(entry.getKey(), str);
 			}
 			// Keyword to get UIN Number
@@ -339,7 +339,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 						.getAbsolutePath();
 		String messageText = null;
 		if (template.equals("otp.generate.email.fra.message.body")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			if (uin.length() == 10) {
 				messageText = messageText.replace("$maskedUIN/VID$", "XXXXXXXX" + uin.substring(8, uin.length()));
 				messageText = messageText.replace("$uin/vid$", "UIN");
@@ -350,7 +350,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 			}
 		}
 		if (template.equals("otp.generate.email.fra.message.address")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			messageText = messageText.replace("$fullname$", fullName);
 		}
 		return messageText;

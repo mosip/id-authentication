@@ -29,7 +29,7 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -40,7 +40,7 @@ import io.mosip.authentication.testdata.TestDataUtil;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
 
-public class UpdateUinRecord extends IdaScriptsUtil implements ITest {
+public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 
 	private static Logger logger = Logger.getLogger(UpdateUinRecord.class);
 	protected static String testCaseName = "";

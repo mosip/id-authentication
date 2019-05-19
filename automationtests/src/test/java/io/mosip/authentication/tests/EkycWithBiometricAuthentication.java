@@ -22,7 +22,7 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
@@ -40,7 +40,7 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements ITest {
+public class EkycWithBiometricAuthentication extends AuthTestsUtil implements ITest {
 
 	private static final Logger logger = Logger.getLogger(EkycWithBiometricAuthentication.class);
 	protected static String testCaseName = "";

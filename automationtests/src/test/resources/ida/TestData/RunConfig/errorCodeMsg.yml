@@ -84,10 +84,10 @@ errors:
     errorMessage: No authentication type selected 
   PolicyWithoutBioFinger:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-Finger-authentiation usage not allowed as per policy
+    errorMessage: Finger-authentiation usage not allowed as per policy
   PolicyWithoutBioIris:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-Iris-authentiation usage not allowed as per policy
+    errorMessage: Iris-authentiation usage not allowed as per policy
   PolicyWithoutDemo:
     errorCode: IDA-MPA-006
     errorMessage: DEMO-authentiation usage not allowed as per policy 
@@ -119,7 +119,7 @@ errors:
     errorCode: IDA-MLC-007
     errorMessage: Request could not be processed. Please try again
   NoOTPChannel:
-    errorCode: IDA-OTA-009
+    errorCode: IDA-OTA-008
     errorMessage: OTP Notification Channel not provided
   OTPFlodding:
     errorCode: IDA-OTA-002
@@ -200,3 +200,21 @@ errors:
   InvalidOTPChannel:
     errorCode: IDA-MLC-009
     errorMessage: $REGEXP:Invalid Input Parameter - otpChannel.*$
+  TxnIDMismatch:
+    errorCode: IDA-OTA-005
+    errorMessage: Input transactionID does not match transactionID of OTP Request
+  InvalidOTP:
+    errorCode: IDA-OTA-004
+    errorMessage: OTP is invalid
+  OTPAttempExceeds:
+    errorCode: IDA-OTA-007
+    errorMessage: UIN is locked for OTP validation due to exceeding no of invalid OTP trials
+  OTPExpired:
+    errorCode: IDA-OTA-003
+    errorMessage: OTP has expired
+  DemoAuthTypeForInternal:
+    errorCode: IDA-MPA-006
+    errorMessage: demo-authentiation usage not allowed as per policy
+    actionMessage: Please use other Authentication Types in the request
+  
+  

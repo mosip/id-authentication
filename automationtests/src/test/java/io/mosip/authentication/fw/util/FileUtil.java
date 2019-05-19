@@ -88,7 +88,7 @@ public class FileUtil{
 	 */
 	public static boolean createAndWriteFile(String fileName, String content) {
 		try {
-			Path path = Paths.get(IdaScriptsUtil.getTestFolder().getAbsolutePath() + "/" + fileName);
+			Path path = Paths.get(AuthTestsUtil.getTestFolder().getAbsolutePath() + "/" + fileName);
 			Charset charset = Charset.forName("UTF-8");
 			BufferedWriter writer = Files.newBufferedWriter(path, charset);
 			writer.write(content);

@@ -11,7 +11,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -38,12 +38,12 @@ testdata:
       otpReq.phone: $REMOVE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
-      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REMOVE$
       output.1.y.res.id: $TestData:id_otp_valid$
       
   Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos:
@@ -58,13 +58,14 @@ testdata:
       otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
-      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedEmail: $REMOVE$
       output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
       output.1.y.res.id: $TestData:id_otp_valid$
+      
   Authentication_OTPGenerate_With_Invalid_Id_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -76,7 +77,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -116,7 +117,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $TestData:txnID_Invalid$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $REMOVE$
@@ -136,7 +137,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TestData:timestamp_invalid$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -156,7 +157,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$MINUTE+10
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -176,7 +177,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$MINUTE-30
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -196,7 +197,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -216,7 +217,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -236,7 +237,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -256,7 +257,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -276,7 +277,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -296,7 +297,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -316,7 +317,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -336,7 +337,7 @@ testdata:
       otpReq.phone: $TestData:otpChannel_invalid$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -356,7 +357,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -396,7 +397,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: ''
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $REMOVE$
@@ -416,7 +417,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: ''
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -436,7 +437,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -456,7 +457,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -476,53 +477,13 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       #output.1.y.res.ver: $version$
       output.1.n.res.errorMessage: $errors:MissingindividualIdType:errorMessage$
       output.1.n.res.errorCode: $errors:MissingindividualIdType:errorCode$
-      #output.1.y.res.status: $TestData:auth_Fail_status$  
-   
-  Authentication_OTPGenerate_With_Null_email_otpchannel_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.otp-generate-request:
-      otpReq.id: $TestData:id_otp_valid$
-      otpReq.individualId: $UIN$
-      otpReq.individualIdType: $TestData:indvId_Uin_valid$
-      otpReq.email: ''
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
-      otpReq.requestTime: $TIMESTAMP$
-      otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
-    output.output-1-expected-n-res:
-      output.1.y.res.resTime: $TIMESTAMP$
-      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
-      #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:InvalidRequest:errorMessage$
-      output.1.n.res.errorCode: $errors:InvalidRequest:errorCode$
-      #output.1.y.res.status: $TestData:auth_Fail_status$
-    
-  Authentication_OTPGenerate_With_Null_phone_otpchannel_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.otp-generate-request:
-      otpReq.id: $TestData:id_otp_valid$
-      otpReq.individualId: $UIN$
-      otpReq.individualIdType: $TestData:indvId_Uin_valid$
-      otpReq.email: $TestData:otpChannel_EMAIL$
-      otpReq.phone: ''
-      otpReq.requestTime: $TIMESTAMP$
-      otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
-    output.output-1-expected-n-res:
-      output.1.y.res.resTime: $TIMESTAMP$
-      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
-      #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:InvalidRequest:errorMessage$
-      output.1.n.res.errorCode: $errors:InvalidRequest:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$    
    
   Authentication_OTPGenerate_Without_Id_Neg:
@@ -536,7 +497,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -576,7 +537,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $REMOVE$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $REMOVE$
@@ -596,7 +557,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $REMOVE$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMPZ$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -616,7 +577,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -636,7 +597,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -656,7 +617,7 @@ testdata:
       #otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -673,10 +634,10 @@ testdata:
       otpReq.individualId: $UIN$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $REMOVE$
-      #otpReq.phone: $REMOVE$
+      otpReq.phone: $REMOVE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -695,7 +656,7 @@ testdata:
       otpReq.otpChannel: $REMOVE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -714,7 +675,7 @@ testdata:
       otpReq.otpChannel: ''
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -731,10 +692,10 @@ testdata:
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
@@ -751,10 +712,10 @@ testdata:
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
       output.1.y.res.resTime: $REMOVE$
       output.1.y.res.txnID: $REMOVE$
@@ -771,15 +732,15 @@ testdata:
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
-      output.1.y.res.resTime: $REMOVE$
-      output.1.y.res.txnID: $REMOVE$
-      output.1.y.res.maskedEmail: $REMOVE$
-      output.1.y.res.maskedMobile: $REMOVE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
    
@@ -791,15 +752,15 @@ testdata:
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-y-res:
-      output.1.y.res.resTime: $REMOVE$
-      output.1.y.res.txnID: $REMOVE$
-      output.1.y.res.maskedEmail: $REMOVE$
-      output.1.y.res.maskedMobile: $REMOVE$
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
       
@@ -811,10 +772,10 @@ testdata:
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
-      #otpReq.version: $version$
+      otpReq.version: $version$
     output.output-1-expected-n-res:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$

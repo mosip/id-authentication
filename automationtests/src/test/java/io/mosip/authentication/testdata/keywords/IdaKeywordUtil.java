@@ -1,6 +1,6 @@
 package io.mosip.authentication.testdata.keywords;
 
-import java.io.File;   
+import java.io.File;    
 import java.text.DateFormat;   
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,13 +20,12 @@ import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidStaticPinDto;
 import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
-import io.mosip.util.CustomTestNgReporterDto;
 
 /**
  * The class is to implementation of keyword as per ida test execution
@@ -194,15 +193,15 @@ public class IdaKeywordUtil extends KeywordUtil{
 				Map<String, String> tempMap = new HashMap<String, String>();
 				String temp = entry.getValue().replaceAll("%", "");
 				String[] getValue = temp.split("_");
-				tempMap.put("txnID", getValue[0]);
-				tempMap.put("tspId", getValue[1]);
+				tempMap.put("uin", getValue[0]);
+				//tempMap.put("tspId", getValue[1]);
 				Map<String, String> tempOut = precondtionKeywords(tempMap);
 				String baseQuery = "select otp from kernel.otp_transaction where id like ";
-				String otpId = "%" + tempOut.get("txnID") + "_" + tempOut.get("tspId") + "%";
-				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[2];
+				String otpId = "%" + tempOut.get("uin")+ "%";
+				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[1];
 				returnMap.put(entry.getKey(), OtpFindQuery);
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
-				IdaScriptsUtil.wait(5000);
+				AuthTestsUtil.wait(5000);
 				String[] tempArray = entry.getValue().split(Pattern.quote("+"));
 				String constantValue = tempArray[0];
 				DateFormat dateFormatter = new SimpleDateFormat("YYYYMMddHHmmss");
@@ -221,7 +220,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 					tempMap.put("text", text);
 				String surceLang = keys[2].replace("$", "");
 				String destLang = keys[3].replace("$", "");
-				String str = IdaScriptsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
+				String str = AuthTestsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
 				returnMap.put(entry.getKey(), str);
 			}
 			// Keyword to get UIN Number
@@ -400,7 +399,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 						.getAbsolutePath();
 		String messageText = null;
 		if (template.equals("otp.generate.email.fra.message.body")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			if (uin.length() == 10) {
 				messageText = messageText.replace("$maskedUIN/VID$", "XXXXXXXX" + uin.substring(8, uin.length()));
 				messageText = messageText.replace("$uin/vid$", "UIN");
@@ -411,7 +410,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 			}
 		}
 		if (template.equals("otp.generate.email.fra.message.address")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			messageText = messageText.replace("$fullname$", fullName);
 		}
 		return messageText;

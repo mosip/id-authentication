@@ -7,8 +7,8 @@
 	"requestHMAC": "EF4F5925A684CE1CE6D8F6E5C3385C641B06800AAE213C9F55696015FF7D8CFC",
 	"requestTime": "2019-03-21T14:43:57.086+05:30",
 	"requestedAuth": {
-		"bio": false,
-		"demo": true,
+		"bio": true,
+		"demo": false,
 		"otp": false,
 		"pin": false
 	},

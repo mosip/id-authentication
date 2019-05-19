@@ -18,7 +18,7 @@ import io.mosip.authentication.fw.precon.XmlPrecondtion;
  * @author Athila
  *
  */
-public class IdRepoUtil extends IdaScriptsUtil{
+public class IdRepoUtil extends AuthTestsUtil{
 
 	private static final Logger IDREPO_UTILITY_LOGGER = Logger.getLogger(IdRepoUtil.class);
 
@@ -32,7 +32,7 @@ public class IdRepoUtil extends IdaScriptsUtil{
 		String retrievePath = RunConfigUtil.objRunConfig.getIdRepoRetrieveDataPath().replace("$uin$", uinNumber);
 		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + retrievePath;
 		if (!FileUtil.checkFileExistForIdRepo(uinNumber + ".json")) {
-			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponseWithCookie(url, "type=all",IdaScriptsUtil.AUTHORIZATHION_COOKIENAME)))
+			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponseWithCookie(url, "type=all",AuthTestsUtil.AUTHORIZATHION_COOKIENAME)))
 				return true;
 			else
 				return false;
@@ -95,18 +95,28 @@ public class IdRepoUtil extends IdaScriptsUtil{
 	 * 
 	 * @return UIN Number
 	 */
-	public static String generateUinNumber() {
+	public static String generateUinNumberForIda() {
+		return JsonPrecondtion.getValueFromJson(
+					getResponseWithCookieForIdaUinGenerator(RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getGenerateUINPath(),AUTHORIZATHION_COOKIENAME), "response.uin");
+	}
+	/**
+	 * Generate uin number using generate_uin api
+	 * 
+	 * @return UIN Number
+	 */
+	public static String generateUinNumberForIdRepo() {
 		boolean flag = false;
 		String uin;
 		do {
 			uin = JsonPrecondtion.getValueFromJson(
-					getResponse("https://qa.mosip.io/v1" + RunConfigUtil.objRunConfig.getGenerateUINPath()), "response.uin");
+					getResponseWithCookieForIdRepoUinGenerator(RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getGenerateUINPath(),AUTHORIZATHION_COOKIENAME), "response.uin");
 			if (uin.startsWith("1") || uin.startsWith("2") || uin.startsWith("3") || uin.startsWith("4")) {
 				flag = true;
 			}
 		} while (flag == false);
 		return uin;
 	}
+	
 	
 	/**
 	 * Get Create UIN api Path for the generated uin number

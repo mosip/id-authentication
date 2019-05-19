@@ -21,7 +21,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 
@@ -31,7 +31,7 @@ import io.mosip.authentication.fw.util.RunConfigUtil;
  * @author Athila
  *
  */
-public class CreateVID extends IdaScriptsUtil implements ITest {
+public class CreateVID extends AuthTestsUtil implements ITest {
 
 	private static final Logger logger = Logger.getLogger(CreateVID.class);
 	protected static String testCaseName = "";

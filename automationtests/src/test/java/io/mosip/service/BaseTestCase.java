@@ -31,7 +31,7 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 //import io.mosip.prereg.scripts.Create_PreRegistration;
@@ -137,7 +137,7 @@ public class BaseTestCase {
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-			IdaScriptsUtil.wakeDemoApp();
+			AuthTestsUtil.wakeDemoApp();
 			
 		} // End suiteSetup
 
