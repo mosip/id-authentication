@@ -37,7 +37,7 @@ public enum CryptomanagerErrorCode {
 	/**
 	 * 
 	 */
-	CANNOT_CONNECT_TO_KEYMANAGER_SERVICE("KER-CRY-005", "cannot connect to keymanager service"),
+	CANNOT_CONNECT_TO_KEYMANAGER_SERVICE("KER-CRY-005", "cannot connect to keymanager service or response is null"),
 	/**
 	 * 
 	 */
@@ -45,7 +45,7 @@ public enum CryptomanagerErrorCode {
 	/**
 	 * 
 	 */
-	RESPONSE_PARSE_ERROR("KER-CRY-008", "Error occur while parsing error from response"),
+	RESPONSE_PARSE_ERROR("KER-CRY-008", "Error occur while parsing response "),
 	/**
 	 * 
 	 */
