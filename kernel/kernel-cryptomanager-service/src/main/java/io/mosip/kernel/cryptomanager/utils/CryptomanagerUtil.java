@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
@@ -57,6 +58,8 @@ import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.exception.CryptoManagerSerivceException;
 import io.mosip.kernel.cryptomanager.exception.KeymanagerServiceException;
 import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
@@ -116,6 +119,14 @@ public class CryptomanagerUtil {
 
 	@Value("${mosip.kernel.cryptomanager.request_version}")
 	private String cryptomanagerRequestVersion;
+	
+	@Value("${mosip.kernel.keymanager-service-encrypt-signature-url}")
+	private String signatureEncryptURL;
+	
+	@Value("${mosip.kernel.keymanager-service-decrypt-signature-url}")
+	private String signatureDecryptURL;
+	
+	
 	/**
 	 * {@link DataMapper} instance.
 	 */
@@ -162,24 +173,8 @@ public class CryptomanagerUtil {
 								+ ex.getResponseBodyAsString());
 			}
 		}
-		String responseBody = response.getBody();
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
-		if (!validationErrorsList.isEmpty()) {
-			throw new KeymanagerServiceException(validationErrorsList);
-		}
-		KeymanagerPublicKeyResponseDto keyManagerResponseDto;
-		ResponseWrapper<?> responseObject;
-		try {
-			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			keyManagerResponseDto = objectMapper.readValue(
-					objectMapper.writeValueAsString(responseObject.getResponse()),
-					KeymanagerPublicKeyResponseDto.class);
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
-		}
+		throwExceptionIfExist(response);
+		KeymanagerPublicKeyResponseDto keyManagerResponseDto = getResponse(response, KeymanagerPublicKeyResponseDto.class);
 
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(
@@ -230,24 +225,8 @@ public class CryptomanagerUtil {
 								+ ex.getResponseBodyAsString());
 			}
 		}
-		String responseBody = response.getBody();
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
-		if (!validationErrorsList.isEmpty()) {
-			throw new KeymanagerServiceException(validationErrorsList);
-		}
-		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto;
-		ResponseWrapper<?> responseObject = null;
-		try {
-			responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			keyManagerSymmetricKeyResponseDto = objectMapper.readValue(
-					objectMapper.writeValueAsString(responseObject.getResponse()),
-					KeymanagerSymmetricKeyResponseDto.class);
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
-		}
+		throwExceptionIfExist(response);
+		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = getResponse(response, KeymanagerSymmetricKeyResponseDto.class);
 		byte[] symmetricKey = CryptoUtil.decodeBase64(keyManagerSymmetricKeyResponseDto.getSymmetricKey());
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
@@ -286,31 +265,53 @@ public class CryptomanagerUtil {
 								+ ex.getResponseBodyAsString());
 			}
 		}
-		String responseBody = response.getBody();
-		List<ServiceError> validationErrorsList = null;
-		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
-		if (!validationErrorsList.isEmpty()) {
-			throw new KeymanagerServiceException(validationErrorsList);
-		}
-		KeyManagerEncryptResponseDto keyManagerResponseDto;
-		ResponseWrapper<KeyManagerEncryptResponseDto> responseObject;
-		try {
-
-			responseObject = objectMapper.readValue(response.getBody(),
-					new TypeReference<ResponseWrapper<KeyManagerEncryptResponseDto>>() {
-					});
-
-			keyManagerResponseDto = responseObject.getResponse();
-		} catch (IOException | NullPointerException exception) {
-			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
-		}
+		throwExceptionIfExist(response);
+		KeyManagerEncryptResponseDto keyManagerResponseDto=getResponse(response, KeyManagerEncryptResponseDto.class);
 
 		encryptedData = keyManagerResponseDto.getEncryptedData();
 
 		return encryptedData;
 	}
+	
+	public SignatureResponseDto signatureDecrypt(SignatureRequestDto signatureRequestDto) {
+		return signatureClient(signatureRequestDto,signatureDecryptURL);
+	}
+
+	public SignatureResponseDto signatureEncrypt(SignatureRequestDto signatureRequestDto) {
+		return signatureClient(signatureRequestDto,signatureEncryptURL);
+	}
+
+	private SignatureResponseDto signatureClient(SignatureRequestDto signatureRequestDto, String url) {
+		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
+		requestWrapper.setId(cryptomanagerRequestID);
+		requestWrapper.setVersion(cryptomanagerRequestVersion);
+		requestWrapper.setRequest(signatureRequestDto);
+		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
+		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		ResponseEntity<String> response = null;
+		HttpEntity<RequestWrapper<SignatureRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
+				requestWrapper, keyManagerRequestHeaders);
+		try {
+			response = restTemplate.exchange(url, HttpMethod.POST, keyManagerRequestEntity,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
+			
+			if (!validationErrorsList.isEmpty()) {
+				throw new KeymanagerServiceException(validationErrorsList);
+			} else {
+				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+								+ ex.getResponseBodyAsString());
+			}
+		}
+		
+		throwExceptionIfExist(response);
+		return getResponse(response, SignatureResponseDto.class);
+	}
+	
 	
 	/**
 	 * Change Parameter form to trim if not null
@@ -348,5 +349,31 @@ public class CryptomanagerUtil {
 			}
 		}
 	}
+	
+	public void throwExceptionIfExist(ResponseEntity<String> response) {
+		if(response == null) {
+			throw new ParseResponseException(CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(),
+					CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage() );
+		}
+		String responseBody = response.getBody();
+		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(responseBody);
+		if (!validationErrorList.isEmpty()) {
+			throw new KeymanagerServiceException(validationErrorList);
+		}
+	}
+	
+	public <S> S getResponse(ResponseEntity<String> response, Class<S> clazz) {
+		try {
+			JsonNode res =objectMapper.readTree(response.getBody());
+			return objectMapper.readValue(res.get("response").toString(), clazz);
+		} catch (IOException|NullPointerException exception) {
+			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
+		}
+	}
+
+	
+	
+	
 
 }
