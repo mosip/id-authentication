@@ -659,13 +659,13 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valueage: 12
+      identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirthPLUS$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:InvalidDOB:errorMessage$
-      output.1.response.n.err.errorCode: $errors:InvalidDOB:errorCode$
+      output.1.response.n.err.errorMessage: $errors:AgeMismatch:errorMessage$
+      output.1.response.n.err.errorCode: $errors:AgeMismatch:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
   Authentication_Demographic_Age_Invalid Age_For VID_Neg_38:

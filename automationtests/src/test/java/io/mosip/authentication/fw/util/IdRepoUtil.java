@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.util;
 
-import java.io.File; 
+import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import io.mosip.authentication.fw.precon.XmlPrecondtion;
  * @author Athila
  *
  */
-public class IdRepoUtil extends AuthTestsUtil{
+public class IdRepoUtil extends AuthTestsUtil {
 
 	private static final Logger IDREPO_UTILITY_LOGGER = Logger.getLogger(IdRepoUtil.class);
 
@@ -32,48 +32,65 @@ public class IdRepoUtil extends AuthTestsUtil{
 		String retrievePath = RunConfigUtil.objRunConfig.getIdRepoRetrieveDataPath().replace("$uin$", uinNumber);
 		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + retrievePath;
 		if (!FileUtil.checkFileExistForIdRepo(uinNumber + ".json")) {
-			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json", getResponseWithCookie(url, "type=all",AuthTestsUtil.AUTHORIZATHION_COOKIENAME)))
+			if (FileUtil.createAndWriteFileForIdRepo(uinNumber + ".json",
+					getResponseWithCookie(url, "type=all", AuthTestsUtil.AUTHORIZATHION_COOKIENAME)))
 				return true;
 			else
 				return false;
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Get field data for the key from saved uin data or json 
+	 * Get field data for the key from saved uin data or json
 	 * 
 	 * @param mapping
 	 * @param uinNumber
 	 * @return uin data or json
 	 */
 	public static String retrieveDataFromIdRepo(String mapping, String uinNumber) {
-		try {		
+		try {
+			String mappingTopass = null;
+			if (mapping.contains("dateOfBirth") && mapping.contains("age")) {
+				mappingTopass=mapping.replaceAll("PLUS", "").replaceAll("MINUS", "");
+			}
+			else
+				mappingTopass=mapping;
 			if (uinNumber.length() == 16) {
 				RunConfigUtil.getVidPropertyValue(RunConfigUtil.getVidPropertyPath());
 				uinNumber = VidDto.getVid().get(uinNumber);
 			}
 			if (retrieveIdRepo(uinNumber)) {
 				String value = XmlPrecondtion.getValueFromXmlUsingMapping(
-						Paths.get(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/"
-								+ uinNumber + ".json").getAbsolutePath()).toString(),
-						new File(
-								"./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/mapping.properties")
+						Paths.get(new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
+								+ RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/" + uinNumber + ".json")
+										.getAbsolutePath())
+								.toString(),
+						new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
+								+ RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/mapping.properties")
 										.getAbsolutePath(),
-						mapping);
-				if(mapping.contains("dateOfBirth") && mapping.contains("input"))
-				{
-					Date valuedate= new SimpleDateFormat("yyyy/MM/dd").parse(value);
-					SimpleDateFormat date= new SimpleDateFormat("dd/MM/yyyy");
+										mappingTopass);
+				if (mapping.contains("dateOfBirth") && mapping.contains("input")) {
+					Date valuedate = new SimpleDateFormat("yyyy/MM/dd").parse(value);
+					SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
 					value = date.format(valuedate);
 				}
-				if(mapping.contains("dateOfBirth") && mapping.contains("age"))
-				{
-					Date valuedate= new SimpleDateFormat("yyyy/MM/dd").parse(value);
-					SimpleDateFormat date= new SimpleDateFormat("dd");
-					SimpleDateFormat month= new SimpleDateFormat("MM");
-					SimpleDateFormat year= new SimpleDateFormat("yyyy");
-					value=calculateAge(Integer.parseInt(year.format(valuedate)),Integer.parseInt(month.format(valuedate)),Integer.parseInt(date.format(valuedate)));
+				if (mapping.contains("dateOfBirth") && mapping.contains("age")) {
+					Date valuedate = new SimpleDateFormat("yyyy/MM/dd").parse(value);
+					SimpleDateFormat date = new SimpleDateFormat("dd");
+					SimpleDateFormat month = new SimpleDateFormat("MM");
+					SimpleDateFormat year = new SimpleDateFormat("yyyy");
+					if (mapping.contains("PLUS"))
+						value = String.valueOf(Integer.parseInt(calculateAge(Integer.parseInt(year.format(valuedate)),
+								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate))))
+								+ Integer.parseInt(AuthTestsUtil.randomize(1)));
+					else if (mapping.contains("MINUS"))
+						value = String.valueOf(Integer.parseInt(calculateAge(Integer.parseInt(year.format(valuedate)),
+								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate))))
+								+ Integer.parseInt(AuthTestsUtil.randomize(1)));
+					else
+						value = calculateAge(Integer.parseInt(year.format(valuedate)),
+								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate)));
 				}
 				if (value.contains("Null"))
 					return "$REMOVE$";
@@ -89,16 +106,20 @@ public class IdRepoUtil extends AuthTestsUtil{
 			return "Exceptione in fetching the data from id repo: " + e.toString();
 		}
 	}
-	
+
 	/**
 	 * Generate uin number using generate_uin api
 	 * 
 	 * @return UIN Number
 	 */
 	public static String generateUinNumberForIda() {
-		return JsonPrecondtion.getValueFromJson(
-					getResponseWithCookieForIdaUinGenerator(RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getGenerateUINPath(),AUTHORIZATHION_COOKIENAME), "response.uin");
+		return JsonPrecondtion
+				.getValueFromJson(
+						getResponseWithCookieForIdaUinGenerator(RunConfigUtil.objRunConfig.getEndPointUrl()
+								+ RunConfigUtil.objRunConfig.getGenerateUINPath(), AUTHORIZATHION_COOKIENAME),
+						"response.uin");
 	}
+
 	/**
 	 * Generate uin number using generate_uin api
 	 * 
@@ -109,15 +130,16 @@ public class IdRepoUtil extends AuthTestsUtil{
 		String uin;
 		do {
 			uin = JsonPrecondtion.getValueFromJson(
-					getResponseWithCookieForIdRepoUinGenerator(RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getGenerateUINPath(),AUTHORIZATHION_COOKIENAME), "response.uin");
+					getResponseWithCookieForIdRepoUinGenerator(RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()
+							+ RunConfigUtil.objRunConfig.getGenerateUINPath(), AUTHORIZATHION_COOKIENAME),
+					"response.uin");
 			if (uin.startsWith("1") || uin.startsWith("2") || uin.startsWith("3") || uin.startsWith("4")) {
 				flag = true;
 			}
 		} while (flag == false);
 		return uin;
 	}
-	
-	
+
 	/**
 	 * Get Create UIN api Path for the generated uin number
 	 * 
@@ -125,9 +147,10 @@ public class IdRepoUtil extends AuthTestsUtil{
 	 * @return create uin path
 	 */
 	public static String getCreateUinPath() {
-		return RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoCreateUINRecordPath();
+		return RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()
+				+ RunConfigUtil.objRunConfig.getIdRepoCreateUINRecordPath();
 	}
-	
+
 	/**
 	 * The method will calculate age
 	 * 

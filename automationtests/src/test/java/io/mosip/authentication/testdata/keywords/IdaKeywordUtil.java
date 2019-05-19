@@ -185,9 +185,9 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String type = keys[1];
 				String digit = keys[2];
 				if (type.equals("N"))
-					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
+					returnMap.put(entry.getKey(), AuthTestsUtil.randomize(Integer.parseInt(digit)));
 				if (type.equals("AN"))
-					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
+					returnMap.put(entry.getKey(), AuthTestsUtil.randomize(Integer.parseInt(digit)));
 			} else if (entry.getValue().contains("%") && entry.getValue().contains(":")
 					&& entry.getValue().startsWith("%$")) {
 				Map<String, String> tempMap = new HashMap<String, String>();
@@ -283,21 +283,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 			precondtionKeywords(returnMap);
 		return returnMap;
 	}
-	
-	/**
-	 * Method return random integer value for number of digit
-	 * 
-	 * @param digit
-	 * @return string
-	 */
-	private String randomize(int digit){
-        Random r = new Random();
-        String randomNumber="";
-        for (int i = 0; i < digit; i++) {
-        	randomNumber=randomNumber+r.nextInt(9);
-        }
-        return randomNumber;
-    }
+
 	/**
 	 * The method generate current timestamp
 	 * 

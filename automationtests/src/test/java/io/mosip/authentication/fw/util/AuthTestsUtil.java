@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -1178,10 +1179,24 @@ public class AuthTestsUtil extends BaseTestCase {
 		}
 	}
 	
-	protected static String getCookieUrlPath()
-	{
-		return RunConfigUtil.objRunConfig.getEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey();
+	protected static String getCookieUrlPath() {
+		return RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey();
 	}
+	
+	/**
+	 * Method return random integer value for number of digit
+	 * 
+	 * @param digit
+	 * @return string
+	 */
+	public static String randomize(int digit){
+        Random r = new Random();
+        String randomNumber="";
+        for (int i = 0; i < digit; i++) {
+        	randomNumber=randomNumber+r.nextInt(9);
+        }
+        return randomNumber;
+    }
 } 
 
 
