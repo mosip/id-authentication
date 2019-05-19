@@ -25,6 +25,8 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
+import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
 import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -136,8 +138,17 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		String encryptedData = cryptomanagerUtil.getEncryptedData(cryptoRequestDto);
 		CryptoEncryptResponseDto cryptoPublicResponseDto = new CryptoEncryptResponseDto();
 		cryptoPublicResponseDto.setData(encryptedData);
+        return cryptoPublicResponseDto;
+	}
 
-		return cryptoPublicResponseDto;
+	@Override
+	public SignatureResponseDto validate(SignatureRequestDto signatureRequestDto) {
+		return cryptomanagerUtil.signatureDecrypt(signatureRequestDto);
+	}
+
+	@Override
+	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto) {
+		return cryptomanagerUtil.signatureEncrypt(signatureRequestDto);
 	}
 
 }
