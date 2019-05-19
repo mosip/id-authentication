@@ -33,7 +33,7 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimes. */
-	@Column(name = "cr_dtimes", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
