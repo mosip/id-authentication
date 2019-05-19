@@ -115,7 +115,7 @@ public class KeymanagerController {
 	
 	@ResponseFilter
 	@ApiOperation(value = "Sign Data Using Certificate")
-	@PostMapping("/sign")
+	@PostMapping("signature/encrypt")
 	public ResponseWrapper<SignatureResponseDto> signature(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
@@ -125,7 +125,7 @@ public class KeymanagerController {
 	
 	@ResponseFilter
 	@ApiOperation(value = "Validate Signature Data Using Certificate")
-	@PostMapping("validate/sign")
+	@PostMapping("signature/decrypt")
 	public ResponseWrapper<SignatureResponseDto> validateSignature(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
