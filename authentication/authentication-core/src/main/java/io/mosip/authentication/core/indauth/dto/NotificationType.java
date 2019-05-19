@@ -17,7 +17,7 @@ public enum NotificationType {
 	/**
 	 * Enum for SMS
 	 */
-	SMS("sms", "PHONE"),
+	SMS("sms", "PHONE", "MOBILE"),
 
 	/**
 	 * Enum for None
@@ -29,10 +29,19 @@ public enum NotificationType {
 	 */
 	private String name;
 	private String channel;
+	private String apiChannel;
 
 	NotificationType(String name, String channel) {
 		this.name = name;
 		this.channel = channel;
+		apiChannel = channel;
+	}
+	
+	NotificationType(String name, String channel, String apiChannel) {
+		this.name = name;
+		this.channel = channel;
+		this.apiChannel = apiChannel;
+		
 	}
 
 	public String getName() {
@@ -41,6 +50,10 @@ public enum NotificationType {
 	
 	public String getChannel() {
 		return channel;
+	}
+	
+	public String getApiChannel() {
+		return apiChannel;
 	}
 
 	public static Optional<NotificationType> getNotificationTypeForChannel(String channel) {

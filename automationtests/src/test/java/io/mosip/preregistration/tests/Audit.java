@@ -67,7 +67,7 @@ public class Audit extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 	}
 	@Test
 	public void getAuditDataForDemographicCreate() {
@@ -82,7 +82,7 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result,"object are not equal");
 	}
-	@Test
+@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -125,6 +125,7 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		System.out.println("============"+auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result,"object are not equal");
 	}
@@ -218,7 +219,6 @@ public class Audit extends BaseTestCase implements ITest {
 		Assert.assertTrue(result, "object are not equal");
 	}
 
-
 	
 	@Override
 	public String getTestName() {
@@ -228,6 +228,7 @@ public class Audit extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void run()
 	{
+		authToken=lib.getToken();
 		
 	}
 

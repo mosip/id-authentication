@@ -1,9 +1,8 @@
 {
 	"locationname" : "string",
-	"invalid_city":"string",
-	"invalid_localAuthority":"string",
-	"invalid_province":"String",
-	"invalid_Region":"string",
-	"invalid_responseTime":"string",
-	"response_time":"string"
+	"Kernel_ValidateLocationByName_city":"string",
+	"Kernel_ValidateLocationByName_localAuthority":"string",
+	"Kernel_ValidateLocationByName_province":"String",
+	"Kernel_ValidateLocationByName_Region":"string",
+	"Kernel_ValidateLocationByName_response_time":"string"
 }

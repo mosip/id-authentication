@@ -5,13 +5,17 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,14 +28,26 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import lombok.Data;
 
 /**
@@ -45,12 +61,18 @@ public class Utilities {
 
 	private static final String UIN = "UIN";
 	public static final String FILE_SEPARATOR = "\\";
+	private static final String RE_PROCESSING = "re-processing";
+	private static final String HANDLER = "handler";
+	private static final String NEW_PACKET = "New-packet";
 
 	@Autowired
 	private FileSystemAdapter adapter;
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	@Autowired
+	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
 
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
@@ -70,6 +92,29 @@ public class Utilities {
 
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
+
+	@Value("${registration.processor.reprocess.elapse.time}")
+	private long elapseTime;
+
+	@Value("${registration.processor.abis.json}")
+	private String registrationProcessorAbisJson;
+
+	@Autowired
+	private PacketInfoDao packetInfoDao;
+
+	@Autowired
+	private RegistrationStatusDao registrationStatusDao;
+
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	private static final String INBOUNDQUEUENAME = "inboundQueueName";
+	private static final String OUTBOUNDQUEUENAME = "outboundQueueName";
+	private static final String ABIS = "abis";
+	private static final String USERNAME = "userName";
+	private static final String PASSWORD = "password";
+	private static final String BROKERURL = "brokerUrl";
+	private static final String TYPEOFQUEUE = "typeOfQueue";
 
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
@@ -100,6 +145,96 @@ public class Utilities {
 
 		}
 
+	}
+
+	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
+
+		if (uin != null) {
+			List<String> pathSegments = new ArrayList<>();
+			pathSegments.add(String.valueOf(uin));
+			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN ,
+					pathSegments, "", "", IdResponseDTO1.class);
+			if (idResponseDto == null)
+				return null;
+			if (!idResponseDto.getErrors().isEmpty())
+				throw new IdRepoAppException(
+						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
+
+			idResponseDto.getResponse().getIdentity();
+			ObjectMapper objMapper = new ObjectMapper();
+			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+
+		}
+
+		return null;
+	}
+
+	public List<List<String>> getInboundOutBoundAddressList() throws RegistrationProcessorCheckedException {
+		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
+		List<String> inBoundAddressList = new ArrayList<>();
+		List<String> outBountAddressList = new ArrayList<>();
+
+		List<List<String>> inboundOutBoundList = new ArrayList<>();
+		try {
+			JSONObject regProcessorAbisJson;
+
+			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
+
+			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+			for (Object object : regProcessorAbisArray) {
+				JSONObject jsonObject = new JSONObject((Map) object);
+				inBoundAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, INBOUNDQUEUENAME));
+				outBountAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, OUTBOUNDQUEUENAME));
+				inboundOutBoundList.add(inBoundAddressList);
+				inboundOutBoundList.add(outBountAddressList);
+
+			}
+		} catch (IOException e) {
+			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
+		}
+		return inboundOutBoundList;
+	}
+
+	public List<MosipQueue> getMosipQueuesForAbis() throws RegistrationProcessorCheckedException {
+		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
+		List<MosipQueue> mosipQueueList = new ArrayList<>();
+
+		JSONObject regProcessorAbisJson;
+		try {
+			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
+
+			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
+
+			for (Object jsonObject : regProcessorAbisArray) {
+				JSONObject json = new JSONObject((Map) jsonObject);
+				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
+				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
+				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
+				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
+				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
+						brokerUrl);
+				if (mosipQueue == null)
+					throw new QueueConnectionNotFound(
+							PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());
+				mosipQueueList.add(mosipQueue);
+
+			}
+		} catch (IOException e) {
+			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
+					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
+		}
+		return mosipQueueList;
+
+	}
+
+	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
+		String value = JsonUtil.getJSONValue(jsonObject, key);
+		if (value == null)
+			throw new RegistrationProcessorUnCheckedException(
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
+		return value;
 	}
 
 	public RegistrationProcessorIdentity getRegistrationProcessorIdentityJson() throws IOException {
@@ -149,23 +284,25 @@ public class Utilities {
 
 	}
 
-	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
+	public String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
 
-		if (uin != null) {
-			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITY,
-					pathSegments, "", "", IdResponseDTO1.class);
-			if (!idResponseDto.getErrors().isEmpty())
-				throw new IdRepoAppException(
-						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
-
-			idResponseDto.getResponse().getIdentity();
-			ObjectMapper objMapper = new ObjectMapper();
-			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
-
+		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase(transactionType)) {
+			LocalDateTime createdDateTime = registrationStatusDto.getCreateDateTime();
+			LocalDateTime currentDateTime = LocalDateTime.now();
+			Duration duration = Duration.between(createdDateTime, currentDateTime);
+			long secondsDiffernce = duration.getSeconds();
+			if (secondsDiffernce > elapseTime)
+				return RE_PROCESSING;
+			else
+				return HANDLER;
 		}
-
-		return null;
+		return NEW_PACKET;
 	}
+
+	public String getLatestTransactionId(String registrationId) {
+		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
+		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
+
+	}
+
 }

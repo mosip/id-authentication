@@ -32,6 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.filter.BaseAuthFilter;
@@ -129,7 +130,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getRequestURL()).thenReturn(sbf);
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
-		ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+		ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 	}
 
 	private ServletInputStreamExtension newServletInputStream() {
@@ -180,7 +181,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -220,7 +221,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -301,7 +302,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -348,7 +349,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -397,7 +398,7 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
@@ -437,9 +438,20 @@ public class BaseAuthFilterTest {
 		Mockito.when(requestWrapper.getContextPath()).thenReturn("/identity");
 		Mockito.when(requestWrapper.getHeader("Authorization")).thenReturn(signature);
 		try {
-			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper);
+			ReflectionTestUtils.invokeMethod(baseAuthFilter, "consumeRequest", requestWrapper, createRequestBody());
 		} catch (UndeclaredThrowableException e) {
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
+	}
+	
+	private Map<String, Object> createRequestBody(){
+		String req = "{\"id\":\"mosip.identity.auth\",\"individualId\":\"2410478395\",\"individualIdType\":\"D\",\"request\":\"TAYl52pSVnojUJaNSfZ7f4ItGcC71r_qj9ZxCZQfSO8ELfIohJSFZB_wlwVqkZgK9A1AIBtG-xni5f5WJrOXth_tRGZJTIRbM9Nxcs_tb9yfspTloMstYnzsQXdwyqKGraJHjpfDn6NIhpZpZ5QJ1g\",\"requestTime\":\"2019-03-13T10:01:57.086+05:30\",\"requestedAuth\":{\"bio\":false,\"demo\":true,\"otp\":false,\"pin\":false},\"requestSessionKey\":\"cCsi1_ImvFMkLKfAhq13DYDOx6Ibri78JJnp3ktd4ZdJRTuIdWKv31wb3Ys7WHBfRzyBVwmBe5ybb-zIgdTOCKIZrMc1xKY9TORdKFJHLWwvDHP94UZVa-TIHDJPKxWNzk0sVJeOpPAbe6tmTbm8TsLs7WPBxCxCBhuBoArwSAIZ9Sll9qoNR3-YwgBIMAsDMXDiP3kSI_89YOyZxSb3ZPCGaU8HWkgv1FUMvD67u2lv75sWJ_v55jQJYUOng94_6P8iElnLvUeR8Y9AEJk3txmj47FWos4Nd90vBXW79qvpON5pIuTjiyP_rMZZAhH1jPkAhYXJLjwpAQUrvGRQDA\",\"transactionID\":\"1234567890\",\"version\":\"0.8\"}";
+		try {
+			return mapper.readValue(req, new TypeReference<Map<String, Object>>() {
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

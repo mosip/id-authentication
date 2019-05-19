@@ -80,6 +80,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		dao.setDate(preID);
 		lib.expiredStatus();
+		lib.FetchAppointmentDetails(preID);
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");

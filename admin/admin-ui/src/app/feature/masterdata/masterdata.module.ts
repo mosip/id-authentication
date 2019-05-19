@@ -4,13 +4,16 @@ import { CommonModule } from '@angular/common';
 import { MasterdataRoutingModule } from './masterdata-routing.module';
 import { MasterdataComponent } from './masterdata/masterdata.component';
 import { SharedModule } from '../../shared/shared.module';
+import { CategoriesComponent } from './categories/categories.component';
+import { MaterialModule } from '../../material.module';
 
 @NgModule({
   imports: [
     CommonModule,
     MasterdataRoutingModule,
-    SharedModule
+    SharedModule,
+    MaterialModule
   ],
-  declarations: [MasterdataComponent]
+  declarations: [MasterdataComponent, CategoriesComponent]
 })
 export class MasterdataModule { }

@@ -35,9 +35,9 @@ import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.service.LoginService;
-import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.login.LoginService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 

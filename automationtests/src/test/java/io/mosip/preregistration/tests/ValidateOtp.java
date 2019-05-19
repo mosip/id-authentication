@@ -64,7 +64,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
 	}
-	/*@Test
+	@Test
 	public void validateExpired() {
 		testSuite = "SendOtp/SendOtpMobile";
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
@@ -83,7 +83,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "OTP_EXPIRED");
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_LGN_013");
-	}*/
+	}
 	@Test
 	public void validateWithoutGeneratingOtp(){
 		

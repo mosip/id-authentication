@@ -4,14 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 
 import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.validation.constraints.AssertTrue;
-
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +20,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -42,7 +41,7 @@ public class GlobalParamServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private AuditFactoryImpl auditFactory;
+	private AuditManagerSerivceImpl auditFactory;
 
 	@InjectMocks
 	private GlobalParamServiceImpl gloablContextParamServiceImpl;
@@ -100,17 +99,16 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParamList.add(globalParam);
 		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);
-
 		gloablContextParamServiceImpl.synchConfigData(false);
 	}
 
 	@Test
 	public void syncConfigData() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
-		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap = new LinkedHashMap<>();
 
 		globalParamJsonMap.put("kernel", "5");
-		HashMap<String, Object> globalParamJsonMap2 = new HashMap<>();
+		HashMap<String, Object> globalParamJsonMap2 = new LinkedHashMap<>();
 		globalParamJsonMap2.put("loginSequence1", "OTP");
 		globalParamJsonMap.put("response", globalParamJsonMap2);
 
@@ -191,8 +189,8 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParam.setVal("Y");
 
-		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
-		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true);
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean(), Mockito.any(Timestamp.class))).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(true, Timestamp.from(Instant.now()));
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_SUCCESS_MSG);
 	}
@@ -209,8 +207,8 @@ public class GlobalParamServiceTest {
 		globalParam.setGlobalParamId(globalParamId);
 		globalParam.setVal("N");
 
-		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean())).thenReturn(globalParam);
-		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false);
+		Mockito.when(globalParamDAOImpl.updateSoftwareUpdateStatus(Mockito.anyBoolean(), Mockito.any(Timestamp.class))).thenReturn(globalParam);
+		ResponseDTO responseDTO = gloablContextParamServiceImpl.updateSoftwareUpdateStatus(false, Timestamp.from(Instant.now()));
 		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),
 				RegistrationConstants.SOFTWARE_UPDATE_FAILURE_MSG);
 	}

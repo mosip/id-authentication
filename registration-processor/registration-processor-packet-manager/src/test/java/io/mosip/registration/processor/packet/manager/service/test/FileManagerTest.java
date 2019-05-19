@@ -76,6 +76,9 @@ public class FileManagerTest {
 	@Value("${VIRUS_SCAN_DEC}")
 	private String virusScanDec;
 
+	@Value("${registration.processor.packet.ext}")
+	private String extention;
+
 	@Mock
 	private ChannelSftp sftp = new ChannelSftp();
 
@@ -229,7 +232,7 @@ public class FileManagerTest {
 		impl.cleanUp(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, sftpDto);
 	}
 
-	@Test(expected = JschConnectionException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testgetSftpConnectionException() throws IOException, JSchException, JschConnectionException {
 
 		FileManagerImpl manager = new FileManagerImpl();

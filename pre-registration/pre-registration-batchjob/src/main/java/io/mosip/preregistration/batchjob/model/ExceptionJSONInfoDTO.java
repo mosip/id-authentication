@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjob.model;
 
 import java.io.Serializable;
@@ -8,6 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Exception json Info
  * 
  * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 public class ExceptionJSONInfoDTO implements Serializable {

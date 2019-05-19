@@ -1,3 +1,4 @@
+
 package io.mosip.service;
 
 import java.io.File;
@@ -20,11 +21,8 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
-
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
-//import io.mosip.prereg.scripts.Create_PreRegistration;
 import io.restassured.RestAssured;
 
 /**
@@ -38,6 +36,7 @@ public class BaseTestCase {
 
 	public static List<String> preIds = new ArrayList<String>();
 
+
 	/**
 	 * Method that will take care of framework setup
 	 */
@@ -45,6 +44,8 @@ public class BaseTestCase {
 	private Properties prop;
 	public static String ApplnURI;
 	public static String authToken;
+	public static String regProcAuthToken;
+	public static String getStatusRegProcAuthToken;
 	public static String environment;
 	public static String SEPRATOR = "";
 

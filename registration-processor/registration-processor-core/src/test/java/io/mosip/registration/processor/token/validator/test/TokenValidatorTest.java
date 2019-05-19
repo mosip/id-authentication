@@ -143,7 +143,7 @@ public class TokenValidatorTest {
 		assertTrue(tokenValidator.validateAccess("/receiver", "REGISTRATION_PROCESSOR"));
 		assertTrue(tokenValidator.validateAccess("/registration-status", "REGISTRATION_OFFICER"));
 		assertTrue(tokenValidator.validateAccess("/registration-sync", "REGISTRATION_PROCESSOR"));
-		assertTrue(tokenValidator.validateAccess("/connector", "REGISTRATION_PROCESSOR"));
+		assertTrue(tokenValidator.validateAccess("/biodedupe", "REGISTRATION_PROCESSOR"));
 		assertTrue(tokenValidator.validateAccess("/printing", "REGISTRATION_PROCESSOR"));
 		assertTrue(tokenValidator.validateAccess("/manual-verification", "REGISTRATION_ADMIN"));
 		assertFalse(tokenValidator.validateAccess("/receiver", "MANUAL_VERIFIER"));

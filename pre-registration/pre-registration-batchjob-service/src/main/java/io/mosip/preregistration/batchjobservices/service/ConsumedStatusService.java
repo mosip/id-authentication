@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -29,7 +28,9 @@ import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExce
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
  * @author Kishan Rathore
@@ -76,8 +77,9 @@ public class ConsumedStatusService {
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
-
-		List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
+		response.setId(idUrl);
+		response.setVersion(versionUrl);
+		List<ProcessedPreRegEntity> preRegList = null;
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
 
@@ -124,9 +126,9 @@ public class ConsumedStatusService {
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e);
+			new BatchServiceExceptionCatcher().handle(e,response);
 		}
-		response.setResponsetime(getCurrentResponseTime());
+		response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
 		response.setResponse("Demographic status to consumed updated successfully");

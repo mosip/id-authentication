@@ -65,16 +65,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage()+ ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage()+ ExceptionUtils.getStackTrace(runtimeException));
-			this.responseDTO = new ResponseDTO();
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			LinkedList<ErrorResponseDTO> errorResponsesList = new LinkedList<>();
-			errorResponsesList.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(errorResponsesList);
-		}
+		} 
 
 		LOGGER.info(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");

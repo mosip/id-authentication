@@ -321,7 +321,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String queryParamName = "type";
 		String queryParamValue = "all";
 
-		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
+		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
 				queryParamName, queryParamValue, IdResponseDTO.class);
 
 		if (response == null || response.getResponse() == null) {

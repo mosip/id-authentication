@@ -5,6 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
+// import { BookingModel } from 'src/app/feature/booking/center-selection/booking.model';
+// import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 
 describe('DataStorageService', () => {
   let service: DataStorageService = null;
@@ -80,7 +82,7 @@ describe('DataStorageService', () => {
 
   it('gets guideline template', () => {
     let response = null;
-    service.getGuidelineTemplate().subscribe(value => {
+    service.getGuidelineTemplate('consent').subscribe(value => {
       response = value;
     });
 

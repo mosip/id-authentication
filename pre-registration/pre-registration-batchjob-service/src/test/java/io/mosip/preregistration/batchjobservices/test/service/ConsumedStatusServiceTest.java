@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.batchjobservices.entity.DemographicEntity;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -39,6 +37,7 @@ import io.mosip.preregistration.batchjobservices.service.ConsumedStatusService;
 import io.mosip.preregistration.batchjobservices.test.BatchJobApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 
 @SpringBootTest(classes = { BatchJobApplicationTest.class })
 @RunWith(SpringRunner.class)
@@ -149,15 +148,20 @@ public class ConsumedStatusServiceTest {
 	    		.thenReturn(preRegList); 
 		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId()))
 				.thenReturn(demographicEntity);
-		BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+		//BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+		demographicEntityConsumed.setPreRegistrationId(preregId);
 		demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 		Mockito.when(demographicConsumedRepository.save(demographicEntityConsumed)).thenReturn(demographicEntityConsumed);
 		Mockito.when(documentRespository.findBypreregId(preregId))
 		.thenReturn(documentEntity);
-		BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+		//BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+		documentEntityConsumed.setPreregId(preregId);
 		Mockito.when(documentConsumedRepository.save(documentEntityConsumed)).thenReturn(documentEntityConsumed);
 		Mockito.when(regAppointmentRepository.getPreRegId(preregId)).thenReturn(bookingEntity);
-		BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+		//BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+		RegistrationBookingPKConsumed bkc=new RegistrationBookingPKConsumed();
+		bkc.setPreregistrationId(preregId);
+		bookingEntityConsumed.setBookingPK(bkc);
 		Mockito.when(appointmentConsumedRepository.save(bookingEntityConsumed)).thenReturn(bookingEntityConsumed);
 
 		response = service.demographicConsumedStatus();
@@ -165,3 +169,4 @@ public class ConsumedStatusServiceTest {
 
 	}
 }
+

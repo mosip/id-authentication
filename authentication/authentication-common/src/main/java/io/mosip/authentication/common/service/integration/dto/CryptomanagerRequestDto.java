@@ -7,6 +7,8 @@
 package io.mosip.authentication.common.service.integration.dto;
 
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotNull;
 
 import io.swagger.annotations.ApiModel;
@@ -43,7 +45,7 @@ public class CryptomanagerRequestDto {
 	 */
 	@ApiModelProperty(notes = "Timestamp as metadata", example = "2018-12-10T06:12:52.994Z", required = true)
 	@NotNull
-	private String timeStamp;
+	private LocalDateTime timeStamp;
 	/**
 	 * Data in BASE64 encoding to encrypt/decrypt
 	 */

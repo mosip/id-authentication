@@ -30,15 +30,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.login.dto.MosipUserDTO;
 import io.mosip.preregistration.login.dto.User;
 import io.mosip.preregistration.login.errorcodes.ErrorCodes;
 import io.mosip.preregistration.login.errorcodes.ErrorMessages;
+import io.mosip.preregistration.login.exception.LoginServiceException;
 import io.mosip.preregistration.login.exception.ParseResponseException;
 
 /**
@@ -48,10 +51,6 @@ import io.mosip.preregistration.login.exception.ParseResponseException;
  */
 @Component
 public class LoginCommonUtil {
-	
-	
-	@Value("${mosip.utc-datetime-pattern}")
-	private String utcDateTimePattern;
 	
 	/**
 	 * Environment instance
@@ -78,6 +77,9 @@ public class LoginCommonUtil {
 	
 	@Value("${otpChannel.email}")
 	private String emailChannel;
+	
+	@Value("${sendOtp.resource.url}")
+	private String sendOtpResourceUrl;
 	/**
 	 * This method will return the MainResponseDTO with id and version
 	 * 
@@ -117,8 +119,7 @@ public class LoginCommonUtil {
 		else {
 			request = new HttpEntity<>(headers);
 		}
-		
-		//HttpEntity<?> request = new HttpEntity<>(body, headers);
+		log.info("sessionId", "idType", "id", "In call to kernel rest service :"+url);
 		return restTemplate.exchange(url,httpMethodType,request,responseClass);
 		
 	}
@@ -146,17 +147,7 @@ public class LoginCommonUtil {
 		
 		throw new InvalidRequestParameterException(ErrorCodes.PRG_AUTH_008.getCode(), ErrorMessages.INVALID_REQUEST_USERID.getMessage(),null);
 	}
-	
-	/**
-	 * This method provides current response time
-	 * @return String
-	 */
-
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
-
-	}
-	
+		
 	/**
 	 * This method will validate the null check for incoming request
 	 * @param mainRequest
@@ -208,6 +199,13 @@ public class LoginCommonUtil {
 		} 
 	}
 	
+	/**
+	 * This method is used to parse string to required object
+	 * @param serviceResponseBody
+	 * @param responseClass
+	 * @return
+	 * @throws ParseResponseException
+	 */
 	public Object requestBodyExchangeObject(String serviceResponseBody,Class<?> responseClass) throws ParseResponseException{
 		try {
 			objectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -218,6 +216,11 @@ public class LoginCommonUtil {
 		} 
 	}
 	
+	/**
+	 * This method is used for parse object to string
+	 * @param response
+	 * @return
+	 */
 	public String responseToString(Object response) {
 		try {
 			return objectMapper.writeValueAsString(response);
@@ -227,13 +230,24 @@ public class LoginCommonUtil {
 		}
 	}
 	
+	/**
+	 * This method is used for parsing string to properties
+	 * @param s
+	 * @return
+	 * @throws IOException
+	 */
 	public Properties parsePropertiesString(String s) throws IOException {
 		final Properties p = new Properties();
 		p.load(new StringReader(s));
 		return p;
 	}
 
-	public String configRestCall(String filname) {
+	/**
+	 * This method is used config rest call
+	 * @param filname
+	 * @return
+	 */
+	public String getConfig(String filname) {
 		String configServerUri = env.getProperty("spring.cloud.config.uri");
 		String configLabel = env.getProperty("spring.cloud.config.label");
 		String configProfile = env.getProperty("spring.profiles.active");
@@ -247,6 +261,11 @@ public class LoginCommonUtil {
 
 	}
 
+	/**This method is used for create key value pair from congif file
+	 * @param prop
+	 * @param configParamMap
+	 * @param reqParams
+	 */
 	public void getConfigParams(Properties prop, Map<String, String> configParamMap, List<String> reqParams) {
 		for (Entry<Object, Object> e : prop.entrySet()) {
 			if (reqParams.contains(String.valueOf(e.getKey()))) {
@@ -256,16 +275,37 @@ public class LoginCommonUtil {
 		}
 	}
 	
-	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
+	/**
+	 * This method is used for create request map
+	 * @param requestDto
+	 * @return
+	 */
+	public Map<String, String> createRequestMap(MainRequestDTO<?> requestDto) {
 		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Login Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime",date.toString());
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			requestMap.put("requesttime", date.toString());
+		}
+		else {
+		requestMap.put("requesttime",null);
+		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
 
+	public String getUserDetailsFromToken(Map<String,String> authHeader) {
+		String url=sendOtpResourceUrl+"/authorize/validateToken";
+		ResponseEntity<String> response=(ResponseEntity<String>) getResponseEntity(url, HttpMethod.POST, MediaType.APPLICATION_JSON, null, authHeader,String.class);
+		ResponseWrapper<?> responseKernel=requestBodyExchange(response.getBody());
+		if(! (responseKernel.getErrors()==null)) {
+			throw new  LoginServiceException(responseKernel.getErrors(),null);
+		}
+		MosipUserDTO userDetailsDto=(MosipUserDTO) requestBodyExchangeObject(responseToString(responseKernel.getResponse()), MosipUserDTO.class);
+		
+		return userDetailsDto.getUserId();
+	}
 
 }

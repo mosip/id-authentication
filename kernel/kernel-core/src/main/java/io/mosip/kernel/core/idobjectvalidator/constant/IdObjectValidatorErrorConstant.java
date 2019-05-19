@@ -9,23 +9,23 @@ package io.mosip.kernel.core.idobjectvalidator.constant;
  */
 public enum IdObjectValidatorErrorConstant {
 
-	FILE_IO_EXCEPTION("KER-JVL-001", "IO interruption while reading the schema file with the name provided."),
+	FILE_IO_EXCEPTION("KER-IOV-001", "IO interruption while reading the schema file with the name provided."),
 	
-	ID_OBJECT_VALIDATION_FAILED("KER-JVL-002", "Id Object validation failed"),
+	ID_OBJECT_VALIDATION_FAILED("KER-IOV-002", "Id Object validation failed"),
 	
-	UNIDENTIFIED_JSON_EXCEPTION("KER-JVL-003", "JSON object does not match with the Schema Definition"),
+	UNIDENTIFIED_JSON_EXCEPTION("KER-IOV-003", "JSON object does not match with the Schema Definition"),
 	
-	NULL_JSON_NODE_EXCEPTION("KER-JVL-004", "Null input json String"),
+	NULL_JSON_NODE_EXCEPTION("KER-IOV-004", "Null input json String"),
 	
-	ID_OBJECT_IO_EXCEPTION("KER-JVL-005", "Invalid input Identity object"),
+	ID_OBJECT_IO_EXCEPTION("KER-IOV-005", "Invalid input Identity object"),
 	
-	HTTP_REQUEST_EXCEPTION("KER-JVL-006", "Unable get to JSON schema with given name from config server"),
+	HTTP_REQUEST_EXCEPTION("KER-IOV-006", "Unable get to JSON schema with given name from config server"),
 	
-	CONFIG_SERVER_CONNECTION_EXCEPTION("KER-JVL-007", "Unable to connect to Configuration Server"),
+	CONFIG_SERVER_CONNECTION_EXCEPTION("KER-IOV-007", "Unable to connect to Configuration Server"),
 	
-	JSON_SCHEMA_IO_EXCEPTION("KER-JVL-008", "Invalid JSON Schema"),
+	JSON_SCHEMA_IO_EXCEPTION("KER-IOV-008", "Invalid JSON Schema"),
 	
-	NULL_JSON_SCHEMA_EXCEPTION("KER-JVL-009", "Null input json Schema"),
+	NULL_JSON_SCHEMA_EXCEPTION("KER-IOV-009", "Null input json Schema"),
 	
 	INVALID_INPUT_PARAMETER("KER-JVL-010", "Invalid input parameter - %s");
 

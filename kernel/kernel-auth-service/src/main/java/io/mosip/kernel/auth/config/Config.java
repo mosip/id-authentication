@@ -25,10 +25,10 @@ public class Config {
 
 	@Bean(name = "ReqResponseFilter")
 	public FilterRegistrationBean<Filter> registerReqResFilterBean() {
-		FilterRegistrationBean<Filter> corsBean = new FilterRegistrationBean<>();
-		corsBean.setFilter(getReqResFilter());
-		corsBean.setOrder(1);
-		return corsBean;
+		FilterRegistrationBean<Filter> reqResFilter = new FilterRegistrationBean<>();
+		reqResFilter.setFilter(getReqResFilter());
+		reqResFilter.setOrder(1);
+		return reqResFilter;
 	}
 
 	@Bean

@@ -51,11 +51,11 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <HBox spacing="3.0">
+                  <HBox alignment="CENTER" spacing="3.0">
                      <children>
-                        <Text onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
-                        <Text fx:id="registrationNavLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
+                        <Text onMouseClicked="#goToHomePageFromRegistration" text="%home" />
+                        <Text fx:id="registrationNavLabel" text="%/newregistration" />
+                        <Text text="%/acknowledgement" />
                      </children>
                      <GridPane.margin>
                         <Insets left="20.0" />

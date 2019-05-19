@@ -72,7 +72,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 	/**
 	 * contains all the routes in this stage
-	 * 
+	 *
 	 * @param router
 	 */
 	private void routes(Router router) {
@@ -110,6 +110,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		JsonObject obj = ctx.getBodyAsJson();
 
 		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_UPLOADER_IN);
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(obj.getBoolean("isValid"));
 		messageDTO.setRid(obj.getString("rid"));
@@ -134,7 +135,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)

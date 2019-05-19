@@ -57,20 +57,22 @@ public class OTPController {
 	 * @param errors        associate error
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IDDataValidationException
 	 */
 	@PostMapping(path = "/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
 			@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("MISP-LK") String mispLK)
-			throws IdAuthenticationAppException {
-
+			throws IdAuthenticationAppException, IDDataValidationException {
+		OtpResponseDTO otpResponseDTO = null;
 		try {
 			DataValidationUtil.validate(errors);
-			OtpResponseDTO otpResponseDTO = otpService.generateOtp(otpRequestDto,partnerId);
+			otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId);
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					otpResponseDTO.getResponseTime());
 			return otpResponseDTO;
 		} catch (IDDataValidationException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP, e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
+					e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());

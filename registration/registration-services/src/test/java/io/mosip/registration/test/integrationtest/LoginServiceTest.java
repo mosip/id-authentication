@@ -21,7 +21,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.service.impl.LoginServiceImpl;
+import io.mosip.registration.service.login.impl.LoginServiceImpl;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;

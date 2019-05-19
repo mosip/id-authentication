@@ -1,9 +1,8 @@
+
 package io.mosip.util;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -11,13 +10,11 @@ import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Logger;
-
 
 
 /**
@@ -114,4 +111,5 @@ public class EmailUtil {
 		objEmailUtil.readEmail("EmailConfig", "vignesh.vijayakumar@mindtree.com", "marMT@2019");
 		//objEmailUtil.readEmail("EmailConfig", "arjun.mosip@gmail.com", "Arjun@123");
 	}
+
 }

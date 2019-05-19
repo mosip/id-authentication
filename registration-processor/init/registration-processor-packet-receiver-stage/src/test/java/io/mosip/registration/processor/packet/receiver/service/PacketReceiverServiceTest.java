@@ -80,7 +80,6 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @RefreshScope
-// @RunWith(SpringRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ IOUtils.class, HMACUtils.class })
 public class PacketReceiverServiceTest {

@@ -15,6 +15,10 @@ public enum IdRepoConstants {
 
 	/** The identity file name key. */
 	FILE_NAME_ATTRIBUTE("value"),
+	
+	VID_TYPE_PATH("vidPolicies.*.vidType"),
+	
+	VID_POLICY_PATH("vidPolicies.*.vidPolicy"),
 
 	/** The root path. */
 	ROOT_PATH("identity"),
@@ -47,7 +51,25 @@ public enum IdRepoConstants {
 	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path");
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path"),
+	
+	VID_ACTIVE_STATUS("mosip.idrepo.vid.active-status"),
+	
+	VID_ALLOWED_STATUS("mosip.idrepo.vid.allowedStatus"),
+	
+	VID_DB_URL("mosip.idrepo.vid.db.url"),
+	
+	VID_DB_USERNAME("mosip.idrepo.vid.db.username"),
+	
+	VID_DB_PASSWORD("mosip.idrepo.vid.db.password"),
+	
+	VID_DB_DRIVER_CLASS_NAME("mosip.idrepo.vid.db.driverClassName"),
+	
+	VID_POLICY_FILE_URL("mosip.idrepo.vid.policy-file-url"),
+	
+	VID_POLICY_SCHEMA_URL("mosip.idrepo.vid.policy-schema-url"),
+	
+	VID_UNLIMITED_TRANSATION_STATUS("mosip.idrepo.vid.unlimited-txn-status");
 	/** The value. */
 	private final String value;
 

@@ -724,9 +724,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
+				/*JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");
+				json.get("preRegistrationId");*/
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getExpiredAppointmentDetails(FetchCentreResponse);
@@ -744,7 +744,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
-				request.replace(key, objArr);
+				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
 
 			}
@@ -776,7 +776,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public List<String> getExpiredAppointmentDetails(Response fetchCenterResponse) {
 
 		List<String> appointmentDetails = new ArrayList<>();
-		String date = getDate(-1);
+		String date = getDate(0);
 
 		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());

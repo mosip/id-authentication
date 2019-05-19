@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -200,3 +201,4 @@ public class EkycWithBiometricAuthentication extends IdaScriptsUtil implements I
 	}
 
 }
+

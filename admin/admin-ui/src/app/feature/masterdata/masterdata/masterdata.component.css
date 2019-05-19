@@ -1,5 +1,5 @@
 .master-table{
-    display: flex;
+    width: 95%;
     margin-top:50px;
     overflow: auto;
     margin-left:5px;

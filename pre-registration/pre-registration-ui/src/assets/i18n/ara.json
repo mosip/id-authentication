@@ -353,7 +353,8 @@
     "action_continue": "استمر",
     "label_sameas": "مثل",
     "text_or": "أو",
-    "action_view": "رأي"
+    "action_view": "رأي",
+    "OR":"أو"
   },
   "acknowledgement": {
     "title": "تم تأكيد الموعد",

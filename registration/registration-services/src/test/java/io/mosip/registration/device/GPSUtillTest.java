@@ -19,7 +19,7 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.gps.impl.GPSBU343Connector;
 import io.mosip.registration.device.gps.impl.GPSBU343Connector.GPSPosition;
@@ -41,7 +41,7 @@ public class GPSUtillTest {
 	private GPSBU343Connector gpsUtillMock;
 
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/**
 	 * @throws java.lang.Exception

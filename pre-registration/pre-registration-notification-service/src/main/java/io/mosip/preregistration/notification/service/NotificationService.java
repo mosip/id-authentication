@@ -151,7 +151,7 @@ public class NotificationService {
 			response.setId(notificationReqDTO.getId());
 			response.setVersion(notificationReqDTO.getVersion());
 			NotificationDTO notificationDto = notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(notificationReqDTO),
+			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO),
 					requiredRequestMap)) {
 				if (notificationDto.isAdditionalRecipient()) {
 					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {

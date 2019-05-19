@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum IdType {
 
-	UIN("UIN"), VID("VID"),USER_ID("USER-ID");
+	UIN("UIN"), VID("VID"),USER_ID("USERID");
 
 	/**
 	 * Value that indicates that default id.
@@ -57,6 +57,11 @@ public enum IdType {
 	 */
 	public static Optional<IdType> getIDType(String type) {
 		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type)).findAny();
+
+	}
+	
+	public static IdType getIDTypeOrDefault(String type) {
+		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type)).findAny().orElse(DEFAULT_ID_TYPE);
 
 	}
 }
