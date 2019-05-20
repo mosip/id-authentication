@@ -5,6 +5,6 @@
    "response": null,
    "errors": [   {
       "errorCode": "PRG_PAM_CORE_001",
-      "message": "Request id is invalid"
+      "message": "Appointment cannot be booked"
    }]
 }

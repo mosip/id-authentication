@@ -724,9 +724,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				/*JSONArray data = (JSONArray) resp.get("response");
+				JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");*/
+				json.get("preRegistrationId");
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getExpiredAppointmentDetails(FetchCentreResponse);
@@ -744,7 +744,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
-				request.replace(key, object);
+				request.replace(key, objArr);
 				request.put("requesttime", getCurrentDate());
 
 			}
@@ -776,7 +776,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public List<String> getExpiredAppointmentDetails(Response fetchCenterResponse) {
 
 		List<String> appointmentDetails = new ArrayList<>();
-		String date = getDate(0);
+		String date = getDate(-1);
 
 		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
@@ -2080,6 +2080,46 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return response;
 	}
 	
+	/*
+	 * Generic method to Book An Appointment
+	 * 
+	 */
+	public JSONObject BookAppointmentRequest(Response FetchCentreResponse, String preID) {
+		List<String> appointmentDetails = new ArrayList<>();
+
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "BookingAppointment/BookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		for (Object key : request.keySet()) {
+			if (key.toString().toLowerCase().equals("request")) {
+				object = new JSONObject();
+				JSONObject innerData = new JSONObject();
+				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
+				regCenterId = appointmentDetails.get(0);
+				appDate = appointmentDetails.get(1);
+				timeSlotFrom = appointmentDetails.get(2);
+				timeSlotTo = appointmentDetails.get(3);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				//object.put("preRegistrationId", preID);
+				/*JSONArray objArr = new JSONArray();
+				objArr.add(object);*/
+				request.replace(key, object);
+				request.put("requesttime", getCurrentDate());
+			}
+		}
+
+		logger.info("Request::Value Of book App::" + request.toString());
+
+		
+		return request;
+	}
 	
 	
 	@Test

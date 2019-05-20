@@ -155,6 +155,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			String preRegistration_URI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preRegistration_URI, parm);
+			logger.info("Delete Doc By Doc Id::"+"Test Case name::"+testCaseName+Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -165,6 +166,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			preReg_URI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			logger.info("Delete Doc By Doc Id Act Res::"+"Test Case name::"+testCaseName+Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
