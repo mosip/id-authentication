@@ -15,6 +15,7 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
  * This interface provides the methods which can be used for Key management
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -51,8 +52,8 @@ public interface KeymanagerService {
 	 */
 	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto);
 
-	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto);
+	public SignatureResponseDto certificatePrivateEncrypt(SignatureRequestDto signatureRequestDto);
 
-	public SignatureResponseDto validate(SignatureRequestDto signatureRequestDto);
+	public PublicKeyResponse<String> getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 
 }
