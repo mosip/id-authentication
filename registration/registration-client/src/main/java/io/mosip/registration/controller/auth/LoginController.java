@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +67,7 @@ import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.sql.JdbcSqlService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
@@ -227,6 +227,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private HeaderController headerController;
 
+	@Autowired
+	private JdbcSqlService jdbcSqlService;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -234,23 +237,23 @@ public class LoginController extends BaseController implements Initializable {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 				hasUpdate = registrationUpdate.hasUpdate();
-				
-				String dateString = registrationUpdate.getLatestVersionReleaseTimestamp();
-				
-				Calendar calendar=Calendar.getInstance();
-				
 
-				int year = Integer.valueOf(dateString.charAt(0)+""+dateString.charAt(1)+""+dateString.charAt(2)+""+dateString.charAt(3));
-				int month = Integer.valueOf(dateString.charAt(4)+""+dateString.charAt(5));
-				int date=Integer.valueOf(dateString.charAt(6)+""+dateString.charAt(7));
-				int hourOfDay = Integer.valueOf(dateString.charAt(8)+""+dateString.charAt(9));
-				int minute=Integer.valueOf(dateString.charAt(10)+""+dateString.charAt(11));
-				int second=Integer.valueOf(dateString.charAt(12)+""+dateString.charAt(13));
-				
-				calendar.set(year, month-1, date, hourOfDay, minute, second);
-				
-				timestamp=new Timestamp(calendar.getTime().getTime());
-				
+				String dateString = registrationUpdate.getLatestVersionReleaseTimestamp();
+
+				Calendar calendar = Calendar.getInstance();
+
+				int year = Integer.valueOf(dateString.charAt(0) + "" + dateString.charAt(1) + "" + dateString.charAt(2)
+						+ "" + dateString.charAt(3));
+				int month = Integer.valueOf(dateString.charAt(4) + "" + dateString.charAt(5));
+				int date = Integer.valueOf(dateString.charAt(6) + "" + dateString.charAt(7));
+				int hourOfDay = Integer.valueOf(dateString.charAt(8) + "" + dateString.charAt(9));
+				int minute = Integer.valueOf(dateString.charAt(10) + "" + dateString.charAt(11));
+				int second = Integer.valueOf(dateString.charAt(12) + "" + dateString.charAt(13));
+
+				calendar.set(year, month - 1, date, hourOfDay, minute, second);
+
+				timestamp = new Timestamp(calendar.getTime().getTime());
+
 				globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
 			}
 
@@ -310,23 +313,37 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
+			if (!registrationUpdate.getCurrentVersion().equals(version)) {
+				loginRoot.setDisable(true);
+				ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(registrationUpdate.getCurrentVersion(),
+						version);
+				loginRoot.setDisable(false);
+
+				if (responseDTO.getErrorResponseDTOs() != null) {
+					if (version.equals("0")) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+					} else {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED);
+					}
+					System.exit(0);
+				}
+			}
+
 			if (hasUpdate) {
 
 				// Update Application
-				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,true);
+				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,
+						isInitialSetUp);
 
-			}
-			if (!isInitialSetUp) {
+			} else if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
 
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (IOException | RuntimeException runtimeException) {
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
-		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -494,32 +511,38 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials entered through UI");
 
 		if (isInitialSetUp || isUserNewToMachine) {
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			loginUserDTO.setUserId(userId.getText());
-			loginUserDTO.setPassword(password.getText());
 
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 
-			try {
-				// Get Auth Token
-				getAuthToken(loginUserDTO, LoginMode.PASSWORD);
-				if (isInitialSetUp) {
-					executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+			} else {
+				LoginUserDTO loginUserDTO = new LoginUserDTO();
+				loginUserDTO.setUserId(userId.getText());
+				loginUserDTO.setPassword(password.getText());
 
-				} else {
-					validateUserCredentialsInLocal();
+				ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+
+				try {
+					// Get Auth Token
+					getAuthToken(loginUserDTO, LoginMode.PASSWORD);
+					if (isInitialSetUp) {
+						executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+					} else {
+						validateUserCredentialsInLocal();
+					}
+
+					// // Execute Sync
+					// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
+
+					loadInitialScreen(Initialization.getPrimaryStage());
 				}
-
-				// // Execute Sync
-				// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
-
-			} catch (Exception exception) {
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
-						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
-
-				loadInitialScreen(Initialization.getPrimaryStage());
 			}
 		} else {
 			validateUserCredentialsInLocal();
