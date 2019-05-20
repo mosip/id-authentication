@@ -185,6 +185,25 @@ Response response = client.newCall(request).execute();
     ]
 }
 ```
+*Validation Unsuccessful*
+ 
+ HTTP Status: 200 OK 
+
+```
+{
+    "id": null,
+    "version": null,
+    "responsetime": "2019-05-20T10:13:13.470Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-CSS-101",
+            "message": "Validation Unsuccessful"
+        }
+    ]
+}
+```
 
 
 **The inputs which have to be provided for validate sign response by passing Response Timestamp along with the data and sign response:**
