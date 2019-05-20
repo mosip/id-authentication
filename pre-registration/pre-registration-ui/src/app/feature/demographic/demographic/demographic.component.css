@@ -187,6 +187,7 @@ mat-icon {
   margin-top: 0.2rem;
   background-color: white;
   border-top: 5px solid #f4f4f4;
+  z-index:22;
 }
 
 .user__btn {

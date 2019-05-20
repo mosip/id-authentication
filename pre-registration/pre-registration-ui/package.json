@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "pre-dev": "ng serve --host 0.0.0.0 --base-href . --disable-host-check",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
