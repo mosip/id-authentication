@@ -16,6 +16,5 @@
 		<module>registration-processor</module>
 		<module>authentication</module>
 		<module>id-repository</module>
-    	<module>admin</module>
   </modules>
 </project>
