@@ -142,7 +142,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -162,7 +162,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = ParseResponseException.class)
@@ -172,7 +172,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -186,7 +186,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilException.class)
@@ -198,7 +198,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test

@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.signature.test.SignatureTestBootApplication;
 
 @SpringBootTest(classes = SignatureTestBootApplication.class)
@@ -48,13 +49,13 @@ public class CryptoSignatureIntegrationTest {
 	public void setup() {
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 	}
 
 	@Test
 	@WithUserDetails("reg-processor")
 	public void signResponseSuccess() throws Exception {
-		when(signatureUtil.signResponse(Mockito.anyString())).thenReturn(signResponse);
+		when(signatureUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
 		mockMvc.perform(post("/sign").contentType(MediaType.APPLICATION_JSON).content(SIGNRESPONSEREQUEST))
 				.andExpect(status().isOk());
 	}

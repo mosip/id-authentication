@@ -39,6 +39,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,6 +50,7 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
@@ -248,47 +250,65 @@ public class CryptomanagerUtil {
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
 
-   /**
-	 * Gets the encrypted data.
-	 *
-	 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
-	 * @return {@link String} encrypted data
-	 */
-	public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
-		String encryptedData = null;
-		RequestWrapper<KeyManagerEncryptRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setId(cryptomanagerRequestID);
-		requestWrapper.setVersion(cryptomanagerRequestVersion);
+	 /**
+		 * Gets the encrypted data.
+		 *
+		 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
+		 * @return {@link String} encrypted data
+		 */
+		public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
+			String encryptedData = null;
+			RequestWrapper<KeyManagerEncryptRequestDto> requestWrapper = new RequestWrapper<>();
+			requestWrapper.setId(cryptomanagerRequestID);
+			requestWrapper.setVersion(cryptomanagerRequestVersion);
 
-		KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
-		keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
-		keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
-		keyManagerEncryptDataRequestDto.setHashedData(cryptoEncryptRequestDto.getData());
-		keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
-		requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
-		ResponseEntity<String> response = null;
-		try {
-			response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+			KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
+			keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
+			keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
+			keyManagerEncryptDataRequestDto.setHashedData(cryptoEncryptRequestDto.getData());
+			keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
+			requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
+			ResponseEntity<String> response = null;
+			try {
+				response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+			} catch (HttpClientErrorException | HttpServerErrorException ex) {
+				List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
-			
+				authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
+				
+				if (!validationErrorsList.isEmpty()) {
+					throw new KeymanagerServiceException(validationErrorsList);
+				} else {
+					throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+							CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+									+ ex.getResponseBodyAsString());
+				}
+			}
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+
 			if (!validationErrorsList.isEmpty()) {
 				throw new KeymanagerServiceException(validationErrorsList);
-			} else {
-				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-								+ ex.getResponseBodyAsString());
 			}
+			KeyManagerEncryptResponseDto keyManagerResponseDto;
+			ResponseWrapper<KeyManagerEncryptResponseDto> responseObject;
+			try {
+
+				responseObject = objectMapper.readValue(response.getBody(),
+						new TypeReference<ResponseWrapper<KeyManagerEncryptResponseDto>>() {
+						});
+
+				keyManagerResponseDto = responseObject.getResponse();
+			} catch (IOException | NullPointerException exception) {
+				throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
+			}
+
+			encryptedData = keyManagerResponseDto.getEncryptedData();
+
+			return encryptedData;
 		}
-		throwExceptionIfExist(response);
-		KeyManagerEncryptResponseDto keyManagerResponseDto=getResponse(response, KeyManagerEncryptResponseDto.class);
-
-		encryptedData = keyManagerResponseDto.getEncryptedData();
-
-		return encryptedData;
-	}
 	
 
 	public SignatureResponseDto signatureEncrypt(SignatureRequestDto signatureRequestDto) {

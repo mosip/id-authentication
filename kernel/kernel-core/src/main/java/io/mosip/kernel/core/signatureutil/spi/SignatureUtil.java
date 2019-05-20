@@ -14,14 +14,34 @@ import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
  */
 public interface SignatureUtil {
 
+
+	public SignatureResponse sign(String data, String timestamp);
+
 	/**
-	 * Sign response.
+	 * Validate with public key.
 	 *
-	 * @param response
-	 *            the response
-	 * @return the string
+	 * @param signature the response signature
+	 * @param data      the response body
+	 * @param publickey         the base64 encoded public key string
+	 * @return true, if successful
+	 * @throws InvalidKeySpecException  the invalid key spec exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
-	public SignatureResponse signResponse(String response);
+	public boolean validateWithPublicKey(String signature, String data, String publickey)
+			throws InvalidKeySpecException, NoSuchAlgorithmException;
+
+	/**
+	 * Validate with public key.
+	 *
+	 * @param signature the response signature
+	 * @param data      the response body
+	 * @param timestamp the sign timestamp
+	 * @return true, if successful
+	 * @throws InvalidKeySpecException  the invalid key spec exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 */
+	public boolean validate(String signature, String data, String timestamp)
+			throws InvalidKeySpecException, NoSuchAlgorithmException;
 	
 	/**
 	 * Sign response.
@@ -32,44 +52,9 @@ public interface SignatureUtil {
 	 */
 	public SignatureResponse signResponseByCertificate(String response);
 
-
-	/**
-	 * Validate with public key.
-	 *
-	 * @param responseSignature
-	 *            the response signature
-	 * @param responseBody
-	 *            the response body
-	 * @param publicKey
-	 *            the base64 encoded public key string
-	 * @return true, if successful
-	 * @throws InvalidKeySpecException
-	 *             the invalid key spec exception
-	 * @throws NoSuchAlgorithmException
-	 *             the no such algorithm exception
-	 */
-	public boolean validateWithPublicKey(String responseSignature, String responseBody, String publicKey)
-			throws InvalidKeySpecException, NoSuchAlgorithmException;
-
-	/**
-	 * Validate with public key.
-	 *
-	 * @param responseSignature
-	 *            the response signature
-	 * @param responseBody
-	 *            the response body
-	 * @return true, if successful
-	 * @throws InvalidKeySpecException
-	 *             the invalid key spec exception
-	 * @throws NoSuchAlgorithmException
-	 *             the no such algorithm exception
-	 */
-	public boolean validate(String responseSignature, String responseBody,String responseTime)
-			throws InvalidKeySpecException, NoSuchAlgorithmException;
-	
 	
 	/**
-	 * Validate with public key.
+	 * Validate
 	 *
 	 * @param responseSignature
 	 *            the response signature

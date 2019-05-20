@@ -50,7 +50,7 @@ public class SignatureController {
 	public ResponseWrapper<SignResponseDto> sign(@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
 		SignatureResponse signatureResponse = service.signResponse(requestDto.getRequest());
 		SignResponseDto signResponse = new SignResponseDto();
-		signResponse.setTimestamp(signatureResponse.getResponseTime());
+		signResponse.setTimestamp(signatureResponse.getTimestamp());
 		signResponse.setSignature(signatureResponse.getData());
 		ResponseWrapper<SignResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(signResponse);
@@ -96,7 +96,7 @@ public class SignatureController {
 	public ResponseWrapper<SignResponseDto> certificateSign(@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
 		SignatureResponse signatureResponse = service.signCertificateResponse(requestDto.getRequest());
 		SignResponseDto signResponse = new SignResponseDto();
-		signResponse.setTimestamp(signatureResponse.getResponseTime());
+		signResponse.setTimestamp(signatureResponse.getTimestamp());
 		signResponse.setSignature(signatureResponse.getData());
 		ResponseWrapper<SignResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(signResponse);
