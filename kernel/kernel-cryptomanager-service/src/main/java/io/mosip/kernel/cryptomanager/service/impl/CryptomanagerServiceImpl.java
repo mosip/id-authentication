@@ -10,6 +10,8 @@ import static java.util.Arrays.copyOfRange;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.validation.Valid;
@@ -25,6 +27,7 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
 import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -141,14 +144,16 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
         return cryptoPublicResponseDto;
 	}
 
+
 	@Override
-	public SignatureResponseDto validate(SignatureRequestDto signatureRequestDto) {
-		return cryptomanagerUtil.signatureDecrypt(signatureRequestDto);
+	public SignatureResponseDto signaturePrivateEncrypt(SignatureRequestDto signatureRequestDto) {
+		return cryptomanagerUtil.signatureEncrypt(signatureRequestDto);
 	}
 
 	@Override
-	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto) {
-		return cryptomanagerUtil.signatureEncrypt(signatureRequestDto);
+	public PublicKeyResponse getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId) {
+		LocalDateTime localDateTimeStamp = cryptomanagerUtil.parseToLocalDateTime(timeStamp);
+		return cryptomanagerUtil.getSignaturePublicKey(applicationId,localDateTimeStamp,referenceId);
 	}
 
 }
