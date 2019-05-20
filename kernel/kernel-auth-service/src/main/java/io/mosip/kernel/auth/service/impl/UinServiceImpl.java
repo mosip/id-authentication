@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,12 @@ public class UinServiceImpl implements UinService {
 			String responseBody = response.getBody();
 			List<ServiceError> validationErrorsList = null;
 				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-	        
+				Optional<ServiceError> service = validationErrorsList.stream().filter(a->a.getErrorCode().equals("IDR-IDS-002")).findFirst();
+				if(service.isPresent())
+				{
+					throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+							AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+				}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}

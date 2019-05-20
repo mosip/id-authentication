@@ -1,0 +1,51 @@
+testdata:
+  Authentication_Biometric_Iris_LeftAndRightEye_With_ValidCompositeScoreMatch_Smoke_Pos:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$    
+      
+  Authentication_Biometric_Iris_LeftEye_With_MatchingScore_Exceed_ThresholdValue_Smoke_Pos:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      
+  Authentication_Biometric_Iris_LeftEye_With_MatchingScore_Exceed_ThresholdValue_Smoke_Pos1:   
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$   
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+    input.identity-encrypt-data:
+      identityReq.rightEye: $REMOVE$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: N
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$

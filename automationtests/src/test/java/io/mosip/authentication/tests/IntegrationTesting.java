@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.tests;
 
 import java.io.File; 
@@ -25,7 +24,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.authentication.fw.util.DataProviderClass;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 
 public class IntegrationTesting implements ITest{
 	
@@ -34,7 +33,7 @@ public class IntegrationTesting implements ITest{
 	public static String uinList="";
 	
 	public Map<String, String> getUinNumber() {
-		Properties prop = IdaScriptsUtil.getPropertyFromFilePath((new File("./src/test/resources/ida/integrationTesting.properties").getAbsolutePath()).toString());
+		Properties prop = AuthTestsUtil.getPropertyFromFilePath((new File("./src/test/resources/ida/integrationTesting.properties").getAbsolutePath()).toString());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		for (String str : prop.stringPropertyNames()) {
 			uinMap.put(str, prop.getProperty(str));
@@ -52,7 +51,7 @@ public class IntegrationTesting implements ITest{
 			Map<String, String> map = new HashMap<String, String>();
 			this.uinList=uinKey;
 			map.put(uinKey, uinValue);
-			IdaScriptsUtil.generateMappingDic("./src/test/resources/ida/TestData/RunConfig/uin.properties", map);
+			AuthTestsUtil.generateMappingDic("./src/test/resources/ida/TestData/RunConfig/uin.properties", map);
 			startIntegTestSuite();
 	}
 
@@ -102,4 +101,3 @@ public class IntegrationTesting implements ITest{
 		String currentModule = ctx.getCurrentXmlTest().getClasses().get(0).getName().split("\\.")[2];
 	}
 }
-

@@ -26,7 +26,7 @@ public class SignatureServiceImpl implements SignatureService {
 
 	@Override
 	public SignatureResponse signResponse(SignRequestDto signResponseRequestDto) {
-		return (signatureUtil.signResponse(signResponseRequestDto.getData()));
+		return (signatureUtil.sign(signResponseRequestDto.getData(), DateUtils.getUTCCurrentDateTimeString()));
 
 	}
 

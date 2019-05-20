@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.util.List;
@@ -67,4 +66,3 @@ public class ReportUtil {
 		return sb.toString();
 	}
 }
-

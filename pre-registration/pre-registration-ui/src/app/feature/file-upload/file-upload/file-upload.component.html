@@ -90,14 +90,14 @@
         [attr.src]="fileUrl"
         type="image/png;Base64,"
       />
-      <div class="file-buttons" *ngIf="!users[0].files.length">
+      <div class="file-buttons" *ngIf="users[0].files.documentsMetaData">
         <button class="previousFile" [disabled]="fileIndex == 0 ? true : false" (click)="previousFile(fileIndex)">
           <img src="assets/left.png" />
         </button>
         <p *ngIf="fileIndex >= 0">{{ fileIndex + 1 }} of {{ users[0].files.documentsMetaData.length }}</p>
         <button
           class="nextFile"
-          [disabled]="fileIndex < users[0].files.documentsMetaData.length - 1 ? false : true"
+          [disabled]="fileIndex == users[0].files.documentsMetaData.length - 1 ? true : false"
           (click)="nextFile(fileIndex)"
         >
           <img src="assets/right.png" />
