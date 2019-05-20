@@ -79,7 +79,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		Object[][] readFolder = null;
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
-			switch ("smoke") {
+			switch ("regression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -178,12 +178,12 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					String expectedErrorCode = null;
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
+						String errorCode = err.get("errorCode").toString();
 						Iterator<Object> iterator1 = expectedError.iterator();
 						// extracting error code from expected response
 						while(iterator1.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
 						}
 						if(expectedErrorCode.matches(errorCode)){
 							finalStatus = "Pass";

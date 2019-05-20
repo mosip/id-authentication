@@ -1,7 +1,7 @@
 {
     "errors": [
         {
-            "errorcode": "RPR-PKR-002",
+            "errorCode": "RPR-PKR-002",
             "message": "The Registration Packet Size is invalid"
         }
     ],

@@ -1,7 +1,7 @@
 {
     "errors": [
         {
-            "errorcode": "RPR-PKR-005",
+            "errorCode": "RPR-PKR-005",
             "message": "The request received is a duplicate request to upload a Packet"
         }
     ],
