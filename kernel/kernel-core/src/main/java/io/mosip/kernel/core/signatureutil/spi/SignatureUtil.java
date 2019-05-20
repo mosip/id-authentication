@@ -18,9 +18,9 @@ public interface SignatureUtil {
 	/**
 	 * Validate with public key.
 	 *
-	 * @param responseSignature the response signature
-	 * @param responseBody      the response body
-	 * @param publicKey         the base64 encoded public key string
+	 * @param signature the response signature
+	 * @param data      the response body
+	 * @param publickey         the base64 encoded public key string
 	 * @return true, if successful
 	 * @throws InvalidKeySpecException  the invalid key spec exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
@@ -31,8 +31,9 @@ public interface SignatureUtil {
 	/**
 	 * Validate with public key.
 	 *
-	 * @param responseSignature the response signature
-	 * @param responseBody      the response body
+	 * @param signature the response signature
+	 * @param data      the response body
+	 * @param timestamp the sign timestamp
 	 * @return true, if successful
 	 * @throws InvalidKeySpecException  the invalid key spec exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception

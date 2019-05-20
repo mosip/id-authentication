@@ -108,13 +108,6 @@ public class SignatureUtilImpl implements SignatureUtil {
 	KeyGenerator keyGen;
 
 
-	/**
-	 * Sign response.
-	 *
-	 * @param response the response
-	 * @return the string
-	 * 
-	 */
 	@Override
 	public SignatureResponse sign(String data, String timestamp) {
 		byte[] responseByteArray = HMACUtils.generateHash(data.getBytes());
