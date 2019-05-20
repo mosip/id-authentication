@@ -55,23 +55,24 @@ import io.restassured.response.Response;
 * @author Ashish Rastogi
 */
 public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
+	public String preId = "";
+	public SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(FetchTheStatusOfApplication.class);
 	boolean status = false;
 	String finalStatus = "";
 	public static JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
+	public Response Actualresponse = null;
+	public JSONObject Expectedresponse = null;
 	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static String preReg_URI ;
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg/Fetch_the_status_of_a_application";
-	static String outputFile = "Fetch_the_status_of_a_applicationOutput.json";
-	static String requestKeyFile = "Fetch_the_status_of_a_applicationRequest.json";
+	public String dest = "";
+	public String configPaths = "";
+	public String folderPath = "preReg/Fetch_the_status_of_a_application";
+	public String outputFile = "Fetch_the_status_of_a_applicationOutput.json";
+	public String requestKeyFile = "Fetch_the_status_of_a_applicationRequest.json";
+	public static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	FetchTheStatusOfApplication() {
 		super();
@@ -94,7 +95,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -121,15 +122,15 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			Response createPreRegResponse = preLab.CreatePreReg();
-			String preRegistrationId = (createPreRegResponse.jsonPath().get("response[0].preRegistrationId"))
+			String preRegistrationId = (createPreRegResponse.jsonPath().get("response.preRegistrationId"))
 					.toString();
 			Actualresponse = preLab.getPreRegistrationStatus(preRegistrationId);
-				preId = (Actualresponse.jsonPath().get("response[0].preRegistartionId")).toString();
-				if(preId.equals(Actualresponse.jsonPath().get("response[0].preRegistartionId").toString()) )
+				preId = (Actualresponse.jsonPath().get("response.preRegistartionId")).toString();
+				if(preId.equals(Actualresponse.jsonPath().get("response.preRegistartionId").toString()) )
 			status = true;
 		}
 		else {
-			Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
+			Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
 
 			outerKeys.add("responsetime");
 			outerKeys.add("timestamp");
@@ -183,14 +184,16 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
+		lib.logOut();
 	}
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		
          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
+         authToken = lib.getToken();
 	}
 
 	@Override

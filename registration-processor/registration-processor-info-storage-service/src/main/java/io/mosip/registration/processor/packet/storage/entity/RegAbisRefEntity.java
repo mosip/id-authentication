@@ -14,14 +14,14 @@ import org.hibernate.annotations.UpdateTimestamp;
  * The Class RegAbisRefEntity.
  */
 @Entity
-@Table(name = "reg_abisref", schema = "regprc")
+@Table(name = "reg_bio_ref", schema = "regprc")
 public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The abis ref id. */
-	@Column(name = "abis_ref_id")
+	@Column(name = "bio_ref_id")
 	private String abisRefId;
 
 	/** The is active. */
@@ -33,7 +33,7 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimes. */
-	@Column(name = "cr_dtimes", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 

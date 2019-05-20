@@ -1,3 +1,8 @@
 {
-                             "pre_registration_id": "41360981649352"
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"",
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"",
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"",
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"",
+             "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":""
 }

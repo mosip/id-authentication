@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.fw.util;
 
 import java.util.HashMap;
@@ -280,3 +281,4 @@ public class RunConfigUtil {
 		TokenIdDto.setTokenId(map);
 	}
 }
+

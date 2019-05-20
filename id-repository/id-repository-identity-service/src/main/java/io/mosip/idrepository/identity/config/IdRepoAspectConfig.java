@@ -40,12 +40,12 @@ public class IdRepoAspectConfig {
 						+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis());
 	}
 
-	@Before("execution(* io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl.*(..))")
+	@Before("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
 	public void beforeJsonSchemaValidator(JoinPoint joinPoint) {
 		jsonSchemaValidatorStartTime = DateUtils.getUTCCurrentDateTime();
 	}
 
-	@After("execution(* io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl.*(..))")
+	@After("execution(* io.mosip.kernel.idobjectvalidator.impl.*.*(..))")
 	public void afterJsonSchemaValidator(JoinPoint joinPoint) {
 		mosipLogger.debug(IdRepoLogger.getUin(), "IdRepoAspectConfig", joinPoint.toString(),
 				"Time taken for execution - "

@@ -4,6 +4,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoginServiceService } from '../../shared/services/login-service.service';
 import { OtpSendModel } from '../../shared/models/otp-send-model';
 import { RequestModel } from '../../shared/models/request-model';
+import { PasswordValidateModel } from '../../shared/models/password-validate-model';
+import {
+  applicationVersion,
+  appId,
+  userIdType,
+  loginOtpContext
+} from '../../app.constants';
 
 @Component({
   selector: 'app-authentication',
@@ -22,18 +29,13 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   showPassword: boolean;
   showOtp: boolean;
   otpSendModel = {} as OtpSendModel;
-  RequestDto: RequestModel;
+  requestDto: RequestModel;
   otpChannel: string[] = ['email', 'mobile'];
-  passwordValidationRequest = {
-    userName: '',
-    password: '',
-    appId: 'admin'
-  };
+  passwordValidationRequest: PasswordValidateModel;
   otpValidation = {
     appId: 'admin',
     otp: '',
     userId: ''
-
   };
   errorMessage: boolean;
   otpStatus = false;
@@ -44,7 +46,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private loginService: LoginServiceService,
-    private activateroute: ActivatedRoute
+    private activatedroute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +54,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       password: ['', Validators.compose([Validators.required])],
       otp: ['', Validators.compose([Validators.required])]
     });
-    this.activateroute.params.subscribe(param => (this.userId = param.userId));
+    this.activatedroute.params.subscribe(param => (this.userId = param.userId));
     console.log(this.loginService.getAuthTypes());
     this.authTypes = this.loginService.getAuthTypes();
     this.displayPasswordAndOtp();
@@ -75,18 +77,18 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     if (this.authTypes.includes('otp')) {
       this.otpSendModel.userId = this.userId;
       this.otpSendModel.otpChannel = this.otpChannel;
-      this.otpSendModel.appId = 'admin';
-      this.otpSendModel.useridtype = 'USERID';
+      this.otpSendModel.appId = appId;
+      this.otpSendModel.useridtype = userIdType;
       this.otpSendModel.templateVariables = null;
-      this.otpSendModel.context = 'auth-otp';
-      this.RequestDto = new RequestModel(
+      this.otpSendModel.context = loginOtpContext;
+      this.requestDto = new RequestModel(
         'mosip.admin.authentication.sendotp',
-        '1.0',
+        applicationVersion,
         this.otpSendModel,
         null
       );
       this.startCountdown(120);
-      this.loginService.sendOtp(this.RequestDto).subscribe(response => {
+      this.loginService.sendOtp(this.requestDto).subscribe(response => {
         console.log(response);
       });
     }
@@ -117,37 +119,42 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   onSubmit(values) {
     if (this.authTypes.includes('password') && this.authTypes.length === 1) {
       console.log(values);
+      this.passwordValidationRequest = new PasswordValidateModel();
       this.passwordValidationRequest.userName = this.userId;
       this.passwordValidationRequest.password = values['password'];
-      this.RequestDto = new RequestModel(
+      this.passwordValidationRequest.appId = appId;
+      this.requestDto = new RequestModel(
         'mosip.admin.authentication.useridPwd',
-        'v1',
+        applicationVersion,
         JSON.parse(JSON.stringify(this.passwordValidationRequest)),
         null
       );
+      console.log(this.requestDto);
       this.loginService
-        .validateUserIdPassword(this.RequestDto)
-        .subscribe(response => {
-          if (response['errors'] === null) {
-            if (response['response'].status === 'success') {
+        .validateUserIdPassword(this.requestDto)
+        .subscribe(({ response, errors }) => {
+          if (errors === null || response != null) {
+            if (response.status === 'success') {
               this.router.navigateByUrl('admin/dashboard');
+            } else {
+              console.log(errors);
+              this.errorMessage = true;
             }
-          } else {
-            console.log(response);
-            this.errorMessage = true;
           }
         });
     } else {
+      this.passwordValidationRequest = new PasswordValidateModel();
+      this.passwordValidationRequest.appId = appId;
       this.passwordValidationRequest.userName = this.userId;
       this.passwordValidationRequest.password = values['password'];
-      this.RequestDto = new RequestModel(
+      this.requestDto = new RequestModel(
         'mosip.admin.authentication.useridPwd',
-        'v1',
+        applicationVersion,
         JSON.parse(JSON.stringify(this.passwordValidationRequest)),
         null
       );
       this.loginService
-        .validateUserIdPassword(this.RequestDto)
+        .validateUserIdPassword(this.requestDto)
         .subscribe(response => {
           console.log(response);
           if (response['errors'] === null) {
@@ -162,13 +169,13 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         });
       this.otpValidation.userId = this.userId;
       this.otpValidation.otp = values['otp'];
-      this.RequestDto = new RequestModel(
+      this.requestDto = new RequestModel(
         'mosip.admin.authentication.useridOTP',
-        'v1',
+        applicationVersion,
         JSON.parse(JSON.stringify(this.otpValidation)),
         null
       );
-      this.loginService.verifyOtp(this.RequestDto).subscribe(response => {
+      this.loginService.verifyOtp(this.requestDto).subscribe(response => {
         console.log(response);
         if (response['errors'] === null) {
           if (response['response'].status === 'success') {
@@ -177,6 +184,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             this.otpStatus = false;
           }
         } else {
+          console.log(response['errors']);
           this.otpErrorMessage = true;
         }
       });

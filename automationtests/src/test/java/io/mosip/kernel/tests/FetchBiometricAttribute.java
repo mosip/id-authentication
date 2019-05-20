@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
@@ -68,6 +68,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	KernelAuthentication auth=new KernelAuthentication();
 	String cookie=null;
+	
 
 	/**
 	 * method to set the test case name to the report
@@ -79,8 +80,8 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-		cookie=auth.getAuthForRegistrationSupervisor();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForRegistrationAdmin();
 
 	}
 
@@ -156,7 +157,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 			String query = "select count(*) from master.biometric_attribute where lang_code = '" + objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
 			
 
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
 
 			// fetching json object from response

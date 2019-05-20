@@ -50,9 +50,13 @@ public class TransliterationServiceUtil {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDTO.getId());
 		inputValidation.put(RequestCodes.VER.getCode(), requestDTO.getVersion());
-		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-				date.toString());
+		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			inputValidation.put(RequestCodes.REQ_TIME.getCode(), date.toString());
+		}
+		else {
+			inputValidation.put(RequestCodes.REQ_TIME.getCode(),null);
+		}
 		inputValidation.put(RequestCodes.REQUEST.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}

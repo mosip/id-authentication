@@ -1,3 +1,4 @@
+
 package io.mosip.util;
 
 /**
@@ -55,3 +56,4 @@ public class CustomTestNgReporterDto {
 		this.deltaMillis = deltaMillis;
 	}
 }
+

@@ -42,10 +42,10 @@ public class TransliterationExceptionHandler {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimepattern;
 	
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
-	@Value("${id}")
+	@Value("${mosip.pre-registration.transliteration.transliterate.id}")
 	String idUrl;
 	
 	/**

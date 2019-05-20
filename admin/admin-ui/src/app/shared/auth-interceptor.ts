@@ -3,10 +3,11 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpEvent
-} from "@angular/common/http";
-import { Observable } from "rxjs/Observable";
+} from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { OnInit } from '@angular/core';
 
-export class AuthInterceptor implements HttpInterceptor {
+export class AuthInterceptor implements HttpInterceptor , OnInit {
   constructor() {}
   ngOnInit(): void {}
   intercept(

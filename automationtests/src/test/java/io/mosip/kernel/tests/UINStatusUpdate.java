@@ -119,18 +119,20 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		
 		switch(testCaseName)
 		{
-		case "smoke_IssuedToUnused": 
+
+		case "Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused": 
 			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
-			uin=res1.getBody().jsonPath().get("response.uin");
+			uin=res1.jsonPath().get("response.uin");
 			JSONObject request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin);
 			response=(JSONObject) Expectedresponse.get("response");
 			response.put("uin", uin);
 			break;
 			
-		case "AssignedToIssued" : 
+
+		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued" : 
 			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
-			uin1=res1.getBody().jsonPath().get("response.uin");
+			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
@@ -138,9 +140,10 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
 			break;
 			
-		case "AssignedToUnused":
+
+		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":
 			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
-			uin1=res1.getBody().jsonPath().get("response.uin");
+			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
@@ -148,9 +151,10 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			request.put("status", "UNASSIGNED");
 			break;
 			
-		case "IssuedToAssigned" :
+
+		case "Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned" :
 			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
-			uin1=res1.getBody().jsonPath().get("response.uin");
+			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			response=(JSONObject) Expectedresponse.get("response");
@@ -173,8 +177,6 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

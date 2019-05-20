@@ -59,13 +59,13 @@ public class TransliterationService {
 	/**
 	 * Reference for ${id} from property file
 	 */
-	@Value("${id}")
+	@Value("${mosip.pre-registration.transliteration.transliterate.id}")
 	private String id;
 
 	/**
 	 * Reference for ${ver} from property file
 	 */
-	@Value("${ver}")
+	@Value("${version}")
 	private String version;
 
 	/**

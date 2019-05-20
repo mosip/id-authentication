@@ -53,11 +53,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.partnerdemo.service.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.partnerdemo.service.dto.EncryptionRequestDto;
 import io.mosip.authentication.partnerdemo.service.dto.EncryptionResponseDto;
 import io.mosip.authentication.partnerdemo.service.helper.CryptoUtility;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -101,6 +103,9 @@ public class Encrypt {
 	@Value("${cryptomanager.partner.id}")
 	private String publicKeyId;
 
+	
+	/** The logger. */
+	private static Logger logger = IdaLogger.getLogger(Encrypt.class);
 	/**
 	 * Encrypt.
 	 *
@@ -240,7 +245,7 @@ public class Encrypt {
 		ClientResponse response = WebClient.create(env.getProperty("auth-token-generator.rest.uri")).post()
 				.syncBody(request)
 				.exchange().block();
-		System.out.println("AuthResponse :" +  response.toEntity(String.class).block().getBody());
+		logger.info("sessionID", "IDA", "ENCRYPT", "AuthResponse :" +  response.toEntity(String.class).block().getBody());
 		List<ResponseCookie> list = response.cookies().get("Authorization");
 		if(list != null && !list.isEmpty()) {
 			ResponseCookie responseCookie = list.get(0);
