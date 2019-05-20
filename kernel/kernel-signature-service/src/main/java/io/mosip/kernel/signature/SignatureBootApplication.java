@@ -2,6 +2,7 @@ package io.mosip.kernel.signature;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Crypto signature application
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication(scanBasePackages = {"io.mosip.kernel.signature.*" ,"io.mosip.kernel.auth.*" })
+@PropertySource("classpath:application-local.properties")
 public class SignatureBootApplication {
 
 	/**
