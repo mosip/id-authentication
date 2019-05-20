@@ -32,4 +32,8 @@ public interface SignatureService {
 
 	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
+
+	public SignatureResponse signCertificateResponse(SignRequestDto request);
+
+	public ValidatorResponseDto certificateValidate(TimestampRequestDto request);
 }
