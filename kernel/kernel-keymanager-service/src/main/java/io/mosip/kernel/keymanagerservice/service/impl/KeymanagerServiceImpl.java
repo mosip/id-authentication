@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,7 +134,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	@Autowired
 	KeymanagerUtil keymanagerUtil;
+	
+	
+	@Value("${mosip.kernel.keygenerator.certificate-file-path}")
+	private String certificateFilePath;
 
+	@Value("${mosip.kernel.keygenerator.privatekey-file-path}")
+	private String privateKeyFilePath;
+	
+	@Value("${mosip.kernel.keygenerator.certificate-type}")
+	private String certificateType;
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -548,29 +559,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		return privateKey;
 	}
 
-	private static PrivateKey getPrivateKeyFromFile(File privateKeyFile) {
-
-		KeyFactory kf = null;
-		PKCS8EncodedKeySpec keySpec = null;
-		PrivateKey privateKey = null;
-		byte[] privateKeyPEM;
-		try {
-			privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
-			String privateKeyPEMString = new String(privateKeyPEM);
-			privateKeyPEMString = privateKeyPEMString.replace("-----BEGIN PRIVATE KEY-----\n", "");
-			privateKeyPEMString = privateKeyPEMString.replace("-----END PRIVATE KEY-----", "");
-			byte[] encoded = Base64.decodeBase64(privateKeyPEMString);
-			kf = KeyFactory.getInstance("RSA");
-			keySpec = new PKCS8EncodedKeySpec(encoded);
-			privateKey = kf.generatePrivate(keySpec);
-
-		} catch (io.mosip.kernel.core.exception.IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
-		}
-
-		return privateKey;
-	}
+	
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
@@ -579,11 +568,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			File file = resourceLoader.getResource("classpath:cert.pem").getFile();
+			File file = resourceLoader.getResource(certificateFilePath).getFile();
 			certData = FileUtils.readFileToByteArray(file);
-			cf = CertificateFactory.getInstance("X509");
+			cf = CertificateFactory.getInstance(certificateType);
 			cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certData));
-			privateKey = getPrivateKeyFromFile(resourceLoader.getResource("classpath:privkey.pem").getFile());
+			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getFile());
 		} catch (CertificateException | IOException | java.io.IOException e) {
 			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
@@ -595,13 +584,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	@Override
-	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto) {
+	public SignatureResponseDto certificatePrivateEncrypt(SignatureRequestDto signatureRequestDto) {
 		CertificateEntry<X509Certificate, PrivateKey> certificateEntry = getCertificateEntryFromHSM(
 				signatureRequestDto);
 		keymanagerUtil.isCertificateValid(certificateEntry);
 		byte[] encryptedSignedData=null;
 		if(certificateEntry!=null) {
-			encryptedSignedData=encryptor.asymmetricPrivateEncrypt(certificateEntry.getPrivateKey(), signatureRequestDto.getData().getBytes());
+			encryptedSignedData=encryptor.asymmetricPrivateEncrypt(certificateEntry.getPrivateKey(), CryptoUtil.decodeBase64(signatureRequestDto.getData()));
 		}
 		return new SignatureResponseDto(CryptoUtil.encodeBase64(encryptedSignedData));
 	}
@@ -671,8 +660,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID, applicationId,
 				KeymanagerConstant.GETEXPIRYPOLICY);
 
-		LocalDateTime policyExpiryTime = DateUtils
-				.parseDateToLocalDateTime(certificateEntry.getChain()[0].getNotAfter());
+		LocalDateTime policyExpiryTime =DateUtils.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(certificateEntry.getChain()[0].getNotAfter()));
 		if (!keyAlias.isEmpty()) {
 			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.KEYALIAS, String.valueOf(keyAlias.size()),
 					"Getting expiry policy. KeyAlias exists");
@@ -691,15 +679,51 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	@Override
-	public SignatureResponseDto validate(SignatureRequestDto signatureRequestDto) {
-		CertificateEntry<X509Certificate, PrivateKey> certificateEntry = getCertificateEntryFromHSM(
-				signatureRequestDto);
-		keymanagerUtil.isCertificateValid(certificateEntry);
-		byte[] decryptedsignedData=null;
-		if(certificateEntry!=null) {
-		decryptedsignedData=decryptor.asymmetricPublicDecrypt(certificateEntry.getChain()[0].getPublicKey(), signatureRequestDto.getData().getBytes());
+	public PublicKeyResponse<String> getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId) {
+		String alias = null;
+		List<KeyAlias> currentKeyAlias = null;
+		Map<String, List<KeyAlias>> keyAliasMap = null;
+		LocalDateTime generationDateTime = null;
+		LocalDateTime expiryDateTime = null;
+		CertificateEntry<X509Certificate, PrivateKey> certificateEntry = null;
+		LocalDateTime localDateTimeStamp = keymanagerUtil.parseToLocalDateTime(timeStamp);
+		if (!referenceId.isPresent() || referenceId.get().trim().isEmpty()) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
+					"Not a valid reference Id. Getting key alias without referenceId");
+			keyAliasMap = getKeyAliases(applicationId, null,
+					localDateTimeStamp);
+		} else {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.EMPTY, KeymanagerConstant.EMPTY,
+					"Valid reference Id. Getting key alias with referenceId");
+			keyAliasMap = getKeyAliases(applicationId,
+					referenceId.get(), localDateTimeStamp);
 		}
-		return new SignatureResponseDto(CryptoUtil.encodeBase64(decryptedsignedData));
+		currentKeyAlias = keyAliasMap.get(KeymanagerConstant.CURRENTKEYALIAS);
+		if (currentKeyAlias.size() > 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					String.valueOf(currentKeyAlias.size()), "CurrentKeyAlias size more than one. Throwing exception");
+			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+		} else if (currentKeyAlias.size() == 1) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.CURRENTKEYALIAS,
+					currentKeyAlias.get(0).getAlias(),
+					"CurrentKeyAlias size is one. Will fetch keypair using this alias");
+			KeyAlias fetchedKeyAlias = currentKeyAlias.get(0);
+			alias = fetchedKeyAlias.getAlias();
+			PrivateKeyEntry privateKeyEntry = keyStore.getAsymmetricKey(alias);
+			certificateEntry = new CertificateEntry<>((X509Certificate[]) privateKeyEntry.getCertificateChain(),
+					privateKeyEntry.getPrivateKey());
+			generationDateTime = fetchedKeyAlias.getKeyGenerationTime();
+			expiryDateTime = fetchedKeyAlias.getKeyExpiryTime();
+		} else if (currentKeyAlias.isEmpty()) {
+			throw new NoUniqueAliasException(KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorCode(),
+					KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
+		}
+		PublicKeyResponse<String> publicKeyResponse=null;
+		if(certificateEntry != null) {
+			publicKeyResponse=new PublicKeyResponse<>(alias,CryptoUtil.encodeBase64(certificateEntry.getChain()[0].getPublicKey().getEncoded()),generationDateTime,expiryDateTime);
+		}
+		return publicKeyResponse;
 	}
 
 }
