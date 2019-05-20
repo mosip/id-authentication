@@ -2,20 +2,16 @@ package io.mosip.authentication.common.service.impl;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.entity.VIDEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
@@ -25,7 +21,6 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.AuditRequestDto;
@@ -34,7 +29,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -42,7 +36,6 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The class validates the UIN and VID.
@@ -67,14 +60,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	@Autowired
 	private RestRequestFactory restFactory;
 	
-	@Autowired
-	private Environment environment;
-
-
 	/** The audit factory. */
 	@Autowired
 	private AuditRequestFactory auditFactory;
-
 
 	@Autowired
 	private IdRepoManager idRepoManager;
