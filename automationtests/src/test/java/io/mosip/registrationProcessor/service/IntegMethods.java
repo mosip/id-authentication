@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 
 import io.mosip.dbaccess.RegProcDBCleanUp;
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
+import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -33,6 +37,8 @@ public class IntegMethods extends BaseTestCase {
 	public final static String Reg_Proc_PacketLanding_URI="/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets";
 	public final static String Reg_Proc_Get_URI="/registrationstatus/v0.1/registration-processor/registration-status/registrationstatus";
 	final static String folder="regProc/IntegrationScenarios";
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
+	String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	String registrationID="";
 	JSONParser parser=new JSONParser();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
@@ -42,6 +48,8 @@ public class IntegMethods extends BaseTestCase {
 	List<String> outerKeys=new ArrayList<String>();
 	AssertResponses assertResponses=new AssertResponses();
 	RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
+	EncryptData encryptData=new EncryptData();
+	SoftAssert softAssert=new SoftAssert();
 	/**
 	 * 
 	 * @param testCase
@@ -52,49 +60,45 @@ public class IntegMethods extends BaseTestCase {
 	 * This method takes testCaseName as a parameter and reads the request/response file inside that folder
 	 * It asserts the response and returns the response.
 	 */
-	public Response syncList(String testCase) throws FileNotFoundException, IOException, ParseException {
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
-		prop.load(new FileReader(new File(propertyFilePath)));
-		JSONObject actualRequest=null;
-		JSONObject expectedResponse=null;
-		String component="SyncList";
-		String configPath= "src/test/resources/" + folder+"/"+testCase+"/SyncPacket";
-		EncrypterDecrypter encrypter = new EncrypterDecrypter();
-		System.out.println(configPath);
-		File file=new File(configPath);
-		File[] folder=file.listFiles();
-		for(File f:folder) {
-			if(f.getName().toLowerCase().contains("request")) {
-				actualRequest=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-			}
-			else if(f.getName().toLowerCase().contains("response")) {
-				expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-			}
+	public boolean syncList(File packet) throws FileNotFoundException, IOException, ParseException {
+		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
+		try {
+			registrationPacketSyncDto = encryptData.createSyncRequest(packet);
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+		String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+		Response resp=applnMethods.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+		String encryptedData = resp.jsonPath().get("response.data").toString();
+		LocalDateTime timeStamp=null;
+		try {
+			timeStamp = encryptData.getTime(regId);
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		try {
-
-			Response actualResponse=null;
-			//Response actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"));
-
-			JSONArray requestBody=(JSONArray) actualRequest.get("request");
-			JSONObject insideRequest=(JSONObject) requestBody.get(0);
-			String regId=(String) insideRequest.get("registrationId");
-			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			Map<String,Object> resp = encrypter.encryptJson(actualRequest);
-			String encryptedData = resp.get("data").toString();
-			String timeStamp = resp.get("responsetime").toString();
-			actualResponse=applnMethods.regProcSync(actualRequest, prop.getProperty("syncListApi"),center_machine_refID,timeStamp);
-
-			logger.info("Expected Response is :: "+ expectedResponse.toJSONString());
-			logger.info("Actual Response is :: "+ actualResponse.asString());
-			outerKeys.add("responsetime");
-			boolean status=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			Assert.assertTrue(status);
-			return actualResponse;
-		}catch(AssertionError | ClassCastException err) {
-			err.printStackTrace();
+			prop.load(new FileReader(new File(propertyFilePath)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return null;
+		Response actualResponse = applnMethods.regProcSync(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
+				timeStamp.toString()+"Z");
+		int status=actualResponse.statusCode();
+		try {
+		Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
+		Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
+		Assert.assertTrue(actualResponse.jsonPath().get("response[0].status").equals("SUCCESS"));
+		Assert.assertTrue(actualResponse.jsonPath().get("response[0].registrationId").equals(regId));
+		return true;
+		}catch (AssertionError e) {
+			return false;
+		}
+		
 	}
 	/**
 	 * 
@@ -107,42 +111,16 @@ public class IntegMethods extends BaseTestCase {
 	 * This methods takes response and testCase name as the parameters and reads the files and uploads them to packetReceiver
 	 * Asserts the response and returns it
 	 */
-	public Response UploadPacket(Response syncResponse,String testCase) throws ParseException, FileNotFoundException, IOException {
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
-		prop.load(new FileReader(new File(propertyFilePath)));
-		Response actualResponse=null;
-		JSONObject expectedResponse=null;
-		String component="PacketReceiver";
-		String configPath= "src/test/resources/" + folder+"/"+testCase+"/UploadPacket";
-		File file=new File(configPath);
-		File[] folder=file.listFiles();
-		JSONObject response=(JSONObject) parser.parse(syncResponse.asString());
-		JSONArray responseArray=(JSONArray) response.get("response");
-		JSONObject responseObject=(JSONObject) responseArray.get(0);
-		String status=responseObject.get("status").toString();
-		if(status.equals("SUCCESS")) {
-			for(File f: folder) {
-				if(f.getName().toLowerCase().contains(responseObject.get("registrationId").toString())) {
-					actualResponse=applnMethods.regProcPacketUpload(f, prop.getProperty("packetReceiverApi"));
-					registrationID=responseObject.get("registrationId").toString();
-				}
-				else if(f.getName().toLowerCase().contains("response")) {
-					expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				}
-			}
-			try {
-				outerKeys.add("responsetime");
-				boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-				Assert.assertTrue(assertStatus);
-		//clearFromDB(responseObject.get("registrationId").toString());
-				return actualResponse;
-			}catch(AssertionError err) {
-				clearFromDB(responseObject.get("registrationId").toString());
-				Assert.fail();
-				err.printStackTrace();
-			}
+	public boolean UploadPacket(File packet) throws ParseException, FileNotFoundException, IOException {
+		Response actualResponse=applnMethods.regProcPacketUpload(packet, prop.getProperty("packetReceiverApi"));
+		try {
+		Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
+		Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
+		Assert.assertTrue(actualResponse.jsonPath().get("response.status").equals("Packet is in PACKET_RECEIVED status"));
+		return true;
+		}catch (AssertionError e) {
+		return false;
 		}
-		return null;
 	}
 	/**
 	 * 
@@ -172,7 +150,7 @@ public class IntegMethods extends BaseTestCase {
 		actualResponse=applnMethods.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest);
 		outerKeys.add("responsetime");
 		boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-		clearFromDB(registrationID);
+		//clearFromDB(registrationID);
 		Assert.assertTrue(assertStatus);
 		
 		try {

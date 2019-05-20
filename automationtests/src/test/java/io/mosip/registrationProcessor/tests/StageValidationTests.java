@@ -7,17 +7,13 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
-import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -27,6 +23,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.dbaccess.RegProcDBCleanUp;
+import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.registrationProcessor.util.TweakRegProcPackets;
 import io.mosip.service.BaseTestCase;
@@ -42,8 +39,12 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	String regID="";
 	RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
 	SoftAssert softAssert=new SoftAssert();
+
+	EncryptData encryptData=new EncryptData();
+
 	@BeforeClass
 	public void readUserStage() {
+
 		Properties folderPath = new Properties();
 		try {
 			FileReader reader=new FileReader(new File(System.getProperty("user.dir") + "/src/config/folderPaths.properties"));
@@ -74,7 +75,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
@@ -84,7 +85,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 	}
 
 	@DataProvider(name = "packetValidatorStage")
@@ -92,41 +93,54 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		Object[][] reutr = null;
 		File file = new File(invalidPacketPath + "/PacketValidator");
 		File[] listOfPackets = file.listFiles();
-		File[] listOfInvalidPackets = new File[listOfPackets.length - 1];
+		List<File> listOfInvalidPackets = new ArrayList<File>();
 		for (int i = 0; i < listOfPackets.length; i++) {
 			if (listOfPackets[i].isDirectory()) {
-				listOfInvalidPackets[i] = listOfPackets[i];
+				listOfInvalidPackets.add(listOfPackets[i]);
 			}
 		}
-		return listOfInvalidPackets;
+		File [] objArray = new File[listOfInvalidPackets.size()];
+		for(int i=0;i< listOfInvalidPackets.size();i++){
+		    objArray[i] = listOfInvalidPackets.get(i);
+		 } 
+		return objArray;
+		
 	}
 	@DataProvider(name="osiValidatorStage")
 	public File[] getInvalidOsiValidatorPackets() {
 		
 		File file = new File(invalidPacketPath + "/OsiValidation");
 		File[] listOfPackets = file.listFiles();
-		File[] listOfInvalidPackets = new File[listOfPackets.length - 1];
+		List<File> listOfInvalidPackets = new ArrayList<File>();
 		for (int i = 0; i < listOfPackets.length; i++) {
 			if (listOfPackets[i].isDirectory()) {
-				listOfInvalidPackets[i] = listOfPackets[i];
+				listOfInvalidPackets.add(listOfPackets[i]);
 			}
 		}
-		return listOfInvalidPackets;
+		File [] objArray = new File[listOfInvalidPackets.size()];
+		for(int i=0;i< listOfInvalidPackets.size();i++){
+		    objArray[i] = listOfInvalidPackets.get(i);
+		 } 
+		return objArray;
 	}
-	@DataProvider(name="demoDedupeStage")
+/*	@DataProvider(name="demoDedupeStage")
 	public File[] getInvalidDemoDedupePackets() {
 		
 		File file = new File(invalidPacketPath + "/DemoDedupe");
 		File[] listOfPackets = file.listFiles();
-		File[] listOfInvalidPackets = new File[listOfPackets.length - 1];
+		List<File> listOfInvalidPackets = new ArrayList<File>();
 		for (int i = 0; i < listOfPackets.length; i++) {
 			if (listOfPackets[i].isDirectory()) {
-				listOfInvalidPackets[i] = listOfPackets[i];
+				listOfInvalidPackets.add(listOfPackets[i]);
 			}
 		}
-		return listOfInvalidPackets;
+		File [] objArray = new File[listOfInvalidPackets.size()];
+		for(int i=0;i< listOfInvalidPackets.size();i++){
+		    objArray[i] = listOfInvalidPackets.get(i);
+		 } 
+		return objArray;
 	}
-	
+	*/
 	
 	@Test(dataProvider = "packetValidatorStage")
 	public void packetValidatorStage(File[] listOfInvpackets) {
@@ -145,13 +159,14 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		StringBuilder stageString = new StringBuilder();
 		stageString.append(prop.getProperty("StageBits").toString());
 		userList = codeList.getStatusCodesList(stageString);
+		String syncStatus="";
 		for (File invalidPacket : listOfInvpackets) {
 			if (invalidPacket.isDirectory()) {
 				for (File packet : invalidPacket.listFiles()) {
-					regID = packet.getName().substring(0, packet.getName().lastIndexOf('.'));
-					scenario.syncPacket(regID);
-					scenario.uploadPacket(packet);
-					statusCodes = scenario.getStatusList(regID);
+					syncStatus=scenario.syncPacket(packet);
+					if(syncStatus.equals("Sync Successfull")) {
+						scenario.uploadPacket(packet);
+					}
 					break;
 				}
 			}
@@ -165,7 +180,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		userList.clear();
 		dbList.clear();
 		softAssert.assertAll();
-		cleanUp.prepareQueryList(regID);
+		//cleanUp.prepareQueryList(regID);
 		regID="";
 	
 	}
@@ -176,7 +191,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		Properties prop = new Properties();
 
 		try {
-			FileReader reader=new FileReader(new File(invalidPacketPath + "/DemoDedupe/StageBits.properties"));
+			FileReader reader=new FileReader(new File(invalidPacketPath + "/OsiValidation/StageBits.properties"));
 			prop.load(reader);
 			reader.close();
 		} catch (IOException e) {
@@ -186,13 +201,14 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		StringBuilder stageString = new StringBuilder();
 		stageString.append(prop.getProperty("StageBits").toString());
 		userList = codeList.getStatusCodesList(stageString);
+		String syncStatus="";
 		for (File invalidPacket : listOfInvpackets) {
 			if (invalidPacket.isDirectory()) {
 				for (File packet : invalidPacket.listFiles()) {
-					 regID = packet.getName().substring(0, packet.getName().lastIndexOf('.'));
-					scenario.syncPacket(regID);
-					scenario.uploadPacket(packet);
-					statusCodes = scenario.getStatusList(regID);
+					syncStatus=scenario.syncPacket(packet);
+					if(syncStatus.equals("Sync Successfull")) {
+						scenario.uploadPacket(packet);
+					}
 					break;
 				}
 			}
@@ -204,11 +220,11 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		
 		userList.clear();
 		dbList.clear();
-		cleanUp.prepareQueryList(regID);
-		softAssert.assertAll();
+	//	cleanUp.prepareQueryList(regID);
+	//	softAssert.assertAll();
 		regID="";
 	}
-	@Test(dataProvider = "demoDedupeStage")
+	/*@Test(dataProvider = "demoDedupeStage")
 	public void demoDedupeStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -224,13 +240,14 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		StringBuilder stageString = new StringBuilder();
 		stageString.append(prop.getProperty("StageBits").toString());
 		userList = codeList.getStatusCodesList(stageString);
+		String syncStatus="";
 		for (File invalidPacket : listOfInvpackets) {
 			if (invalidPacket.isDirectory()) {
 				for (File packet : invalidPacket.listFiles()) {
-					regID = packet.getName().substring(0, packet.getName().lastIndexOf('.'));
-					scenario.syncPacket(regID);
-					scenario.uploadPacket(packet);
-					statusCodes = scenario.getStatusList(regID);
+					syncStatus=scenario.syncPacket(packet);
+					if(syncStatus.equals("Sync Successfull")) {
+						scenario.uploadPacket(packet);
+					}
 					break;
 				}
 			}
@@ -242,19 +259,12 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		
 		userList.clear();
 		dbList.clear();
-		cleanUp.prepareQueryList(regID);
+	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";
-	}
-	
-	
-/*	@AfterTest
-	public void compareList() {
-		Set<String> uniqueDbList = new LinkedHashSet<>(dbList);
-		Assert.assertTrue(userList.equals(uniqueDbList));
-		userList.clear();
-		dbList.clear();
 	}*/
+	
+
 
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
@@ -284,12 +294,11 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method " + e);
 		}
-
+		
 	}
 
 	@Override
 	public String getTestName() {
-		
 		return this.testCaseName;
 	}
 }

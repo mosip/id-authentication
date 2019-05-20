@@ -79,7 +79,7 @@ public class RegProcDBCleanUp {
 		queryList.add(deleteRegistration);
 		
 		for(String query:queryList) {
-			cleanUp.deleteFromRegProcTables("10006100060001220190419042546", query);
+			cleanUp.deleteFromRegProcTables("10006100060000720190518153303", query);
 		}
 
 	}

@@ -22,6 +22,7 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -32,6 +33,7 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -63,6 +65,8 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
 	String rId = null;
+	RegProcTokenGenerate tokenGenearte=new RegProcTokenGenerate();
+	String token="";
 	Properties prop =  new Properties();
 
 	/**
@@ -94,7 +98,10 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		}
 		return readFolder;
 	}
-
+@BeforeClass
+public void getToken() {
+	token=tokenGenearte.getRegProcAuthToken();
+}
 	/**
 	 * This method is used for generating actual response and comparing it with expected response
 	 * along with db check and audit log check
@@ -104,7 +111,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 */
 	@Test(dataProvider="PacketReceiver")
 	public void packetReceiver(String testSuite, Integer i, JSONObject object){
-
+		
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -196,13 +203,13 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			}else{
 				finalStatus="Fail";
 			}
-			/*boolean setFinalStatus=false;
+			boolean setFinalStatus=false;
 	        if(finalStatus.equals("Fail"))
 	              setFinalStatus=false;
 	        else if(finalStatus.equals("Pass"))
 	              setFinalStatus=true;
 	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();*/
+	        softAssert.assertAll();
 
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
@@ -237,12 +244,13 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			test=extent.createTest(testCaseName);
+			
 			f.set(baseTestMethod, PacketReceiver.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
 		}
-
+		
+		
 	}
 
 	/**

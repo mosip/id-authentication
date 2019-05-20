@@ -101,7 +101,7 @@ public class Sync extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch ("smoke") {
+			switch (testParam) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -137,13 +137,7 @@ public class Sync extends BaseTestCase implements ITest {
 		EncryptData encryptData=new EncryptData();
 		File file=ResponseRequestMapper.getPacket(testSuite, object);
 		RegistrationPacketSyncDTO registrationPacketSyncDto=encryptData.createSyncRequest(file);
-		try {
-			String json=mapper.writeValueAsString(registrationPacketSyncDto);
-			System.out.println(json);
-		} catch (JsonProcessingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	
 		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 	
 		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
@@ -155,8 +149,7 @@ public class Sync extends BaseTestCase implements ITest {
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			LocalDateTime timeStamp = encryptData.getTime(regId);
 			
-			System.out.println("encryptedData :" +encryptedData);
-			System.out.println("TimeStamp :" +registrationPacketSyncDto.getRequesttime());
+		
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
