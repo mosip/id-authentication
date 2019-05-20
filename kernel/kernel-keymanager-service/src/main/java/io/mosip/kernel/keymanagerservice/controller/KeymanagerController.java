@@ -35,6 +35,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * This class provides controller methods for Key manager.
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -113,23 +114,27 @@ public class KeymanagerController {
 	}
 	
 	
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
-	@ApiOperation(value = "Sign Data Using Certificate")
-	@PostMapping("signature/encrypt")
-	public ResponseWrapper<SignatureResponseDto> signature(
+	@ApiOperation(value = "Encrypt ")
+	@PostMapping("signature/private/encrypt")
+	public ResponseWrapper<SignatureResponseDto> signaturePublicEncrypt(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.sign(signatureResponseDto.getRequest()));
+		response.setResponse(keymanagerService.certificatePrivateEncrypt(signatureResponseDto.getRequest()));
 		return response;
     }
 	
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
-	@ApiOperation(value = "Validate Signature Data Using Certificate")
-	@PostMapping("signature/decrypt")
-	public ResponseWrapper<SignatureResponseDto> validateSignature(
-			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
-		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.validate(signatureResponseDto.getRequest()));
+	@ApiOperation(value = "Get Public Key")
+	@GetMapping("signature/publickey/{applicationId}")
+	public ResponseWrapper<PublicKeyResponse<String>> getSignaturePublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
+		response.setResponse(keymanagerService.getSignPublicKey(applicationId,timeStamp,referenceId));
 		return response;
     }
 }
