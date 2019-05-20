@@ -432,7 +432,7 @@ export class FileUploadComponent implements OnInit {
     this.fileIndex = 0;
     console.log('file', fileMeta);
     // console.log('file any', test);
-    this.start = true;
+    this.disableNavigation = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
         console.log(res);
@@ -494,7 +494,7 @@ export class FileUploadComponent implements OnInit {
           //   );
           // }
         }
-        this.start = false;
+        this.disableNavigation = false;
       }
     );
   }
@@ -636,9 +636,11 @@ export class FileUploadComponent implements OnInit {
     // this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
+    console.log('data to be sent', this.formData);
+
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
-        console.log(response);
+        console.log('file response', response);
 
         if (response['errors'] == null) {
           this.updateUsers(response);
@@ -667,10 +669,10 @@ export class FileUploadComponent implements OnInit {
   updateUsers(fileResponse) {
     let i = 0;
     this.file = new FileModel();
-    this.userFile = [this.file];
+    this.userFile[0] = this.file;
     this.userFile[0].docCatCode = fileResponse.response.docCatCode;
     this.userFile[0].doc_file_format = fileResponse.response.docFileFormat;
-    this.userFile[0].documentId = fileResponse.response.documentId;
+    this.userFile[0].documentId = fileResponse.response.docId;
     this.userFile[0].docName = fileResponse.response.docName;
     this.userFile[0].docTypCode = fileResponse.response.docTypCode;
     this.userFile[0].multipartFile = this.fileByteArray;
