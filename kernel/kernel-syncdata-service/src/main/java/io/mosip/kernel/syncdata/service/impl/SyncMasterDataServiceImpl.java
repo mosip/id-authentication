@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -82,7 +83,6 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.MetaDataUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
-
 /**
  * Masterdata sync handler service impl
  * 
@@ -119,14 +119,16 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 
 	@Override
 	public MasterDataResponseDto syncData(String regCenterId, String macAddress, String serialNum,
-			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp,String keyIndex) throws InterruptedException, ExecutionException {
+			LocalDateTime lastUpdated, LocalDateTime currentTimeStamp, String keyIndex)
+			throws InterruptedException, ExecutionException {
 		String machineId = null;
 		RegistrationCenterMachineDto regCenterMachineDto = null;
 		if (regCenterId == null) {
-			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum,keyIndex);
+			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum, keyIndex);
 		} else {
 
-			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum,keyIndex);
+			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum,
+					keyIndex);
 		}
 
 		machineId = regCenterMachineDto.getMachineId();
@@ -313,31 +315,35 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * This method would return RegistrationCenterMachine mapping based on
 	 * macaddress/serial number
 	 * 
-	 * @param macId     - mac address
-	 * @param serialNum - serial number
+	 * @param macId
+	 *            - mac address
+	 * @param serialNum
+	 *            - serial number
 	 * @return - {@link RegistrationCenterMachineDto}
 	 */
-	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum,String keyIndex) {
+	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum, String keyIndex) {
 		List<Object[]> machineList = null;
 		RegistrationCenterMachineDto regMachineDto = null;
 
 		try {
-			if(macId!=null && serialNum!=null && keyIndex!=null) {
-				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddressAndSerialNumAndKeyIndex(macId, serialNum, keyIndex);
-				
-			}else if(macId!=null && keyIndex!=null) {
-				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddressAndKeyIndex(macId, keyIndex);
-				
-			}else if(serialNum!=null && keyIndex!=null) {
-				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithSerialNumberAndKeyIndex(serialNum, keyIndex);
-				
-			}else if (macId != null && serialNum != null) {
+			if (macId != null && serialNum != null && keyIndex != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithMacAddressAndSerialNumAndKeyIndex(macId, serialNum, keyIndex);
+
+			} else if (macId != null && keyIndex != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithMacAddressAndKeyIndex(macId, keyIndex);
+
+			} else if (serialNum != null && keyIndex != null) {
+				machineList = registrationCenterMachineRepository
+						.getRegistrationCenterMachineWithSerialNumberAndKeyIndex(serialNum, keyIndex);
+
+			} else if (macId != null && serialNum != null) {
 				machineList = registrationCenterMachineRepository
 						.getRegistrationCenterMachineWithMacAddressAndSerialNum(macId, serialNum);
-			}else if(keyIndex!=null) {
-				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithKeyIndex(keyIndex);	
-			}
-			else if (macId != null) {
+			} else if (keyIndex != null) {
+				machineList = registrationCenterMachineRepository.getRegistrationCenterMachineWithKeyIndex(keyIndex);
+			} else if (macId != null) {
 				machineList = registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(macId);
 			} else if (serialNum != null) {
 				machineList = registrationCenterMachineRepository
@@ -369,14 +375,17 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * regCenterid is not available if regCenterId is present it would check for the
 	 * mapping. If the mapping is not present and is not active it will throw error.
 	 * 
-	 * @param regCenterId - registration center id
-	 * @param macId       - mac address
-	 * @param serialNum   - serial address
+	 * @param regCenterId
+	 *            - registration center id
+	 * @param macId
+	 *            - mac address
+	 * @param serialNum
+	 *            - serial address
 	 * @return {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,
-			String serialNum,String keyIndex) {
-		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, serialNum,keyIndex);
+			String serialNum, String keyIndex) {
+		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, serialNum, keyIndex);
 		RegistrationCenterMachine registrationCenterMachine = null;
 
 		try {
@@ -403,11 +412,23 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		return regCenterMachine;
 	}
 
-@Override
+	@Override
 	@Transactional
 	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
 		final byte[] publicKey = CryptoUtil.decodeBase64(uploadPublicKeyRequestDto.getPublicKey());
 		final String keyIndex = CryptoUtil.computeFingerPrint(publicKey, null);
+
+		Machine machineDetail = machineRepo.findByMachineNameAndIsActive(uploadPublicKeyRequestDto.getMachineName());
+		if (machineDetail != null) {
+			if (Arrays.equals(publicKey, machineDetail.getPublicKey())) {
+				return new UploadPublicKeyResponseDto(machineDetail.getKeyIndex());
+			} else if (machineDetail.getPublicKey() != null && machineDetail.getPublicKey().length != 0
+					&& !Arrays.equals(publicKey, machineDetail.getPublicKey())) {
+				throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_ALREADY_EXIST.getErrorCode(),
+						MasterDataErrorCode.MACHINE_PUBLIC_KEY_ALREADY_EXIST.getErrorMessage());
+			}
+		}
+
 		try {
 			Optional<Machine> machineOptional = machineRepo
 					.findByMachineNameActiveNondeleted(uploadPublicKeyRequestDto.getMachineName());
@@ -427,9 +448,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		} catch (DataAccessLayerException | DataAccessException ex) {
 
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
-					MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
+					MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(ex));
 		}
-		return  new UploadPublicKeyResponseDto(keyIndex);
+		return new UploadPublicKeyResponseDto(keyIndex);
 	}
 
 }

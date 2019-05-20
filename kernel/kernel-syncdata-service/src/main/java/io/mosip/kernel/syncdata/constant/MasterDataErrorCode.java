@@ -59,7 +59,8 @@ public enum MasterDataErrorCode {
 	SYNC_JOB_DEF_FETCH_EXCEPTION("KER-SNC-153","Error occured while fetching sync job definitons"),
 	SYNC_JOB_DEF_PARSE_EXCEPTION("KER-SNC-154","Error occured while parsing the response"),
 	MACHINE_NOT_FOUND("KER-SNC-155","Machine not found"),
-	MACHINE_PUBLIC_UPLOAD_EXCEPTION("KER-SNC-156","Error occurred while uploading public key in database");
+	MACHINE_PUBLIC_UPLOAD_EXCEPTION("KER-SNC-156","Error occurred while uploading public key in database"),
+	MACHINE_PUBLIC_KEY_ALREADY_EXIST("KER-SNC-157","A different public key already exist against the Machine Name received");
 	
 	private final String errorCode;
 	private final String errorMessage;
