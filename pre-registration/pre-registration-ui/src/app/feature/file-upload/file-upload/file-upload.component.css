@@ -166,7 +166,7 @@ mat-select:focus {
 }
 
 .file-uplaoad__body__2__preview {
-  height: 95%;
+  height: 60vh;
   width: 100%;
 }
 
