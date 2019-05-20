@@ -101,6 +101,7 @@ mat-select:focus {
   font-size: 12px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 15vh;
 }
 
 .file-upload__body__1 {
@@ -174,9 +175,10 @@ mat-select:focus {
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
-  position: fixed;
   bottom: 0;
-  z-index:22;
+  position: fixed;
+  background: #ffffff;
+  box-shadow: 10px 10px 10px 3px #808080;
 }
 
 .user__btn {

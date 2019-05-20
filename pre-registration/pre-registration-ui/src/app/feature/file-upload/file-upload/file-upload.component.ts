@@ -429,6 +429,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
+    this.fileIndex = 0;
     console.log('file', fileMeta);
     // console.log('file any', test);
     this.start = true;
@@ -441,7 +442,7 @@ export class FileUploadComponent implements OnInit {
         } else {
           console.log('ELSE ');
 
-          // this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage('Error', this.errorlabels.error);
           this.start = false;
         }
       },
@@ -455,12 +456,15 @@ export class FileUploadComponent implements OnInit {
         let i = 0;
         for (let x of this.users[0].files.documentsMetaData) {
           if (this.fileName === x.docName) {
-            i++;
             break;
           }
+          i++;
         }
+        console.log('file index before updating', this.fileIndex);
 
         this.fileIndex = i;
+
+        console.log('file index after updating', this.fileIndex);
 
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         if (this.fileByteArray) {
@@ -677,7 +681,7 @@ export class FileUploadComponent implements OnInit {
       if (file.docCatCode == this.userFile[0].docCatCode) {
         // this.removeFilePreview();
         this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
-        this.fileIndex--;
+        // this.fileIndex--;
         break;
       }
       i++;
@@ -794,7 +798,7 @@ export class FileUploadComponent implements OnInit {
    */
   nextFile(fileIndex: number) {
     this.fileIndex = fileIndex + 1;
-
+    console.log('next', this.fileIndex);
     this.viewFileByIndex(this.fileIndex);
   }
   /**
@@ -805,6 +809,8 @@ export class FileUploadComponent implements OnInit {
    */
   previousFile(fileIndex: number) {
     this.fileIndex = fileIndex - 1;
+    console.log('previous', this.fileIndex);
+
     this.viewFileByIndex(this.fileIndex);
   }
 
