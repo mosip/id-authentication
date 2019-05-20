@@ -6,13 +6,18 @@
  */
 package io.mosip.kernel.cryptomanager.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -22,6 +27,7 @@ import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
+import io.mosip.kernel.cryptomanager.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
 import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -60,7 +66,6 @@ public class CryptomanagerController {
 	public ResponseWrapper<CryptomanagerResponseDto> encrypt(
 			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
 		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
-		System.out.println("Request :"+cryptomanagerRequestDto.getRequest());
 		response.setResponse(cryptomanagerService.encrypt(cryptomanagerRequestDto.getRequest()));
 		return response;
 	}
@@ -88,23 +93,27 @@ public class CryptomanagerController {
 	 * @param cryptomanagerRequestDto
 	 * @return {@link ResponseWrapper<CryptoEncryptResponseDto> }
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@ApiOperation(value = "Sign Data Using Certificate")
-	@PostMapping("signature/encrypt")
+	@PostMapping("signature/private/encrypt")
 	public ResponseWrapper<SignatureResponseDto> signature(
 			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
 		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(cryptomanagerService.sign(signatureResponseDto.getRequest()));
+		response.setResponse(cryptomanagerService.signaturePrivateEncrypt(signatureResponseDto.getRequest()));
 		return response;
     }
 	
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
-	@ApiOperation(value = "Validate Signature Data Using Certificate")
-	@PostMapping("signature/decrypt")
-	public ResponseWrapper<SignatureResponseDto> validateSignature(
-			@RequestBody RequestWrapper<SignatureRequestDto> signatureResponseDto) {
-		ResponseWrapper<SignatureResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(cryptomanagerService.validate(signatureResponseDto.getRequest()));
+	@ApiOperation(value = "Get Signature Public Key")
+	@GetMapping("signature/publickey/{applicationId}")
+	public ResponseWrapper<PublicKeyResponse> getSignaturePublicKey(
+			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
+		ResponseWrapper<PublicKeyResponse> response = new ResponseWrapper<>();
+		response.setResponse(cryptomanagerService.getSignPublicKey(applicationId,timeStamp,referenceId));
 		return response;
     }
 	
@@ -120,7 +129,6 @@ public class CryptomanagerController {
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> decrypt(
 			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
-		System.out.println("Request :"+cryptomanagerRequestDto.getRequest());
 		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(cryptomanagerService.decrypt(cryptomanagerRequestDto.getRequest()));
 		return response;
