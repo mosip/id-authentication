@@ -101,12 +101,6 @@ public class RegistrationUIConstants {
 	public static final String NO_PENDING_APPLICATIONS = bundle.getString("NO_PENDING_APPLICATIONS");
 	public static final String NO_RE_REGISTER_APPLICATIONS = bundle.getString("NO_RE_REGISTER_APPLICATIONS");
 
-	// DEVICE MAPPING
-
-	public static final String DEVICE_ONBOARD_ERROR_MSG = bundle.getString("DEVICE_ONBOARD_ERROR_MSG");
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE = bundle.getString("DEVICE_MAPPING_SUCCESS_MESSAGE");
-	public static final String DEVICE_MAPPING_ERROR_MESSAGE = bundle.getString("DEVICE_MAPPING_ERROR_MESSAGE");
-
 	// AUTHENTICATION
 	public static final String AUTHENTICATION_FAILURE = bundle.getString("AUTHENTICATION_FAILURE");
 	public static final String AUTH_APPROVAL_SUCCESS_MSG = bundle.getString("AUTH_APPROVAL_SUCCESS_MSG");
@@ -140,6 +134,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
+	public static final String REG_LGN_001 = bundle.getString("REG_LGN_001");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
 	public static final String SCAN = bundle.getString("SCAN");

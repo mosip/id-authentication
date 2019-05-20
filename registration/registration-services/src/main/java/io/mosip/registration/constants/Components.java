@@ -45,10 +45,7 @@ public enum Components {
 	PACKET_RETRIVE("REG-MOD-131","Packet Retrive for Approval"), 
 	PACKET_UPDATE("REG-MOD-132","Update Packet"), 
 	SYNC_VALIDATE("REG-MOD-133","Sync service"),
-	
-	// Device Onboarding
-	DEVICE_ONBOARD("REG-MOD-134", "Device Onboarding"),
-	
+		
 	//Packet Upload
 	PACKET_UPLOAD("REG-MOD-135", "Packet upload"),
 	

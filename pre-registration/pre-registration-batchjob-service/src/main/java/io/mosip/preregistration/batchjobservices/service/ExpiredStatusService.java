@@ -54,7 +54,7 @@ public class ExpiredStatusService {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
-		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
+		List<RegistrationBookingEntity> bookedPreIdList = null;
 		try {
 			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
 

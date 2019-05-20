@@ -65,7 +65,7 @@ public class BookingDAO {
 	 * @return List AvailibityEntity based registration id and registration date.
 	 */
 	public List<AvailibityEntity> availability(String regcntrId, LocalDate regDate) {
-		List<AvailibityEntity> availabilityList = new ArrayList<>();
+		List<AvailibityEntity> availabilityList = null;
 		try {
 			availabilityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId,
 					regDate);
@@ -92,10 +92,10 @@ public class BookingDAO {
 	 * @return List of Local date
 	 */
 	public List<LocalDate> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
-		List<LocalDate> localDatList = new ArrayList<>();
+		List<LocalDate> localDatList = null;
 		try {
 			localDatList = bookingAvailabilityRepository.findDate(regcntrId, fromDate, toDate);
-			if (localDatList.isEmpty()) {
+			if (localDatList == null || localDatList.isEmpty()) {
 				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
 						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
 			}
@@ -239,7 +239,7 @@ public class BookingDAO {
 	 */
 	public List<AvailibityEntity> findByRegcntrIdAndRegDateOrderByFromTimeAsc(String regcntrId, LocalDate regDate) {
 
-		List<AvailibityEntity> entityList = new ArrayList<>();
+		List<AvailibityEntity> entityList = null;
 		try {
 			entityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId, regDate);
 		} catch (DataAccessLayerException e) {
@@ -258,7 +258,7 @@ public class BookingDAO {
 	}
 
 	public List<RegistrationBookingEntity> findByPreregistrationId(String preId) {
-		List<RegistrationBookingEntity> entityList = new ArrayList<>();
+		List<RegistrationBookingEntity> entityList = null;
 		try {
 			entityList = registrationBookingRepository.findBypreregistrationId(preId);
 			if (entityList.isEmpty()) {
@@ -328,7 +328,7 @@ public class BookingDAO {
 	 * @return list of date
 	 */
 	public List<LocalDate> findDateDistinct(LocalDate regDate) {
-		List<LocalDate> localDatList = new ArrayList<>();
+		List<LocalDate> localDatList = null;
 		try {
 			localDatList = bookingAvailabilityRepository.findAvaialableDate(regDate);
 		} catch (DataAccessLayerException e) {

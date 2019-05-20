@@ -77,7 +77,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public GetPreRegistartionData() {
 		super();
 	}
-	PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	static PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	/**
 	 * Data Prividers to read the input json files from the folders
 	 * 
@@ -92,7 +92,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -116,17 +116,17 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			Response createResponse = lib.CreatePreReg();
-			preId = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = createResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response getPreRegistrationResponse = lib.getPreRegistrationData(preId);
-			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response[0].preRegistrationId").toString(),
+			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.preRegistrationId").toString(),
 					preId);
-			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response[0].demographicDetails").toString(),
-					createResponse.jsonPath().get("response[0].demographicDetails").toString());
+			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.demographicDetails").toString(),
+					createResponse.jsonPath().get("response.demographicDetails").toString());
 			status = true;
 
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequest(preReg_URI, GetHeader.getHeader(actualRequest));
+				Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
 
 			} catch (Exception e) {
 				logger.info(e);
@@ -183,6 +183,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
+		lib.logOut();
 	}
 
 	@BeforeMethod
@@ -190,6 +191,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		 preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
+		  authToken = lib.getToken();
 	}
 
 	@Override

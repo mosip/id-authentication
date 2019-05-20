@@ -21,7 +21,7 @@ public class RoleListEntity extends BaseQcuserEntity<RoleListPKEntity> implement
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-	@Column(name = "cr_dtimes", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 

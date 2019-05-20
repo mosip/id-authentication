@@ -1,9 +1,7 @@
 package io.mosip.authentication.otp.service.impl;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +28,7 @@ import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
+import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
@@ -40,7 +39,6 @@ import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRespon
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.OtpErrorConstants;
-import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
@@ -94,6 +92,9 @@ public class OTPServiceImplTest {
 
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
+	
+	@Mock
+	private AuditHelper auditHelper;
 
 	@Autowired
 	Environment env;
@@ -110,6 +111,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", env);
 		ReflectionTestUtils.setField(otpServiceImpl, "idAuthService", idAuthService);
+		ReflectionTestUtils.setField(otpServiceImpl, "auditHelper", auditHelper);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -227,17 +229,6 @@ public class OTPServiceImplTest {
 		response.setResponse(map);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
-
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestParseException() throws Throwable {
-		try {
-			ReflectionTestUtils.invokeMethod(otpServiceImpl, "createAuthTxn", "426789089018", IdType.UIN.getType(),
-					"426789089018", "test", "1234567890", "true", "comment", RequestType.DEMO_AUTH);
-		} catch (UndeclaredThrowableException e) {
-			throw e.getCause();
-		}
 
 	}
 

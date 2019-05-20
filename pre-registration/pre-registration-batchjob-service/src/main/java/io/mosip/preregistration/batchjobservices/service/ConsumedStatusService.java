@@ -79,7 +79,7 @@ public class ConsumedStatusService {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
-		List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
+		List<ProcessedPreRegEntity> preRegList = null;
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
 

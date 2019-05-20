@@ -26,7 +26,7 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimes. */
-	@Column(name = "cr_dtimes", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 

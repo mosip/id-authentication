@@ -136,5 +136,5 @@ public interface RegistrationProcessorRestClientService<T> {
 	 * @throws ApisResourceAccessException 
 	 */
 	public T putApi(ApiName apiName, List<String> pathsegments, String queryParam, String queryParamValue,
-			T requestedData, Class<?> responseType) throws ApisResourceAccessException;
+			T requestedData, Class<?> responseType,MediaType mediaType) throws ApisResourceAccessException;
 }

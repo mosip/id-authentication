@@ -119,9 +119,6 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private AckReceiptController ackReceiptController;
 
 	@Autowired
-	private HomeController homeController;
-
-	@Autowired
 	private TemplateService templateService;
 
 	@Autowired
@@ -174,6 +171,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@FXML
 	public ProgressBar syncProgressBar;
 	
+	@FXML
+	private Label eodLabel;
+	
 	@Autowired
 	HeaderController headerController;
 
@@ -184,6 +184,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
 				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
 			eodProcessGridPane.setVisible(false);
+			eodLabel.setVisible(false);
 		}
 		
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);

@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
+import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
 import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.MosipUserTokenDto;
@@ -35,21 +36,23 @@ public interface AuthService extends AuthZService, AuthNService {
 	public MosipUserListDto getListOfUsersDetails(List<String> userDetails, String appId) throws Exception;
 
 	public MosipUserSaltListDto getAllUserDetailsWithSalt(String appId) throws Exception;
-	
-	public RIdDto getRidBasedOnUid(String userId,String appId) throws Exception;
-	
-	public AuthZResponseDto unBlockUser(String userId,String appId) throws Exception;
-	
-	public AuthZResponseDto changePassword(String appId,PasswordDto passwordDto) throws Exception;
 
-	public AuthZResponseDto resetPassword(String appId,PasswordDto passwordDto) throws Exception;
-	
-	public UserNameDto getUserNameBasedOnMobileNumber(String appId,String mobileNumber) throws Exception;
+	public RIdDto getRidBasedOnUid(String userId, String appId) throws Exception;
 
-	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) ;
+	public AuthZResponseDto unBlockUser(String userId, String appId) throws Exception;
+
+	public AuthZResponseDto changePassword(String appId, PasswordDto passwordDto) throws Exception;
+
+	public AuthZResponseDto resetPassword(String appId, PasswordDto passwordDto) throws Exception;
+
+	public UserNameDto getUserNameBasedOnMobileNumber(String appId, String mobileNumber) throws Exception;
+
+	UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto);
 
 	UserPasswordResponseDto addUserPassword(UserPasswordRequestDto userPasswordRequestDto);
-  
-  public UserRoleDto getUserRole(String appId, String userId) throws Exception;
+
+	public UserRoleDto getUserRole(String appId, String userId) throws Exception;
+
+	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
 
 }

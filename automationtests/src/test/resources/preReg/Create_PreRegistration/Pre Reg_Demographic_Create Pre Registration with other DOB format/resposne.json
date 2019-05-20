@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "errors": [
+    {
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "dateOfBirth failed for the regex ^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
+    }
+    ],
+    "responsetime": "2019-04-22T12:51:28.759Z",
+    "response": null
+}

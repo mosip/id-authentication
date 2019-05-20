@@ -1,32 +1,19 @@
 package io.mosip.registration.processor.core.kernel.beans;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
-
-import javax.crypto.SecretKey;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.crypto.spi.Decryptor;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapterImpl;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.cryptosignature.impl.SignatureUtilImpl;
 
 @Configuration
 public class KernelConfig {
@@ -54,8 +41,13 @@ public class KernelConfig {
 	public CbeffUtil getCbeffUtil() {
 		return new CbeffImpl();
 	}
-	
+
 	@Bean
+	@Primary
+	public ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
+	}
+	/*@Bean
 	@Primary
 	public SignatureUtil getSignatureUtil() {
 		return new SignatureUtilImpl();
@@ -66,12 +58,7 @@ public class KernelConfig {
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
-	
-	@Bean
-	@Primary
-	public ObjectMapper getObjectMapper() {
-		return new ObjectMapper().registerModule(new JavaTimeModule());
-	}
+
 	
 	@Bean
 	@Primary
@@ -89,7 +76,7 @@ public class KernelConfig {
 	@Primary
 	public KeyGenerator getKeyGenerator() {
 		return new KeyGenerator();
-	}
+	}*/
 
 
 }

@@ -15,7 +15,8 @@ package io.mosip.admin.usermgmt.constant;
  */
 public enum UserMgmtErrorCode {
 	
-	INTERNAL_SERVER_ERROR("KER-UMT-500", "Internal server error occured : ");
+	
+	INTERNAL_SERVER_ERROR("ADM-UMT-500", "Internal server error occured : ");
 
 	/**
 	 * The errorCode

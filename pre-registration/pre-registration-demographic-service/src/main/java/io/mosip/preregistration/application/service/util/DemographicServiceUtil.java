@@ -237,28 +237,17 @@ public class DemographicServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime", date.toString());
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			requestMap.put("requesttime", date.toString());
+		}
+		else {
+		requestMap.put("requesttime",null);
+		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
-	// public Map<String, String>
-	// prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO>
-	// demographicRequestDTO) {
-	// log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of
-	// pre-registration service util");
-	// Map<String, String> inputValidation = new HashMap<>();
-	// inputValidation.put(RequestCodes.ID.getCode(),
-	// demographicRequestDTO.getId());
-	// inputValidation.put(RequestCodes.VER.getCode(),
-	// demographicRequestDTO.getVersion());
-	// inputValidation.put(RequestCodes.REQ_TIME.getCode(),
-	// new
-	// SimpleDateFormat(utcDateTimePattern).format(demographicRequestDTO.getRequesttime()));
-	// inputValidation.put(RequestCodes.REQUEST.getCode(),
-	// demographicRequestDTO.getRequest().toString());
-	// return inputValidation;
-	// }
+	
 
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.

@@ -106,7 +106,6 @@ public class LoginController {
 		log.info("sessionId", "idType", "id",
 				"In invalidateToken method of Login controller for invalidating access token ");
 		String authHeader=req.getHeader("Cookie");
-		//List<HttpCookie> authCookie=HttpCookie.parse(authHeader);
 		return ResponseEntity.status(HttpStatus.OK).body(loginService.invalidateToken(authHeader));
 		
 	}

@@ -1,4 +1,5 @@
 package io.mosip.registration.util.healthcheck;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MAC_ADDRESS;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,6 +10,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+
 /**
  * Registration System Properties Checker
  * 
@@ -16,6 +22,8 @@ import java.util.regex.Pattern;
  * @since 1.0.0
  */
 public class RegistrationSystemPropertiesChecker {
+	
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationSystemPropertiesChecker.class);
 
 	private RegistrationSystemPropertiesChecker() {
 
@@ -31,14 +39,18 @@ public class RegistrationSystemPropertiesChecker {
 		if (System.getProperty("os.name").equals("Linux")) {
 			try {
 				machineId = getLinuxMacAddress();
-			} catch (IOException e) {
-
+			} catch (IOException exIoException) {
+				LOGGER.error(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						exIoException.getMessage() + ExceptionUtils.getStackTrace(exIoException));
 			}
 		} else {
 			try {
 				machineId = getWindowsMacAddress();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException exIoException) {
+				LOGGER.error(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						exIoException.getMessage() + ExceptionUtils.getStackTrace(exIoException));
 			}
 		}
 		return machineId;
@@ -52,10 +64,26 @@ public class RegistrationSystemPropertiesChecker {
 		while (true) {
 			String line = bufferedReader.readLine();
 			if (line != null) {
-				Pattern p = Pattern.compile(".*Physical Address.*: (.*)");
-				Matcher m = p.matcher(line);
-				if (m.matches()) {
-					windowsMachineId = m.group(1);
+				Pattern englishPattern = Pattern.compile(".*Physical Address.*: (.*)");
+				Pattern frenchPattern = Pattern.compile(".*Adresse physique.*: (.*)");
+				Pattern arabicPattern = Pattern.compile(".*العنوان الفعلي.*: (.*)");
+
+
+				Matcher englishMatcher = englishPattern.matcher(line);
+				if (englishMatcher.matches()) {
+					windowsMachineId = englishMatcher.group(1);
+					break;
+				}
+
+				Matcher frenchMatcher = frenchPattern.matcher(line);
+				if (frenchMatcher.matches()) {
+					windowsMachineId = frenchMatcher.group(1);
+					break;
+				}
+				
+				Matcher arabicMatcher = arabicPattern.matcher(line);
+				if (arabicMatcher.matches()) {
+					windowsMachineId = arabicMatcher.group(1);
 					break;
 				}
 			}
@@ -76,18 +104,22 @@ public class RegistrationSystemPropertiesChecker {
 				}
 			}
 			for (String device : devices) {
-				try(FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
+				try (FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
 					if (!device.equals("lo")) {
 						BufferedReader in1 = new BufferedReader(reader1);
 						linuxMachineId = in1.readLine();
 						in1.close();
 					}
-				} catch (IOException e) {
-
+				} catch (IOException exIoException) {
+					LOGGER.error(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID,
+							exIoException.getMessage() + ExceptionUtils.getStackTrace(exIoException));
 				}
 			}
-		} catch (IOException e) {
-
+		} catch (IOException exIoException) {
+			LOGGER.error(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					exIoException.getMessage() + ExceptionUtils.getStackTrace(exIoException));
 		}
 		return linuxMachineId;
 	}
