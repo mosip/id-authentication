@@ -14,6 +14,7 @@ import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
 import io.mosip.kernel.signature.dto.SignRequestDto;
 import io.mosip.kernel.signature.dto.TimestampRequestDto;
 import io.mosip.kernel.signature.dto.ValidatorResponseDto;
+import io.mosip.kernel.signature.exception.PublicKeyParseException;
 import io.mosip.kernel.signature.exception.SignatureFailureException;
 import io.mosip.kernel.signature.service.SignatureService;
 
@@ -64,6 +65,32 @@ public class SignatureServiceImpl implements SignatureService {
 					SignatureErrorCode.NOT_VALID.getErrorMessage(), null);
 		}
 
+	}
+
+	@Override
+	public SignatureResponse signCertificateResponse(SignRequestDto signRequestDto) {
+		return signatureUtil.signResponseByCertificate(signRequestDto.getData());
+	}
+
+	@Override
+	public ValidatorResponseDto certificateValidate(TimestampRequestDto timestampRequestDto) {
+		boolean status;
+		try {
+			status = signatureUtil.validateWithCertificate(timestampRequestDto.getSignature(),
+					timestampRequestDto.getData(), timestampRequestDto.getTimestamp());
+		} catch (InvalidKeySpecException| NoSuchAlgorithmException exception) {
+			throw new  PublicKeyParseException(SignatureErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), exception.getMessage(), exception);
+		}
+
+		if (status) {
+			ValidatorResponseDto response = new ValidatorResponseDto();
+			response.setMessage("VALIDATION_SUCCESSFUL");
+			response.setStatus("success");
+			return response;
+		} else {
+			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
+					SignatureErrorCode.NOT_VALID.getErrorMessage(), null);
+		}
 	}
 
 }
