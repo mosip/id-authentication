@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.bioapi.model.BDBInfo;
 import io.mosip.kernel.core.bioapi.model.BiometricRecord;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
@@ -20,6 +22,7 @@ import io.mosip.kernel.core.util.StringUtils;
  * 
  * @author Sanjay Murali
  */
+@Component
 public class BioApiImpl implements IBioApi{
 
 	/* (non-Javadoc)
