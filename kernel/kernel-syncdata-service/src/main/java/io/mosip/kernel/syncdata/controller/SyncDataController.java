@@ -153,7 +153,7 @@ public class SyncDataController {
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
-			@RequestParam(value="keyindex",required=true)String keyIndex)
+			@RequestParam(value="keyindex",required=false)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
@@ -187,7 +187,7 @@ public class SyncDataController {
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
 			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
-			@RequestParam(value="keyindex",required=true)String keyIndex)
+			@RequestParam(value="keyindex",required=false)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
@@ -267,7 +267,7 @@ public class SyncDataController {
 	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
 	@ResponseFilter
 	@PostMapping(value = "/tpm/publickey", produces = "application/json")
-	public ResponseWrapper<UploadPublicKeyResponseDto> uploadpublickey(@RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
+	public ResponseWrapper<UploadPublicKeyResponseDto> uploadpublickey(@ApiParam("public key in BASE64 encoded")@RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
 		ResponseWrapper<UploadPublicKeyResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(masterDataService.uploadpublickey(uploadPublicKeyRequestDto.getRequest()));
 		return response;

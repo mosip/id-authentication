@@ -82,6 +82,7 @@ import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.mosip.kernel.syncdata.utils.MetaDataUtils;
 import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
 
+
 /**
  * Masterdata sync handler service impl
  * 
@@ -122,10 +123,10 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		String machineId = null;
 		RegistrationCenterMachineDto regCenterMachineDto = null;
 		if (regCenterId == null) {
-			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum);
+			regCenterMachineDto = getRegistationMachineMapping(macAddress, serialNum,keyIndex);
 		} else {
 
-			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum);
+			regCenterMachineDto = getRegCenterMachineMappingWithRegCenterId(regCenterId, macAddress, serialNum,keyIndex);
 		}
 
 		machineId = regCenterMachineDto.getMachineId();
@@ -179,7 +180,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<ScreenDetailDto>> screenDetails;
 
 		applications = serviceHelper.getApplications(lastUpdated, currentTimeStamp);
-		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp,keyIndex);
+		machineDetails = serviceHelper.getMachines(regCenterId, lastUpdated, currentTimeStamp);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated, currentTimeStamp);
 		registrationCenterTypes = serviceHelper.getRegistrationCenterType(machineId, lastUpdated, currentTimeStamp);
 		templates = serviceHelper.getTemplates(lastUpdated, currentTimeStamp);
@@ -316,15 +317,27 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * @param serialNum - serial number
 	 * @return - {@link RegistrationCenterMachineDto}
 	 */
-	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum) {
+	private RegistrationCenterMachineDto getRegistationMachineMapping(String macId, String serialNum,String keyIndex) {
 		List<Object[]> machineList = null;
 		RegistrationCenterMachineDto regMachineDto = null;
 
 		try {
-			if (macId != null && serialNum != null) {
+			if(macId!=null && serialNum!=null && keyIndex!=null) {
+				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddressAndSerialNumAndKeyIndex(macId, serialNum, keyIndex);
+				
+			}else if(macId!=null && keyIndex!=null) {
+				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddressAndKeyIndex(macId, keyIndex);
+				
+			}else if(serialNum!=null && keyIndex!=null) {
+				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithSerialNumberAndKeyIndex(serialNum, keyIndex);
+				
+			}else if (macId != null && serialNum != null) {
 				machineList = registrationCenterMachineRepository
 						.getRegistrationCenterMachineWithMacAddressAndSerialNum(macId, serialNum);
-			} else if (macId != null) {
+			}else if(keyIndex!=null) {
+				machineList=registrationCenterMachineRepository.getRegistrationCenterMachineWithKeyIndex(keyIndex);	
+			}
+			else if (macId != null) {
 				machineList = registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddress(macId);
 			} else if (serialNum != null) {
 				machineList = registrationCenterMachineRepository
@@ -362,8 +375,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	 * @return {@link RegistrationCenterMachineDto}
 	 */
 	private RegistrationCenterMachineDto getRegCenterMachineMappingWithRegCenterId(String regCenterId, String macId,
-			String serialNum) {
-		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, serialNum);
+			String serialNum,String keyIndex) {
+		RegistrationCenterMachineDto regCenterMachine = getRegistationMachineMapping(macId, serialNum,keyIndex);
 		RegistrationCenterMachine registrationCenterMachine = null;
 
 		try {
