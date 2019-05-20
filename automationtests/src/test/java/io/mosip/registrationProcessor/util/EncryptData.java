@@ -100,7 +100,7 @@ public class EncryptData {
 		SyncRegistrationDto syncRegistrationDto=new SyncRegistrationDto();
 		syncRegistrationDto.setLangCode("eng");
 		syncRegistrationDto.setPacketHashValue(packetHash);
-		syncRegistrationDto.setPacketSize(BigInteger.valueOf(f.getTotalSpace()));
+		syncRegistrationDto.setPacketSize(BigInteger.valueOf(f.length()));
 		syncRegistrationDto.setRegistrationId(regId);
 		syncRegistrationDto.setRegistrationType("NEW");
 		syncRegistrationDto.setSupervisorComment("APPROVED");

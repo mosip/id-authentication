@@ -1,7 +1,7 @@
 {
     "errors": [
         {
-            "errorcode": "RPR-PKR-001",
+            "errorCode": "RPR-PKR-001",
             "message": "Registration packet is not in Sync with Sync table"
         }
     ],
