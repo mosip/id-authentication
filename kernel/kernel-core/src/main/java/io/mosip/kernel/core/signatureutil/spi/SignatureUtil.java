@@ -2,6 +2,7 @@ package io.mosip.kernel.core.signatureutil.spi;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDateTime;
 
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 
@@ -21,6 +22,16 @@ public interface SignatureUtil {
 	 * @return the string
 	 */
 	public SignatureResponse signResponse(String response);
+	
+	/**
+	 * Sign response.
+	 *
+	 * @param response
+	 *            the response
+	 * @return the string
+	 */
+	public SignatureResponse signResponseByCertificate(String response);
+
 
 	/**
 	 * Validate with public key.
@@ -55,4 +66,20 @@ public interface SignatureUtil {
 	 */
 	public boolean validate(String responseSignature, String responseBody,String responseTime)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
+	
+	
+	/**
+	 * Validate with public key.
+	 *
+	 * @param responseSignature
+	 *            the response signature
+	 * @param responseBody
+	 *            the response body
+	 * @return true, if successful
+	 * @throws InvalidKeySpecException
+	 *             the invalid key spec exception
+	 * @throws NoSuchAlgorithmException
+	 *             the no such algorithm exception
+	 */
+	public boolean validateWithCertificate(String responseSignature, String responseBody,LocalDateTime responseTime) throws InvalidKeySpecException, NoSuchAlgorithmException;
 }
