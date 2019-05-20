@@ -166,7 +166,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	private static final String VALUE = "value";
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
-	private static final String MATCHED_REFERENCE_TYPE = "uin";
+	private static final String MATCHED_REFERENCE_TYPE = "rid";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketInfoManagerImpl.class);
