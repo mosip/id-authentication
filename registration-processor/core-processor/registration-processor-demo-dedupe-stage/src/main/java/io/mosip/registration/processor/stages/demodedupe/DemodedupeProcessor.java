@@ -129,7 +129,7 @@ public class DemodedupeProcessor {
 	byte[] bytesArray = null;
 
 	/** The is match found. */
-	private boolean isMatchFound = false;
+	private volatile boolean isMatchFound = false;
 
 	/** The description. */
 	private String description = "";
@@ -145,7 +145,7 @@ public class DemodedupeProcessor {
 	 * @return the message DTO
 	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
-		
+
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		object.setIsValid(Boolean.FALSE);
@@ -250,8 +250,20 @@ public class DemodedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if (isMatchFound) {
-				saveDuplicateDtoList(duplicateDtos, registrationStatusDto);
+			try {
+				if (isMatchFound) {
+					saveDuplicateDtoList(duplicateDtos, registrationStatusDto, object);
+				}
+			} catch (Exception e) {
+				registrationStatusDto.setRegistrationStageName(stageName);
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+                description = "Duplicate data not saved in demo list table";
+                regProcLogger.error("Duplicate data not saved in demo list table", "", "", "");
+                object.setIsValid(Boolean.FALSE);
+                object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
+                object.setInternalError(Boolean.TRUE);
 			}
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -341,7 +353,7 @@ public class DemodedupeProcessor {
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 
 		List<AbisResponseDto> abisResponseDto = packetInfoManager.getAbisResponseRecords(latestTransactionId, IDENTIFY);
-		
+
 		for (AbisResponseDto responseDto : abisResponseDto) {
 			if (responseDto.getStatusCode().equalsIgnoreCase(AbisStatusCode.SUCCESS.toString())) {
 				responsIds.add(responseDto.getId());
@@ -390,7 +402,7 @@ public class DemodedupeProcessor {
 						"ABIS response Details found. Hence sending to manual adjudication");
 			}
 		}
-		
+
 		return isTransactionSuccessful;
 	}
 
@@ -402,8 +414,9 @@ public class DemodedupeProcessor {
 	 * @return true, if successful
 	 */
 	private boolean saveDuplicateDtoList(List<DemographicInfoDto> duplicateDtos,
-			InternalRegistrationStatusDto registrationStatusDto) {
+			InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
 		boolean isDataSaved = false;
+		int numberOfProcessedPackets = 0;
 		for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
 			InternalRegistrationStatusDto potentialMatchRegistrationDto = registrationStatusService
 					.getRegistrationStatus(demographicInfoDto.getRegId());
@@ -426,10 +439,14 @@ public class DemodedupeProcessor {
 				regDemoDedupeListDto.setCrBy(CREATED_BY);
 				packetInfoManager.saveDemoDedupePotentialData(regDemoDedupeListDto);
 				isDataSaved = true;
+				numberOfProcessedPackets++;
 			} else {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"The packet status is something different");
+			}
+			if (numberOfProcessedPackets == 0) {
+				object.setIsValid(Boolean.TRUE);
 			}
 		}
 		return isDataSaved;
