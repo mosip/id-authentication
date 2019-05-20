@@ -33,12 +33,6 @@ public class AdminBootApplication {
 		return executor;
 	}
 	
-	@Bean
-	public CommandLineRunner runner(ProcessFlowConfigValidator service) {
-		return args -> {
-			service.validateDocumentProcess();
-		};
-	}
 	
 
 }

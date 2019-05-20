@@ -4,8 +4,8 @@ public enum ConfigValidatorErrorCode {
 
 	CONFIG_FILE_NOT_FOUND("ADM-xxx-002", "Process Flow Configuration not found"), CONFIG_NOT_SUCCESSFULLY_VALIDATED(
 			"ADM-xxx-004",
-			"Unable to validate Process Flow Configurations as they do not match"), REG_CLIENT_PROPERTY_NOT_FOUND("XX",
-					"Reg client property not found"), REG_PROC_PROPERTY_NOT_FOUND("XX", "Reg proc property not found");
+			"Unable to validate Process Flow Configurations as they do not match"), REG_CLIENT_PROPERTY_NOT_FOUND("ADM-xxx-xxx",
+					"Reg client property not found"), REG_PROC_PROPERTY_NOT_FOUND("ADM-xxx-xxx", "Reg proc property not found");
 
 	private final String errorCode;
 	private final String errorMessage;
