@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata;
 
 import java.util.Map;
@@ -29,4 +28,3 @@ public class TestDataDto {
 		TestDataDto.testdata = testdata;
 	}
 }
-

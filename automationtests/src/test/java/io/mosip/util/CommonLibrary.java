@@ -41,6 +41,7 @@ import io.restassured.response.Response;
 public class CommonLibrary extends BaseTestCase {
 
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
+
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
 	public static void configFileWriter(String folderPath, String requestKeyFile, String generationType,
@@ -920,5 +921,6 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	} // end GET_REQUEST
+
 
 }

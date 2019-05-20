@@ -3,7 +3,6 @@ package io.mosip.service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -18,22 +17,15 @@ import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.testng.ITestContext;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
-
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.dbaccess.PreRegDbread;
-//import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.util.PreRegistrationLibrary;
-//import io.mosip.util.TokenGeneration;
-//import io.mosip.prereg.scripts.Create_PreRegistration;
 import io.restassured.RestAssured;
 
 /**
@@ -42,11 +34,15 @@ import io.restassured.RestAssured;
  *
  */
 
- public class BaseTestCase {
+
+public class BaseTestCase {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
-
-	public static List<String> preIds = new ArrayList<String>();
-
+	
+	public static List<String> preIds=new ArrayList<String> ();
+	public ExtentHtmlReporter htmlReporter;
+	public ExtentReports extent;
+	public ExtentTest test;
+		
 
 	/**
 	 * Method that will take care of framework setup
@@ -65,6 +61,7 @@ import io.restassured.RestAssured;
 		String type = System.getProperty("os.name");
 		if (type.toLowerCase().contains("windows")) {
 			SEPRATOR = "\\\\";
+
 
 			return "WINDOWS";
 		} else if (type.toLowerCase().contains("linux") || type.toLowerCase().contains("unix")) {
@@ -102,6 +99,7 @@ import io.restassured.RestAssured;
 			ApplnURI = System.getProperty("env.endpoint");
 			logger.info("Application URI ======" + ApplnURI);
 
+
 			logger.info("Configs from properties file are set.");
 
 		} catch (IOException e) {
@@ -109,6 +107,7 @@ import io.restassured.RestAssured;
 		}
 
 	}
+
 
 
 	// ================================================================================================================
@@ -128,7 +127,7 @@ import io.restassured.RestAssured;
 
 		PreRegistrationLibrary pil = new PreRegistrationLibrary();
 		pil.PreRegistrationResourceIntialize();
-		// IdaScriptsUtil.wakeDemoApp();
+		AuthTestsUtil.wakeDemoApp();
 
 	} // End suiteSetup
 
@@ -150,6 +149,8 @@ import io.restassured.RestAssured;
 				logger.info("PreId is deleted from the DB");
 			else
 				logger.info("PreId is NOT deleted from the DB");
+
+		
 		}
 		/*
 		 * Saving TestNG reports to be published

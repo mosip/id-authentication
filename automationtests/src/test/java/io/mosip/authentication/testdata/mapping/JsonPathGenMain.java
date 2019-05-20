@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata.mapping;
 
 import java.io.IOException;
@@ -21,4 +20,3 @@ public class JsonPathGenMain {
 				"D:\\Git\\QA_IDA\\automationtests\\src\\test\\resources\\ida\\TestData\\Otp\\OtpGeneration\\map.properties");
 	}
 }
-

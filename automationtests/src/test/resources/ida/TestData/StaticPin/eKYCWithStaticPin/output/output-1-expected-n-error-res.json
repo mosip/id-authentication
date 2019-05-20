@@ -1,0 +1,11 @@
+{
+  "status": "N",
+  "err": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 24 hrs/min"
+    }
+  ],
+  "resTime": "2019-02-13T12:54:04.789+05:30",
+  "ver": "1.0"
+}
