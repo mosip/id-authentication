@@ -161,7 +161,15 @@ public class BaseTestCase{
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-			
+			TokenGeneration generateToken = new TokenGeneration();
+			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
+			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
+			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+			regProcAuthToken = generateToken.getToken(tokenEntity);
+			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
+			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
+			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
+			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
 			//authToken=pil.getToken();
 			
@@ -206,7 +214,7 @@ public class BaseTestCase{
 			extent.flush();
 		} // end testTearDown
 		
-	/*	@AfterMethod
+		/*@AfterMethod
 		public void getResult(ITestResult result) {
 			if(result.getStatus()==ITestResult.FAILURE) {
 				test.fail(MarkupHelper.createLabel(result.getName()+"  Test Case Failed", ExtentColor.RED));
