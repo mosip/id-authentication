@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.signature.constant.SignatureConstant;
 import io.mosip.kernel.signature.constant.SignatureErrorCode;
 import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
 import io.mosip.kernel.signature.dto.SignRequestDto;
@@ -38,8 +39,8 @@ public class SignatureServiceImpl implements SignatureService {
 
 		if (status) {
 			ValidatorResponseDto response = new ValidatorResponseDto();
-			response.setMessage("VALIDATION_SUCCESSFUL");
-			response.setStatus("success");
+			response.setMessage(SignatureConstant.VALIDATION_SUCCESSFUL);
+			response.setStatus(SignatureConstant.SUCCESS);
 			return response;
 		} else {
 			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
@@ -51,13 +52,13 @@ public class SignatureServiceImpl implements SignatureService {
 	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto)
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 
-		boolean status = signatureUtil.validate(timestampRequestDto.getSignature(),
-				timestampRequestDto.getData(), DateUtils.formatToISOString(timestampRequestDto.getTimestamp()));
+		boolean status = signatureUtil.validate(timestampRequestDto.getSignature(), timestampRequestDto.getData(),
+				DateUtils.formatToISOString(timestampRequestDto.getTimestamp()));
 
 		if (status) {
 			ValidatorResponseDto response = new ValidatorResponseDto();
-			response.setMessage("VALIDATION_SUCCESSFUL");
-			response.setStatus("success");
+			response.setMessage(SignatureConstant.VALIDATION_SUCCESSFUL);
+			response.setStatus(SignatureConstant.SUCCESS);
 			return response;
 		} else {
 			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
