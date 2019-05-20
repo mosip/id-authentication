@@ -287,7 +287,7 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 		.thenReturn(getRestRequestDTOEncrypt());
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
-		assertNotNull(keyManager.encryptData(createIdentity()));
+		assertNotNull(keyManager.encryptData(createIdentity(), mapper));
 	}
 	
 	@Test(expected=IdAuthenticationAppException.class)
@@ -295,13 +295,15 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 		.thenReturn(getRestRequestDTOEncrypt());
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
-		keyManager.encryptData(createIdentity());
+		keyManager.encryptData(createIdentity(), mapper);
 	}
 	
 	private Map<String, Object> createIdentity(){
 		String identity = "{phoneNumber=[{value=9000007865}], gender=[{language=ara, value=الذكر}, {language=fra, value=mâle}], dob=[{value=1955/04/15}], name=[{language=ara, value=ابراهيم بن علي}, {language=fra, value=Ibrahim Ibn Ali}], location1=[{language=ara, value=الدار البيضاء}, {language=fra, value=Casablanca}], location2=[{language=ara, value=طنجة - تطوان - الحسيمة}, {language=fra, value=Tanger-Tétouan-Al Hoceima}], addressLine1=[{language=ara, value=عنوان العينة سطر 1}, {language=fra, value=exemple d'adresse ligne 1}], emailId=[{value=adc.xyz@mindtree.com}], addressLine2=[{language=ara, value=عنوان العينة سطر 2}, {language=fra, value=exemple d'adresse ligne 2}], location3=[{language=ara, value=فاس-مكناس}, {language=fra, value=Fès-Meknès}], addressLine3=[{language=ara, value=عنوان العينة سطر 2}, {language=fra, value=exemple d'adresse ligne 2}]}";
 		Map<String, Object> map = new HashMap<>();
-		map.put("identity", identity);
+		Map<String, Object> readValue = new HashMap<>();
+		readValue.put("identity", identity);
+		map.put("identity", readValue);
 		return map;
 	}
 
