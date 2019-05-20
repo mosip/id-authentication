@@ -101,7 +101,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, null, MessageBusAddress.PACKET_RECEIVER_OUT));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -116,8 +116,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 
 		router.post(contextPath + "/registrationpackets");
 		router.handler(this::processURL, this::processPacket, this::failure);
-		router.get(contextPath + "/health");
-		router.handler(this::health);
 	};
 
 	/**
@@ -129,20 +127,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
 	}
 
-	/**
-	 * This is for health check up
-	 *
-	 * @param routingContext
-	 */
-	private void health(RoutingContext routingContext) {
-		this.setResponse(routingContext, "Server is up and running");
-	}
 
 	private void processPacket(RoutingContext ctx) {
 
 		try {
 
 			MessageDTO messageDTO = packetReceiverService.processPacket(file);
+			messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_RECEIVER_OUT);
 			if (messageDTO.getIsValid()) {
 				this.sendMessage(messageDTO);
 			}

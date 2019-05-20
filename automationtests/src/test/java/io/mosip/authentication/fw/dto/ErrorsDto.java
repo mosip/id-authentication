@@ -32,3 +32,4 @@ public class ErrorsDto {
 		ErrorsDto.errors = errors;
 	}
 }
+

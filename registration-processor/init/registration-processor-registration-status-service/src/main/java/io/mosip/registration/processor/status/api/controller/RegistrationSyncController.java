@@ -75,10 +75,10 @@ public class RegistrationSyncController {
 	TokenValidator tokenValidator;
 
 	@Value("${registration.processor.signature.isEnabled}")
-	Boolean isEnabled;
+	private Boolean isEnabled;
 
 	@Autowired
-	DigitalSignatureUtility digitalSignatureUtility;
+	private DigitalSignatureUtility digitalSignatureUtility;
 
 
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";

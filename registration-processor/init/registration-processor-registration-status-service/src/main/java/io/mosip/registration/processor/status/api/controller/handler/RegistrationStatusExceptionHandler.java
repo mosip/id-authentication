@@ -150,6 +150,7 @@ public class RegistrationStatusExceptionHandler {
 			return ResponseEntity.ok().headers(headers).body(gson.toJson(response));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 

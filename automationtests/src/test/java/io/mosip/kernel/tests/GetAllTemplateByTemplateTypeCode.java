@@ -119,10 +119,15 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
       if (status) {
     	  if(testCaseName.equalsIgnoreCase("smoke"))
     	  {
-    		String id = actualRequest.get("id").toString();
+
+    		/*String id = actualRequest.get("id").toString();
 	        String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
-		    boolean valid = kernelDB.validateDataInDb(queryStr);     
+
+		    boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");     
 			if(valid)
+
+		        */
+			if(status)
 					{
 						finalStatus ="Pass";
 					}

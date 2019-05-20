@@ -75,10 +75,10 @@ public class RegistrationStatusController {
 	Gson gson = new GsonBuilder().create();
 
 	@Value("${registration.processor.signature.isEnabled}")
-	Boolean isEnabled;
+	private Boolean isEnabled;
 
 	@Autowired
-	DigitalSignatureUtility digitalSignatureUtility;
+	private DigitalSignatureUtility digitalSignatureUtility;
 
 
 

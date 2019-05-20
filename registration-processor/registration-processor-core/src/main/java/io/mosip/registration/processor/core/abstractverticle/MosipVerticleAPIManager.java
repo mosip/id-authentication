@@ -5,6 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.registration.processor.core.constant.HealthConstant;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
@@ -15,7 +21,7 @@ import io.vertx.ext.web.handler.BodyHandler;
  * @author Mukul Puspam
  *
  */
-public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
+public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
@@ -23,15 +29,74 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
 
+	@Autowired
+	Environment environment;
+
+	@Autowired
+	ObjectMapper objectMapper;
+
 	/**
 	 * This method creates a body handler for the routes
+	 *
 	 * @param vertx
 	 * @return
 	 */
-	public Router postUrl(Vertx vertx) {
+	public Router postUrl(Vertx vertx, MessageBusAddress consumeAddress, MessageBusAddress sendAddress) {
 		Router router = Router.router(vertx);
 		router.route().handler(BodyHandler.create());
+		if (consumeAddress == null)
+			configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), null, sendAddress.getAddress());
+		else if (sendAddress == null)
+			configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), consumeAddress.getAddress(), null);
+		else
+		configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), consumeAddress.getAddress(), sendAddress.getAddress());
 		return router;
+	}
+
+	public void configureHealthCheckEndpoint(Vertx vertx, Router router, final String servletPath,
+			String consumeAddress, String sendAddress) {
+		StageHealthCheckHandler healthCheckHandler = new StageHealthCheckHandler(vertx, null, objectMapper,
+				environment);
+		router.get(servletPath + HealthConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
+		if (servletPath.contains("receiver") || servletPath.contains("uploader")) {
+			healthCheckHandler.register("virusscanner", healthCheckHandler::virusScanHealthChecker);
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Verticle",
+					future -> healthCheckHandler.senderHealthHandler(future, vertx, sendAddress));
+		}
+		if (servletPath.contains("packetvalidator") || servletPath.contains("osi") || servletPath.contains("demo") || servletPath.contains("bio") || servletPath.contains("uin")) {
+			healthCheckHandler.register("hdfscheck", healthCheckHandler::hdfsHealthChecker);
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Send", future -> {
+				healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);
+			});
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Consume", future -> {
+				healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress);
+			});
+		}
+		if (servletPath.contains("external")) {
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Send", future -> {
+				healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);
+			});
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Consume", future -> {
+				healthCheckHandler.senderHealthHandler(future, vertx, consumeAddress);
+			});
+		}
+		if (servletPath.contains("manual")) {
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Verticle",
+					future -> healthCheckHandler.senderHealthHandler(future, vertx, sendAddress));
+		}
+		if (servletPath.contains("print")) {
+			healthCheckHandler.register("queuecheck", healthCheckHandler::queueHealthChecker);
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Verticle",
+					future -> healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress));
+		}
+		if (servletPath.contains("sender")) {
+			healthCheckHandler.register("hdfscheck", healthCheckHandler::hdfsHealthChecker);
+			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Verticle",
+					future -> healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress));
+		}
+
+		healthCheckHandler.register("diskSpace", healthCheckHandler::dispSpaceHealthChecker);
+		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
 	}
 
 	/**
@@ -51,7 +116,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	public void setResponse(RoutingContext ctx, Object object) {
 		ctx.response().putHeader("content-type", "text/plain")
 		.putHeader("Access-Control-Allow-Origin", "*")
-		.putHeader("Access-Control-Allow-Methods","GET, POST") 
+		.putHeader("Access-Control-Allow-Methods","GET, POST")
 		.setStatusCode(200)
 		.end(object.toString());
 	};
@@ -65,10 +130,10 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 		HttpServerResponse response = ctx.response();
 		if(isEnabled)
-			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(object.toString()));		
+			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(object.toString()));
 		response.putHeader("content-type", contentType)
 		.putHeader("Access-Control-Allow-Origin", "*")
-		.putHeader("Access-Control-Allow-Methods","GET, POST") 
+		.putHeader("Access-Control-Allow-Methods","GET, POST")
 		.setStatusCode(200)
 		.end(object.toString());
 

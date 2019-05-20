@@ -121,18 +121,18 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 		 
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {  
-				if(response_time<=300)
+
+				/*if(response_time<=300)*/
 					finalStatus = "Pass";
-				else
-					finalStatus = "Fail";	
+				/*else
+					finalStatus = "Fail";	*/
+
 			}	
 		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

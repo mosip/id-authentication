@@ -131,8 +131,31 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant PRINTING_BUS_RESEND. */
 	public static final MessageBusAddress PRINTING_BUS_RESEND = new MessageBusAddress("printing-bus-resend");
 
+	/** The Constant EXTERNAL_STAGE_BUS_IN. */
 	public static final MessageBusAddress EXTERNAL_STAGE_BUS_IN = new MessageBusAddress("external-bus-in");
 
+	/** The Constant EXTERNAL_STAGE_BUS_OUT. */
 	public static final MessageBusAddress EXTERNAL_STAGE_BUS_OUT = new MessageBusAddress("external-bus-out");
 
+	/** The Constant ABIS_MIDDLEWARE_BUS_IN. */
+	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_IN = new MessageBusAddress("abis-middle-ware-bus-in");
+
+	/** The Constant ABIS_MIDDLEWARE_BUS_OUT. */
+	public static final MessageBusAddress ABIS_MIDDLEWARE_BUS_OUT = new MessageBusAddress("abis-middle-ware-bus-out");
+
+	/** The Constant ABIS_HANDLER_BUS_IN. */
+	public static final MessageBusAddress ABIS_HANDLER_BUS_IN = new MessageBusAddress("abis-handler-bus-in");
+
+	/** The Constant ABIS_HANDLER_BUS_OUT. */
+	public static final MessageBusAddress ABIS_HANDLER_BUS_OUT = new MessageBusAddress("abis-handler-bus-out");
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "MessageBusAddress{" + "address='" + address + '\'' + '}';
+	}
 }

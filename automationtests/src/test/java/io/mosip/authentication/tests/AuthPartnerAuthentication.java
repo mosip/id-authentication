@@ -1,3 +1,4 @@
+
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -198,3 +199,4 @@ public class AuthPartnerAuthentication extends IdaScriptsUtil implements ITest {
 		}
 	}
 }
+

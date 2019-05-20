@@ -1,6 +1,19 @@
 {
-                             "catCode": "POA",
-                             "destinationPreId": "76498407281526",
-                             "sourcePrId": "28571691254604"
-                             
+       "CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists": "",
+       "CopyUploadedDocumentByPassingInvalidCatCode_AlphabetsOtherThanPOA": "",
+       "CopyUploadedDocumentByPassingInvalidCatCode_AlphaNumeric": "",
+       "CopyUploadedDocumentByPassingInvalidCatCode_AlphaNumericAndSpecialCharacters": "",                     
+       "CopyUploadedDocumentByPassingInvalidCatCode_EmptyValue":"",
+       "CopyUploadedDocumentByPassingInvalidCatCode_SpecialCharacters":"",
+       "CopyUploadedDocumentByPassingInvalidDestinationPreId_Alphabets":"",
+       "CopyUploadedDocumentByPassingInvalidDestinationPreId_AlphaNumeric":"",
+       "CopyUploadedDocumentByPassingInvalidDestinationPreId_AlphaNumericAndSpecialCharacters":"",
+       "CopyUploadedDocumentByPassingInvalidDestinationPreId_EmptyValue":"",
+       "CopyUploadedDocumentByPassingInvalidDestinationPreId_SpecialCharacters":"",
+       "CopyUploadedDocumentByPassingInvalidSourcePreId_Alphabets":"",
+       "CopyUploadedDocumentByPassingInvalidSourcePreId_AlphaNumeric":"",
+       "CopyUploadedDocumentByPassingInvalidSourcePreId_AlphaNumericAndSpecialCharacters":"",
+       "CopyUploadedDocumentByPassingInvalidSourcePreId_EmptyValue":"",
+       "CopyUploadedDocumentByPassingInvalidSourcePreId_SpecialCharacters":"",
+       "CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded":""
 }

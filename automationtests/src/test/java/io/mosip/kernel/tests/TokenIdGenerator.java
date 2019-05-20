@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -36,8 +37,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
@@ -60,7 +62,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	private final String requestJsonName = "TokenIdGeneratorRequest";
 	private final String outputJsonName = "TokenIdGeneratorOutput";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String tokenIdGenerator_URI = props.get("auditLog_URI").toString();
+	private final String tokenIdGenerator_URI = props.get("tokenIdGenerator_URI").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -71,6 +73,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -82,8 +86,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	@BeforeMethod
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie = auth.getAuthForIDA();
 	}
 
 	/**
@@ -147,7 +151,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-					response = applicationLibrary.getRequestPathPara(tokenIdGenerator_URI, objectData);
+					response = applicationLibrary.getRequestPathPara(tokenIdGenerator_URI, objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -229,3 +233,4 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 		}
 	}
 }
+

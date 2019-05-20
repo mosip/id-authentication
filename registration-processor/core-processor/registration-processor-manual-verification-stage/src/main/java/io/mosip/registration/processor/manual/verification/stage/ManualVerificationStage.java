@@ -104,7 +104,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, null ,MessageBusAddress.MANUAL_VERIFICATION_BUS));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -153,14 +153,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 			this.setResponseWithDigitalSignature(handlerObj, manualVerificationExceptionHandler.handler(handlerObj.failure()), APPLICATION_JSON);
 
 		});
-
-
-		router.get(contextPath+"/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(handlerObj -> {
-			this.setResponse(handlerObj, handlerObj.failure().getMessage());
-		});
-
 
 	}
 	/**

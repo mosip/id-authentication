@@ -31,7 +31,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+
 import io.mosip.dbaccess.KernelMasterDataR;
+
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
@@ -83,7 +85,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIDA();
 	}
 
@@ -168,7 +170,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 				String id = (response.jsonPath().get("id")).toString();
 				logger.info("id is : " + id);
 				String queryStr = "SELECT count(*) FROM master.machine_spec WHERE id='" + id + "'";
-				long count = new KernelDataBaseAccess().validateDBCount(queryStr);
+				long count = new KernelDataBaseAccess().validateDBCount(queryStr,"masterdata");
 				if (count==1) {
 					finalStatus = "Pass";
 				} else {

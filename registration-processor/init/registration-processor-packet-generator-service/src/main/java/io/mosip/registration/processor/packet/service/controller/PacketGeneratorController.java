@@ -113,15 +113,13 @@ public class PacketGeneratorController {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-			
+
 			if(isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildPacketGeneratorResponse(packerGeneratorResDto)));
 				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-
-
 		} catch (PacketGeneratorValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
