@@ -6,23 +6,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -36,10 +29,6 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
@@ -48,7 +37,6 @@ import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.registrationProcessor.util.EncryptData;
-import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -227,7 +215,7 @@ public class Sync extends BaseTestCase implements ITest {
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
+						String errorCode = err.get("errorCode").toString();
 						logger.info("errorCode : "+errorCode);
 						Iterator<Object> iterator1 = expectedError.iterator();
 
@@ -260,12 +248,7 @@ public class Sync extends BaseTestCase implements ITest {
 			logger.error("Exception occurred in Sync class in sync method "+e);
 			 
 		}
-	}  
-
-	private boolean createInputJson(String packetHash, long packetSize, String regId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	} 
 
 	/**
 	 * This method is used for fetching test case name
