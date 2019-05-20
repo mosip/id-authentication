@@ -176,6 +176,7 @@ mat-select:focus {
   margin-top: 1rem;
   position: fixed;
   bottom: 0;
+  z-index:22;
 }
 
 .user__btn {

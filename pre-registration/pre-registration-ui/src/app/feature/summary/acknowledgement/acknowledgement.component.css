@@ -51,6 +51,7 @@
   left: 0;
   padding-top: 10px;
   display: flex;
+  z-index:22;
 }
 
 .spacer {
@@ -118,7 +119,7 @@ table tr td {
 }
 
 @media(max-width: 500px) {
-  
+
   .ack-container {
     margin: 5px;
   }
@@ -127,7 +128,7 @@ table tr td {
     font-size: 8px;
     padding: 5px;
   }
-  
+
   .ack__header {
     white-space: nowrap;
     margin-left: -31px !important;
