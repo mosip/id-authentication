@@ -12,9 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -36,7 +39,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,7 +49,6 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
@@ -58,6 +59,7 @@ import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
+import io.mosip.kernel.cryptomanager.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
 import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.exception.CryptoManagerSerivceException;
@@ -75,6 +77,21 @@ import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
 @Component
 public class CryptomanagerUtil {
 
+	
+	private static final String RESPONSE = "response";
+
+	private static final String ACCESS_DENIED = "Access denied for ";
+
+	private static final String AUTHENTICATION_FAILED = "Authentication failed for ";
+
+	private static final String REFERENCE_ID = "referenceId";
+
+	private static final String TIMESTAMP = "timeStamp";
+
+	private static final String APPLICATION_ID = "applicationId";
+
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -123,8 +140,8 @@ public class CryptomanagerUtil {
 	@Value("${mosip.kernel.keymanager-service-encrypt-signature-url}")
 	private String signatureEncryptURL;
 	
-	@Value("${mosip.kernel.keymanager-service-decrypt-signature-url}")
-	private String signatureDecryptURL;
+	@Value("${mosip.kernel.keymanager-service-publickey-signature-url}")
+	private String signaturePublicURL;
 	
 	
 	/**
@@ -153,10 +170,10 @@ public class CryptomanagerUtil {
 		PublicKey key = null;
 		ResponseEntity<String> response = null;
 		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("applicationId", cryptomanagerRequestDto.getApplicationId());
+		uriParams.put(APPLICATION_ID, cryptomanagerRequestDto.getApplicationId());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", DateUtils.formatToISOString(cryptomanagerRequestDto.getTimeStamp()))
-				.queryParam("referenceId", cryptomanagerRequestDto.getReferenceId());
+				.queryParam(TIMESTAMP, DateUtils.formatToISOString(cryptomanagerRequestDto.getTimeStamp()))
+				.queryParam(REFERENCE_ID, cryptomanagerRequestDto.getReferenceId());
 		try {
 			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
@@ -273,15 +290,8 @@ public class CryptomanagerUtil {
 		return encryptedData;
 	}
 	
-	public SignatureResponseDto signatureDecrypt(SignatureRequestDto signatureRequestDto) {
-		return signatureClient(signatureRequestDto,signatureDecryptURL);
-	}
 
 	public SignatureResponseDto signatureEncrypt(SignatureRequestDto signatureRequestDto) {
-		return signatureClient(signatureRequestDto,signatureEncryptURL);
-	}
-
-	private SignatureResponseDto signatureClient(SignatureRequestDto signatureRequestDto, String url) {
 		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
 		requestWrapper.setId(cryptomanagerRequestID);
 		requestWrapper.setVersion(cryptomanagerRequestVersion);
@@ -292,7 +302,7 @@ public class CryptomanagerUtil {
 		HttpEntity<RequestWrapper<SignatureRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
 				requestWrapper, keyManagerRequestHeaders);
 		try {
-			response = restTemplate.exchange(url, HttpMethod.POST, keyManagerRequestEntity,
+			response = restTemplate.exchange(signatureEncryptURL, HttpMethod.POST, keyManagerRequestEntity,
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
@@ -311,6 +321,8 @@ public class CryptomanagerUtil {
 		throwExceptionIfExist(response);
 		return getResponse(response, SignatureResponseDto.class);
 	}
+
+	
 	
 	
 	/**
@@ -333,19 +345,46 @@ public class CryptomanagerUtil {
 		return salt != null && !salt.trim().isEmpty();
 	}
 	
+	public PublicKeyResponse getSignaturePublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> referenceId) {
+		ResponseEntity<String> response = null;
+		Map<String, String> uriParams = new HashMap<>();
+		uriParams.put(APPLICATION_ID, applicationId);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(signaturePublicURL)
+				.queryParam(TIMESTAMP, DateUtils.formatToISOString(timeStamp))
+				.queryParam(REFERENCE_ID,referenceId);
+		try {
+			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			authExceptionHandler(ex, validationErrorsList, PUBLIC_KEY);
+			
+			if (!validationErrorsList.isEmpty()) {
+				throw new KeymanagerServiceException(validationErrorsList);
+			} else {
+				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+								+ ex.getResponseBodyAsString());
+			}
+		}
+		throwExceptionIfExist(response);
+		return getResponse(response, PublicKeyResponse.class);
+	}
+	
 	private void authExceptionHandler(HttpStatusCodeException ex, List<ServiceError> validationErrorsList, String source) {
 		if (ex.getRawStatusCode() == 401) {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthNException(validationErrorsList);
 			} else {
-				throw new BadCredentialsException("Authentication failed for "+source);
+				throw new BadCredentialsException(AUTHENTICATION_FAILED+source);
 			}
 		}
 		if (ex.getRawStatusCode() == 403) {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthZException(validationErrorsList);
 			} else {
-				throw new AccessDeniedException("Access denied for "+source);
+				throw new AccessDeniedException(ACCESS_DENIED+source);
 			}
 		}
 	}
@@ -365,11 +404,22 @@ public class CryptomanagerUtil {
 	public <S> S getResponse(ResponseEntity<String> response, Class<S> clazz) {
 		try {
 			JsonNode res =objectMapper.readTree(response.getBody());
-			return objectMapper.readValue(res.get("response").toString(), clazz);
+			return objectMapper.readValue(res.get(RESPONSE).toString(), clazz);
 		} catch (IOException|NullPointerException exception) {
 			throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
 					CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
 		}
+	}
+	
+	/**
+	 * Parse a date string of pattern UTC_DATETIME_PATTERN into
+	 * {@link LocalDateTime}
+	 * 
+	 * @param dateTime of type {@link String} of pattern UTC_DATETIME_PATTERN
+	 * @return a {@link LocalDateTime} of given pattern
+	 */
+	public LocalDateTime parseToLocalDateTime(String dateTime) {
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 	
