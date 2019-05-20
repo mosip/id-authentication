@@ -814,4 +814,15 @@ public class CommonLibrary extends BaseTestCase{
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
+	public Response regProcPacketGenerator(Object body,String url,String contentHeader ) {
+		logger.info("REST:ASSURED:Sending a post request to"+url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization",adminRegProcAuthToken);
+
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.log().all().when().post(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
 }

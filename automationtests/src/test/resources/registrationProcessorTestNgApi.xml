@@ -4,10 +4,10 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
+
 <listeners>
 		<!-- <listener class-name="io.mosip.report.CustomTestNGReporter" /> -->
 		<!-- <listener class-name="io.mosip.report.ExtentReportListener"></listener> -->
-	</listeners>   
 
 <!-- 
   Passing Group as parmeter unsing "testType"
@@ -22,6 +22,7 @@
 		<parameter name="testType" value="smokeAndRegression" />
 		<classes>
 		<class name="io.mosip.registrationProcessor.tests.Sync" />
+
 		<!-- 	<class name="io.mosip.registrationProcessor.tests.PacketStatus" /> -->
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 		<!-- 	<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" /> -->

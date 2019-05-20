@@ -109,13 +109,8 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 	 	 //outer and inner keys which are dynamic in the actual response
 	 	 	 outerKeys.add("responsetime");
 	 	 	 innerKeys.add("registrationId");
-	 	 	JSONArray requestBody=(JSONArray) actualRequest.get("request");
-			JSONObject insideRequest=(JSONObject) requestBody.get(0);
-			String regId=(String) insideRequest.get("registrationId");
-			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-	 	 	Map<String,Object> resp = encrypter.encryptJson(actualRequest);
-			String encryptedData = resp.get("data").toString();
-			String timeStamp = resp.get("responsetime").toString();
+	 	 	actualResponse=applicationLibrary.regProcPacketGenerator(actualRequest, prop.getProperty("packetGeneratorApi"));
+		
 
 	 	 	 status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 	 	 	 if(status) {
@@ -168,7 +163,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 	 } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 	 	 	 logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
 	 	 }
-
+	 	
 	 }
 
 	 /**

@@ -3,6 +3,8 @@ package io.mosip.registrationProcessor.util;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -16,40 +18,54 @@ import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 import io.mosip.dbaccess.RegProcTransactionDb;
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
 
 public class StageValidationMethods extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
 	RegProcTransactionDb packetTransaction = new RegProcTransactionDb();
+	String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+	Properties prop =  new Properties();
 	final String configPath = "src/test/resources/regProc/Stagevalidation";
 	public String finalStatus = "";
 	static public List<String> statusFromDb=new LinkedList<String>();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
+	EncryptData encryptData=new EncryptData();
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
-	public void syncPacket(String regId) {
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
-		Properties prop=new Properties();
+	public String syncPacket(File packet) {
+		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
+		try {
+			registrationPacketSyncDto = encryptData.createSyncRequest(packet);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+		String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+		Response resp=applnMethods.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+		String encryptedData = resp.jsonPath().get("response.data").toString();
+		LocalDateTime timeStamp=null;
+		try {
+			timeStamp = encryptData.getTime(regId);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		JSONObject syncRequest=new JSONObject();
-		syncRequest.put("id", "mosip.registration.sync");
-		syncRequest.put("version", "1.0");
-		JSONArray request=new JSONArray();
-		JSONObject requestBody=new JSONObject();
-		requestBody.put("langCode", "eng");
-		requestBody.put("parentRegistrationId", null);
-		requestBody.put("registrationId", regId);
-		requestBody.put("statusComment","");
-		requestBody.put("syncStatus", "PRE_SYNC");
-		requestBody.put("syncType","NEW");
-		request.add(requestBody);
-		syncRequest.put("requesttime", "2019-02-14T12:40:59.768Z");
-		syncRequest.put("request",request);
-		Response actualResponse=applnMethods.postRequest(syncRequest, prop.getProperty("syncListApi"));
-		logger.info("Response is :: "+ actualResponse.asString());
+		Response actualResponse = applnMethods.regProcSync(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
+				timeStamp.toString()+"Z");
+		int status=actualResponse.statusCode();
+		if(status==200) {
+			return "Sync Successfull";
+		} else {
+			return "Sync Unsuccessfull";
+		}
 	}
 	public void uploadPacket(File file) {
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";

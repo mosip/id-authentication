@@ -460,10 +460,7 @@ public class CustomTestNGReporter implements IReporter {
 					else
 						testCaseName = testMethodName.substring(testMethodName.indexOf(":") + 1,
 								testMethodName.lastIndexOf(":"));
-					// apiName=testMethodName.substring(0, testMethodName.indexOf(":"));
-					// String
-					// description=testMethodName.substring(testMethodName.lastIndexOf(":")+1);
-					// Get startDateStr
+			
 					startDateStr = this.getTimeInStringFormat(new Date(object.getStartTimeMillis()));
 
 					// Get startDateStr

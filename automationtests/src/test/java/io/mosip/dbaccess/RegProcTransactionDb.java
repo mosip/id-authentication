@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import io.mosip.dbentity.TransactionEntity;
+
 import io.mosip.dbdto.TransactionStatusDTO;
 /**
  * 
@@ -34,7 +34,7 @@ public class RegProcTransactionDb {
 	public List<String> readStatus(String regId) {
 		Session session=getCurrentSession();
 		 Transaction t=session.beginTransaction();
-		// String queryString="SELECT regprc.reg_id,regprc.status_code,regprc.status_comment FROM regprc.registration_transaction where reg_id='20916100110014920190218154630'";
+		
 		 
 		 String queryString="SELECT regprc.registration_transaction.reg_id,regprc.registration_transaction.status_code,regprc.registration_transaction.status_comment" + 
 		 		"	FROM regprc.registration_transaction where regprc.registration_transaction.reg_id= :regId";

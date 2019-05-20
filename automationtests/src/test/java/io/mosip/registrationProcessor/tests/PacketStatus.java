@@ -41,7 +41,7 @@ import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.RegistrationStatusEntity;
-
+import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -79,7 +79,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	static String outputFile = "PacketStatusOutput.json";
 	static String requestKeyFile = "PacketStatusRequest.json";
 	Properties prop =  new Properties();
-
+	
 	/**
 	 * This method is use for reading data for packet status based on test case name
 	 * @param context
@@ -94,7 +94,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 
-			switch (testParam) {
+			switch ( "smokeAndRegression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -217,7 +217,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			}else {
 				finalStatus="Fail";
 			}		
-	/*		boolean setFinalStatus=false;
+		/*boolean setFinalStatus=false;
 	        if(finalStatus.equals("Fail"))
 	              setFinalStatus=false;
 	        else if(finalStatus.equals("Pass"))
@@ -261,7 +261,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketStatus class in setResultTestName "+e);
 		}
-
+		
 	}
 
 	/**
