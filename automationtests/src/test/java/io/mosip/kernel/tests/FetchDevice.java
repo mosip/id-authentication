@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
@@ -59,7 +59,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	private final String apiName = "FetchDevice";
 	private final String requestJsonName = "fetchDeviceRequest";
 	private final String outputJsonName = "fetchDeviceOutput";
-	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String FetchDevice_lang_URI = props.get("FetchDevice_lang_URI").toString();
 	private final String FetchDevice_id_lang_URI = props.get("FetchDevice_id_lang_URI").toString();
 
@@ -85,7 +85,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationOfficer();
 
 	}
@@ -178,7 +178,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("languagecode") + "'";
 			}
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
@@ -276,3 +276,4 @@ public class FetchDevice extends BaseTestCase implements ITest {
 		}
 	}
 }
+

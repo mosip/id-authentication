@@ -83,9 +83,11 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			try {
 
 				uriComponents = builder.build(false).encode();
+				regProcLogger.info(uriComponents.toUri().toString(), " URI Of ID Repo", "", "");
 				obj = restApiClient.getApi(uriComponents.toUri(), responseType);
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						e.getMessage() + ExceptionUtils.getStackTrace(e));

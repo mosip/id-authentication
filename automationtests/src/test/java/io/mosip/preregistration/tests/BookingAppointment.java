@@ -49,64 +49,67 @@ import io.restassured.response.Response;
  */
 
 public class BookingAppointment extends BaseTestCase implements ITest {
+
 	/**
 	 * Declaration of all variables
 	 **/
 
-	static String preId = "";
-	static SoftAssert softAssert = new SoftAssert();
-	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(BookingAppointment.class);
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	CommonLibrary commonLibrary = new CommonLibrary();
+	static String testCaseName = "";
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_URI;
-	static String dest = "";
-	static String configPaths = "";
-	static String folderPath = "preReg/BookingAppointment";
-	static String outputFile = "BookingAppointmentOutput.json";
-	static String requestKeyFile = "BookingAppointmentRequest.json";
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	String preReg_URI;
+	String dest = "";
+	String configPaths = "";
+	String folderPath = "preReg/BookingAppointment";
+	String outputFile = "BookingAppointmentOutput.json";
+	String requestKeyFile = "BookingAppointmentRequest.json";
 	String testParam = null;
 	boolean status_val = false;
-	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	JSONParser parser = new JSONParser();
+	
 
 	/* implement,IInvokedMethodListener */
 	public BookingAppointment() {
 
 	}
 
-	/**
-	 * Data Providers to read the input json files from the folders
+	/*
+	 * Given Booking Appointment valid request when User Send POST request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
+	 * should get success response with elements defined as per specifications
 	 * 
-	 * @param context
-	 * @return input request file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws ParseException
+	 * Given Invalid request when User send POST request to
+	 * https://mosip.io/preregistration/v1/appointment/:preRegistrationId Then I
+	 * should get Error response along with Error Code and Error messages as per
+	 * Specification
 	 */
 	@DataProvider(name = "bookAppointment")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+	public  Object[][] readData(ITestContext context) throws Exception {
+		
+		
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-
 		case "regression":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
 		default:
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-
 	}
+
+	
 
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "bookAppointment")
@@ -116,85 +119,135 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
-		String testCase = object.get("testCaseName").toString();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		/* Creating the Pre-Registration Application */
+		String val = null;
+		String name = null;
+		
+		/*Reading test case name from folder and based on the test case name the switching happens */
+		if (testCaseName.contains("smoke")) {
+			val = testCaseName;
+		} else {
+			String[] parts = testCaseName.split("_");
+			val = parts[0];
+			name = parts[1];
+		}
+		
+		/*Creating the Pre-Registration Application*/
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-
-		/* Document Upload for created application */
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-
-		/* PreId of Uploaded document */
-		preId = docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		/* Fetch availability[or]center details */
 		Response fetchCenter = preRegLib.FetchCentre();
 
 		/* Book An Appointment for the available data */
-		Response bookAppointmentResponse = preRegLib.BookAppointment(docUploadResponse, fetchCenter, preId.toString());
-
-	
+		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+		logger.info("bookAppointmentResponse::"+bookAppointmentResponse.asString());
 		
-		switch ("BookingAppointment_smoke") {
+		switch (val) {
 
 		case "BookingAppointment_smoke":
 
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+
+		case "ReBookingAppointment_smoke":
+			
+			Response rebookAppointmentRes = null;
+			try {
+				fetchCenter = preRegLib.FetchCentre();
+				 rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
+				break;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			outerKeys.add("responsetime");
+			status = AssertResponses.assertResponses(rebookAppointmentRes, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+
+		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
+			String preRegBookingAppointmentURI = preReg_URI + preId;
+
+			Response response = applicationLibrary.postRequest(actualRequest, preRegBookingAppointmentURI);
+
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+
+		case "BookAnAppointmentByPassingInvalidStatusCode":
+
+			preRegLib.updateStatusCode("Consumed", preId);
+			/* Fetch availability[or]center details */
+			Response fetchCen = preRegLib.FetchCentre();
+
+			/* Book An Appointment for the available data */
+			Response bookAppointmentRes = preRegLib.BookAppointment(fetchCen, preId.toString());
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+		case "BookAnAppointmentByPassingInvalidId":
 
-		case "empty_registration_center_id":
+		    String id= actualRequest.get("id").toString();
+			String preRegBookingAppURI = preReg_URI + id;
 
-			String jsonPathTraverse = "$.request[0].preRegistrationId";
-			String jsonSetVal = preId;
-			String readFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_registration_center_id/request.json";
-			String writeFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_registration_center_id/request.json";
-			ObjectNode jsonPath = preRegLib.dynamicJsonRequest(jsonPathTraverse, jsonSetVal, readFilePath,
-					writeFilePath);
+			Response res = applicationLibrary.postRequest(actualRequest, preRegBookingAppURI);
 
-			String strPath = jsonPath.toString();
-			JSONObject fetchCenterReqjson = (JSONObject) parser.parse(strPath);
-
-			Actualresponse = applicationLibrary.postRequest(fetchCenterReqjson, preReg_URI);
-
-			outerKeys.add("resTime");
-			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "empty_appointment_date":
+		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
 
-			String jsonPathTra = "$.request[0].preRegistrationId";
-			String jsonSetValue = preId;
-			String readJsonFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_appointment_date/request.json";
-			String writeJsonFilePath = "src/test/resources/" + "preReg/BookingAppointment/"
-					+ "empty_appointment_date/request.json";
-			ObjectNode jsonPathVal = preRegLib.dynamicJsonRequest(jsonPathTra, jsonSetValue, readJsonFilePath,
-					writeJsonFilePath);
+			String preRegBookAppURI = preReg_URI + preId;
 
-			String strPathVal = jsonPathVal.toString();
-			JSONObject fetchCenterReqjsonVal = (JSONObject) parser.parse(strPathVal);
+			Response resp = applicationLibrary.postRequest(actualRequest, preRegBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
 
-			Actualresponse = applicationLibrary.postRequest(fetchCenterReqjsonVal, preReg_URI);
+			break;
+		case "BookAnAppointmentByPassingInvalidAppointmentDate":
 
-			outerKeys.add("resTime");
-			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+			String preRegiBookAppURI = preReg_URI + preId;
+
+			Response respo = applicationLibrary.postRequest(actualRequest, preRegiBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respo, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+		case "BookAnAppointmentByPassingInvalidTimeSlotFrom":
+
+			String preRegisBookAppURI = preReg_URI + preId;
+
+			Response respon = applicationLibrary.postRequest(actualRequest, preRegisBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respon, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+
+		case "BookAnAppointmentByPassingInvalidTimeSlotTo":
+
+			String preRegistBookAppURI = preReg_URI + preId;
+
+			Response respons = applicationLibrary.postRequest(actualRequest, preRegistBookAppURI);
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respons, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 
 		default:
-
-			Actualresponse = applicationLibrary.postRequest(actualRequest, preReg_URI);
-
-			// removing the keys for assertion
-			outerKeys.add("resTime");
-			innerKeys.add("preRegistrationId");
-			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 		}
@@ -242,11 +295,10 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		CommonLibrary.backUpFiles(source, folderPath);
 
 		/*
-		 * Add generated PreRegistrationId to list to be Deleted from DB
-		 * AfterSuite
+		 * Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
 		 */
 
-		preIds.add(preId);
+		// preIds.add(preId); 
 
 	}
 
@@ -276,18 +328,15 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	 * 
 	 * @param result
 	 */
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun = true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		/**
-		 * Booking Appointment Resource URI
-		 */
-
+		// Booking Appointment Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
-		logger.info("Currently fetched Resource URI =======" +preReg_URI);
-
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		authToken = preRegLib.getToken();
 	}
 
 	@Override

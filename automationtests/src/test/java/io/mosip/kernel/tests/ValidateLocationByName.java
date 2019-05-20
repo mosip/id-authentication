@@ -124,8 +124,12 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	            
 				if(response_time<=300)
 					finalStatus = "Pass";
-				else
-					finalStatus = "Fail";  
+
+				else {
+					finalStatus = "Fail";
+					logger.info("ValidateLocationByName service response time is more than 300ms");
+				}
+
 			}	
 		
 		else {

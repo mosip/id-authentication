@@ -109,6 +109,8 @@ public class JsonUtil {
 	 */
 	public static JSONArray getJSONArray(JSONObject jsonObject, Object key) {
 		ArrayList value = (ArrayList) jsonObject.get(key);
+		if (value == null)
+			return null;
 		JSONArray jsonArray = new JSONArray();
 		jsonArray.addAll(value);
 

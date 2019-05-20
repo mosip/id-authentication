@@ -30,10 +30,6 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidateListDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
@@ -44,6 +40,10 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidateListDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -72,14 +72,14 @@ public class BioDedupeServiceImplTest {
 
 	/** The abis insert responce dto. */
 	@Mock
-	AbisInsertResponceDto abisInsertResponceDto = new AbisInsertResponceDto();
+	AbisInsertResponseDto abisInsertResponseDto = new AbisInsertResponseDto();
 
 	/** The bio dedupe service. */
 	@InjectMocks
 	BioDedupeServiceImpl bioDedupeService = new BioDedupeServiceImpl();
 
 	/** The identify response. */
-	private IdentityResponceDto identifyResponse = new IdentityResponceDto();
+	private AbisIdentifyResponseDto identifyResponse = new AbisIdentifyResponseDto();
 
 	/** The registration id. */
 	String registrationId = "1000";
@@ -107,7 +107,7 @@ public class BioDedupeServiceImplTest {
 
 		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any());
 
-		abisInsertResponceDto.setReturnValue(2);
+		abisInsertResponseDto.setReturnValue(2);
 
 		ReflectionTestUtils.setField(bioDedupeService, "maxResults", 30);
 		ReflectionTestUtils.setField(bioDedupeService, "targetFPIR", 30);
@@ -168,9 +168,9 @@ public class BioDedupeServiceImplTest {
 	@Test
 	public void insertBiometricsSuccessTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setReturnValue(1);
+		abisInsertResponseDto.setReturnValue(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(abisInsertResponceDto);
+				.thenReturn(abisInsertResponseDto);
 
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("success"));
@@ -186,9 +186,9 @@ public class BioDedupeServiceImplTest {
 	@Test(expected = ABISInternalError.class)
 	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setFailureReason(1);
+		abisInsertResponseDto.setFailureReason(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(abisInsertResponceDto);
+				.thenReturn(abisInsertResponseDto);
 
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("2"));
@@ -204,9 +204,9 @@ public class BioDedupeServiceImplTest {
 	@Test(expected = ABISAbortException.class)
 	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setFailureReason(2);
+		abisInsertResponseDto.setFailureReason(2);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(abisInsertResponceDto);
+				.thenReturn(abisInsertResponseDto);
 
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("2"));
@@ -222,9 +222,9 @@ public class BioDedupeServiceImplTest {
 	@Test(expected = UnexceptedError.class)
 	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setFailureReason(3);
+		abisInsertResponseDto.setFailureReason(3);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(abisInsertResponceDto);
+				.thenReturn(abisInsertResponseDto);
 
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("2"));
@@ -240,9 +240,9 @@ public class BioDedupeServiceImplTest {
 	@Test(expected = UnableToServeRequestABISException.class)
 	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setFailureReason(4);
+		abisInsertResponseDto.setFailureReason(4);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(abisInsertResponceDto);
+				.thenReturn(abisInsertResponseDto);
 
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("2"));

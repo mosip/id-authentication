@@ -25,7 +25,10 @@ public class IndividualDemographicDedupe {
 	}
 
 	public JsonValue[] getGender() {
+		if(gender != null)
 		return Arrays.copyOf(gender,gender.length);
+		else
+		return null;
 	}
 
 	public void setGender(JsonValue[] gender) {

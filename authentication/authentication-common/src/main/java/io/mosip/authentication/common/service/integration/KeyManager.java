@@ -44,6 +44,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class KeyManager {
 	
+	
+
 	/** The Constant ERROR_CODE. */
 	private static final String ERROR_CODE = "errorCode";
 
@@ -112,10 +114,8 @@ public class KeyManager {
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException, IOException {
-		String decodedIdentity=null;
-		Map<String, Object> request;
-		decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
-		request = mapper.readValue(decodedIdentity,Map.class);
+		String decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
+		Map<String, Object> request = mapper.readValue(decodedIdentity,Map.class);
 		return request;
 	}
 
@@ -131,9 +131,7 @@ public class KeyManager {
 	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
 			throws IdAuthenticationAppException {
 		String decryptedRequest=null;
-		RestRequestDTO restRequestDTO = null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
-		Map<String,Object> cryptoResponseMap= null;
 		try {
 			cryptoManagerRequestDto.setApplicationId(appId);
 			cryptoManagerRequestDto.setReferenceId(partnerId);
@@ -141,10 +139,10 @@ public class KeyManager {
 					DateUtils.getUTCCurrentDateTime());
 			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 					CryptoUtil.combineByteArray(encryptedRequest, encryptedSessionKey, keySplitter)));
-			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
+			RestRequestDTO restRequestDTO= restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
 					RestRequestFactory.createRequest(cryptoManagerRequestDto), Map.class);
-			cryptoResponseMap = restHelper.requestSync(restRequestDTO);
-			Object encodedIdentity= ((Map<String,Object>) cryptoResponseMap.get("response")).get("data");
+			Map<String,Object> cryptoResponseMap = restHelper.requestSync(restRequestDTO);
+			Object encodedIdentity= ((Map<String,Object>) cryptoResponseMap.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			decryptedRequest = new String(Base64.decodeBase64((String)encodedIdentity),
 					StandardCharsets.UTF_8);
 		}
@@ -217,7 +215,7 @@ public class KeyManager {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
 				response = restHelper.requestSync(restRequestDTO);
-				return (String)((Map<String,Object>) response.get("response")).get("data");
+				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.DATA);
 			} catch (IDDataValidationException | RestServiceException e) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);

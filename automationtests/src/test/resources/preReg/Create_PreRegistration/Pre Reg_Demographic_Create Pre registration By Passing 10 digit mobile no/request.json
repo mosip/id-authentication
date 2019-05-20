@@ -1,0 +1,109 @@
+{
+	"id": "mosip.pre-registration.demographic.create",
+  "version": "1.0",
+  "requesttime": "2019-01-22T07:22:57.086Z",
+	"request": {
+		"langCode": "ENG",
+		"demographicDetails": {
+			"identity": {
+				"IDSchemaVersion": 1.0,
+				"dateOfBirth": "1991/09/11",
+				"gender": [{
+						"language": "eng",
+						"value": "male"
+					},
+					{
+						"language": "ara",
+						"value": "male"
+					}
+				],
+				"addressLine1": [{
+						"language": "eng",
+						"value": "Municipalite Abou Seddiq,Marrakesh,Morocco 40000"
+					},
+					{
+						"language": "ara",
+						"value": "Ø¨Ù„Ø¯ÙŠØ© Ø£Ø¨Ùˆ ØµØ¯ÙŠÙ‚ ØŒ Ù…Ø±Ø§ÙƒØ´ ØŒ Ø§Ù„Ù…ØºØ±Ø¨ 40000"
+					}
+				],
+				"addressLine2": [{
+						"language": "eng",
+						"value": "Administrative Palestine, Marrakesh 40000, Morocco"
+					},
+					{
+						"language": "ara",
+						"value": "Ù�Ù„Ø³Ø·ÙŠÙ† Ø§Ù„Ø¥Ø¯Ø§Ø±ÙŠØ© ØŒ Ù…Ø±Ø§ÙƒØ´ 40000 ØŒ Ø§Ù„Ù…ØºØ±Ø¨"
+					}
+				],
+				"addressLine3": [{
+						"language": "eng",
+						"value": "Direction Regionale Des Marrakesh 40140, Morocco"
+					},
+					{
+						"language": "ara",
+						"value": "Ø§Ù„Ø§ØªØ¬Ø§Ù‡ Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ù…Ø­Ù„Ø© Ø¯ÙŠØ³ÙƒÙˆ Ù…Ø±Ø§ÙƒØ´ 40140 ØŒ Ø§Ù„Ù…ØºØ±Ø¨"
+					}
+				],
+				"region": [{
+						"language": "eng",
+						"value": "Rabat Sale Kenitra"
+					},
+					{
+						"language": "ara",
+						"value": "Ø§Ù„Ø±Ø¨Ø§Ø· Ø¨ÙŠØ¹ Ø§Ù„Ù‚Ù†ÙŠØ·Ø±Ø©"
+					}
+				],
+				"province": [{
+						"language": "eng",
+						"value": "Kenitra"
+					},
+					{
+						"language": "ara",
+						"value": "Ø§Ù„Ù‚Ù†ÙŠØ·Ø±Ø©"
+					}
+				],
+				"city": [{
+						"language": "eng",
+						"value": "Kenitra"
+					},
+					{
+						"language": "ara",
+						"value": "Ø§Ù„Ù‚Ù†ÙŠØ·Ø±Ø©"
+					}
+				],
+				"localAdministrativeAuthority": [{
+						"language": "eng",
+						"value": "Mnasra"
+					},
+					{
+						"language": "ara",
+						"value": "Ù…Ù†ØµØ±Ø§"
+					}
+				],
+				"fullName": [{
+						"language": "eng",
+						"value": "Mohammed Karim Lamrani"
+					},
+					{
+						"language": "ara",
+						"value": "Ù…Ø­Ù…Ø¯ ÙƒØ±ÙŠÙ… Ø§Ù„Ø¹Ù…Ø±Ø§Ù†ÙŠ"
+					}
+				],
+				"residenceStatus":[  
+               {  
+                  "language":"fra",
+                  "value":"national"
+               },
+               {  
+                  "language":"ara",
+                  "value":"national"
+               }
+            ],
+				"phone": "0965625706",
+				"CNIENumber": "6789545678912",
+				"postalCode": "14022",
+				"email": "omsaieswar@gmail.com"
+			}
+		}
+	}
+}

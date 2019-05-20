@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
@@ -59,7 +59,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	private final String apiName = "FetchApplication";
 	private final String requestJsonName = "FetchApplicationRequest";
 	private final String outputJsonName = "FetchApplicationOutput";
-	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String FetchApplication_URI = props.get("FetchApplication_URI").toString();
 	private final String FetchApplication_lang_URI = props.get("FetchApplication_lang_URI").toString();
 	private final String FetchApplication_id_lang_URI = props.get("FetchApplication_id_lang_URI").toString();
@@ -86,7 +86,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIndividual();
 
 	}
@@ -153,7 +153,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 				if (objectData.containsKey("code"))
-					response = applicationLibrary.getRequestPathPara(FetchApplication_URI, objectData,cookie);
+					response = applicationLibrary.getRequestPathPara(FetchApplication_id_lang_URI, objectData,cookie);
 				else
 					response = applicationLibrary.getRequestPathPara(FetchApplication_lang_URI, objectData,cookie);
 
@@ -185,7 +185,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
@@ -276,4 +276,5 @@ public class FetchApplication extends BaseTestCase implements ITest {
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
 		}
 	}
+
 }
