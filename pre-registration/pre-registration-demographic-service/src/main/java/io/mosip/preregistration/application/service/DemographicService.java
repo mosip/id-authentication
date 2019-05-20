@@ -267,6 +267,7 @@ public class DemographicService {
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
 				DemographicRequestDTO demographicRequest = request.getRequest();
+				ValidationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
 				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
@@ -327,12 +328,13 @@ public class DemographicService {
 		log.info("sessionId", "idType", "id", "In updatePreRegistration method of pre-registration service ");
 		log.info("sessionId", "idType", "id",
 				"Pre Registration start time : " + DateUtils.getUTCCurrentDateTimeString());
-		MainResponseDTO<DemographicUpdateResponseDTO> mainResponseDTO = new MainResponseDTO<>();
+		MainResponseDTO<DemographicUpdateResponseDTO> mainResponseDTO = null;
 		mainResponseDTO = (MainResponseDTO<DemographicUpdateResponseDTO>) serviceUtil.getMainResponseDto(request);
 		requiredRequestMap.put("id", updateId);
 		boolean isSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
+				ValidationUtil.langvalidation(request.getRequest().getLangCode());
 				Map<String, String> requestParamMap = new HashMap<>();
 				requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
 				if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -571,7 +573,7 @@ public class DemographicService {
 					if (serviceUtil.checkStatusForDeletion(demographicEntity.getStatusCode())) {
 						getDocumentServiceToDeleteAllByPreId(preregId);
 						if (!(demographicEntity.getStatusCode().equals(StatusCodes.PENDING_APPOINTMENT.getCode()))) {
-							callBookingServiceToDeleteAllByPreId(preregId);
+							getBookingServiceToDeleteAllByPreId(preregId);
 						}
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
@@ -855,7 +857,7 @@ public class DemographicService {
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
-	private void callBookingServiceToDeleteAllByPreId(String preregId) {
+	private void getBookingServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callBookingServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<MainResponseDTO<DeleteBookingDTO>> responseEntity = null;

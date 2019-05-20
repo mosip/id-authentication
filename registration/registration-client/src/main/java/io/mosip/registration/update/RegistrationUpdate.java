@@ -13,10 +13,12 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -26,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -36,7 +39,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
@@ -47,6 +49,15 @@ import io.mosip.registration.service.config.GlobalParamService;
  */
 @Component
 public class RegistrationUpdate {
+	
+	public RegistrationUpdate() throws IOException {
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		Properties properties = new Properties();
+		/*properties.load(fileInputStream);
+		serverRegClientURL = properties.getProperty("mosip.client.url");
+		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");*/
+	}
 
 	private static String SLASH = "/";
 
@@ -54,8 +65,8 @@ public class RegistrationUpdate {
 
 	// TODO move to application.properties
 	private String backUpPath = "D://mosip/AutoBackUp";
-	private static String serverRegClientURL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private String serverMosipXmlFileUrl = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
+	private static String serverRegClientURL ;
+	private String serverMosipXmlFileUrl ;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";
@@ -71,6 +82,10 @@ public class RegistrationUpdate {
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
+
+	private String latestVersionReleaseTimestamp;
+
+	private String lastUpdatedTag = "lastUpdated";
 
 	/**
 	 * Instance of {@link Logger}
@@ -95,32 +110,39 @@ public class RegistrationUpdate {
 		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
 		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
 
-		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-		if (list != null && list.getLength() > 0) {
-			NodeList subList = list.item(0).getChildNodes();
-
-			if (subList != null && subList.getLength() > 0) {
-				// Set Latest Version
-				setLatestVersion(subList.item(0).getNodeValue());
-			}
-		}
+		setLatestVersion(getElementValue(metaInfXmlDocument, versionTag));
+		setLatestVersionReleaseTimestamp(getElementValue(metaInfXmlDocument, lastUpdatedTag));
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for latest version completed");
 		return latestVersion;
 	}
 
+	private String getElementValue(Document metaInfXmlDocument, String tagName) {
+		NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(tagName);
+		String val = null;
+		if (list != null && list.getLength() > 0) {
+			NodeList subList = list.item(0).getChildNodes();
+
+			if (subList != null && subList.getLength() > 0) {
+				// Set Latest Version
+				val = subList.item(0).getNodeValue();
+			}
+		}
+
+		return val;
+
+	}
+
 	public String getCurrentVersion() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for current version started");
-		if (currentVersion != null) {
-			return currentVersion;
-		} else {
-			// Get Local manifest file
-			if (getLocalManifest() != null) {
-				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
-			}
+
+		// Get Local manifest file
+		if (getLocalManifest() != null) {
+			setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 		}
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for current version completed");
 		return currentVersion;
@@ -159,17 +181,14 @@ public class RegistrationUpdate {
 				} else {
 					Attributes localAttribute = jar.getValue();
 					Attributes serverAttribute = serverAttributes.get(jar.getKey());
-					try {
-						if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
-								.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
+					if (!localAttribute.getValue(Attributes.Name.CONTENT_TYPE)
+							.equals(serverAttribute.getValue(Attributes.Name.CONTENT_TYPE))) {
 
-							/* Jar to be downloaded */
-							downloadJars.add(jar.getKey());
+						/* Jar to be downloaded */
+						downloadJars.add(jar.getKey());
 
-						}
-					} catch(Exception e) {
-						System.out.println("Hello");
 					}
+
 					serverManifest.getEntries().remove(jar.getKey());
 
 				}
@@ -195,7 +214,7 @@ public class RegistrationUpdate {
 			setServerManifest(null);
 			setLatestVersion(null);
 
-			//Update global param of software update flag as false
+			// Update global param of software update flag as false
 			globalParamService.update(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE,
 					RegistrationConstants.DISABLE);
 
@@ -277,16 +296,16 @@ public class RegistrationUpdate {
 
 		File jarInFolder = new File(folderName + jarFileName);
 
-			if (!jarInFolder.exists()
-					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-							&& FileUtils.deleteQuietly(jarInFolder))) {
+		if (!jarInFolder.exists()
+				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+						&& FileUtils.deleteQuietly(jarInFolder))) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-						"Downloading jar : " + jarFileName + " started");
-				// Download Jar
-				Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Downloading jar : " + jarFileName + " started");
+			// Download Jar
+			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
 
-			}
+		}
 
 	}
 
@@ -322,9 +341,7 @@ public class RegistrationUpdate {
 	private Manifest getLocalManifest() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Geting  of local manifest started");
-		if (localManifest != null) {
-			return localManifest;
-		}
+
 		File localManifestFile = new File(manifestFile);
 
 		if (localManifestFile.exists()) {
@@ -405,5 +422,28 @@ public class RegistrationUpdate {
 			throw new IOException("No Disk Space");
 		}
 
+	}
+
+	public void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
+		this.latestVersionReleaseTimestamp = latestVersionReleaseTimestamp;
+	}
+
+	public Timestamp getLatestVersionReleaseTimestamp() {
+
+		Calendar calendar = Calendar.getInstance();
+
+		String dateString = latestVersionReleaseTimestamp;
+
+		int year = Integer.valueOf(dateString.charAt(0) + "" + dateString.charAt(1) + "" + dateString.charAt(2) + ""
+				+ dateString.charAt(3));
+		int month = Integer.valueOf(dateString.charAt(4) + "" + dateString.charAt(5));
+		int date = Integer.valueOf(dateString.charAt(6) + "" + dateString.charAt(7));
+		int hourOfDay = Integer.valueOf(dateString.charAt(8) + "" + dateString.charAt(9));
+		int minute = Integer.valueOf(dateString.charAt(10) + "" + dateString.charAt(11));
+		int second = Integer.valueOf(dateString.charAt(12) + "" + dateString.charAt(13));
+
+		calendar.set(year, month - 1, date, hourOfDay, minute, second);
+
+		return new Timestamp(calendar.getTime().getTime());
 	}
 }

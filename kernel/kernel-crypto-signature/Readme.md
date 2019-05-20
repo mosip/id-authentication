@@ -50,27 +50,22 @@ auth.server.validate.url=https://host/v1.0/authorize/validateToken
   ```
    #Instance of signatureUtil
    @Autowired
-   private SignatureUtil signingUtil;
+   private SignatureUtil signatureUtil;
    
    String responseBody = "\"response\": { \"roles\": [ { \"roleId\": \"REGISTRATION_ADMIN\", \"roleName\": \"REGISTRATION_ADMIN\", \"roleDescription\": \"Registration administrator\" }, { \"roleId\": \"TSP\", \"roleName\": \"TSP\", \"roleDescription\": \"Trusted Service Provider\" } ] }"
   
     #Pass the response body to sign the response with private key.
-    SignatureResponse signatureResponse=signingUtil.signResponse( responseBody);
+    SignatureResponse signatureResponse= signatureUtil.sign( responseBody);
    ```
    
    **Sample response**
  
  ```
  {
-  "id": "string",
-  "version": "string",
-  "responsetime": "2019-04-29T04:37:16.141Z",
-  "metadata": null,
   "response": {
     "data": "SvYBeeZTl-ao4loe981MkTTBZ507Om7HaZAzxQ1Dj9M9KNuxgslYbQgFdcsaSnoCiUM5nZRDVl2-GgyUJdlqd9cb5kvnAZQjubV2ZYsZfqu2W8MJnsglXK1iUrD6jPf0KNCQ86UmlHOc9BIFi9u1Wh87b8kKmIdbkL8Jv4x2Yqqvufp5kkFja4udXcIVJhhSmsYS4Z0DtDv6p9eGZ18Gcrz-Nf9G9ZRcGpllOIvZfo7Jq4-MW94TJNBq0FA-H0qwdHFJIDJaCT5lN_dGzD4mFu-9CPL4xpeA76V1E7D_vT_v7UQcFgAu4ewdw4-Qew9guOSCUrrcJ-PF5sYxxyT9Fg"
-    "responseTime":"2019:09:09:09.000Z
-  },
-  "errors": null
+    "timestamp":"2019:09:09:09.000Z
+  }
 }
  ```
    2. *Validate with public key*

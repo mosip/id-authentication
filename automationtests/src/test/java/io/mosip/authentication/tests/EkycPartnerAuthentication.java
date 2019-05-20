@@ -21,11 +21,12 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -38,7 +39,7 @@ import org.testng.Reporter;
  * @author Athila
  *
  */
-public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
+public class EkycPartnerAuthentication extends AuthTestsUtil implements ITest{
 
 	private static final Logger logger = Logger.getLogger(EkycPartnerAuthentication.class);
 	protected static String testCaseName = "";
@@ -72,7 +73,8 @@ public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 	/**
@@ -110,8 +112,8 @@ public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);	
 		return DataProviderClass.getDataProvider(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
 	}
 	/**
 	 * Set current testcaseName
@@ -135,6 +137,7 @@ public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, EkycPartnerAuthentication.testCaseName);
+			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -158,13 +161,13 @@ public class EkycPartnerAuthentication extends IdaScriptsUtil implements ITest{
 		String mapping = TestDataUtil.getMappingPath();
 		String extUrl=getExtendedUrl(new File(objTestParameters.getTestCaseFile()+"/url.properties"));
 		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
-		logger.info("************* Modification of demo auth request ******************");
-		Reporter.log("<b><u>Modification of demo auth request</u></b>");
+		logger.info("************* Modification of auth request ******************");
+		Reporter.log("<b><u>Modification of auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "auth-request"), true);
-		logger.info("******Post request Json to EndPointUrl: " + RunConfig.getEndPointUrl() + RunConfig.getEkycPath()
+		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl+" *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfig.getEndPointUrl() + RunConfig.getEkycPath() +extUrl, "request", "output-1-actual-res",200), true);
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath() +extUrl, "request", "output-1-actual-res",200), true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());

@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -18,12 +17,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sql.JdbcSqlService;
 
 /**
@@ -44,70 +42,63 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	@Autowired
 	private GlobalParamService globalParamService;
 
-	@Autowired
-	private JobConfigurationService jobConfigurationService;
+//	@Autowired
+//	private JobConfigurationService jobConfigurationService;
+
+	// TODO move to application.properties
+	private String backUpPath = "D://mosip/AutoBackUp";
+
+	private static String libFolder = "lib/";
+	private String binFolder = "bin/";
+
+	private String manifestFile = "MANIFEST.MF";
 
 	@Override
-	public ResponseDTO executeSqlFile(String version) {
+	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) {
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		clearScheduler();
+		// clearScheduler();
 
 		try (Connection connection = getConnection()) {
 			// Get JDBC Connection
 			this.derbyRegConnection = connection;
 
 			if (derbyRegConnection != null) {
-				executeSqlFile(responseDTO, version);
+				executeSqlFile(responseDTO, latestVersion, previousVersion);
 			} else {
 				// Prepare Error Response as unable to establish connection
 				setErrorResponse(responseDTO, "unable to esablish connection", null);
 			}
-		} catch (SQLException e) {
+		} catch (SQLException | RuntimeException exception) {
 			// Prepare Error Response as unable to establish connection
 			setErrorResponse(responseDTO, "unable to esablish connection", null);
 		}
 		return responseDTO;
 	}
 
-	private void clearScheduler() {
-		if (jobConfigurationService != null && jobConfigurationService.isSchedulerRunning()) {
-			jobConfigurationService.stopScheduler();
+	/*
+	 * private void clearScheduler() { if (jobConfigurationService != null &&
+	 * jobConfigurationService.isSchedulerRunning()) {
+	 * jobConfigurationService.stopScheduler();
+	 * 
+	 * boolean isCompleted = false;
+	 * 
+	 * while (!isCompleted) { isCompleted = isRunningJobsCompleted(); } } }
+	 */
 
-			boolean isCompleted = false;
-
-			while (!isCompleted) {
-				isCompleted = isRunningJobsCompleted();
-			}
-		}
-	}
-
-	private boolean isRunningJobsCompleted() {
-
-		boolean isCompleted = false;
-		isCompleted = BaseJob.getCompletedJobMap().keySet()
-				.containsAll(jobConfigurationService.getActiveSyncJobMap().keySet());
-
-		return isCompleted;
-	}
+	/*
+	 * private boolean isRunningJobsCompleted() {
+	 * 
+	 * boolean isCompleted = false; isCompleted =
+	 * BaseJob.getCompletedJobMap().keySet()
+	 * .containsAll(jobConfigurationService.getActiveSyncJobMap().keySet());
+	 * 
+	 * return isCompleted; }
+	 */
 
 	private Connection getConnection() {
-		Connection con = null;
-		// Get Connection
-		if (applicationContext != null) {
-			con = DataSourceUtils.getConnection((DataSource) applicationContext.getBean("dataSource"));
-		} else {
 
-			try {
-				Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				con = DriverManager.getConnection("jdbc:derby:reg;bootPassword=mosip12345");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return con;
+		return DataSourceUtils.getConnection((DataSource) applicationContext.getBean("dataSource"));
 
 	}
 
@@ -129,50 +120,40 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				}
 
 				List<String> statments = java.util.Arrays.asList(sb.toString().split(";"));
-				PreparedStatement prepStmt = null;
-				try {
 
-					for (String stat : statments) {
-						if (!stat.trim().equals("")) {
-							prepStmt= derbyRegConnection.prepareStatement(stat);
+				for (String stat : statments) {
+					if (!stat.trim().equals("")) {
+						try (PreparedStatement prepStmt = derbyRegConnection.prepareStatement(stat)) {
 							prepStmt.executeUpdate();
 						}
 					}
-
-				} catch (Exception exception) {
-					exception.printStackTrace();
-				} finally {
-					if(prepStmt != null) {
-						prepStmt.close();
-					}
 				}
-			}
-		}
 
-		/*
-		 * // Initialize ScriptRunner ScriptRunner scriptRunner = new
-		 * ScriptRunner(derbyRegConnection, false, false);
-		 * 
-		 * for (File file : sqlFile.listFiles()) { try (Reader reader = new
-		 * BufferedReader(new FileReader(file))) { // Execute script
-		 * scriptRunner.runScript(reader); } }
-		 */
+			}
+
+		}
 
 	}
 
-	private void executeSqlFile(ResponseDTO responseDTO, String version) {
-		File sqlFile = getSqlFile(this.getClass().getResource("/sql/" + version + "/").getPath());
+	private void executeSqlFile(ResponseDTO responseDTO, String latestVersion, String previousVersion) {
+		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
+		if (resource != null) {
 
-		if (sqlFile.exists()) {
+			File sqlFile = getSqlFile(resource.getPath());
+
 			// execute sql file
 			try {
 
 				runSqlFile(sqlFile);
 
 			} catch (RuntimeException | IOException | SQLException runtimeException) {
-				File rollBackFile = getSqlFile(this.getClass().getResource("/sql/" + version + "_rollback/").getPath());
+
+				replaceWithBackUpApplication(responseDTO, previousVersion);
 
 				try {
+					File rollBackFile = getSqlFile(
+							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
+
 					if (rollBackFile.exists()) {
 						runSqlFile(rollBackFile);
 					}
@@ -184,26 +165,37 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				// Prepare Error Response
 				setErrorResponse(responseDTO, "unable to execute sql file", null);
 			}
-		} else {
+		}
+
+		else {
 			// Update global param with current version
-			if (globalParamService != null) {
-				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, version);
-			}
+			globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
+			setSuccessResponse(responseDTO, "Updated Version", null);
+
 		}
+	}
 
-		try (Connection connection = getConnection()) {
-			// Get JDBC Connection
-			this.derbyRegConnection = connection;
+	private void replaceWithBackUpApplication(ResponseDTO responseDTO, String previousVersion) {
+		File file = new File(backUpPath);
 
-			if (derbyRegConnection != null) {
-				try(Statement stmt = derbyRegConnection.createStatement()){
-					stmt.executeUpdate("update reg.global_param set VAL='"+version+"' where code='mosip.reg.db.current.version'");
+		for (File backUpFolder : file.listFiles()) {
+			if (backUpFolder.getName().contains(previousVersion)) {
+
+				try {
+					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + File.separator + binFolder),
+							new File(binFolder));
+					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + File.separator + libFolder),
+							new File(libFolder));
+					FileUtils.copyFile(new File(backUpFolder.getAbsolutePath() + File.separator + manifestFile),
+							new File(manifestFile));
+
+				} catch (io.mosip.kernel.core.exception.IOException e) {
+					setErrorResponse(responseDTO, "Replaced with previous Binaroies", null);
 				}
+				break;
+
 			}
-		} catch(SQLException sqlException) {
-			sqlException.printStackTrace();
 		}
-	
 	}
 
 }

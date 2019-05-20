@@ -58,6 +58,7 @@ public class CryptomanagerController {
 	public ResponseWrapper<CryptomanagerResponseDto> encrypt(
 			@ApiParam("Salt and Data to encrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
 		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+		System.out.println("Request :"+cryptomanagerRequestDto.getRequest());
 		response.setResponse(cryptomanagerService.encrypt(cryptomanagerRequestDto.getRequest()));
 		return response;
 	}
@@ -89,7 +90,7 @@ public class CryptomanagerController {
 	@PostMapping(value = "/decrypt", produces = "application/json")
 	public ResponseWrapper<CryptomanagerResponseDto> decrypt(
 			@ApiParam("Salt and Data to decrypt in BASE64 encoding with meta-data") @RequestBody @Valid RequestWrapper<CryptomanagerRequestDto> cryptomanagerRequestDto) {
-
+		System.out.println("Request :"+cryptomanagerRequestDto.getRequest());
 		ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(cryptomanagerService.decrypt(cryptomanagerRequestDto.getRequest()));
 		return response;

@@ -14,7 +14,7 @@ import org.testng.annotations.ITestAnnotation;
  * @author Vignesh
  *
  */
-public class AuthenticationTestsListener extends IdaScriptsUtil implements IAnnotationTransformer{
+public class AuthenticationTestsListener extends AuthTestsUtil implements IAnnotationTransformer{
 
 	/**
 	 * The method to set the invocationcount for authentication tests provided in runConfiguration property file

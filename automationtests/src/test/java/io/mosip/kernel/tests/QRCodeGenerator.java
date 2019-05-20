@@ -1,4 +1,4 @@
-package io.mosip.kernel.tests;
+/*package io.mosip.kernel.tests;
 
 import java.io.File;
 import java.io.FileReader;
@@ -62,13 +62,13 @@ public class QRCodeGenerator extends AbstractTestNGSpringContextTests implements
 	@Autowired
 	private QrcodeGeneratorImpl qrgenerator;
 
-	/**
+	*//**
 	 * method to set the test case name to the report
 	 * 
 	 * @param method
 	 * @param testdata
 	 * @param ctx
-	 */
+	 *//*
 	@BeforeMethod
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
@@ -76,12 +76,12 @@ public class QRCodeGenerator extends AbstractTestNGSpringContextTests implements
 
 	}
 
-	/**
+	*//**
 	 * This data provider will return a test case name
 	 * 
 	 * @param context
 	 * @return test case name as object
-	 */
+	 *//*
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -98,13 +98,13 @@ public class QRCodeGenerator extends AbstractTestNGSpringContextTests implements
 
 	}
 
-	/**
+	*//**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
 	 * @param fileName
 	 * @param object
 	 * 
-	 */
+	 *//*
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void generateQRCode(String testcaseName, JSONObject object)
@@ -203,9 +203,9 @@ public class QRCodeGenerator extends AbstractTestNGSpringContextTests implements
 		}
 	}
 
-	/**
+	*//**
 	 * this method write the output to corressponding json
-	 */
+	 *//*
 	@AfterClass
 	public void updateOutput() throws IOException {
 		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
@@ -215,3 +215,4 @@ public class QRCodeGenerator extends AbstractTestNGSpringContextTests implements
 		}
 	}
 }
+*/

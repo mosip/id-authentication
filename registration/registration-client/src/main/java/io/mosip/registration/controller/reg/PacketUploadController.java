@@ -424,9 +424,11 @@ public class PacketUploadController extends BaseController implements Initializa
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
 			filterData(newValue, filteredList);
 		});
-		if(!filterField.getText().isEmpty()) {
+
+		if (!filterField.getText().isEmpty()) {
 			filterData(filterField.getText(), filteredList);
 		}
+
 		// 3. Wrap the FilteredList in a SortedList.
 		sortedList = new SortedList<>(filteredList);
 
@@ -461,8 +463,10 @@ public class PacketUploadController extends BaseController implements Initializa
 	 * @return
 	 */
 	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
+
 		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
+
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();

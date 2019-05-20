@@ -59,13 +59,13 @@ public class TransliterationService {
 	/**
 	 * Reference for ${id} from property file
 	 */
-	@Value("${id}")
+	@Value("${mosip.pre-registration.transliteration.transliterate.id}")
 	private String id;
 
 	/**
 	 * Reference for ${ver} from property file
 	 */
-	@Value("${ver}")
+	@Value("${version}")
 	private String version;
 
 	/**
@@ -93,6 +93,8 @@ public class TransliterationService {
 	 */
 	public MainResponseDTO<TransliterationResponseDTO> translitratorService(MainRequestDTO<TransliterationRequestDTO> requestDTO) {
 		MainResponseDTO<TransliterationResponseDTO> responseDTO = new MainResponseDTO<>();
+		responseDTO.setId(requestDTO.getId());
+		responseDTO.setVersion(requestDTO.getVersion());
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO),requiredRequestMap)) {
 				TransliterationRequestDTO transliterationRequestDTO = requestDTO.getRequest();
@@ -106,18 +108,16 @@ public class TransliterationService {
 								transliterationRequestDTO.getFromFieldValue());
 						responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue, transliterationRequestDTO));
 						responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
-						responseDTO.setId(id);
-						responseDTO.setVersion(version);
 					}
 					else {
 						throw new UnSupportedLanguageException(ErrorCodes.PRG_TRL_APP_008.getCode(), 
-								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage(),null);
+								ErrorMessage.UNSUPPORTED_LANGUAGE.getMessage(),responseDTO);
 					}
 
 					
 				} else {
 					throw new MandatoryFieldRequiredException(ErrorCodes.PRG_TRL_APP_002.getCode(),
-							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(),null);
+							ErrorMessage.INCORRECT_MANDATORY_FIELDS.getMessage(),responseDTO);
 				}
 			}
 		} catch (Exception e) {

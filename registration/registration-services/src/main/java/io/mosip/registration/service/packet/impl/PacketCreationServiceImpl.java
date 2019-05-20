@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -36,11 +37,11 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -92,7 +93,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@Autowired
 	private CbeffImpl cbeffI;
 	@Autowired
-	private JsonValidator jsonValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 	private static SecureRandom random = new SecureRandom(String.valueOf(5000).getBytes());
 	@Autowired
 	private AuditManagerService auditFactory;
@@ -202,9 +204,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			// Generating Demographic JSON as byte array
-			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString);
-			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
+			idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
+			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
+					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
@@ -285,12 +287,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
-		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException jsonValidationException) {
+		} catch (IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
+				| FileIOException idSchemaValidationException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
-					jsonValidationException);
+					idSchemaValidationException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());

@@ -24,10 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,8 +38,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.auth.adapter.filter.AuthFilter;
-import io.mosip.kernel.auth.adapter.handler.AuthHandler;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -110,16 +104,12 @@ public class RegistrationStatusControllerTest {
 
 	Gson gson = new GsonBuilder().serializeNulls().create();
 
-	@Mock
-	SignatureUtil signatureUtil;
-	@Mock
-	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
+	//@Mock
+	//io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
 
 	@Autowired
 	private WebApplicationContext wac;
 
-	@Mock
-	AuthFilter filter;
 
 	/**
 	 * Sets the up.
@@ -168,11 +158,10 @@ public class RegistrationStatusControllerTest {
 
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
 
-		signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
+		/*signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
 		when(signatureUtil.signResponse(Mockito.any(String.class))).thenReturn(signatureResponse);
 		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
-
-		this.mockMvc = webAppContextSetup (this.wac).addFilters(filter).build();
+*/
 	}
 
 	/**

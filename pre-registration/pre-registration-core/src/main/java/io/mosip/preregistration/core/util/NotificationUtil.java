@@ -67,10 +67,10 @@ public class NotificationUtil {
 		log.info("sessionId", "idType", "id", "In notify method of NotificationUtil service");
 		
 		MainResponseDTO<NotificationResponseDTO> response=new MainResponseDTO<>();
-		if(notificationType==RequestCodes.SMS)  {
+		if(notificationType.equals(RequestCodes.SMS))  {
 			response=smsNotification(acknowledgementDTO, langCode);
 		}
-		if(notificationType==RequestCodes.EMAIL) {
+		if(notificationType.equals(RequestCodes.EMAIL)) {
 			response=emailNotification(acknowledgementDTO, langCode, file);
 		}
 		

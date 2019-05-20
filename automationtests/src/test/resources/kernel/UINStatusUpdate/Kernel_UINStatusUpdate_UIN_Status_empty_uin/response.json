@@ -1,0 +1,11 @@
+{
+   "id": "string",
+   "version": "string",
+   "responsetime": "2019-04-30T07:09:02.074Z",
+   "metadata": null,
+   "response": null,
+   "errors": [   {
+      "errorCode": "KER-UIG-001",
+      "message": "UIN could not be found"
+   }]
+}

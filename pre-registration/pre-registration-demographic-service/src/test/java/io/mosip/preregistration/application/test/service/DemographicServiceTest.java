@@ -396,7 +396,7 @@ public class DemographicServiceTest {
 		demographicResponseForCreateDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
-
+        createPreRegistrationDTO.setLangCode("fra");
 		request.setRequest(createPreRegistrationDTO);
 		List<DemographicCreateResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseForCreateDTO);
@@ -425,6 +425,7 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.save(Mockito.any())).thenThrow(exception);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
+		createPreRegistrationDTO.setLangCode("fra");
 		request.setRequest(createPreRegistrationDTO);
 		preRegistrationService.addPreRegistration(request);
 	}
@@ -445,6 +446,7 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.update(Mockito.any())).thenReturn(preRegistrationEntity);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
+		createPreRegistrationDTO.setLangCode("eng");
 		request.setRequest(createPreRegistrationDTO);
 		MainResponseDTO<DemographicUpdateResponseDTO> res = preRegistrationService.updatePreRegistration(request, preId,
 				userId);
@@ -469,6 +471,7 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.update(Mockito.any())).thenThrow(exception);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
+		createPreRegistrationDTO.setLangCode("eng");
 		request.setRequest(createPreRegistrationDTO);
 		preRegistrationService.updatePreRegistration(request, preId, userId);
 	}
@@ -493,6 +496,7 @@ public class DemographicServiceTest {
 		demographicResponseDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
+		createPreRegistrationDTO.setLangCode("fra");
 		request.setRequest(createPreRegistrationDTO);
 		List<DemographicResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);
@@ -536,6 +540,7 @@ public class DemographicServiceTest {
 		Mockito.when(demographicRepository.update(Mockito.any())).thenReturn(preRegistrationEntity);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
+		createPreRegistrationDTO.setLangCode("eng");
 		request.setRequest(createPreRegistrationDTO);
 		MainResponseDTO<DemographicUpdateResponseDTO> res = preRegistrationService.updatePreRegistration(request, preId,
 				"1234");
@@ -1044,6 +1049,7 @@ public class DemographicServiceTest {
 		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
+		createPreRegistrationDTO.setLangCode("eng");
 		request.setRequest(createPreRegistrationDTO);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		preRegistrationService.updatePreRegistration(request, preId, userId);
@@ -1095,6 +1101,7 @@ public class DemographicServiceTest {
 		Mockito.when(serviceUtil.prepareRequestMap(request)).thenReturn(requestMap);
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
+		createPreRegistrationDTO.setLangCode("eng");
 		request.setRequest(createPreRegistrationDTO);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(jsonObject.toString().getBytes());
 		preRegistrationService.updatePreRegistration(request, preId, userId);

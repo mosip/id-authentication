@@ -5,7 +5,6 @@ import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
@@ -41,22 +40,20 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	/**
 	 * The method to set up session and destination
 	 * 
-	 * @param mosipActiveMq
-	 *            The Mosip ActiveMq instance
+	 * @param mosipActiveMq The Mosip ActiveMq instance
 	 */
 	private void setup(MosipActiveMq mosipActiveMq) {
-		if (connection == null) {
-			try {
-				this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
-				if (session == null) {
-					connection.start();
-					this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				}
-			} catch (JMSException e) {
-				throw new ConnectionUnavailableException(
-						PlatformErrorMessages.RPR_MQI_CONNECTION_UNAVAILABLE.getMessage(), e);
+		try {
+			this.connection = mosipActiveMq.getActiveMQConnectionFactory().createConnection();
+			if (session == null) {
+				connection.start();
+				this.session = this.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			}
+		} catch (JMSException e) {
+			throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_MQI_CONNECTION_UNAVAILABLE.getMessage(),
+					e);
 		}
+
 	}
 
 	/*
@@ -74,9 +71,7 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 		if (activeMQConnectionFactory == null) {
 			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
-		if (destination == null) {
-			setup(mosipActiveMq);
-		}
+		setup(mosipActiveMq);
 		try {
 			destination = session.createQueue(address);
 			MessageProducer messageProducer = session.createProducer(destination);

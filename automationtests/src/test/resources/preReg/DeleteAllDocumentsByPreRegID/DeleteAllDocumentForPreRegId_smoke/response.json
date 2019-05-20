@@ -1,12 +1,9 @@
 {
-    "id": "mosip.pre-registration.document.upload",
-    "version": "1.0",
-    "err": null,
-    "responsetime": "2019-03-29T07:29:52.437Z",
-    "response": [
-        {
-            "documnet_Id": "70d15e17-51f4-11e9-8073-8b81a2621c21",
-            "resMsg": "DOCUMENT_DELETE_SUCCESSFUL"
-        }
-    ]
+   "id": "mosip.pre-registration.document.delete",
+   "version" : "1.0",
+   "responsetime": "2019-01-16T17:31:04.021Z",
+   "response": {
+       "message": "All documents assosiated with requested pre-registration id deleted sucessfully"
+    },
+   "errors":null
 }

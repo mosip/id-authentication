@@ -86,7 +86,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationProcessor();
 
 	}
@@ -216,7 +216,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			
 			
 			
-			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI);
+			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI, cookie);
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
 
