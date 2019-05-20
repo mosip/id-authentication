@@ -36,7 +36,6 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -86,9 +85,6 @@ public class KycControllerTest {
 	@Mock
 	private KycFacadeImpl kycFacade;
 
-	@Mock
-	private IdServiceImpl idAuthService;
-
 	@InjectMocks
 	private KycAuthController kycAuthController;
 
@@ -111,8 +107,6 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(kycAuthController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
-		ReflectionTestUtils.setField(kycAuthController, "env", env);
-		ReflectionTestUtils.setField(kycAuthController, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoFetcher", idInfoFetcherImpl);
 

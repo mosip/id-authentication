@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 
 /**
@@ -18,7 +20,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 
 @RefreshScope
 @Service
-public class DemoDedupeStage extends MosipVerticleManager {
+public class DemoDedupeStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 
@@ -33,16 +35,31 @@ public class DemoDedupeStage extends MosipVerticleManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+	
+	private MosipEventBus mosipEventBus = null;
 	@Autowired
 	DemodedupeProcessor demodedupeProcessor;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN, MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
+	}
+
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.DEMO_DEDUPE_BUS_IN, MessageBusAddress.DEMO_DEDUPE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*

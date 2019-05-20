@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -88,6 +89,9 @@ public class MessageNotificationServiceImplTest {
 	@Mock
 	private Utilities utility;
 
+	@Mock
+	private ABISHandlerUtil abisHandlerUtil;
+
 	/** The rest client service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -99,7 +103,7 @@ public class MessageNotificationServiceImplTest {
 	/** The env. */
 	@Mock
 	private Environment env;
-	
+
 
 	@Mock
 	private ObjectMapper mapper;
@@ -274,6 +278,7 @@ public class MessageNotificationServiceImplTest {
 		wrapper.setResponse(smsResponseDto);
 		wrapper.setErrors(null);
 
+		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(1234567);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(wrapper);
 		Mockito.when(mapper.writeValueAsString(any())).thenReturn(smsResponseDto.toString());
@@ -386,6 +391,7 @@ public class MessageNotificationServiceImplTest {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(uin);
 
+		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(1234567);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(null);
 
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
@@ -394,15 +400,13 @@ public class MessageNotificationServiceImplTest {
 	
 	@Test(expected=IDRepoResponseNull.class)
 	public void testApisResourceAccessException() throws Exception {
-		
-		
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
 
 		String uin = "1234567";
 		List<String> uinList = new ArrayList<>();
 		uinList.add(uin);
-
+		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(1234567);
 		ApisResourceAccessException exp= new ApisResourceAccessException("Error Message");
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any(Class.class))).thenThrow(exp);
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",

@@ -1,13 +1,6 @@
 {
 	"identityRequest": {
-		"demographics": {
-			"otp": [
-				{
-                     "value": "818215"
-				}
-			]
-		},
-		"timestamp": "2019-03-16T10:01:57.086+05:30",
-		"transactionID": "1234567890"
+		"otp": "818215",
+		"timestamp": "2019-03-16T10:01:57.086+05:30"
 	}
 }

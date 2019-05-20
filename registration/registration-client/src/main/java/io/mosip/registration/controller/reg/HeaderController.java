@@ -26,6 +26,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RestartController;
+import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -47,7 +48,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -134,6 +134,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService statusValidatorService;
+
+	@Autowired
+	private LoginController loginController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -308,50 +311,6 @@ public class HeaderController extends BaseController {
 	}
 
 	/**
-	 * Redirects to Device On-Boarding UI Page.
-	 * 
-	 * @param actionEvent
-	 *            is an action event
-	 */
-	public void onBoardDevice(ActionEvent actionEvent) {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-				"Navigating to Device Onboarding Page");
-
-		try {
-			auditFactory.audit(AuditEvent.NAV_ON_BOARD_DEVICES, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			AnchorPane onBoardRoot = BaseController
-					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
-
-			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				VBox pane = (VBox) menu.getParent().getParent().getParent();
-				Object parent = pane.getChildren().get(0);
-				pane.getChildren().clear();
-				pane.getChildren().add((Node) parent);
-				pane.getChildren().add(onBoardRoot);
-			}
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
-							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
-		} finally {
-			LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
-					"Navigation to Device Onboarding page completed");
-		}
-	}
-
-	/**
 	 * This method is to trigger the Pre registration sync service
 	 * 
 	 * @param event
@@ -411,7 +370,7 @@ public class HeaderController extends BaseController {
 		if (hasUpdate()) {
 
 			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
-					RegistrationUIConstants.UPDATE_LATER);
+					RegistrationUIConstants.UPDATE_LATER, true);
 
 		}
 
@@ -568,7 +527,7 @@ public class HeaderController extends BaseController {
 				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
 					// generateAlert(RegistrationConstants.ERROR,
 					// RegistrationUIConstants.UNABLE_TO_UPDATE);
-					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE);
+					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, true);
 				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
@@ -582,7 +541,8 @@ public class HeaderController extends BaseController {
 
 	}
 
-	public void update(Pane pane, ProgressIndicator progressIndicator, String context) {
+	public void update(Pane pane, ProgressIndicator progressIndicator, String context,
+			boolean isPreLaunchTaskToBeStopped) {
 
 		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
 				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
@@ -600,7 +560,7 @@ public class HeaderController extends BaseController {
 					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
 
 			alert.showAndWait();
-			
+
 			/* Get Option from user */
 			ButtonType alertResult = alert.getResult();
 
@@ -610,6 +570,10 @@ public class HeaderController extends BaseController {
 			}
 		} else {
 			pane.setDisable(false);
+			if (!isPreLaunchTaskToBeStopped) {
+				loginController.executePreLaunchTask(pane, progressIndicator);
+				jobConfigurationService.startScheduler();
+			}
 		}
 
 	}

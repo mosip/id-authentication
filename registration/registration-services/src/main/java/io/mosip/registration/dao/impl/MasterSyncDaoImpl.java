@@ -691,6 +691,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterRegCenterUserEntity.add(centerUsr);
 			});
 			registrationCenterUserRepository.saveAll(masterRegCenterUserEntity);
+			
 
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Center Machine Mapping details syncing....");

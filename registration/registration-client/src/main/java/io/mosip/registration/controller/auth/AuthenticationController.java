@@ -264,12 +264,12 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (RegistrationConstants.SUCCESS.equals(status)) {
 					userAuthenticationTypeListValidation.remove(0);
 					userNameField = username.getText();
+					if (!isEODAuthentication) {
+						getOSIData().setOperatorAuthenticatedByPassword(true);
+					}
 					loadNextScreen();
 				} else if (RegistrationConstants.FAILURE.equals(status)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
-				}
-				if (!isEODAuthentication) {
-					getOSIData().setOperatorAuthenticatedByPassword(true);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);

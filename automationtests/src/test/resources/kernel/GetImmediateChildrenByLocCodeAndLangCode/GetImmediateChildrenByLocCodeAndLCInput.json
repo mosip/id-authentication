@@ -2,10 +2,10 @@
   
   "langcode":"string",
   "locationcode":"string",
-  "invalid_country":"string",
-  "invalid_provinace":"string",
-  "invalid_region":"string",
-  "invalid_city":"string",
-  "invalid_localAuthority":"string",
-  "response_time":"string"
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_country":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_provinace":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_region":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_city":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_localAuthority":"string",
+  "Kernel_GetImmediateChildrenByLocCodeAndLangCode_response_time":"string"
 }

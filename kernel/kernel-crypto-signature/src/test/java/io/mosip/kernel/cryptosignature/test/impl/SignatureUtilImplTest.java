@@ -142,7 +142,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -162,7 +162,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = ParseResponseException.class)
@@ -172,7 +172,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withSuccess().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilClientException.class)
@@ -186,7 +186,7 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test(expected = SignatureUtilException.class)
@@ -198,17 +198,17 @@ public class SignatureUtilImplTest {
 		server.expect(requestTo(encryptUrl))
 				.andRespond(withBadRequest().body(response).contentType(MediaType.APPLICATION_JSON));
 
-		signingUtil.signResponse("MOSIP");
+		signingUtil.sign("MOSIP", DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Test
 	public void validateWithPublicKeyTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
 
 		PrivateKey privateKey = keyPair.getPrivate();
-		byte[] hashedData = HMACUtils.generateHash("signedData".getBytes());
+		byte[] hashedData = HMACUtils.generateHash("admin".getBytes());
 		String hashedString = CryptoUtil.encodeBase64(hashedData);
 		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedString.getBytes());
-		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "signedData",
+		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "admin",
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()));
 		assertTrue(isVerfied);
 	}

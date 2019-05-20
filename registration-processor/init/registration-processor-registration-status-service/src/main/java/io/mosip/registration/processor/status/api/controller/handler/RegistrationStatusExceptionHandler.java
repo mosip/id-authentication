@@ -45,9 +45,6 @@ public class RegistrationStatusExceptionHandler {
 	private Environment env;
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
-	@Autowired
-	SignatureUtil signatureUtil;
-
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusExceptionHandler.class);
 
 	@ExceptionHandler(AccessDeniedException.class)
@@ -137,9 +134,10 @@ public class RegistrationStatusExceptionHandler {
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().create();
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
-		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(gson.toJson(response));
+	//	HttpHeaders headers = new HttpHeaders();
+		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 

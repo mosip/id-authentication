@@ -85,7 +85,7 @@ public class KycFacadeImplTest {
 	private IdService<?> idInfoService;
 
 	@Mock
-	private BioAuthServiceImpl bioAuthServiceImpl;
+	private BioAuthServiceImpl bioAuthService;
 
 	@Mock
 	private AuditHelper auditHelper;
@@ -98,14 +98,19 @@ public class KycFacadeImplTest {
 	
 	@Mock
 	private KycService kycService;
+	
+	@Mock
+	private IdService<AutnTxn> idAuthService;
 
 	@Before
 	public void beforeClass() {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
+		ReflectionTestUtils.setField(kycFacade, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(kycFacade, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "idInfoFetcher", idInfoFetcher);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
+		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 	}
 
 	@Test
@@ -169,6 +174,7 @@ public class KycFacadeImplTest {
 				.thenReturn(idRepo);
 		Mockito.when(idinfoservice.getIdByUin(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(idInfo);
+		Mockito.when(idAuthService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO res = new ResponseDTO();
 		res.setAuthStatus(Boolean.TRUE);
@@ -182,7 +188,7 @@ public class KycFacadeImplTest {
 		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
 		IdType values = IdType.UIN;
 		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
-		Mockito.when(bioAuthServiceImpl.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
+		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456")).thenReturn(authStatusInfo);
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
 	}
@@ -219,7 +225,7 @@ public class KycFacadeImplTest {
 		kycAuthRequestDTO.setRequest(request);
 		kycAuthRequestDTO.setRequestedAuth(authTypeDTO);
 		kycAuthRequestDTO.setRequest(request);
-
+		Mockito.when(idAuthService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(repoDetails());
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponseTime(ZonedDateTime.now()

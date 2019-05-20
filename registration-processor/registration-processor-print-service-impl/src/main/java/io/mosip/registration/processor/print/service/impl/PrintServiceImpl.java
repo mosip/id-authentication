@@ -138,7 +138,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The template generator. */
 	@Autowired
 	private TemplateGenerator templateGenerator;
-	
+
 	@Autowired
 	private Utilities utilities;
 
@@ -324,10 +324,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(idValue);
 
-		
-		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
-				pathsegments, "", "", IdResponseDTO1.class);
-		
+		String queryParamName = "type";
+		String queryParamValue = "all";
+
+		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
+				queryParamName, queryParamValue, IdResponseDTO.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

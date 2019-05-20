@@ -361,7 +361,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, MessageBusAddress.PRINTING_BUS, null));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -375,20 +375,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private void routes(MosipRouter router) {
 		router.post(contextPath+"/resend");
 		router.handler(this::reSendPrintPdf, this::failure);
-		
-		router.get(contextPath+"/health");
-		router.handler(this::health);
 
-
-	}
-
-	/**
-	 * This is for health check up
-	 * 
-	 * @param routingContext
-	 */
-	private void health(RoutingContext routingContext) {
-		this.setResponse(routingContext, "Server is up and running");
 	}
 	
 	/**

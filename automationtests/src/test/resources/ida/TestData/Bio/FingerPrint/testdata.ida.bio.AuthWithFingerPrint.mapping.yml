@@ -1,5 +1,5 @@
 testdata:
-  Finger_Auth_Request_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke_Pos_01:
+  Authentication_Biometric_Finger_Request_LeftAndRightIndex_With_ValidCompositeScoreMatch_smoke_Pos_01:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867
@@ -32,7 +32,7 @@ testdata:
       moduleName: FINGERPRINT_AUTH
       refIdType: UIN   
       
-  Finger_Auth_Request_LeftIndex_With_ValidScoreMatch_smoke_Pos_02:
+  Authentication_Biometric_Finger_Request_LeftIndex_With_ValidScoreMatch_smoke_Pos_02:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867
@@ -65,7 +65,7 @@ testdata:
       moduleName: FINGERPRINT_AUTH
       refIdType: UIN  
       
-  Finger_Auth_Request_RightIndex_With_ValidScoreMatch_smoke_Pos_03:
+  Authentication_Biometric_Finger_Request_RightIndex_With_ValidScoreMatch_smoke_Pos_03:
     input.bio-auth-request:
       bioAuthReq.idvId: $UIN$
       bioAuthReq.tspID: 7404012867

@@ -31,7 +31,9 @@ public enum RegistrationTransactionTypeCode {
 	PRINT_SERVICE,
 	/** The print postal service. */
 	PRINT_POSTAL_SERVICE,
-	/** The print stage. */
-	PRINT
+    /** The print stage. */
+    PRINT,
+	/** The reprocess. */
+	REPROCESS
 
 }

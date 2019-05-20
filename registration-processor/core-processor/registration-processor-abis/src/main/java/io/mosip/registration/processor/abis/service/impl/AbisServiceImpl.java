@@ -3,7 +3,10 @@ package io.mosip.registration.processor.abis.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -20,24 +23,30 @@ import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
-import io.mosip.registration.processor.abis.dto.CandidateListDto;
-import io.mosip.registration.processor.abis.dto.CandidatesDto;
+import io.mosip.registration.processor.abis.exception.MissingMandatoryFieldsException;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisPingRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisPingResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidateListDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
  * The Class AbisServiceImpl.
+ *
+ * @author M1048860 Kiran Raj
  */
 @Service
 public class AbisServiceImpl implements AbisService {
@@ -59,6 +68,12 @@ public class AbisServiceImpl implements AbisService {
 	/** The Constant IDENTIFY. */
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
+	private static Set<String> storedRefId = new HashSet<>();
+
+	private static Set<String> actualStoredRefId = new HashSet<>();
+
+	private String identifyReqId;
+
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
 	private String testFingerPrint;
@@ -74,98 +89,90 @@ public class AbisServiceImpl implements AbisService {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
 
-	/**
-	 * Insert.
-	 *
-	 * @param abisInsertRequestDto
-	 *            the abis insert request dto
-	 * @return the abis insert responce dto
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
-	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::insert()::entry");
-
-		boolean isPresent = false;
+	@Override
+	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::insert()::entry");
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
+
+		if (storedRefId.size() < 1000)
+			storedRefId.add(referenceId);
+
+		response.setId(ABIS_INSERT);
+		response.setRequestId(abisInsertRequestDto.getRequestId());
+		response.setTimestamp(abisInsertRequestDto.getTimestamp());
+
+		Document doc;
 		try {
-			response.setId(ABIS_INSERT);
-			response.setRequestId(abisInsertRequestDto.getRequestId());
-			response.setTimestamp(abisInsertRequestDto.getTimestamp());
-
-			Document doc = getCbeffDocument(referenceId);
-
+			doc = getCbeffDocument(referenceId);
 			if (testFingerPrint == null || testIris == null || testFace == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
 			}
-			if(doc != null) {
+			if (doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
 				NodeList irisNodeList = doc.getElementsByTagName(testIris);
 				NodeList faceNodeList = doc.getElementsByTagName(testFace);
 
 				if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
-					isPresent = true;
-				}
-				if (isPresent) {
 					response.setReturnValue(1);
+
 				} else {
 					response.setReturnValue(2);
+					response.setFailureReason(7);
 				}
-			}else {
+			} else {
 				response.setReturnValue(2);
-				response.setFailureReason(3);
+				response.setFailureReason(7);
 			}
 
-		} catch (Exception e) {
+		} catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(7);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
+					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url."
+							+ ExceptionUtils.getStackTrace(e));
+
+		} catch (MissingMandatoryFieldsException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(5);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "MissingMandatoryFieldsException : Mandatory fields are missing in Request."
+							+ ExceptionUtils.getStackTrace(e));
+
+		} catch (Exception e) {
+			response.setReturnValue(2);
+			response.setFailureReason(3);
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
+
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::insert()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::insert()::exit");
 
 		return response;
 	}
 
-	/**
-	 * Gets the cbeff document.
-	 *
-	 * @param referenceId
-	 *            the reference id
-	 * @return the cbeff document
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
 	private Document getCbeffDocument(String referenceId)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::getCbeffDocument()::entry");
+			throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::getCbeffDocument()::entry");
 		List<String> regId = null;
-		if(referenceId != null) {
+		if (referenceId != null) {
 			regId = packetInfoManager.getRidByReferenceId(referenceId);
 			List<String> pathSegments = new ArrayList<>();
-			if(regId != null && regId.size() > 0) {
+			if (regId != null && !(regId.isEmpty())) {
 				pathSegments.add(regId.get(0));
 
-				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
+						byte[].class);
 				if (bytefile == null) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-							referenceId, "Byte file not found from BioDedupe api");
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), referenceId,
+							"Byte file not found from BioDedupe api");
 				}
 
 				if (bytefile != null) {
@@ -173,95 +180,129 @@ public class AbisServiceImpl implements AbisService {
 
 					InputSource is = new InputSource();
 					is.setCharacterStream(new StringReader(byteFileStr));
-					
+
 					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					return dBuilder.parse(is);
 				}
 			}
+		} else {
+			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::getCbeffDocument()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::getCbeffDocument()::exit");
 
 		return null;
 	}
 
-	/**
-	 * Perform dedupe.
-	 *
-	 * @param identifyRequest
-	 *            the identity request
-	 * @return the identity responce dto
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the SAX exception
-	 */
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+	@Override
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest) {
 		boolean duplicate = false;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::performDedupe()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::performDedupe()::entry");
 
-		int count = 0;
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
-		String referenceId = identifyRequest.getReferenceId();
+		identifyReqId = identifyRequest.getReferenceId();
 
+		Document doc;
 		try {
+			doc = getCbeffDocument(identifyReqId);
+
 			response.setId(ABIS_IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
 			response.setTimestamp(identifyRequest.getTimestamp());
 
-			Document doc = getCbeffDocument(referenceId);
-			if(doc != null) {
+			if (doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
-				if(fingerNodeList != null) {
+				if (fingerNodeList != null) {
 					duplicate = checkDuplicate(duplicate, fingerNodeList);
 				}
 
 				NodeList irisNodeList = doc.getElementsByTagName(testIris);
-				if(irisNodeList != null) {
+				if (irisNodeList != null) {
 					duplicate = checkDuplicate(duplicate, irisNodeList);
 				}
 				NodeList faceNodeList = doc.getElementsByTagName(testFace);
-				if(faceNodeList != null) {
+				if (faceNodeList != null) {
 					duplicate = checkDuplicate(duplicate, faceNodeList);
 				}
-					response.setReturnValue(1);
+				response.setReturnValue(1);
 
 				if (duplicate) {
-					CandidateListDto cd = new CandidateListDto();
-					CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-
-					for (int i = 0; i <candidatesDto.length; i++) {
-						candidatesDto[i] = new CandidatesDto();
-						candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-						candidatesDto[i].setScaledScore(100 - i + "");
-						count++;
-					}
-					cd.setCount(count + "");
-					cd.setCandidates(candidatesDto);
-					response.setCandidateList(cd);
+					addCandidateList(identifyRequest, response);
 				}
-			}else {
-				response.setReturnValue(3);
-
+			} else {
+				response.setReturnValue(2);
+				response.setFailureReason(7);
 			}
+
+		} catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(7);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					identifyReqId, "ApisResourceAccessException : Unable to acces getting cbef url."
+							+ ExceptionUtils.getStackTrace(e));
+
+		} catch (MissingMandatoryFieldsException e) {
+			response.setReturnValue(2);
+			response.setFailureReason(5);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					identifyReqId, "MissingMandatoryFieldsException : Mandatory fields are missing in Request."
+							+ ExceptionUtils.getStackTrace(e));
+
 		} catch (Exception e) {
 			response.setReturnValue(2);
-			response.setFailureReason(1);
+			response.setFailureReason(3);
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
+					identifyReqId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
+
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				"", "AbisServiceImpl::performDedupe()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::performDedupe()::exit");
 		return response;
+	}
+
+	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
+
+		int count = 0;
+
+		CandidateListDto cd = new CandidateListDto();
+		CandidatesDto[] candidatesDto;
+		if(storedRefId.size()>1) {
+			for(String refId :storedRefId) {
+				if(!identifyRequest.getReferenceId().equals(refId)) {
+					actualStoredRefId.add(identifyRequest.getReferenceId());
+				}
+			}
+		}
+		ArrayList<String> storedRefIdList = new ArrayList<>(actualStoredRefId);
+		Collections.shuffle(storedRefIdList);
+		int loopLimit = storedRefIdList.size();
+		if (storedRefIdList.size() > 5)
+			loopLimit = 5;
+		candidatesDto = new CandidatesDto[loopLimit];
+		for (int i = 0; i < candidatesDto.length; i++) {
+			candidatesDto[i] = new CandidatesDto();
+			if (!(identifyRequest.getReferenceId().equals(storedRefIdList.get(i)))) {
+
+				candidatesDto[i].setReferenceId(storedRefIdList.get(i));
+				candidatesDto[i].setScaledScore(100 - i + "");
+				count++;
+			}
+
+		}
+
+		cd.setCount(count + "");
+		if (count != 0) {
+			cd.setCandidates(candidatesDto);
+			response.setCandidateList(cd);
+		}
+		if(storedRefId.size()<1000)
+		storedRefId.add(identifyReqId);
+
 	}
 
 	/**
@@ -284,11 +325,19 @@ public class AbisServiceImpl implements AbisService {
 		return duplicate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
 	 */
 	@Override
 	public void delete() {
 		// Delete should be implemented in future
+	}
+
+	@Override
+	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto) {
+		// Ping should be implemented in future
+		return null;
 	}
 }

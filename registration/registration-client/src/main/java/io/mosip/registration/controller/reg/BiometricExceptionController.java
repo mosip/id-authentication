@@ -142,7 +142,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private GuardianBiometricsController guardianBiometricsController;
-	
+
 	@FXML
 	private Label registrationNavlabel;
 
@@ -392,7 +392,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		bioList.addAll(fingerList);
 		bioList.addAll(irisList);
 		List<BiometricExceptionDTO> biometricExceptionList = new ArrayList<>();
-		if (!bioList.isEmpty()) {			
+		if (!bioList.isEmpty()) {
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
 				if (bioType.contains(RegistrationConstants.EYE)) {
@@ -417,7 +417,8 @@ public class BiometricExceptionController extends BaseController implements Init
 					|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
-			} else if (getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+					|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.getIntroducerBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			} else {
@@ -425,8 +426,13 @@ public class BiometricExceptionController extends BaseController implements Init
 						.getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
 			}
 
-		}else {
+		} else {
 			SessionContext.map().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION, biometricExceptionList);
+			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
+					|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
+			}
 		}
 
 		LOGGER.info("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,

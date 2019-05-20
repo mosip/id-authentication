@@ -72,8 +72,6 @@ public class RegistrationStatusController {
 
 	Gson gson = new GsonBuilder().create();
 
-	@Autowired
-	SignatureUtil signatureUtil;
 
 	/**
 	 * Search.
@@ -94,9 +92,9 @@ public class RegistrationStatusController {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,RegistrationStatusRequestDTO.class);
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());
-			return ResponseEntity.status(HttpStatus.OK).headers(headers).body(buildRegistrationStatusResponse(registrations));
+		//	HttpHeaders headers = new HttpHeaders();
+			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());
+			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		} catch (Exception e) {

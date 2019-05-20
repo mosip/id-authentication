@@ -15,11 +15,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityRequestDto;
-import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
@@ -36,6 +31,11 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -62,7 +62,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 
 	/** The identify request dto. */
-	private IdentityRequestDto identifyRequestDto = new IdentityRequestDto();
+	private AbisIdentifyRequestDto identifyRequestDto = new AbisIdentifyRequestDto();
 
 	/** The rest client service. */
 	@Autowired
@@ -71,7 +71,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	@Autowired
 	private RegistrationStatusService registrationStatusService;
 
@@ -97,9 +97,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-	
+
 	private static final String ABIS_INSERT = "mosip.abis.insert";
-	
+
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	/*
@@ -129,8 +129,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		packetInfoManager.saveAbisRef(regAbisRefDto);
 
-		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService
-				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponceDto.class);
+		AbisInsertResponseDto authResponseDTO = (AbisInsertResponseDto) restClientService
+				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponseDto.class);
 
 		if (authResponseDTO.getReturnValue() == 1)
 			insertStatus = "success";
@@ -201,8 +201,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		identifyRequestDto.setTargetFPIR(targetFPIR);
 
 		// call Identify Api to get duplicate ids
-		IdentityResponceDto responsedto = (IdentityResponceDto) restClientService.postApi(ApiName.BIODEDUPEPOTENTIAL,
-				"", "", identifyRequestDto, IdentityResponceDto.class);
+		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService
+				.postApi(ApiName.BIODEDUPEPOTENTIAL, "", "", identifyRequestDto, AbisIdentifyResponseDto.class);
 
 		if (responsedto != null) {
 
@@ -232,7 +232,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * @return the duplicate candidates
 	 */
 	private void getDuplicateCandidates(List<String> duplicates, List<String> abisResponseDuplicates,
-			IdentityResponceDto responsedto) {
+			AbisIdentifyResponseDto responsedto) {
 		CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
 
 		for (CandidatesDto candidate : candidateList) {

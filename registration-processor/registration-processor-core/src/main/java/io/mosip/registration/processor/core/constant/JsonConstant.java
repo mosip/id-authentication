@@ -1,9 +1,9 @@
 package io.mosip.registration.processor.core.constant;
 
 /**
- * The Enum JsonConstant.
+ * The Class JsonConstant.
  * 
- * @author M1039285
+ * @author Nagalakshmi
  */
 public class JsonConstant {
 
@@ -149,76 +149,77 @@ public class JsonConstant {
 	/** The Constant INTRODUCERBIOMETRICSEQUENCE. */
 	public static final String INTRODUCERBIOMETRICSEQUENCE = "INTRODUCERBIOMETRICSEQUENCE";
 
+	/** The Constant APPLICANTBIOMETRICSEQUENCE. */
 	public static final String APPLICANTBIOMETRICSEQUENCE = "APPLICANTBIOMETRICSEQUENCE";
-	/** Supervisor Authentication */
+
+	/** Supervisor Authentication. */
 	public static final String SUPERVISOROTPAUTHENTICATION = "SUPERVISOROTPAUTHENTICATION";
-	/** officer Authentication */
+
+	/** officer Authentication. */
 	public static final String OFFICEROTPAUTHENTICATION = "OFFICEROTPAUTHENTICATION";
-	
-	
-	
-	/**OSI DTO instance field constants*/ 
-	
+
+	/** OSI DTO instance field constants. */
+
 	/** The reg id. */
-	public static final String REGID="REGID";
+	public static final String REGID = "REGID";
 
 	/** The prereg id. */
-	public static final String PREREGID="PREREGID";
+	public static final String PREREGID = "PREREGID";
 
 	/** The officer iris image name. */
-	public static final String OFFICERIRISIMAGENAME="OFFICERIRISIMAGENAME";
+	public static final String OFFICERIRISIMAGENAME = "OFFICERIRISIMAGENAME";
 
 	/** The officerfinger type. */
-	public static final String OFFICERFINGERTYPE="OFFICERFINGERTYPE";
+	public static final String OFFICERFINGERTYPE = "OFFICERFINGERTYPE";
 
 	/** The officer photo name. */
-	public static final String OFFICERPHOTONAME="OFFICERFACEIMAGE";
+	public static final String OFFICERPHOTONAME = "OFFICERFACEIMAGE";
 
 	/** The officer hashed pin. */
-	public static final String OFFICERHASHEDPIN="OFFICERHASHEDPIN";
+	public static final String OFFICERHASHEDPIN = "OFFICERHASHEDPIN";
 
 	/** The officer hashed pwd. */
-	public static final String OFFICERHASHEDPWD="OFFICERHASHEDPWD";
+	public static final String OFFICERHASHEDPWD = "OFFICERHASHEDPWD";
 
 	/** The officer fingerp image name. */
-	public static final String OFFICERFINGERPIMAGENAME="OFFICERFINGERPIMAGENAME";
+	public static final String OFFICERFINGERPIMAGENAME = "OFFICERFINGERPIMAGENAME";
 
 	/** The supervisor fingerp image name. */
-	public static final String SUPERVISORFINGERPIMAGENAME="SUPERVISORFINGERPIMAGENAME";
+	public static final String SUPERVISORFINGERPIMAGENAME = "SUPERVISORFINGERPIMAGENAME";
 
 	/** The supervisor iris image name. */
-	public static final String SUPERVISORIRISIMAGENAME="SUPERVISORIRISIMAGENAME";
+	public static final String SUPERVISORIRISIMAGENAME = "SUPERVISORIRISIMAGENAME";
 
 	/** The supervisor finger type. */
-	public static final String SUPERVISORFINGERTYPE="SUPERVISORFINGERTYPE";
+	public static final String SUPERVISORFINGERTYPE = "SUPERVISORFINGERTYPE";
 
 	/** The supervisor hashed pwd. */
-	public static final String SUPERVISORHASHEDPWD="SUPERVISORHASHEDPWD";
+	public static final String SUPERVISORHASHEDPWD = "SUPERVISORHASHEDPWD";
 
 	/** The supervisor hashed pin. */
-	public static final String SUPERVISORHASHEDPIN="SUPERVISORHASHEDPIN";
+	public static final String SUPERVISORHASHEDPIN = "SUPERVISORHASHEDPIN";
 
 	/** The supervisor photo name. */
-	public static final String SUPERVISORPHOTONAME="SUPERVISORPHOTONAME";
+	public static final String SUPERVISORPHOTONAME = "SUPERVISORPHOTONAME";
 
 	/** The introducer id. */
-	public static final String INTRODUCERID="INTRODUCERID";
+	public static final String INTRODUCERID = "INTRODUCERID";
 
 	/** The introducer typ. */
-	public static final String INTRODUCERTYP="INTRODUCERTYP";
+	public static final String INTRODUCERTYP = "INTRODUCERTYP";
 
 	/** The introducer reg id. */
-	public static final String INTRODUCERREGID="INTRODUCERREGID";
+	public static final String INTRODUCERREGID = "INTRODUCERREGID";
 
 	/** The introducer iris image name. */
-	public static final String INTRODUCERIRISIMAGENAME="INTRODUCERIRISIMAGENAME";
+	public static final String INTRODUCERIRISIMAGENAME = "INTRODUCERIRISIMAGENAME";
 
 	/** The introducer fingerp type. */
-	public static final String INTRODUCERFINGERPTYPE="INTRODUCERFINGERPTYPE";
+	public static final String INTRODUCERFINGERPTYPE = "INTRODUCERFINGERPTYPE";
 
 	/** The introducer fingerp image name. */
-	public static final String INTRODUCERFINGERPIMAGENAME="INTRODUCERFINGERPIMAGENAME";
-	
+	public static final String INTRODUCERFINGERPIMAGENAME = "INTRODUCERFINGERPIMAGENAME";
+
 	/** The introducer photo name. */
-	public static final String INTRODUCERPHOTONAME="INTRODUCERPHOTONAME";
+	public static final String INTRODUCERPHOTONAME = "INTRODUCERPHOTONAME";
 }

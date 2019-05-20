@@ -1,5 +1,5 @@
 testdata: 
-  Address Authentication_With_fra and ara_smoke_pos_01:
+  Authentication_Demographic_Address_With_fra and ara_IntegrationTest_smoke_pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -31,8 +31,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -57,7 +58,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Address Authentication_With_fra_smoke_pos_02:
+  Authentication_Demographic_Address_With_fra_IntegrationTest_smoke_pos_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -89,8 +90,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $REMOVE$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -115,7 +117,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
        
-  Address Authentication_With_ara_smoke_pos_03:
+  Authentication_Demographic_Address_With_ara_IntegrationTest_smoke_pos_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -147,8 +149,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
       identityReq.languagecity0: $TestData:secondary_lang_code$
       identityReq.languagecity1: $REMOVE$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:secondary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:secondary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -173,7 +176,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Address Authentication_for invalid UIN_Neg_04:
+  Authentication_Demographic_Address_for invalid UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -187,7 +190,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime_For UIN_Neg_05:
+  Authentication_Demographic_Address_invalid reqTime_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -219,8 +222,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -228,7 +232,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime greaterthan24hrs_For UIN_Neg_06:
+  Authentication_Demographic_Address_invalid reqTime greaterthan24hrs_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -260,8 +264,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $IGNORE$
@@ -269,7 +274,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_invalid reqTime lessthan24hrs_For UIN_07:
+  Authentication_Demographic_Address_invalid reqTime lessthan24hrs_For IntegrationTest_UIN_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -301,8 +306,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -310,7 +316,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid individualIdType_For UIN_Neg_08:
+  Authentication_Demographic_Address_Invalid individualIdType_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -343,8 +349,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -352,7 +359,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid version_For UIN_Neg_09:
+  Authentication_Demographic_Address_Invalid version_For UIN_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -385,8 +392,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -395,7 +403,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $version$
       
-  Address Authentication_Invalid txnID_For UIN_Neg_10:
+  Authentication_Demographic_Address_Invalid txnID_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -427,8 +435,8 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -436,7 +444,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_for invalid UIN which is not as per definition_Neg_11:
+  Authentication_Demographic_Address_for invalid UIN which is not as per definition_Neg_11:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -450,7 +458,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime_For UIN which is not as per definition_Neg_12:
+  Authentication_Demographic_Address_invalid reqTime_For UIN which is not as per definition_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -482,8 +490,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -492,7 +501,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
       
-  Address Authentication_Invalid individualIdType which is not as per defintion_For UIN_Neg_13:
+  Authentication_Demographic_Address_Invalid individualIdType which is not as per defintion_For UIN_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -525,8 +534,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -534,7 +544,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid version which is not as per definition_For UIN_Neg_14:
+  Authentication_Demographic_Address_Invalid version which is not as per definition_For UIN_Neg_14:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -567,8 +577,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -577,7 +588,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $version$
   
-  Address Authentication_Invalid txnID which is not as per defintion_For UIN_Neg_15:
+  Authentication_Demographic_Address_Invalid txnID which is not as per defintion_For UIN_Neg_15:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -609,15 +620,15 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
       output.1.response.n.err.errorCode: $errors:InvalidtransactionID:errorCode$
       output.1.response.n.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-  Address Authentication_for Missing UIN_Neg_16:
+  Authentication_Demographic_Address_for Missing UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -631,7 +642,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_Missing reqTime_For UIN_Neg_17:
+  Authentication_Demographic_Address_Missing reqTime_For UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -663,8 +674,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -672,7 +684,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Missing individualIdType_For UIN_Neg_18:
+  Authentication_Demographic_Address_Missing individualIdType_For UIN_Neg_18:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -705,8 +717,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -714,7 +727,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Missing version_For UIN_Neg_19:
+  Authentication_Demographic_Address_Missing version_For UIN_Neg_19:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -747,8 +760,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -757,7 +771,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $input.demo-auth-request:AuthReq.version$
       
-  Address Authentication_Missing txnID_For UIN_Neg_20:
+  Authentication_Demographic_Address_Missing txnID_For UIN_Neg_20:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -789,8 +803,8 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -798,7 +812,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_for invalid VID_Neg_21:
+  Authentication_Demographic_Address_for invalid VID_Neg_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -813,7 +827,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime_For VID_Neg_22:
+  Authentication_Demographic_Address_invalid reqTime_For VID_Neg_22:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -846,8 +860,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -855,7 +870,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime greaterthan24hrs_For VID_Neg_23:
+  Authentication_Demographic_Address_invalid reqTime greaterthan24hrs_For VID_Neg_23:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -888,8 +903,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $IGNORE$
@@ -897,7 +913,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_invalid reqTime lessthan24hrs_For VID_24:
+  Authentication_Demographic_Address_invalid reqTime lessthan24hrs_For VID_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -930,8 +946,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -939,7 +956,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid individualIdType_For VID_Neg_25:
+  Authentication_Demographic_Address_Invalid individualIdType_For VID_Neg_25:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -973,8 +990,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -982,7 +1000,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid version_For VID_Neg_26:
+  Authentication_Demographic_Address_Invalid version_For VID_Neg_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1016,8 +1034,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1026,7 +1045,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $version$
       
-  Address Authentication_Invalid txnID_For VID_Neg_27:
+  Authentication_Demographic_Address_Invalid txnID_For VID_Neg_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1059,8 +1078,8 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1068,7 +1087,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_for invalid VID which is not as per definition_Neg_28:
+  Authentication_Demographic_Address_for invalid VID which is not as per definition_Neg_28:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1083,7 +1102,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_invalid reqTime_For VID which is not as per definition_Neg_29:
+  Authentication_Demographic_Address_invalid reqTime_For VID which is not as per definition_Neg_29:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1116,8 +1135,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -1126,7 +1146,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
       
-  Address Authentication_Invalid individualIdType which is not as per defintion_For VID_Neg_30:
+  Authentication_Demographic_Address_Invalid individualIdType which is not as per defintion_For VID_Neg_30:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1160,8 +1180,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$  
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1169,7 +1190,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Invalid version which is not as per definition_For VID_Neg_31:
+  Authentication_Demographic_Address_Invalid version which is not as per definition_For VID_Neg_31:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1203,8 +1224,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1213,7 +1235,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $version$
   
-  Address Authentication_Invalid txnID which is not as per defintion_For VID_Neg_32:
+  Authentication_Demographic_Address_Invalid txnID which is not as per defintion_For VID_Neg_32:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1246,8 +1268,8 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1255,7 +1277,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
   
-  Address Authentication_for Missing VID_Neg_33:
+  Authentication_Demographic_Address_for Missing VID_Neg_33:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1270,7 +1292,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Address Authentication_Missing reqTime_For VID_Neg_34:
+  Authentication_Demographic_Address_Missing reqTime_For VID_Neg_34:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1303,8 +1325,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $IGNORE$
@@ -1312,7 +1335,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Missing individualIdType_For VID_Neg_35:
+  Authentication_Demographic_Address_Missing individualIdType_For VID_Neg_35:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1346,8 +1369,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$  
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$ 
+      identityReq.timestamp: $TIMESTAMP$ 
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1355,7 +1379,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_Missing version_For VID_Neg_36:
+  Authentication_Demographic_Address_Missing version_For VID_Neg_36:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1389,8 +1413,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1399,7 +1424,7 @@ testdata:
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       output.1.response.n.err.version: $input.demo-auth-request:AuthReq.version$
       
-  Address Authentication_Missing txnID_For VID_Neg_37:
+  Authentication_Demographic_Address_Missing txnID_For VID_Neg_37:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1432,8 +1457,8 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $RANDOM:N:10$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1441,7 +1466,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Address Authentication_With_fra and ara_for VID_smoke_pos_38:
+  Authentication_Demographic_Address_With_fra and ara_for VID_smoke_pos_38:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1474,8 +1499,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $TestData:secondary_lang_code$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1500,7 +1526,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Address Authentication_With_fra_For VID_smoke_pos_39:
+  Authentication_Demographic_Address_With_fra_For VID_smoke_pos_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1533,8 +1559,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
       identityReq.languagecity0: $TestData:primary_lang_code$
       identityReq.languagecity1: $REMOVE$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1559,7 +1586,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
        
-  Address Authentication_With_ara_smoke_pos_40:
+  Authentication_Demographic_Address_With_ara_smoke_pos_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1592,8 +1619,9 @@ testdata:
       identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
       identityReq.languagecity0: $TestData:secondary_lang_code$
       identityReq.languagecity1: $REMOVE$
-      identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:secondary_lang_code$      
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:secondary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$
       output.1.response.y.responseTime: $TIMESTAMP$

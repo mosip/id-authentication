@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.io.File;
@@ -27,7 +26,7 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
  * @author Vignesh
  *
  */
-public class OutputValidationUtil extends IdaScriptsUtil{
+public class OutputValidationUtil extends AuthTestsUtil{
 
 	private static final Logger OUTPUTVALIDATION_LOGGER = Logger.getLogger(OutputValidationUtil.class);
 	
@@ -355,7 +354,7 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 	 */
 	public static void performTokenIdOper(String uin, String tspId, String tokenId) {
 		File file = new File(
-				new File("./" + RunConfig.getSrcPath() + RunConfigUtil.getTokenIdPropertyPath()).getAbsolutePath());
+				new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.getTokenIdPropertyPath()).getAbsolutePath());
 		if (file.exists()) {
 			if (!getPropertyFromFilePath(file.getAbsolutePath()).containsKey(uin + "." + tspId)) {
 				Map<String, String> map = getPropertyAsMap(file.getAbsolutePath());
@@ -369,4 +368,3 @@ public class OutputValidationUtil extends IdaScriptsUtil{
 		}
 	}
 }
-

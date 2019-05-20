@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -108,6 +110,9 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private Utilities utility;
 
+	@Autowired
+	private ABISHandlerUtil abisHandlerUtil;
+
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -115,8 +120,8 @@ public class MessageNotificationServiceImpl
 	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
-	
-	
+
+
 
 	/** The email id. */
 	private String emailId;
@@ -290,8 +295,8 @@ public class MessageNotificationServiceImpl
 	 * @return the template json
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException 
-	 * @throws IdRepoAppException 
+	 * @throws ApisResourceAccessException
+	 * @throws IdRepoAppException
 	 */
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
 			throws IOException, ApisResourceAccessException {
@@ -314,6 +319,8 @@ public class MessageNotificationServiceImpl
 		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
+		} else{
+			setAttributes(demographicInfo, attributes, regType);
 		}
 
 		return attributes;
@@ -339,7 +346,7 @@ public class MessageNotificationServiceImpl
 		pathsegments.add(uin.toString());
 		IdResponseDTO response = null;
 		try {
-			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "", "",
+			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, "", "",
 					IdResponseDTO.class);
 
 			if (response == null || response.getResponse() == null) {

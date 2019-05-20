@@ -7,19 +7,22 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
-import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
-import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisIdentifyResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisPingRequestDto;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisPingResponseDto;
 
 /**
  * The Interface AbisService.
- * @Author Kiran
+ *  @author M1048860 Kiran Raj
  */
 @Service
 public interface AbisService {
-	
+
+
 	/**
 	 * Insert.
 	 *
@@ -30,24 +33,29 @@ public interface AbisService {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
+	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto);
 
 	/**
 	 * Perform dedupe.
 	 *
 	 * @param identifyRequest the identify request
-	 * @return the identify response dto
+	 * @return the abis identify response dto
 	 * @throws ApisResourceAccessException the apis resource access exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
-			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
-	
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest);
 	/**
 	 * Delete.
 	 */
 	public void delete();
+
+	/**
+	 * Ping.
+	 *
+	 * @param abisPingRequestDto the abis ping request dto
+	 * @return the abis ping response dto
+	 */
+	AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto);
 }

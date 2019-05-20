@@ -47,9 +47,6 @@ public class RegistrationSyncExceptionHandler {
 	private Environment env;
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
-	@Autowired
-	SignatureUtil signatureUtil;
-
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationSyncExceptionHandler.class);
 
@@ -139,11 +136,10 @@ public class RegistrationSyncExceptionHandler {
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().create();
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
-		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(gson.toJson(response));
+		//HttpHeaders headers = new HttpHeaders();
+		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
 
-		//return gson.toJson(response);
 	}
 
 

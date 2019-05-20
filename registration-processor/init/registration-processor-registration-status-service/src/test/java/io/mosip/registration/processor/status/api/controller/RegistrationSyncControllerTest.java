@@ -34,7 +34,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.auth.adapter.filter.AuthFilter;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
@@ -107,16 +106,11 @@ public class RegistrationSyncControllerTest {
 	RegistrationSyncRequestValidator registrationSyncRequestValidator;
 
 	Gson gson = new GsonBuilder().serializeNulls().create();
-	@Mock
-	SignatureUtil signatureUtil;
-	@Mock
-	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
+
 
 	@Autowired
 	private WebApplicationContext wac;
 
-	@Mock
-	AuthFilter filter;
 	/**
 	 * Sets the up.
 	 *
@@ -161,11 +155,10 @@ public class RegistrationSyncControllerTest {
 		syncResponseDtoList.add(syncResponseFailureDto);
 
 
-		signatureResponse=Mockito.mock(SignatureResponse.class);
+	/*	signatureResponse=Mockito.mock(SignatureResponse.class);
 		when(signatureUtil.signResponse(Mockito.any(String.class))).thenReturn(signatureResponse);
 		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
-
-		this.mockMvc = webAppContextSetup (this.wac).addFilters(filter).build();
+*/
 
 	}
 
@@ -176,7 +169,6 @@ public class RegistrationSyncControllerTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 		Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(registrationSyncRequestDTO);
@@ -197,7 +189,6 @@ public class RegistrationSyncControllerTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);

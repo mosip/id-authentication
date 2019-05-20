@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
@@ -84,7 +84,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIndividual();
 	}
 
@@ -172,7 +172,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 					+ objectData.get("year").toString().split("T")[0] +"-12-31' and lang_code = '"
 					+ objectData.get("langcode") + "'";
 
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query);
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response

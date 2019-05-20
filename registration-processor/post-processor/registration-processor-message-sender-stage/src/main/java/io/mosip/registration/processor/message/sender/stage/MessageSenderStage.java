@@ -35,6 +35,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -80,7 +82,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
  */
 @RefreshScope
 @Service
-public class MessageSenderStage extends MosipVerticleManager {
+public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MessageSenderStage.class);
@@ -136,9 +138,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The service. */
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
-	
+
 	@Autowired
-	private TransactionService<TransactionDto> transactionStatusService; 
+	private TransactionService<TransactionDto> transactionStatusService;
 
 	/** The Constant SMS_TYPE. */
 	private static final String SMS_TYPE = "SMS";
@@ -169,12 +171,31 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
+	/** The port. */
+	@Value("${server.port}")
+	private String port;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
+	@Override
+	public void start() {
+		router.setRoute(this.postUrl(vertx, MessageBusAddress.MESSAGE_SENDER_BUS, null));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*

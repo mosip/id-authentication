@@ -33,7 +33,7 @@ public class BioDedupeController {
 
 	/** Token validator class */
 	@Autowired
-	TokenValidator tokenValidator;
+    private TokenValidator tokenValidator;
 	
 	/**
 	 * Gets the file.
@@ -50,7 +50,7 @@ public class BioDedupeController {
 	public ResponseEntity<byte[]> getFile(@PathVariable("regId") String regId,
 			@CookieValue(value = "Authorization", required = true) String token) {
 
-		tokenValidator.validate("Authorization=" + token, "packetgenerator");
+		tokenValidator.validate("Authorization=" + token, "biodedupe");
 		byte[] file = bioDedupeService.getFile(regId);
 		return ResponseEntity.status(HttpStatus.OK).body(file);
 

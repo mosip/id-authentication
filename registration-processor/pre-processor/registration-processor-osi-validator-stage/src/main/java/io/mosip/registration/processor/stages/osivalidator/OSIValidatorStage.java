@@ -13,6 +13,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -38,7 +40,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class OSIValidatorStage.
  */
 @Service
-public class OSIValidatorStage extends MosipVerticleManager {
+public class OSIValidatorStage extends MosipVerticleAPIManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -61,12 +63,22 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	UMCValidator umcValidator;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
+
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
 
 	private String description = "";
 
 	private String code;
+
+	private MosipEventBus mosipEventBus = null;
 
 	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
 
@@ -76,8 +88,15 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
+	}
+
+	@Override
+	public void start() {
+		router.setRoute(
+				this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*

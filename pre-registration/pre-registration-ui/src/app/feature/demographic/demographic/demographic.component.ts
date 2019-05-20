@@ -100,6 +100,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   residenceStatus: any;
   message = {};
   config = {};
+  consentMessage :any;
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -194,6 +195,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     this.config = this.configService.getConfig();
     this.setConfig();
     await this.getPrimaryLabels();
+    await this.getConsentMessage();
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
@@ -236,6 +238,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
+private getConsentMessage() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGuidelineTemplate('consent').subscribe(response => {
+        console.log(response);
+        this.consentMessage = response['response']['templates'][0].fileText;
+        resolve(true);
+      });
+    });
+  }
   /**
    * @description This method do the basic initialization,
    * if user is opt for updation or creating the new applicaton
@@ -270,7 +281,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         case: 'CONSENTPOPUP',
         title: this.demographiclabels.consent.title,
         subtitle: this.demographiclabels.consent.subtitle,
-        message: this.demographiclabels.consent.message,
+        message: this.consentMessage,
         checkCondition: this.demographiclabels.consent.checkCondition,
         acceptButton: this.demographiclabels.consent.acceptButton,
         alertMessageFirst: this.demographiclabels.consent.alertMessageFirst,
@@ -384,7 +395,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
    */
   private async setLocations() {
     await this.getLocationMetadataHirearchy(); //MOR
-    console.log('this.uppermostLocationHierarchy', this.uppermostLocationHierarchy);
 
     this.selectedLocationCode = [
       this.uppermostLocationHierarchy,
@@ -405,9 +415,10 @@ export class DemographicComponent implements OnInit, OnDestroy {
         const element = elements[elementsIndex];
         const language = this.languages[elementsIndex];
         await this.getLocationImmediateHierearchy(language, parentLocationCode, element, currentLocationCode);
-        console.log('IMMEDIATE HIER AFTER AWAIT : ', element);
       }
     }
+
+    this.dataIncomingSuccessful = true;
   }
 
   /**
@@ -455,7 +466,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: '',
         addressLine3Secondary: ''
       };
-      this.dataIncomingSuccessful = true;
+      // this.dataIncomingSuccessful = true;
     } else {
       let index = 0;
       let secondaryIndex = 1;
@@ -491,7 +502,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
-      this.dataIncomingSuccessful = true;
+      // this.dataIncomingSuccessful = true;
     }
   }
 
@@ -506,7 +517,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise(resolve => {
       this.dataStorageService.getGenderDetails().subscribe(
         response => {
-          console.log(response);
           if (response[appConstants.NESTED_ERROR]) {
             this.onError();
           } else {
@@ -595,7 +605,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       for (let index = 0; index < currentLocationHierarchies.length; index++) {
         const currentLocationHierarchy = currentLocationHierarchies[index];
         currentLocationHierarchy.filter(currentLocationHierarchy => {
-          console.log('currentLocationHierarchy', currentLocationHierarchy);
           if (currentLocationHierarchy.valueCode === event.value) {
             this.addCodeValue(currentLocationHierarchy);
           }
@@ -616,7 +625,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       valueName: element.valueName,
       languageCode: element.languageCode
     });
-    console.log('code value', this.codeValue);
   }
 
   /**
@@ -686,7 +694,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onEntityChange(entity: any, event?: MatButtonToggleChange) {
     if (event) {
       entity.forEach(element => {
-        console.log('GENDER ELEMENT', element);
         element.filter((element: any) => {
           if (event.value === element.code) {
             const codeValue: CodeValueModal = {
@@ -808,7 +815,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
-            this.transUserForm.controls[toControl].patchValue('can not be transliterated');
+            // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
             this.onError();
           }
         },
@@ -845,7 +852,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    console.log('this.dataIncomingSuccessful', this.dataIncomingSuccessful);
+    console.log('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
 
     if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
@@ -906,27 +913,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private onModification(request: ResponseModel) {
-    console.log(' && this.dataIncomingSuccessful before if', this.dataIncomingSuccessful);
-
-    if (this.dataIncomingSuccessful) {
-      console.log(' && this.dataIncomingSuccessful', this.dataIncomingSuccessful);
-
-      this.regService.updateUser(
-        this.step,
-        new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
-      );
-      this.bookingService.updateNameList(this.step, {
-        fullName: this.userForm.controls[this.formControlNames.fullName].value,
-        fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
-        preRegId: this.preRegId,
-        postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
-        regDto: this.bookingService.getNameList()[0].regDto
-      });
-
-      console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
-      console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
-      console.log('GET User Array On UPDATIOn', this.regService.getUsers());
-    }
+    this.regService.updateUser(
+      this.step,
+      new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
+    );
+    this.bookingService.updateNameList(this.step, {
+      fullName: this.userForm.controls[this.formControlNames.fullName].value,
+      fullNameSecondaryLang: this.transUserForm.controls[this.formControlNames.fullNameSecondary].value,
+      preRegId: this.preRegId,
+      postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
+      regDto: this.bookingService.getNameList()[0].regDto
+    });
+    // }
   }
 
   /**
@@ -946,9 +944,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       preRegId: this.preRegId,
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
-    console.log('GET NAME LIST On ADDITON', this.bookingService.getNameList());
-    console.log('CODE VALUE ON ADDITON', this.codeValue);
-    console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
   /**

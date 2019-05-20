@@ -3,7 +3,7 @@ errors:
   InvalidUIN:
     errorCode: IDA-MLC-002
     errorMessage: Invalid UIN
-    actionMessage: Please retry with correct UIN
+    actionMessage: Please retry with the correct UIN
   DeactivatedUIN:
     errorCode: IDA-MLC-003
     errorMessage: UIN has been deactivated
@@ -17,16 +17,20 @@ errors:
     errorMessage: Expired VID
   RequestTimeGT24HR:
     errorCode: IDA-MLC-001
-    errorMessage: Request to be received at MOSIP within 24 hrs
-    actionMessage: Please send the request within 24 hrs
+    errorMessage: Request to be received at MOSIP within 30 minutes
+    actionMessage: Please send the request within 30 minutes
   RequestTimeLT24HR:
     errorCode: IDA-MLC-001
-    errorMessage: Request to be received at MOSIP within 24 hrs
-    actionMessage: Please send the request within 24 hrs
+    errorMessage: Request to be received at MOSIP within 30 minutes
+    actionMessage: Please send the request within 30 minutes
   RequestTimeIsFuture:
     errorCode: IDA-MLC-001
-    errorMessage: Request to be received at MOSIP within 24 hrs
-    actionMessage: Please send the request within 24 hrs
+    errorMessage: Request to be received at MOSIP within 30 minutes
+    actionMessage: Please send the request within 30 minutes
+  RequestTimeIsPast:
+    errorCode: IDA-MLC-001
+    errorMessage: Request to be received at MOSIP within 30 minutes
+    actionMessage: Please send the request within 30 minutes
   InvalidId:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - id 
@@ -80,10 +84,10 @@ errors:
     errorMessage: No authentication type selected 
   PolicyWithoutBioFinger:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-Finger-authentiation usage not allowed as per policy
+    errorMessage: Finger-authentiation usage not allowed as per policy
   PolicyWithoutBioIris:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-Iris-authentiation usage not allowed as per policy
+    errorMessage: Iris-authentiation usage not allowed as per policy
   PolicyWithoutDemo:
     errorCode: IDA-MPA-006
     errorMessage: DEMO-authentiation usage not allowed as per policy 
@@ -115,7 +119,7 @@ errors:
     errorCode: IDA-MLC-007
     errorMessage: Request could not be processed. Please try again
   NoOTPChannel:
-    errorCode: IDA-OTA-009
+    errorCode: IDA-OTA-008
     errorMessage: OTP Notification Channel not provided
   OTPFlodding:
     errorCode: IDA-OTA-002
@@ -179,5 +183,38 @@ errors:
     errorCode: IDA-BIA-001
     errorMessage: Biometric data – FID did not match
     actionMessage: Please give your biometrics again
-    
-    
+  Demo_GenderMismatch:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data gender in ara did not match
+    actionMessage: Please re-enter your gender in ara
+  MisssingGenderInMosipDB:
+    errorCode: IDA-DEA-003
+    errorMessage: Demographic data gender in ara not available in database
+  EmailIdMismatch:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data emailId did not match
+  AgeMismatch:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data age did not match
+    actionMessage: Please re-enter your age
+  InvalidOTPChannel:
+    errorCode: IDA-MLC-009
+    errorMessage: $REGEXP:Invalid Input Parameter - otpChannel.*$
+  TxnIDMismatch:
+    errorCode: IDA-OTA-005
+    errorMessage: Input transactionID does not match transactionID of OTP Request
+  InvalidOTP:
+    errorCode: IDA-OTA-004
+    errorMessage: OTP is invalid
+  OTPAttempExceeds:
+    errorCode: IDA-OTA-007
+    errorMessage: UIN is locked for OTP validation due to exceeding no of invalid OTP trials
+  OTPExpired:
+    errorCode: IDA-OTA-003
+    errorMessage: OTP has expired
+  DemoAuthTypeForInternal:
+    errorCode: IDA-MPA-006
+    errorMessage: demo-authentiation usage not allowed as per policy
+    actionMessage: Please use other Authentication Types in the request
+  
+  

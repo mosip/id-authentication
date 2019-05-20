@@ -263,6 +263,7 @@
     left: 0;
     padding-top: 10px;
     display: flex;
+    z-index:22;
 }
 .spacer {
     flex: 1 1 auto;

@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -22,8 +21,9 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 
 /**
  * Test to generate VID for UIN
@@ -31,7 +31,7 @@ import io.mosip.authentication.fw.util.RunConfig;
  * @author Athila
  *
  */
-public class CreateVID extends IdaScriptsUtil implements ITest {
+public class CreateVID extends AuthTestsUtil implements ITest {
 
 	private static final Logger logger = Logger.getLogger(CreateVID.class);
 	protected static String testCaseName = "";
@@ -67,7 +67,8 @@ public class CreateVID extends IdaScriptsUtil implements ITest {
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 	}
 
 	/**
@@ -79,8 +80,8 @@ public class CreateVID extends IdaScriptsUtil implements ITest {
 	 */
 	@Test
 	public void generateVidForUin() {
-		Properties prop = getPropertyFromFilePath(new File("./" + RunConfig.getSrcPath() + "ida/"
-				+ RunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
+		Properties prop = getPropertyFromFilePath(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
+				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
 		for (String str : prop.stringPropertyNames()) {
@@ -89,14 +90,14 @@ public class CreateVID extends IdaScriptsUtil implements ITest {
 		for (Entry<String, String> entry : uinMap.entrySet()) {
 			if (!(entry.getValue().contains("NoVID") || entry.getValue().contains("Deactivated")
 					|| entry.getValue().contains("novid"))) {
-				String url = RunConfig.getEndPointUrl() + RunConfig.getVidGenPath();
+				String url = RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getVidGenPath();
 				url = url.replace("$uin$", entry.getKey());
 				String vidJson = getResponse(url);
 				String vid = JsonPrecondtion.getValueFromJson(vidJson, "response.vid");
 				vidMap.put(vid, entry.getKey());
 			}
 		}
-		generateMappingDic(new File("./" + RunConfig.getSrcPath() + "ida/" + RunConfig.getTestDataFolderName()
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
 				+ "/RunConfig/vid.properties").getAbsolutePath(), vidMap);
 	}
 
@@ -137,9 +138,9 @@ public class CreateVID extends IdaScriptsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, CreateVID.testCaseName);
+			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
 }
-

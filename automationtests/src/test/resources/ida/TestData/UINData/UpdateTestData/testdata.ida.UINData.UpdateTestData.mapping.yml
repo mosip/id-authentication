@@ -4,6 +4,7 @@ testdata:
       registrationId: 278476573600025+$YYYYMMddHHmmss$
       status: DEACTIVATED
       timestamp: $TIMESTAMPZ$
+      UIN: LONG:+$UIN$
     output.output-1-expected-res:
       output.1.res.status: DEACTIVATED
       output.1.res.timestamp: $IGNORE$

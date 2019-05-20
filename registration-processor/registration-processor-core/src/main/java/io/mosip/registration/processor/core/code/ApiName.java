@@ -58,6 +58,9 @@ public enum ApiName {
 	/** The idrepository. */
 	IDREPOSITORY,
 
+	/** The idrepository get id by uin. */
+	IDREPOGETIDBYUIN,
+
 	/** The uingenerator. */
 	UINGENERATOR,
 
@@ -70,16 +73,16 @@ public enum ApiName {
 	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
 
-	/** The Device history **/
+	/**  The Device history *. */
 	DEVICESHISTORIES,
 
-	/** The Reg center device history **/
+	/**  The Reg center device history *. */
 	REGISTRATIONCENTERDEVICEHISTORY,
 
-	/** The registration center timestamp **/
+	/**  The registration center timestamp *. */
 	REGISTRATIONCENTERTIMESTAMP,
 
-	/** The registration connector **/
+	/**  The registration connector *. */
 	REGISTRATIONCONNECTOR,
 
 	/** The fullname. */
@@ -152,28 +155,32 @@ public enum ApiName {
 
 	SYNCSERVICE,
 
+	/** The encryptionservice. */
 	ENCRYPTIONSERVICE,
 
+	/** The packetreceiver. */
 	PACKETRECEIVER,
 
-	/** The decryption api from DMZ **/
+	/**  The decryption api from DMZ *. */
 	DMZCRYPTOMANAGERDECRYPT,
 
-	/** The AUDIT api from DMZ **/
+	/**  The AUDIT api from DMZ *. */
 	DMZAUDIT,
 
 	/** The centerdetails. */
 	CENTERDETAILS,
 
 	/** The machinedetails. */
-	MACHINEDETAILS, 
-	
+	MACHINEDETAILS,
+
 	/** The external service. */
 	 EISERVICE,
-	 
-	 RIDGENERATION,
 
-	 RETRIEVEIDENTITY,
+	/** The ridgeneration. */
+	RIDGENERATION,
+
+    /** The retrieveidentity. */
+    RETRIEVEIDENTITY,
 
 	 RETRIEVEIDENTITYFROMRID;
 

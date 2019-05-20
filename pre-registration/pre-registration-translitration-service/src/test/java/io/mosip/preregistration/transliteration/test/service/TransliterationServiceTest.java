@@ -77,10 +77,10 @@ public class TransliterationServiceTest {
 	String times = null;
 	MainResponseDTO<TransliterationResponseDTO> responseDTO = null;
 	
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
-	@Value("${id}")
+	@Value("${mosip.pre-registration.transliteration.transliterate.id}")
 	String idUrl;
 
 	private Map<String, String> reqDateRange = new HashMap<>();

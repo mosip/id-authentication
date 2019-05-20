@@ -1,5 +1,5 @@
 testdata:
-  Face_Auth_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos:
+  Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -37,7 +37,7 @@ testdata:
       moduleName: $TestData:audit_log_face_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Face_Auth_With_requestedAuth_set_bio_true_when_bio_Face_Auth_selected_in_ploicy_Pos:
+  Authentication_Biometric_Face_With_requestedAuth_set_bio_true_when_bio_Authentication_Biometric_Face_selected_in_ploicy_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -75,7 +75,7 @@ testdata:
       moduleName: $TestData:audit_log_face_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Face_Auth_With_Valid_Request_Where_UIN_Not_Having_Bio_data_In_DB_Neg:
+  Authentication_Biometric_Face_With_Valid_Request_Where_UIN_Not_Having_Bio_data_In_DB_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -98,7 +98,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:MisssingBioInMosipDB:errorMessage$
       output.1.response.error.actionMessage: $errors:MisssingBioInMosipDB:actionMessage$
    
-  Face_Auth_With_Valid_BioType_FID_and_Invalid_BioSubType_Left_Index_Neg:
+  Authentication_Biometric_Face_With_Valid_BioType_FID_and_Invalid_BioSubType_Left_Index_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -120,7 +120,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioSubtype:errorMessage$
       
-  Face_Auth_With_Different_transactionID_In_Request_and_Identity_block_Neg:
+  Authentication_Biometric_Face_With_Different_transactionID_In_Request_and_Identity_block_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -142,7 +142,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_With_future_requestTime_In_Request_Neg:
+  Authentication_Biometric_Face_With_future_requestTime_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -165,7 +165,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:RequestTimeIsFuture:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeIsFuture:actionMessage$
       
-  Face_Auth_With_MoreThan_one_FaceRecord_In_Identity_Neg:
+  Authentication_Biometric_Face_With_MoreThan_one_FaceRecord_In_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -194,7 +194,7 @@ testdata:
       output.1.response.error.errorCode: $errors:FaceExceed1:errorCode$
       output.1.response.error.errorMessage: $errors:FaceExceed1:errorMessage$
       
-  Face_Auth_With_requestedAuth_all_set_false_Neg:
+  Authentication_Biometric_Face_With_requestedAuth_all_set_false_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -220,7 +220,7 @@ testdata:
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
       
-  Face_Auth_With_requestTime_LT24HR_In_Request_Neg:
+  Authentication_Biometric_Face_With_requestTime_LT24HR_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -243,7 +243,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeLT24HR:actionMessage$
       
-  Face_Auth_With_requestTime_LT25HR_In_Request_Neg:
+  Authentication_Biometric_Face_With_requestTime_LT25HR_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -266,7 +266,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeLT24HR:actionMessage$
       
-  Face_Auth_With_requestedAuth_set_bio_false_other_true_Neg:
+  Authentication_Biometric_Face_With_requestedAuth_set_bio_false_other_true_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -292,7 +292,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_With_requestedAuth_bio_otherThan_true_or_false_Neg:
+  Authentication_Biometric_Face_With_requestedAuth_bio_otherThan_true_or_false_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -315,7 +315,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_With_requestedAuth_set_bio_true_when_bio_Face_Auth_not_selected_in_ploicy_Neg:
+  Authentication_Biometric_Face_With_requestedAuth_set_bio_true_when_bio_Authentication_Biometric_Face_not_selected_in_ploicy_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:NOFACEPIDMLK$
     input.bio-auth-request:
@@ -338,7 +338,7 @@ testdata:
       output.1.response.error.errorCode: $errors:PolicyWithoutBioFace:errorCode$
       output.1.response.error.errorMessage: $errors:PolicyWithoutBioFace:errorMessage$
       
-  Face_Auth_With_Valid_individualId_UIN_and_individualIdType_as_VID_Neg:
+  Authentication_Biometric_Face_With_Valid_individualId_UIN_and_individualIdType_as_VID_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -363,7 +363,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.error.actionMessage: $errors:InvalidVID:actionMessage$
       
-  Face_Auth_Without_Version_In_Request_Neg:
+  Authentication_Biometric_Face_Without_Version_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -388,7 +388,7 @@ testdata:
       output.1.response.error.errorCode: $errors:Missingversion:errorCode$
       output.1.response.error.errorMessage: $errors:Missingversion:errorMessage$
       
-  Face_Auth_Without_bioSubType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_bioSubType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -412,7 +412,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioSubtype:errorMessage$
       
-  Face_Auth_Without_bioType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_bioType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -436,7 +436,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioType:errorMessage$
       
-  Face_Auth_Without_bioValue_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_bioValue_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -460,7 +460,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_Without_consentObtained_Neg:
+  Authentication_Biometric_Face_Without_consentObtained_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -485,7 +485,7 @@ testdata:
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
       
-  Face_Auth_Without_deviceCode_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_deviceCode_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -509,7 +509,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioDeviceCode:errorMessage$
       
-  Face_Auth_Without_deviceProviderID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_deviceProviderID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -533,7 +533,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
       
-  Face_Auth_Without_Id_In_Request_Neg:
+  Authentication_Biometric_Face_Without_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -558,7 +558,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingId:errorMessage$
       
-  Face_Auth_Without_individualId_Neg:
+  Authentication_Biometric_Face_Without_individualId_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -582,7 +582,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.error.errorMessage: $errors:MissingUIN:errorMessage$
       
-  Face_Auth_Without_individualIdType_Neg:
+  Authentication_Biometric_Face_Without_individualIdType_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -606,7 +606,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingindividualIdType:errorMessage$
       
-  Face_Auth_Without_requestTime_In_Request_Neg:
+  Authentication_Biometric_Face_Without_requestTime_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -630,7 +630,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
       
-  Face_Auth_Without_timestamp_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_timestamp_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -654,7 +654,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
       
-  Face_Auth_Without_transactionID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Without_transactionID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -678,7 +678,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
       
-  Face_Auth_Without_bio_requestAuth_In_request_Neg:
+  Authentication_Biometric_Face_Without_bio_requestAuth_In_request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -702,7 +702,7 @@ testdata:
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
       
-  Face_Auth_Without_transactionID_In_Request_Neg:
+  Authentication_Biometric_Face_Without_transactionID_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -726,7 +726,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingtransactionID:errorMessage$
       
-  Face_Auth_With_Invalid_Version_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_Version_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -751,7 +751,7 @@ testdata:
       output.1.response.error.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.error.errorMessage: $errors:Invalidversion:errorMessage$
       
-  Face_Auth_With_Invalid_bioSubType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_bioSubType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -775,7 +775,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioSubtype:errorMessage$
       
-  Face_Auth_With_Invalid_bioType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_bioType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -799,7 +799,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidBioType:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioType:errorMessage$
       
-  Face_Auth_With_Invalid_bioValue_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_bioValue_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -824,7 +824,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:BiometricFaceMismatch:errorMessage$
       output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$
       
-  Face_Auth_With_Invalid_consentObtained_neither_true_nor_false_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_consentObtained_neither_true_nor_false_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -849,7 +849,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_With_Invalid_consentObtained_false_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_consentObtained_false_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -874,7 +874,7 @@ testdata:
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
       
-  Face_Auth_With_Invalid_deviceCode_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_deviceCode_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -898,7 +898,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioDeviceCode:errorMessage$
       
-  Face_Auth_With_Invalid_deviceProviderID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_deviceProviderID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -922,7 +922,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidDeviceProviderId:errorMessage$
       
-  Face_Auth_With_Invalid_Id_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -947,7 +947,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidId:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidId:errorMessage$
       
-  Face_Auth_With_Invalid_individualId_UIN_Neg:
+  Authentication_Biometric_Face_With_Invalid_individualId_UIN_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -971,7 +971,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidUIN:errorMessage$
       
-  Face_Auth_With_Invalid_individualId_VID_Neg:
+  Authentication_Biometric_Face_With_Invalid_individualId_VID_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -995,7 +995,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
   
-  Face_Auth_With_Invalid_individualId_DeactivedUIN_Neg:
+  Authentication_Biometric_Face_With_Invalid_individualId_DeactivedUIN_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1019,7 +1019,7 @@ testdata:
       output.1.response.error.errorMessage: $errors:DeactivatedUIN:errorMessage$
       output.1.response.error.actionMessage: $errors:DeactivatedUIN:actionMessage$
           
-  Face_Auth_With_Invalid_individualIdType_Neg:
+  Authentication_Biometric_Face_With_Invalid_individualIdType_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1043,7 +1043,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       
-  Face_Auth_With_Invalid_requestTime_format_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_requestTime_format_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1067,7 +1067,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidrequestTime:errorMessage$
       
-  Face_Auth_With_Invalid_timestamp_format_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_timestamp_format_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1091,7 +1091,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidIdentityTimestamp:errorMessage$
       
-  Face_Auth_With_Invalid_transactionID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_With_Invalid_transactionID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1115,7 +1115,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidReqtxnID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidReqtxnID:errorMessage$
       
-  Face_Auth_With_Invalid_transactionID_In_Request_Neg:
+  Authentication_Biometric_Face_With_Invalid_transactionID_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1139,7 +1139,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidtransactionID:errorMessage$
       
-  Face_Auth_Null_Version_In_Request_Neg:
+  Authentication_Biometric_Face_Null_Version_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1164,7 +1164,7 @@ testdata:
       output.1.response.error.errorCode: $errors:Missingversion:errorCode$
       output.1.response.error.errorMessage: $errors:Missingversion:errorMessage$
       
-  Face_Auth_Null_bioSubType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_bioSubType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1188,7 +1188,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioSubtype:errorMessage$
       
-  Face_Auth_Null_bioType_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_bioType_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1212,7 +1212,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioType:errorMessage$
       
-  Face_Auth_Null_bioValue_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_bioValue_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1236,7 +1236,7 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
-  Face_Auth_Null_consentObtained_Neg:
+  Authentication_Biometric_Face_Null_consentObtained_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1261,7 +1261,7 @@ testdata:
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
       
-  Face_Auth_Null_deviceCode_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_deviceCode_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1285,7 +1285,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioDeviceCode:errorMessage$
       
-  Face_Auth_Null_deviceProviderID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_deviceProviderID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1309,7 +1309,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
       
-  Face_Auth_Null_Id_In_Request_Neg:
+  Authentication_Biometric_Face_Null_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1334,7 +1334,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingId:errorMessage$
       
-  Face_Auth_Null_individualId_Neg:
+  Authentication_Biometric_Face_Null_individualId_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1358,7 +1358,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.error.errorMessage: $errors:MissingUIN:errorMessage$
       
-  Face_Auth_Null_individualIdType_Neg:
+  Authentication_Biometric_Face_Null_individualIdType_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1382,7 +1382,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingindividualIdType:errorMessage$
       
-  Face_Auth_Null_requestTime_In_Request_Neg:
+  Authentication_Biometric_Face_Null_requestTime_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1406,7 +1406,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
       
-  Face_Auth_Null_timestamp_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_timestamp_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1430,7 +1430,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
       
-  Face_Auth_Null_transactionID_In_Bio_Identity_Neg:
+  Authentication_Biometric_Face_Null_transactionID_In_Bio_Identity_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1454,7 +1454,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
       
-  Face_Auth_Null_bio_requestAuth_In_request_Neg:
+  Authentication_Biometric_Face_Null_bio_requestAuth_In_request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1478,7 +1478,7 @@ testdata:
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
       
-  Face_Auth_Null_transactionID_In_Request_Neg:
+  Authentication_Biometric_Face_Null_transactionID_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1502,7 +1502,7 @@ testdata:
       output.1.response.error.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingtransactionID:errorMessage$
       
-  Face_Auth_With_FaceRecord_In_Identity_Exceeds_ThresholdValue_Pos:
+  Authentication_Biometric_Face_With_FaceRecord_In_Identity_Exceeds_ThresholdValue_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -1522,7 +1522,7 @@ testdata:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$   
    
-  Face_Auth_With_FaceRecord_In_Identity_NotExceeds_ThresholdValue_Neg:
+  Authentication_Biometric_Face_With_FaceRecord_In_Identity_NotExceeds_ThresholdValue_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:

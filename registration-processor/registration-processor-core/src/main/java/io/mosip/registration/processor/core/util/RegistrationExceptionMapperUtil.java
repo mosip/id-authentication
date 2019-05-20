@@ -111,6 +111,12 @@ public class RegistrationExceptionMapperUtil {
 
 		statusMap.put(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
+
+		statusMap.put(RegistrationExceptionTypeCode.ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
+				RegistrationTransactionStatusCode.REPROCESS);
+		
 		return unmodifiableMap;
 
 	}

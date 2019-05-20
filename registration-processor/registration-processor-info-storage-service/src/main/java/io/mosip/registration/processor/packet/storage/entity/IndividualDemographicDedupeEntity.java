@@ -39,7 +39,7 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "SYSTEM";
 
-	@Column(name = "cr_dtimes", updatable = false, nullable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 
@@ -70,11 +70,11 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	}
 
 	public String getDob() {
-		return dob; //new Date(dob.getTime());
+		return dob; // new Date(dob.getTime());
 	}
 
 	public void setDob(String dob) {
-		this.dob = dob; //new Date(dob.getTime());
+		this.dob = dob; // new Date(dob.getTime());
 	}
 
 	public String getGender() {

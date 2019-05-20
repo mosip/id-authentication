@@ -1,7 +1,6 @@
-
 package io.mosip.authentication.testdata.keywords;
 
-import java.io.File;   
+import java.io.File;    
 import java.text.DateFormat;   
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,7 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedSet;
 import java.util.TimeZone;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -18,7 +20,7 @@ import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidStaticPinDto;
 import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
@@ -33,6 +35,7 @@ import io.mosip.authentication.testdata.TestDataUtil;
  */
 public class IdaKeywordUtil extends KeywordUtil{
 	
+	private static Map<String,String> currentTestData = new HashMap<String,String>();
 	/**
 	 * The method return precondtion message or keyword from yml test data file
 	 * 
@@ -40,9 +43,9 @@ public class IdaKeywordUtil extends KeywordUtil{
 	 */
 	@Override
 	public Map<String, String> precondtionKeywords(Map<String, String> map) {
-		Map<String, String> returnMap = map;
+		TreeMap<String, String> returnMap = getSortedTreeMap(map);
 		boolean flag = false;
-		for (Entry<String, String> entry : map.entrySet()) {
+		for (Entry<String, String> entry : returnMap.entrySet()) {
 			if (entry.getValue().contains("TOKENID") && entry.getValue().startsWith("$TOKENID")) {
 				String[] keys = entry.getValue().split(Pattern.quote("~"));
 				Map<String, String> tempmap = new HashMap<String, String>();
@@ -120,7 +123,11 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String[] keys = keyword.split(":");
 				String jsonFileName = keys[0];
 				String fieldName = keys[1];
-				String val = TestDataUtil.getCurrTestDataDic().get(jsonFileName).get(fieldName);
+				String val=null;
+				if (TestDataUtil.getCurrTestDataDic()!=null && TestDataUtil.getCurrTestDataDic().containsKey(jsonFileName))
+					val = TestDataUtil.getCurrTestDataDic().get(jsonFileName).get(fieldName);
+				else
+					val=currentTestData.get(fieldName).toString();
 				returnMap.put(entry.getKey(), val);
 			} else if (entry.getValue().contains("$") && entry.getValue().startsWith("$idrepo")
 					&& !entry.getValue().contains("+")
@@ -178,23 +185,23 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String type = keys[1];
 				String digit = keys[2];
 				if (type.equals("N"))
-					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
+					returnMap.put(entry.getKey(), AuthTestsUtil.randomize(Integer.parseInt(digit)));
 				if (type.equals("AN"))
-					returnMap.put(entry.getKey(), randomize(Integer.parseInt(digit)));
+					returnMap.put(entry.getKey(), AuthTestsUtil.randomize(Integer.parseInt(digit)));
 			} else if (entry.getValue().contains("%") && entry.getValue().contains(":")
 					&& entry.getValue().startsWith("%$")) {
 				Map<String, String> tempMap = new HashMap<String, String>();
 				String temp = entry.getValue().replaceAll("%", "");
 				String[] getValue = temp.split("_");
-				tempMap.put("txnID", getValue[0]);
-				tempMap.put("tspId", getValue[1]);
+				tempMap.put("uin", getValue[0]);
+				//tempMap.put("tspId", getValue[1]);
 				Map<String, String> tempOut = precondtionKeywords(tempMap);
 				String baseQuery = "select otp from kernel.otp_transaction where id like ";
-				String otpId = "%" + tempOut.get("txnID") + "_" + tempOut.get("tspId") + "%";
-				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[2];
+				String otpId = "%" + tempOut.get("uin")+ "%";
+				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[1];
 				returnMap.put(entry.getKey(), OtpFindQuery);
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
-				IdaScriptsUtil.wait(5000);
+				AuthTestsUtil.wait(5000);
 				String[] tempArray = entry.getValue().split(Pattern.quote("+"));
 				String constantValue = tempArray[0];
 				DateFormat dateFormatter = new SimpleDateFormat("YYYYMMddHHmmss");
@@ -213,7 +220,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 					tempMap.put("text", text);
 				String surceLang = keys[2].replace("$", "");
 				String destLang = keys[3].replace("$", "");
-				String str = IdaScriptsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
+				String str = AuthTestsUtil.languageConverter(tempMap.get("text"), surceLang, destLang);
 				returnMap.put(entry.getKey(), str);
 			}
 			// Keyword to get UIN Number
@@ -270,26 +277,13 @@ public class IdaKeywordUtil extends KeywordUtil{
 				returnMap.put(entry.getKey(), EncryptDecrptUtil.getCbeffEncode(new File(file).getAbsolutePath().toString()));
 			} else
 				returnMap.put(entry.getKey(), entry.getValue());
+			currentTestData=returnMap;
 		}
 		if (flag)
 			precondtionKeywords(returnMap);
 		return returnMap;
 	}
-	
-	/**
-	 * Method return random integer value for number of digit
-	 * 
-	 * @param digit
-	 * @return string
-	 */
-	private String randomize(int digit){
-        Random r = new Random();
-        String randomNumber="";
-        for (int i = 0; i < digit; i++) {
-        	randomNumber=randomNumber+r.nextInt(9);
-        }
-        return randomNumber;
-    }
+
 	/**
 	 * The method generate current timestamp
 	 * 
@@ -391,7 +385,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 						.getAbsolutePath();
 		String messageText = null;
 		if (template.equals("otp.generate.email.fra.message.body")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			if (uin.length() == 10) {
 				messageText = messageText.replace("$maskedUIN/VID$", "XXXXXXXX" + uin.substring(8, uin.length()));
 				messageText = messageText.replace("$uin/vid$", "UIN");
@@ -402,10 +396,24 @@ public class IdaKeywordUtil extends KeywordUtil{
 			}
 		}
 		if (template.equals("otp.generate.email.fra.message.address")) {
-			messageText = IdaScriptsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
+			messageText = AuthTestsUtil.getPropertyFromFilePath(emailNotiConfigFile).get(template).toString();
 			messageText = messageText.replace("$fullname$", fullName);
 		}
 		return messageText;
 	}
+	
+	private TreeMap<String, String> getSortedTreeMap(Map<String, String> map) {
+		SortedSet<String> sortedKey = new TreeSet<>();
+		map.forEach((key, value) -> {
+			sortedKey.add(key);
+		});
+		TreeMap<String, String> sortedMap = new TreeMap<String, String>();
+		sortedKey.forEach(sortKey -> {
+			map.forEach((key, value) -> {
+				if (key.equals(sortKey))
+					sortedMap.put(key, value);
+			});
+		});
+		return sortedMap;
+	}
 }
-

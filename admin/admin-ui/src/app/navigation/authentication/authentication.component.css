@@ -28,7 +28,6 @@
 .valid-timer {
   display: flex;
   justify-content: flex-start;
-  padding-left: 2em;
   padding-top: 2.5em;
 }
 .valid-text{
@@ -40,7 +39,7 @@
   opacity: 0.5;
 }
 .button-container {
-  padding-top: 5em;
+  padding-top:2em; 
   padding-right: 0.4rem;
   display: flex;
   justify-content: flex-end;
@@ -51,4 +50,21 @@
   border-radius: 0;
   padding-left: 25px;
   padding-right: 25px;
+}
+.validation{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular';
+  font-size: 12px;
+  word-spacing: 1px;
+  color: rgb(255, 85, 85);
+  animation: 0.6s valAnim  forwards ;
+}
+@keyframes valAnim {
+  from{
+    opacity: 0;
+    transform: translateY(-8px)
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0px)
+  }
 }

@@ -13,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -55,6 +56,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+	
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -68,6 +73,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	/** The description. */
 	String description = "";
 
@@ -90,6 +99,18 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
+	@Override
+	public void start() {
+
+		router.setRoute(this.postUrl(vertx,MessageBusAddress.EXTERNAL_STAGE_BUS_IN,
+				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
