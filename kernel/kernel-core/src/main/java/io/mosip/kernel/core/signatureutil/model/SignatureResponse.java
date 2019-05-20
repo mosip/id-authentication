@@ -25,5 +25,5 @@ public class SignatureResponse {
 	/**
 	 * response time.
 	 */
-	private LocalDateTime responseTime;
+	private LocalDateTime timestamp;
 }

@@ -307,7 +307,6 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	
 	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
 	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
 	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
@@ -319,7 +318,7 @@ public class SyncDataIntegrationTest {
 	public void setup() {
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 		LocalDateTime localdateTime = LocalDateTime.parse("2018-11-01T01:01:01");
 		LocalTime localTime = LocalTime.parse("09:00:00");
 		applications = new ArrayList<>();
@@ -739,7 +738,7 @@ public class SyncDataIntegrationTest {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUri).queryParam("lastupdatedtimestamp",
 				"1970-01-01T00:00:00.000Z");
 		server.expect(requestTo(builder.toUriString())).andRespond(withSuccess().body(JSON_SYNC_JOB_DEF));
-		when(signatureUtil.sign(Mockito.anyString(),DateUtils.getUTCCurrentDateTimeString())).thenReturn(signResponse);
+		when(signatureUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
 	}
 
 	@Test
@@ -1329,7 +1328,5 @@ public class SyncDataIntegrationTest {
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
 		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
 	}
-
-	
 
 }
