@@ -282,7 +282,7 @@ public class Sync extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
-			test=extent.createTest(testCaseName);
+			
 			
 	/*		if(result.getStatus()==ITestResult.SUCCESS) {
 				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
