@@ -41,9 +41,6 @@ spec:
         ports:
         - name: verticle-port
           containerPort: 8087
-        ports:
-        - name: ssh
-          containerPort: 22
         env:
         - name: active_profile_env
           value: dev
