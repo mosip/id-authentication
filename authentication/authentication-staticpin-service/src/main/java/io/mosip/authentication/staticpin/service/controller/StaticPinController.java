@@ -102,9 +102,7 @@ public class StaticPinController {
 			logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 					STATIC_PIN, "Staticpin Authentication status : " + "");
 			String idType = staticPinRequestDTO.getIndividualIdType();
-			IdType actualidType = idType != null && !idType.isEmpty() && idType.equalsIgnoreCase(IdType.UIN.getType())
-					? IdType.UIN
-					: IdType.VID;
+			IdType actualidType =IdType.getIDTypeOrDefault(idType);
 			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.AUTH_REQUEST_RESPONSE,
 					staticPinRequestDTO.getId() != null && !staticPinRequestDTO.getId().isEmpty()
 							? staticPinRequestDTO.getId()

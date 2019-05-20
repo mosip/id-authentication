@@ -53,9 +53,9 @@ public class RegistrationUpdate {
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
-		properties.load(fileInputStream);
+		/*properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");*/
 	}
 
 	private static String SLASH = "/";

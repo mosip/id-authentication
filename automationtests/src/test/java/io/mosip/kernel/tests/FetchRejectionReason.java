@@ -32,8 +32,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
@@ -62,6 +64,8 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	KernelAuthentication auth=new KernelAuthentication();
+	String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -73,8 +77,8 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
 	/**
@@ -132,7 +136,8 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.getRequestPathPara(FetchRejectionReason_URI,objectData);
+
+				response = applicationLibrary.getRequestPathPara(FetchRejectionReason_URI,objectData,cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));

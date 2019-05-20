@@ -117,12 +117,15 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
     	  
-    	  if(testCaseName.contains("smoke"))
+    	  if(testCaseName.contains("Kernel_GetRegCenterByID_timestamp_smoke"))
     	  {
-    		    String id= (actualRequest.get("id").toString());
+
+    		    /*String id= (actualRequest.get("id").toString());
+
 	            String queryStr = "SELECT master.registration_center.* FROM master.registration_center WHERE id='"+id+"'";
-				boolean valid = kernelDB.validateDataInDb(queryStr);
-			if(valid)
+				boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");*/
+
+			if(status)
 					{
 						finalStatus ="Pass";
 					}
@@ -138,8 +141,6 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

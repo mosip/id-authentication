@@ -18,5 +18,9 @@ public enum RegistrationType {
 	ACTIVATED,
 
 	/** The deactivated. */
-	DEACTIVATED;
+	DEACTIVATED,
+	
+	/** The resupdate. */
+	RESUPDATE;
+	
 }

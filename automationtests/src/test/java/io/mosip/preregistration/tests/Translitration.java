@@ -48,17 +48,16 @@ import io.restassured.response.Response;
  */
 
 public class Translitration extends BaseTestCase implements ITest {
-	Logger logger = Logger.getLogger(Translitration.class);
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	String preID = null;
+	public Logger logger = Logger.getLogger(Translitration.class);
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public String preID = null;
 	protected static String testCaseName = "";
-	static String folder = "preReg";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applnLib = new ApplicationLibrary();
+	public String folder = "preReg";
+	public ApplicationLibrary applnLib = new ApplicationLibrary();
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -66,7 +65,7 @@ public class Translitration extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * Batch job service for expired application
+	 * Translitration
 	 */
 	@Test
 	public void translitrationFromArabicToFranch() {
@@ -96,7 +95,7 @@ public class Translitration extends BaseTestCase implements ITest {
 		translitrationRequest=lib.translitrationRequest(testSuite, toLang, to_field_value,fromLang );
 		translitrationResponse=lib.translitration(translitrationRequest);
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
-		lib.compareValues(from_value, expectedto_field_value);
+		lib.compareValues(expectedto_field_value, from_value);
 	}
 
 	@Override
@@ -104,6 +103,12 @@ public class Translitration extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
+	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
+	
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {

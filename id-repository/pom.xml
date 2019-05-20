@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.11.2</version>
+		<version>0.11.3</version>
 	</parent>
 
 	<groupId>io.mosip.idrepository</groupId>
@@ -49,9 +49,11 @@
 
 		<!-- utilities -->
 		<lombok.version>1.16.18</lombok.version>
-
+		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
+		<powermock.version>2.0.0</powermock.version>
 	</properties>
 
 	<build>
@@ -88,24 +90,25 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
-					<append>true</append>
+					<excludes>
+						<exclude>**/constant/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/entity/**</exclude>
+						<exclude>**/repository/**</exclude>
+						<exclude>**/*BootApplication.class</exclude>
+						<exclude>**/httpfilter/**</exclude>
+					</excludes>
 				</configuration>
 				<executions>
 					<execution>
-						<id>agent-for-ut</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>agent-for-it</id>
-						<goals>
-							<goal>prepare-agent-integration</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>verify</phase>
+						<id>report</id>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>

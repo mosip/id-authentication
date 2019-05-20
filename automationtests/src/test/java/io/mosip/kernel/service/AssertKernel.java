@@ -125,15 +125,20 @@ public class AssertKernel {
 				response.remove(elementToRemove);
 			else {
 				JSONObject responseJson = null;
-				if(response.containsKey("response"))
+
+				if(response.containsKey("response") && response.get("response")!=null)
+					{
 					responseJson = (JSONObject)response.get("response");
-				else if(response.containsKey("request"))
-					responseJson = (JSONObject)response.get("request");
-				if(responseJson!=null)
-				{
-					responseJson.remove(elementToRemove);
+					if(responseJson.containsKey(elementToRemove))responseJson.remove(elementToRemove);
 					response.put("response", responseJson);
-				}
+					}
+				else if(response.containsKey("request") && response.get("request")!=null)
+					{
+					responseJson = (JSONObject)response.get("request");
+					if(responseJson.containsKey(elementToRemove))responseJson.remove(elementToRemove);
+					response.put("request", responseJson);
+					}
+
 			}
 		}
 		

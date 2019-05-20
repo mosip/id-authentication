@@ -58,14 +58,12 @@ public class NotificationServiceUtil {
 	
 	public MainRequestDTO<NotificationDTO> createNotificationDetails(String jsonString) throws JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, JSONException, ParseException {
-		//DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(utcDateTimePattern);
 		log.info("sessionId", "idType", "id", "In createUploadDto method of document service util");
 		MainRequestDTO<NotificationDTO> notificationReqDto = new MainRequestDTO<>();
 		JSONObject notificationData = new JSONObject(jsonString);
 		JSONObject notificationDtoData = (JSONObject) notificationData.get("request");
 		NotificationDTO notififcationDTO = (NotificationDTO) JsonUtils.jsonStringToJavaObject(NotificationDTO.class,
 				notificationDtoData.toString());
-		//LocalDateTime localDateTime = DateUtils.parseToLocalDateTime(notificationData.get("requesttime").toString());
 		notificationReqDto.setId(notificationData.get("id").toString());
 		notificationReqDto.setVersion(notificationData.get("version").toString());
 		notificationReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(notificationData.get("requesttime").toString()) );
@@ -79,8 +77,13 @@ public class NotificationServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		requestMap.put("requesttime",date.toString());
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			requestMap.put("requesttime", date.toString());
+		}
+		else {
+		requestMap.put("requesttime",null);
+		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}

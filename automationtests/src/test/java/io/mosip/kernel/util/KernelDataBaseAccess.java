@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.util;
 
 import java.math.BigInteger;
@@ -25,25 +26,11 @@ public class KernelDataBaseAccess {
 
 	public String env = System.getProperty("env.user");
 
-	public Session getDataBaseConnection() {
-		String kernelDb = null;
-		String masterDb = null;
-		switch (env) {
-		case "dev":
-			kernelDb = "kerneldev.cfg.xml";
-			masterDb = "masterdatadev.cfg.xml";
-			break;
+	public Session getDataBaseConnection(String dbName) {
 
-		case "qa":
-			kernelDb = "kernelqa.cfg.xml";
-			masterDb = "masterdataqa.cfg.xml";
-			break;
-
-		}
-
+		String dbConfigXml = dbName+env+".cfg.xml";
 		try {
-			factory = new Configuration().configure(kernelDb).configure(masterDb).buildSessionFactory();
-
+		factory = new Configuration().configure(dbConfigXml).buildSessionFactory();
 		} catch (HibernateException e) {
 			logger.info("Exception in Database Connection with following message: ");
 			logger.info(e.getMessage());
@@ -55,28 +42,33 @@ public class KernelDataBaseAccess {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> getDbData(String queryString) {
+	public List<String> getDbData(String queryString, String dbName) {
 
-		return (List<String>) getDataBaseConnection().createSQLQuery(queryString).list();
+		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 
 	}
+	@SuppressWarnings("unchecked")
+	public List<Object> getData(String queryString, String dbName) {
 
-	public long validateDBCount(String queryStr) {
+		return  getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+
+	}
+	public long validateDBCount(String queryStr, String dbName) {
 		long count = 0;
-		count = ((BigInteger) getDataBaseConnection().createSQLQuery(queryStr).getSingleResult()).longValue();
+		count = ((BigInteger) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryStr).getSingleResult()).longValue();
 		logger.info("obtained objects count from DB is : " + count);
 		return count;
 	}
 
-	public boolean validateDataInDb(String queryString) {
-		int size = getDataBaseConnection().createSQLQuery(queryString).list().size();
+	public boolean validateDataInDb(String queryString, String dbName) {
+		int size = getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list().size();
 		logger.info("Size is : " + size);
 		return (size == 1) ? true : false;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String[]> getArrayData(String queryString) {
-		return (List<String[]>) getDataBaseConnection().createSQLQuery(queryString).list();
+	public List<String[]> getArrayData(String queryString, String dbName) {
+		return (List<String[]>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 	}
 
 	@AfterClass(alwaysRun = true)
@@ -86,4 +78,5 @@ public class KernelDataBaseAccess {
 		session.close();
 		factory.close();
 	}
+
 }

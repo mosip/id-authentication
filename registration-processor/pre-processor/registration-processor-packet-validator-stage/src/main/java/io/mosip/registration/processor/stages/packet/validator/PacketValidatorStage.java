@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
+import io.vertx.core.Future;
 
 /**
  * The Class PacketValidatorStage.
@@ -22,7 +24,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 
 @RefreshScope
 @Service
-public class PacketValidatorStage extends MosipVerticleManager {
+public class PacketValidatorStage extends MosipVerticleAPIManager {
 
 	/** Paacket validate Processor */
 	@Autowired
@@ -31,9 +33,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+	
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	/**
 	 * Deploy verticle.
 	 */
@@ -43,6 +53,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}
 
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.PACKET_VALIDATOR_BUS_IN,
+				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
 	/*
 	 * (non-Javadoc)
 	 *

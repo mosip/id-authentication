@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
+import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -44,6 +46,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
+import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
@@ -60,6 +63,9 @@ public class InternalAuthControllerTest {
 
 	@Mock
 	AuditHelper auditHelper;
+
+	@Mock
+	IdInfoFetcherImpl idInfoFetcher;
 
 	@Mock
 	IdServiceImpl idservice;
@@ -224,6 +230,10 @@ public class InternalAuthControllerTest {
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setPin(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setIndividualId("5134256294");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		authRequestDTO.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ResponseDTO response = new ResponseDTO();
 		response.setAuthStatus(true);
@@ -231,6 +241,8 @@ public class InternalAuthControllerTest {
 		authResponseDTO.setErrors(new ArrayList<>());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
 				.thenReturn(authResponseDTO);
+		Mockito.when(idInfoFetcher.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
+		Mockito.when(idInfoFetcher.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		authController.authenticate(authRequestDTO, error);
 	}
 

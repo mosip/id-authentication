@@ -54,6 +54,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	private static final String READ = "read";
+
 	private static final String REGISTRATION_ID = "registrationId";
 
 	private static final String RETRIEVE_IDENTITY_BY_RID = "retrieveIdentityByRid";
@@ -135,11 +137,11 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
+			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), errors, CREATE);
-			validator.validateUin(uin);
-			DataValidationUtil.validate(errors);
+			validator.validateUin(uin,CREATE);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
@@ -166,7 +168,7 @@ public class IdRepoController {
 		try {
 			IdRepoLogger.setUin(uin);
 			type = validateType(uin, type);
-			validator.validateUin(uin);
+			validator.validateUin(uin,READ);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByUin(uin, type), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(uin, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY, e.getMessage());
@@ -193,11 +195,11 @@ public class IdRepoController {
 			validator.validateRid(rid);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByRid(rid, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(rid, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
+			mosipLogger.error(IdRepoLogger.getRid(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(rid, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
+			mosipLogger.error(IdRepoLogger.getRid(), ID_REPO_CONTROLLER, RETRIEVE_IDENTITY_BY_RID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
@@ -216,11 +218,11 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
+			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), errors, UPDATE);
-			validator.validateUin(uin);
-			DataValidationUtil.validate(errors);
+			validator.validateUin(uin,UPDATE);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());

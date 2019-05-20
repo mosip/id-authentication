@@ -46,7 +46,7 @@ ZIP|Fat Jar + DB|Latest version|The ZIP contains the both fat jar and required t
 [local_policy.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/local_policy.jar)|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 [US_export_policy.jar](https://github.com/mosip/mosip/tree/0.11.0/docs/registration-additional-files/US_export_policy.jar)|NA|NA|Path:C:\Program Files\Java\jre1.8.0_191  Please copy the dll to the ‘JAVA_HOME\jre\lib\security\policy\unlimited\’ file.</br>
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
-mosip-sw-0.11.0.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
+mosip-sw-0.11.2.zip|NA|NA|<br>Please unzip the file and execute the command to run the run.jar</br><br> **“java -jar run.jar”**</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
 kernel-core|NA|0.11.1|Basic core kernel packages.
 kernel-logger-logback|NA|0.11.1|Use for the logging.
