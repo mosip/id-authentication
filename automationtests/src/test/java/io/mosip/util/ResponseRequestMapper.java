@@ -67,7 +67,7 @@ public class ResponseRequestMapper {
 		File[] listOfFolders = folder.listFiles();
 		for (int j = 0; j < listOfFolders.length; j++) {
 			if (listOfFolders[j].isDirectory()) {
-				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
+				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString()) && object.get("testCaseName").toString().contains("smoke")) {
 					logger.info("Testcase name is" + listOfFolders[j].getName());
 					File[] listOfFiles = listOfFolders[j].listFiles();
 					for (File f : listOfFiles) {

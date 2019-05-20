@@ -1,27 +1,2 @@
-{
-    "lengthLessThan29":"",
-	"lengthMoreThan29":"",
-	"wrongDateValue":"",
-	"wrongHourValue":"",
-	"wrongMinuteValue":"",
-	"wrongMonthValue":"",
-	"wrongSecondsValue":"",
-	"wrongSymbols&Numbers":"",
-	"wrongText&Numbers":"",
-	"wrongText&Symbol":"",
-	"wrongYearValue":"",
-	"emptyLangCode":"",
-	"emptyRegID":"",
-	"emptySyncType":"",
-	"emptyTimestamp":"",
-	"emptyVersion":"",
-	"multipewrongRegIds":"",
-	"multipleEmptyLangCodes":"",
-	"sameRegId&ParentRegId":"",
-	"wrongRegId":"",
-	"wrongRegId&WrongLangCode":"",
-	"wrongSyncType":"",
-	"wrongSyncType&LangCode":"",
-	"wrongLangCode":"",
-	"wrongMultipleSyncTypes":""
- }
+{	
+}
