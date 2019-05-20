@@ -317,6 +317,26 @@ public class OSIValidator {
 	private boolean isValidIntroducer(String registrationId)
 			throws IOException, ApisResourceAccessException {
 			
+		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name()) ||
+				(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
+				int age = utility.getApplicantAge(registrationId);
+				int ageThreshold = Integer.parseInt(ageLimit);
+				if (age < ageThreshold) {
+					String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
+					String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
+					Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
+					Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
+					BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
+					BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
+					if (introducerUIN == null && introducerRID == null) {
+						//registrationStatusDto.setStatusCode(RegistrationStatusCode.Failed);
+						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+						return false;
+					}
+			}
+				
+		}
+		
 		int childAgeLimit = Integer.parseInt(ageLimit);
 		int applicantAge = getApplicantAge(registrationId);
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
