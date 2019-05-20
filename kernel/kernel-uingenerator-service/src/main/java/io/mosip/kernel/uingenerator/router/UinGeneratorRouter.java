@@ -22,6 +22,7 @@ import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilException;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.uingenerator.config.UINHealthCheckerhandler;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
@@ -103,7 +104,8 @@ public class UinGeneratorRouter {
 		configureHealthCheckEndpoint(vertx, router, servletPath);
 
 		router.route(environment.getProperty(UinGeneratorConstant.SERVER_SERVLET_PATH) + "/*").handler(
-				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH).setAlwaysAsyncFS(true).setAllowRootFileSystemAccess(true));
+				StaticHandler.create().setCachingEnabled(false).setWebRoot(UinGeneratorConstant.SWAGGER_UI_PATH)
+						.setAlwaysAsyncFS(true).setAllowRootFileSystemAccess(true));
 		return router;
 	}
 
@@ -126,13 +128,15 @@ public class UinGeneratorRouter {
 			UinResponseDto uin = new UinResponseDto();
 			uin = uinGeneratorService.getUin();
 			ResponseWrapper<UinResponseDto> reswrp = new ResponseWrapper<>();
+			String timestamp = DateUtils.getUTCCurrentDateTimeString();
+			reswrp.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 			reswrp.setResponse(uin);
 			reswrp.setErrors(null);
 			String profile = environment.getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE);
-
 			if (!profile.equalsIgnoreCase("test")) {
 				resWrpJsonString = objectMapper.writeValueAsString(reswrp);
-				SignatureResponse cryptoManagerResponseDto=signatureUtil.signResponse(resWrpJsonString);
+
+				SignatureResponse cryptoManagerResponseDto = signatureUtil.sign(resWrpJsonString, timestamp);
 				signedData = cryptoManagerResponseDto.getData();
 			}
 			routingContext.response().putHeader("response-signature", signedData)

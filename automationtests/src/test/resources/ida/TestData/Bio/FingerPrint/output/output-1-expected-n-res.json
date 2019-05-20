@@ -1,0 +1,28 @@
+{
+	"status": "N",
+	"err": [
+		{
+			"errorCode": "IDA-IDV-003",
+			"errorMessage": "Missing Input Parameter - model"
+		}
+	],
+	"txnID": "7404012866",
+	"resTime": "2019-01-25T12:52:13.900+05:30",
+	"info": {
+		"idType": "D",
+		"reqTime": "2019-01-25T12:50:13.013+05:30",
+		"matchInfos": [],
+		"bioInfos": [
+			{
+				"bioType": "irisImg",
+				"deviceInfo": {
+					"deviceId": "123143",
+					"make": "morpho",
+					"model": "steel"
+				}
+			}
+		],
+		"usageData": "0x0000800000000000"
+	},
+	"ver": "$version$"
+}
