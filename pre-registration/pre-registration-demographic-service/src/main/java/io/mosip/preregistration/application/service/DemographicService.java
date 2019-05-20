@@ -334,6 +334,7 @@ public class DemographicService {
 		boolean isSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
+				ValidationUtil.langvalidation(request.getRequest().getLangCode());
 				Map<String, String> requestParamMap = new HashMap<>();
 				requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
 				if (ValidationUtil.requstParamValidator(requestParamMap)) {

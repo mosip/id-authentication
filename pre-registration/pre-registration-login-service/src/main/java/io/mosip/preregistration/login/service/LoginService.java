@@ -149,7 +149,7 @@ public class LoginService {
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
-				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
+				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
 				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
@@ -200,7 +200,7 @@ public class LoginService {
 				
 				ResponseEntity<String> responseEntity = null;
 				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
-				responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
+				responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
 				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=null;
 				validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
@@ -266,7 +266,7 @@ public class LoginService {
 			headersMap.put("Cookie",authHeader);
 			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
 			userId=loginCommonUtil.getUserDetailsFromToken(headersMap);
-			responseEntity=(ResponseEntity<String>) loginCommonUtil.getResponseEntity(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
+			responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);
 			log.info("sessionId", "idType","id","Kernel response: \n"+responseEntity.getBody());
 			List<ServiceError> validationErrorList=null;
 			validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());

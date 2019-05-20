@@ -105,7 +105,7 @@ public class LoginCommonUtil {
 	 * @return ResponseEntity<?>
 	 */
 	
-	public ResponseEntity<?> getResponseEntity(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass){
+	public ResponseEntity<?> callAuthService(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass){
 		log.info("sessionId", "idType", "id", "In getResponseEntity method of Login Common Util");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
@@ -298,7 +298,7 @@ public class LoginCommonUtil {
 
 	public String getUserDetailsFromToken(Map<String,String> authHeader) {
 		String url=sendOtpResourceUrl+"/authorize/validateToken";
-		ResponseEntity<String> response=(ResponseEntity<String>) getResponseEntity(url, HttpMethod.POST, MediaType.APPLICATION_JSON, null, authHeader,String.class);
+		ResponseEntity<String> response=(ResponseEntity<String>) callAuthService(url, HttpMethod.POST, MediaType.APPLICATION_JSON, null, authHeader,String.class);
 		ResponseWrapper<?> responseKernel=requestBodyExchange(response.getBody());
 		if(! (responseKernel.getErrors()==null)) {
 			throw new  LoginServiceException(responseKernel.getErrors(),null);
