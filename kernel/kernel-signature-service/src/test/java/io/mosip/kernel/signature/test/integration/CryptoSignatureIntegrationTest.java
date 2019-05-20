@@ -49,13 +49,13 @@ public class CryptoSignatureIntegrationTest {
 	public void setup() {
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 	}
 
 	@Test
 	@WithUserDetails("reg-processor")
 	public void signResponseSuccess() throws Exception {
-		when(signatureUtil.sign(Mockito.anyString(), DateUtils.getUTCCurrentDateTimeString())).thenReturn(signResponse);
+		when(signatureUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
 		mockMvc.perform(post("/sign").contentType(MediaType.APPLICATION_JSON).content(SIGNRESPONSEREQUEST))
 				.andExpect(status().isOk());
 	}

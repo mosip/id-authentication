@@ -61,8 +61,8 @@ public class UserConfigIntegrationTest {
 	public void testGetConfig() throws Exception {
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString(), DateUtils.getUTCCurrentDateTimeString())).thenReturn(signResponse);
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
 		ReflectionTestUtils.setField(syncConfigDetailsService, "globalConfigFileName",
 				"mosip.kernel.syncdata.global-config-file");
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
@@ -78,8 +78,8 @@ public class UserConfigIntegrationTest {
 				"mosip.kernel.syncdata.global-config-file");
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString(), DateUtils.getUTCCurrentDateTimeString())).thenReturn(signResponse);
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.sign(Mockito.anyString(),Mockito.anyString())).thenReturn(signResponse);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_GLOBAL_CONFIG_RESPONSE);
@@ -111,8 +111,8 @@ public class UserConfigIntegrationTest {
 	public void testRegistrationConfig() throws Exception {
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
-		when(signingUtil.sign(Mockito.anyString(), DateUtils.getUTCCurrentDateTimeString())).thenReturn(signResponse);
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+		when(signingUtil.sign(Mockito.anyString(), Mockito.anyString())).thenReturn(signResponse);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
 				.thenReturn(JSON_REGISTRATION_CONFIG_RESPONSE);
 		when(restTemplate.getForObject(Mockito.anyString(), Mockito.any()))
