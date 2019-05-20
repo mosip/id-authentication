@@ -191,6 +191,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			String preRegBookingAppointmentURI = preReg_URI + preRegId;
 			Response fetchCentInvPreId = preRegLib.FetchCentre();
 			JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
+			//JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
 			actualReqInvPreId.put("requesttime", preRegLib.getCurrentDate());
 			logger.info("BookAnAppointmentByPassingRegCen::"+actualReqInvPreId.toString());
 			Response respInvPreId = applicationLibrary.postRequest(actualReqInvPreId, preRegBookingAppointmentURI);
