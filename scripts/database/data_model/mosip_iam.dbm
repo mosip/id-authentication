@@ -68,7 +68,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Role List : List of roles defined within the system. These roles are used for various processes like data access, authentication methods, authorization, etc.]]></comment>
-	<position x="50" y="50"/>
+	<position x="60" y="60"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Code : list of roles defined for security , authorization,  permission for various modules/processes, etc.]]></comment>
@@ -118,7 +118,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Detail : List of applicatgion users in the system, who can perform UIN registration functions as per roles assigned.]]></comment>
-	<position x="379.216" y="232"/>
+	<position x="380" y="240"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : Unique ID generated / assigned for a user]]></comment>
@@ -155,6 +155,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Last Login Method: Previous login method in which the user logged into the system]]></comment>
 	</column>
+	<column name="salt">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Salt: Salt used in the encryption algorithm to encrypt the latest password of the user.]]></comment>
+	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
@@ -183,9 +187,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<column name="salt">
-		<type name="character varying" length="64"/>
-	</column>
 	<constraint name="pk_usrdtl_id" type="pk-constr" table="iam.user_detail">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
@@ -195,10 +196,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Detail History : This to track changes to iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer iam.user_detail table description for details.]]></comment>
-	<position x="843.432" y="349"/>
+	<position x="840" y="340"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : Unique ID generated / assigned for a user]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Date Timestamp : This to track iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
 	</column>
 	<column name="reg_id">
 		<type name="character varying" length="39"/>
@@ -232,6 +237,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Last Login Method: Previous login method in which the user logged into the system]]></comment>
 	</column>
+	<column name="salt">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Salt: Salt used in the encryption algorithm to encrypt the password of the user.]]></comment>
+	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
@@ -260,13 +269,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<column name="eff_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Effective Date Timestamp : This to track iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
-	</column>
-	<column name="salt">
-		<type name="character varying" length="64"/>
-	</column>
 	<constraint name="pk_usrdtl_h_id" type="pk-constr" table="iam.user_detail_h">
 		<columns names="id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
@@ -276,7 +278,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Password : Stores encripted password of users in iam.user_details table. ]]></comment>
-	<position x="463.649" y="618"/>
+	<position x="460" y="620"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : registration center id refers to iam.user_detail.id]]></comment>
@@ -334,7 +336,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Role : List of user roles as per the security and access rights, that will be assigned to specific users.]]></comment>
-	<position x="883.565" y="47"/>
+	<position x="880" y="40"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : registration center id refers to iam.user_detail.id]]></comment>
@@ -384,7 +386,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Authentication Access Token : This table is used to store the auth token, refresh token and expiration time for JWT token based validation.]]></comment>
-	<position x="66" y="580.25"/>
+	<position x="60" y="580"/>
 	<column name="auth_token">
 		<type name="character varying" length="1024"/>
 		<comment><![CDATA[Authentication Token : JWT Token for user logged in]]></comment>
