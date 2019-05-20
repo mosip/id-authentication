@@ -62,7 +62,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	 * @param object
 	 * @param contentType
 	 */
-	public void setResponse(RoutingContext ctx, Object object, String contentType) {
+	public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
 		HttpServerResponse response = ctx.response();
 		if(isEnabled)
 			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(object.toString()));		

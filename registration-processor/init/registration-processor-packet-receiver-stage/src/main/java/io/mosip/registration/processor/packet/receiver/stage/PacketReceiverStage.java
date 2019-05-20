@@ -126,7 +126,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param routingContext
 	 */
 	private void failure(RoutingContext routingContext) {
-		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
+		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
-				this.setResponse(ctx, responseData, APPLICATION_JSON);
+				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {
