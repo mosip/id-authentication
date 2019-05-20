@@ -2,22 +2,24 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   overflow-x: visible;
+  width:800px;
 }
 td,
 th {
-  border: 1px solid #ccc;
-  height: 30px;
-  text-align: left;
-  padding: 10px;
+  border: 1px solid rgb(180, 180, 180);
+  height: 24px;
+  text-align: center;
+  padding: 8px;
 }
 th {
-  background: #b6b6b6;
+  background: #d3d3d3;
   font-weight: bold;
   text-transform: capitalize;
-  font-family: sans-serif;
-  font-size: 15px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular';
+  font-size: 13px;
 }
 td {
-  font-family: sans-serif;
-  font-size: 13px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular';
+  font-size: 12px;
+  font-weight: bold;
 }

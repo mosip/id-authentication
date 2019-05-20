@@ -1,6 +1,5 @@
-import { DatePipe, registerLocaleData } from '@angular/common';
-export default class Utils{
-
+import { DatePipe } from '@angular/common';
+export default class Utils {
     static  getCurrentDate() {
         const now = new Date();
         const pipe = new DatePipe('en-US');
@@ -9,3 +8,4 @@ export default class Utils{
         return formattedDate;
       }
 }
+

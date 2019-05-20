@@ -8,8 +8,8 @@
 
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>init</artifactId>
-		<version>0.11.1</version>
+		<artifactId>pre-processor</artifactId>
+		<version>0.11.2</version>
 	</parent>
 
 	<properties>

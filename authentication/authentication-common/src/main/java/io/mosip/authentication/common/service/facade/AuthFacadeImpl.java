@@ -221,13 +221,8 @@ public class AuthFacadeImpl implements AuthFacade {
 						AUTH_FACADE, "Pin Authentication  status :" + isStatus);
 				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.PIN_AUTH.getDesc());
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-						.withUin(uin)
-						.withAuthRequest(authRequestDTO)
-						.withRequestType(RequestType.STATIC_PIN_AUTH)
-						.withStaticToken(staticTokenId)
-						.withStatus(isStatus)
-						.build(idInfoFetcher, env);	
+				AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId,
+						RequestType.STATIC_PIN_AUTH);
 				idAuthService.saveAutnTxn(authTxn);
 			}
 
@@ -293,14 +288,8 @@ public class AuthFacadeImpl implements AuthFacade {
 						AUTH_FACADE, "Demographic Authentication status : " + isStatus);
 				auditHelper.audit(AuditModules.DEMO_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.DEMO_AUTH.getDesc());
-				
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-						.withUin(uin)
-						.withAuthRequest(authRequestDTO)
-						.withRequestType(RequestType.DEMO_AUTH)
-						.withStaticToken(staticTokenId)
-						.withStatus(isStatus)
-						.build(idInfoFetcher, env);
+
+				AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.DEMO_AUTH);
 				idAuthService.saveAutnTxn(authTxn);
 
 			}
@@ -348,13 +337,7 @@ public class AuthFacadeImpl implements AuthFacade {
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
 				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth),
 						idInfoFetcher.getUinOrVid(authRequestDTO).get(), idType, AuditModules.OTP_AUTH.getDesc());
-				AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-										.withUin(uin)
-										.withAuthRequest(authRequestDTO)
-										.withRequestType(RequestType.OTP_AUTH)
-										.withStaticToken(staticTokenId)
-										.withStatus(isStatus)
-										.build(idInfoFetcher, env);
+				AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.OTP_AUTH);
 				idAuthService.saveAutnTxn(authTxn);
 			}
 
@@ -387,41 +370,34 @@ public class AuthFacadeImpl implements AuthFacade {
 						|| bioInfo.getBioType().equals(BioAuthType.FGR_IMG.getType()))) {
 			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
 					auditHelper.getUinorVid(authRequestDTO), idType, AuditModules.FINGERPRINT_AUTH.getDesc());
-			AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-					.withUin(uin)
-					.withAuthRequest(authRequestDTO)
-					.withRequestType(RequestType.FINGER_AUTH)
-					.withStaticToken(staticTokenId)
-					.withStatus(isStatus)
-					.build(idInfoFetcher, env);			
+			AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FINGER_AUTH);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.IRIS_IMG.getType()))) {
 			auditHelper.audit(AuditModules.IRIS_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
 					auditHelper.getUinorVid(authRequestDTO), idType, AuditModules.IRIS_AUTH.getDesc());
-			AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-					.withUin(uin)
-					.withAuthRequest(authRequestDTO)
-					.withRequestType(RequestType.IRIS_AUTH)
-					.withStaticToken(staticTokenId)
-					.withStatus(isStatus)
-					.build(idInfoFetcher, env);					
+			AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.IRIS_AUTH);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		if (authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioAuthType.FACE_IMG.getType()))) {
 			auditHelper.audit(AuditModules.FACE_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
 					auditHelper.getUinorVid(authRequestDTO), idType, AuditModules.FACE_AUTH.getDesc());
-			AutnTxn authTxn = AuthTransactionBuilder.newInstance()
-					.withUin(uin)
-					.withAuthRequest(authRequestDTO)
-					.withRequestType(RequestType.FACE_AUTH)
-					.withStaticToken(staticTokenId)
-					.withStatus(isStatus)
-					.build(idInfoFetcher, env);	
+			AutnTxn authTxn = fetchAuthTxn(authRequestDTO, uin, isStatus, staticTokenId, RequestType.FACE_AUTH);
 			idAuthService.saveAutnTxn(authTxn);
 		}
+	}
+
+	private AutnTxn fetchAuthTxn(AuthRequestDTO authRequestDTO, String uin, boolean isStatus, String staticTokenId,
+			RequestType requestType) throws IdAuthenticationBusinessException {
+		return AuthTransactionBuilder.newInstance()
+				.withUin(uin)
+				.withAuthRequest(authRequestDTO)
+				.withRequestType(requestType)
+				.withStaticToken(staticTokenId)
+				.withStatus(isStatus)
+				.build(idInfoFetcher, env);
 	}
 
 }
