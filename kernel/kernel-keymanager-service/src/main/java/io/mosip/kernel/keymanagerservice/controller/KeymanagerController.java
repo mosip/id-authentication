@@ -63,11 +63,11 @@ public class KeymanagerController {
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Timestamp as metadata") @RequestParam("timestamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.getPublicKey(applicationId, timeStamp, referenceId));
+		response.setResponse(keymanagerService.getPublicKey(applicationId, timestamp, referenceId));
 
 		return response;
 	}
@@ -131,10 +131,10 @@ public class KeymanagerController {
 	@GetMapping("signature/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getSignaturePublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Timestamp as metadata") @RequestParam("timestamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
-		response.setResponse(keymanagerService.getSignPublicKey(applicationId,timeStamp,referenceId));
+		response.setResponse(keymanagerService.getSignPublicKey(applicationId,timestamp,referenceId));
 		return response;
     }
 }
