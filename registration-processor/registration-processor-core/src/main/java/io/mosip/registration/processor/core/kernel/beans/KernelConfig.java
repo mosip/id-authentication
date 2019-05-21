@@ -41,42 +41,12 @@ public class KernelConfig {
 	public CbeffUtil getCbeffUtil() {
 		return new CbeffImpl();
 	}
-
+	
 	@Bean
 	@Primary
 	public ObjectMapper getObjectMapper() {
-		return new ObjectMapper();
+		return new ObjectMapper().registerModule(new JavaTimeModule());
 	}
-	/*@Bean
-	@Primary
-	public SignatureUtil getSignatureUtil() {
-		return new SignatureUtilImpl();
-	}
-	
-	@Bean
-	@Primary
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
-
-	
-	@Bean
-	@Primary
-	public Decryptor<PrivateKey, PublicKey, SecretKey> getDecryptor() {
-		return new DecryptorImpl();
-	}
-	
-	@Bean
-	@Primary
-	public Encryptor<PrivateKey, PublicKey, SecretKey> getEncryptor() {
-		return new EncryptorImpl();
-	}
-	
-	@Bean
-	@Primary
-	public KeyGenerator getKeyGenerator() {
-		return new KeyGenerator();
-	}*/
 
 
 }

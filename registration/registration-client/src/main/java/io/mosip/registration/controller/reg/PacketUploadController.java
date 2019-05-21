@@ -83,6 +83,9 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	@FXML
 	private TableColumn<PacketStatusVO, Boolean> checkBoxColumn;
+	
+	@FXML
+	private TableColumn<PacketStatusVO, Boolean> regDate;
 
 	@FXML
 	private Button saveToDevice;
@@ -376,6 +379,7 @@ public class PacketUploadController extends BaseController implements Initializa
 				"To display all the ui data");
 		checkBoxColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+		regDate.setCellValueFactory(new PropertyValueFactory<>("createdTime"));
 
 		this.list = FXCollections.observableArrayList(new Callback<PacketStatusVO, Observable[]>() {
 
@@ -415,6 +419,7 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		table.setItems(sortedList);
 		table.setEditable(true);
+		Platform.runLater(() -> table.refresh());
 	}
 
 	private void wrapListAndAddFiltering() {
@@ -494,6 +499,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			packetStatusVO.setUploadStatus(packet.getUploadStatus());
 			packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
 			packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
+			packetStatusVO.setCreatedTime(packet.getCreatedTime());
 			packetsToBeExport.add(packetStatusVO);
 		});
 		if (packetsToBeExport.isEmpty()) {
@@ -509,6 +515,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		loadInitialPage();
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
+		regDate.setResizable(false);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
 	}

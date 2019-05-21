@@ -259,7 +259,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 		regTransaction.setCrBy(SessionContext.isSessionContextAvailable() ? SessionContext.userContext().getUserId()
 				: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-		regTransaction.setCrDtime(time);
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);

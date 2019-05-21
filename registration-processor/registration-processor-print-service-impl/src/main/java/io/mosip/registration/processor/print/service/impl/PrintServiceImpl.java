@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.exception.TemplateProcessingFailureE
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -138,6 +139,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	@Autowired
+	private Utilities utilities;
+
 	/** The uin card generator. */
 	@Autowired
 	private UinCardGenerator<ByteArrayOutputStream> uinCardGenerator;
@@ -183,7 +187,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			if (idType.toString().equalsIgnoreCase(UIN)) {
 				uin = idValue;
 			} else if (idType.toString().equalsIgnoreCase(RID)) {
-				uin = packetInfoManager.getUINByRid(idValue).get(0);
+				JSONObject jsonObject = utilities.retrieveUIN(idValue);
+				Long value=JsonUtil.getJSONValue(jsonObject, UIN);
+				uin= Long.toString(value);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), null,
@@ -192,7 +198,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				}
 			}
 
-			IdResponseDTO response = getIdRepoResponse(uin);
+			IdResponseDTO1 response = getIdRepoResponse(idValue);
 
 			boolean isPhotoSet = setApplicantPhoto(response);
 			if (!isPhotoSet) {
@@ -314,19 +320,19 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private IdResponseDTO getIdRepoResponse(String uin) throws ApisResourceAccessException {
+	private IdResponseDTO1 getIdRepoResponse(String idValue) throws ApisResourceAccessException {
 		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
+		pathsegments.add(idValue);
 
 		String queryParamName = "type";
 		String queryParamValue = "all";
 
-		IdResponseDTO response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
+		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
 				queryParamName, queryParamValue, IdResponseDTO.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					uin, PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name());
+					idValue, PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name());
 			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
 
@@ -412,7 +418,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private boolean setApplicantPhoto(IdResponseDTO response) throws Exception {
+	private boolean setApplicantPhoto(IdResponseDTO1 response) throws Exception {
 		String value = null;
 		boolean isPhotoSet = false;
 
