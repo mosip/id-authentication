@@ -47,7 +47,7 @@ public class RegistrationSyncExceptionHandler {
 	private Environment env;
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
-
+	
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationSyncExceptionHandler.class);
 
 	@ExceptionHandler(AccessDeniedException.class)
@@ -139,6 +139,7 @@ public class RegistrationSyncExceptionHandler {
 		//HttpHeaders headers = new HttpHeaders();
 		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
 		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 

@@ -121,7 +121,14 @@ public class BatchJob extends BaseTestCase implements ITest {
 	}
 
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		logger.info("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_BatchJob_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
 	}
 }

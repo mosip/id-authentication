@@ -31,7 +31,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	private String crBy;
 
 	/** The cr dtimes. */
-	@Column(name = "cr_dtimes", updatable = false, nullable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private Timestamp crDtimes;
 

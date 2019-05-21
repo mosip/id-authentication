@@ -21,6 +21,10 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.dbaccess.PreRegDbread;
 import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.RestAssured;
@@ -31,11 +35,16 @@ import io.restassured.RestAssured;
  *
  */
 
+
+
 public class BaseTestCase {
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
-
-	public static List<String> preIds = new ArrayList<String>();
-
+	
+	public static List<String> preIds=new ArrayList<String> ();
+	public ExtentHtmlReporter htmlReporter;
+	public ExtentReports extent;
+	public ExtentTest test;
+		
 
 	/**
 	 * Method that will take care of framework setup
@@ -47,6 +56,7 @@ public class BaseTestCase {
 	public static String regProcAuthToken;
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
+
 	public static String SEPRATOR = "";
 
 	public static String getOSType() {
@@ -80,12 +90,14 @@ public class BaseTestCase {
 			InputStream inputStream = new FileInputStream(
 					"src" + BaseTestCase.SEPRATOR + "config" + BaseTestCase.SEPRATOR + "test.properties");
 			prop.load(inputStream);
+
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" + environment);
 			ApplnURI = System.getProperty("env.endpoint");
 			logger.info("Application URI ======" + ApplnURI);
+
 
 			logger.info("Configs from properties file are set.");
 
@@ -94,6 +106,7 @@ public class BaseTestCase {
 		}
 
 	}
+
 
 	// ================================================================================================================
 	// TESTNG BEFORE AND AFTER SUITE ANNOTATIONS
@@ -109,9 +122,10 @@ public class BaseTestCase {
 		initialize();
 		logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 
+
 		PreRegistrationLibrary pil = new PreRegistrationLibrary();
 		pil.PreRegistrationResourceIntialize();
-		// IdaScriptsUtil.wakeDemoApp();
+		AuthTestsUtil.wakeDemoApp();
 
 	} // End suiteSetup
 
@@ -133,6 +147,8 @@ public class BaseTestCase {
 				logger.info("PreId is deleted from the DB");
 			else
 				logger.info("PreId is NOT deleted from the DB");
+
+		
 		}
 		/*
 		 * Saving TestNG reports to be published

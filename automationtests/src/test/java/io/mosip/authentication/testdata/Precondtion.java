@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata;
 
 import java.io.File;
@@ -9,25 +8,31 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Reporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.FileUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.testdata.keywords.IdRepoKeywordUtil;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
+import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
 
 /**
  * Precondtion json file according to the input and mapping provided in test
@@ -60,29 +65,29 @@ public class Precondtion {
 			for (Entry<String, String> map : fieldvalue.entrySet()) {
 				if (map.getValue().contains("LONG:")) {
 					String value = map.getValue().replace("LONG:", "");
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Long.parseLong(value));
 				} else if (map.getValue().contains("DOUBLE:")) {
 					String value = map.getValue().replace("DOUBLE:", "");
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							Double.parseDouble(value));
 				} else if (map.getValue().contains("BOOLEAN:")) {
 					String value = map.getValue();
 					if (value.contains("true"))
-						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								true);
 					if (value.contains("false"))
-						PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 								false);
 				} else
-					PropertyUtils.setProperty(jsonObj, IdaScriptsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
+					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
 			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
 			// Replacing the version in request
-			outputJson = outputJson.replace("$version$", RunConfig.getAuthVersion());
-			outputJson = outputJson.replaceAll("$version$", RunConfig.getAuthVersion());
+			outputJson = outputJson.replace("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
+			outputJson = outputJson.replaceAll("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
 			if (outputJson.contains("$REMOVE$"))
 				outputJson = removeObject(new JSONObject(outputJson));
 			FileUtil.writeFile(outputFilePath, outputJson);
@@ -109,7 +114,7 @@ public class Precondtion {
 			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
 			Map<String, String> auditTxnValue = new HashMap<String, String>();
 			for (Entry<String, String> entry : fieldvalue.entrySet()) {
-				String orgKey = IdaScriptsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
+				String orgKey = AuthTestsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
 				auditTxnValue.put(orgKey, entry.getValue());
 			}
 			Properties prop = new Properties();
@@ -204,9 +209,21 @@ public class Precondtion {
 				JSONArray array = (JSONArray) value;
 				String finalarrayContent = "";
 				for (int i = 0; i < array.length(); ++i) {
+					if(!array.toString().contains("{") && !array.toString().contains("}"))
+					{
+						Set<String> arr = new HashSet<String>();
+						for (int k = 0; k < array.length(); k++)
+						{
+							arr.add(array.getString(k));
+						}
+						finalarrayContent=removObjectFromArray(arr);
+					}
+					else
+					{
 					String arrayContent = removeObject(new JSONObject(array.get(i).toString()), finalarrayContent);
 					if (!arrayContent.equals("{}"))
 						finalarrayContent = finalarrayContent + "," + arrayContent;
+					}
 				}
 				finalarrayContent = finalarrayContent.substring(1, finalarrayContent.length());
 				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
@@ -220,6 +237,31 @@ public class Precondtion {
 			}
 		}
 		return object.toString();
+	}
+	
+	private static String removObjectFromArray(Set<String> content) {
+		String array = "[";
+		for (String str : content) {
+			if (!str.contains("$REMOVE$"))
+				array = array + '"' + str + '"' + ",";
+		}
+		array = array.substring(0, array.length() - 1);
+		array = array + "]";
+		return array;
+	}
+	public static boolean isJSONValid(String test) {
+	    try {
+	        new JSONObject(test);
+	    } catch (JSONException ex) {
+	        // edited, to include @Arthur's comment
+	        // e.g. in case JSONArray is valid as well...
+	        try {
+	            new JSONArray(test);
+	        } catch (JSONException ex1) {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 	/**
 	 * The method remove Object from Json array
@@ -260,6 +302,8 @@ public class Precondtion {
 		KeywordUtil objKeywordUtil = null;
 		if (moduleName.equalsIgnoreCase("ida"))
 			objKeywordUtil = new IdaKeywordUtil();
+		else if (moduleName.equalsIgnoreCase("idrepo"))
+			objKeywordUtil = new IdRepoKeywordUtil();
 		return objKeywordUtil;
 	}
 

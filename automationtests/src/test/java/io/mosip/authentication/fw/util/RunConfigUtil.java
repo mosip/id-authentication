@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.util.HashMap;
@@ -12,6 +11,8 @@ import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidDto;
 import io.mosip.authentication.fw.dto.VidStaticPinDto;
+import io.mosip.authentication.testdata.keywords.KeywordUtil;
+import io.mosip.idRepositoty.fw.util.IdRepoRunConfig;
 
 /**
  * The class perform picking up UIN,VID,TokenID,PartnerID,LicenseKey,StaticPin
@@ -27,7 +28,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getUinPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/uin.properties";
+		return "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties";
 	}
 	/**
 	 * The method get static pin UIN property path
@@ -35,7 +36,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getStaticPinUinPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/uinStaticPin.properties";
+		return "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uinStaticPin.properties";
 	}
 	/**
 	 * The method return VID property file path
@@ -43,7 +44,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getVidPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/vid.properties";
+		return "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties";
 	}
 	/**
 	 * The method get static pin VID property file path
@@ -51,7 +52,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getStaticPinVidPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties";
+		return RunConfigUtil.objRunConfig.getTestDataFolderName()+"/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vidStaticPin.properties";
 	}
 	/**
 	 * The method get tokenId property file path
@@ -59,7 +60,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getTokenIdPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/static-tokenId.properties";
+		return "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/static-tokenId.properties";
 	}
 	/**
 	 * The method get partnerID and Misp License key value property file path
@@ -67,7 +68,7 @@ public class RunConfigUtil {
 	 * @return string, property file path
 	 */
 	public static String getPartnerIDMispLKPropertyPath() {
-		return "ida/" + RunConfig.getTestDataFolderName() + "/RunConfig/parter-license-id.properties";
+		return "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/parter-license-id.properties";
 	}
 	/**
 	 * The method get partnerID and License key value for the key
@@ -76,7 +77,7 @@ public class RunConfigUtil {
 	 * @return string, value of partner ID and License key
 	 */
 	public static String getPartnerIDMispLKValue(String key) {
-		return IdaScriptsUtil.getPropertyFromRelativeFilePath(getPartnerIDMispLKPropertyPath()).get(key).toString();
+		return AuthTestsUtil.getPropertyFromRelativeFilePath(getPartnerIDMispLKPropertyPath()).get(key).toString();
 	}
 	/**
 	 * The method get token ID for UIN and PartnerID
@@ -216,7 +217,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	protected static void getUinPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -230,7 +231,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getStaticPinUinPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -244,7 +245,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getStaticPinVidPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -258,7 +259,7 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	protected static void getVidPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
@@ -272,13 +273,27 @@ public class RunConfigUtil {
 	 * @param path
 	 */
 	public static void getTokenIdPropertyValue(String path) {
-		Properties prop = IdaScriptsUtil.getPropertyFromRelativeFilePath(path);
+		Properties prop = AuthTestsUtil.getPropertyFromRelativeFilePath(path);
 		Map<String, String> map = new HashMap<String, String>();
 		for (String key : prop.stringPropertyNames()) {
 			String value = prop.getProperty(key);
 			map.put(key, value);
 		}
 		TokenIdDto.setTokenId(map);
+	}
+	
+	public static RunConfig objRunConfig;
+
+	public static void getRunConfigObject(String module) {
+		if (module.equals("ida"))
+			objRunConfig = new IdaRunConfig();
+		else if (module.equals("idrepo"))
+			objRunConfig = new IdRepoRunConfig();
+		
+	}
+	
+	public static String getRunEvironment() {
+		return System.getProperty("env.user");
 	}
 }
 

@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.tests;
 
 import java.io.File;
@@ -23,12 +22,13 @@ import org.testng.internal.TestResult;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.IdaScriptsUtil;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
+import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -41,7 +41,7 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class CreateUinRecord extends IdaScriptsUtil implements ITest {
+public class CreateUinRecord extends AuthTestsUtil implements ITest {
 
 	private static final Logger logger = Logger.getLogger(CreateUinRecord.class);
 	protected static String testCaseName = "";
@@ -50,6 +50,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	private String TESTDATA_FILENAME;
 	private String testType;
 	private int invocationCount = 0;
+	private String cookieValue;
 
 	/**
 	 * Set Test Type - Smoke, Regression or Integration
@@ -78,7 +79,8 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	 * @param testType
 	 */
 	public void setConfigurations(String testType) {
-		RunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		RunConfigUtil.getRunConfigObject("ida");
+		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
 		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 
@@ -116,8 +118,9 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	@Test
 	public void generateUINTestData() {
 		Object[][] object = DataProviderClass.getDataProvider(
-				RunConfig.getUserDirectory() + RunConfig.getSrcPath() + RunConfig.getScenarioPath(),
-				RunConfig.getScenarioPath(), RunConfig.getTestType());
+				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
+				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
+		cookieValue=getAuthorizationCookie(getCookieRequestFilePath(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		for (int i = 1; i < object.length; i++) {
 			createUinDataTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
 					object[i][2].toString());
@@ -147,6 +150,7 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, CreateUinRecord.testCaseName);
+			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -168,14 +172,14 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
 		Map<String, String> tempMap = new HashMap<String, String>();
-		String uin = IdRepoUtil.generateUinNumber();
+		String uin = IdRepoUtil.generateUinNumberForIda();
 		tempMap.put("UIN", "LONG:" + uin);
 		logger.info("************* IdRepo UIN request ******************");
 		Reporter.log("<b><u>UIN create request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
-		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath(uin) + " *******");
-		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(uin),
-				"create", "output-1-actual-res", 0);
+		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
+		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
+				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -191,9 +195,8 @@ public class CreateUinRecord extends IdaScriptsUtil implements ITest {
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
 		logger.info("Genereated UIN: " + UinDto.getUinData());
-		generateMappingDic(new File("./" + RunConfig.getSrcPath() + "ida/" + RunConfig.getTestDataFolderName()
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
 				+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
 
 }
-

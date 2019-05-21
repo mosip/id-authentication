@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata.keywords;
 
 import java.util.Map;
@@ -21,4 +20,3 @@ public abstract class KeywordUtil {
 	public abstract Map<String, String> precondtionKeywords(Map<String, String> map);
 
 }
-

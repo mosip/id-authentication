@@ -14,7 +14,14 @@ public class CustomTestNgReporterDto {
 	private long startTimeMillis;
 	private long endTimeMillis;
 	private long deltaMillis;
+	private String log;
+	public String getLog() {
+		return log;
+	}
 
+	public void setLog(String log) {
+		this.log = log;
+	}
 	public String getTestClassName() {
 		return testClassName;
 	}
@@ -55,3 +62,4 @@ public class CustomTestNgReporterDto {
 		this.deltaMillis = deltaMillis;
 	}
 }
+

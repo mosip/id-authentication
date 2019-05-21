@@ -415,7 +415,6 @@ private getConsentMessage() {
         const element = elements[elementsIndex];
         const language = this.languages[elementsIndex];
         await this.getLocationImmediateHierearchy(language, parentLocationCode, element, currentLocationCode);
-        console.log('IMMEDIATE HIER AFTER AWAIT : ', element);
       }
     }
 
@@ -518,7 +517,6 @@ private getConsentMessage() {
     return new Promise(resolve => {
       this.dataStorageService.getGenderDetails().subscribe(
         response => {
-          console.log(response);
           if (response[appConstants.NESTED_ERROR]) {
             this.onError();
           } else {
@@ -915,11 +913,6 @@ private getConsentMessage() {
    * @memberof DemographicComponent
    */
   private onModification(request: ResponseModel) {
-    // console.log(' && this.dataIncomingSuccessful before if', this.dataIncomingSuccessful);
-
-    // if (this.dataIncomingSuccessful) {
-    //   console.log(' && this.dataIncomingSuccessful', this.dataIncomingSuccessful);
-
     this.regService.updateUser(
       this.step,
       new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.codeValue)
@@ -931,10 +924,6 @@ private getConsentMessage() {
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
       regDto: this.bookingService.getNameList()[0].regDto
     });
-
-    console.log('GET NAME LIST on Modification', this.bookingService.getNameList());
-    console.log('CODE VALUE ON MODIFICATIOn', this.codeValue);
-    console.log('GET User Array On UPDATIOn', this.regService.getUsers());
     // }
   }
 
@@ -955,9 +944,6 @@ private getConsentMessage() {
       preRegId: this.preRegId,
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value
     });
-    console.log('GET NAME LIST On ADDITON', this.bookingService.getNameList());
-    console.log('CODE VALUE ON ADDITON', this.codeValue);
-    console.log('GET User Array On ADDITON', this.regService.getUsers());
   }
 
   /**

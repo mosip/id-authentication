@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.dto;
 
 import java.util.Map;
@@ -32,4 +31,3 @@ public class VidDto {
 	}
 
 }
-

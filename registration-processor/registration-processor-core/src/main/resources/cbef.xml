@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<BIR xmlns="http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/">
+    <Version>
+        <Major>1</Major>
+        <Minor>1</Minor>
+    </Version>
+    <CBEFFVersion>
+        <Major>1</Major>
+        <Minor>1</Minor>
+    </CBEFFVersion>
+    <BIRInfo>
+        <Integrity>false</Integrity>
+    </BIRInfo>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>24446fbe-1fd6-48a3-8098-c1f0d23ef1db</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.457+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Left IndexFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEaAAABPAFiAMUAxQEAAAAoKoCKAMcjUIB3ANAuZEB9AOkiZICKAIEOZIDNAIvjZIBsARIVZECMAST8ZEBGAQ8jIUA7ARCUIUBBAGkcXUDlAFfuZICvAVx3FEC+ACr2ZIBfACATXYCYAK6tUICaAJz/V0C/APhXZICuAH6LZEB9ARcMZEDKAHfsZIDrAHxsZIEOANlZZICBAFKcZIDPAUH6ZEDYATx7ZEA4AToIV0AxAUjfQ0DzACnuZICDAK4hXYC3AKLeXYBkAOUvZEDXAPBUZIC2ARl1ZEBeAQ4dZECDATXzZEBNAR0SXUBbATb8XUEiAM3XQ0D1ATdpZIDjADp0ZICkABsGZIDFABaDZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>5c279197-366a-4689-ad95-24b4b71ebdba</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Left LittleFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAD8AAABPAFiAMUAxQEAAAAoJUB5ANY3ZICRALXPZICNARUmZICSAJ7tZICyAJ5pZIC5AJbZZEC7ATsYKIBlAH4ZZIAhAQ8kXUCuAGjpZEBeAV8EUIAsAU4VNYCtAE7tZICoAOGzZECeALnNZEB4AR6cZICnAR4pZIDJAK1ZXUA+AL+zZIBGASscZECxAUUASYCGAVcAUIBdAVYSUEDhAVL0DYBYAFiiXUCVAMC4ZEB2AQ0nZEBMAOYyZIDUAOK9ZEDhANDKUEBjATkcXUCVAUsNUEDlAKHRZEDMAUp/B0DPAHBqZEBLAGMgV4B+AE0CZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>7cae3231-88c2-48f0-8275-d6ac7bc2aef6</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Left MiddleFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAD8AAABPAFiAMUAxQEAAAAoJYCKALVpV4B8AHv1ZEC/AI1PZEBhAGsWZEDPAPJQZEBEAPslZICpASeHXYBOARoXZIC3ADl8Q0CKATwHZICWABb8ZEB4AVD+SUA+AVIFQ4BsAKn3Q4BdAJUXZEA+AJgoZIC+APVYZEDOAGPSZEDJAEdoXYB5AScPZEB5ADQGZEAQAMMnZEDeADvQQ4BGACAbXYBYABObXUCzANNKZIB4AOiSQ0CqAPxjZICIAQWSZECcAReFXUCoADz1ZIDEAR5pXUDaAEtLXYDmARBbSUDrADtASYC2ABZ7L0AdAS4YZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>020de9c9-d84c-4ded-b0d0-f32a993cd880</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Left RingFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>149c869f-b2bd-4d06-864f-81794a496698</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Left Thumb</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEgAAABPAFiAMUAxQEAAAAoK0CeANjvXUCvAO5yXUDKAOFrZIC/AKtxZEC/ARHjXYCvAH/0ZECfAHaCZEDUASRjXUDFAG95ZEEZAOZiXYCWAVd2L0EHASldUIBQAVd+SUANASH1Q4BJADIQUECcAMrwXUC+AL9wZIBtANECZECDAQnzV4BUAPcKUIBIAOutUIBUAJINZEDxAQ7dZECAAF0EZEA2ASdqZIAlARhFXUAfASFmUEDTAETyZEC6ADH9ZECrAN5vXUCdAKPzZEDGALXmZIBqAQSEUIBaAQQEV0DiAQ/cXUBdAIWPZECoAGr5ZEAhAOOqZIEDAIHkZED1ATrZXUEEATpbXUEBAUxZQ0DvADbxXQAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>a3c1e813-4f02-4b22-a468-89d496c62e5a</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Right Thumb</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEmAAABPAFiAMUAxQEAAAAoLIC9AOwBXYBkAPaqZIB5ARshZEBSAPApZEBMAPurZEDhAQ2FUICKAUQNZIDkATKIUEA4AR0qZEEEAMDXXYAgANomZIAeAQcaSUAWAR6gUEEQAVGgG0B+ACuKXUCkALkEZICzARsTXYDWAOqBV4CaATSQXYCFATURZEBgASgmZID1AMxiXUC9AIL/XYC7AVMIUEDKAIN/XUEGAMDWXUAtAKSiZEEGAI/nZIBkAFMPZEAmAB4cV0DHAN2LZICfASEWXYC0ASsCXYDGALKEZECjATv/ZEBLALilZEDBAUWAZICSAVf9NYEGAQW3V4BdAU0YNUA2ATMkZEDrAU6NNYDDAF16ZEBmADELZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>5735b299-6202-4f56-9ba1-69630b154f15</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Right IndexFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEOAAABPAFiAMUAxQEAAAAoKIC4ANU9KEC4AKdfZICeAI1/ZICQAQwJZIBiAQAYZIDaAR17ZEDrAHLZZECAAFaNZEEcAKxWUIDJAU8CV0B3AVIAPEEGAGnbZEEBAUjzQ0CwABh1ZICwAKzKUECNAKGXXYC/AQSCZEBdANkkZEDuALPPZIBBAI2fZIELAQRXV0BMAG+XZIAuAQyPUEBAASQWXUDoAUeFXYCVADmAZEBAAD0NSYDFALnHUIB5APUWZIDRAPhmZEDhAPhXZIDsAPdRZECsAFnlZID2ASVtUIAuAPshUEDuAGRhZEBXAUQIV4AuAR4YUIBPAUoHPICQABz1ZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>e82ba806-606c-401e-bff6-09f1c7133a10</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Right LittleFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECPAMtjZICDAKOEXUDLAKRSXYCgAQ5YZEBUAP1QXUBRAH2bZEBsAFaGZEDdATNjZEBgAURyUED5AUhwNUBmABN+UICDAMrUUEByALjtUICzAP1VZEDUAPZUZIBaAHoDZED/ALLVIUByAT9qXYCCAUp2Q4DUAVF1NUA2ADoJXUDMABFlV4C+AMTSZECGAJJ6XYCVAHptZEClAG/fZICFASFeZIDsAHtaV0CuAURlXYCoAU9yL0CtACFxZEBiACD9VwAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>376ffd36-7be2-4cf2-a9b4-f6f867d0f11e</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Right MiddleFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEOAAABPAFiAMUAxQEAAAAoKICSAONsXYBvAObxSYC/AKVeZIByAISXZEDUAI9fZEBgAR4NZIBPARYoZEDtAJFWZIDUATteXUCnAVV1L4AyATccSUAjAT4ZDUD/AVbvIYD6ADRcV0B7ALrzZEBrANwQSUCKAQ91XYBCAO4uZEA6ANauZIBoAHkDZECjAGpxXUCNAGPyXYCwAU5sL4DHAVBwNUDbAU5xPEClADPsZEDWACllZICZAKt0ZEC0APlSZEBsAJkGXYC7AIHdZIC5ASZaZEDxAPhRZIBsAHKWZICFAUp9L4BQAT8HZID1AGxYZIA8AUwJUEBxACyHZICcAB16ZAAA</BDB>
+    </BIR>
+    <BIR>
+        <TestFingerPrint xmlns="testschema">Unique</TestFingerPrint>
+        <BIRInfo>
+            <Integrity>false</Integrity>
+        </BIRInfo>
+        <BDBInfo>
+            <Index>513e9d59-ac4d-4e55-a0c0-ab88342dfb5a</Index>
+            <FormatOwner>257</FormatOwner>
+            <FormatType>7</FormatType>
+            <CreationDate>2019-03-25T17:38:08.459+05:30</CreationDate>
+            <Type>Finger</Type>
+            <Subtype>Right RingFinger</Subtype>
+            <Level>Intermediate</Level>
+            <Purpose>Enroll</Purpose>
+            <Quality>90</Quality>
+        </BDBInfo>
+        <BDB>Rk1SACAyMAAAAAEsAAABPAFiAMUAxQEAAAAoLYByAM7TXUCSAKBjZECoARVcZEA/ARVLZECrAINbSUAdAO7GZECGAG3kZICbAThgZIDiARVYV0CFAVNyNUAvATtWPEDDAUtzPIBXAEr9XUDrAT1iG4AdAFeqZEByAMDZXYBOALAqZEC2AQhXZECfAINjSUDJAJ/WXUCgAHXcSYB4AGt4ZIBKAHUOZEBQAUhtSUCAAFV2ZEDZATJfPIAwAGCqZICRAERyZEBjADp8V4ARAFYhZICqAORTZEAvAOvIZEBXAR9TZIAkALc/ZEDUALBWXYA/AS1WV0B8AT1hZEBoAUFnZIBkAU14PICiAU9wQ4A2AUtqQ0DTAT9rZIB0AEDyXYBPADsQV4DrAVB8LwAA</BDB>
+    </BIR>
+</BIR>

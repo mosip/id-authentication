@@ -370,7 +370,7 @@ public class HeaderController extends BaseController {
 		if (hasUpdate()) {
 
 			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
-					RegistrationUIConstants.UPDATE_LATER, false);
+					RegistrationUIConstants.UPDATE_LATER, true);
 
 		}
 
@@ -527,7 +527,7 @@ public class HeaderController extends BaseController {
 				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
 					// generateAlert(RegistrationConstants.ERROR,
 					// RegistrationUIConstants.UNABLE_TO_UPDATE);
-					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, false);
+					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, true);
 				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
@@ -542,7 +542,7 @@ public class HeaderController extends BaseController {
 	}
 
 	public void update(Pane pane, ProgressIndicator progressIndicator, String context,
-			boolean isPreLaunchTaskToBeExecuted) {
+			boolean isPreLaunchTaskToBeStopped) {
 
 		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
 				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
@@ -570,8 +570,9 @@ public class HeaderController extends BaseController {
 			}
 		} else {
 			pane.setDisable(false);
-			if (isPreLaunchTaskToBeExecuted) {
+			if (!isPreLaunchTaskToBeStopped) {
 				loginController.executePreLaunchTask(pane, progressIndicator);
+				jobConfigurationService.startScheduler();
 			}
 		}
 

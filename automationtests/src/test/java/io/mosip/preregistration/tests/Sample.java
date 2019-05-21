@@ -77,27 +77,27 @@ public class Sample extends BaseTestCase implements ITest {
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void cancelAppointmentForExpiredApplication() {
+	public void updatePreRegistrationDataForExpiredApplication()
+			throws FileNotFoundException, IOException, ParseException {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		for(int i=0;i<=20;i++)
+		{	Response createResponse = lib.CreatePreReg(createPregRequest);
+			
+		}
+	
+		/*String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		dao.setDate(preID);
-		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		lib.expiredStatus();
-		lib.getPreRegistrationStatus(preID);
-		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
-				preID);
-		String msg = CancelBookingAppointmentResponse.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(msg, "Appointment cannot be canceled");
-
+		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);*/
+		//lib.expiredStatus();
+lib.pagination("1");
 	}
 
 
-
+	
 
 	@BeforeMethod(alwaysRun=true)
 	public void run()

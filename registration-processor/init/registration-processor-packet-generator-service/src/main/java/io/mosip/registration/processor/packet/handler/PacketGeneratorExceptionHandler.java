@@ -53,7 +53,9 @@ public class PacketGeneratorExceptionHandler {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
 
-	
+	@Autowired
+	SignatureUtil signatureUtil;
+
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -140,6 +142,7 @@ public class PacketGeneratorExceptionHandler {
 		//HttpHeaders headers = new HttpHeaders();
 		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
 		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 }
