@@ -68,6 +68,11 @@
 			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>${powermock.module.junit4.version}</version>

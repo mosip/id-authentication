@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.crypto.SecretKey;
+
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
@@ -149,11 +153,14 @@ public class OSIValidator {
 
 	@Autowired
 	private Utilities utility;
-	
-	
+
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil  = new RegistrationExceptionMapperUtil();
 
-	/**
+    /** The key generator. */
+    @Autowired
+    private KeyGenerator keyGenerator;
+
+    /**
 	 * Checks if is valid OSI.
 	 *
 	 * @param registrationId
@@ -227,9 +234,6 @@ public class OSIValidator {
 				}
 				return flag;
 			} else if ((validateUIN(officerId))
-					&& (validateFingerprint(officerId, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(officerId, iris, irisType, registrationId))
-					&& (validateFace(officerId, face, registrationId)) && (validatePin(officerId, pin))
 					&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
 				return true;
 			} else {
@@ -294,9 +298,6 @@ public class OSIValidator {
 				}
 				return flag;
 			} else if ((validateUIN(supervisorId))
-					&& (validateFingerprint(supervisorId, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(supervisorId, iris, irisType, registrationId))
-					&& (validateFace(supervisorId, face, registrationId)) && (validatePin(supervisorId, pin))
 					&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
 				return true;
 			} else {
@@ -353,16 +354,16 @@ public class OSIValidator {
 							registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
 							return false;
 						}
-						
+
 					}
 					if (introducerUinString != null) {
 						return validateIntroducer(registrationId, introducerUinString,"");
-					} 
+					}
 			}
-				
+
 		}
-		
-		
+
+
 		return true;
 	}
 
@@ -415,46 +416,6 @@ public class OSIValidator {
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 		return demographicIdentity;
 	}
-	
-
-	/**
-	 * Validate fingerprint.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param fingerprint
-	 *            the fingerprint
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateFingerprint(String uin, String fingerprint, String type, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (fingerprint == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
-				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
-				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-				setAuthDto();
-				identityInfoDTO.setValue(new String(fingerPrintByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setFingerPrint(true);
-				setFingerBiometric(biometricData, type.toUpperCase());
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.FINGER_PRINT;
-		return false;
-	}
 
 	/**
 	 * Sets the finger biometric dto.
@@ -503,86 +464,6 @@ public class OSIValidator {
 	}
 
 	/**
-	 * Validate iris.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param iris
-	 *            the iris
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateIris(String uin, String iris, String type, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (iris == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, iris.toUpperCase())) {
-				InputStream irisFileName = adapter.getFile(registrationId, iris.toUpperCase());
-				byte[] irisByte = IOUtils.toByteArray(irisFileName);
-				setAuthDto();
-				identityInfoDTO.setValue(new String(irisByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setIris(true);
-				if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
-					identityDTO.setLeftEye(biometricData);
-				} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
-					identityDTO.setRightEye(biometricData);
-				}
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.IRIS;
-		return false;
-	}
-
-	/**
-	 * Validate face.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param face
-	 *            the face
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateFace(String uin, String face, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (face == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, face.toUpperCase())) {
-				setAuthDto();
-				InputStream faceFile = adapter.getFile(registrationId, face.toUpperCase());
-				byte[] faceByte = IOUtils.toByteArray(faceFile);
-				identityInfoDTO.setValue(new String(faceByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setFace(true);
-				identityDTO.setFace(biometricData);
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.FACE;
-		return false;
-	}
-
-	/**
 	 * Validate UIN.
 	 *
 	 * @param uin
@@ -592,38 +473,6 @@ public class OSIValidator {
 	private boolean validateUIN(String uin) {
 		// todo To call IAM rest API for UNI validation
 		return true;
-	}
-
-	/**
-	 * Validate pin.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param pin
-	 *            the pin
-	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
-		if (pin == null)
-			return true;
-		Boolean isValidPin = false;
-		authTypeDTO.setPin(true);
-		authRequestDTO.setIdvId(uin);
-		pinInfo.setValue(pin);
-		pinInfo.setType("SPIN");
-		List<PinInfo> pinList = new ArrayList<>();
-		pinList.add(pinInfo);
-		authRequestDTO.setPinInfo(pinList);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); if
-		 * (authResponseDTO.getStatus().equalsIgnoreCase("y"))
-		 */
-		isValidPin = true;
-		return isValidPin;
 	}
 
 	/**
@@ -642,53 +491,6 @@ public class OSIValidator {
 
 		}
 
-	}
-
-	/**
-	 * Validate biometric.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	boolean validateBiometric(String uin) throws ApisResourceAccessException {
-
-		authRequestDTO.setIdvId(uin);
-		authRequestDTO.setAuthType(authTypeDTO);
-		request.setIdentity(identityDTO);
-		authRequestDTO.setRequest(request);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); return authResponseDTO != null &&
-		 * authResponseDTO.getStatus() != null &&
-		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
-		 */
-		return true;
-	}
-
-	/**
-	 * Sets the auth dto.
-	 */
-	public void setAuthDto() {
-		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String date = simpleDateFormat.format(new Date());
-		authRequestDTO.setReqTime(date);
-		authRequestDTO.setId("mosip.internal.auth");
-		authRequestDTO.setIdvIdType("D");
-		// authRequestDTO.setVer("1.0");
-		authTypeDTO.setAddress(false);
-		authTypeDTO.setBio(false);
-		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPersonalIdentity(false);
-		authTypeDTO.setPin(false);
-		// authTypeDTO.setFace(false);
-		// authTypeDTO.setFingerPrint(false);
-		// authTypeDTO.setIris(false);
 	}
 
 	/**
@@ -728,23 +530,23 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			
+
 
 			return true;
-			
+
 		}else {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
-		
+
 
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			return false;
 		}
-		
+
 	}
 
-	
+
 
 	/**
 	 * Gets the hash sequence value.
