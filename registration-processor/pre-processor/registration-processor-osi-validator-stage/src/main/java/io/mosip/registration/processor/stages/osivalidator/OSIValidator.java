@@ -55,6 +55,7 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
@@ -331,8 +332,6 @@ public class OSIValidator {
 	 *             the apis resource access exception
 	 */
 	private boolean isValidIntroducer(String registrationId) throws IOException, ApisResourceAccessException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				|| (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
@@ -360,7 +359,7 @@ public class OSIValidator {
 				String introducerRidString = bigIntegerToString(introducerRID);
 				String introducerUinString = bigIntegerToString(introducerUIN);
 				if (introducerUinString == null && validateIntroducerRid(introducerRidString)) {
-					// To do Fetch the UIN of the Parent using the RID from the ID Repository.
+
 					introducerUinString = abisHandlerUtil.getUinFromIDRepo(introducerRidString).toString();
 					if (introducerUinString == null) {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
@@ -377,9 +376,6 @@ public class OSIValidator {
 			}
 
 		}
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "OSIValidator::isValidIntroducer()::exit");
 
 		return true;
 	}
@@ -535,8 +531,15 @@ public class OSIValidator {
 
 	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile)
 			throws ApisResourceAccessException, IOException {
-		if (introducerBiometricsFile != null || (!introducerBiometricsFile.trim().isEmpty())) {
-			InputStream packetMetaInfoStream = adapter.getFile(registrationId, introducerBiometricsFile);
+		if (introducerBiometricsFile != null && (!introducerBiometricsFile.trim().isEmpty())) {
+			InputStream packetMetaInfoStream = adapter.getFile(registrationId,
+					PacketStructure.BIOMETRIC + introducerBiometricsFile.toUpperCase());
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
+			return false;
 		}
 		return true;
 

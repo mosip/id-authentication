@@ -136,7 +136,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED));
 				registrationStatusDto.setRetryCount(retryCount);
 
-				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
+				registrationStatusDto.setStatusComment(umcValidator.getRegistrationStatusDto().getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 
 				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();

@@ -115,4 +115,6 @@ public class StatusMessage {
 
 	public static final String OSI_FAILED_REJECTED_PARENT = "Rejected as Parent is Rejected";
 
+	public static final String PARENT_BIOMETRIC_NOT_IN_PACKET = "Parent biometric file name not present in packet";
+
 }
