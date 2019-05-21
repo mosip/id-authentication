@@ -510,7 +510,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		abisResponseDetPKEntity.setAbisRespId(abisResponseDto.getId());
 		abisResponseDetPKEntity.setMatchedBioRefId(candidatesDto.getReferenceId());
 		abisResponseDetEntity.setId(abisResponseDetPKEntity);
-		abisResponseDetEntity.setScore(Integer.valueOf(candidatesDto.getScaledScore()));
+		if (candidatesDto.getScaledScore() != null) {
+			abisResponseDetEntity.setScore(Integer.valueOf(candidatesDto.getScaledScore()));
+		} else {
+			abisResponseDetEntity.setScore(null);
+
+		}
 		abisResponseDetEntity.setCrBy(SYSTEM);
 		abisResponseDetEntity.setUpdBy(SYSTEM);
 		abisResponseDetEntity.setIsDeleted(false);

@@ -275,6 +275,8 @@ public class AbisServiceImpl implements AbisService {
 
 	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest,
 			AbisIdentifyResponseDto response) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::addCandidateList()::Entry");
 		int count = 0;
 
 		CandidateListDto cd = new CandidateListDto();
@@ -286,6 +288,10 @@ public class AbisServiceImpl implements AbisService {
 				}
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::addCandidateList()::storedRefId" + storedRefId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::addCandidateList()::actualStoredRefId" + actualStoredRefId);
 		ArrayList<String> storedRefIdList = new ArrayList<>(actualStoredRefId);
 		Collections.shuffle(storedRefIdList);
 		int loopLimit = storedRefIdList.size();
@@ -310,6 +316,9 @@ public class AbisServiceImpl implements AbisService {
 		}
 		if (storedRefId.size() < 1000)
 			storedRefId.add(identifyReqId);
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisServiceImpl::addCandidateList()::Exit");
 
 	}
 
