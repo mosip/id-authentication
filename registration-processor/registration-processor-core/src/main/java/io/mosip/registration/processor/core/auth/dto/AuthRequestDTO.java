@@ -15,10 +15,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AuthRequestDTO extends BaseAuthRequestDTO {
+	
+	private String individualId;
 
-	private String idvId;
+	private String individualIdType;
+	
+	private String keyIndex;
 
-	private String idvIdType;
+	private RequestDTO request;
 
 	private AuthTypeDTO authType;
 
@@ -37,7 +41,5 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	private List<PinInfo> pinInfo;
 
 	private List<BioInfo> bioInfo;
-
-	private RequestDTO request;
 
 }

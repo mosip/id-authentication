@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class BaseAuthRequestDTO {
 
+	private String consentObtained;
+	
 	private String id;
 	
 	//private String ver;
