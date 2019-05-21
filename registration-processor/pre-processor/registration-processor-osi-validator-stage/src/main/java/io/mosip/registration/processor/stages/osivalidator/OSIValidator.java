@@ -251,7 +251,7 @@ public class OSIValidator {
 
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
-	
+
 	private boolean wasOperatorActiveDuringPCT(String operatorId, String creationDate) throws ApisResourceAccessException {
 		boolean wasOperatorActive=false;
 		List<String> pathSegments=new ArrayList<String>();
@@ -262,7 +262,7 @@ public class OSIValidator {
 				"","",UserResponseDto.class);
 			if (userResponse.getErrors() == null) {
 				wasOperatorActive = userResponse.getResponse().getUserResponseDto().get(0).isActive();
-				
+
 			} else {
 				List<ServerError> errors = userResponse.getErrors();
 				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
@@ -612,8 +612,7 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 */
 
-	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile)
-			throws ApisResourceAccessException, IOException {
+	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile) {
 		if (introducerBiometricsFile != null && (!introducerBiometricsFile.trim().isEmpty())) {
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId,
 					PacketStructure.BIOMETRIC + introducerBiometricsFile.toUpperCase());
@@ -711,12 +710,12 @@ public class OSIValidator {
 
 	}
 
-
-	private List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
+	private List<BioInfo> getBioInfoListDto(byte[] cbefByteFile)
+			throws ParserConfigurationException, SAXException, IOException {
 
 		List<BioInfo> biometrics = null;
-		BioInfo bioInfo=new BioInfo();
-		DataInfoDTO dataInfoDTO=new DataInfoDTO();
+		BioInfo bioInfo = new BioInfo();
+		DataInfoDTO dataInfoDTO = new DataInfoDTO();
 		String byteFileStr = new String(cbefByteFile);
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(byteFileStr));
@@ -724,7 +723,7 @@ public class OSIValidator {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc=dBuilder.parse(is);
+		Document doc = dBuilder.parse(is);
 		doc.getDocumentElement().normalize();
 		if (doc != null) {
 			NodeList birList = doc.getElementsByTagName("BIR");
