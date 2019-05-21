@@ -412,6 +412,8 @@ public class OSIValidator {
 	 *             the apis resource access exception
 	 */
 	private boolean isValidIntroducer(String registrationId) throws IOException, ApisResourceAccessException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				|| (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
@@ -434,11 +436,14 @@ public class OSIValidator {
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 					registrationStatusDto
 							.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET);
 					return false;
 				}
 				String introducerRidString = bigIntegerToString(introducerRID);
 				String introducerUinString = bigIntegerToString(introducerUIN);
-				if (introducerUinString == null && validateIntroducerRid(introducerRidString)) {
+				if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
 
 					introducerUinString = abisHandlerUtil.getUinFromIDRepo(introducerRidString).toString();
 					if (introducerUinString == null) {
@@ -446,6 +451,9 @@ public class OSIValidator {
 								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								StatusMessage.PARENT_UIN_NOT_AVAIALBLE);
 						return false;
 					}
 
@@ -456,6 +464,8 @@ public class OSIValidator {
 			}
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::exit");
 
 		return true;
 	}
@@ -596,6 +606,8 @@ public class OSIValidator {
 					.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
 			return false;
 		}
 		return true;
@@ -611,24 +623,33 @@ public class OSIValidator {
 	 *            the registration id
 	 * @return true, if successful
 	 */
-	private boolean validateIntroducerRid(String introducerRid) {
+	private boolean validateIntroducerRid(String introducerRid, String registrationId) {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
 			if (registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSING.toString())) {
+
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
 
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, StatusMessage.PACKET_IS_ON_HOLD);
 				return false;
+
 			} else if (registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.REJECTED.toString())
 					|| registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.FAILED.toString())) {
+
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT));
 
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_FAILED_REJECTED_PARENT);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						StatusMessage.OSI_FAILED_REJECTED_PARENT);
+
 				return false;
 			} else {
 				return true;
@@ -640,6 +661,8 @@ public class OSIValidator {
 
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.PACKET_IS_ON_HOLD);
 			return false;
 		}
 
