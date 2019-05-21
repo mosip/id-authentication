@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
@@ -8,7 +9,11 @@
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
-
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.11.5</version>
+	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
@@ -16,41 +21,18 @@
 			<version>0.4.7</version>
 		</dependency>
 
-	<!-- 	<dependency>
+<!-- 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 			<version>0.9.0</version>
-		</dependency> -->
-
-		<dependency>
-		<groupId>com.aventstack</groupId>
-    <artifactId>extentreports</artifactId>
-    <version>3.0.0</version>
-</dependency>
-<dependency>
-			<groupId>com.relevantcodes</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>2.41.2</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
-			<version>0.9.0</version>
-		</dependency>  -->
-		
+ -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>3.0.2.RELEASE</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -71,23 +53,17 @@
 			<version>6.11</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+    <version>3.0.2.RELEASE</version>
+</dependency>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.8.6</version>
-		</dependency>
-		<!-- Extent Report Tabish-->
-		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-		<!-- Extent Report Arjun-->
-		<dependency>
-			<groupId>com.relevantcodes</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>2.41.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
@@ -178,10 +154,18 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.2</version>
 		</dependency>
-		<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>testing</artifactId> 
-			<version>demoApp</version> </dependency> -->
+		<!-- Encryption Decryption Util Jar -->
+	<!-- 	<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-partnerdemo-service</artifactId>
+			<version>0.11.1</version>
+		</dependency> -->
+		<!-- <dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-demo</artifactId>
+			<version>0.10.2</version>
+		</dependency> -->
 
-	
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -231,6 +215,18 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.6.0</version>
 		</dependency>
+		<!-- Extent Report Tabish-->
+		<dependency>
+			<groupId>com.aventstack</groupId>
+			<artifactId>extentreports</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<!-- Extent Report Arjun-->
+		<dependency>
+			<groupId>com.relevantcodes</groupId>
+			<artifactId>extentreports</artifactId>
+			<version>2.41.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -245,6 +241,7 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
+
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -261,7 +258,6 @@
 
 			</plugins>
 		</pluginManagement>
-
 
 
 	</build>

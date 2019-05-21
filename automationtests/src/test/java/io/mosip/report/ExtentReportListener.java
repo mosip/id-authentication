@@ -17,13 +17,13 @@ import com.relevantcodes.extentreports.LogStatus;
  * @author Arjun, Vignesh
  *
  */
-public class ExtentReportListener implements ITestListener {
+public class ExtentReportListener extends Reporter implements ITestListener {
 	protected static ExtentReports reports;
 	protected static ExtentTest test;
 
 	public void onTestStart(ITestResult result) {
-		reports.addSystemInfo("Environment", System.getProperty("env.user"));
-		reports.addSystemInfo("Deployment Version", CustomTestNGReporter.getBuildTag());
+		reports.addSystemInfo("Environment", getAppEnvironment());
+		reports.addSystemInfo("Deployment Version", getAppDepolymentVersion());
 		test = reports.startTest(result.getName());
 		test.log(LogStatus.INFO, result.getName() + "testcase is started");
 	}
@@ -47,11 +47,12 @@ public class ExtentReportListener implements ITestListener {
 
 	public void onStart(ITestContext context) {
 		reports = new ExtentReports(
-				"extent-report-" + new SimpleDateFormat("yyyy-MM-dd hh-mm-ss-ms").format(new Date()) + ".html");
+				"extent-report.html");
 	}
 
 	public void onFinish(ITestContext context) {
 		reports.endTest(test);
 		reports.flush();
 	}
+
 }

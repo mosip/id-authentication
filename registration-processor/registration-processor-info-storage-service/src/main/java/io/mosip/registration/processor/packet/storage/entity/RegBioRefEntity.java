@@ -23,7 +23,7 @@ public class RegBioRefEntity extends BasePacketEntity<RegBioRefPKEntity> impleme
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "SYSTEM";
 
-	@Column(name = "cr_dtimes", updatable = false, nullable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 

@@ -30,7 +30,7 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	@Column(name = "cr_by")
 	private String crBy;
 
-	@Column(name = "cr_dtimes", updatable = false, nullable = false)
+	@Column(name = "cr_dtimes", updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimes;
 

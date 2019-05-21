@@ -13,10 +13,9 @@ public interface JdbcSqlService {
 
 	/**
 	 * Execute sql file
-	 * 
-	 * @param version
-	 *            services version
-	 * @return Response of sql update
+	 * @param updatedVersion latest
+	 * @param previousVerion previous
+	 * @return response
 	 */
-	public ResponseDTO executeSqlFile(String version);
+	public ResponseDTO executeSqlFile(String updatedVersion,String previousVerion);
 }

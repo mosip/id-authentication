@@ -375,7 +375,7 @@ export class DashBoardComponent implements OnInit {
               this.secondaryLanguagelabels.cancelAppointment.msg_deleted
             );
             const index = this.users.indexOf(element);
-            this.users[index].status = 'Pending Appointment';
+            this.users[index].status = appConstants.APPLICATION_STATUS_CODES.pending;
             this.users[index].appointmentDate = '-';
             this.users[index].appointmentTime = '';
           } else {

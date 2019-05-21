@@ -320,7 +320,9 @@ public class RegistrationUIConstants {
 	public static final String UNABLE_TO_UPDATE = bundle.getString("UNABLE_TO_UPDATE");
 	public static final String UPDATE_LATER = bundle.getString("UPDATE_LATER");
 	public static final String UPDATE_FREEZE_TIME_EXCEED = bundle.getString("UPDATE_FREEZE_TIME_EXCEED");
-	
-	//AUTH TOKEN
-		public static String UNABLE_TO_GET_AUTH_TOKEN= bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
+	public static final String SQL_EXECUTION_FAILED_AND_REPLACED = bundle
+			.getString("SQL_EXECUTION_FAILED_AND_REPLACED");
+
+	// AUTH TOKEN
+	public static String UNABLE_TO_GET_AUTH_TOKEN = bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
 }

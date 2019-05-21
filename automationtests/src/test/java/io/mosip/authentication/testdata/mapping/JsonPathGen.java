@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata.mapping;
 
 import java.io.FileOutputStream;
@@ -157,4 +156,3 @@ public class JsonPathGen {
 	}
 
 }
-

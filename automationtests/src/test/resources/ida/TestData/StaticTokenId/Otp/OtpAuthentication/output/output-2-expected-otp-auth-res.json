@@ -1,0 +1,13 @@
+{
+  "status": "Y",
+  "err": [],
+  "txnID": "1234567890",
+  "resTime": "2019-01-30T16:47:30.002+05:30",
+  "info": {
+    "idType": "D",
+    "reqTime": "2019-01-30T16:44:17.078+05:30",
+    "matchInfos": [],
+    "bioInfos": []
+  },
+  "ver": "$version$"
+}
