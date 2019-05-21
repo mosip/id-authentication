@@ -308,18 +308,23 @@ public class RegistrationPreviewController extends BaseController implements Ini
 			}
 			registrationController.showUINUpdateCurrentPage();
 		} else {
-			if (RegistrationConstants.ENABLE
-					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+			if((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-						RegistrationConstants.FINGERPRINT_CAPTURE);
-			} else if (RegistrationConstants.ENABLE
-					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
-				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-						RegistrationConstants.IRIS_CAPTURE);
-			} else if (RegistrationConstants.ENABLE
-					.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
-				registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
-						RegistrationConstants.FACE_CAPTURE);
+						RegistrationConstants.GUARDIAN_BIOMETRIC);
+			} else {
+				if (RegistrationConstants.ENABLE
+						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))) {
+					registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+							RegistrationConstants.FINGERPRINT_CAPTURE);
+				} else if (RegistrationConstants.ENABLE
+						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+					registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+							RegistrationConstants.IRIS_CAPTURE);
+				} else if (RegistrationConstants.ENABLE
+						.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG))) {
+					registrationController.showCurrentPage(RegistrationConstants.REGISTRATION_PREVIEW,
+							RegistrationConstants.FACE_CAPTURE);
+				}
 			}
 		}
 	}
