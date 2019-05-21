@@ -324,11 +324,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(idValue);
 
-		String queryParamName = "type";
-		String queryParamValue = "all";
+		String queryParamName = null;  //"type";
+		String queryParamValue =null; // "all";
 
-		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
-				queryParamName, queryParamValue, IdResponseDTO.class);
+		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
+				queryParamName, queryParamValue, IdResponseDTO1.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
