@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -48,21 +49,22 @@ import io.restassured.response.Response;
  */
 
 public class BatchJob extends BaseTestCase implements ITest {
-	Logger logger = Logger.getLogger(BatchJob.class);
-	PreRegistrationLibrary lib = new PreRegistrationLibrary();
-	String testSuite;
-	String preRegID = null;
-	String createdBy = null;
-	Response response = null;
-	String preID = null;
+	public Logger logger = Logger.getLogger(BatchJob.class);
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public String preID = null;
 	protected static String testCaseName = "";
-	static String folder = "preReg";
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applnLib = new ApplicationLibrary();
+	public String folder = "preReg";
+	public ApplicationLibrary applnLib = new ApplicationLibrary();
+	public PreregistrationDAO dao=new PreregistrationDAO();
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
+		authToken = lib.getToken();
 	}
 	/**
 	 * Batch job service for expired application
@@ -72,14 +74,17 @@ public class BatchJob extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
-		lib.BookExpiredAppointment(documentResponse, avilibityResponse, preID);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
 		lib.expiredStatus();
+		lib.FetchAppointmentDetails(preID);
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
-		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response[0].statusCode").toString();
+		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
+	
 	}
 	/**
 	 * Batch Job service Consumed Application
@@ -90,7 +95,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response[0].preRegistrationId").toString();
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
@@ -100,18 +105,23 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String message = consumedResponse.jsonPath().get("response").toString();
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
 		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
-		lib.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-
+	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
+	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
 
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+		logger.info("method name:" + result.getMethod().getMethodName());
 	}
 }

@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-{
-  "status": "Y",
-  "err": [],
-  "txnID": "1234567890",
-  "resTime": "2019-02-01T10:34:01.057+05:30",
-  "info": {
-    "idType": "D",
-    "reqTime": "2019-01-31T10:00:23.027+05:30",
-    "matchInfos": [],
-    "bioInfos": []
-  },
-  "ver": "$version$"
-=======
 {
   "responseTime": "2019-03-21T15:42:12.467+05:30",
   "transactionID": "1013645414",
@@ -20,5 +6,4 @@
   "response": {
     "authStatus": true
   } 
->>>>>>> QA_IDA
 }

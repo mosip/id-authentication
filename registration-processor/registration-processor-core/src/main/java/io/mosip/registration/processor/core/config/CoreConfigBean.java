@@ -22,6 +22,8 @@ import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+
 import org.springframework.context.annotation.Primary;
 
 @PropertySource("classpath:bootstrap.properties")
@@ -80,4 +82,8 @@ public class CoreConfigBean {
 		return new MosipRouter();
 	}
 
+	@Bean
+	public DigitalSignatureUtility getDigitalSignatureUtility() {
+		return new DigitalSignatureUtility();
+	}
 }

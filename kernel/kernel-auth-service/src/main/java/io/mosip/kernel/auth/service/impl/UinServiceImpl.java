@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,6 @@ public class UinServiceImpl implements UinService {
 			String responseBody = response.getBody();
 			List<ServiceError> validationErrorsList = null;
 				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-	        
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			}
@@ -130,7 +130,7 @@ public class UinServiceImpl implements UinService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthNException(validationErrorsList);
 				} else {
-					throw new BadCredentialsException("Authentication failed from UIN services");
+					throw new BadCredentialsException("Authentication failed from UIN services "+ex.getResponseBodyAsString());
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
@@ -150,6 +150,94 @@ public class UinServiceImpl implements UinService {
 		
 		return mosipDto;
 	}
+	
+	@Override
+	public MosipUserDto getDetailsForValidateOtp(String uin) throws Exception {
+		String token=null;
+		MosipUserDto mosipDto = null;
+		ResponseDTO idResponse = null;
+		
+		Map<String, String> uriParams = new HashMap<String, String>();
+		try {
+			token = tokenService.getUINBasedToken();
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
+		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), uin);
+		ResponseEntity<String> response = null;
+		String url = UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString();
+		try
+		{
+		response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers),
+				String.class);
+		if (response.getStatusCode().equals(HttpStatus.OK)) {
+			String responseBody = response.getBody();
+			List<ServiceError> validationErrorsList = null;
+				validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+				Optional<ServiceError> service = validationErrorsList.stream().filter(a->(a.getErrorCode().equals("IDR-IDC-002") || a.getErrorCode().equals("IDR-IDS-002"))).findFirst();
+				if(service.isPresent())
+				{
+					throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+							AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+				}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			}
+			ResponseWrapper<?> responseObject;
+			try {
+				responseObject = mapper.readValue(response.getBody(), ResponseWrapper.class);
+				idResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
+						ResponseDTO.class);
+				
+			} catch (Exception e) {
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			}
+		}
+			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
+			if(res!=null)
+			{
+				mosipDto = new MosipUserDto();
+				mosipDto.setUserId(uin);
+				validate(res);
+				if(res.get("phone")!=null)
+				{
+					mosipDto.setMobile((String) res.get("phone"));
+				}
+				if(res.get("email")!=null)
+				{
+					mosipDto.setMail(res.get("email"));
+				}
+			}	
+		}catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from UIN services "+ex.getResponseBodyAsString());
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from UIN services");
+				}
+			}
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerServiceException(validationErrorsList);
+			} else {
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+			}
+		}
+		
+		return mosipDto;
+	}
+	
 
 	private void validate(Map<String, String> res) {
 		if((String) res.get("phone")==null && (String) res.get("email")==null)

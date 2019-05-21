@@ -220,7 +220,6 @@ public class OSIValidatorTest {
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 		
 		
-		demographicInfoDto.setUin("1234");
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		regOsiDto.setOfficerId("O1234");
 		regOsiDto.setOfficerHashedPin("officerHashedPin");
@@ -316,6 +315,7 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -457,7 +457,6 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(ridList);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 

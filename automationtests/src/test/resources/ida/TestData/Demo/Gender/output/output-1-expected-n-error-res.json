@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-{
-	"status": "N",
-	"err": [
-		{
-			"errorCode": "IDA-IDV-003",
-			"errorMessage": "Missing Input Parameter - model"
-		}
-	],
-	"txnID": "7404012866",
-	"resTime": "2019-01-25T12:52:13.427+05:30",
-	"ver": "$version$"
-}
-=======
 {
 	"response": {
 		"authStatus": false
@@ -27,4 +13,3 @@
 	"transactionID": "2381861355",
 	"id": "mosip.identity.auth"
 }
->>>>>>> QA_IDA

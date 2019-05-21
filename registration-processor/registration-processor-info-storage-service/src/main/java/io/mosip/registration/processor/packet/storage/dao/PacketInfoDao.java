@@ -54,7 +54,7 @@ public class PacketInfoDao {
 	/** The reg bio ref repository. */
 	@Autowired
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
-	
+
 	@Autowired
 	private RegistrationRepositary<BaseRegistrationEntity,String> registrationRepositary;
 
@@ -136,7 +136,6 @@ public class PacketInfoDao {
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();
 		demo.setRegId(object.getId().getRegId());
-		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
@@ -196,11 +195,10 @@ public class PacketInfoDao {
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
 		StringBuilder query = new StringBuilder();
 		query.append(
-				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin " + IS_NOT_NULL + AND);
+				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
 		if (name != null) {
 			query.append(alias + ".name=:name ").append(AND);
 			params.put("name", name);
-
 		}
 		if (gender != null) {
 			query.append(alias + ".gender=:gender ").append(AND);
@@ -212,12 +210,12 @@ public class PacketInfoDao {
 		}
 		query.append(alias + ".id.langCode=:langCode").append(AND);
 		params.put("langCode", langCode);
-
 		query.append(alias + ".isActive=:isActive");
 		params.put("isActive", IS_ACTIVE_TRUE);
-
 		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
-	}
+		}
+
+
 
 	/**
 	 * Gets the all demographic info dtos.
@@ -250,20 +248,6 @@ public class PacketInfoDao {
 	 *            the uin
 	 * @return the reg id by UIN
 	 */
-	public List<String> getRegIdByUIN(String uin) {
-		return demographicDedupeRepository.getRegIdByUIN(uin);
-	}
-
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid
-	 *            the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String rid) {
-		return demographicDedupeRepository.getUINByRid(rid);
-	}
 
 	/**
 	 * Gets the insert or identify request.
@@ -536,7 +520,7 @@ public class PacketInfoDao {
 	public List<AbisRequestEntity> getAbisRequestsByBioRefId(String bioRefId) {
 		return abisRequestRepository.getAbisRequestsByBioRefId(bioRefId, "INSERT");
 	}
-	
+
 	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds,String statusCode) {
 		return registrationRepositary.getProcessedOrProcessingRegIds(matchedRegIds, statusCode);
 	}

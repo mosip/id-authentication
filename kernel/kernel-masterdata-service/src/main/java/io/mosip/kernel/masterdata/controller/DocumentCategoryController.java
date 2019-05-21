@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
@@ -57,7 +59,8 @@ public class DocumentCategoryController {
 	/**
 	 * API to fetch all Document categories details based on language code
 	 * 
-	 * @param langCode the language code
+	 * @param langCode
+	 *            the language code
 	 * 
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
@@ -73,8 +76,10 @@ public class DocumentCategoryController {
 	/**
 	 * API to fetch all Document categories details based on code and language code
 	 * 
-	 * @param code     the code
-	 * @param langCode the language code
+	 * @param code
+	 *            the code
+	 * @param langCode
+	 *            the language code
 	 * @return {@link DocumentCategoryResponseDto}
 	 */
 	@ResponseFilter
@@ -90,7 +95,8 @@ public class DocumentCategoryController {
 	/**
 	 * API to create Document category
 	 * 
-	 * @param category is of type {@link DocumentCategoryDto}
+	 * @param category
+	 *            is of type {@link DocumentCategoryDto}
 	 * 
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
@@ -108,7 +114,8 @@ public class DocumentCategoryController {
 	/**
 	 * Api to update Document category.
 	 * 
-	 * @param category is of type {@link DocumentCategoryDto}
+	 * @param category
+	 *            is of type {@link DocumentCategoryDto}
 	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@ResponseFilter
@@ -125,7 +132,8 @@ public class DocumentCategoryController {
 	/**
 	 * Api to delete Document Category.
 	 * 
-	 * @param code the document category code.
+	 * @param code
+	 *            the document category code.
 	 * @return the code.
 	 */
 	@ResponseFilter

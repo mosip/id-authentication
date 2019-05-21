@@ -1,5 +1,5 @@
 testdata:
-  PhoneNumber_Authentication_smoke_For UIN_Pos_01:
+  Authentication_Demographic_PhoneNumber_smoke_For IntegrationTest_UIN_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -8,7 +8,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -32,7 +32,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType
       
-  PhoneNumber_Authentication_Invalid UIN_Neg_02:
+  Authentication_Demographic_PhoneNumber_Invalid UIN_Neg_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -40,7 +40,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$ 
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.valuePhoneNumber: 9003356458
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -48,7 +49,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid reqTime_For UIN_Neg_03:
+  Authentication_Demographic_PhoneNumber_Invalid reqTime_For UIN_Neg_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -57,7 +58,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $IGNORE$
@@ -65,7 +66,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
+  Authentication_Demographic_PhoneNumber_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -74,7 +75,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $IGNORE$
@@ -82,7 +83,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid_reqTime_Lessthan24hrs_For UIN_Neg_05:
+  Authentication_Demographic_PhoneNumber_Invalid_reqTime_Lessthan24hrs_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -91,7 +92,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -99,7 +100,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid individualIdType_For UIN_Neg_06:
+  Authentication_Demographic_PhoneNumber_Invalid individualIdType_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -109,7 +110,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -117,7 +118,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid version_For UIN_Neg_07:
+  Authentication_Demographic_PhoneNumber_Invalid version_For UIN_Neg_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -127,7 +128,7 @@ testdata:
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -136,7 +137,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid txnID_For UIN_Neg_08:
+  Authentication_Demographic_PhoneNumber_Invalid txnID_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -145,7 +146,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -153,7 +154,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid UIN which is not as per defintion_Neg_09:
+  Authentication_Demographic_PhoneNumber_Invalid UIN which is not as per defintion_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -161,7 +162,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$ 
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.valuePhoneNumber: 8656278662
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -169,7 +171,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid reqTime which is not as per defintion_For UIN_Neg_10:
+  Authentication_Demographic_PhoneNumber_Invalid reqTime which is not as per defintion_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -178,7 +180,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMPZ$
@@ -186,7 +188,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
           
-  PhoneNumber_Authentication_Invalid individualIdType which is not as per defintion_For UIN_Neg_11:
+  Authentication_Demographic_PhoneNumber_Invalid individualIdType which is not as per defintion_For UIN_Neg_11:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -196,7 +198,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -204,7 +206,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid version which is not as per defintion_For UIN_Neg_12:
+  Authentication_Demographic_PhoneNumber_Invalid version which is not as per defintion_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -214,7 +216,7 @@ testdata:
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -223,7 +225,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid txnID which is not as per defintion_For UIN_Neg_13:
+  Authentication_Demographic_PhoneNumber_Invalid txnID which is not as per defintion_For UIN_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -232,7 +234,7 @@ testdata:
       AuthReq.transactionID: $TestData:txnID_Invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -240,7 +242,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing UIN_Neg_16:
+  Authentication_Demographic_PhoneNumber_Missing UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -248,7 +250,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.valuePhoneNumber: 38746376884
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -256,7 +259,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing reqTime_For UIN_Neg_17:
+  Authentication_Demographic_PhoneNumber_Missing reqTime_For UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -265,7 +268,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -273,7 +276,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing individualIdType_For UIN_Neg_18:
+  Authentication_Demographic_PhoneNumber_Missing individualIdType_For IntegrationTest_UIN_Neg_18:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -283,7 +286,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -291,7 +294,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing version_For UIN_Neg_19:
+  Authentication_Demographic_PhoneNumber_Missing version_For UIN_Neg_19:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -301,7 +304,7 @@ testdata:
       AuthReq.version: $REMOVE$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -309,7 +312,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing txnID_For UIN_Neg_20:
+  Authentication_Demographic_PhoneNumber_Missing txnID_For UIN_Neg_20:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -318,7 +321,7 @@ testdata:
       AuthReq.transactionID: $REMOVE$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -326,7 +329,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  PhoneNumber_Authentication_smoke_For VID_Pos_21:
+  Authentication_Demographic_PhoneNumber_smoke_For VID_Pos_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -336,13 +339,13 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
        
-  PhoneNumber_Authentication_Invalid VID_Neg_22:
+  Authentication_Demographic_PhoneNumber_Invalid VID_Neg_22:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -351,7 +354,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$ 
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.valuePhoneNumber: 37867676869
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -359,7 +363,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid reqTime_For VID_Neg_23:
+  Authentication_Demographic_PhoneNumber_Invalid reqTime_For VID_Neg_23:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -369,7 +373,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMPZ$
@@ -377,7 +381,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid_reqTime_greaterthan24hrs_For VID_Neg_24:
+  Authentication_Demographic_PhoneNumber_Invalid_reqTime_greaterthan24hrs_For VID_Neg_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -387,7 +391,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMPZ$
@@ -395,7 +399,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid_reqTime_Lessthan24hrs_For VID_Neg_25:
+  Authentication_Demographic_PhoneNumber_Invalid_reqTime_Lessthan24hrs_For VID_Neg_25:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -405,7 +409,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -413,7 +417,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid individualIdType_For VID_Neg_26:
+  Authentication_Demographic_PhoneNumber_Invalid individualIdType_For VID_Neg_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -424,7 +428,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -432,7 +436,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid version_For VID_Neg_27:
+  Authentication_Demographic_PhoneNumber_Invalid version_For VID_Neg_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -443,7 +447,7 @@ testdata:
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -451,7 +455,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid txnID_For VID_Neg_28:
+  Authentication_Demographic_PhoneNumber_Invalid txnID_For VID_Neg_28:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -461,7 +465,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -469,7 +473,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid VID which is not as per defintion_Neg_29:
+  Authentication_Demographic_PhoneNumber_Invalid VID which is not as per defintion_Neg_29:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -479,7 +483,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $TestData:phone_Mismatch$ 
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -487,7 +491,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid reqTime which is not as per defintion_For VID_Neg_30:
+  Authentication_Demographic_PhoneNumber_Invalid reqTime which is not as per defintion_For VID_Neg_30:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -497,7 +501,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMPZ$
@@ -505,7 +509,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
           
-  PhoneNumber_Authentication_Invalid individualIdType which is not as per defintion_For VID_Neg_31:
+  Authentication_Demographic_PhoneNumber_Invalid individualIdType which is not as per defintion_For VID_Neg_31:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -516,7 +520,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -524,7 +528,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid version which is not as per defintion_For VID_Neg_32:
+  Authentication_Demographic_PhoneNumber_Invalid version which is not as per defintion_For VID_Neg_32:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -535,7 +539,7 @@ testdata:
       AuthReq.version: $TestData:id_version_invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -543,7 +547,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Invalid txnID which is not as per defintion_For VID_Neg_33:
+  Authentication_Demographic_PhoneNumber_Invalid txnID which is not as per defintion_For VID_Neg_33:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -553,7 +557,7 @@ testdata:
       AuthReq.transactionID: $TestData:txnID_Invalid$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -561,7 +565,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing VID_Neg_34:
+  Authentication_Demographic_PhoneNumber_Missing VID_Neg_34:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -571,7 +575,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $TestData:phone_Mismatch$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -579,7 +583,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing reqTime_For VID_Neg_35:
+  Authentication_Demographic_PhoneNumber_Missing reqTime_For VID_Neg_35:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -589,7 +593,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -597,7 +601,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing individualIdType_For VID_Neg_36:
+  Authentication_Demographic_PhoneNumber_Missing individualIdType_For VID_Neg_36:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -608,7 +612,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -616,7 +620,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing version_For VID_Neg_37:
+  Authentication_Demographic_PhoneNumber_Missing version_For VID_Neg_37:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -627,7 +631,7 @@ testdata:
       AuthReq.version: $REMOVE$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -635,7 +639,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_Missing txnID_For VID_Neg_38:
+  Authentication_Demographic_PhoneNumber_Missing txnID_For VID_Neg_38:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -653,7 +657,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$   
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_PhoneNumber Mismatch_For UIN_Neg_39:
+  Authentication_Demographic_PhoneNumber_PhoneNumber Mismatch_For UIN_Neg_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -662,7 +666,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $TestData:phone_Mismatch$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$  
@@ -690,7 +694,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
 
-  PhoneNumber_Authentication_PhoneNumber Mismatch_For VID_Neg_40:
+  Authentication_Demographic_PhoneNumber_PhoneNumber Mismatch_For VID_Neg_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -700,7 +704,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $TestData:phone_Mismatch$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -728,7 +732,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$ 
    
-  PhoneNumber_Authentication_No Authentication Type is Selected_For UIN_Neg_41:
+  Authentication_Demographic_PhoneNumber_No Authentication Type is Selected_For UIN_Neg_41:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -738,7 +742,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -746,7 +750,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  PhoneNumber_Authentication_No Authentication Type is Selected_For VID_Neg_42:
+  Authentication_Demographic_PhoneNumber_No Authentication Type is Selected_For VID_Neg_42:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -757,7 +761,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -765,7 +769,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$   
       
-  PhoneNumber_Authentication_Deactivated UIN_Neg_43:
+  Authentication_Demographic_PhoneNumber_Deactivated UIN_Neg_43:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -774,7 +778,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuePhoneNumber: $idrepo~$input.demo-auth-request:AuthReq.individualId$~phone$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$

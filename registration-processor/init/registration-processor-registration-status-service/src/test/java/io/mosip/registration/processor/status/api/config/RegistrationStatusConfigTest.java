@@ -7,10 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
-import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
@@ -25,14 +22,6 @@ public class RegistrationStatusConfigTest {
 
 	@MockBean
 	public ConnectionUtils connectionUtil;
-	
-	@MockBean
-	public TokenValidator tokenValidator;
 
-	@MockBean
-	public RidValidator<?> ridValidator;
-
-	@MockBean
-	public UinValidator<?> uinValidator;
 
 }

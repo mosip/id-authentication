@@ -1,7 +1,7 @@
 {
   "id": "string",
   "request": {
-    "appId": "preregistration",
+    "appId": "admin",
     "password": "preregadmin",
     "userName": "preregadmin"
   },

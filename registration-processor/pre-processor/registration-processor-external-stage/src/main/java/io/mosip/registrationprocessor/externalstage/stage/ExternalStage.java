@@ -13,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
@@ -55,6 +56,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -67,6 +72,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	 */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 
 	/** The description. */
 	String description = "";
@@ -90,6 +99,18 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
+	@Override
+	public void start() {
+
+		router.setRoute(this.postUrl(vertx,MessageBusAddress.EXTERNAL_STAGE_BUS_IN,
+				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,7 +146,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_SUCCESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				object.setIsValid(true);
 				object.setInternalError(false);
 				isTransactionSuccessful = true;
@@ -135,7 +156,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED));
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_FAILURE);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_FAILURE.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				object.setIsValid(false);
 				object.setInternalError(false);
 				description = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + description;
@@ -143,7 +164,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			}
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_REPROCESSING.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			object.setInternalError(true);
@@ -151,7 +172,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			regProcLogger.debug("", "", "sent to next stage --> ", ExceptionUtils.getStackTrace(e));
 		} finally {
 
-			
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -162,8 +183,8 @@ public class ExternalStage extends MosipVerticleAPIManager {
 
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.EXTERNAL_STAGE_FAILURE.toString());
-				
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()

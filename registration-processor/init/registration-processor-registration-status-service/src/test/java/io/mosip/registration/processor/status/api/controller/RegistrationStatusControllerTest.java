@@ -192,7 +192,7 @@ public class RegistrationStatusControllerTest {
 		this.mockMvc
 		.perform(MockMvcRequestBuilders.get("/search")
 				.accept(MediaType.APPLICATION_ATOM_XML).contentType(MediaType.ALL_VALUE))
-		.andExpect(MockMvcResultMatchers.status().isBadRequest());
+		.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
 
 	@Test

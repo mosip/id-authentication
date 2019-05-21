@@ -643,6 +643,8 @@ function setDocumentScrollTop(ypos)
  <li><a href="#login">Login</a></li> 
  <li><a href="#master-data">Master Data</a></li> 
  <li><a href="#account-management">Account Management</a></li> 
+ <li><a href="#user-management">User Management</a></li> 
+ <li><a href="#uin-services">UIN Services</a></li> 
 </ul> 
 <h1> <a id="login" class="anchor" href="#login" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Login</h1> 
 <ul> 
@@ -1263,6 +1265,7 @@ JSON Response:
  <li><a href="#get-unblockuser">GET /unblockuser</a></li> 
  <li><a href="#post-changepassword">POST /changepassword</a></li> 
  <li><a href="#post-resetpassword">POST /resetpassword</a></li> 
+ <li><a href="#get-usernamemobilenumber">GET /username/{mobilenumber}</a></li> 
 </ul> 
 <h3> <a id="get-unblockuser" class="anchor" href="#get-unblockuser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET /unblockuser</h3> 
 <p>The user can unblock himself using this service. Once authenticated via OTP, the user will be unblocked.</p> 
@@ -1325,7 +1328,7 @@ JSON Response:
 <div class="highlight highlight-source-json">
  <pre>
 {
-	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.unblockuser<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.unblockuser<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>metadata<span class="pl-pds">&quot;</span></span>: {},
 	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
@@ -1342,7 +1345,7 @@ JSON Response:
 <div class="highlight highlight-source-json">
  <pre>
 {
-  <span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.authfactors<span class="pl-pds">&quot;</span></span>,
+  <span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.unblockuser<span class="pl-pds">&quot;</span></span>,
   <span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
   <span class="pl-s"><span class="pl-pds">&quot;</span>metadata<span class="pl-pds">&quot;</span></span>: {},
   <span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
@@ -1424,7 +1427,7 @@ JSON Response:
 <h4> <a id="example-request-3" class="anchor" href="#example-request-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Request</h4> 
 <div class="highlight highlight-source-json">
  <pre>{
-	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.authentication.changepassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.changepassword<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,	
 	<span class="pl-s"><span class="pl-pds">&quot;</span>requesttime<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>request<span class="pl-pds">&quot;</span></span>: {
@@ -1444,7 +1447,7 @@ Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlk
 
 JSON:
 {
-	&quot;id&quot;: &quot;mosip.admin.authentication.changepassword&quot;,
+	&quot;id&quot;: &quot;mosip.admin.accountmanagement.changepassword&quot;,
 	&quot;ver&quot;: &quot;1.0&quot;,
 	&quot;responsetime&quot;: &quot;2007-12-03T10:15:30Z&quot;,
 	&quot;response&quot;: {
@@ -1461,7 +1464,7 @@ JSON:
 <div class="highlight highlight-source-json">
  <pre>
 {
-	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.authentication.changepassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.changepassword<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
@@ -1497,7 +1500,847 @@ JSON:
 <div class="highlight highlight-source-json">
  <pre>
 {
-	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.authentication.changepassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.changepassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_INVALIDAPPID<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in application ID is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+
+</pre>
+</div> 
+<h3> <a id="post-resetpassword" class="anchor" href="#post-resetpassword" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POST /resetpassword</h3> 
+<p>This service will reset the password to new value.</p> 
+<h4> <a id="resource-url-7" class="anchor" href="#resource-url-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/resetpassword" rel="nofollow">https://mosip.io/v1/admin/resetpassword</a>
+</div> 
+<h4> <a id="resource-details-7" class="anchor" href="#resource-details-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>The response will be sent in the Response Header and also a JSON message will be returned.</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>no</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="parameters-4" class="anchor" href="#parameters-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Default Value</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>username</td> 
+   <td>Yes</td> 
+   <td>This is the username of the user.</td> 
+   <td>-NA-</td> 
+   <td>M392380</td> 
+  </tr> 
+  <tr> 
+   <td>newpassword</td> 
+   <td>Yes</td> 
+   <td>This is the new password of the user</td> 
+   <td>-NA-</td> 
+   <td>hfsfs32#</td> 
+  </tr> 
+  <tr> 
+   <td>appid</td> 
+   <td>Yes</td> 
+   <td>This is the application ID of the caller of this service.</td> 
+   <td>-NA-</td> 
+   <td>ADMIN</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="example-request-4" class="anchor" href="#example-request-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Request</h4> 
+<div class="highlight highlight-source-json">
+ <pre>{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,	
+	<span class="pl-s"><span class="pl-pds">&quot;</span>requesttime<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>request<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>username<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>M392380<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>newpassword<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>hfsfs32#<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>appid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMIN<span class="pl-pds">&quot;</span></span>
+	}
+}</pre>
+</div> 
+<h4> <a id="example-response-4" class="anchor" href="#example-response-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Response</h4> 
+<p>Success Response</p> 
+<pre><code>Response Cookie:
+
+Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlkdWFsIiwibW9iaWxlIjoiOTY2MzE3NTkyOCIsIm1haWwiOiJpbmRpdmlkdWFsQGdtYWlsLmNvbSIsInJvbGUiOiJwZXJzb24iLCJpYXQiOjE1NTEzNDU1NjUsImV4cCI6MTU1MTM1MTU2NX0.pCyibViXo31enOgRD60BnKjEpEA-78yzbWnZGChxCIZ5lTpYnhgm-0dtoT3neFebTJ8eAI7-o8jDWMCMqq6uSw; Max-Age=6000000; Expires=Wed, 08-May-2019 19:59:43 GMT; Path=/; Secure; HttpOnly
+
+
+JSON:
+{
+	&quot;id&quot;: &quot;mosip.admin.accountmanagement.resetpassword&quot;,
+	&quot;ver&quot;: &quot;1.0&quot;,
+	&quot;responsetime&quot;: &quot;2007-12-03T10:15:30Z&quot;,
+	&quot;response&quot;: {
+        &quot;status&quot;: &quot;success&quot;,
+		&quot;message&quot;:&quot;Password reset successfully&quot;
+	}
+}
+
+</code></pre> 
+<p>Error Responses</p> 
+<ol> 
+ <li>Invalid credentials: If the passed credentials is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-INVLD-CRDNTIALS<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in credentials is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="2"> 
+ <li>Password policy rule not met: If the new password is not meeting the password policy.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_LNGTH_NOT_STSFIED<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The length of the new password is lesser than expected<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="3"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_INVALIDAPPID<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in application ID is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<h3> <a id="get-usernamemobilenumber" class="anchor" href="#get-usernamemobilenumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET /username/{mobilenumber}</h3> 
+<p>The user can get user-name from mobile number.</p> 
+<h4> <a id="resource-url-8" class="anchor" href="#resource-url-8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/actmgmt/username/%7Bmobilenumber%7D" rel="nofollow">https://mosip.io/v1/admin/actmgmt/username/{mobilenumber}</a>
+</div> 
+<h4> <a id="resource-details-8" class="anchor" href="#resource-details-8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>JSON</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>Yes</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="request-part-parameters-3" class="anchor" href="#request-part-parameters-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Request Part Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>mobilenumber</td> 
+   <td>Yes</td> 
+   <td>mobile number of the user</td> 
+   <td>325624646</td> 
+  </tr> 
+  <tr> 
+   <td>timeStamp</td> 
+   <td>Yes</td> 
+   <td>Date-time in UTC ISO-8601</td> 
+   <td>2007-12-03T10:15:30Z</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="request-3" class="anchor" href="#request-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Request</h4> 
+<div> 
+ <a href="https://mosip.io/v1/admin/actmgmt/username/458575535" rel="nofollow">https://mosip.io/v1/admin/actmgmt/username/458575535</a> 
+</div> 
+<h4> <a id="responses-3" class="anchor" href="#responses-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responses:</h4> 
+<h5> <a id="success-response-3" class="anchor" href="#success-response-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Success Response:</h5> 
+<h6> <a id="status-code-200-6" class="anchor" href="#status-code-200-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status code: '200'</h6> 
+<h6> <a id="description-list-of-auth-factors-are-returned-2" class="anchor" href="#description-list-of-auth-factors-are-returned-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description: List of auth factors are returned</h6> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.mobilenumber<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>metadata<span class="pl-pds">&quot;</span></span>: {},
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>: [],
+	<span class="pl-s"><span class="pl-pds">&quot;</span>response<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>Status<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>SUCCESS<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>Message<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>The user had been succesfully unblocked<span class="pl-pds">&quot;</span></span>
+	}
+}</pre>
+</div> 
+<h5> <a id="error-response-3" class="anchor" href="#error-response-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Error Response:</h5> 
+<h6> <a id="status-code-200-7" class="anchor" href="#status-code-200-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status code: '200'</h6> 
+<h6> <a id="description-if-the-user-is-not-found-3" class="anchor" href="#description-if-the-user-is-not-found-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description: If the user is not found.</h6> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+  <span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.accountmanagement.mobilenumber<span class="pl-pds">&quot;</span></span>,
+  <span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+  <span class="pl-s"><span class="pl-pds">&quot;</span>metadata<span class="pl-pds">&quot;</span></span>: {},
+  <span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+  <span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>: [
+    {
+      <span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-USR-NOTFOUND<span class="pl-pds">&quot;</span></span>,
+      <span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The userid is not found in the system<span class="pl-pds">&quot;</span></span>
+    }
+  ]
+}</pre>
+</div> 
+<h1> <a id="user-management" class="anchor" href="#user-management" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>User Management</h1> 
+<ul> 
+ <li><a href="#post-register">POST /register</a></li> 
+ <li><a href="#post-rid">POST /rid</a></li> 
+ <li><a href="#post-password">POST /password</a></li> 
+</ul> 
+<h3> <a id="post-register" class="anchor" href="#post-register" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POST /register</h3> 
+<p>This service will register a new user.</p> 
+<h4> <a id="resource-url-9" class="anchor" href="#resource-url-9" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/usermgmt/register" rel="nofollow">https://mosip.io/v1/admin/usermgmt/register</a>
+</div> 
+<h4> <a id="resource-details-9" class="anchor" href="#resource-details-9" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>The response will be sent in the Response Header and also a JSON message will be returned.</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>no</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="parameters-5" class="anchor" href="#parameters-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Default Value</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>username</td> 
+   <td>Yes</td> 
+   <td>This is the username of the user.</td> 
+   <td>-NA-</td> 
+   <td>M392380</td> 
+  </tr> 
+  <tr> 
+   <td>firstName</td> 
+   <td>Yes</td> 
+   <td>This is the firstname of the user</td> 
+   <td>-NA-</td> 
+   <td>test#</td> 
+  </tr> 
+  <tr> 
+   <td>lastName</td> 
+   <td>Yes</td> 
+   <td>This is the lastName of the user</td> 
+   <td>-NA-</td> 
+   <td>name#</td> 
+  </tr> 
+  <tr> 
+   <td>contactNo</td> 
+   <td>Yes</td> 
+   <td>This is the contactNo of the user</td> 
+   <td>-NA-</td> 
+   <td>974822990#</td> 
+  </tr> 
+  <tr> 
+   <td>emailID</td> 
+   <td>Yes</td> 
+   <td>This is the emailID of the user</td> 
+   <td>-NA-</td> 
+   <td> <a href="mailto:testname@mosip.io">testname@mosip.io</a>#</td> 
+  </tr> 
+  <tr> 
+   <td>dateOfBirth</td> 
+   <td>Yes</td> 
+   <td>This is the dateOfBirth of the user</td> 
+   <td>-NA-</td> 
+   <td>1975-11-05#</td> 
+  </tr> 
+  <tr> 
+   <td>gender</td> 
+   <td>Yes</td> 
+   <td>This is the gender of the user</td> 
+   <td>-NA-</td> 
+   <td> <a href="mailto:testname@mosip.io">testname@mosip.io</a>#</td> 
+  </tr> 
+  <tr> 
+   <td>role</td> 
+   <td>Yes</td> 
+   <td>This is the role of the user</td> 
+   <td>-NA-</td> 
+   <td>SUPER_ADMIN#</td> 
+  </tr> 
+  <tr> 
+   <td>appid</td> 
+   <td>Yes</td> 
+   <td>This is the application ID of the caller of this service.</td> 
+   <td>-NA-</td> 
+   <td>ADMIN</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="example-request-5" class="anchor" href="#example-request-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Request</h4> 
+<div class="highlight highlight-source-json">
+ <pre>{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.register<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,	
+	<span class="pl-s"><span class="pl-pds">&quot;</span>requesttime<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>request<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>username<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>M392380<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>firstName<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>test<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>lastName<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>name<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>contactNo<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>974822990<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>emailID<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>testname@mosip.io<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>dateOfBirth<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1975-11-05<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>gender<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>male<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>role<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMIN<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>appid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMIN<span class="pl-pds">&quot;</span></span>
+	}
+}</pre>
+</div> 
+<h4> <a id="example-response-5" class="anchor" href="#example-response-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Response</h4> 
+<p>Success Response</p> 
+<pre><code>
+JSON:
+{
+	&quot;id&quot;: &quot;mosip.admin.usermanagement.register&quot;,
+	&quot;ver&quot;: &quot;1.0&quot;,
+	&quot;responsetime&quot;: &quot;2007-12-03T10:15:30Z&quot;,
+	&quot;response&quot;: {
+        &quot;status&quot;: &quot;success&quot;,
+		&quot;message&quot;:&quot;User created successfully&quot;
+	}
+}
+
+</code></pre> 
+<p>Error Responses</p> 
+<ol> 
+ <li>Invalid credentials: If the passed credentials is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.register<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-INVLD-CRDNTIALS<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in credentials is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="2"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_INVALIDAPPID<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in application ID is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<h3> <a id="post-rid" class="anchor" href="#post-rid" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POST /rid</h3> 
+<p>This service will check for the rid with the user.</p> 
+<h4> <a id="resource-url-10" class="anchor" href="#resource-url-10" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/usermgmt/rid" rel="nofollow">https://mosip.io/v1/admin/usermgmt/rid</a>
+</div> 
+<h4> <a id="resource-details-10" class="anchor" href="#resource-details-10" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>The response will be sent in the Response Header and also a JSON message will be returned.</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>no</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="parameters-6" class="anchor" href="#parameters-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Default Value</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>username</td> 
+   <td>Yes</td> 
+   <td>This is the username of the user.</td> 
+   <td>-NA-</td> 
+   <td>M392380</td> 
+  </tr> 
+  <tr> 
+   <td>rid</td> 
+   <td>Yes</td> 
+   <td>This is the registration of the user</td> 
+   <td>-NA-</td> 
+   <td>test#</td> 
+  </tr> 
+  <tr> 
+   <td>appid</td> 
+   <td>Yes</td> 
+   <td>This is the application ID of the caller of this service.</td> 
+   <td>-NA-</td> 
+   <td>ADMIN</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="example-request-6" class="anchor" href="#example-request-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Request</h4> 
+<div class="highlight highlight-source-json">
+ <pre>{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.register<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,	
+	<span class="pl-s"><span class="pl-pds">&quot;</span>requesttime<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>request<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>username<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>M392380<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>rid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>41355315155<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>appid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMIN<span class="pl-pds">&quot;</span></span>
+	}
+}</pre>
+</div> 
+<h4> <a id="example-response-6" class="anchor" href="#example-response-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Response</h4> 
+<p>Success Response</p> 
+<pre><code>
+JSON:
+{
+	&quot;id&quot;: &quot;mosip.admin.usermanagement.rid&quot;,
+	&quot;ver&quot;: &quot;1.0&quot;,
+	&quot;responsetime&quot;: &quot;2007-12-03T10:15:30Z&quot;,
+	&quot;response&quot;: {
+        &quot;status&quot;: &quot;success&quot;,
+		&quot;message&quot;:&quot;Rid verification mail sent successfully&quot;
+	}
+}
+
+</code></pre> 
+<p>Error Responses</p> 
+<ol> 
+ <li>Invalid credentials: If the passed credentials is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.register<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-INVLD-CRDNTIALS<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in credentials is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="2"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_INVALIDAPPID<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in application ID is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="3"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.resetpassword<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_CHANNELNOTPRESENT<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The channel passed with username is not present<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<h3> <a id="post-password" class="anchor" href="#post-password" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>POST /password</h3> 
+<p>This service will add a new password to the user.</p> 
+<h4> <a id="resource-url-11" class="anchor" href="#resource-url-11" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/usermgmt/password" rel="nofollow">https://mosip.io/v1/admin/usermgmt/password</a>
+</div> 
+<h4> <a id="resource-details-11" class="anchor" href="#resource-details-11" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>The response will be sent in the Response Header and also a JSON message will be returned.</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>no</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="parameters-7" class="anchor" href="#parameters-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Default Value</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>username</td> 
+   <td>Yes</td> 
+   <td>This is the username of the user.</td> 
+   <td>-NA-</td> 
+   <td>M392380</td> 
+  </tr> 
+  <tr> 
+   <td>rid</td> 
+   <td>Yes</td> 
+   <td>This is the registration id of the user</td> 
+   <td>-NA-</td> 
+   <td>24331562664#</td> 
+  </tr> 
+  <tr> 
+   <td>password</td> 
+   <td>Yes</td> 
+   <td>This is the new password of the user</td> 
+   <td>-NA-</td> 
+   <td>ksafuff#</td> 
+  </tr> 
+  <tr> 
+   <td>appid</td> 
+   <td>Yes</td> 
+   <td>This is the application ID of the caller of this service.</td> 
+   <td>-NA-</td> 
+   <td>ADMIN</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="example-request-7" class="anchor" href="#example-request-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Request</h4> 
+<div class="highlight highlight-source-json">
+ <pre>{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.password<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,	
+	<span class="pl-s"><span class="pl-pds">&quot;</span>requesttime<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>request<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>username<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>M392380<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>rid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>41355315155<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>password<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ksafuff<span class="pl-pds">&quot;</span></span>,
+		<span class="pl-s"><span class="pl-pds">&quot;</span>appid<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMIN<span class="pl-pds">&quot;</span></span>
+	}
+}</pre>
+</div> 
+<h4> <a id="example-response-7" class="anchor" href="#example-response-7" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Response</h4> 
+<p>Success Response</p> 
+<pre><code>
+JSON:
+{
+	&quot;id&quot;: &quot;mosip.admin.usermanagement.password&quot;,
+	&quot;ver&quot;: &quot;1.0&quot;,
+	&quot;responsetime&quot;: &quot;2007-12-03T10:15:30Z&quot;,
+	&quot;response&quot;: {
+        &quot;status&quot;: &quot;success&quot;,
+		&quot;message&quot;:&quot;Password created successfully for user&quot;
+	}
+}
+
+</code></pre> 
+<p>Error Responses</p> 
+<ol> 
+ <li>Invalid credentials: If the passed credentials is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.password<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-INVLD-CRDNTIALS<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in credentials is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="2"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.password<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_INVALIDAPPID<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in application ID is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="3"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.password<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_CHANNELNOTPRESENT<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The channel passed with username is not present<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="4"> 
+ <li>Password policy rule not met: If the new password is not meeting the password policy.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.usermanagement.password<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN_AUTH_ERR_LNGTH_NOT_STSFIED<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The length of the new password is lesser than expected<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}</pre>
+</div> 
+<h1> <a id="uin-services" class="anchor" href="#uin-services" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UIN Services</h1> 
+<ul> 
+ <li><a href="#get-status">GET /status/{uin}</a></li> 
+</ul> 
+<h3> <a id="get-statusuin" class="anchor" href="#get-statusuin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GET /status/{uin}</h3> 
+<p>The user can get status of the uin</p> 
+<h4> <a id="resource-url-12" class="anchor" href="#resource-url-12" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource URL</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/uinmgmt/status/%7Buin%7D" rel="nofollow">https://mosip.io/v1/admin/uinmgmt/status/{uin}</a>
+</div> 
+<h4> <a id="resource-details-12" class="anchor" href="#resource-details-12" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource details</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Resource Details</th> 
+   <th>Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>Response format</td> 
+   <td>JSON</td> 
+  </tr> 
+  <tr> 
+   <td>Requires Authentication</td> 
+   <td>Yes</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="request-part-parameters-4" class="anchor" href="#request-part-parameters-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Request Part Parameters</h4> 
+<table> 
+ <thead> 
+  <tr> 
+   <th>Name</th> 
+   <th>Required</th> 
+   <th>Description</th> 
+   <th>Example</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td>uin</td> 
+   <td>Yes</td> 
+   <td>uin number of the user</td> 
+   <td>325624646</td> 
+  </tr> 
+  <tr> 
+   <td>timeStamp</td> 
+   <td>Yes</td> 
+   <td>Date-time in UTC ISO-8601</td> 
+   <td>2007-12-03T10:15:30Z</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h4> <a id="request-4" class="anchor" href="#request-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Request</h4> 
+<div>
+ <a href="https://mosip.io/v1/admin/uinmgmt/status/458575535" rel="nofollow">https://mosip.io/v1/admin/uinmgmt/status/458575535</a>
+</div> 
+<h4> <a id="responses-4" class="anchor" href="#responses-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Responses:</h4> 
+<h5> <a id="success-response-4" class="anchor" href="#success-response-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Success Response:</h5> 
+<h6> <a id="status-code-200-8" class="anchor" href="#status-code-200-8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status code: '200'</h6> 
+<h6> <a id="description-returns-status-of-uin" class="anchor" href="#description-returns-status-of-uin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description: returns status of uin</h6> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.uinmgmt.status<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>metadata<span class="pl-pds">&quot;</span></span>: {},
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>: [],
+	<span class="pl-s"><span class="pl-pds">&quot;</span>response<span class="pl-pds">&quot;</span></span>: {
+		<span class="pl-s"><span class="pl-pds">&quot;</span>Status<span class="pl-pds">&quot;</span></span>:<span class="pl-s"><span class="pl-pds">&quot;</span>Valid<span class="pl-pds">&quot;</span></span>,
+	}
+}</pre>
+</div> 
+<p>Error Responses</p> 
+<ol> 
+ <li>Invalid credentials: If the passed credentials is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.uinmgmt.status<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
+	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[
+			{
+				<span class="pl-s"><span class="pl-pds">&quot;</span>errorCode<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>ADMN-ACC-INVLD-CRDNTIALS<span class="pl-pds">&quot;</span></span>,
+				<span class="pl-s"><span class="pl-pds">&quot;</span>message<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>The passed in credentials is not correct<span class="pl-pds">&quot;</span></span>
+		  }	
+		]
+}
+</pre>
+</div> 
+<ol start="2"> 
+ <li>Invalid application ID: If the passed in application is not correct.</li> 
+</ol> 
+<div class="highlight highlight-source-json">
+ <pre>
+{
+	<span class="pl-s"><span class="pl-pds">&quot;</span>id<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>mosip.admin.uinmgmt.status<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>ver<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>responsetime<span class="pl-pds">&quot;</span></span>: <span class="pl-s"><span class="pl-pds">&quot;</span>2007-12-03T10:15:30Z<span class="pl-pds">&quot;</span></span>,
 	<span class="pl-s"><span class="pl-pds">&quot;</span>errors<span class="pl-pds">&quot;</span></span>:[

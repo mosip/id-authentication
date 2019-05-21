@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
@@ -82,6 +84,11 @@ public class PacketGeneratorController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
+	@Value("${registration.processor.signature.isEnabled}")
+	Boolean isEnabled;
+
+	@Autowired
+	DigitalSignatureUtility digitalSignatureUtility;
 
 	/**
 	 * Gets the status.
@@ -100,14 +107,18 @@ public class PacketGeneratorController {
 	public ResponseEntity<Object> getStatus(
 			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
 			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-			throws RegBaseCheckedException, IOException {
+					throws RegBaseCheckedException, IOException {
 		tokenValidator.validate("Authorization=" + token, "packetgenerator");
 		try {
 			PacketGeneratorValidationUtil.validate(errors);
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
-			//HttpHeaders headers = new HttpHeaders();
-			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildPacketGeneratorResponse(packerGeneratorResDto)).getData());
+
+			if(isEnabled) {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildPacketGeneratorResponse(packerGeneratorResDto)));
+				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
+			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
 		} catch (PacketGeneratorValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);

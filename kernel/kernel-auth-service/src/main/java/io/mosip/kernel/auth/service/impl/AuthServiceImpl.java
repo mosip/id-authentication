@@ -93,6 +93,11 @@ public class AuthServiceImpl implements AuthService {
 	public MosipUserTokenDto validateToken(String token) throws Exception {
 		// long currentTime = Instant.now().toEpochMilli();
 		MosipUserTokenDto mosipUserDtoToken = tokenValidator.validateToken(token);
+		AuthToken authToken = customTokenServices.getTokenDetails(token);
+		if(authToken==null)
+		{
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		}
 		/*
 		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
 		 * (authToken == null) { throw new
@@ -207,8 +212,8 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserTokenDto mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
-		if (mosipUser == null) {
-			mosipUser = uinService.getDetailsFromUin(userOtp.getUserId());
+		if (mosipUser == null && AuthConstant.IDA.toLowerCase().equals(userOtp.getAppId().toLowerCase())) {
+			mosipUser = uinService.getDetailsForValidateOtp(userOtp.getUserId());
 		}
 		if (mosipUser != null) {
 			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());

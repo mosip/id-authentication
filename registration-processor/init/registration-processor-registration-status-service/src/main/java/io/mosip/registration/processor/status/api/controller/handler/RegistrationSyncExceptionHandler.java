@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.api.controller.RegistrationSyncController;
 import io.mosip.registration.processor.status.dto.SyncErrorDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
@@ -45,6 +47,13 @@ public class RegistrationSyncExceptionHandler {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	@Autowired
 	private Environment env;
+
+	@Value("${registration.processor.signature.isEnabled}")
+	Boolean isEnabled;
+
+	@Autowired
+	DigitalSignatureUtility digitalSignatureUtility;
+
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 
@@ -136,9 +145,14 @@ public class RegistrationSyncExceptionHandler {
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().create();
 
-		//HttpHeaders headers = new HttpHeaders();
-		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
+
+		if(isEnabled) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
+			return ResponseEntity.ok().headers(headers).body(gson.toJson(response));
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+
 	}
 
 

@@ -58,15 +58,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<DemographicInfoDto> findDemoById(String regId);
 
 	/**
-	 * Gets the applicant registration id by UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return the registration id by UIN
-	 */
-	public List<String> getRegIdByUIN(String uin);
-
-	/**
 	 * Save manual adjudication data.
 	 *
 	 * @param uniqueMatchedRefIds
@@ -105,15 +96,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the rid by reference id
 	 */
 	public List<String> getRidByReferenceId(String refId);
-
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid
-	 *            the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String rid);
 
 	/**
 	 * Gets the insert or identify request.
@@ -170,7 +152,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the batch statusby batch id
 	 */
 	public List<String> getBatchStatusbyBatchId(String batchId);
-	
+
 	/**
 	 * Gets the reference id by batch id.
 	 *

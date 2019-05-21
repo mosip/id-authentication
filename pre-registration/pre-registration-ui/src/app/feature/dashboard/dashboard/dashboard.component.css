@@ -128,7 +128,7 @@ img {
 }
 .modifyapp-btn-img {
   height: 12px;
-  filter: grayscale();
+  filter: grayscale(100%);
 }
 .modifyinfo-btn-img {
   height: 14px;

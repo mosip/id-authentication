@@ -21,6 +21,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +35,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -53,13 +60,16 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.util.StatusNotificationTypeMapUtil;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderStatusMessage;
+
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateCode;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
+import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
@@ -72,7 +82,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
  */
 @RefreshScope
 @Service
-public class MessageSenderStage extends MosipVerticleManager {
+public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MessageSenderStage.class);
@@ -80,10 +90,6 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-
-	/** The transcation status service. */
-	@Autowired
-	private TransactionService<TransactionDto> transactionStatusService;
 
 	/** The adapter. */
 	@Autowired
@@ -133,6 +139,9 @@ public class MessageSenderStage extends MosipVerticleManager {
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
 
+	@Autowired
+	private TransactionService<TransactionDto> transactionStatusService;
+
 	/** The Constant SMS_TYPE. */
 	private static final String SMS_TYPE = "SMS";
 
@@ -162,12 +171,31 @@ public class MessageSenderStage extends MosipVerticleManager {
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
+	/** The port. */
+	@Value("${server.port}")
+	private String port;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see io.vertx.core.AbstractVerticle#start()
+	 */
+	@Override
+	public void start() {
+		router.setRoute(this.postUrl(vertx, MessageBusAddress.MESSAGE_SENDER_BUS, null));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*
@@ -181,10 +209,13 @@ public class MessageSenderStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
+		String status;
 		String id = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(id);
+		status=registrationStatusDto.getLatestTransactionTypeCode() +"_"+ registrationStatusDto.getLatestTransactionStatusCode();
+
 
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.NOTIFICATION.toString());
 		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
@@ -196,8 +227,17 @@ public class MessageSenderStage extends MosipVerticleManager {
 			List<FieldValue> metadataList = packetMetaInfo.getIdentity().getMetaData();
 			String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 
+			NotificationTemplateType type=null;
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
-			NotificationTemplateType type = map.getTemplateType(registrationStatusDto.getStatusCode());
+			if(registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSED.toString())) {
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
+					type=NotificationTemplateType.UIN_CREATED;
+				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
+					type=NotificationTemplateType.UIN_UPDATE;
+			}
+			else {
+			 type = map.getTemplateType(status);
+			}
 			if (type != null) {
 				setTemplateAndSubject(type, regType);
 			}
@@ -227,7 +267,7 @@ public class MessageSenderStage extends MosipVerticleManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, description);
 
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.NOTIFICATION_SENT_TO_RESIDENT.toString());
+
 			registrationStatusDto.setStatusComment(description);
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 

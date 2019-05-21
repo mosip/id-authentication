@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-{
-	"status": "Y",
-	"err": [],
-	"txnID": "1234567890",
-	"resTime": "2019-01-31T16:39:23.621+05:30",
-	"info": {
-		"idType": "D",
-		"reqTime": "2019-01-31T10:00:23.027+05:30",
-		"matchInfos": [],
-		"bioInfos": []
-	},
-	"ver": "$version$"
-=======
 {
   "transactionID": "8284400485",
   "version": "$version$",
@@ -22,5 +8,4 @@
     "authStatus": true,
     "staticToken": "283888653083333345934366346932177270"
   }
->>>>>>> QA_IDA
 }

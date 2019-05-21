@@ -1,5 +1,5 @@
 testdata:
-  Name_Authentication_Male_Tittle_Normalisation_Smoke_For UIN_Pos_01:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -7,10 +7,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_male_arabic_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_male_secondary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -34,7 +34,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_Female_Tittle_Normalisation_Smoke_For UIN_Pos_02:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For UIN_Pos_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -42,10 +42,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_arabic_lang$
+      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_secondary_lang$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -69,7 +69,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_03:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -77,10 +77,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_arabic_lang$
+      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_secondary_lang$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -104,7 +104,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_Male_Tittle_Normalisation_Smoke_For UIN_Pos_04:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -112,10 +112,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_male_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_male_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -139,7 +139,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_Female_Tittle_Normalisation_Smoke_For UIN_Pos_05:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For UIN_Pos_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -147,10 +147,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_female_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_female_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -174,7 +174,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_06:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -182,10 +182,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_UnMarriedfemale_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_UnMarriedfemale_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -209,7 +209,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Name_Authentication_Male_Tittle_Normalisation_Smoke_For VID_Pos_01:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For VID_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -218,10 +218,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_male_arabic_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_male_secondary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -245,7 +245,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Name_Authentication_Female_Tittle_Normalisation_Smoke_For VID_Pos_02:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For VID_Pos_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -254,10 +254,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_arabic_lang$
+      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_secondary_lang$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -281,7 +281,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Name_Authentication_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_03:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -290,10 +290,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_arabic_lang$
+      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_secondary_lang$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -317,7 +317,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Name_Authentication_Male_Tittle_Normalisation_Smoke_For VID_Pos_04:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For VID_Pos_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -326,10 +326,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_male_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_male_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -353,7 +353,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Name_Authentication_Female_Tittle_Normalisation_Smoke_For VID_Pos_05:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For VID_Pos_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -362,10 +362,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_female_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_female_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -389,7 +389,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Name_Authentication_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_06:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -398,10 +398,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $TestData:name_tittle_UnMarriedfemale_english_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.valuename: $TestData:name_tittle_UnMarriedfemale_primary_lang$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $TestData:primary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -426,7 +426,7 @@ testdata:
       refIdType: $TestData:audit_log_VID_refIdType$ 
 #Adding
  
-  Name_Authentication_smoke_For UIN_Pos_01:
+  Authentication_Demographic_Name_smoke_For UIN_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -437,7 +437,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -460,7 +460,7 @@ testdata:
       #appName: ID-Authentication
       #moduleName: DEMO_AUTH
       
-  Name_Authentication_Invalid_UIN_Neg_02:
+  Authentication_Demographic_Name_Invalid_UIN_Neg_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -471,7 +471,7 @@ testdata:
       identityReq.valuename: sarasa
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -479,7 +479,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
      
-  Name_Authentication_Invalid_reqTime_For UIN_Neg_03:
+  Authentication_Demographic_Name_Invalid_reqTime_For UIN_Neg_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -490,7 +490,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -498,7 +498,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Name_Authentication_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
+  Authentication_Demographic_Name_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -509,7 +509,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -517,7 +517,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
   
-  Name_Authentication_Invalid_reqTime_lessthan24hrs_For UIN_Neg_05:
+  Authentication_Demographic_Name_Invalid_reqTime_lessthan24hrs_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -528,7 +528,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -536,7 +536,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_individualIdType_For UIN_Neg_06:
+  Authentication_Demographic_Name_Invalid_individualIdType_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -548,7 +548,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -556,7 +556,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_version_For UIN_Neg_07:
+  Authentication_Demographic_Name_Invalid_version_For UIN_Neg_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -568,7 +568,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -576,7 +576,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Name_Authentication_Invalid_txnID_For UIN_Neg_08:
+  Authentication_Demographic_Name_Invalid_txnID_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -595,7 +595,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Name_Authentication_Missing_UIN_For UIN_Neg_09:
+  Authentication_Demographic_Name_Missing_UIN_For UIN_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -606,7 +606,7 @@ testdata:
       identityReq.valuename: saira
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -614,7 +614,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_txnID_For UIN_Neg_10:
+  Authentication_Demographic_Name_Missing_txnID_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -633,7 +633,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_reqTime_For UIN_Neg_11:
+  Authentication_Demographic_Name_Missing_reqTime_For UIN_Neg_11:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -644,7 +644,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -652,7 +652,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_version_For UIN_Neg_12:
+  Authentication_Demographic_Name_Missing_version_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -664,7 +664,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -672,7 +672,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_individualIdType_For UIN_Neg_13:
+  Authentication_Demographic_Name_Missing_individualIdType_For UIN_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -684,7 +684,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -692,7 +692,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_UIN which is not as per data definition_Neg_14:
+  Authentication_Demographic_Name_Invalid_UIN which is not as per data definition_Neg_14:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -703,7 +703,7 @@ testdata:
       identityReq.valuename: sarasa
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -711,7 +711,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_reqTime which is not as per definition_For UIN_Neg_15:
+  Authentication_Demographic_Name_Invalid_reqTime which is not as per definition_For UIN_Neg_15:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -722,7 +722,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -730,7 +730,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_individualIdType which is not as per defenition_For UIN_Neg_16:
+  Authentication_Demographic_Name_Invalid_individualIdType which is not as per defenition_For UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -742,7 +742,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -750,7 +750,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_version which is not as per defenition_For UIN_Neg_17:
+  Authentication_Demographic_Name_Invalid_version which is not as per defenition_For IntegrationTest_UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -762,35 +762,15 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$      
       
-  Name_Authentication_Invalid_txnID which is not as per defenition_For UIN_Neg_18:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: abcdefg12
-    input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
-      identityReq.languagename: $TestData:secondary_lang_code$ 
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-n-error-res:
-      output.1.response.n.err.status: BOOLEAN:false
-      output.1.response.y.responseTime:  $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:InvalidReqtxnID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:InvalidReqtxnID:errorCode$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      
-      
-  Autheticate_Name_Authentication_smoke_For VID_Pos_19:
+  Autheticate_Authentication_Demographic_Name_smoke_For VID_Pos_19:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -802,13 +782,13 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-y-res:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_VID_Neg_20:
+  Authentication_Demographic_Name_Invalid_VID_Neg_20:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -820,7 +800,7 @@ testdata:
       identityReq.valuename: sarasa
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -828,7 +808,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_reqTime_For VID_Neg_21:
+  Authentication_Demographic_Name_Invalid_reqTime_For VID_Neg_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -840,7 +820,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -848,7 +828,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_reqTime_greaterthan24hrs_For VID_Neg_22:
+  Authentication_Demographic_Name_Invalid_reqTime_greaterthan24hrs_For VID_Neg_22:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -860,7 +840,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -868,7 +848,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_reqTime_lessthan24hrs_For VID_Neg_23:
+  Authentication_Demographic_Name_Invalid_reqTime_lessthan24hrs_For VID_Neg_23:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -880,7 +860,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -888,7 +868,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_individualIdType_For VID_Neg_24:
+  Authentication_Demographic_Name_Invalid_individualIdType_For VID_Neg_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -901,7 +881,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -909,7 +889,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_version_For VID_Neg_25:
+  Authentication_Demographic_Name_Invalid_version_For VID_Neg_25:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -922,7 +902,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -930,7 +910,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_txnID_For VID_Neg_26:
+  Authentication_Demographic_Name_Invalid_txnID_For VID_Neg_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -942,7 +922,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -950,7 +930,7 @@ testdata:
       output.1.response.n.err.errorCode:  $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_VID_For VID_Neg_27:
+  Authentication_Demographic_Name_Missing_VID_For VID_Neg_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -962,7 +942,7 @@ testdata:
       identityReq.valuename: saira
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -970,7 +950,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_txnID_For VID_Neg_28:
+  Authentication_Demographic_Name_Missing_txnID_For VID_Neg_28:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -982,7 +962,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -990,7 +970,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_reqTime_For VID_Neg_29:
+  Authentication_Demographic_Name_Missing_reqTime_For VID_Neg_29:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1002,7 +982,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -1010,7 +990,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_version_For VID_Neg_30:
+  Authentication_Demographic_Name_Missing_version_For VID_Neg_30:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1023,7 +1003,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1031,7 +1011,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Missing_individualIdType_For VID_Neg_31:
+  Authentication_Demographic_Name_Missing_individualIdType_For VID_Neg_31:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1044,7 +1024,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1052,7 +1032,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_VID which is not as per data definition_Neg_32:
+  Authentication_Demographic_Name_Invalid_VID which is not as per data definition_Neg_32:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1064,7 +1044,7 @@ testdata:
       identityReq.valuename: sarasa
       identityReq.languagename: fra
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -1072,7 +1052,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_reqTime which is not as per definition_For VID_Neg_33:
+  Authentication_Demographic_Name_Invalid_reqTime which is not as per definition_For VID_Neg_33:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1084,7 +1064,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMPZ$
@@ -1092,7 +1072,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_individualIdType which is not as per defenition_For VID_Neg_34:
+  Authentication_Demographic_Name_Invalid_individualIdType which is not as per defenition_For VID_Neg_34:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1105,7 +1085,7 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
@@ -1113,7 +1093,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Name_Authentication_Invalid_version which is not as per defenition_For VID_Neg_35:
+  Authentication_Demographic_Name_Invalid_version which is not as per defenition_For VID_Neg_35:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1126,30 +1106,10 @@ testdata:
       identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      
-  Name_Authentication_Invalid_txnID which is not as per defenition_For VID_Neg_36:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $VID$     
-      AuthReq.individualIdType: VID
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: abcdefg12
-    input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
-      identityReq.languagename: $TestData:secondary_lang_code$ 
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-n-error-res:
-      output.1.response.n.err.status: BOOLEAN:false
-      output.1.response.y.responseTime:  $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:InvalidReqtxnID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:InvalidReqtxnID:errorCode$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$ 
