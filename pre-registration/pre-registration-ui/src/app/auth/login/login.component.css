@@ -19,7 +19,7 @@
 }
 
 .form_wrapper{
-    margin: 5% 0%;
+    margin: 4% 0%;
 }
 
 .form_fields_wrapper{
@@ -40,8 +40,8 @@
     font-size:1.5rem;
 }
 
-mat-form-field{ 
-    width: 100%; 
+mat-form-field{
+    width: 100%;
     height: 100%;
 }
 
@@ -79,7 +79,7 @@ button{
     border-bottom: 3px solid #fe528d;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-} 
+}
 
 @media(max-width: 500px) {
     .form_fields_padding {

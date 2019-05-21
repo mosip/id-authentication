@@ -175,11 +175,13 @@ public enum ApiName {
 
 	/** The external service. */
 	EISERVICE,
-
-	/** The ridgeneration. */
+    /** The ridgeneration. */
 	RIDGENERATION,
-
     /** The retrieveidentity. */
-    RETRIEVEIDENTITY;
+    RETRIEVEIDENTITY,
+    /** The retrieveidentity using rid. */
+	RETRIEVEIDENTITYFROMRID,
+    /** The digitalsignature */
+	DIGITALSIGNATURE;
 
 }

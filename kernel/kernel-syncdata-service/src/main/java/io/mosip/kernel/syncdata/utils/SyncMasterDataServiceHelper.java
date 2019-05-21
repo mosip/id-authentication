@@ -11,6 +11,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -267,7 +283,7 @@ public class SyncMasterDataServiceHelper {
 	public CompletableFuture<List<MachineDto>> getMachines(String regCenterId, LocalDateTime lastUpdated,
 			LocalDateTime currentTimeStamp) {
 		List<Machine> machineDetailList = new ArrayList<>();
-		List<MachineDto> machineDetailDtoList = null;
+		List<MachineDto> machineDetailDtoList = new ArrayList<>();
 		try {
 			if (lastUpdated == null) {
 				lastUpdated = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
@@ -280,9 +296,25 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
-
-			machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
-
+			
+			//machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
+          machineDetailList.forEach(machine->{
+        	  MachineDto responseDto=new MachineDto();
+        	  responseDto.setPublicKey(CryptoUtil.encodeBase64(machine.getPublicKey()));
+        	  responseDto.setId(machine.getId());
+        	  responseDto.setIpAddress(machine.getIpAddress());
+        	  responseDto.setIsActive(machine.getIsActive());
+        	  responseDto.setIsDeleted(machine.getIsDeleted());
+        	  responseDto.setKeyIndex(machine.getKeyIndex());
+        	  responseDto.setLangCode(machine.getLangCode());
+        	  responseDto.setMacAddress(machine.getMacAddress());
+        	  responseDto.setMachineSpecId(machine.getMachineSpecId());
+              responseDto.setName(machine.getName());
+              responseDto.setSerialNum(machine.getSerialNum());
+              responseDto.setValidityDateTime(machine.getValidityDateTime());
+              machineDetailDtoList.add(responseDto);
+          });
+			
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);

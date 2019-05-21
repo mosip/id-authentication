@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.11.3</version>
+		<version>0.12.0</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>

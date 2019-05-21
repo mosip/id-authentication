@@ -154,7 +154,7 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	PacketInfoMapper packetInfoMapper;
-	
+
 	@Mock
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
 	/** The byte array. */
@@ -648,7 +648,6 @@ public class PacketInfoManagerImplTest {
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
-		uinDto.setUin("1234567");
 		uinDto.setDob(date.toString());
 
 		DemographicInfoDto uinDto1 = new DemographicInfoDto();
@@ -656,7 +655,6 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setUin("1234567");
 		uinDto1.setDob(date.toString());
 
 		depdupeList.add(uinDto);
@@ -682,32 +680,19 @@ public class PacketInfoManagerImplTest {
 	 * applicantFingerPrintImages = new ArrayList<>();
 	 * applicantFingerPrintImages.add("LeftThumb");
 	 * applicantFingerPrintImages.add("RightThumb");
-	 * 
+	 *
 	 * Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(anyString()))
 	 * .thenReturn(applicantFingerPrintImages);
-	 * 
+	 *
 	 * List<String> resultList = packetInfoManagerImpl
 	 * .getApplicantFingerPrintImageNameById("2018782130000103122018100224");
 	 * assertEquals(
 	 * "Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb"
 	 * , "LeftThumb", resultList.get(0));
-	 * 
+	 *
 	 * }
 	 */
 
-	/**
-	 * Test get reg idby UIN.
-	 */
-	@Test
-	public void testGetRegIdbyUIN() {
-		String uin = "123456789";
-		List<String> regIdlist = new ArrayList<>();
-		regIdlist.add("27847657360002520181208094056");
-		Mockito.when(packetInfoDao.getRegIdByUIN(uin)).thenReturn(regIdlist);
-
-		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
-		assertEquals("27847657360002520181208094056", ridList.get(0));
-	}
 
 	/**
 	 * Test get reference id by rid.
@@ -958,7 +943,7 @@ public class PacketInfoManagerImplTest {
 		List<AbisRequestDto> output = packetInfoManagerImpl.getInsertOrIdentifyRequest("", "");
 		assertEquals(output, list);
 	}
-	
+
 	@Test
 	public void testgetAbisResponseRecordswithoutTransctionId() {
 		List<AbisResponseDto> list = new ArrayList<>();
@@ -968,7 +953,7 @@ public class PacketInfoManagerImplTest {
 		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseRecords("", "");
 		assertEquals(output, list);
 	}
-	
+
 	@Test
 	public void testgetAbisResponseIDs() {
 		List<AbisResponseDto> list = new ArrayList<>();
@@ -979,7 +964,7 @@ public class PacketInfoManagerImplTest {
 		List<AbisResponseDto> output = packetInfoManagerImpl.getAbisResponseIDs("");
 		assertEquals(output, list);
 	}
-	
+
 	@Test
 	public void testgetAbisResponseDetRecords() {
 		List<AbisResponseDetDto> list = new ArrayList<>();
@@ -989,10 +974,10 @@ public class PacketInfoManagerImplTest {
 		List<AbisResponseDetDto> output = packetInfoManagerImpl.getAbisResponseDetRecords(new AbisResponseDto());
 		assertEquals(output, list);
 	}
-	
+
 	@Test
 	public void testsaveIndividualDemographicDedupe() {
-		
+
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		demographicData.setDateOfBirth("2019-03-02T06:29:41.011Z");
 		List<IndividualDemographicDedupeEntity> applicantDemographicEntities=new ArrayList<>();
@@ -1003,12 +988,12 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(PacketInfoMapper.converDemographicDedupeDtoToEntity(any(),any())).thenReturn(applicantDemographicEntities);
 		Mockito.when(demographicDedupeRepository.save(any())).thenReturn(entity);
 		packetInfoManagerImpl.saveIndividualDemographicDedupeUpdatePacket(demographicData, "1001");
-		
+
 	}
-	
+
 	@Test(expected=UnableToInsertData.class)
 	public void testsaveIndividualDemographicDedupeException() {
-		
+
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		demographicData.setDateOfBirth("2019-03-02T06:29:41.011Z");
 		List<IndividualDemographicDedupeEntity> applicantDemographicEntities=new ArrayList<>();
@@ -1019,12 +1004,12 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(PacketInfoMapper.converDemographicDedupeDtoToEntity(any(),any())).thenReturn(applicantDemographicEntities);
 		Mockito.when(demographicDedupeRepository.save(any())).thenThrow(exp);
 		packetInfoManagerImpl.saveIndividualDemographicDedupeUpdatePacket(demographicData, "1001");
-		
+
 	}
-	
+
 	@Test
 	public void testsaveDemoDedupePotentialData() {
-		
+
 		RegDemoDedupeListDto regDemoDedupeListDto=new RegDemoDedupeListDto();
 		RegDemoDedupeListEntity regDemoDedupeListEntity=new RegDemoDedupeListEntity();
 		PowerMockito.mockStatic(PacketInfoMapper.class);
@@ -1032,10 +1017,10 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(regDemoDedupeListRepository.save(any())).thenReturn(new RegDemoDedupeListEntity());
 		packetInfoManagerImpl.saveDemoDedupePotentialData(regDemoDedupeListDto);
 	}
-	
+
 	@Test(expected=UnableToInsertData.class)
 	public void testsaveDemoDedupePotentialDataException() {
-		
+
 		RegDemoDedupeListDto regDemoDedupeListDto=new RegDemoDedupeListDto();
 		RegDemoDedupeListEntity regDemoDedupeListEntity=new RegDemoDedupeListEntity();
 		PowerMockito.mockStatic(PacketInfoMapper.class);
@@ -1043,15 +1028,15 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(regDemoDedupeListRepository.save(any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemoDedupePotentialData(regDemoDedupeListDto);
 	}
-	
-	@Test 
+
+	@Test
 	public void testgetBatchStatusbyBatchId() {
 		Mockito.when(packetInfoDao.getBatchStatusbyBatchId(any())).thenReturn(Arrays.asList("PROCESSED","PROCESSED","PROCESSED"));
 		List<String> list=packetInfoManagerImpl.getBatchStatusbyBatchId("123312");
 		assertEquals(list.get(0),"PROCESSED");
 	}
-	
-	@Test 
+
+	@Test
 	public void testgetAbisRequestByRequestId() {
 		AbisRequestEntity entity=new AbisRequestEntity();
 		entity.setLangCode("eng");
@@ -1067,13 +1052,13 @@ public class PacketInfoManagerImplTest {
 		AbisRequestDto dt=packetInfoManagerImpl.getAbisRequestByRequestId("123312");
 		assertEquals(dt.getLangCode(),"eng");
 	}
-	
-	@Test 
+
+	@Test
 	public void testgetBatchIdByRequestId() {
 		Mockito.when(packetInfoDao.getBatchIdByRequestId(any())).thenReturn("123312");
 		String batchId=packetInfoManagerImpl.getBatchIdByRequestId("114");
 		assertEquals(batchId,"123312");
 	}
-	
-	
+
+
 }

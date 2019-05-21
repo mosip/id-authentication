@@ -34,6 +34,11 @@ public class AuthManagerException extends AuthenticationException {
 		this.errorCode = errorCode;
 	}
 	
+	public AuthManagerException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorMessage, rootCause);
+		this.errorCode = errorCode;
+	}
+	
 	/**
 	 * This variable holds the MosipErrors list.
 	 */

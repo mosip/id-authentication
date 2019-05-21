@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
-import io.mosip.registration.processor.core.auth.dto.RequestDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -34,6 +34,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Demograph
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class DemoDedupe.
@@ -62,6 +63,9 @@ public class DemoDedupe {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private RegistrationStatusService registrationStatusService;
+
 	/** The auth request DTO. */
 	private AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
@@ -75,7 +79,7 @@ public class DemoDedupe {
 	private IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 
 	/** The request. */
-	private RequestDTO request = new RequestDTO();
+	// private RequestDTO request = new RequestDTO();
 
 	/** The packet info manager. */
 	@Autowired
@@ -96,18 +100,32 @@ public class DemoDedupe {
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> performDedupe(String refId) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
-				refId, "DemoDedupe::performDedupe()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(), refId,
+				"DemoDedupe::performDedupe()::entry");
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
+		List<DemographicInfoDto> infoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
-					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
+			infoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(), demoDto.getGenderCode(),
+					demoDto.getDob(), demoDto.getLangCode()));
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
-				refId, "DemoDedupe::performDedupe()::exit");
+		demographicInfoDtos = getAllDemographicInfoDtosWithUin(infoDtos);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(), refId,
+				"DemoDedupe::performDedupe()::exit");
 		return demographicInfoDtos;
+	}
+
+	private List<DemographicInfoDto> getAllDemographicInfoDtosWithUin(
+			List<DemographicInfoDto> duplicateDemographicDtos) {
+		List<DemographicInfoDto> demographicInfoDtosWithUin = new ArrayList<>();
+		for (DemographicInfoDto demographicDto : duplicateDemographicDtos) {
+			if (registrationStatusService.checkUinAvailabilityForRid(demographicDto.getRegId())) {
+				demographicInfoDtosWithUin.add(demographicDto);
+			}
+
+		}
+		return demographicInfoDtosWithUin;
 	}
 
 	/**
@@ -115,30 +133,31 @@ public class DemoDedupe {
 	 *
 	 * @param regId
 	 *            the reg id
-	 * @param duplicateUins
+	 * @param uniqueMatchedRefIds
 	 *            the duplicate uins
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
+	 * @throws IntrospectionException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
-	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
-			throws ApisResourceAccessException, IOException,ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+	public boolean authenticateDuplicates(String regId, Set<String> uniqueMatchedRefIds)
+			throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
-		//TODO Validating Mocked Biometric logic 
+		// TODO Validating Mocked Biometric logic
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "DemoDedupe::authenticateDuplicates()::entry");
 
 		boolean isDuplicate = false;
-		for (String duplicateUin : duplicateUins) {
+		for (String duplicateRid : uniqueMatchedRefIds) {
 			setAuthDto();
-			isDuplicate = biometricValidation.validateBiometric(duplicateUin,regId);
-			if(isDuplicate==true) {
+			isDuplicate = biometricValidation.validateBiometric(duplicateRid, regId);
+			if (isDuplicate == true) {
 				return isDuplicate;
 			}
 		}
@@ -163,14 +182,15 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws ParseException 
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
+	 * @throws ParseException
+	 * @throws IntrospectionException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
 	private boolean authenticateFingerBiometric(List<String> biometriclist, String type, String duplicateUin,
-			String regId) throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+			String regId) throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		for (String biometricName : biometriclist) {
 			String biometric = BIOMETRIC_APPLICANT + biometricName.toUpperCase();
 			if (adapter.checkFileExistence(regId, biometric)) {
@@ -185,7 +205,7 @@ public class DemoDedupe {
 			}
 		}
 		// change to return validateBiometric(duplicateUin); once the auth is fixed
-		return biometricValidation.validateBiometric(duplicateUin,regId);
+		return biometricValidation.validateBiometric(duplicateUin, regId);
 	}
 
 	/**
@@ -197,14 +217,15 @@ public class DemoDedupe {
 	 *            the field name
 	 * @param value
 	 *            the value
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
+	 * @throws IntrospectionException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
-	private void setFingerBiometricDto(Object obj, String fieldName, Object value) throws  IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+	private void setFingerBiometricDto(Object obj, String fieldName, Object value)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		PropertyDescriptor pd;
-		if(fieldName != null ) {
+		if (fieldName != null) {
 			pd = new PropertyDescriptor(fieldName, obj.getClass());
 			pd.getWriteMethod().invoke(obj, value);
 		}
@@ -217,12 +238,13 @@ public class DemoDedupe {
 	 *            the biometric data
 	 * @param type
 	 *            the type
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
+	 * @throws IntrospectionException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
 	 */
-	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		String finger = null;
 		String[] fingerType = env.getProperty("fingerType").split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
@@ -253,7 +275,7 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private boolean authenticateIrisBiometric(List<String> biometriclist, String type, String duplicateUin,
 			String regId) throws ApisResourceAccessException, IOException, ParseException {
@@ -275,7 +297,7 @@ public class DemoDedupe {
 				}
 			}
 		}
-		return biometricValidation.validateBiometric(duplicateUin,regId);
+		return biometricValidation.validateBiometric(duplicateUin, regId);
 		// return validateBiometric(duplicateUin);
 	}
 
@@ -289,10 +311,10 @@ public class DemoDedupe {
 	 *             the apis resource access exception
 	 */
 	private boolean validateBiometric(String duplicateUin) throws ApisResourceAccessException {
-		authRequestDTO.setIdvId(duplicateUin);
-		authRequestDTO.setAuthType(authTypeDTO);
-		request.setIdentity(identityDTO);
-		authRequestDTO.setRequest(request);
+		// authRequestDTO.setIdvId(duplicateUin);
+		// authRequestDTO.setAuthType(authTypeDTO);
+		// request.setIdentity(identityDTO);
+		// authRequestDTO.setRequest(request);
 		/*
 		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
 		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
@@ -310,16 +332,16 @@ public class DemoDedupe {
 		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		String date = simpleDateFormat.format(new Date());
-		authRequestDTO.setReqTime(date);
-		authRequestDTO.setId("mosip.internal.auth");
-		authRequestDTO.setIdvIdType("D");
+		// authRequestDTO.setReqTime(date);
+		// authRequestDTO.setId("mosip.internal.auth");
+		// authRequestDTO.setIdvIdType("D");
 		// authRequestDTO.setVer("1.0");
-		authTypeDTO.setAddress(false);
-		authTypeDTO.setBio(false);
-		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPersonalIdentity(false);
-		authTypeDTO.setPin(false);
+		// authTypeDTO.setAddress(false);
+		// authTypeDTO.setBio(false);
+		// authTypeDTO.setFullAddress(false);
+		// authTypeDTO.setOtp(false);
+		// authTypeDTO.setPersonalIdentity(false);
+		// authTypeDTO.setPin(false);
 		// authTypeDTO.setFace(false);
 		// authTypeDTO.setFingerPrint(false);
 		// authTypeDTO.setIris(false);
