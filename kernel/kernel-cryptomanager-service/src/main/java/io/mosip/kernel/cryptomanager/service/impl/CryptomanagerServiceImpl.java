@@ -151,8 +151,8 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	}
 
 	@Override
-	public PublicKeyResponse getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId) {
-		LocalDateTime localDateTimeStamp = cryptomanagerUtil.parseToLocalDateTime(timeStamp);
+	public PublicKeyResponse getSignPublicKey(String applicationId, String timestamp, Optional<String> referenceId) {
+		LocalDateTime localDateTimeStamp = cryptomanagerUtil.parseToLocalDateTime(timestamp);
 		return cryptomanagerUtil.getSignaturePublicKey(applicationId,localDateTimeStamp,referenceId);
 	}
 
