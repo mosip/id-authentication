@@ -228,7 +228,7 @@ public enum BioAuthType implements AuthType {
 
 	/** The Constant COMPOSITE_THRESHOLD. */
 	private static final String COMPOSITE_THRESHOLD = ".composite.threshold";
-	
+
 	/** The Constant MULTI_THRESHOLD. */
 	private static final String MULTI_THRESHOLD = ".multi.threshold";
 
@@ -240,7 +240,7 @@ public enum BioAuthType implements AuthType {
 	/** The count. */
 	private int count;
 
-	private IntPredicate intPredicate;
+	private IntPredicate countPredicate;
 
 	/**
 	 * Instantiates a new bio auth type.
@@ -251,9 +251,9 @@ public enum BioAuthType implements AuthType {
 	 * @param count                the count
 	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName,
-			IntPredicate intPredicate) {
+			IntPredicate countPredicate) {
 		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, displayName);
-		this.intPredicate = intPredicate;
+		this.countPredicate = countPredicate;
 	}
 
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
@@ -293,7 +293,7 @@ public enum BioAuthType implements AuthType {
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 		return authReq.getRequestedAuth().isBio()
-				&& intPredicate.test(getBioIdentityValuesCount(authReq, helper).intValue());
+				&& countPredicate.test(getBioIdentityValuesCount(authReq, helper).intValue());
 	}
 
 	/**
@@ -346,13 +346,19 @@ public enum BioAuthType implements AuthType {
 	 */
 	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
 		BioAuthType[] values = BioAuthType.values();
-		return Stream.of(values)
-				.filter(authType -> authType.getType().equalsIgnoreCase(type) && authType.getCount() == 1).findAny();
+		return Stream.of(values).filter(authType -> {
+			int singleBioCount = 1;
+			return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
+		}).findAny();
 	}
 
 	@Override
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;
+	}
+
+	public IntPredicate getCountPredicate() {
+		return countPredicate;
 	}
 
 }
