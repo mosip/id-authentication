@@ -8,14 +8,8 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,11 +54,11 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -83,7 +77,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registration.processor.core.packet.dto.ServerError;
+
 /**
  * The Class OSIValidator.
  */
@@ -103,8 +97,8 @@ public class OSIValidator {
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
 	/** The registration status service. */
-	/** the application Id*/
-	private static final String  APP_ID="registrationprocessor";
+	/** the application Id */
+	private static final String APP_ID = "registrationprocessor";
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -188,7 +182,7 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		String creationDate =null;
+		String creationDate = null;
 		demographicIdentity = getDemoIdentity(registrationId);
 		regProcessorIdentityJson = getIdentity();
 		Identity identity = osiUtils.getIdentity(registrationId);
@@ -198,26 +192,26 @@ public class OSIValidator {
 		String supervisorId = regOsi.getSupervisorId();
 		if (officerId == null && supervisorId == null) {
 			registrationStatusDto
-				.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "Both Officer and Supervisor ID are not present in Packet");
+					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
 		}
-		for(int i=0;i<identity.getMetaData().size();i++){
-			if("creationDate".equals(identity.getMetaData().get(i).getLabel())){
-				creationDate=identity.getMetaData().get(i).getValue();
+		for (int i = 0; i < identity.getMetaData().size(); i++) {
+			if ("creationDate".equals(identity.getMetaData().get(i).getLabel())) {
+				creationDate = identity.getMetaData().get(i).getValue();
 				break;
 			}
 		}
-		if(creationDate !=null &&!creationDate.isEmpty()) {
-			if (!wereOperatorsActiveDuringPCT(officerId, creationDate,supervisorId) ) {
+		if (creationDate != null && !creationDate.isEmpty()) {
+			if (!wereOperatorsActiveDuringPCT(officerId, creationDate, supervisorId)) {
 				return false;
 			}
-		}
-		else{
-			registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " packet creationDate is null");
+		} else {
+			registrationStatusDto
+					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " packet creationDate is null");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "packet creationDate is null");
+					registrationId, "packet creationDate is null");
 			return false;
 		}
 		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
@@ -228,54 +222,56 @@ public class OSIValidator {
 		return isValidOsi;
 	}
 
-	private boolean wereOperatorsActiveDuringPCT(String officerId, String creationDate,String supervisorId) throws ApisResourceAccessException {
-		boolean wasOfficerActiveDuringPCT=false;
-		boolean wasSupervisorActiveDuringPCT=false;
-		if(officerId !=null && !officerId.isEmpty()){
-			wasOfficerActiveDuringPCT=wasOperatorActiveDuringPCT(officerId,creationDate);
+	private boolean wereOperatorsActiveDuringPCT(String officerId, String creationDate, String supervisorId)
+			throws ApisResourceAccessException {
+		boolean wasOfficerActiveDuringPCT = false;
+		boolean wasSupervisorActiveDuringPCT = false;
+		if (officerId != null && !officerId.isEmpty()) {
+			wasOfficerActiveDuringPCT = wasOperatorActiveDuringPCT(officerId, creationDate);
 			if (!wasOfficerActiveDuringPCT) {
 				this.registrationStatusDto.setStatusComment(StatusMessage.OFFICER_NOT_ACTIVE);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", StatusMessage.OFFICER_NOT_ACTIVE);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
 			}
 		}
 
-		if(supervisorId !=null && !supervisorId.isEmpty()){
-			wasSupervisorActiveDuringPCT=wasOperatorActiveDuringPCT(supervisorId,creationDate);
+		if (supervisorId != null && !supervisorId.isEmpty()) {
+			wasSupervisorActiveDuringPCT = wasOperatorActiveDuringPCT(supervisorId, creationDate);
 			if (!wasSupervisorActiveDuringPCT) {
 				this.registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_NOT_ACTIVE);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", StatusMessage.SUPERVISOR_NOT_ACTIVE);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
 			}
 		}
 
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private boolean wasOperatorActiveDuringPCT(String operatorId, String creationDate) throws ApisResourceAccessException {
-		boolean wasOperatorActive=false;
-		List<String> pathSegments=new ArrayList<String>();
+	private boolean wasOperatorActiveDuringPCT(String operatorId, String creationDate)
+			throws ApisResourceAccessException {
+		boolean wasOperatorActive = false;
+		List<String> pathSegments = new ArrayList<String>();
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
 		try {
-			UserResponseDto userResponse= (UserResponseDto)restClientService.getApi(ApiName.USERDETAILS,pathSegments,
-				"","",UserResponseDto.class);
+			UserResponseDto userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments,
+					"", "", UserResponseDto.class);
 			if (userResponse.getErrors() == null) {
 				wasOperatorActive = userResponse.getResponse().getUserResponseDto().get(0).isActive();
 
 			} else {
 				List<ServerError> errors = userResponse.getErrors();
 				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						"", errors.get(0).getMessage());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
 				this.registrationStatusDto.setStatusComment(result);
 				throw e;
 			} else {
@@ -285,6 +281,7 @@ public class OSIValidator {
 		}
 		return wasOperatorActive;
 	}
+
 	/**
 	 * Checks if is valid operator.
 	 *
@@ -306,7 +303,7 @@ public class OSIValidator {
 			// officer password and otp check
 			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
-			String officerRegistrationId=getOperatorRid(officerId);
+			String officerRegistrationId = getOperatorRid(officerId);
 			String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = null;// regOsi.getOfficerfingerType();
 			String iris = null;// regOsi.getOfficerIrisImageName();
@@ -372,7 +369,7 @@ public class OSIValidator {
 			// superVisior otp and password
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
 			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
-			String supervisorRegistrationId=getOperatorRid(supervisorId);
+			String supervisorRegistrationId = getOperatorRid(supervisorId);
 			String fingerPrint = null;// regOsi.getSupervisorBiometricFileName();
 			String fingerPrintType = null;// regOsi.getSupervisorFingerType();
 			String iris = null;// regOsi.getSupervisorIrisImageName();
@@ -470,28 +467,6 @@ public class OSIValidator {
 	private String bigIntegerToString(BigInteger number) {
 
 		return number != null ? String.valueOf(number) : null;
-	}
-
-	private int getApplicantAge(String registrationId) throws IOException {
-		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
-		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
-
-		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
-		try {
-			if (applicantDob != null) {
-				DateFormat sdf = new SimpleDateFormat(dobFormat);
-				Date birthDate = sdf.parse(applicantDob);
-				LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
-				Period p = Period.between(ld, LocalDate.now());
-				return p.getYears();
-			} else {
-				return JsonUtil.getJSONValue(demographicIdentity, ageKey);
-			}
-		} catch (ParseException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, e.getMessage());
-		}
-		return 0;
 	}
 
 	private RegistrationProcessorIdentity getIdentity() throws JsonParseException, JsonMappingException, IOException {
@@ -671,29 +646,6 @@ public class OSIValidator {
 	}
 
 	/**
-	 * Gets the hash sequence value.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param field
-	 *            the field
-	 * @return the hash sequence value
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private String getHashSequenceValue(String registrationId, String field) throws UnsupportedEncodingException {
-
-		Identity identity = getIdentity(registrationId);
-		List<FieldValueArray> hashSequence = identity.getHashSequence1();
-		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
-		if (hashList != null)
-			return hashList.get(0).toUpperCase();
-
-		return null;
-
-	}
-
-	/**
 	 * Gets the identity.
 	 *
 	 * @param registrationId
@@ -752,35 +704,36 @@ public class OSIValidator {
 		}
 		return biometrics;
 	}
+
 	private String getOperatorRid(String operatorId) throws ApisResourceAccessException {
-				List<String> pathSegments=new ArrayList<String>();
-				pathSegments.add(APP_ID);
-				pathSegments.add(operatorId);
-				try{
-				RIDResponseDto ridDto=(RIDResponseDto) restClientService.getApi(ApiName.GETRIDFROMUSERID,pathSegments,
-						"","",RIDResponseDto.class);
-					if (ridDto.getErrors() == null) {
-						return ridDto.getResponse().getRid();
-					} else {
-						List<ServerError> errors = ridDto.getErrors();
-						this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
-						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-								"", errors.get(0).getMessage());
-					}
-
-				} catch (ApisResourceAccessException e) {
-					if (e.getCause() instanceof HttpClientErrorException) {
-						HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-						String result = httpClientException.getResponseBodyAsString();
-						this.registrationStatusDto.setStatusComment(result);
-						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-								"", result);
-						throw e;
-					} else {
-						throw e;
-					}
-
-				}
-				return null;
+		List<String> pathSegments = new ArrayList<String>();
+		pathSegments.add(APP_ID);
+		pathSegments.add(operatorId);
+		try {
+			RIDResponseDto ridDto = (RIDResponseDto) restClientService.getApi(ApiName.GETRIDFROMUSERID, pathSegments,
+					"", "", RIDResponseDto.class);
+			if (ridDto.getErrors() == null) {
+				return ridDto.getResponse().getRid();
+			} else {
+				List<ServerError> errors = ridDto.getErrors();
+				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw e;
+			} else {
+				throw e;
+			}
+
+		}
+		return null;
+	}
 }
