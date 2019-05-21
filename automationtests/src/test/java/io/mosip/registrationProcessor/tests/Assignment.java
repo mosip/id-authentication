@@ -65,8 +65,8 @@ public class Assignment extends BaseTestCase implements ITest{
 	static String outputFile = "AssignmentOutput.json";
 	static String requestKeyFile = "AssignmentRequest.json";
 	static String description="";
-	static String apiName="AssignmentApi : ";
-	
+	static String apiName="AssignmentApi";
+	static String moduleName="RegProc";
 	CommonLibrary common=new CommonLibrary();
 	/**
 	 *This method is used for reading the test data based on the test case name passed
@@ -231,7 +231,8 @@ public class Assignment extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName =apiName+ object.get("testCaseName").toString();
+		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
+		
 	}
 
 	/**

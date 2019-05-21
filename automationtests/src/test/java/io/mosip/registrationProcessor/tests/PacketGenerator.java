@@ -57,6 +57,9 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 static String outputFile = "DeactivateRequestOutput.json";
 	 static String requestKeyFile = "DeactivateUinRequest.json";
 	 String rId = null;
+	 static String moduleName="RegProc";
+	 static String apiName="PacketGeneratorDeactivate";
+	 
 	 Properties prop =  new Properties();
 	 RegProcTransactionDb regProcDbRead=new RegProcTransactionDb();
 	 /**
@@ -154,7 +157,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 @BeforeMethod(alwaysRun=true)
 	 public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 	 	 JSONObject object = (JSONObject) testdata[2];
-	 	 testCaseName = object.get("testCaseName").toString();
+	 	testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	 }
 
 	 /**

@@ -4,12 +4,20 @@
 <suite name="Mosip API Suite">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
+<<<<<<< HEAD
+ <listeners>
+		<listener class-name="io.mosip.report.CustomTestNGReporter" />
+		<listener class-name="io.mosip.report.ExtentReportListener"></listener>
+	</listeners>   
+ 
+=======
 
 <--<listeners>
 		<!-- <listener class-name="io.mosip.report.CustomTestNGReporter" /> -->
 		<!-- <listener class-name="io.mosip.report.ExtentReportListener">
 		</listener> -->
 
+>>>>>>> 4a14b2420b6cc9e192cc1a40bb89e23f1be3b0d0
 <!-- 
   Passing Group as parmeter unsing "testType"
   Possible Groups are:
@@ -22,6 +30,17 @@
 			<test name="RegistrationProcessor Tests">
 		<parameter name="testType" value="smokeAndRegression" />
 		<classes>
+<<<<<<< HEAD
+		<class name="io.mosip.registrationProcessor.tests.Sync" /> 
+		<class name="io.mosip.registrationProcessor.tests.PacketStatus" />
+		 <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
+			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
+			 <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />  
+			<class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />  
+			<class name="io.mosip.registrationProcessor.tests.Assignment" />
+			<class name="io.mosip.registrationProcessor.tests.Decision" /> 
+=======
 		<class name="io.mosip.registrationProcessor.tests.Sync" />
 
 		<!-- 	<class name="io.mosip.registrationProcessor.tests.PacketStatus" /> -->
@@ -32,6 +51,7 @@
 			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" /> 
 			<class name="io.mosip.registrationProcessor.tests.Assignment" />
 			<class name="io.mosip.registrationProcessor.tests.Decision" /> -->
+>>>>>>> 4a14b2420b6cc9e192cc1a40bb89e23f1be3b0d0
 		</classes>
 	</test>  
 	

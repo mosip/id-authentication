@@ -1,1 +1,0 @@
-Sync request with valid multiple registration ids

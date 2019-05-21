@@ -85,7 +85,8 @@ public class Sync extends BaseTestCase implements ITest {
 	static String outputFile = "SyncOutput.json";
 	static String requestKeyFile = "SyncRequest.json";
 	static String description="";
-	static String apiName="SyncApi : ";
+	static String apiName="SyncApi";
+	static String moduleName="RegProc";
 
 	CommonLibrary common=new CommonLibrary();
 	/**
@@ -282,7 +283,7 @@ public class Sync extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName =apiName+ object.get("testCaseName").toString();
+		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
 
 	/**
@@ -292,7 +293,7 @@ public class Sync extends BaseTestCase implements ITest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		testCaseName =testCaseName +": "+ description;
+		
 		Field method;
 		try {
 			method = TestResult.class.getDeclaredField("m_method");
