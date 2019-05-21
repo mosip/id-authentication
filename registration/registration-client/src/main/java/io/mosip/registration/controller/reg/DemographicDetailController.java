@@ -1635,9 +1635,8 @@ public class DemographicDetailController extends BaseController {
 																.replace(RegistrationConstants.XML_FILE_FORMAT,
 																		RegistrationConstants.EMPTY)))
 												.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get()))
-						.with(identity -> identity.setParentOrGuardianBiometrics(
-								(!getRegistrationDTOFromSession().isUpdateUINChild()) || (introducerBiometric
-										.getFingerprintDetailsDTO().isEmpty()
+						.with(identity -> identity
+								.setParentOrGuardianBiometrics((introducerBiometric.getFingerprintDetailsDTO().isEmpty()
 										&& introducerBiometric.getIrisDetailsDTO().isEmpty()
 										&& introducerBiometric.getFace().getFace() == null)
 												? null
