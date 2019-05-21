@@ -50,6 +50,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
+	/** server context Path. */
+	@Value("${server.servlet.path}")
+	private String contextPath;
+
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String MODULE_ID = "mosip.registration.processor.packet.id";
@@ -75,9 +79,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	@Autowired
 	MosipRouter router;
 	File file = null;
-
-	@Autowired
-	SignatureUtil signatureUtil;
 
 	/**
 	 * deploys this verticle.
@@ -106,7 +107,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, null, MessageBusAddress.PACKET_RECEIVER_OUT));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -119,12 +120,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(MosipRouter router) {
 
-		router.post("/packetreceiver/registration-processor/registrationpackets/v1.0");
-
+		router.post(contextPath + "/registrationpackets");
 		router.handler(this::processURL, this::processPacket, this::failure);
-
-		router.get("/packetreceiver/health");
-		router.handler(this::health);
 	};
 
 	/**
@@ -134,24 +131,17 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	private void failure(RoutingContext routingContext) {
 		String exceptionError=globalExceptionHandler.handler(routingContext.failure());
-		digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-		this.setResponse(routingContext, exceptionError, APPLICATION_JSON, digitallySignedResponse);
+		//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
+		this.setResponse(routingContext, exceptionError, APPLICATION_JSON);
 	}
 
-	/**
-	 * This is for health check up
-	 *
-	 * @param routingContext
-	 */
-	private void health(RoutingContext routingContext) {
-		this.setResponse(routingContext, "Server is up and running");
-	}
 
 	private void processPacket(RoutingContext ctx) {
 
 		try {
 
 			MessageDTO messageDTO = packetReceiverService.processPacket(file);
+			messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_RECEIVER_OUT);
 			if (messageDTO.getIsValid()) {
 				this.sendMessage(messageDTO);
 			}
@@ -186,8 +176,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
-				digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
-				this.setResponse(ctx, responseData, APPLICATION_JSON, digitallySignedResponse);
+				//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
+				this.setResponse(ctx, responseData, APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {

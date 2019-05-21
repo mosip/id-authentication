@@ -218,8 +218,8 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void loadDocTypes() {
 		docTypeMap = new LinkedMultiValueMap<>();
 		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
-			docCatMap.keySet().parallelStream().forEach(langCode ->
-			docCatMap.get(langCode).forEach(docCat -> {
+			docCatMap.keySet().stream().forEach(langCode ->
+			docCatMap.get(langCode).stream().forEach(docCat -> {
 				String uri = UriComponentsBuilder
 						.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_DOCUMENT_TYPES_URI.getValue()))
 						.buildAndExpand(docCat, langCode).toUriString();
@@ -243,7 +243,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void loadLocationDetails() {
 		locationHierarchyDetails = new LinkedMultiValueMap<>();
 		locationDetails = new LinkedHashMap<>();
-		languageList.parallelStream().forEach(langCode -> {
+		languageList.stream().forEach(langCode -> {
 			String uri = UriComponentsBuilder
 					.fromUriString(env.getProperty(IdObjectValidatorConstant.MASTERDATA_LOCATIONS_URI.getValue()))
 					.buildAndExpand(langCode).toUriString();
@@ -264,7 +264,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 			}
 		});
 		
-		locationDetails.keySet().parallelStream().forEach(hierarchyName -> {
+		locationDetails.keySet().stream().forEach(hierarchyName -> {
 			String uri = UriComponentsBuilder
 					.fromUriString(
 							env.getProperty(IdObjectValidatorConstant.MASTERDATA_LOCATION_HIERARCHY_URI.getValue()))
@@ -343,7 +343,9 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void validateRegion(String identityString, List<ServiceError> errorList) {
 		MultiValueMap<String, String> regionMap = new LinkedMultiValueMap<>();
 		List<String> regionNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.REGION.getLevel());
-		regionNameList.parallelStream().forEach(hierarchyName -> regionMap.addAll(locationDetails.get(hierarchyName)));
+		Optional.ofNullable(regionNameList).orElse(Collections.emptyList()).parallelStream()
+				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
+						.ifPresent(locationDetail -> regionMap.addAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_VALUE_PATH.getValue());
@@ -374,9 +376,11 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	 */
 	private void validateProvince(String identityString, List<ServiceError> errorList) {
 		MultiValueMap<String, String> provinceMap = new LinkedMultiValueMap<>();
-		List<String> provinceNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
-		provinceNameList.parallelStream()
-				.forEach(hierarchyName -> provinceMap.addAll(locationDetails.get(hierarchyName)));
+		List<String> provinceNameList = locationHierarchyDetails
+				.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
+		Optional.ofNullable(provinceNameList).orElse(Collections.emptyList()).parallelStream()
+				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
+						.ifPresent(locationDetail -> provinceMap.addAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_VALUE_PATH.getValue());
@@ -408,8 +412,9 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void validateCity(String identityString, List<ServiceError> errorList) {
 		MultiValueMap<String, String> cityMap = new LinkedMultiValueMap<>();
 		List<String> cityNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.CITY.getLevel());
-		cityNameList.parallelStream()
-				.forEach(hierarchyName -> cityMap.addAll(locationDetails.get(hierarchyName)));
+		Optional.ofNullable(cityNameList).orElse(Collections.emptyList()).parallelStream()
+				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
+						.ifPresent(locationDetail -> cityMap.addAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_VALUE_PATH.getValue());
@@ -442,8 +447,9 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		MultiValueMap<String, String> localAdministrativeAuthorityMap = new LinkedMultiValueMap<>();
 		List<String> localAdminAuthNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
-		localAdminAuthNameList.parallelStream()
-				.forEach(hierarchyName -> localAdministrativeAuthorityMap.addAll(locationDetails.get(hierarchyName)));
+		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptyList()).parallelStream()
+				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
+						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.addAll(locationDetail)));
 		JsonPath langPath = JsonPath
 				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
@@ -479,11 +485,13 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		MultiValueMap<String, String> postalCodeMap = new LinkedMultiValueMap<>();
 		List<String> postalCodeNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.POSTAL_CODE.getLevel());
-		postalCodeNameList.parallelStream()
-				.forEach(hierarchyName -> postalCodeMap.addAll(locationDetails.get(hierarchyName)));
+		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptyList()).parallelStream()
+				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
+						.ifPresent(locationDetail -> postalCodeMap.addAll(locationDetail)));
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_POSTAL_CODE_PATH.getValue());
 		String value = jsonPath.read(identityString, READ_OPTIONS);
-		if (!postalCodeMap.values().parallelStream().allMatch(postalCodeList -> postalCodeList.contains(value))) {
+		if (Objects.nonNull(value) && !postalCodeMap.values().parallelStream()
+				.allMatch(postalCodeList -> postalCodeList.contains(value))) {
 			errorList.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 							convertToPath(jsonPath.getPath()))));
@@ -500,7 +508,8 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().parallelStream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
-					if (!docTypeMap.get(entry.getKey()).contains(jsonPath.read(identityString, READ_OPTIONS))) {
+					Object value = jsonPath.read(identityString, READ_OPTIONS);
+					if (Objects.nonNull(value) && !docTypeMap.get(entry.getKey()).contains(value)) {
 						errorList.add(
 								new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(

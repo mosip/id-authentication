@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata;
 
 import java.io.File;
@@ -76,4 +75,3 @@ public class TestDataProcessor {
 		return testdata;
 	}
 }
-

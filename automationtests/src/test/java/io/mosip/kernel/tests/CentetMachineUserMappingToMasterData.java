@@ -46,7 +46,6 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public CentetMachineUserMappingToMasterData() 
 	{
 		super();
-		
 	}
 	
     // Declaration of all variables 
@@ -71,7 +70,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "kernel_"+"CentetMachineUserMappingToMasterData_"+object.toString();
 		 cookie = auth.getAuthForRegistrationProcessor();
 	}
 	
@@ -122,10 +121,8 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 		else {
 			finalStatus="Fail";
 			logger.error(response);
-			softAssert.assertTrue(false);
 		}
 		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

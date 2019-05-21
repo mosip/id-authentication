@@ -50,7 +50,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @RefreshScope
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationSyncController {
 
@@ -73,8 +72,6 @@ public class RegistrationSyncController {
 	@Autowired
 	TokenValidator tokenValidator;
 
-	@Autowired
-	SignatureUtil signatureUtil;
 
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
@@ -89,7 +86,7 @@ public class RegistrationSyncController {
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@PostMapping(path = "/sync/v1.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
@@ -109,10 +106,9 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE,
-					signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseList)).getData());
-			return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
+			//HttpHeaders headers = new HttpHeaders();
+			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseList)).getData());
+			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseList));
 		} catch (JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}

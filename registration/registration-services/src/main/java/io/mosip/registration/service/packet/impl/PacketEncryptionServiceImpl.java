@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -69,7 +69,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/**
 	 * Instance of {@link AuditLogControlDAO}

@@ -375,7 +375,7 @@ export class DashBoardComponent implements OnInit {
               this.secondaryLanguagelabels.cancelAppointment.msg_deleted
             );
             const index = this.users.indexOf(element);
-            this.users[index].status = 'Pending Appointment';
+            this.users[index].status = appConstants.APPLICATION_STATUS_CODES.pending;
             this.users[index].appointmentDate = '-';
             this.users[index].appointmentTime = '';
           } else {
@@ -608,7 +608,7 @@ export class DashBoardComponent implements OnInit {
    *
    * @private
    * @returns the `Promise`
-   * @memberof DemographicComponent
+   * @memberof DashBoardComponent
    */
   private getErrorLabels() {
     return new Promise((resolve, reject) => {
@@ -623,19 +623,21 @@ export class DashBoardComponent implements OnInit {
    * @description This is a dialoug box whenever an erroe comes from the server, it will appear.
    *
    * @private
-   * @memberof DemographicComponent
+   * @memberof DashBoardComponent
    */
   private async onError() {
     await this.getErrorLabels();
-    const body = {
-      case: 'ERROR',
-      title: 'ERROR',
-      message: this.errorLanguagelabels.error,
-      yesButtonText: this.errorLanguagelabels.button_ok
-    };
-    this.dialog.open(DialougComponent, {
-      width: '250px',
-      data: body
-    });
+    if (this.errorLanguagelabels) {
+      const body = {
+        case: 'ERROR',
+        title: 'ERROR',
+        message: this.errorLanguagelabels.error,
+        yesButtonText: this.errorLanguagelabels.button_ok
+      };
+      this.dialog.open(DialougComponent, {
+        width: '250px',
+        data: body
+      });
+    }
   }
 }

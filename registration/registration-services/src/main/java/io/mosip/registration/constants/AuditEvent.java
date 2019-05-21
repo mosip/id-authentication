@@ -189,12 +189,7 @@ public enum AuditEvent {
 	
 	//Packet Upload
 	PACKET_UPLOAD("REG-EVT-133", USER_EVENT.getCode(), "PACKET_UPLOAD", "Upload the local packets to the server"),
-	
-	// Device Onboarding
-	GET_ONBOARDING_DEVICES_TYPES("REG-EVT-134", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES_TYPES", "Get the types of devices for device onboarding"),
-	GET_ONBOARDING_DEVICES("REG-EVT-135", USER_EVENT.getCode(), "GET_ONBOARDING_DEVICES", "Get the available and mapped devices for the requested device type"),
-	UPDATE_DEVICES_ONBOARDING("REG-EVT-136", USER_EVENT.getCode(), "UPDATE_DEVICES_ONBOARDING", "Devices onboarding updated for the registration client"),
-
+		
 	// Notification Service
 	NOTIFICATION_STATUS("REG-EVT-137", USER_EVENT.getCode(), "NOTIFICATION_SERVICE", "Notification request status"),
 	
@@ -205,8 +200,13 @@ public enum AuditEvent {
 	
 	//Scheduler Util
 	SCHEDULER_REFRESHED_TIMEOUT("REG-EVT-141", SYSTEM_EVENT.getCode(),"REFRESHED_TIMEOUT", "The time task remainder alert"),
-	SCHEDULER_SESSION_TIMEOUT("REG-EVT-142", SYSTEM_EVENT.getCode(),"SESSION_TIMEOUT", "The time task session expires");
+	SCHEDULER_SESSION_TIMEOUT("REG-EVT-142", SYSTEM_EVENT.getCode(),"SESSION_TIMEOUT", "The time task session expires"),
 	
+	//MDM 
+	MDM_CAPTURE_FAILED("REG-EVT-143", USER_EVENT.getCode(), "CAPTURE_FAILED", "Biometric capture failed"),
+	MDM_CAPTURE_SUCCESS("REG-EVT-144", USER_EVENT.getCode(), "CAPTURE_SUCESS", "Biometric capture completed"),
+	MDM_NO_DEVICE_AVAILABLE("REG-EVT-145", USER_EVENT.getCode(), "DEVICE_NOT_FOUND", "No devic3 is available"),
+	MDM_DEVICE_FOUND("REG-EVT-146", USER_EVENT.getCode(), "MDM_DEVICE_FOUND", "Device is found");
 	
 	/**
 	 * The constructor

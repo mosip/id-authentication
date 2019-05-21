@@ -1,4 +1,5 @@
 
+
 package io.mosip.kernel.tests;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	private final String apiName = "fetchBlackListedWord";
 	private final String requestJsonName = "fetchBlackListedWordRequest";
 	private final String outputJsonName = "fetchBlackListedWordOutput";
-	private final Map props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String FetchBlackListedWord_URI = props.get("FetchBlackListedWord_URI").toString();
 
 	protected String testCaseName = "";
@@ -80,7 +81,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		logger.info("Test Case Name is :: "+testCaseName);
 		cookie=auth.getAuthForIndividual();
 	}
@@ -215,4 +216,3 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 		}
 	}
 }
-

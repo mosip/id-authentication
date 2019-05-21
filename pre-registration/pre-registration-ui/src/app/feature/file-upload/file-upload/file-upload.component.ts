@@ -429,9 +429,10 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
+    this.fileIndex = 0;
     console.log('file', fileMeta);
     // console.log('file any', test);
-    this.start = true;
+    this.disableNavigation = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
       res => {
         console.log(res);
@@ -441,7 +442,7 @@ export class FileUploadComponent implements OnInit {
         } else {
           console.log('ELSE ');
 
-          // this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage('Error', this.errorlabels.error);
           this.start = false;
         }
       },
@@ -455,14 +456,16 @@ export class FileUploadComponent implements OnInit {
         let i = 0;
         for (let x of this.users[0].files.documentsMetaData) {
           if (this.fileName === x.docName) {
-            i++;
             break;
           }
+          i++;
         }
-        if (this.firstFile) {
-          this.fileIndex = i;
-          this.firstFile = false;
-        }
+        console.log('file index before updating', this.fileIndex);
+
+        this.fileIndex = i;
+
+        console.log('file index after updating', this.fileIndex);
+
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         if (this.fileByteArray) {
           // console.log('file Extension', file.docName.substring(file.docName.indexOf('.') + 1));
@@ -491,7 +494,7 @@ export class FileUploadComponent implements OnInit {
           //   );
           // }
         }
-        this.start = false;
+        this.disableNavigation = false;
       }
     );
   }
@@ -633,9 +636,11 @@ export class FileUploadComponent implements OnInit {
     // this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
+    console.log('data to be sent', this.formData);
+
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
-        console.log(response);
+        console.log('file response', response);
 
         if (response['errors'] == null) {
           this.updateUsers(response);
@@ -664,10 +669,10 @@ export class FileUploadComponent implements OnInit {
   updateUsers(fileResponse) {
     let i = 0;
     this.file = new FileModel();
-    this.userFile = [this.file];
+    this.userFile[0] = this.file;
     this.userFile[0].docCatCode = fileResponse.response.docCatCode;
     this.userFile[0].doc_file_format = fileResponse.response.docFileFormat;
-    this.userFile[0].documentId = fileResponse.response.documentId;
+    this.userFile[0].documentId = fileResponse.response.docId;
     this.userFile[0].docName = fileResponse.response.docName;
     this.userFile[0].docTypCode = fileResponse.response.docTypCode;
     this.userFile[0].multipartFile = this.fileByteArray;
@@ -678,7 +683,7 @@ export class FileUploadComponent implements OnInit {
       if (file.docCatCode == this.userFile[0].docCatCode) {
         // this.removeFilePreview();
         this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
-        this.fileIndex--;
+        // this.fileIndex--;
         break;
       }
       i++;
@@ -706,6 +711,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   sameAsChange(event) {
+    this.disableNavigation = true;
     if (event.value == '') {
       this.sameAsselected = false;
     } else {
@@ -714,6 +720,7 @@ export class FileUploadComponent implements OnInit {
           if (response['errors'] == null) {
             this.registration.setSameAs(event.value);
             this.removePOADocument();
+            this.updateUsers(response);
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
@@ -728,6 +735,7 @@ export class FileUploadComponent implements OnInit {
       );
       this.sameAsselected = true;
     }
+    this.disableNavigation = false;
   }
   /**
    *@description method to remove the POA document from users array when same as option has been selected.
@@ -792,7 +800,7 @@ export class FileUploadComponent implements OnInit {
    */
   nextFile(fileIndex: number) {
     this.fileIndex = fileIndex + 1;
-
+    console.log('next', this.fileIndex);
     this.viewFileByIndex(this.fileIndex);
   }
   /**
@@ -803,6 +811,8 @@ export class FileUploadComponent implements OnInit {
    */
   previousFile(fileIndex: number) {
     this.fileIndex = fileIndex - 1;
+    console.log('previous', this.fileIndex);
+
     this.viewFileByIndex(this.fileIndex);
   }
 

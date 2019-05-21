@@ -11,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -30,6 +31,8 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
@@ -82,7 +85,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * @author Rishabh Keshari
  */
 @Service
-public class UinGeneratorStage extends MosipVerticleManager {
+public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinGeneratorStage.class);
@@ -113,6 +116,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Value("${registration.processor.id.repo.update}")
 	private String idRepoUpdate;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
@@ -120,6 +127,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 
 	/** The registration processor rest client service. */
 	@Autowired
@@ -159,7 +170,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The id repo api version. */
-	private String idRepoApiVersion = "1.0";
+	private String idRepoApiVersion = "v1";
 
 	/** The reg processor identity json. */
 	@Autowired
@@ -371,9 +382,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		requestDto.setDocuments(documentInfo);
 		requestDto.setRegistrationId(regId);
 		requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(uin);
+		requestDto.setBiometricReferenceId(uin);
+		
 		IdResponseDTO result = null;
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setRequest(requestDto);
@@ -386,13 +396,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 				LoggerFileConstant.REGISTRATIONID.toString() + regId, "Request to IdRepo API", "is: " + idRequest);
 		try {
-			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments,
+			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
 					"is : " + result.toString());
 
 		} catch (ApisResourceAccessException e) {
+			
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = UIN_GENERATION_FAILED + registrationId + "::"
@@ -501,8 +513,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 					requestDto.setRegistrationId(regId);
 					requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-
-					pathsegments.add(Long.toString(uin));
+					requestDto.setBiometricReferenceId(Long.toString(uin));
+					
 					idRequestDTO.setId(idRepoUpdate);
 					idRequestDTO.setRequest(requestDto);
 					idRequestDTO.setMetadata(null);
@@ -517,7 +529,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 				result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
-
+				
 				if (result != null && result.getResponse() != null) {
 
 						if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
@@ -591,7 +603,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				requestDto.setRegistrationId(regId);
 				requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
 
-				pathsegments.add(Long.toString(uin));
+				requestDto.setBiometricReferenceId(Long.toString(uin));
 				idRequestDTO.setId(idRepoUpdate);
 				idRequestDTO.setMetadata(null);
 				idRequestDTO.setRequest(requestDto);
@@ -645,8 +657,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(Long.toString(uin));
 		try {
-			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments,
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments,
 					"", "", IdResponseDTO.class);
+			
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -692,7 +705,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			jsonString = objMapper.writeValueAsString(uinRequest);
 			String response;
 			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
-					jsonString, String.class);
+					jsonString, String.class,MediaType.APPLICATION_JSON);
+			
 			Gson gsonValue = new Gson();
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getResponse() != null) {
@@ -729,7 +743,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
-	
+
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
+
 	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws JsonParseException, JsonMappingException, IOException {
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();

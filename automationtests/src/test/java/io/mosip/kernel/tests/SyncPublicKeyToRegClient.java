@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -33,10 +34,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 
-import io.mosip.dbaccess.KernelMasterDataR;
+
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.service.ApplicationLibrary;
+
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -72,6 +75,9 @@ import io.restassured.response.Response;
 	       JSONObject responseObject = null;
 	       private AssertKernel assertions = new AssertKernel();
 	       private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	       KernelAuthentication auth=new KernelAuthentication();
+	   	   String cookie=null;
+
 	
 	       /**
 	       * method to set the test case name to the report
@@ -83,8 +89,8 @@ import io.restassured.response.Response;
 	       @BeforeMethod(alwaysRun=true)
 	       public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 	              String object = (String) testdata[0];
-	              testCaseName = object.toString();
-	
+	              testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+	              cookie = auth.getAuthForRegistrationAdmin();
 	       }
 	
 	       /**
@@ -154,7 +160,9 @@ import io.restassured.response.Response;
 	                           
 	                            objectData.remove("applicationId");
 	                           
-	                           response = applicationLibrary.getRequest(SyncPublicKeyToRegClient_URI+applicationId, GetHeader.getHeader(objectData));
+
+	                           response = applicationLibrary.getRequest(SyncPublicKeyToRegClient_URI+applicationId, GetHeader.getHeader(objectData),cookie);
+
 	
 	
 	                     } else if (listofFiles[k].getName().toLowerCase().contains("response"))
@@ -173,11 +181,12 @@ import io.restassured.response.Response;
 	              {
 	                     String referenceId=(objectData.get("referenceId")).toString();
 	                     String queryStr = "select public_key from kernel.key_store where id = (select id from kernel.key_alias where ref_id = '"+referenceId+"' and app_id='"+applicationId+"')";
-	                     boolean valid = new KernelDataBaseAccess().validateDataInDb(queryStr);
+
+	                     List<Object> publicKey = new KernelDataBaseAccess().getData(queryStr,"kernel");
 	                     String s = null;
-	                     if(valid)
+	                     if(publicKey.size()>0)
 	                     {
-	                           byte b[] = (byte[]) KernelMasterDataR.objs.get(0);
+	                           byte b[] = (byte[]) publicKey.get(0);
 	                           s = BaseEncoding.base64().encode(b);
 	                     }
 	                     if(s!=null)
@@ -187,7 +196,9 @@ import io.restassured.response.Response;
 	                     }
 	                     
 	                     logger.info("obtained key from db : "+s);
-	                     valid = (((HashMap<String, String>)response.jsonPath().get("response")).get("publicKey")).toString().equals(s);
+
+	                     boolean valid = (((HashMap<String, String>)response.jsonPath().get("response")).get("publicKey")).toString().equals(s);
+
 	                     if(valid) {
 	                           finalStatus = "Pass";
 	                     }

@@ -14,6 +14,7 @@ import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 @Configuration
@@ -35,6 +36,11 @@ public class PacketStorageBeanConfig {
 	@Bean
 	public Utilities getUtilities() {
 		return new Utilities();
+	}
+	
+	@Bean
+	public ABISHandlerUtil getABISHandlerUtil() {
+		return new ABISHandlerUtil();
 	}
 
 }

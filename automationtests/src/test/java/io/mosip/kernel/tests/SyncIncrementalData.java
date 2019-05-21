@@ -94,7 +94,8 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	 * Given input Json as per defined folders When GET request is sent to /v1/admin/syncjobdef/{lastupdatedtimestamp}
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@SuppressWarnings({ "unchecked", "unused"})
+
+	@SuppressWarnings({ "unchecked"})
 	@Test(dataProvider="SyncIncrementalData")
 	public void syncIncrementalData(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
@@ -121,8 +122,6 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

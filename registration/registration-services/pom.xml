@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.11.1</version>
+		<version>0.11.5</version>
 	</parent>
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
@@ -251,10 +251,6 @@
 			<artifactId>kernel-crypto-jce</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-jsonvalidator</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 			<version>1.8.3</version>
@@ -298,7 +294,11 @@
 			<groupId>com.github.microsoft</groupId>
 			<artifactId>TSS.Java</artifactId>
 		</dependency>
-	
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>

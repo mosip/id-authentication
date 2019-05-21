@@ -1,5 +1,3 @@
-
-
 package io.mosip.authentication.fw.dto;
 
 /**
@@ -108,4 +106,3 @@ public class OutputValidationDto {
 		this.status = status;
 	}
 }
-

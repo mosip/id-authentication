@@ -1,9 +1,12 @@
 {
-    "err": {
-        "errorCode": "PRG_PAM_APP_005",
-        "message": "UNABLE_TO_FETCH_THE_PRE_REGISTRATION"
-    },
-    "status": false,
-    "resTime": "2019-02-24T12:08:15.492Z",
-    "response": null
+    "id": "mosip.pre-registration.datasync.fetch",
+    "version": "1.0",
+    "responsetime": "2019-05-07T05:31:06.410Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_APP_005",
+            "message": "No data found for the requested pre-registration id"
+        }
+    ]
 }

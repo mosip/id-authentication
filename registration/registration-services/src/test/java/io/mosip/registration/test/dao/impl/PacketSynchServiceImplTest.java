@@ -32,7 +32,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
@@ -67,7 +67,7 @@ public class PacketSynchServiceImplTest {
 	@Mock
 	private RequestHTTPDTO requestHTTPDTO;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 	@InjectMocks
 	private PacketSynchServiceImpl packetSynchServiceImpl;
 
@@ -177,6 +177,7 @@ public class PacketSynchServiceImplTest {
 		reg.setId("123456789");
 		reg.setClientStatusCode("SYNCED");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 		synchedPackets.add(packetStatusDTO);
 
@@ -198,6 +199,7 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("12345");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
@@ -213,7 +215,8 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("123456789");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
-
+		reg.setStatusCode("NEW");
+		
 		Object respObj = new Object();
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 
@@ -237,6 +240,7 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setId("123456789");
 		reg.setAckFilename("10001100010025920190430051904_Ack.html");
+		reg.setStatusCode("NEW");
 		synchedPackets.add(reg);
 		reg.setClientStatusCode("SYNCED");
 		Mockito.when(registrationDAO.get(idlist)).thenReturn(synchedPackets);

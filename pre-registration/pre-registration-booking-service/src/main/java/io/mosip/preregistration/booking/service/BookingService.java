@@ -102,8 +102,6 @@ public class BookingService {
 	@Value("${version}")
 	String versionUrl;
 
-	@Value("${id}")
-	String idUrl;
 
 	@Value("${mosip.preregistration.booking.availability.sync.id}")
 	String idUrlSync;
@@ -165,14 +163,16 @@ public class BookingService {
 		response.setVersion(versionUrl);
 		boolean isSaveSuccess = false;
 		try {
-			LocalDate endDate = LocalDate.now().plusDays(syncDays);
+			LocalDate endDate = LocalDate.now().plusDays(syncDays-1);
 			List<LocalDate> insertedDate = bookingDAO.findDateDistinct(LocalDate.now());
 			List<RegistrationCenterDto> regCenter = serviceUtil.callRegCenterDateRestService();
 			for (RegistrationCenterDto regDto : regCenter) {
 				List<String> holidaylist = serviceUtil.callGetHolidayListRestService(regDto);
-				for (LocalDate sDate = LocalDate.now(); ((sDate.isBefore(endDate) || sDate.isEqual(endDate))
-						&& !insertedDate.contains(sDate)); sDate = sDate.plusDays(1)) {
-					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+				for (LocalDate sDate = LocalDate.now(); (sDate.isBefore(endDate) || sDate.isEqual(endDate)); sDate = sDate.plusDays(1)) {
+					if(!insertedDate.contains(sDate)) {
+						serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
+					}
+					
 				}
 
 			}
@@ -505,7 +505,7 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		responseDto.setId(idUrlFetch);
 		responseDto.setVersion(versionUrl);
-		RegistrationBookingEntity entity = new RegistrationBookingEntity();
+		RegistrationBookingEntity entity = null;
 		try {
 			/* Checking Status From Demographic */
 			serviceUtil.callGetStatusRestService(preRegID);
@@ -854,7 +854,7 @@ public class BookingService {
 			new BookingExceptionCatcher().handle(ex, response);
 		}
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		response.setId(idUrl);
+		response.setId(idUrlBookingByDate);
 		response.setVersion(versionUrl);
 		response.setErrors(null);
 		return response;
@@ -873,8 +873,13 @@ public class BookingService {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.getCode(), requestDTO.getId());
 		inputValidation.put(RequestCodes.version.getCode(), requestDTO.getVersion());
-		LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-		inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+			inputValidation.put(RequestCodes.requesttime.getCode(), date.toString());
+		}
+		else {
+			inputValidation.put(RequestCodes.requesttime.getCode(),null);
+		}
 		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}

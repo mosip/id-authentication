@@ -53,6 +53,7 @@ import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentReBookingFailedException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
 import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNotFoundException;
@@ -134,7 +135,7 @@ public class BookingServiceUtil {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
-			//RestTemplate restTemplate = restTemplateBuilder.build();
+			// RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(regCenterUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -146,7 +147,7 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, entity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 					});
-			if(!responseEntity.getBody().getErrors().isEmpty()) {
+			if (responseEntity.getBody().getErrors() != null && !responseEntity.getBody().getErrors().isEmpty()) {
 				throw new MasterDataNotAvailableException(responseEntity.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity.getBody().getErrors().get(0).getMessage());
 			}
@@ -155,13 +156,13 @@ public class BookingServiceUtil {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 			}
-			
+
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-				throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
-						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
+					ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
 		}
 		return regCenter;
 	}
@@ -190,7 +191,7 @@ public class BookingServiceUtil {
 					uriBuilder, HttpMethod.GET, httpHolidayEntity,
 					new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterHolidayDto>>() {
 					});
-			if(!responseEntity2.getBody().getErrors().isEmpty()) {
+			if (responseEntity2.getBody().getErrors() != null && !responseEntity2.getBody().getErrors().isEmpty()) {
 				throw new MasterDataNotAvailableException(responseEntity2.getBody().getErrors().get(0).getErrorCode(),
 						responseEntity2.getBody().getErrors().get(0).getMessage());
 			}
@@ -205,9 +206,9 @@ public class BookingServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-				throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
-						ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
-			
+			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_020.getCode(),
+					ErrorMessages.MASTER_DATA_NOT_FOUND.getMessage());
+
 		}
 		return holidaylist;
 	}
@@ -341,9 +342,16 @@ public class BookingServiceUtil {
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
 
 				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
+					if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
+						throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
+								ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
+					}
 
-					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
-							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
+					else {
+						throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.getCode(),
+								ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.getMessage());
+					}
+
 				}
 			} else {
 				for (ExceptionJSONInfoDTO dto : respEntity.getBody().getErrors()) {
@@ -574,7 +582,7 @@ public class BookingServiceUtil {
 		if (isNull(preRegistrationId)) {
 			throw new BookingPreIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_006.getCode(),
 					ErrorMessages.PREREGISTRATION_ID_NOT_ENTERED.getMessage());
-		} 
+		}
 
 		return flag;
 
@@ -601,7 +609,6 @@ public class BookingServiceUtil {
 		return true;
 	}
 
-	
 	/**
 	 * This method is used to add the initial request values into a map for request
 	 * map.

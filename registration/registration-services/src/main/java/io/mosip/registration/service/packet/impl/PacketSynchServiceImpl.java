@@ -22,7 +22,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -57,7 +57,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	private RegistrationDAO syncRegistrationDAO;
 
 	@Autowired
-	protected AuditFactory auditFactory;
+	protected AuditManagerService auditFactory;
 	
 	@Autowired
 	private AESEncryptionService aesEncryptionService;
@@ -98,11 +98,11 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
-					syncDto.setSyncType(packetToBeSynch.getPacketStatus());
-					syncDto.setPacketHash(packetToBeSynch.getPacketHash());
+					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
+					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
 					syncDto.setPacketSize(packetToBeSynch.getPacketSize());
 					syncDto.setSupervisorStatus(packetToBeSynch.getSupervisorStatus());
-					syncDto.setSupervisorComments(packetToBeSynch.getSupervisorComments());
+					syncDto.setSupervisorComment(packetToBeSynch.getSupervisorComments());
 					syncDtoList.add(syncDto);
 				}
 				RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
@@ -112,7 +112,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
 				responseDTO = syncPacketsToServer(
 						CryptoUtil.encodeBase64(
-								aesEncryptionService.encrypt(javaObjectToJsonString(syncDtoList).getBytes())),
+								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -139,6 +139,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 					}
 				}
 				updateSyncStatus(synchedPackets);
+			} else {
+				syncErrorStatus=RegistrationConstants.SYNC_FAILURE;
 			}
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
@@ -173,6 +175,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketPath(reg.getAckFilename());
 			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
+			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
+			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;
@@ -196,7 +200,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.PACKET_SYNC, encodedString, triggerPoint);
+					.post(RegistrationConstants.PACKET_SYNC, javaObjectToJsonString(encodedString), triggerPoint);
 			if (response.get("response") != null) {
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				Map<String, Object> statusMap = new WeakHashMap<>();
@@ -206,6 +210,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				}
 				successResponseDTO.setOtherAttributes(statusMap);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
+			} else if(response.get("errors") != null) {
+				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						response.get("errors").toString());
 			}
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,

@@ -1,4 +1,3 @@
-
 {
 	"id": "mosip.identity.otp",
 	"version": "1.0",
@@ -10,5 +9,4 @@
 		"EMAIL",
 		"PHONE"
 	]
-
 }

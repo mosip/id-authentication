@@ -14,9 +14,9 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.identity.entity.Uin;
 import io.mosip.idrepository.identity.entity.UinHistory;
-import io.mosip.idrepository.identity.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
@@ -64,8 +64,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			}
 			if (entity instanceof UinHistory) {
 				UinHistory uinHEntity = (UinHistory) entity;
-				uinHEntity.setUinData(
-						securityManager.encrypt(CryptoUtil.encodeBase64(uinHEntity.getUinData()).getBytes()));
+				uinHEntity.setUinData(securityManager.encrypt(uinHEntity.getUinData()));
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
@@ -88,8 +87,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			if (entity instanceof Uin || entity instanceof UinHistory) {
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
-				state[indexOfData] = CryptoUtil.decodeBase64(new String(
-						securityManager.decrypt(CryptoUtil.decodeBase64(new String((byte[]) state[indexOfData])))));
+				state[indexOfData] = securityManager.decrypt((byte[]) state[indexOfData]);
 
 				if (!StringUtils.equals(securityManager.hash((byte[]) state[indexOfData]),
 						(String) state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {

@@ -24,7 +24,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -101,7 +101,7 @@ public class BaseController {
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
 	@Autowired
-	protected AuditFactory auditFactory;
+	protected AuditManagerService auditFactory;
 	@Autowired
 	private GlobalParamService globalParamService;
 
@@ -222,8 +222,7 @@ public class BaseController {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static <T> T load(URL url) throws IOException {
-		clearDeviceOnboardingContext();
+	public static <T> T load(URL url) throws IOException {		
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
@@ -314,7 +313,8 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		label.setText(context);
+		if(!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
+			label.setText(context);
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
@@ -553,16 +553,6 @@ public class BaseController {
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
-	}
-
-	/**
-	 * Clear device onboarding context.
-	 */
-	private static void clearDeviceOnboardingContext() {
-		if (SessionContext.isSessionContextAvailable()) {
-			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
-			SessionContext.map().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
-		}
 	}
 
 	/**

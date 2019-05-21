@@ -351,7 +351,8 @@
     "action_continue": "CONTINUE",
     "label_sameas": "Same as",
     "text_or": "OR",
-    "action_view": "preiew"
+    "action_view": "preiew",
+    "OR": "OR"
   },
   "acknowledgement": {
     "title": "Appointment Confirmed",

@@ -22,7 +22,6 @@ import lombok.ToString;
  * @param <T> generic type
  */
 @Getter
-@Setter
 @NoArgsConstructor
 @ToString
 public class BookingResponseDTO<T> implements Serializable {

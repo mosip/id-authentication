@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
@@ -78,7 +77,7 @@ public class RestHelper {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdRepoLogger.getLogger(RestHelper.class);
 	
-//	@Autowired
+	@Autowired
 	private WebClient webClient;
 	
 	/**
@@ -101,15 +100,13 @@ public class RestHelper {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
 			} else {
 				response = request(request).block();
 				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
-				checkErrorResponse(response, request.getResponseType());
-				return (T) response;
 			}
+			checkErrorResponse(response, request.getResponseType());
+			return (T) response;
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
@@ -186,8 +183,7 @@ public class RestHelper {
 
 		if (request.getHeaders() != null) {
 			requestBodySpec = requestBodySpec
-					.header(HttpHeaders.CONTENT_TYPE,
-							request.getHeaders().getContentType().toString());
+					.headers(headers -> headers.addAll(request.getHeaders()));
 		}
 
 		if (request.getRequestBody() != null) {

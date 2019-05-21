@@ -75,11 +75,20 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
 					|| source.isUpdateUINChild();
 			identity.setExceptionPhotograph(buildExceptionPhotograph(
-					isIntroducerFace
-							? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getNumOfRetries()
-							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getNumOfRetries(),
-					isIntroducerFace ? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace()
-							: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace(),
+					isIntroducerFace || (source.isUpdateUINChild()
+							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+									.equals(RegistrationConstants.ENABLE))
+											? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+													.getNumOfRetries()
+											: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
+													.getNumOfRetries(),
+					isIntroducerFace || (source.isUpdateUINChild()
+							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+									.equals(RegistrationConstants.ENABLE))
+											? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+													.getFace()
+											: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
+													.getFace(),
 					source));
 
 			// Set Documents
@@ -191,13 +200,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		if (face != null) {
 			exceptionPhotograph = new ExceptionPhotograph();
 			exceptionPhotograph.setNumRetry(numRetry);
-			exceptionPhotograph.setIndividualType(
-					(boolean) SessionContext.map().get(RegistrationConstants.IS_Child) || source.isUpdateUINChild()
-							? RegistrationConstants.PARENT
-							: RegistrationConstants.INDIVIDUAL);
+			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINChild())
+									? RegistrationConstants.PARENT
+									: RegistrationConstants.INDIVIDUAL);
 			exceptionPhotograph.setPhotoName(((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| source.isUpdateUINChild() && !SessionContext.map()
-							.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN).equals(RegistrationConstants.ENABLE)
+					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINChild())
 									? RegistrationConstants.PARENT.toLowerCase()
 									: RegistrationConstants.INDIVIDUAL.toLowerCase())
 											.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO));

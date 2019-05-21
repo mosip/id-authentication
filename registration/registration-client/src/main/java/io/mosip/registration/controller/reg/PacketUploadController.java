@@ -4,6 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -135,6 +139,22 @@ public class PacketUploadController extends BaseController implements Initializa
 						packetStatusVO.setPacketServerStatus(packet.getPacketServerStatus());
 						packetStatusVO.setPacketStatus(packet.getPacketStatus());
 						packetStatusVO.setUploadStatus(packet.getUploadStatus());
+						packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
+						packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
+
+						try (FileInputStream fis = new FileInputStream(new File(
+								packet.getPacketPath().replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION,
+										RegistrationConstants.ZIP_FILE_EXTENSION)))) {
+							byte[] byteArray = new byte[(int) fis.available()];
+							fis.read(byteArray);
+							byte[] packetHash = HMACUtils.generateHash(byteArray);
+							packetStatusVO.setPacketHash(HMACUtils.digestAsPlainText(packetHash));
+							packetStatusVO.setPacketSize(BigInteger.valueOf(byteArray.length));
+
+						} catch (IOException ioException) {
+							LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+									ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+						}
 						packetsToBeSynced.add(packetStatusVO);
 					});
 					String packetSyncStatus = packetSynchService.packetSync(packetsToBeSynced);
@@ -378,10 +398,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			public void onChanged(Change<? extends PacketStatusVO> c) {
 				while (c.next()) {
 					if (c.wasUpdated()) {
-						if (!selectedPackets.contains(list.get(c.getFrom()))) {
-							selectedPackets.add(list.get(c.getFrom()));
+						if (!selectedPackets.contains(table.getItems().get(c.getFrom()))) {
+							selectedPackets.add(table.getItems().get(c.getFrom()));
 						} else {
-							selectedPackets.remove(list.get(c.getFrom()));
+							selectedPackets.remove(table.getItems().get(c.getFrom()));
 						}
 						saveToDevice.setDisable(!selectedPackets.isEmpty());
 					}
@@ -402,30 +422,38 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredList.setPredicate(reg -> {
-				// If filter text is empty, display all ID's.
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-
-				// Compare every ID with filter text.
-				String lowerCaseFilter = newValue.toLowerCase();
-
-				if (reg.getFileName().contains(lowerCaseFilter)) {
-					// Filter matches first name.
-					table.getSelectionModel().selectFirst();
-					return true;
-				}
-				return false; // Does not match.
-			});
-			table.getSelectionModel().selectFirst();
+			filterData(newValue, filteredList);
 		});
+
+		if (!filterField.getText().isEmpty()) {
+			filterData(filterField.getText(), filteredList);
+		}
 
 		// 3. Wrap the FilteredList in a SortedList.
 		sortedList = new SortedList<>(filteredList);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
+	}
+
+	private void filterData(String newValue, FilteredList<PacketStatusVO> filteredList) {
+		filteredList.setPredicate(reg -> {
+			// If filter text is empty, display all ID's.
+			if (newValue == null || newValue.isEmpty()) {
+				return true;
+			}
+
+			// Compare every ID with filter text.
+			String lowerCaseFilter = newValue.toLowerCase();
+
+			if (reg.getFileName().contains(lowerCaseFilter)) {
+				// Filter matches first name.
+				table.getSelectionModel().selectFirst();
+				return true;
+			}
+			return false; // Does not match.
+		});
+		table.getSelectionModel().selectFirst();
 	}
 
 	/**
@@ -435,8 +463,10 @@ public class PacketUploadController extends BaseController implements Initializa
 	 * @return
 	 */
 	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
+
 		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
+
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
@@ -462,6 +492,8 @@ public class PacketUploadController extends BaseController implements Initializa
 			packetStatusVO.setPacketStatus(packet.getPacketStatus());
 			packetStatusVO.setStatus(false);
 			packetStatusVO.setUploadStatus(packet.getUploadStatus());
+			packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
+			packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
 			packetsToBeExport.add(packetStatusVO);
 		});
 		if (packetsToBeExport.isEmpty()) {
@@ -499,7 +531,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			TableColumn<PacketStatusDTO, String> statusCol = new TableColumn<>(
 					RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS);
 			statusCol.setMinWidth(250);
-			
+
 			statusCol.getStyleClass().add("tableId");
 			ObservableList<PacketStatusDTO> displayList = FXCollections.observableArrayList(filesToDisplay);
 			statusTable.setItems(displayList);

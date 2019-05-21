@@ -43,7 +43,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDt
  */
 @RefreshScope
 @RestController
-@RequestMapping("/registration-processor")
 @Api(tags = "Registration Status")
 public class RegistrationStatusController {
 
@@ -73,8 +72,6 @@ public class RegistrationStatusController {
 
 	Gson gson = new GsonBuilder().create();
 
-	@Autowired
-	SignatureUtil signatureUtil;
 
 	/**
 	 * Search.
@@ -83,7 +80,7 @@ public class RegistrationStatusController {
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@GetMapping(path = "/registrationstatus/v1.0", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/search", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
@@ -95,9 +92,9 @@ public class RegistrationStatusController {
 			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,RegistrationStatusRequestDTO.class);
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
 			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());
-			return ResponseEntity.status(HttpStatus.OK).headers(headers).body(buildRegistrationStatusResponse(registrations));
+		//	HttpHeaders headers = new HttpHeaders();
+			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationStatusResponse(registrations)).getData());
+			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		} catch (Exception e) {

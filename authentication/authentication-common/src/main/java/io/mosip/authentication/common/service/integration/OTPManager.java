@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.IdType;
+import io.mosip.authentication.core.indauth.dto.NotificationType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -50,7 +52,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public class OTPManager {
-	
 
 	/** The Constant NAME. */
 	private static final String NAME = "name";
@@ -58,7 +59,6 @@ public class OTPManager {
 	private static final String TIME = "time";
 	/** The Constant DATE. */
 	private static final String DATE = "date";
-	
 
 	/** The Constant RESPONSE. */
 	private static final String RESPONSE = "response";
@@ -77,6 +77,9 @@ public class OTPManager {
 
 	/** The Constant STATUS_FAILURE. */
 	private static final String STATUS_FAILURE = "failure";
+	
+	/** The Constant Message. */
+	private static final String MESSAGE = "message";
 
 	/** The Constant USER_BLOCKED. */
 	private static final String USER_BLOCKED = "USER_BLOCKED";
@@ -98,22 +101,25 @@ public class OTPManager {
 	/**
 	 * Generate OTP with information of {@link MediaType } and OTP generation
 	 * time-out
-	 * @param namePri 
-	 * @param nameSec 
-	 * @param priLang 
-	 * @param secLang 
-	 * @param idInfo 
+	 * 
+	 * @param namePri
+	 * @param nameSec
+	 * @param priLang
+	 * @param secLang
+	 * @param idInfo
 	 *
-	 * @param otpKey the otp key
+	 * @param otpKey  the otp key
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean generateOTP(OtpRequestDTO otpRequestDTO, String uin, String namePri, String nameSec, String priLang, String secLang) throws IdAuthenticationBusinessException {
+	public boolean sendOtp(OtpRequestDTO otpRequestDTO, String uin, Map<String, String> valueMap)
+			throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
+		String message = null;
 		boolean isOtpGenerated = false;
 		try {
 			String appId = environment.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID);
@@ -121,50 +127,34 @@ public class OTPManager {
 			otpGeneratorRequestDto.setAppId(appId);
 			otpGeneratorRequestDto.setContext(context);
 			otpGeneratorRequestDto.setUserId(uin);
-			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, namePri, nameSec, priLang, secLang);
+			Map<String, Object> otpTemplateValues = getOtpTemplateValues(otpRequestDTO, uin, valueMap);
 			otpGeneratorRequestDto.setTemplateVariables(otpTemplateValues);
 			otpGeneratorRequestDto.setUseridtype(IdType.UIN.getType());
-			otpGeneratorRequestDto.setOtpChannel(otpRequestDTO.getOtpChannel());
+			List<String> otpChannel = new ArrayList<>();
+			for (String channel : otpRequestDTO.getOtpChannel()) {
+				NotificationType.getNotificationTypeForChannel(channel).ifPresent(type -> otpChannel.add(type.getApiChannel().toLowerCase()));
+			}
+			otpGeneratorRequestDto.setOtpChannel(otpChannel);
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					RestRequestFactory.createRequest(otpGeneratorRequestDto), ResponseWrapper.class);
 			ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = (String) ((Map<String, Object>) otpGeneratorResponsetDto.getResponse()).get(STATUS);
+			message = (String) ((Map<String, Object>) otpGeneratorResponsetDto.getResponse()).get(MESSAGE);
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateOTP",
 					"otpGeneratorResponsetDto " + response);
-			isOtpGenerated = response != null && response.equalsIgnoreCase(STATUS_SUCCESS);
+			if (response != null) {
+				if (response.equalsIgnoreCase(STATUS_SUCCESS)) {
+					isOtpGenerated = true;
+				} else if (response.equalsIgnoreCase(STATUS_FAILURE) && message.equalsIgnoreCase(USER_BLOCKED)) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
+				}
+			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
-				ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody
-						.get();
-				List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
-				if (errorList != null && !errorList.isEmpty()) {
-					if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.PHONE.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.EMAIL.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-								String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
-										IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
-					} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
-							.equalsIgnoreCase(OtpErrorConstants.USERBLOCKED.getErrorCode()))) {
-						throw new IdAuthenticationBusinessException(
-								IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE);
-					}
-				}
+				handleOtpErrorResponse(responseBody.get());
 
 			} else {
 				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
@@ -179,12 +169,47 @@ public class OTPManager {
 		}
 		return isOtpGenerated;
 	}
-	
+
+	/**
+	 * Handle otp error response.
+	 *
+	 * @param responseBody the response body
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	@SuppressWarnings("unchecked")
+	private void handleOtpErrorResponse(Object responseBody) throws IdAuthenticationBusinessException {
+		ResponseWrapper<OtpGeneratorResponseDto> otpGeneratorResponsetDto = (ResponseWrapper<OtpGeneratorResponseDto>) responseBody;
+		List<ServiceError> errorList = otpGeneratorResponsetDto.getErrors();
+		if (errorList != null && !errorList.isEmpty()) {
+			if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.PHONE.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.EMAIL.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
+					.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
+						String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
+								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+			}
+		}
+	}
+
 	/*
 	 * Send Otp Notification
 	 * 
 	 */
-	public Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin, String namePri, String nameSec, String priLang, String secLang) {
+	private Map<String, Object> getOtpTemplateValues(OtpRequestDTO otpRequestDto, String uin,
+			Map<String, String> valueMap) {
 
 		Entry<String, String> dateAndTime = getDateAndTime(otpRequestDto.getRequestTime(),
 				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
@@ -204,13 +229,14 @@ public class OTPManager {
 		values.put("validTime", String.valueOf(timeInMinutes));
 		values.put(DATE, date);
 		values.put(TIME, time);
-
-		values.put(NAME, namePri);
-		values.put(NAME + "_" + priLang, namePri);
-		values.put(NAME + "_" + secLang, nameSec);
+		values.put(NAME, valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.PRIMARY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_PRI));
+		values.put(NAME + "_" + valueMap.get(IdAuthCommonConstants.SECONDAY_LANG),
+				valueMap.get(IdAuthCommonConstants.NAME_SEC));
 		return values;
 	}
-	
+
 	/**
 	 * Gets the date and time.
 	 *
@@ -283,7 +309,7 @@ public class OTPManager {
 	private void handleErrorStatus(RestServiceException e, Map<String, Object> res)
 			throws IdAuthenticationBusinessException {
 		Object status = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(STATUS) : null;
-		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get("message")
+		Object message = res.get(RESPONSE) instanceof Map ? ((Map<String, Object>) res.get(RESPONSE)).get(MESSAGE)
 				: null;
 		if (status instanceof String && message instanceof String) {
 			if (((String) status).equalsIgnoreCase(STATUS_FAILURE)) {

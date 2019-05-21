@@ -2,7 +2,7 @@
   "id":"string",
   "langcode":"string",
   "effdatetimes":"string",
-  "invalid_effdatetimes_2":"string",
-  "invalid_effdatetimes_3":"string",
-  "response_time":"string"
+  "Kernel_GetDeviceHistory_invalid_effdatetimes_format_2":"string",
+  "Kernel_GetDeviceHistory_invalid_effdatetimes_format_3":"string",
+  "Kernel_GetDeviceHistory_response_time":"string"
 }

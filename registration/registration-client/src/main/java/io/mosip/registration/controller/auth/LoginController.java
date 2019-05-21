@@ -66,8 +66,8 @@ import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.sql.JdbcSqlService;
 import io.mosip.registration.service.sync.MasterSyncService;
-import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.RegistrationUpdate;
 import io.mosip.registration.util.common.OTPManager;
@@ -223,17 +223,24 @@ public class LoginController extends BaseController implements Initializable {
 
 	private boolean hasUpdate;
 
-
 	@Autowired
 	private HeaderController headerController;
+
+	@Autowired
+	private JdbcSqlService jdbcSqlService;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
 				hasUpdate = registrationUpdate.hasUpdate();
-				globalParamService.updateSoftwareUpdateStatus(hasUpdate);
+
+				Timestamp timestamp = hasUpdate ? registrationUpdate.getLatestVersionReleaseTimestamp()
+						: Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+
+				globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
 			}
 
 		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
@@ -292,23 +299,37 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			if (hasUpdate) {
-				
-				//Update Application
-					headerController.update(loginRoot, progressIndicator,RegistrationUIConstants.UPDATE_LATER);
-				
+			String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
+			if (!registrationUpdate.getCurrentVersion().equals(version)) {
+				loginRoot.setDisable(true);
+				ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(registrationUpdate.getCurrentVersion(),
+						version);
+				loginRoot.setDisable(false);
+
+				if (responseDTO.getErrorResponseDTOs() != null) {
+					if (version.equals("0")) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+					} else {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED);
+					}
+					System.exit(0);
+				}
 			}
-			if (!isInitialSetUp) {
+
+			if (hasUpdate) {
+
+				// Update Application
+				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,
+						isInitialSetUp);
+
+			} else if (!isInitialSetUp) {
 				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
 
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (IOException | RuntimeException runtimeException) {
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
-		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
@@ -476,32 +497,38 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials entered through UI");
 
 		if (isInitialSetUp || isUserNewToMachine) {
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			loginUserDTO.setUserId(userId.getText());
-			loginUserDTO.setPassword(password.getText());
 
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 
-			try {
-				// Get Auth Token
-				getAuthToken(loginUserDTO, LoginMode.PASSWORD);
-				if (isInitialSetUp) {
-					executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+			} else {
+				LoginUserDTO loginUserDTO = new LoginUserDTO();
+				loginUserDTO.setUserId(userId.getText());
+				loginUserDTO.setPassword(password.getText());
 
-				} else {
-					validateUserCredentialsInLocal();
+				ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+
+				try {
+					// Get Auth Token
+					getAuthToken(loginUserDTO, LoginMode.PASSWORD);
+					if (isInitialSetUp) {
+						executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+					} else {
+						validateUserCredentialsInLocal();
+					}
+
+					// // Execute Sync
+					// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
+
+					loadInitialScreen(Initialization.getPrimaryStage());
 				}
-
-				// // Execute Sync
-				// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
-
-			} catch (Exception exception) {
-				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String
-						.format("Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
-
-				loadInitialScreen(Initialization.getPrimaryStage());
 			}
 		} else {
 			validateUserCredentialsInLocal();
@@ -1151,7 +1178,7 @@ public class LoginController extends BaseController implements Initializable {
 						- loginTime.getTime()) > invalidLoginTime);
 	}
 
-	private void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
+	public void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
 		pane.setDisable(true);
@@ -1181,8 +1208,8 @@ public class LoginController extends BaseController implements Initializable {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						List<String> val = new LinkedList<>();
-						publicKeySyncImpl.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
+						ResponseDTO publicKeySyncResponse = publicKeySyncImpl
+								.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 						ResponseDTO responseDTO = getSyncConfigData();
 						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
@@ -1201,7 +1228,8 @@ public class LoginController extends BaseController implements Initializable {
 						if (((masterResponseDTO.getErrorResponseDTOs() != null
 								|| userResponseDTO.getErrorResponseDTOs() != null
 								|| userSaltResponse.getErrorResponseDTOs() != null)
-								|| responseDTO.getErrorResponseDTOs() != null)) {
+								|| responseDTO.getErrorResponseDTOs() != null
+								|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
 							val.add(RegistrationConstants.FAILURE);
 						} else {
 							val.add(RegistrationConstants.SUCCESS);

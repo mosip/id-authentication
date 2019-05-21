@@ -70,7 +70,8 @@ mat-icon {
 }
 
 .user__form mat-form-field {
-  width: 84%;
+  width: 92%;
+  /* width: 84%; keyboard*/
   padding: 3px;
   color: #000000;
   font-size: 0.7rem;
@@ -170,7 +171,8 @@ mat-icon {
 }
 
 .user__dropdown {
-  width: 49.5%;
+  /* width: 49.5%; keyboard*/
+  width: 48%;
   /* margin-right: 3%; */
   display: inline-block;
 }
@@ -185,6 +187,7 @@ mat-icon {
   margin-top: 0.2rem;
   background-color: white;
   border-top: 5px solid #f4f4f4;
+  z-index:22;
 }
 
 .user__btn {

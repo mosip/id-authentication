@@ -100,13 +100,12 @@ public class LoginController {
 	 * @return AuthNResponse
 	 */
 	@PostMapping(value="/invalidateToken",produces=MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Inavlidate the token")
+	@ApiOperation(value = "Invalidate the token")
 	@ResponseStatus(value=HttpStatus.OK)
 	public ResponseEntity<MainResponseDTO<AuthNResponse>> invalidateToken(HttpServletRequest req){
 		log.info("sessionId", "idType", "id",
 				"In invalidateToken method of Login controller for invalidating access token ");
 		String authHeader=req.getHeader("Cookie");
-		//List<HttpCookie> authCookie=HttpCookie.parse(authHeader);
 		return ResponseEntity.status(HttpStatus.OK).body(loginService.invalidateToken(authHeader));
 		
 	}

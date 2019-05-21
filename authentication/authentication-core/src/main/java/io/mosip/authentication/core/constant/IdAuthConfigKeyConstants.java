@@ -70,6 +70,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String APP_ENVIRONMENT_LOCAL = "application.env.local";
 	public static final String SWAGGER_BASE_URL = "swagger.base-url";
 	public static final String KEY_SPLITTER = "mosip.kernel.data-key-splitter";
-	public static final String USERID_RID = null;
+	public static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
+	public static final String INTERNAL_AUTH_ALLOWED_IDTYPE = "request.idtypes.allowed.internalauth";
+	public static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.auth.types.allowed";
 	
 }

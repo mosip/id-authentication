@@ -15,8 +15,9 @@ import java.util.WeakHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -74,7 +75,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 * Instance of {@code AuditFactory}
 	 */
 	@Autowired
-	private AuditFactory auditFactory;
+	private AuditManagerService auditFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -136,7 +137,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	 *            the error response DTO list
 	 */
 	private void validatingCenterToMachineDistance(List<ErrorResponseDTO> errorResponseDTOList) {
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GEO_CAP_FREQ)))) {
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GEO_CAP_FREQ)))) {
 			if (!isCapturedForTheDay()) {
 				captureGeoLocation(errorResponseDTOList);
 			}
@@ -206,8 +208,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			Date lastSyncDate = new Date(
 					lastExportedRegistrations.get(RegistrationConstants.PARAM_ZERO).getUpdDtimes().getTime());
 			if (ApplicationContext.map().get(RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME) != null
-					&& Integer.parseInt(String.valueOf(ApplicationContext.map().get(
-							RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME))) <= getActualDays(
+					&& Integer.parseInt(String.valueOf(ApplicationContext.map()
+							.get(RegistrationConstants.OPT_TO_REG_LAST_EXPORT_REG_PKTS_TIME))) <= getActualDays(
 									lastSyncDate)) {
 				getErrorResponse(RegistrationConstants.ICS_CODE_TWO,
 						RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
@@ -215,8 +217,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			}
 		}
 
-		if (syncJobInfo.getYetToExportCount() >= Double
-				.parseDouble(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ)))) {
+		if (syncJobInfo.getYetToExportCount() >= Double.parseDouble(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_OFFLINE_FREQ)))) {
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Checking the yet to export packets frequency with the configured limit count");
@@ -247,8 +249,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
 				RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-		if (registrationDetails.size() >= Integer
-				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+		if (registrationDetails.size() >= Integer.parseInt(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 			getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT, RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED,
 					RegistrationConstants.ERROR, errorResponseDTOList);
@@ -310,8 +312,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG)))) {
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG)))) {
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the geo location of machine w.r.t registration center started");
@@ -328,8 +330,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 					.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 
-				if (Double.parseDouble(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER))) <= Double
-						.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
+				if (Double.parseDouble(String.valueOf(
+						ApplicationContext.map().get(RegistrationConstants.DIST_FRM_MACHN_TO_CENTER))) <= Double
+								.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
 					getErrorResponse(RegistrationConstants.ICS_CODE_FOUR,
 							RegistrationConstants.OPT_TO_REG_OUTSIDE_LOCATION, RegistrationConstants.ERROR,
@@ -388,9 +391,10 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		if (registration != null && registration.getCrDtime() != null) {
 
 			/* This will subtract configured number of days from current Date */
-			Date differDate = new Date(new Date().getTime() - (Long.parseLong(
-					String.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT)))) * 24
-					* 3600 * 1000));
+			Date differDate = new Date(new Date().getTime() - (Long
+					.parseLong(String.valueOf(String
+							.valueOf(ApplicationContext.map().get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))))
+					* 24 * 3600 * 1000));
 
 			/* This will convert timestamp to Date */
 			Date createdDate = new Date(registration.getCrDtime().getTime());
@@ -437,8 +441,8 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		List<SyncJobDef> syncJobDefs = jobConfigDAO.getAll();
 		for (SyncJobDef syncJobDef : syncJobDefs) {
 			if (syncJobDef.getApiName() != null) {
-				String configuredValue = String.valueOf(ApplicationContext.map().get(
-						RegistrationConstants.MOSIP_REGISTRATION.concat(syncJobDef.getApiName())
+				String configuredValue = String.valueOf(ApplicationContext.map()
+						.get(RegistrationConstants.MOSIP_REGISTRATION.concat(syncJobDef.getApiName())
 								.concat(RegistrationConstants.DOT).concat(RegistrationConstants.FREQUENCY)));
 				if (configuredValue != null && !configuredValue.equalsIgnoreCase("null")) {
 					jobsMap.put(syncJobDef.getId(), configuredValue.trim());
@@ -461,13 +465,19 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		String isSoftwareAvailable = globalParam.getVal();
 		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
 
-		if (isSoftwareAvailable != null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE)
-				&& Double.parseDouble(String.valueOf(ApplicationContext.map().get(
-						RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ))) <= getActualDays(
-								lastSoftwareUpdatedTime)) {
-			return true;
+		try {
+			if (isSoftwareAvailable != null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE)
+					&& Double.parseDouble(String.valueOf(ApplicationContext.map()
+							.get(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ))) <= getActualDays(
+									lastSoftwareUpdatedTime)) {
+				return true;
+			}
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("SYNC-STATUS-VALIDATOR-SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			return false;
 		}
-		
+
 		return false;
 	}
 }
