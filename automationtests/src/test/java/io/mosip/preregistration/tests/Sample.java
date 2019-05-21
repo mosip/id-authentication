@@ -70,19 +70,33 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
-
-		lib.syncAvailability();
-		
+	public void updatePreRegistrationDataForExpiredApplication()
+			throws FileNotFoundException, IOException, ParseException {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
+		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		lib.expiredStatus();
+		Response updateResponse = lib.updatePreReg(preID);
+		String updatePreId = updateResponse.jsonPath().get("response.preRegistrationId").toString();
+		lib.compareValues(updatePreId, preID);
+		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
 	}
 
+
+	
 
 	@BeforeMethod(alwaysRun=true)
 	public void run()

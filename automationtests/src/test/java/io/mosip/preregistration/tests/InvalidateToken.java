@@ -1,12 +1,17 @@
 package io.mosip.preregistration.tests;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 import org.testng.ITest;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
 
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -57,8 +62,15 @@ public class InvalidateToken extends BaseTestCase implements ITest {
 	}
 
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Authentication_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
+	
 	}
-
 }

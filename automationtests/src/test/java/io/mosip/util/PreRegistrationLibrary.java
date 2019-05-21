@@ -317,11 +317,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getConsumedStatus(String PreID) {
-		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
-				+ "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String status = preId_status.get(0).toString();
+		String status = dao.getConsumedStatus(PreID);
 		return status;
 	}
 
@@ -332,19 +328,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getDocumentIdOfConsumedApplication(String PreID) {
-		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String documentId = preId_status.get(0).toString();
+		String documentId = dao.getDocumentIdOfConsumedApplication(PreID);
 		return documentId;
 	}
 
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
-		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String regCenterId = preId_status.get(0).toString();
-		return regCenterId;
+		String preId_status = dao.getRegCenterIdOfConsumedApplication(PreID);
+		return preId_status;
 	}
 
 	/**
@@ -1322,16 +1312,16 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
-		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment1";
+		/*testSuite = "CancelAnBookedAppointment/CancelAnReBookedAppointment_smoke";
 		request = getRequest(testSuite);
-		/*
+		
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
 		 * string to parse method which will return the parsed JSON. Then we pass the
 		 * json path of the value that needs to be updated and the new value that we
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
-		 */
+		 
 		ObjectNode cancelAppPreRegId = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.pre_registration_id", preID).json();
 		ObjectNode cancelAppRegCenterId = JsonPath.using(config).parse(cancelAppPreRegId.toString())
@@ -1355,10 +1345,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			e.printStackTrace();
 		}
 		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
-		JSONObject parm = getRequest(testSuite);
+		JSONObject parm = getRequest(testSuite);*/
+		HashMap<String, String> parm=new HashMap<String, String>();
+		
 		parm.put("preRegistrationId", preID);
-		cancelAppjson.put("requesttime", getCurrentDate());
-		response = applnLib.putRequestWithParameter(preReg_CancelAppointmenturi, parm, cancelAppjson);
+		//cancelAppjson.put("requesttime", getCurrentDate());
+		response = applnLib.putRequestWithParameterWithoutBody(preReg_CancelAppointmenturi, parm);
 		return response;
 	}
 

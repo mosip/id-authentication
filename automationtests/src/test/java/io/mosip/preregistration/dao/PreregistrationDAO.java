@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
+
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbdto.Audit;
+import io.mosip.dbentity.PreRegEntity;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
 
@@ -70,6 +73,27 @@ public class PreregistrationDAO
 		List<String> otp = dbAccess.getDbData(queryString, "kernel");
 		return otp;
 	}
+	public String getConsumedStatus(String PreID)
+	{
+		String queryString = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID+ "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String status = preId_status.get(0).toString();
+		return status;
+	}
+	public String getRegCenterIdOfConsumedApplication(String PreID) {
+		String queryString = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String regCenterId = preId_status.get(0).toString();
+		return regCenterId;
+	}
+	public String getDocumentIdOfConsumedApplication(String PreID) {
+		String queryString = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String documentId = preId_status.get(0).toString();
+		return documentId;
+	}
+
+
 	
 	
 
