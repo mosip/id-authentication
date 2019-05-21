@@ -402,24 +402,26 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.deletePreregistration(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
-            );
           }
+          // else {
+          //   this.displayMessage(
+          //     this.secondaryLanguagelabels.title_error,
+          //     this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
+          //   );
+          // }
         });
       } else if (selectedOption && Number(selectedOption) === 2) {
         dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
-            );
           }
+          // else {
+          //   this.displayMessage(
+          //     this.secondaryLanguagelabels.title_error,
+          //     this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
+          //   );
+          // }
         });
       }
     });
