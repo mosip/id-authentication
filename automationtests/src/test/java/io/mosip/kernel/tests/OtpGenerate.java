@@ -114,7 +114,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		innerKeys.add("otp");
 		
 	    //making key as frozen key        
-    	  if(testCaseName.equalsIgnoreCase("invalid_key_frozen"))
+    	  if(testCaseName.equalsIgnoreCase("Kernel_otpGenerate_key_frozen"))
     	  {
     		// Calling the post method 
     		  res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);

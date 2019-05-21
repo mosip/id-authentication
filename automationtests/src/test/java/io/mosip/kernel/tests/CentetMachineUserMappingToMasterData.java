@@ -70,7 +70,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = "kernel_"+"CentetMachineUserMappingToMasterData_"+object.toString();
+		testCaseName = object.get("testCaseName").toString();
 		 cookie = auth.getAuthForRegistrationProcessor();
 	}
 	
