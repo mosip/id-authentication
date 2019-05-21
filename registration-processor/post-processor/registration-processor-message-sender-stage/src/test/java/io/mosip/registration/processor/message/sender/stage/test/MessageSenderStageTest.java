@@ -14,6 +14,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,6 +33,8 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
@@ -51,6 +54,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.vertx.core.Vertx;
+
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class, JsonUtil.class })
@@ -125,6 +129,7 @@ public class MessageSenderStageTest {
 		
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("NEW");
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		Mockito.when(transcationStatusService.addRegistrationTransaction(any())).thenReturn(null);
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
@@ -167,7 +172,9 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -198,7 +205,10 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -228,7 +238,10 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
@@ -271,7 +284,11 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+//		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("UPDATE");
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
@@ -314,7 +331,9 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.MANUAL_VERIFICATION.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.REJECTED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -345,7 +364,9 @@ public class MessageSenderStageTest {
 		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.OSI_VALIDATE.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.FAILED.name());
 		
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -357,7 +378,9 @@ public class MessageSenderStageTest {
 	public void testConfigNotFoundException() throws Exception {
 		ReflectionTestUtils.setField(stage, "notificationTypes", "");
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -370,7 +393,9 @@ public class MessageSenderStageTest {
 		ReflectionTestUtils.setField(stage, "notificationTypes", "OTP");
 		
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_UIN_GENERATION_SUCCESS.name());
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -381,7 +406,9 @@ public class MessageSenderStageTest {
 	@Test
 	public void testException() throws ApisResourceAccessException {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+		
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -406,7 +433,9 @@ public class MessageSenderStageTest {
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenThrow(e);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
-		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn(RegistrationTransactionTypeCode.OSI_VALIDATE.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode()).thenReturn(RegistrationTransactionStatusCode.FAILED.name());
+
 		
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
