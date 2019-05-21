@@ -94,7 +94,7 @@ public class VidController {
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
 			throws IdRepoAppException {
 		try {
-			validator.validateId(request.getId(), errors, CREATE);
+			
 			IdRepoLogger.setUin(request.getRequest().getUin());
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.createVid(request.getRequest()), HttpStatus.OK);
@@ -145,7 +145,6 @@ public class VidController {
 			throws IdRepoAppException {
 		try {
 			IdRepoLogger.setVid(vid);
-			validator.validateId(request.getId(), errors, UPDATE);
 			validator.validateVid(vid);
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.updateVid(vid, request.getRequest()), HttpStatus.OK);

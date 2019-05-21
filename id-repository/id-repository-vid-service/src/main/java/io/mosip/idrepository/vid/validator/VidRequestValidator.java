@@ -69,9 +69,9 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	@Resource
 	private List<String> allowedStatus;
 
-	/** The id. */
-	@Resource
-	private Map<String, String> id;
+//	/** The id. */
+//	@Resource
+//	private Map<String, String> id;
 
 	/*
 	 * (non-Javadoc)
@@ -104,11 +104,13 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		}
 
 		if (!errors.hasErrors() && requestId.equals(id.get(CREATE))) {
+			validateId(requestId, errors, CREATE);
 			validateVidType(request.getRequest().getVidType(), errors);
 			validateUin(request.getRequest().getUin(), errors);
 		}
 
 		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
+			validateId(requestId, errors, UPDATE);
 			validateStatus(request.getRequest().getVidStatus(), errors);
 		}
 	}
