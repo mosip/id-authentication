@@ -132,7 +132,7 @@ public class Sync extends BaseTestCase implements ITest {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
-		EncrypterDecrypter encrypter = new EncrypterDecrypter();
+		
 		
 		EncryptData encryptData=new EncryptData();
 		File file=ResponseRequestMapper.getPacket(testSuite, object);

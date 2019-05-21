@@ -242,7 +242,7 @@ public class Assignment extends BaseTestCase implements ITest{
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		testCaseName =testCaseName +": "+ description;
+		
 		Field method;
 		try {
 			method = TestResult.class.getDeclaredField("m_method");

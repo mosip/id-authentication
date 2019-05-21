@@ -30,6 +30,7 @@ public class EncryptData {
 	private String applicationId="REGISTRATION";
 	ObjectMapper objectMapper=new ObjectMapper();
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject encryptData(RegistrationPacketSyncDTO registrationPacketSyncDto) {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -55,15 +56,6 @@ public class EncryptData {
 		
 		try {
 					
-			String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
-			int n = 100 + new Random().nextInt(900);
-			String milliseconds = String.valueOf(n);
-			
-			Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
-					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
-			LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-			Date currentDate=new Date();
-			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
 			decrypterDto.setApplicationId(applicationId);
 			decrypterDto.setReferenceId(referenceId);
 			decrypterDto.setData(encryptedString);

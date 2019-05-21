@@ -472,7 +472,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					if (!testClassNameFlag) {
 						/* Add tests name. */
 						retStrBuf.append("<td rowspan='" + countTestClassName + "'>");
-						retStrBuf.append(testClassName);
+						retStrBuf.append(testClassName.substring(testClassName.lastIndexOf(".")+1));
 						retStrBuf.append("</td>");
 						testClassNameFlag = true;
 					}

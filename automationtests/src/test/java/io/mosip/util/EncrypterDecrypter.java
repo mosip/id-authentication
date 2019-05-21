@@ -469,7 +469,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			return demo;
 			  
 		}
-	/*@Test
+	@Test
 	public void getpackts() throws IOException, ZipException, ParseException {
 		EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();
 		File file=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets");
@@ -481,5 +481,5 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 		}
 		
-	}*/
+	}
 }

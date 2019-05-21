@@ -62,8 +62,9 @@ public String getToken(TokenGenerationEntity tokenGenerateEntity) {
 	requestToBeSent.put("request",nestedRequest);
 	requestToBeSent.put("requesttime",  tokenGenerateEntity.getRequesttime().atOffset(ZoneOffset.UTC).toString());
 	requestToBeSent.put("version",tokenGenerateEntity.getVersion());
-	System.out.println(requestToBeSent);
+	
 	Response response=applnMethods.postRequest(requestToBeSent, "/v1/authmanager/authenticate/useridPwd");
+	System.out.println(response.getCookie("Authorization"));
 	return response.getCookie("Authorization");
 }
 public String readPropertyFile(String tokenGenerationFilePath) {
