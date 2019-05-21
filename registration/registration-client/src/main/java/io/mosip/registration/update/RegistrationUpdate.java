@@ -51,12 +51,12 @@ import io.mosip.registration.service.config.GlobalParamService;
 public class RegistrationUpdate {
 	
 	public RegistrationUpdate() throws IOException {
-		/*String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");*/
+		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
 	}
 
 	private static String SLASH = "/";
@@ -73,7 +73,7 @@ public class RegistrationUpdate {
 
 	private String currentVersion;
 
-	private String latestVersion = "0.10.1";
+	private String latestVersion ;
 
 	private Manifest localManifest;
 
