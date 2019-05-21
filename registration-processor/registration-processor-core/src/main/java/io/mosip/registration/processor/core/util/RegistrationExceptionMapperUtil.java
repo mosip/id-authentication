@@ -99,7 +99,8 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.UNEXCEPTED_ERROR, RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.JSCH_CONNECTION, RegistrationTransactionStatusCode.REPROCESS);
-		statusMap.put(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION,
+				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_STRUCTURAL_VALIDATION_FAILED,
@@ -120,10 +121,10 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET,
 				RegistrationTransactionStatusCode.FAILED);
-		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE,
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT,
 				RegistrationTransactionStatusCode.FAILED);
-		
-		
+
 		return unmodifiableMap;
 
 	}

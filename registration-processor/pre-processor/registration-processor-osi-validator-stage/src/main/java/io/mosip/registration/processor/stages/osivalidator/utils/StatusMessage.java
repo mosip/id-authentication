@@ -32,7 +32,6 @@ public class StatusMessage {
 	/** otp/pwd validation failed */
 	public static final String VALIDATE_OTP_PASSWORD = "OTP/Password validation failed";
 
-
 	/** The Constant PIN. */
 	public static final String PIN = "Pin validation failed";
 
@@ -41,13 +40,11 @@ public class StatusMessage {
 	public static final String VALIDATION_DETAILS_FAILURE = "Either iris/fingerprint/face/pin is null and password/OTP is not verified for ";
 	public static final String VALIDATION_DETAILS = "Either iris/fingerprint/photo is null for Introducer";
 
-
 	/** The Constant OSI_VALIDATION_SUCCESS. */
 	public static final String OSI_VALIDATION_SUCCESS = "OSI Validation is successful";
 	/** Osi Validation failed */
 	public static final String OSI_VALIDATION_FAILURE = "OSI Validation failed ";
 
- 
 	/** The Constant PARENT_UIN_AND_RID_NOT_IN_PACKET. */
 	public static final String PARENT_UIN_AND_RID_NOT_IN_PACKET = "The UIN and RID of Parent is not present in Packet";
 
@@ -104,17 +101,18 @@ public class StatusMessage {
 
 	/** The Constant THE_CENTER_ID. */
 	public static final String THE_CENTER_ID = "The Center ID";
-	
+
 	/** The Constant CENTER_NOT_FOUND. */
 	public static final String CENTER_NOT_FOUND = " was not available for Registration ID";
-	
+
 	/** The Constant TIMESTAMP_VALIDATION1. */
 	public static final String TIMESTAMP_VALIDATION1 = "The Packet with Registration ID";
-	
+
 	/** The Constant TIMESTAMP_VALIDATION2. */
 	public static final String TIMESTAMP_VALIDATION2 = " was not created in Working Hours of the Center with Center ID";
 
 	public static final String PARENT_UIN_NOT_AVAIALBLE = "Parent UIN not available";
 
+	public static final String OSI_FAILED_REJECTED_PARENT = "Rejected as Parent is Rejected";
 
 }
