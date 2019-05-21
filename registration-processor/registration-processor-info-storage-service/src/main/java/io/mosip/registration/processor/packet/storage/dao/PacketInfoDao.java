@@ -238,6 +238,7 @@ public class PacketInfoDao {
 			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
 		}
 		return demographicInfoDtos;
+	}
 
 	/**
 	 * Gets the reg id by UIN.
@@ -246,20 +247,6 @@ public class PacketInfoDao {
 	 *            the uin
 	 * @return the reg id by UIN
 	 */
-	public List<String> getRegIdByUIN(String uin) {
-		return demographicDedupeRepository.getRegIdByUIN(uin);
-	}
-
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid
-	 *            the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String rid) {
-		return demographicDedupeRepository.getUINByRid(rid);
-	}
 
 	/**
 	 * Gets the insert or identify request.

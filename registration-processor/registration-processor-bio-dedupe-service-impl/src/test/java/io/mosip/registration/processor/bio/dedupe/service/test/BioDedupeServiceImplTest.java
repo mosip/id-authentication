@@ -97,6 +97,9 @@ public class BioDedupeServiceImplTest {
 	private ListAppender<ILoggingEvent> listAppender;
 
 	private Logger fooLogger;
+	
+	@Mock
+	private RegistrationStatusService registrationStatusService;
 
 	/**
 	 * Setup.

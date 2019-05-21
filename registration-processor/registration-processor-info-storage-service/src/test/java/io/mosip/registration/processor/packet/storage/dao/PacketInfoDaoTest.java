@@ -6,7 +6,7 @@ import static org.mockito.Matchers.anyString;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import static org.mockito.Matchers.any;
 import io.mosip.registration.processor.packet.storage.entity.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
