@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -72,6 +74,12 @@ public class RegistrationSyncController {
 	@Autowired
 	TokenValidator tokenValidator;
 
+	@Value("${registration.processor.signature.isEnabled}")
+	private Boolean isEnabled;
+
+	@Autowired
+	private DigitalSignatureUtility digitalSignatureUtility;
+
 
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
@@ -106,9 +114,14 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-			//HttpHeaders headers = new HttpHeaders();
-			//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(buildRegistrationSyncResponse(syncResponseList)).getData());
+			if(isEnabled) {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
+				return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
+			}
+
 			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseList));
+
 		} catch (JsonProcessingException e) {
 			throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 		}

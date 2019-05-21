@@ -58,15 +58,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<DemographicInfoDto> findDemoById(String regId);
 
 	/**
-	 * Gets the applicant registration id by UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return the registration id by UIN
-	 */
-	public List<String> getRegIdByUIN(String uin);
-
-	/**
 	 * Save manual adjudication data.
 	 *
 	 * @param uniqueMatchedRefIds
@@ -107,15 +98,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<String> getRidByReferenceId(String refId);
 
 	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid
-	 *            the rid
-	 * @return the UIN by rid
-	 */
-	public List<String> getUINByRid(String rid);
-
-	/**
 	 * Gets the insert or identify request.
 	 *
 	 * @param bioRefId            the abis ref id
@@ -123,7 +105,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the insert or identify request
 	 */
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId);
-	
+
 	/**
 	 * Gets the abis request by request id.
 	 *
@@ -131,7 +113,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis request by request id
 	 */
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
-	
+
 	/**
 	 * Gets the batch id by request id.
 	 *
@@ -139,7 +121,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the batch id by request id
 	 */
 	public String getBatchIdByRequestId(String abisRequestId);
-	
+
 	/**
 	 * Gets the batch statusby batch id.
 	 *
@@ -147,7 +129,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the batch statusby batch id
 	 */
 	public List<String> getBatchStatusbyBatchId(String batchId);
-	
+
 	/**
 	 * Gets the insert or identify request.
 	 *
@@ -225,7 +207,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response records
 	 */
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
-	
+
 	/**
 	 * Gets the abis response records.
 	 *
@@ -235,7 +217,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response records
 	 */
 	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String identify);
-	
+
 	/**
 	 * Gets the abis response I ds.
 	 *
@@ -243,7 +225,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response I ds
 	 */
 	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId);
-	
+
 	/**
 	 * Gets the abis response det records.
 	 *
@@ -251,7 +233,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response det records
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
-	
+
 	/**
 	 * Gets the abis response det records.
 	 *
@@ -259,7 +241,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response det records
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto);
-	
+
 	/**
 	 * Gets the abis response details.
 	 *
@@ -267,7 +249,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis response details
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId);
-	
+
 	/**
 	 * Save individual demographic dedupe update packet.
 	 *

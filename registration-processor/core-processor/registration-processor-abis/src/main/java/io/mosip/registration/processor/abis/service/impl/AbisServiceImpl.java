@@ -45,7 +45,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
  * The Class AbisServiceImpl.
- * 
+ *
  * @author M1048860 Kiran Raj
  */
 @Service
@@ -69,9 +69,9 @@ public class AbisServiceImpl implements AbisService {
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	private static Set<String> storedRefId = new HashSet<>();
-	
+
 	private static Set<String> actualStoredRefId = new HashSet<>();
-	
+
 	private String identifyReqId;
 
 	/** The Constant TESTFINGERPRINT. */
@@ -266,7 +266,7 @@ public class AbisServiceImpl implements AbisService {
 	}
 
 	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
-		
+
 		int count = 0;
 
 		CandidateListDto cd = new CandidateListDto();
@@ -327,7 +327,7 @@ public class AbisServiceImpl implements AbisService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
 	 */
 	@Override

@@ -59,7 +59,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 
 	@Value("${registration.processor.vm.ppk}")
-	private String regProcPPK; 
+	private String regProcPPK;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
@@ -515,14 +515,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			out = new FileOutputStream(file);
 			out.write(data.getBytes());
 			out.close();
-			
+
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString(), "",
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());		
+			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
 		return file.getPath();
 
-	} 
+	}
 }
