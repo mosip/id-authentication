@@ -116,6 +116,13 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 				RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET,
+				RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE,
+				RegistrationTransactionStatusCode.FAILED);
+		
 		
 		return unmodifiableMap;
 

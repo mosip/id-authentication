@@ -38,6 +38,7 @@ import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
@@ -54,11 +55,13 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
@@ -146,6 +149,9 @@ public class OSIValidator {
 
 	@Autowired
 	private Utilities utility;
+	
+	
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil  = new RegistrationExceptionMapperUtil();
 
 	/**
 	 * Checks if is valid OSI.
@@ -329,45 +335,34 @@ public class OSIValidator {
 					BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
 					BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
 					if (introducerUIN == null && introducerRID == null) {
-						//registrationStatusDto.setStatusCode(RegistrationStatusCode.Failed);
+						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
+						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 						return false;
 					}
+					String introducerRidString = bigIntegerToString(introducerRID);
+					String introducerUinString = bigIntegerToString(introducerUIN);
+					if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
+						//To do Fetch the UIN of the Parent using the RID from the ID Repository.
+						//introducerUinString = getIntroducerUIN(introducerRidString);
+						if (introducerUinString == null) {
+							registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+									.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
+							registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+							registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
+							return false;
+						}
+						
+					}
+					if (introducerUinString != null) {
+						return validateIntroducer(registrationId, introducerUinString,"");
+					} 
 			}
 				
 		}
 		
-		int childAgeLimit = Integer.parseInt(ageLimit);
-		int applicantAge = getApplicantAge(registrationId);
-		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
-				&& applicantAge<= childAgeLimit && applicantAge>0) {
-			String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
-			String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
-			Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
-			Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
-			BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
-			BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
-			if (introducerUIN == null && introducerRID == null) {
-				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
-				return false;
-			}
-			String introducerRidString = bigIntegerToString(introducerRID);
-			String introducerUinString = bigIntegerToString(introducerUIN);
-			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
-
-				introducerUinString = getIntroducerUIN(introducerRidString);
-				if (introducerUinString == null) {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
-					return false;
-				}
-			}
-			if (introducerUinString != null) {
-				return validateIntroducer(registrationId, introducerUinString);
-			} else {
-				return false;
-			}
-		}
+		
 		return true;
 	}
 
@@ -713,7 +708,7 @@ public class OSIValidator {
 	 */
 	
 	//TODO Now Introducer data will come in ID JSON Logic is going to change 
-	private boolean validateIntroducer(String registrationId, String introducerUin)
+	private boolean validateIntroducer(String registrationId, String introducerUin,String introducerBiometricsFile)
 			throws ApisResourceAccessException, IOException {
 		
 		return true;
@@ -733,32 +728,23 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			List<String> introducerUINList = packetInfoManager.getUINByRid(introducerRid);
-			if(!introducerUINList.isEmpty()) {
-						return true;
-					}
+			
+
+			return true;
+			
+		}else {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
+		
+
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
-			return false;
-		} else {
-			registrationStatusDto.setStatusComment(StatusMessage.PARENT_RID_NOT_IN_REGISTRATION_TABLE + registrationId);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			return false;
 		}
+		
 	}
 
-	/**
-	 * Gets the introducer UIN.
-	 *
-	 * @param intoducerRid
-	 *            the intoducer rid
-	 * @return the introducer UIN
-	 */
-	private String getIntroducerUIN(String intoducerRid) {
-		List<DemographicInfoDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
-		if (!demographicDedupeDtoList.isEmpty()) {
-			return demographicDedupeDtoList.get(0).getUin();
-		}
-		return null;
-	}
+	
 
 	/**
 	 * Gets the hash sequence value.

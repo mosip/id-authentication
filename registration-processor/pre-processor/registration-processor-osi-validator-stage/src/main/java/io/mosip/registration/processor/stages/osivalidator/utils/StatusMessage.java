@@ -55,7 +55,7 @@ public class StatusMessage {
 	public static final String PARENT_RID_NOT_IN_REGISTRATION_TABLE = "The RID of Parent is not present in Packet";
 
 	/** The Constant PACKET_IS_ON_HOLD. */
-	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
+	public static final String PACKET_IS_ON_HOLD = "On-Hold due to Parent Packet";
 
 	/** The Constant MACHINE_ID_NOT_FOUND. */
 	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID";
@@ -113,6 +113,8 @@ public class StatusMessage {
 	
 	/** The Constant TIMESTAMP_VALIDATION2. */
 	public static final String TIMESTAMP_VALIDATION2 = " was not created in Working Hours of the Center with Center ID";
+
+	public static final String PARENT_UIN_NOT_AVAIALBLE = "Parent UIN not available";
 
 
 }

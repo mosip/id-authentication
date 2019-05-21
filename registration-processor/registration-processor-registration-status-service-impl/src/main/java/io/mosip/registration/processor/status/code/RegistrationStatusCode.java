@@ -151,5 +151,14 @@ public enum RegistrationStatusCode {
 	PACKET_UIN_UPDATION_REPROCESSING,
 
 	/** The external stage reprocessing */
-	EXTERNAL_STAGE_REPROCESSING
+	EXTERNAL_STAGE_REPROCESSING,
+	
+    FAILED,
+
+    REJECTED,
+
+    PROCESSING,
+
+    PROCESSED
+
 }
