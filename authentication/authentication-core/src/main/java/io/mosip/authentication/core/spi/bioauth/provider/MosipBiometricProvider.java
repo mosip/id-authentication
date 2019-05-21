@@ -70,6 +70,18 @@ public interface MosipBiometricProvider {
 		return 0;
 	}
 	
+	
+	/**
+	 * Match multi minutae.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the double
+	 */
+	default double matchMultiMinutaeAverage( Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		return 0;
+	}
+	
 	/**
 	 * Match multi image.
 	 *

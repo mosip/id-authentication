@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
@@ -74,6 +76,8 @@ public class KeyManager {
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
+	
+	
 
 	/**
 	 * requestData method used to decipher the request block {@link RequestDTO}
@@ -196,21 +200,21 @@ public class KeyManager {
 	 * This method is used to encrypt the KYC identity response
 	 *
 	 * @param responseBody the response body
+	 * @param mapper 
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String encryptData(Map<String, Object> responseBody) throws IdAuthenticationAppException {
-		Optional<String> identity = Optional.ofNullable(responseBody.get("identity"))
-				.map(String::valueOf);
+	public String encryptData(Map<String, Object> responseBody, ObjectMapper mapper) throws IdAuthenticationAppException {
+		Map<String, Object> identity = responseBody.get("identity") instanceof Map ? (Map<String, Object>) responseBody.get("identity") : null;
 		Map<String, Object> response;
 		RestRequestDTO restRequestDTO = null;
-		if (identity.isPresent()) {
+		if (Objects.nonNull(identity)) {
 			EncryptDataRequestDto encryptDataRequestDto = new EncryptDataRequestDto();
 			encryptDataRequestDto.setApplicationId(appId);
 			encryptDataRequestDto.setReferenceId(partnerId);
 			encryptDataRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
-			encryptDataRequestDto.setData(CryptoUtil.encodeBase64(identity.get().getBytes()));
+			encryptDataRequestDto.setData(CryptoUtil.encodeBase64(toJsonString(identity, mapper).getBytes()));
 			try {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
@@ -222,6 +226,22 @@ public class KeyManager {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * This method is used to convert the map to JSON format
+	 *
+	 * @param map the map
+	 * @param mapper the mapper
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
+		try {
+			return mapper.writerFor(Map.class).writeValueAsString(map);
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+		}
 	}
 
 }
