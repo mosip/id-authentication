@@ -183,7 +183,7 @@ public class BookingService {
 		} finally {
 			response.setResponsetime(serviceUtil.getCurrentResponseTime());
 			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.SYSTEM.toString(),
+				setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(), EventType.BUSINESS.toString(),
 						"Availability for booking successfully saved in the database",
 						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 						authUserDetails().getUsername(), null);
@@ -234,7 +234,7 @@ public class BookingService {
 			new BookingExceptionCatcher().handle(ex, response);
 		} finally {
 			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.SYSTEM.toString(),
+				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
 						"  Availability retrieved successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername(), regID);
 			} else {
@@ -346,7 +346,7 @@ public class BookingService {
 			} finally {
 				if (isSaveSuccess) {
 					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
-							EventType.SYSTEM.toString(), " Appointment booked successfully",
+							EventType.BUSINESS.toString(), " Appointment booked successfully",
 							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 							authUserDetails().getUsername(), bookingRequestDTOs.getRequest().getRegistrationCenterId());
 				} else {
@@ -472,7 +472,7 @@ public class BookingService {
 			} finally {
 				if (isSaveSuccess) {
 					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
-							EventType.SYSTEM.toString(), "  Appointment booked successfully    ",
+							EventType.BUSINESS.toString(), "  Appointment booked successfully    ",
 							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 							authUserDetails().getUsername(),
 							bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegistrationCenterId());
@@ -657,7 +657,7 @@ public class BookingService {
 		} finally {
 
 			if (isSaveSuccess) {
-				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.SYSTEM.toString(),
+				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
 						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			} else {
