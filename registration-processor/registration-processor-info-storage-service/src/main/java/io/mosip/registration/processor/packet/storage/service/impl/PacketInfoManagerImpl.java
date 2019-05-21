@@ -351,7 +351,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveIndividualDemographicDedupeUpdatePacket(io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe, java.lang.String)
 	 */
@@ -448,29 +448,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.findDemoById(regId);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getRegIdByUIN(java.lang.String)
-	 */
-	@Override
-	public List<String> getRegIdByUIN(String uin) {
-		return packetInfoDao.getRegIdByUIN(uin);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getUINByRid(java.lang.String)
-	 */
-	@Override
-	public List<String> getUINByRid(String rid) {
-		return packetInfoDao.getUINByRid(rid);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -615,16 +592,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId,refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchStatusbyBatchId(java.lang.String)
 	 */
 	@Override
 	public List<String> getBatchStatusbyBatchId(String batchId){
 		return packetInfoDao.getBatchStatusbyBatchId(batchId);
-		
+
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestByRequestId(java.lang.String)
 	 */
@@ -639,7 +616,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchIdByRequestId(java.lang.String)
 	 */

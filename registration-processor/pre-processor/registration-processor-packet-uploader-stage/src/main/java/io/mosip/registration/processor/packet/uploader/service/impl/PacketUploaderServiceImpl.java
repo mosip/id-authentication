@@ -233,7 +233,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 								dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 										.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 								dto.setStatusCode(
-										RegistrationStatusCode.PACKET_UPLOAD_TO_PACKET_STORE_FAILED.toString());
+										RegistrationStatusCode.FAILED.toString());
 								dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 								dto.setUpdatedBy(USER);
 							}
@@ -450,7 +450,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				if (fileManager.cleanUp(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE,
 						DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
 
-					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+					dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 					dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
 					dto.setUpdatedBy(USER);
 					object.setInternalError(false);

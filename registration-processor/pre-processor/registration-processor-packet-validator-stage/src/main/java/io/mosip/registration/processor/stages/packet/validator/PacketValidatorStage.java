@@ -36,14 +36,14 @@ public class PacketValidatorStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
-	
+
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	/**
 	 * Deploy verticle.
 	 */

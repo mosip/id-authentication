@@ -18,9 +18,6 @@ public class DemographicInfoDto implements Serializable {
 	/** The reg id. */
 	private String regId;
 	
-	/** The uin. */
-	private String uin;
-	
 	/** The lang code. */
 	private String langCode;
 

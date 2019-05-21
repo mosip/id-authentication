@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -46,10 +48,11 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
-
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 /**
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
@@ -88,6 +91,9 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 	private ObjectMapper mapper=new ObjectMapper();
+
+	@Autowired
+	private Utilities utilities;
 
 
 	/*
@@ -150,8 +156,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		boolean isValidUIN = false;
 		try {
 			isValidUIN = uinValidatorImpl.validateId(uin);
-			List<String> regIdList = packetInfoManager.getRegIdByUIN(uin);
-			if (isValidUIN && ((regIdList != null) && !regIdList.isEmpty())) {
+			JSONObject jsonObject =  utilities.retrieveIdrepoJson(Long.parseLong(uin));
+			if (isValidUIN && jsonObject!=null) {
 				isValidUIN = true;
 			} else {
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
@@ -161,6 +167,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		} catch (InvalidIDException ex) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
 
+		} catch (IdRepoAppException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (NumberFormatException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
 		}
 		return isValidUIN;
 	}
