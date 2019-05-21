@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -39,6 +40,7 @@ public class AuthAdapterExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}
 
@@ -49,6 +51,7 @@ public class AuthAdapterExceptionHandler {
 		ServiceError error = new ServiceError(AuthAdapterErrorCode.FORBIDDEN.getErrorCode(),
 				AuthAdapterErrorCode.FORBIDDEN.getErrorMessage());
 		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 
@@ -58,6 +61,7 @@ public class AuthAdapterExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}
 
@@ -66,6 +70,7 @@ public class AuthAdapterExceptionHandler {
 			final AuthNException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(e.getList());
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}
 	
@@ -74,6 +79,7 @@ public class AuthAdapterExceptionHandler {
 			final AuthZException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(e.getList());
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 
