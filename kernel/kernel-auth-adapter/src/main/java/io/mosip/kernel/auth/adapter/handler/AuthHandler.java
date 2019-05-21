@@ -127,12 +127,11 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	private ResponseEntity<String> getValidatedUserResponse(String token)
 			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		HttpHeaders headers = new HttpHeaders();
-		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
-		System.out.println("Validate Url " + validateUrl);
+		System.out.println("\nInside Auth Handler");
+		System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-
 	}
 
 	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {

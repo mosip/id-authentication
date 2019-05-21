@@ -115,13 +115,15 @@ public final class ExceptionUtils {
 	}
 
 	public static void logRootCause(Throwable exception) {
+		System.out.println("\n\n");
 		Optional<Throwable> rootCause = Stream.iterate(exception, Throwable::getCause)
 				.filter(element -> element.getCause() == null).findFirst();
 		if (rootCause.isPresent()) {
-			logger.error("\n\n RootCause Exception : ", rootCause.get());
+			logger.error("Exception : " + exception.getMessage());
+			logger.error("RootCause Exception : ", rootCause.get());
 		} else {
-			logger.error("\n\n Exception : ", exception);
+			logger.error("Exception : ", exception);
 		}
-
+		System.out.println("\n\n");
 	}
 }
