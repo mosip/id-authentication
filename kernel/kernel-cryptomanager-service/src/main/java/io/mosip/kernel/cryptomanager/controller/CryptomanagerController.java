@@ -110,10 +110,10 @@ public class CryptomanagerController {
 	@GetMapping("signature/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse> getSignaturePublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timeStamp,
+			@ApiParam("Timestamp as metadata") @RequestParam("timestamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 		ResponseWrapper<PublicKeyResponse> response = new ResponseWrapper<>();
-		response.setResponse(cryptomanagerService.getSignPublicKey(applicationId,timeStamp,referenceId));
+		response.setResponse(cryptomanagerService.getSignPublicKey(applicationId,timestamp,referenceId));
 		return response;
     }
 	
