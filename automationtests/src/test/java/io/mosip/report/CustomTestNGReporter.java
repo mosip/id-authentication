@@ -1,13 +1,13 @@
 package io.mosip.report;
 
+import org.testng.IReporter;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -19,12 +19,10 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.mail.Folder;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.testng.IReporter;
+import org.apache.log4j.Logger;
 import org.testng.IResultMap;
 import org.testng.ISuite;
 import org.testng.ISuiteResult;
@@ -35,11 +33,14 @@ import org.testng.xml.XmlSuite;
 /**
  * Customised Testng Report
  * 
- * @author Vignesh,Tabish
+ * @author Vignesh
  *
  */
-public class CustomTestNGReporter implements IReporter {
+public class CustomTestNGReporter extends Reporter implements IReporter {
 
+	private static final Logger CustomTestNGReporterLog = Logger.getLogger(CustomTestNGReporter.class);
+	private static final String defaultTestNgEmailableReport="./target/surefire-reports/emailable-report.html";
+	private static final String extendtReport="./extent-report.html";
 	// This is the customize emailable report template file path.
 	private static final String emailableReportTemplateFile = new File(
 			"./src/test/resources/customize-emailable-report-template.html").getAbsolutePath();
@@ -52,11 +53,9 @@ public class CustomTestNGReporter implements IReporter {
 	private String color = "";
 	private int countTestClassName = 0;
 	private boolean testClassNameFlag = false;
-	String buildNumber = "";
 
 	@Override
 	public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectory) {
-		buildNumber = getBuildTag();
 		try {
 			// Get content data in TestNG report template file.
 			customReportTemplateStr = this.readEmailabelReportTemplate();
@@ -75,8 +74,11 @@ public class CustomTestNGReporter implements IReporter {
 			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$Test_Case_Detail\\$",
 					customTestMethodSummary);
 			customReportTemplateStr = updatePieChart(customReportTemplateStr);
+
 			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$detailedReport\\$",
 					'"' + encodeDefaultTestngReportFile() + '"');
+			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$extentReport\\$",
+					'"' + encodeExtentReportFile() + '"');			
 			// Write replaced test report content to custom-emailable-report.html.
 			File targetFile = new File(outputDirectory + "/custom-emailable-report.html");
 			FileWriter fw = new FileWriter(targetFile);
@@ -102,7 +104,7 @@ public class CustomTestNGReporter implements IReporter {
 
 		try {
 
-			File file = new File(this.emailableReportTemplateFile);
+			File file = new File(emailableReportTemplateFile);
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 
@@ -137,7 +139,7 @@ public class CustomTestNGReporter implements IReporter {
 			int totalTestSkipped = 0;
 
 			for (ISuite tempSuite : suites) {
-				retBuf.append("<tr><td colspan=11><center><b></b></center></td></tr>");
+				retBuf.append("<tr><td colspan=11><center><b>" + tempSuite.getName() + "</b></center></td></tr>");
 
 				Map<String, ISuiteResult> testResults = tempSuite.getResults();
 
@@ -196,13 +198,13 @@ public class CustomTestNGReporter implements IReporter {
 					/* Start Date */
 					Date startDate = testObj.getStartDate();
 					retBuf.append("<td>");
-					retBuf.append(this.getTimeInStringFormat(startDate));
+					retBuf.append(this.getTimeInStringFormat1(startDate));
 					retBuf.append("</td>");
 
 					/* End Date */
 					Date endDate = testObj.getEndDate();
 					retBuf.append("<td>");
-					retBuf.append(this.getTimeInStringFormat(endDate));
+					retBuf.append(this.getTimeInStringFormat1(endDate));
 					retBuf.append("</td>");
 
 					/* Execute Time */
@@ -211,10 +213,11 @@ public class CustomTestNGReporter implements IReporter {
 					retBuf.append("<td>");
 					retBuf.append(deltaTimeStr);
 					retBuf.append("</td>");
-
+					
 					/* Build Number */
+					String deploymentVersion = getAppDepolymentVersion();
 					retBuf.append("<td>");
-					retBuf.append(buildNumber);
+					retBuf.append(deploymentVersion);
 					retBuf.append("</td>");
 
 					/*
@@ -271,6 +274,16 @@ public class CustomTestNGReporter implements IReporter {
 		retBuf.append(df.format(date));
 		return retBuf.toString();
 	}
+	
+	private String getTimeInStringFormat1(Date date) {
+		StringBuffer retBuf = new StringBuffer();
+		if (date == null) {
+			date = new Date();
+		}
+		DateFormat df = new SimpleDateFormat("HH:mm:ss");
+		retBuf.append(df.format(date));
+		return retBuf.toString();
+	}
 
 	private String getTimeInStringFormat(Date date) {
 		StringBuffer retBuf = new StringBuffer();
@@ -286,6 +299,7 @@ public class CustomTestNGReporter implements IReporter {
 	private String convertDeltaTimeToString(long deltaTime) {
 		StringBuffer retBuf = new StringBuffer();
 		long milli = deltaTime;
+
 		String milliSec = "0";
 		if (String.valueOf(milli).length() > 3)
 			milliSec = String.valueOf(milli).substring(0, 3);
@@ -312,6 +326,7 @@ public class CustomTestNGReporter implements IReporter {
 		long seconds = deltaTime / 1000 % 60;
 		long minutes = deltaTime / (60 * 1000) % 60;
 		long hours = deltaTime / (60 * 60 * 1000) % 24;
+
 		retBuf.append(hours + ":" + minutes + ":" + seconds);
 		return retBuf.toString();
 	}
@@ -322,7 +337,7 @@ public class CustomTestNGReporter implements IReporter {
 
 		try {
 			for (ISuite tempSuite : suites) {
-				retBuf.append("<tr><td colspan=7><center><b></b></center></td></tr>");
+				retBuf.append("<tr><td colspan=7><center><b>" + tempSuite.getName() + "</b></center></td></tr>");
 
 				Map<String, ISuiteResult> testResults = tempSuite.getResults();
 
@@ -361,12 +376,13 @@ public class CustomTestNGReporter implements IReporter {
 	/* Get failed, passed or skipped test methods report. */
 	private String getTestMethodReport(String testName, IResultMap testResultMap, boolean passedReault,
 			boolean skippedResult) {
-
 		StringBuffer retStrBuf = new StringBuffer();
 
 		String resultTitle = testName;
 
+
 		color = "#3cb353";
+
 
 		if (skippedResult) {
 			resultTitle += " - Skipped ";
@@ -388,32 +404,13 @@ public class CustomTestNGReporter implements IReporter {
 		// Sorting testClassName
 		SortedSet<String> sortedTestsName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {
+
 			sortedTestsName.add(testResult.getTestClass().getName());
-			/*
-			 * Throwable exception = testResult.getThrowable(); if(exception!=null) {
-			 * StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);
-			 * exception.printStackTrace(pw); StackTraceElement[]
-			 * element=exception.getStackTrace(); exceptionMessage = element[0].toString();
-			 * }
-			 */
-		}
-		// Sort ApiName
-		SortedSet<String> sortedApiName = new TreeSet<>();
-		for (ITestResult testResult : testResultSet) {
-			String apiName;
-			if (testResult.getTestName().toString().contains("-")) {
-				apiName = testResult.getTestName().toString();
-			} else
-				apiName = testResult.getTestName().toString();
-			if (!sortedApiName.contains(apiName))
-				sortedApiName.add(apiName);
 		}
 		// Sorting testMethodName
 		SortedSet<String> sortedTestsMethodName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {
 			sortedTestsMethodName.add(testResult.getMethod().getMethodName());
-			// sortedTestsMethodName.add(testResult.getName());
-			// testResult.getName();
 		}
 		TreeMap<String, CustomTestNgReporterDto> customTestReport = new TreeMap<String, CustomTestNgReporterDto>();
 		for (String testsName : sortedTestsName) {
@@ -428,39 +425,39 @@ public class CustomTestNGReporter implements IReporter {
 						objCustomTestNgReporterDto.setEndTimeMillis(testResult.getEndMillis());
 						objCustomTestNgReporterDto
 								.setDeltaMillis(testResult.getEndMillis() - testResult.getStartMillis());
+						if(testResult.getThrowable()!=null)
+							objCustomTestNgReporterDto.setLog(testResult.getThrowable().toString());
+						else
+							objCustomTestNgReporterDto.setLog("NA");
 						customTestReport.put(testMethodName, objCustomTestNgReporterDto);
 					}
 				});
+
 			}
 		}
-		for (String apiName : sortedApiName) {
-
+		for (String testsName : sortedTestsName) {
 			testClassNameFlag = false;
 			customTestReport.forEach((testMethod, object) -> {
 				countTestClassName = 0;
 				customTestReport.forEach((k, v) -> {
-					if (v.getTestMathodName().toString().contains(apiName))
+					if (v.getTestClassName().toString().equals(testsName))
 						countTestClassName++;
 				});
-				String exceptionMessage = "";
-				if (object.getTestMathodName().toString().contains(apiName)) {
+				if (object.getTestClassName().toString().equals(testsName)) {
 					String testClassName = "";
 					String testMethodName = "";
 					String startDateStr = "";
 					String endDateStr = "";
 					String executeTimeStr = "";
+					String log="";
+
 					// Get testClassName
-					testClassName = object.getTestMathodName().toString();
+					testClassName = object.getTestClassName().toString();
 
 					// Get testMethodName
 					testMethodName = testMethod.toString();
-					String testCaseName;
-					if (testMethodName.contains("-"))
-						testCaseName = testMethodName.substring(testMethodName.lastIndexOf("-")+1,testMethodName.length());
-					else
-						testCaseName = testMethodName.substring(testMethodName.indexOf(":") + 1,
-								testMethodName.lastIndexOf(":"));
-			
+
+					// Get startDateStr
 					startDateStr = this.getTimeInStringFormat(new Date(object.getStartTimeMillis()));
 
 					// Get startDateStr
@@ -468,30 +465,21 @@ public class CustomTestNGReporter implements IReporter {
 
 					// Get Execute time.
 					executeTimeStr = this.convertDeltaTimeToString(object.getDeltaMillis());
+					log=object.getLog();
 
-					DurationFormatUtils.formatDuration(object.getDeltaMillis(), "HH:mm:ss,SSS");
 					retStrBuf.append("<tr bgcolor=" + color + ">");
 
 					if (!testClassNameFlag) {
 						/* Add tests name. */
 						retStrBuf.append("<td rowspan='" + countTestClassName + "'>");
-						if(testMethodName.toString().contains("-"))
-						 retStrBuf.append(testMethodName.substring(0, testMethodName.indexOf("-")));
-						else
-						retStrBuf.append(testMethodName.substring(0, testMethodName.indexOf(":")));
+						retStrBuf.append(testClassName);
 						retStrBuf.append("</td>");
 						testClassNameFlag = true;
 					}
 
 					/* Add test case name. */
 					retStrBuf.append("<td>");
-					retStrBuf.append(testCaseName);
-					retStrBuf.append("</td>");
-					/*
-					 * Add Description
-					 */
-					retStrBuf.append("<td>");
-					retStrBuf.append(testMethodName.substring(testMethodName.lastIndexOf(":") + 1));
+					retStrBuf.append(testMethodName);
 					retStrBuf.append("</td>");
 
 					/* Add start time. */
@@ -509,25 +497,8 @@ public class CustomTestNGReporter implements IReporter {
 					retStrBuf.append(executeTimeStr);
 					retStrBuf.append("</td>");
 
-					/* Add ExceptionMessage */
-
-					for (ITestResult testResult : testResultSet) {
-						sortedTestsName.add(testResult.getTestClass().getName());
-						Throwable exception = testResult.getThrowable();
-						if (exception != null) {
-							StringWriter sw = new StringWriter();
-							PrintWriter pw = new PrintWriter(sw);
-							exception.printStackTrace(pw);
-							StackTraceElement[] element = exception.getStackTrace();
-
-							exceptionMessage = element[0].toString() + "\n at " + element[1].toString() + "\n at "
-									+ element[2].toString() + "\n... Removed additional stack frames";
-						} else {
-							exceptionMessage = "N/A";
-						}
-					}
 					retStrBuf.append("<td>");
-					retStrBuf.append(exceptionMessage);
+					retStrBuf.append(log);
 					retStrBuf.append("</td>");
 
 					/*
@@ -540,6 +511,7 @@ public class CustomTestNGReporter implements IReporter {
 					 * Add exception message. retStrBuf.append("<td>");
 					 * retStrBuf.append(exceptionMessage); retStrBuf.append("</td>");
 					 */
+
 
 					retStrBuf.append("</tr>");
 				}
@@ -559,7 +531,7 @@ public class CustomTestNGReporter implements IReporter {
 		}
 		return retStrBuf.toString();
 	}
-
+	
 	private int getStringCount(String whatToFind, String content) {
 		int M = whatToFind.length();
 		int N = content.length();
@@ -584,34 +556,33 @@ public class CustomTestNGReporter implements IReporter {
 			}
 		}
 		return count;
-	}
+	}	
 
-	@SuppressWarnings("deprecation")
-
-	private String encodeDefaultTestngReportFile() throws IOException {
-
-		// String content=FileUtils.readFileToString(new
-		// File("./test-output/emailable-report.html").getAbsoluteFile());
-
-		String content = FileUtils
-				.readFileToString(new File("./test-output/emailable-report.html").getAbsoluteFile());
-		String base64encodedString = Base64.getEncoder().encodeToString(content.getBytes("UTF-8"));
-
-		return base64encodedString;
-	}
-
-	public static String getBuildTag() {
-		MavenXpp3Reader reader = new MavenXpp3Reader();
-		Model model = null;
+	private String encodeDefaultTestngReportFile() {
+		// wait for file to load
 		try {
-			model = reader.read(new FileReader("pom.xml"));
-		} catch (IOException | XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Thread.sleep(5000);	
+			String content = FileUtils.readFileToString(new File(defaultTestNgEmailableReport).getAbsoluteFile(),"UTF-8");
+			String base64encodedString = Base64.getEncoder().encodeToString(content.getBytes("UTF-8"));
+			return base64encodedString;
+		} catch (Exception e) {
+			CustomTestNGReporterLog.error("Exception occured while encoding: " + e.getMessage());
+			return "SomeThing went wrong with defaultTestNGFile";
 		}
-
-		return model.getParent().getVersion();
-
-
 	}
+	
+	private String encodeExtentReportFile() {
+		// wait for file to load
+		try {
+			Thread.sleep(5000);
+			@SuppressWarnings("deprecation")
+			String content = FileUtils.readFileToString(new File(extendtReport).getAbsoluteFile());
+			String base64encodedString = Base64.getEncoder().encodeToString(content.getBytes("UTF-8"));
+			return base64encodedString;
+		} catch (Exception e) {
+			CustomTestNGReporterLog.error("Exception occured while encoding: " + e.getMessage());
+			return "SomeThing went wrong with Extent Report";
+		}
+	}
+
 }

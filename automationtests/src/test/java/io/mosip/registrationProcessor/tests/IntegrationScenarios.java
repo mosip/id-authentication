@@ -29,7 +29,8 @@ public class IntegrationScenarios extends BaseTestCase {
 	EncryptData encryptData = new EncryptData();
 
 	IntegMethods scenario = new IntegMethods();
-
+	String moduleName="RegProc";
+	String apiName="Integration";
 	@DataProvider(name = "packetValidatorStage")
 	public File[] getInvalidPacketValidatorPackets() {
 		

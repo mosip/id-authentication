@@ -57,6 +57,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 static String requestKeyFile = "ReactivateUinRequest.json";
 	 String rId = null;
 	 Properties prop =  new Properties();
+	 static String moduleName="RegProc";
 	 RegProcTransactionDb regProcDbRead=new RegProcTransactionDb();
 	 /**
 	  * This method is used for reading the test data based on the test case name passed
@@ -140,7 +141,8 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 @BeforeMethod(alwaysRun=true)
 	 public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 	 	 JSONObject object = (JSONObject) testdata[2];
-	 	 testCaseName = object.get("testCaseName").toString();
+	 	 String apiName="PacketGenerator";
+	 	testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	 }
 
 	 /**

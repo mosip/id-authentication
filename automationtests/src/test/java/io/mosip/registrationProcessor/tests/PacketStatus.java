@@ -79,7 +79,8 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	static String outputFile = "PacketStatusOutput.json";
 	static String requestKeyFile = "PacketStatusRequest.json";
 	Properties prop =  new Properties();
-	
+	static String moduleName="RegProc";
+	static String apiName="packetStatus";
 	/**
 	 * This method is use for reading data for packet status based on test case name
 	 * @param context
@@ -238,7 +239,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
 
 	/**
