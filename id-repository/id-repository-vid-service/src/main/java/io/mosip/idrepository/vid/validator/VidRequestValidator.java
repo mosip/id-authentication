@@ -1,7 +1,6 @@
 package io.mosip.idrepository.vid.validator;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
@@ -68,10 +67,6 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	/** The allowed types. */
 	@Resource
 	private List<String> allowedStatus;
-
-//	/** The id. */
-//	@Resource
-//	private Map<String, String> id;
 
 	/*
 	 * (non-Javadoc)

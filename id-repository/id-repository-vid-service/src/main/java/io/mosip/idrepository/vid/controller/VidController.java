@@ -44,12 +44,6 @@ public class VidController {
 	/** The data source. */
 	@Autowired
 	DataSource dataSource;
-	
-	/** The Constant UPDATE. */
-	private static final String UPDATE = "update";
-
-	/** The Constant CREATE. */
-	private static final String CREATE = "create";
 
 	/**  The Constant RETRIEVE_UIN_BY_VID. */
 	private static final String RETRIEVE_UIN_BY_VID = "retrieveUinByVid";
