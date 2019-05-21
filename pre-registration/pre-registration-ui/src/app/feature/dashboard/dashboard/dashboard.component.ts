@@ -232,8 +232,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    console.log('applicants test', applicants);
-
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     let primaryIndex = 0;

@@ -71,6 +71,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   isNewApplicant = false;
   checked = true;
   dataUploadComplete = true;
+  hasError = false;
   // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
@@ -100,7 +101,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   residenceStatus: any;
   message = {};
   config = {};
-  consentMessage :any;
+  consentMessage: any;
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -238,7 +239,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     });
   }
 
-private getConsentMessage() {
+  private getConsentMessage() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(response => {
         console.log(response);
@@ -1095,6 +1096,7 @@ private getConsentMessage() {
    */
   private onError() {
     this.dataUploadComplete = true;
+    this.hasError = true;
     const body = {
       case: 'ERROR',
       title: 'ERROR',
