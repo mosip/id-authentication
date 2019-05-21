@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -119,5 +120,46 @@ public class EncryptData {
 		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
 		
 		return ldt;
+	}
+	public RegistrationPacketSyncDTO createSyncRequest(JSONObject jsonRequest) throws ParseException{
+		String regId = null;
+		String packetHash=null;
+		long packetSize = 0;
+		String langCode = null;
+		String registrationType = null;
+		String superVisiorStatus = null;
+		JSONArray request = (JSONArray) jsonRequest.get("request");
+		for(int j = 0; j<request.size() ; j++){
+			JSONObject obj  = (JSONObject) request.get(j);
+			regId = obj.get("registrationId").toString();
+			packetHash = obj.get("packetHashValue").toString();
+			packetSize =  (long) obj.get("packetSize");
+			langCode = obj.get("langCode").toString();
+			registrationType = obj.get("registrationType").toString();
+			superVisiorStatus = obj.get("supervisorStatus").toString();
+		}
+		String id = jsonRequest.get("id").toString();
+		String version = jsonRequest.get("version").toString();
+		String requesttime = jsonRequest.get("requesttime").toString();
+		
+		SyncRegistrationDto syncRegistrationDto=new SyncRegistrationDto();
+		syncRegistrationDto.setLangCode(langCode);
+		syncRegistrationDto.setPacketHashValue(packetHash);
+		syncRegistrationDto.setPacketSize(BigInteger.valueOf(packetSize));
+		syncRegistrationDto.setRegistrationId(regId);
+		syncRegistrationDto.setRegistrationType(registrationType);
+		syncRegistrationDto.setSupervisorComment("APPROVED");
+		syncRegistrationDto.setSupervisorStatus(superVisiorStatus);
+		List<SyncRegistrationDto> syncRegistrationList=new ArrayList<SyncRegistrationDto>();
+		syncRegistrationList.add(syncRegistrationDto);
+		RegistrationPacketSyncDTO registrationPacketSyncDto=new RegistrationPacketSyncDTO();
+		registrationPacketSyncDto.setId(id);
+		
+		//LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
+		registrationPacketSyncDto.setRequesttime(requesttime);
+		registrationPacketSyncDto.setVersion(version);
+		registrationPacketSyncDto.setSyncRegistrationDTOs(syncRegistrationList);
+		return registrationPacketSyncDto;
+		
 	}
 }

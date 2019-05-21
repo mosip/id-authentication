@@ -1,6 +1,22 @@
-{	
-
-
-	"invalid" : ""
-
-}
+{
+	"lengthMoreThan29":"",
+	"wrongDateValue":"",
+	"wrongHourValue":"",
+	"wrongMinuteValue":"",
+	"wrongMonthValue":"",
+	"wrongSecondsValue":"",
+	"wrongSymbols&Numbers":"",
+	"wrongText&Numbers":"",
+	"wrongText&Symbol":"",
+	"wrongYearValue":"",
+	"sizeGreaterThan5mb" : "",
+	"sizeZeroMb" : "",
+	"idEmpty" : "",
+	"idInvalid" : "",
+	"versionEmpty" : "",
+	"versionInvalid": "",
+	"requesttimeEmpty" : "",
+	"requesttimeInvalid" : "",
+	"langCodeEmpty" : "",
+	"langCodeInvalid" : ""
+ }
