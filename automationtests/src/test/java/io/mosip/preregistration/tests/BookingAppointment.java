@@ -390,7 +390,8 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, BookingAppointment.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_BookAnAppointment_" +BookingAppointment.testCaseName);
+			//f.set(baseTestMethod, BookingAppointment.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

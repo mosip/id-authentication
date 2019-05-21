@@ -70,18 +70,33 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
+	public void cancelAppointmentForExpiredApplication() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
+		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		lib.expiredStatus();
+		lib.getPreRegistrationStatus(preID);
+		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
+				preID);
+		String msg = CancelBookingAppointmentResponse.jsonPath().get("errors[0].message").toString();
+		lib.compareValues(msg, "Appointment cannot be canceled");
 
-		lib.syncAvailability();
-		
 	}
+
+
 
 
 	@BeforeMethod(alwaysRun=true)

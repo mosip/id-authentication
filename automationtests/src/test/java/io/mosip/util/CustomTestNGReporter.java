@@ -559,10 +559,19 @@ public class CustomTestNGReporter implements IReporter {
 	@SuppressWarnings("deprecation")
 	private String encodeDefaultTestngReportFile1() throws IOException
 	{
+		
+		
+		/**
+		 * Make sure test-output is there
+		 */
+		//File testOutput = new File("test-output");
+		//File content = new File(System.getProperty("user.dir") + "/test-output/emailable-report.html");
+		//String content=FileUtils.readFileToString(new File(System.getProperty("user.dir") +"/test-output/emailable-report.html").getAbsoluteFile());
 
-		//String content=FileUtils.readFileToString(new File("./test-output/emailable-report.html").getAbsoluteFile());
+		String content=FileUtils.readFileToString(new File("./test-output/emailable-report.html").getAbsoluteFile());
+		//String content=FileUtils.readFileToString(new File("test-output/emailable-report.html").getAbsoluteFile());
 
-		String content=FileUtils.readFileToString(new File("./target/surefire-reports/emailable-report.html").getAbsoluteFile());
+		//String content=FileUtils.readFileToString(new File("./target/surefire-reports/emailable-report.html").getAbsoluteFile());
 		String base64encodedString = Base64.getEncoder().encodeToString(
 				content.getBytes("UTF-8"));
 		return base64encodedString;
