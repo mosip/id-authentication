@@ -65,5 +65,7 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	 */
 	@Query("SELECT DISTINCT e.regDate FROM AvailibityEntity e  WHERE e.regDate>= ?1")
 	public List<LocalDate> findAvaialableDate(LocalDate regDate);
+	
+	public List<AvailibityEntity> findByRegcntrId(String regCenterId);
 
 }

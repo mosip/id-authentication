@@ -63,7 +63,5 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	@Query(getPreIdQuery)
 	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDate start,
 			LocalDate end, String regCenterId);
-	/*@Query("SELECT new io.mosip.preregistration.booking.dto.DemographicBookingRightJoin(d.statusCode,b.registrationCenterId,b.slotFromTime,b.slotToTime,b.regDate)"+" FROM RegistrationBookingEntity b JOIN DemographicEntity d ON b.bookingPK.preregistrationId=d.preRegistrationId where d.preRegistrationId= ?1")
-	public DemographicBookingRightJoin getDemographiBookingRightJoin( String preid);
-*/
+	
 }
