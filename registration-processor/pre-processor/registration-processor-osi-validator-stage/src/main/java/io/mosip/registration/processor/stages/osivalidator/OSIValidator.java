@@ -77,7 +77,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class OSIValidator.
  */
@@ -192,7 +192,7 @@ public class OSIValidator {
 		String supervisorId = regOsi.getSupervisorId();
 		if (officerId == null && supervisorId == null) {
 			registrationStatusDto
-					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
@@ -209,9 +209,10 @@ public class OSIValidator {
 			}
 		} else {
 			registrationStatusDto
-					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " packet creationDate is null");
+			.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " packet creationDate is null");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "packet creationDate is null");
+
 			return false;
 		}
 		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
@@ -315,10 +316,10 @@ public class OSIValidator {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
 				} else {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
 
 				}
 				return flag;
@@ -381,10 +382,10 @@ public class OSIValidator {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
 				} else {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 				}
 				return flag;
 			} else if ((validateUIN(supervisorId))
@@ -435,7 +436,7 @@ public class OSIValidator {
 							.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 					registrationStatusDto
-							.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+					.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET);
@@ -685,47 +686,40 @@ public class OSIValidator {
 
 	}
 
-	private List<BioInfo> getBioInfoListDto(byte[] cbefByteFile)
-			throws ParserConfigurationException, SAXException, IOException {
 
-		List<BioInfo> biometrics = null;
-		BioInfo bioInfo = new BioInfo();
-		DataInfoDTO dataInfoDTO = new DataInfoDTO();
+
+	public String getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
+
+		List<BioInfo> biometrics =new  ArrayList<>();
+
 		String byteFileStr = new String(cbefByteFile);
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(byteFileStr));
-
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(is);
 		doc.getDocumentElement().normalize();
 		if (doc != null) {
-			NodeList birList = doc.getElementsByTagName("BIR");
-			for (int bl = 0; bl < birList.getLength(); bl++) {
-				NodeList bdbInfo = doc.getElementsByTagName("BDBInfo");
-				for (int bi = 0; bi < bdbInfo.getLength(); bi++) {
-					Node bdbInfoList = bdbInfo.item(bi);
-					if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
-
-						Element eElement = (Element) bdbInfoList;
-						dataInfoDTO.setBioType(eElement.getElementsByTagName("Type").item(0).getTextContent());
-
-						dataInfoDTO.setBioSubType(eElement.getElementsByTagName("Subtype").item(0).getTextContent());
-						dataInfoDTO.setBioValue(eElement.getElementsByTagName("firstname").item(0).getTextContent());
-
-					}
+			NodeList bdbInfo = doc.getElementsByTagName("BDBInfo");
+			for (int bi = 0; bi < bdbInfo.getLength(); bi++) {
+				BioInfo bioInfo=new BioInfo();
+				DataInfoDTO dataInfoDTO=new DataInfoDTO();
+				Node bdbInfoList = bdbInfo.item(bi);
+				if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) bdbInfoList;
+					dataInfoDTO.setBioType(eElement.getElementsByTagName("Type").item(0).getTextContent());
+					dataInfoDTO.setBioSubType(eElement.getElementsByTagName("Subtype").item(0).getTextContent());
 					NodeList bdb = doc.getElementsByTagName("BDB");
 					String value = bdb.item(0).getTextContent();
 					dataInfoDTO.setBioValue(value);
-					bioInfo.setData(dataInfoDTO);
-
-					biometrics.add(bioInfo);
-
 				}
+				bioInfo.setData(dataInfoDTO);
+				biometrics.add(bioInfo);
 			}
 		}
-		return biometrics;
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(biometrics);
 	}
 
 	private String getOperatorRid(String operatorId) throws ApisResourceAccessException {
