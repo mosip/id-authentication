@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
@@ -18,12 +19,23 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -34,6 +46,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
+import io.mosip.registration.processor.core.auth.dto.BioInfo;
+import io.mosip.registration.processor.core.auth.dto.DataInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
@@ -611,4 +625,46 @@ public class OSIValidator {
 
 	}
 
+
+	private List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
+
+		List<BioInfo> biometrics = null;
+		BioInfo bioInfo=new BioInfo();
+		DataInfoDTO dataInfoDTO=new DataInfoDTO();
+		String byteFileStr = new String(cbefByteFile);
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(byteFileStr));
+
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc=dBuilder.parse(is);
+		doc.getDocumentElement().normalize();
+		if (doc != null) {
+			NodeList birList = doc.getElementsByTagName("BIR");
+			for (int bl = 0; bl < birList.getLength(); bl++) {
+				NodeList bdbInfo = doc.getElementsByTagName("BDBInfo");
+				for (int bi = 0; bi < bdbInfo.getLength(); bi++) {
+					Node bdbInfoList = bdbInfo.item(bi);
+					if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
+
+						Element eElement = (Element) bdbInfoList;
+						dataInfoDTO.setBioType(eElement.getElementsByTagName("Type").item(0).getTextContent());
+
+						dataInfoDTO.setBioSubType(eElement.getElementsByTagName("Subtype").item(0).getTextContent());
+						dataInfoDTO.setBioValue(eElement.getElementsByTagName("firstname").item(0).getTextContent());
+
+					}
+					NodeList bdb = doc.getElementsByTagName("BDB");
+					String value = bdb.item(0).getTextContent();
+					dataInfoDTO.setBioValue(value);
+					bioInfo.setData(dataInfoDTO);
+
+					biometrics.add(bioInfo);
+
+				}
+			}
+		}
+		return biometrics;
+	}
 }

@@ -5,7 +5,6 @@ package io.mosip.registration.processor.core.auth.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -13,7 +12,6 @@ import lombok.Data;
  *
  */
 @Data
-@AllArgsConstructor
 public class DataInfoDTO {
 	
 	private String bioSubType;
