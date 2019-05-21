@@ -35,9 +35,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRequestValidator extends BaseIdRepoValidator implements Validator {
-	
+
 	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
-	
+
 	private static final String VID_REQUEST_VALIDATOR = "VidRequestValidator";
 
 	private static final String VID_TYPE = "vidType";
@@ -47,7 +47,6 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
 
-
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
 
@@ -55,14 +54,14 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	private static final String STATUS_FIELD = "vidStatus";
 
 	private static final String UIN = "UIN";
-	
+
 	@Autowired
 	private VidPolicyProvider policyProvider;
 
 	/** The Vid Validator */
 	@Autowired
 	private VidValidator<String> vidValidator;
-	
+
 	@Autowired
 	private UinValidator<String> uinValidator;
 
@@ -97,12 +96,18 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		validateReqTime(request.getRequesttime(), errors);
 		validateVersion(request.getVersion(), errors);
 		validateRequest(request.getRequest(), errors);
-		
-		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {
+		String requestId = request.getId();
+
+		if (Objects.isNull(requestId)) {
+			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
+		}
+
+		if (!errors.hasErrors() && requestId.equals(id.get(CREATE))) {
 			validateVidType(request.getRequest().getVidType(), errors);
 			validateUin(request.getRequest().getUin(), errors);
 		}
-		
+
 		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
 			validateStatus(request.getRequest().getVidStatus(), errors);
 		}
@@ -110,8 +115,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 
 	private void validateVidType(String vidType, Errors errors) {
 		if (Objects.isNull(vidType)) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType",
-					"vidType is null");
+			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateVidType", "vidType is null");
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		} else if (!policyProvider.getAllVidTypes().contains(vidType)) {
@@ -121,16 +125,20 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID_TYPE));
 		}
 	}
-	
+
 	private void validateUin(String uin, Errors errors) {
-		try {
-			uinValidator.validateId(uin);
-		} catch (InvalidIDException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateUin",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							UIN));
+		if (Objects.isNull(uin)) {
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
+		} else {
+			try {
+				uinValidator.validateId(uin);
+			} catch (InvalidIDException e) {
+				mosipLogger.error(IdRepoLogger.getUin(), VID_REQUEST_VALIDATOR, "validateUin",
+						"\n" + ExceptionUtils.getStackTrace(e));
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+			}
 		}
 	}
 
@@ -164,7 +172,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * @param vid
 	 * @throws IdRepoAppException
 	 */
-	public void validateVid(String vid) throws IdRepoAppException{
+	public void validateVid(String vid) throws IdRepoAppException {
 		vidValidator.validateId(vid);
 	}
 

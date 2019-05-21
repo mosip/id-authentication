@@ -245,6 +245,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
+		request.setUin("123456");
 		request.setVidType("Temp");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -270,6 +271,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
+		request.setUin("123456");
 		request.setVidType(null);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -286,6 +288,27 @@ public class VidRequestValidatorTest {
 			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "vidType"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
+		});
+	}
+	
+	@Test
+	public void testValidate_NullId() {
+		RequestWrapper<VidRequestDTO> req = new RequestWrapper<VidRequestDTO>();
+		req.setId(null);
+		VidRequestDTO request = new VidRequestDTO();
+		request.setVidStatus("ACTIVE");
+		request.setVidType(null);
+		req.setVersion("v1");
+		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
+		req.setRequest(request);
+		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
+		assertTrue(errors.hasErrors());
+		errors.getAllErrors().forEach(error -> {
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
+					error.getDefaultMessage());
+			assertEquals("id", ((FieldError) error).getField());
 		});
 	}
 	
