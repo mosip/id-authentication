@@ -4,19 +4,26 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.concurrent.ExecutionException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.PublicKeyResponse;
 import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
@@ -37,6 +44,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Abhishek Kumar
  * @author Bal Vikash Sharma
  * @author Megha Tanga
+ * @author Urvil Joshi
  * @since 1.0.0
  */
 @RestController
@@ -144,14 +152,15 @@ public class SyncDataController {
 	public ResponseWrapper<MasterDataResponseDto> syncMasterData(
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
+			@RequestParam(value="keyindex",required=false)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		String regCenterId = null;
 		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
-				timestamp, currentTimeStamp);
+				timestamp, currentTimeStamp,keyIndex);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 
@@ -177,13 +186,14 @@ public class SyncDataController {
 			@PathVariable("regcenterId") String regCenterId,
 			@RequestParam(value = "macaddress", required = false) String macId,
 			@RequestParam(value = "serialnumber", required = false) String serialNumber,
-			@RequestParam(value = "lastupdated", required = false) String lastUpdated)
+			@RequestParam(value = "lastupdated", required = false) String lastUpdated,
+			@RequestParam(value="keyindex",required=false)String keyIndex)
 			throws InterruptedException, ExecutionException {
 
 		LocalDateTime currentTimeStamp = LocalDateTime.now(ZoneOffset.UTC);
 		LocalDateTime timestamp = localDateTimeUtil.getLocalDateTimeFromTimeStamp(currentTimeStamp, lastUpdated);
 		MasterDataResponseDto masterDataResponseDto = masterDataService.syncData(regCenterId, macId, serialNumber,
-				timestamp, currentTimeStamp);
+				timestamp, currentTimeStamp,keyIndex);
 
 		masterDataResponseDto.setLastSyncTime(DateUtils.formatToISOString(currentTimeStamp));
 
@@ -251,6 +261,15 @@ public class SyncDataController {
 
 		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();
 		response.setResponse(publicKeyResponse);
+		return response;
+	}
+	
+	@PreAuthorize("hasAnyRole('REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_ADMIN')")
+	@ResponseFilter
+	@PostMapping(value = "/tpm/publickey", produces = "application/json")
+	public ResponseWrapper<UploadPublicKeyResponseDto> uploadpublickey(@ApiParam("public key in BASE64 encoded")@RequestBody @Valid RequestWrapper<UploadPublicKeyRequestDto> uploadPublicKeyRequestDto) {
+		ResponseWrapper<UploadPublicKeyResponseDto> response = new ResponseWrapper<>();
+		response.setResponse(masterDataService.uploadpublickey(uploadPublicKeyRequestDto.getRequest()));
 		return response;
 	}
 

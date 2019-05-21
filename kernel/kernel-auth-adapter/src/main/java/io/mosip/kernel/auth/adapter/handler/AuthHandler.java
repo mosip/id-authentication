@@ -101,19 +101,20 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		MosipUserDto mosipUserDto = null;
 		try {
 			response = getValidatedUserResponse(token);
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
+			}
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
-		}
+
 		try {
 			ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
 			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
 					MosipUserDto.class);
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
@@ -200,7 +201,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 				httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
 				routingContext.next();
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 		});
 	}

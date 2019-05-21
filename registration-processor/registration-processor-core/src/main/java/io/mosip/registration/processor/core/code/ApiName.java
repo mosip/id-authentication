@@ -174,14 +174,14 @@ public enum ApiName {
 	MACHINEDETAILS,
 
 	/** The external service. */
-	 EISERVICE,
-
-	/** The ridgeneration. */
+	EISERVICE,
+    /** The ridgeneration. */
 	RIDGENERATION,
-
     /** The retrieveidentity. */
     RETRIEVEIDENTITY,
-
-	 RETRIEVEIDENTITYFROMRID;
+    /** The retrieveidentity using rid. */
+	RETRIEVEIDENTITYFROMRID,
+    /** The digitalsignature */
+	DIGITALSIGNATURE;
 
 }

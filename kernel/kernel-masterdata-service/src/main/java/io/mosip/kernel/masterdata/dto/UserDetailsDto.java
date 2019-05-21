@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -40,5 +41,8 @@ public class UserDetailsDto {
 	@NotBlank
 	@Size(min = 1, max = 16)
 	private String statusCode;
+	
+	@NotNull
+	private Boolean isActive;
 
 }
