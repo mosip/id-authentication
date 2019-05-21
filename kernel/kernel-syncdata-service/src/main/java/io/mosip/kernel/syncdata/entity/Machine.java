@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
  * Entity for Machine Details
  * 
  * @author Megha Tanga
+ * @author Urvil Joshi
  * @since 1.0.1
  *
  */
@@ -84,6 +85,18 @@ public class Machine extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
+	
+	/**
+	 * Field for publicKey
+	 */
+	@Column(name = "public_key")
+	private byte[] publicKey;
+	
+	/**
+	 * Field for public key pringerprint
+	 */
+	@Column(name = "key_index")
+	private String keyIndex;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),

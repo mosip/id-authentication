@@ -1,16 +1,15 @@
 package io.mosip.kernel.signature.constant;
 
 /**
- * Constants for CryptoSignaure 
+ * Constants for CryptoSignaure
  * 
  * @author Uday Kumarl
  * @since 1.0.0
  *
  */
 public enum SignatureErrorCode {
-	REQUEST_DATA_NOT_VALID("KER-CSS-999", "Invalid request input"),
-	INTERNAL_SERVER_ERROR("KER-CSS-500", "Internal server error"),
-	NOT_VALID("KER-CSS-101", "Validation Unsuccessful");
+	REQUEST_DATA_NOT_VALID("KER-CSS-999", "Invalid request input"), NOT_VALID("KER-CSS-101",
+			"Validation Unsuccessful"), INTERNAL_SERVER_ERROR("KER-CSS-102", "Internal server error");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -4,17 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -98,9 +95,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	private Environment env;
-
-	private String digitallySignedResponse="";
-
 	private String responseData="";
 
 	/*
@@ -133,9 +127,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param routingContext
 	 */
 	private void failure(RoutingContext routingContext) {
-		String exceptionError=globalExceptionHandler.handler(routingContext.failure());
-		//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
-		this.setResponse(routingContext, exceptionError, APPLICATION_JSON);
+		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
 	}
 
 
@@ -179,8 +171,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
-				//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
-				this.setResponse(ctx, responseData, APPLICATION_JSON);
+				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {

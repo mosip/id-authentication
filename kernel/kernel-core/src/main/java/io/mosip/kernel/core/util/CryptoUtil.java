@@ -3,6 +3,8 @@ package io.mosip.kernel.core.util;
 import static java.util.Arrays.copyOfRange;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Crypto Util for common methods in various module
@@ -91,4 +93,31 @@ public class CryptoUtil {
 		return Base64.decodeBase64(data);
 	}
 
+	/**
+	 * Compute Fingerprint of a key
+	 * 
+	 * @param data     key data
+	 * @param metaData metadata related to key
+	 * @return fingerprint
+	 */
+	public static String computeFingerPrint(String data, String metaData) {
+		return computeFingerPrint(data.getBytes(), metaData);
+	}
+
+	/**
+	 * Compute Fingerprint of a key
+	 * 
+	 * @param data     key data
+	 * @param metaData metadata related to key
+	 * @return fingerprint
+	 */
+	public static String computeFingerPrint(byte[] data, String metaData) {
+		byte[] combinedPlainTextBytes = null;
+		if (EmptyCheckUtils.isNullEmpty(metaData)) {
+			combinedPlainTextBytes = ArrayUtils.addAll(data);
+		} else {
+			combinedPlainTextBytes = ArrayUtils.addAll(data, metaData.getBytes());
+		}
+		return Hex.encodeHexString(HMACUtils.generateHash(combinedPlainTextBytes)).replaceAll("..(?!$)", "$0:");
+	}
 }

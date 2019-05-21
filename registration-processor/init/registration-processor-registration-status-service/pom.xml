@@ -8,13 +8,11 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>init</artifactId>
-		<version>0.11.3</version>
+		<version>0.12.0</version>
 	</parent>
 	<artifactId>registration-processor-registration-status-service</artifactId>
 
 	<name>registration-processor-registration-status-service</name>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
