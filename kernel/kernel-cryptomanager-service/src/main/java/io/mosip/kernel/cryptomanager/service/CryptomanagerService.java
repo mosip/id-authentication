@@ -58,7 +58,7 @@ public interface CryptomanagerService {
 
 	public SignatureResponseDto signaturePrivateEncrypt(SignatureRequestDto request);
 
-	public PublicKeyResponse getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
+	public PublicKeyResponse getSignPublicKey(String applicationId, String timestamp, Optional<String> referenceId);
 
 
 }
