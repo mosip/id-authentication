@@ -41,7 +41,7 @@ public class TokenValidator {
 	Environment env;
 
 	public void validate(String token, String url) {
-		
+
 		if (token == null)
 			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
 		try {	

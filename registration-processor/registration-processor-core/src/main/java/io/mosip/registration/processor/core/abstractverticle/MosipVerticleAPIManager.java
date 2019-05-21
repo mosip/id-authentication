@@ -1,12 +1,18 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.constant.HealthConstant;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -17,6 +23,12 @@ import io.vertx.ext.web.handler.BodyHandler;
  */
 public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
+	@Value("${registration.processor.signature.isEnabled}")
+	Boolean isEnabled;
+
+	@Autowired
+	DigitalSignatureUtility digitalSignatureUtility;
+
 	@Autowired
 	Environment environment;
 
@@ -25,7 +37,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 	/**
 	 * This method creates a body handler for the routes
-	 * 
+	 *
 	 * @param vertx
 	 * @return
 	 */
@@ -36,7 +48,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 			configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), null, sendAddress.getAddress());
 		else if (sendAddress == null)
 			configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), consumeAddress.getAddress(), null);
-		else 
+		else
 		configureHealthCheckEndpoint(vertx, router, environment.getProperty(HealthConstant.SERVLET_PATH), consumeAddress.getAddress(), sendAddress.getAddress());
 		return router;
 	}
@@ -95,7 +107,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 	public void createServer(Router router, int port) {
 		vertx.createHttpServer().requestHandler(router::accept).listen(port);
 	}
-	
+
 	/**
 	 * This method returns a response to the routing context
 	 * @param ctx
@@ -103,38 +115,27 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 	 */
 	public void setResponse(RoutingContext ctx, Object object) {
 		ctx.response().putHeader("content-type", "text/plain")
-					  .putHeader("Access-Control-Allow-Origin", "*")
-					  .putHeader("Access-Control-Allow-Methods","GET, POST") 
-					  .setStatusCode(200)
-					  .end(object.toString());
+		.putHeader("Access-Control-Allow-Origin", "*")
+		.putHeader("Access-Control-Allow-Methods","GET, POST")
+		.setStatusCode(200)
+		.end(object.toString());
 	};
-	
-	/**
-	 * This method returns a response to the routing context
-	 * @param ctx
-	 * @param object
-	 * @param contentType
-	 *//*
-	public void setResponse(RoutingContext ctx, Object object, String contentType,String digitalSignauture) {
-		ctx.response().putHeader("content-type", contentType)
-					  .putHeader("Response-Signature", digitalSignauture)
-					  .putHeader("Access-Control-Allow-Origin", "*")
-					  .putHeader("Access-Control-Allow-Methods","GET, POST") 
-					  .setStatusCode(200)
-					  .end(object.toString());
-	};*/
-	
+
 	/**
 	 * This method returns a response to the routing context
 	 * @param ctx
 	 * @param object
 	 * @param contentType
 	 */
-	public void setResponse(RoutingContext ctx, Object object, String contentType) {
-		ctx.response().putHeader("content-type", contentType)
-					  .putHeader("Access-Control-Allow-Origin", "*")
-					  .putHeader("Access-Control-Allow-Methods","GET, POST") 
-					  .setStatusCode(200)
-					  .end(object.toString());
+	public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
+		HttpServerResponse response = ctx.response();
+		if(isEnabled)
+			response.putHeader("Response-Signature", digitalSignatureUtility.getDigitalSignature(object.toString()));
+		response.putHeader("content-type", contentType)
+		.putHeader("Access-Control-Allow-Origin", "*")
+		.putHeader("Access-Control-Allow-Methods","GET, POST")
+		.setStatusCode(200)
+		.end(object.toString());
+
 	};
 }

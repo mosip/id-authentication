@@ -1,13 +1,12 @@
 package io.mosip.registration.processor.packet.storage.dao;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import static org.mockito.Matchers.any;
 import io.mosip.registration.processor.packet.storage.entity.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -123,21 +123,6 @@ public class PacketInfoDaoTest {
 	}*/
 
 
-	/**
-	 * Gets the all demo with UIN test.
-	 *
-	 * @return the all demo with UIN test
-	 */
-	@Test
-	public void getAllDemoWithUINTest() {
-		dedupeEntity.setUin("1234");
-		List<IndividualDemographicDedupeEntity> dedupeList = new ArrayList<>();
-		dedupeList.add(dedupeEntity);
-		Mockito.when(demographicDedupeRepository.createQuerySelect(any(), any())).thenReturn(dedupeList);
-		List<DemographicInfoDto> duplicateUin = packetInfodao.getAllDemographicInfoDtos("A125", "male", null, "ar");
-		assertEquals("1234", duplicateUin.get(0).getUin());
-
-	}
 
 	/**
 	 * Find demo by id test.
@@ -151,21 +136,6 @@ public class PacketInfoDaoTest {
 
 		List<DemographicInfoDto> demographicDedupeDtoList = packetInfodao.findDemoById("2018782130000224092018121229");
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
-	}
-
-
-	/**
-	 * Gets the reg id by UIN test.
-	 *
-	 * @return the reg id by UIN test
-	 */
-	@Test
-	public void getRegIdByUINTest() {
-		List<String> regIdList = new ArrayList<>();
-		regIdList.add("2018782130000224092018121229");
-		Mockito.when(demographicDedupeRepository.getRegIdByUIN("493410317027")).thenReturn(regIdList);
-		List<String> result = packetInfodao.getRegIdByUIN("493410317027");
-		assertEquals("2018782130000224092018121229", result.get(0));
 	}
 
 	@Test

@@ -29,7 +29,7 @@ public class RequestDto {
 	private String registrationId;
 	
 	private String status;
-	
+
 	/** The UIN */
 	private String biometricReferenceId;
 }
