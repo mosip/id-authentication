@@ -13,6 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +32,7 @@ import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
 import io.mosip.kernel.auth.adapter.exception.AuthManagerException;
 import io.mosip.kernel.auth.adapter.model.AuthToken;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -40,6 +43,8 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
  *
  */
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
+
+	private static final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
 	private String[] allowedEndPoints() {
 		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
@@ -73,18 +78,16 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
 		Cookie[] cookies = httpServletRequest.getCookies();
-		System.out.println("Cookies List " + cookies);
-		System.out.println("Inside Auth Filter");
+		System.out.println("\nInside Auth Filter");
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
 					token = cookie.getValue();
-					System.out.println("Cookie name with Auth header:" + cookie.getName() + ":");
 					System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}
 		}
-		System.out.println("Outside Auth Filter");
+		System.out.println("Outside Auth Filter\n");
 		if (token == null) {
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
@@ -94,6 +97,8 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			httpServletResponse.setContentType("application/json");
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			httpServletResponse.getWriter().write(convertObjectToJson(errorResponse));
+			logger.error("\n\n Exception : Authorization token not present > " + httpServletRequest.getRequestURL()
+					+ "\n\n");
 			return null;
 		}
 		AuthToken authToken = new AuthToken(token);
@@ -112,10 +117,17 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			AuthenticationException failed) throws IOException, ServletException {
 		AuthManagerException exception = (AuthManagerException) failed;
 		ResponseWrapper<ServiceError> errorResponse = setErrors(request);
-		errorResponse.getErrors().addAll(exception.getList());
+		if (exception.getList().size() != 0) {
+			errorResponse.getErrors().addAll(exception.getList());
+		} else {
+			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
+					"Authentication Failed");
+			errorResponse.getErrors().add(error);
+		}
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
+		ExceptionUtils.logRootCause(failed);
 		response.getWriter().write(convertObjectToJson(errorResponse));
 
 	}

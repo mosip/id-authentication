@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>	
 	<groupId>io.mosip</groupId>
 	<artifactId>mosip-parent</artifactId>
-	<version>0.11.5</version>
+	<version>0.12.0</version>
 	<packaging>pom</packaging>	
 	
 	<name>MOSIP Project Parent POM</name>	
@@ -16,5 +16,6 @@
 		<module>registration-processor</module>
 		<module>authentication</module>
 		<module>id-repository</module>
+		<module>admin</module>
   </modules>
 </project>

@@ -27,13 +27,16 @@ import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+
+import org.springframework.context.annotation.Primary;
 
 @PropertySource("classpath:bootstrap.properties")
 @Configuration
 public class CoreConfigBean {
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CoreConfigBean.class);
-	
+
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertiesFromConfigServer(Environment environment) {
 		try {
@@ -128,4 +131,8 @@ public class CoreConfigBean {
 		return new MosipRouter();
 	}
 
+	@Bean
+	public DigitalSignatureUtility getDigitalSignatureUtility() {
+		return new DigitalSignatureUtility();
+	}
 }
