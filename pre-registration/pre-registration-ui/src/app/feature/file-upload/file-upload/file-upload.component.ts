@@ -90,7 +90,7 @@ export class FileUploadComponent implements OnInit {
     private dataStroage: DataStorageService,
     private router: Router,
     private config: ConfigService,
-    private domSanitizer: DomSanitizer,
+    public domSanitizer: DomSanitizer,
     private bookingService: BookingService,
     private translate: TranslateService,
     private dialog: MatDialog
@@ -646,7 +646,7 @@ export class FileUploadComponent implements OnInit {
           this.updateUsers(response);
         } else {
           // alert(response['errors'].errorCode + ' Invalid document format supported');
-          this.displayMessage('Error', response['errors'][0].message);
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       error => {
@@ -725,7 +725,7 @@ export class FileUploadComponent implements OnInit {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
             // alert(response['errors'].message);
-            this.displayMessage('Error', response['errors'][0].message);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg9);
           }
         },
         err => {
