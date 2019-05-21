@@ -279,6 +279,11 @@ public class PacketInfoDao {
 
 	}
 	
+	public List<String> getReferenceIdByBatchId(String batchId){
+		return abisRequestRepository.getReferenceIdByBatchId(batchId);
+		
+	}
+	
 	/**
 	 * Gets the abis transaction id by request id.
 	 *

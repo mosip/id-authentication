@@ -170,6 +170,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the batch statusby batch id
 	 */
 	public List<String> getBatchStatusbyBatchId(String batchId);
+	
+	/**
+	 * Gets the reference id by batch id.
+	 *
+	 * @param batchId the batch id
+	 * @return the reference id by batch id
+	 */
+	public List<String> getReferenceIdByBatchId(String batchId);
 
 	/**
 	 * Gets the insert or identify request.

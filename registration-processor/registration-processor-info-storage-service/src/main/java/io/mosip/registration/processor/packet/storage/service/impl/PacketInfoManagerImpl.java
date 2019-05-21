@@ -622,6 +622,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
+	
+	@Override
+	public List<String> getReferenceIdByBatchId(String batchId){
+		return packetInfoDao.getReferenceIdByBatchId(batchId);
+	}
 
 	/*
 	 * (non-Javadoc)
