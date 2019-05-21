@@ -118,39 +118,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
-	/**
-	 * Update uin wrt registraion id.
-	 *
-	 * @param regId
-	 *            the reg id
-	 * @param uin
-	 *            the uin
-	 */
-	@Modifying
-	@Transactional
-	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.uin =:uin WHERE demo.id.regId =:regId")
-	public void updateUinWrtRegistraionId(@Param("regId") String regId, @Param("uin") String uin);
-
-	/**
-	 * Gets the reg id by UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return the reg id by UIN
-	 */
-
-	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
-	public List<String> getRegIdByUIN(@Param("uin") String uin);
-
-	/**
-	 * Gets the UIN by rid.
-	 *
-	 * @param rid
-	 *            the rid
-	 * @return the UIN by rid
-	 */
-	@Query("SELECT demo.uin FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId =:rid")
-	public List<String> getUINByRid(@Param("rid") String rid);
 
 	/**
 	 * Gets the reference id by rid.
@@ -283,8 +250,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
-	
-	
+
+
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId in :abisRespIds")
 	public List<AbisResponseDetEntity> getAbisResponseDetailsList(@Param("abisRespIds") List<String> responseId);
 

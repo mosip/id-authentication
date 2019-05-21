@@ -51,7 +51,7 @@ public class RegistrationStatusExceptionHandler {
 
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
-	
+
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusExceptionHandler.class);
@@ -143,7 +143,7 @@ public class RegistrationStatusExceptionHandler {
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(null);
 		Gson gson = new GsonBuilder().create();
-		
+
 		if(isEnabled) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));

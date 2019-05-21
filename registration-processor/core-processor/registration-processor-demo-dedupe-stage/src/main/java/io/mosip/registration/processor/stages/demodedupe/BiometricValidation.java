@@ -42,7 +42,7 @@ public class BiometricValidation {
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = File.separator;
 
-	public boolean validateBiometric(String duplicateUin, String regId) throws ApisResourceAccessException, IOException, ParseException {
+	public boolean validateBiometric(String duplicateRid, String regId) throws ApisResourceAccessException, IOException, ParseException {
 		/*
 		 * authRequestDTO.setIdvId(duplicateUin);
 		 * authRequestDTO.setAuthType(authTypeDTO); request.setIdentity(identityDTO);
