@@ -271,9 +271,15 @@ public class LoginServiceTest {
 	 
 	  @MockBean
 	  private  AuditLogUtil auditLogUtil;
+	  @Mock
+	  ResponseEntity<?> responseEntityAudit;
 	  @Test
 	  public void setAuditValuesTest() {
-		  Mockito.doNothing().when(auditLogUtil).saveAuditDetails(Mockito.any());
+		  list.add("Mosip");
+		  Mockito.doNothing().when(auditLogUtil).saveAuditDetails(Mockito.any(),Mockito.any());
+		  Mockito.doReturn(responseEntityAudit).when(authCommonUtil).callAuthService(Mockito.any(),Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		  Mockito.when(responseEntityAudit.getHeaders()).thenReturn(headers);
+		  Mockito.when(headers.get(Mockito.any())).thenReturn(list);
 		  spyAuthService.setAuditValues("eventId", "eventName", "eventType", "description", "idType", "userId", "userName");
 		  
 	  }

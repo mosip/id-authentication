@@ -41,6 +41,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.login.dto.ClientSecretDTO;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.OtpUser;
 import io.mosip.preregistration.login.dto.User;
@@ -112,6 +113,12 @@ public class LoginService {
 	AuditLogUtil auditLogUtil;
 	
 	Map<String, String> requiredRequestMap = new HashMap<>();
+
+	@Value("${clientId}")
+	private String clientId;
+
+	@Value("${secretKey}")
+	private String secretKey;
 	
 	@PostConstruct
 	public void setupLoginService() {
@@ -149,8 +156,9 @@ public class LoginService {
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString());
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
-				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
+				log.info("sessionId", "idType","id"," Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
@@ -200,8 +208,9 @@ public class LoginService {
 				
 				ResponseEntity<String> responseEntity = null;
 				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString());
 				responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
-				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
+				log.info("sessionId", "idType","id","\nKernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=null;
 				validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
@@ -229,7 +238,7 @@ public class LoginService {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		
 				if (isSuccess) {
-					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
+					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
 							" User sucessfully logedin    ",
 							AuditLogVariables.NO_ID.toString(), userid,
 							userid);
@@ -286,7 +295,7 @@ public class LoginService {
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
-				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
+				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
 						"User sucessfully logedin ",
 						AuditLogVariables.NO_ID.toString(),userId,
 						userId);
@@ -310,6 +319,13 @@ public class LoginService {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+		String tokenUrl=sendOtpResourceUrl+"/authenticate/clientidsecretkey";
+		ClientSecretDTO clientSecretDto=new ClientSecretDTO(clientId, secretKey, appId);
+		RequestWrapper<ClientSecretDTO> requestKernel=new RequestWrapper<>();
+		requestKernel.setRequest(clientSecretDto);
+		requestKernel.setRequesttime(LocalDateTime.now());
+		ResponseEntity<?> response=loginCommonUtil.callAuthService(tokenUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, requestKernel,null,ResponseWrapper.class);
+		String token=response.getHeaders().get("Set-Cookie").get(0);
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -320,7 +336,7 @@ public class LoginService {
 		auditRequestDto.setSessionUserName(userName);
 		auditRequestDto.setModuleId(AuditLogVariables.AUTHENTICATION.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.AUTHENTICATION_SERVICE.toString());
-		auditLogUtil.saveAuditDetails(auditRequestDto);
+		auditLogUtil.saveAuditDetails(auditRequestDto,token);
 	}
 	
 	/**
