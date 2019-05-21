@@ -62,6 +62,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
@@ -71,7 +72,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -109,11 +109,14 @@ public class OSIValidator {
 	/** The osi utils. */
 	@Autowired
 	private OSIUtils osiUtils;
+	
+	@Autowired
+	ABISHandlerUtil abisHandlerUtil;
 
 	private JSONObject demographicIdentity;
-	
+
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-	
+
 	/** The message. */
 	private String message = null;
 
@@ -143,24 +146,24 @@ public class OSIValidator {
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-	
+
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
-	
+
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
-	
+
 
 	@Autowired
 	private Utilities utility;
 
 	RegistrationExceptionMapperUtil registrationExceptionMapperUtil  = new RegistrationExceptionMapperUtil();
 
-    /** The key generator. */
-    @Autowired
-    private KeyGenerator keyGenerator;
+	/** The key generator. */
+	@Autowired
+	private KeyGenerator keyGenerator;
 
-    /**
+	/**
 	 * Checks if is valid OSI.
 	 *
 	 * @param registrationId
@@ -214,22 +217,22 @@ public class OSIValidator {
 			// officer password and otp check
 			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
-			
+
 			String fingerPrint = null;//regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = null;//regOsi.getOfficerfingerType();
 			String iris =null;// regOsi.getOfficerIrisImageName();
 			String irisType =null;// regOsi.getOfficerIrisType();
 			String face =null;// regOsi.getOfficerPhotoName();
 			String pin = null;//regOsi.getOfficerHashedPin();
-			
+
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
 				if (flag) {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
 				} else {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
+					.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
 
 				}
 				return flag;
@@ -281,14 +284,14 @@ public class OSIValidator {
 			// superVisior otp and password
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
 			String supervisorOTPAuthentication =regOsi.getSupervisorOTPAuthentication();
-			
+
 			String fingerPrint = null;//regOsi.getSupervisorBiometricFileName();
 			String fingerPrintType = null;//regOsi.getSupervisorFingerType();
 			String iris = null;//regOsi.getSupervisorIrisImageName();
 			String irisType = null;//regOsi.getSupervisorIrisType();
 			String face = null;//regOsi.getSupervisorPhotoName();
 			String pin = null;//regOsi.getSupervisorHashedPin();
-			
+
 			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
 				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
 				if (flag) {
@@ -323,54 +326,58 @@ public class OSIValidator {
 	 */
 	private boolean isValidIntroducer(String registrationId)
 			throws IOException, ApisResourceAccessException {
-			
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::entry");
+	
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name()) ||
 				(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
-				int age = utility.getApplicantAge(registrationId);
-				int ageThreshold = Integer.parseInt(ageLimit);
-				if (age < ageThreshold) {
-					String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
-					String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
-					Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
-					Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
-					BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
-					BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
-					if (introducerUIN == null && introducerRID == null) {
+			int age = utility.getApplicantAge(registrationId);
+			int ageThreshold = Integer.parseInt(ageLimit);
+			if (age < ageThreshold) {
+				String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
+				String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
+				Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
+				Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
+				BigInteger introducerUIN =numberToBigInteger(introducerUinNumber);
+				BigInteger introducerRID =numberToBigInteger(introducerRidNumber);
+				if (introducerUIN == null && introducerRID == null) {
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+					return false;
+				}
+				String introducerRidString = bigIntegerToString(introducerRID);
+				String introducerUinString = bigIntegerToString(introducerUIN);
+				if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
+					//To do Fetch the UIN of the Parent using the RID from the ID Repository.
+					introducerUinString = abisHandlerUtil.getUinFromIDRepo(introducerRidString).toString();
+					if (introducerUinString == null) {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
+								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
 						return false;
 					}
-					String introducerRidString = bigIntegerToString(introducerRID);
-					String introducerUinString = bigIntegerToString(introducerUIN);
-					if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
-						//To do Fetch the UIN of the Parent using the RID from the ID Repository.
-						//introducerUinString = getIntroducerUIN(introducerRidString);
-						if (introducerUinString == null) {
-							registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-									.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
-							registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-							registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
-							return false;
-						}
 
-					}
-					if (introducerUinString != null) {
-						return validateIntroducer(registrationId, introducerUinString,"");
-					}
+				}
+				if (introducerUinString != null) {
+					return validateIntroducer(registrationId, introducerUinString,"");
+				}
 			}
 
 		}
 
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::exit");
+	
 		return true;
 	}
 
 	private BigInteger numberToBigInteger(Number number ) {
 		return number!=null? new BigInteger(String.valueOf(number)):null;
 	}
-	
+
 	private String bigIntegerToString(BigInteger number ) {
 
 		return number!=null?String.valueOf(number):null;
@@ -379,7 +386,7 @@ public class OSIValidator {
 	private int getApplicantAge(String registrationId) throws IOException {
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
-		
+
 		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
 		try {
 			if (applicantDob != null) {
@@ -508,11 +515,13 @@ public class OSIValidator {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	
+
 	//TODO Now Introducer data will come in ID JSON Logic is going to change 
 	private boolean validateIntroducer(String registrationId, String introducerUin,String introducerBiometricsFile)
 			throws ApisResourceAccessException, IOException {
-		
+		if(introducerBiometricsFile != null ||(!introducerBiometricsFile.trim().isEmpty())) {
+			InputStream packetMetaInfoStream = adapter.getFile(registrationId, introducerBiometricsFile);
+		}
 		return true;
 
 	}
