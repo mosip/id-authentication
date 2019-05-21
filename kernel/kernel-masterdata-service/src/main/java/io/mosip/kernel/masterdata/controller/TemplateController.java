@@ -47,7 +47,7 @@ public class TemplateController {
 	 * 
 	 * @return All {@link TemplateDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<TemplateResponseDto> getAllTemplate() {
@@ -59,7 +59,8 @@ public class TemplateController {
 	/**
 	 * Method to fetch all Template details based on language code
 	 * 
-	 * @param langCode the language code
+	 * @param langCode
+	 *            the language code
 	 * @return All {@link TemplateDto}
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
@@ -76,8 +77,10 @@ public class TemplateController {
 	 * Method to fetch all Template details based on language code and template type
 	 * code
 	 * 
-	 * @param langCode         the language code
-	 * @param templateTypeCode the template type code
+	 * @param langCode
+	 *            the language code
+	 * @param templateTypeCode
+	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_PROCESSOR','ID_AUTHENTICATION','AUTH')")
@@ -95,7 +98,8 @@ public class TemplateController {
 	/**
 	 * This method creates template based on provided details.
 	 * 
-	 * @param template the template detail
+	 * @param template
+	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -115,7 +119,8 @@ public class TemplateController {
 	/**
 	 * This method update template based on provided details.
 	 * 
-	 * @param template the template detail
+	 * @param template
+	 *            the template detail
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -135,7 +140,8 @@ public class TemplateController {
 	/**
 	 * This method delete template based on provided details.
 	 * 
-	 * @param id the template id
+	 * @param id
+	 *            the template id
 	 * @return {@link IdResponseDto}
 	 */
 	@ResponseFilter
@@ -155,7 +161,8 @@ public class TemplateController {
 	/**
 	 * Method to fetch all Template details based on template type code
 	 * 
-	 * @param templateTypeCode the template type code
+	 * @param templateTypeCode
+	 *            the template type code
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/templatetypecodes/{code}")

@@ -212,8 +212,8 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserTokenDto mosipToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(userOtp.getAppId())
 				.authenticateUserWithOtp(userOtp);
-		if (mosipUser == null) {
-			mosipUser = uinService.getDetailsFromUin(userOtp.getUserId());
+		if (mosipUser == null && AuthConstant.IDA.toLowerCase().equals(userOtp.getAppId().toLowerCase())) {
+			mosipUser = uinService.getDetailsForValidateOtp(userOtp.getUserId());
 		}
 		if (mosipUser != null) {
 			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
