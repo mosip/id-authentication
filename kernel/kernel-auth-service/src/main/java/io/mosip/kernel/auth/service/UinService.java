@@ -12,5 +12,6 @@ import io.mosip.kernel.auth.dto.MosipUserDto;
 public interface UinService {
 
 	MosipUserDto getDetailsFromUin(String uin) throws Exception;
-
+	
+	MosipUserDto getDetailsForValidateOtp(String uin) throws Exception;
 }
