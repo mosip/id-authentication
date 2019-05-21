@@ -2169,7 +2169,7 @@ public class DemographicDetailController extends BaseController {
 		}
 		LocalDate localDate = LocalDate.now();
 
-		if (localDate.compareTo(date) != -1) {
+		if (localDate.compareTo(date) >= 0) {
 
 			try {
 				age = Period.between(date, localDate).getYears();
