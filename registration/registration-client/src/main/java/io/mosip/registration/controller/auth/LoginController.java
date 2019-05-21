@@ -47,6 +47,7 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -307,12 +308,18 @@ public class LoginController extends BaseController implements Initializable {
 				loginRoot.setDisable(false);
 
 				if (responseDTO.getErrorResponseDTOs() != null) {
-					if (version.equals("0")) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-					} else {
+
+					ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+
+					if (RegistrationConstants.BACKUP_PREVIOUS_SUCCESS.equalsIgnoreCase(errorResponseDTO.getMessage())) {
 						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED);
+								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED
+										+ RegistrationUIConstants.RESTART_APPLICATION);
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+
 					}
+
 					System.exit(0);
 				}
 			}

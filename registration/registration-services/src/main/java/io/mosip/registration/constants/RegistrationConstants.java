@@ -1326,4 +1326,11 @@ public class RegistrationConstants {
 	public static final byte[] NULL_VECTOR = new byte[0];
 	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
 	
+	//SQL Execution
+	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
+	public static final String ROLL_BACK_SQL_EXECUTION_SUCCESS = "ROLL BACK SQL EXECUTION SUCCESS";
+	public static final String ROLL_BACK_SQL_EXECUTION_FAILURE = "ROLL BACK SQL EXECUTION FAILURE";
+	public static final String SQL_EXECUTION_FAILURE = "SQL EXECUTION FAILURE";
+	public static final String BACKUP_PREVIOUS_SUCCESS = "Backup Success";
+	public static final String BACKUP_PREVIOUS_FAILURE = "Backup Failed";
 }

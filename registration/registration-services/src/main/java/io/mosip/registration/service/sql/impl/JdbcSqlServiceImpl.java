@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -42,8 +43,8 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	@Autowired
 	private GlobalParamService globalParamService;
 
-//	@Autowired
-//	private JobConfigurationService jobConfigurationService;
+	// @Autowired
+	// private JobConfigurationService jobConfigurationService;
 
 	// TODO move to application.properties
 	private String backUpPath = "D://mosip/AutoBackUp";
@@ -67,11 +68,11 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				executeSqlFile(responseDTO, latestVersion, previousVersion);
 			} else {
 				// Prepare Error Response as unable to establish connection
-				setErrorResponse(responseDTO, "unable to esablish connection", null);
+				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
 			}
 		} catch (SQLException | RuntimeException exception) {
 			// Prepare Error Response as unable to establish connection
-			setErrorResponse(responseDTO, "unable to esablish connection", null);
+			setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
 		}
 		return responseDTO;
 	}
@@ -148,8 +149,7 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 
 			} catch (RuntimeException | IOException | SQLException runtimeException) {
 
-				replaceWithBackUpApplication(responseDTO, previousVersion);
-
+				
 				try {
 					File rollBackFile = getSqlFile(
 							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
@@ -159,11 +159,15 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 					}
 				} catch (RuntimeException | IOException | SQLException exception) {
 					// Prepare Error Response
-					setErrorResponse(responseDTO, "unable to execute sql file", null);
+					setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
 
 				}
 				// Prepare Error Response
-				setErrorResponse(responseDTO, "unable to execute sql file", null);
+				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+				
+				//Replace with backup
+				replaceWithBackUpApplication(responseDTO, previousVersion);
+
 			}
 		}
 
@@ -176,26 +180,34 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	}
 
 	private void replaceWithBackUpApplication(ResponseDTO responseDTO, String previousVersion) {
-		File file = new File(backUpPath);
+		File file = new File(FilenameUtils.getFullPath(backUpPath), FilenameUtils.getName(backUpPath));
 
+		boolean isBackUpCompleted = false;
 		for (File backUpFolder : file.listFiles()) {
 			if (backUpFolder.getName().contains(previousVersion)) {
 
 				try {
-					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + File.separator + binFolder),
-							new File(binFolder));
-					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + File.separator + libFolder),
-							new File(libFolder));
-					FileUtils.copyFile(new File(backUpFolder.getAbsolutePath() + File.separator + manifestFile),
-							new File(manifestFile));
+					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
+							new File(FilenameUtils.getName(binFolder)));
+					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
+							new File(FilenameUtils.getName(libFolder)));
+					FileUtils.copyFile(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
+							new File(FilenameUtils.getName(manifestFile)));
 
-				} catch (io.mosip.kernel.core.exception.IOException e) {
-					setErrorResponse(responseDTO, "Replaced with previous Binaroies", null);
+					isBackUpCompleted = true;
+					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
+				} catch (io.mosip.kernel.core.exception.IOException exception) {
+					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 				}
 				break;
 
 			}
 		}
+
+		if (!isBackUpCompleted) {
+			setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+		}
 	}
+
 
 }
