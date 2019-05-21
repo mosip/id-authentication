@@ -336,6 +336,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String preId_status = dao.getRegCenterIdOfConsumedApplication(PreID);
 		return preId_status;
 	}
+	public Response pagination(String index)
+	{
+		HashMap<String, String> pageIndeex=new HashMap<String, String>();
+		pageIndeex.put("pageIndex", index);
+		response = applnLib.getRequest(preReg_FetchAllApplicationCreatedByUserURI, pageIndeex);
+		return response;
+		
+	}
 
 	/**
 	 * VALIDATING OTP
@@ -343,7 +351,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @param request
 	 * @return
 	 */
-	public static Response validateOTP(JSONObject request) {
+	public  Response validateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, validateOTP_URI);
 		return response;
 	}
