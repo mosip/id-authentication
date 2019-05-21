@@ -113,18 +113,6 @@ public class BaseIdRepoValidatorTest {
 	}
 	
 	@Test
-	public void testValidateIdNullId() {
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", null, errors, "read");
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
-	}
-
-	@Test
 	public void testValidateIdInvalidId() {
 		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", "abc", errors, "read");
 		assertTrue(errors.hasErrors());

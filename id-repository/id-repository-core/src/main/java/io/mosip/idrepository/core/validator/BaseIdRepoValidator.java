@@ -33,7 +33,7 @@ public abstract class BaseIdRepoValidator {
 	private static final String VER = "version";
 
 	/** The Constant ID. */
-	private static final String ID = "id";
+	protected static final String ID = "id";
 
 	/** The Environment */
 	@Autowired
@@ -86,10 +86,7 @@ public abstract class BaseIdRepoValidator {
 	 * @param operation
 	 */
 	public void validateId(String id, Errors errors, String operation) {
-		if (Objects.isNull(id)) {
-			errors.rejectValue(ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID));
-		} else if (!this.id.get(operation).equals(id)) {
+		if (!this.id.get(operation).equals(id)) {
 			errors.rejectValue(ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID));
 		}
