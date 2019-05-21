@@ -84,7 +84,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 	
-	@Value("${mosip.sign-certificate-refid}")
+	@Value("${mosip.sign-certificate-refid:SIGN}")
 	private String certificateSignRefID;
 
 	/** The rest template. */
