@@ -614,7 +614,6 @@ export class DashBoardComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
         this.errorLanguagelabels = response['error'];
-        this.secondaryLanguagelabels = response['dashboard'];
         resolve(true);
       });
     });

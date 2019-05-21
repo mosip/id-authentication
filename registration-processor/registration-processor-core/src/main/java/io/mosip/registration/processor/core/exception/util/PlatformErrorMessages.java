@@ -642,6 +642,9 @@ public enum PlatformErrorMessages {
 	/** The rpr utl cbeff version mismatch. */
 	RPR_UTL_CBEFF_VERSION_MISMATCH(PlatformConstants.RPR_UTIL + "002", "Both Files have different versions"),
 
+	/** The rpr utl digital sign exception. */
+	RPR_UTL_DIGITAL_SIGN_EXCEPTION(PlatformConstants.RPR_UTIL + "003", "Failed to generate digital signature"),
+
 	/** The rpr prt pdf not generated. */
 	// Printing stage exceptions
 	RPR_PRT_PDF_NOT_GENERATED(PlatformConstants.RPR_PRINTING_MODULE + "001", "Error while generating PDF for UIN Card"),
