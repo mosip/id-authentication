@@ -3,6 +3,7 @@ package io.mosip.idrepository.core.test.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Map;
 
 import org.junit.Before;
@@ -24,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
+import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -114,13 +116,23 @@ public class BaseIdRepoValidatorTest {
 	
 	@Test
 	public void testValidateIdInvalidId() {
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", "abc", errors, "read");
-		assertTrue(errors.hasErrors());
-		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"),
-					error.getDefaultMessage());
-			assertEquals("id", ((FieldError) error).getField());
-		});
+		try {
+			ReflectionTestUtils.invokeMethod(requestValidator, "validateId", "abc","read");
+			}catch (UndeclaredThrowableException e) {
+				IdRepoAppException cause = (IdRepoAppException) e.getCause();
+				assertEquals(cause.getErrorCode(), IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+				assertEquals(cause.getErrorText(), String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "id"));
+			}
+	}
+	
+	@Test
+	public void testValidate_NullId() throws Throwable {
+		try {
+		ReflectionTestUtils.invokeMethod(requestValidator, "validateId", null,"read");
+		}catch (UndeclaredThrowableException e) {
+			IdRepoAppException cause = (IdRepoAppException) e.getCause();
+			assertEquals(cause.getErrorCode(), IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode());
+			assertEquals(cause.getErrorText(), String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "id"));
+		}
 	}
 }
