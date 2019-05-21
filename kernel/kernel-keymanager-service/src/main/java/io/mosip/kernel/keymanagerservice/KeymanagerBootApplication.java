@@ -2,6 +2,7 @@ package io.mosip.kernel.keymanagerservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Key Manager Application
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.kernel.keymanagerservice.*", "io.mosip.kernel.auth.*" })
+@PropertySource("classpath:application-local.properties")
 public class KeymanagerBootApplication {
 
 	/**
