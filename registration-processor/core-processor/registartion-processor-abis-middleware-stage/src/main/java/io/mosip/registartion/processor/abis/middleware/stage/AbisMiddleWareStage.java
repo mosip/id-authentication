@@ -104,7 +104,6 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private List<String> abisInboundAddresses;
 	private List<MosipQueue> mosipQueueList;
 	private InternalRegistrationStatusDto internalRegDto;
-	private List<AbisRequestDto> abisIdentifyRequestList;
 	private String registrationId;
 	private static final String REQUESTID = "requestId";
 	private MessageDTO messageDto;
@@ -156,6 +155,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::process()::entry");
 		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
@@ -195,7 +196,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			List<AbisRequestDto> abisInsertRequestList = abisInsertIdentifyList.stream()
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.INSERT.toString()))
 					.collect(Collectors.toList());
-			abisIdentifyRequestList = abisInsertIdentifyList.stream()
+			List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString()))
 					.collect(Collectors.toList());
 			if (abisInsertRequestList == null || abisInsertRequestList != null && abisInsertRequestList.isEmpty()) {
@@ -223,6 +224,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			isTransactionSuccessful = true;
 			description = "Abis insertRequests sucessfully sent to Queue";
 			messageDto = object;
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
 		} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
@@ -260,17 +263,26 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::process()::Exit");
 		return object;
 	}
 
 	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus)
 			throws RegistrationProcessorCheckedException {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::consumerListener()::entry");
+
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
+
 		try {
 			JSONObject commonResponse = JsonUtil.objectMapperReadValue(response, JSONObject.class);
 			String requestId = JsonUtil.getJSONValue(commonResponse, REQUESTID);
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
+
 			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.INSERT.toString())) {
 				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
@@ -279,10 +291,19 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				updateAbisResponseEntity(abisInsertResponseDto, response);
 				updteAbisRequestProcessed(abisInsertResponseDto, abisCommonRequestDto);
 				if (abisInsertResponseDto.getReturnValue() == 1) {
-					List<AbisRequestDto> temp = abisIdentifyRequestList.stream()
+					List<String> transactionIdList = packetInfoManager.getAbisTransactionIdByRequestId(requestId);
+					List<AbisRequestDto> abisIdentifyRequestList = packetInfoManager.getIdentifyReqListByTransactionId(
+							transactionIdList.get(0), AbisStatusCode.IDENTIFY.toString());
+					if (abisIdentifyRequestList == null
+							|| abisIdentifyRequestList != null && abisIdentifyRequestList.isEmpty()) {
+						throw new RegistrationProcessorUnCheckedException(
+								PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getCode(),
+								PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getMessage());
+					}
+					List<AbisRequestDto> abisIdentifyRequest = abisIdentifyRequestList.stream()
 							.filter(dto1 -> dto1.getAbisAppCode().equals(abisCommonRequestDto.getAbisAppCode()))
 							.collect(Collectors.toList());
-					AbisRequestDto abisIdentifyRequestDto = temp.get(0);
+					AbisRequestDto abisIdentifyRequestDto = abisIdentifyRequest.get(0);
 					boolean isAddedToQueue = sendToQueue(queue, new String(abisIdentifyRequestDto.getReqText()),
 							abisInBoundAddress);
 					updateAbisRequest(isAddedToQueue, abisIdentifyRequestDto);
@@ -304,6 +325,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 				String batchId = packetInfoManager.getBatchIdByRequestId(abisIdentifyResponseDto.getRequestId());
 				if (checkAllIdentifyRequestsProcessed(batchId)) {
+
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+							"",
+							"AbisMiddlewareStage::consumerListener()::All identify are requests processed sending to Abis handler");
+
 					this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
 				}
 
@@ -315,21 +341,28 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::consumerListener()::Exit()");
 	}
 
 	private boolean sendToQueue(MosipQueue queue, String abisReqTextString, String abisQueueAddress)
 			throws RegistrationProcessorCheckedException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::sendToQueue()::Entry");
 		boolean isAddedToQueue;
 		try {
 			isAddedToQueue = mosipQueueManager.send(queue, abisReqTextString.getBytes(), abisQueueAddress);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage:: sent to abis queue ::" + abisReqTextString);
+
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMiddlewareStage::sendToQueue()::Exit");
 		return isAddedToQueue;
 	}
 

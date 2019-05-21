@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
@@ -187,6 +188,28 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 			@Param("refRegtrnId") String refRegtrnId);
 
 	/**
+	 * Get transaction id from Abis request table
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@Query("SELECT abisreq.refRegtrnId FROM AbisRequestEntity abisreq WHERE abisreq.id.id =:id")
+	public List<String> getAbisTransactionIdByRequestId(@Param("id") String id);
+
+	/**
+	 * Gets the identify req list by transaction id.
+	 *
+	 * @param refRegtrnId
+	 *            the ref regtrn id
+	 * @param requestType
+	 *            the request type
+	 * @return the identify req list by transaction id
+	 */
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType =:requestType")
+	public List<AbisRequestEntity> getIdentifyReqListByTransactionId(@Param("refRegtrnId") String refRegtrnId,
+			@Param("requestType") String requestType);
+
+	/**
 	 * Gets the abis request by request id.
 	 *
 	 * @param id
@@ -283,8 +306,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
-	
-	
+
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId in :abisRespIds")
 	public List<AbisResponseDetEntity> getAbisResponseDetailsList(@Param("abisRespIds") List<String> responseId);
 
