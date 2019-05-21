@@ -164,19 +164,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	ProgressIndicator progressIndicator;
-	
+
 	@FXML
 	public GridPane progressPane;
-	
+
 	@FXML
 	public ProgressBar syncProgressBar;
-	
+
 	@FXML
 	private Label eodLabel;
-	
+
 	@Autowired
 	HeaderController headerController;
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -186,7 +185,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			eodProcessGridPane.setVisible(false);
 			eodLabel.setVisible(false);
 		}
-		
+
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
@@ -256,7 +255,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+							errorMessage.append(
+									RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage())
+											+ "\n\n");
 						}
 						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 					} else {
@@ -326,7 +327,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								errorMessage.append(RegistrationUIConstants
+										.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
@@ -508,7 +510,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								errorMessage.append(RegistrationUIConstants
+										.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -654,10 +657,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
-				
+
 				sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
 						registrationDTO.getRegistrationId());
-				
+
 				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
@@ -763,8 +766,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -789,6 +791,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	}
 
+	@SuppressWarnings("resource")
 	private void sendNotification(String email, String mobile, String regID) {
 		try {
 			boolean emailSent = false;
@@ -798,10 +801,22 @@ public class PacketHandlerController extends BaseController implements Initializ
 						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					ResponseDTO notificationResponse;
-					Writer writeNotificationTemplate;
+					Writer writeNotificationTemplate = null;
 					if (email != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
-						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+
+						if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+								.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.LOST_UIN_EMAIL_TEMPLATE);
+						} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+								.getRegistrationCategory().equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.UPDATE_UIN_EMAIL_TEMPLATE);
+						} else {
+							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+						}
+
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
@@ -815,7 +830,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 					}
 					if (mobile != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
-						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+
+						if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+								.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.LOST_UIN_SMS_TEMPLATE);
+						} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+								.getRegistrationCategory().equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.UPDATE_UIN_SMS_TEMPLATE);
+						} else {
+							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+						}
+
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);

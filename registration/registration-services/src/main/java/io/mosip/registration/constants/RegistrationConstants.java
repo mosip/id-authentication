@@ -744,7 +744,12 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_4 = "reg-ack-template-part4";
 	public static final String EMAIL_TEMPLATE = "reg-email-notification";
+	public static final String UPDATE_UIN_EMAIL_TEMPLATE = "updateUIN-email-notification";
+	public static final String LOST_UIN_EMAIL_TEMPLATE = "lostUIN-email-notification";
 	public static final String SMS_TEMPLATE = "reg-sms-notification";
+	public static final String UPDATE_UIN_SMS_TEMPLATE = "updateUIN-sms-notification";
+	public static final String LOST_UIN_SMS_TEMPLATE = "lostUIN-sms-notification";
+
 
 	// Notification Service
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
