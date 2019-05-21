@@ -109,7 +109,7 @@ public class OSIValidator {
 	/** The osi utils. */
 	@Autowired
 	private OSIUtils osiUtils;
-	
+
 	@Autowired
 	ABISHandlerUtil abisHandlerUtil;
 
@@ -137,9 +137,6 @@ public class OSIValidator {
 
 	/** The identity info DTO. */
 	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-
-	/** The request. */
-	RequestDTO request = new RequestDTO();
 
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
@@ -328,7 +325,7 @@ public class OSIValidator {
 			throws IOException, ApisResourceAccessException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
-	
+
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name()) ||
 				(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
 			int age = utility.getApplicantAge(registrationId);
@@ -370,7 +367,7 @@ public class OSIValidator {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::exit");
-	
+
 		return true;
 	}
 

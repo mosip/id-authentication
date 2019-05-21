@@ -67,9 +67,9 @@
 			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-abis-handler-stage</artifactId>
-			<version>${registration.processor.abis.handler.stage.version}</version>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>

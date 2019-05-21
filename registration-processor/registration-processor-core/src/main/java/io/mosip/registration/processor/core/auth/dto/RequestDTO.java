@@ -3,19 +3,14 @@ package io.mosip.registration.processor.core.auth.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/**
- * 
- * @author Dinesh Karuppiah.T
- */
 @Data
+@AllArgsConstructor
 public class RequestDTO {
-/*
-	*//** variable to hold identity value *//*
-	private IdentityDTO identity;*/
-	
-	private List<DataInfoDTO> biometrics;
+
+	private List<BioInfo> biometrics;
 	
 	private String otp;
 	
