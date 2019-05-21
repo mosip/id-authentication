@@ -66,7 +66,7 @@ import io.restassured.response.Response;
  */
 
 public class Sync extends BaseTestCase implements ITest {
-	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(Sync.class);
 	boolean status = false;
@@ -86,7 +86,7 @@ public class Sync extends BaseTestCase implements ITest {
 	static String requestKeyFile = "SyncRequest.json";
 	static String description="";
 	static String apiName="SyncApi : ";
-	
+
 	CommonLibrary common=new CommonLibrary();
 	/**
 	 *This method is used for reading the test data based on the test case name passed
@@ -101,7 +101,7 @@ public class Sync extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			switch ("regression") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -133,23 +133,40 @@ public class Sync extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
 		EncrypterDecrypter encrypter = new EncrypterDecrypter();
-		
+
 		EncryptData encryptData=new EncryptData();
+		String regId = null;
+		JSONObject requestToEncrypt = null;
 		File file=ResponseRequestMapper.getPacket(testSuite, object);
-		RegistrationPacketSyncDTO registrationPacketSyncDto=encryptData.createSyncRequest(file);
-	
-		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
-	
-		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 		try{
-			
-			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+			if(file!=null){
+				registrationPacketSyncDto=encryptData.createSyncRequest(file);
+
+				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+
+				requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+			}
+			else {
+				actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+				JSONArray request = (JSONArray) actualRequest.get("request");
+				for(int j = 0; j<request.size() ; j++){
+					JSONObject obj  = (JSONObject) request.get(j);
+					regId = obj.get("registrationId").toString();
+					registrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
+					requestToEncrypt = encryptData.encryptData(registrationPacketSyncDto);
+				}
+			}
+
+
+
+
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
 			Response resp=applicationLibrary.postRequestToDecrypt(requestToEncrypt, encrypterURL);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			LocalDateTime timeStamp = encryptData.getTime(regId);
-			
-		
+
+
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
@@ -220,13 +237,13 @@ public class Sync extends BaseTestCase implements ITest {
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
+						String errorCode = err.get("errorCode").toString();
 						logger.info("errorCode : "+errorCode);
 						Iterator<Object> iterator1 = expectedError.iterator();
 
 						while(iterator1.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
 							logger.info("expectedErrorCode: "+expectedErrorCode);
 						}
 						if(expectedErrorCode.matches(errorCode)){
@@ -242,23 +259,19 @@ public class Sync extends BaseTestCase implements ITest {
 				finalStatus="Fail";
 			}
 			boolean setFinalStatus=false;
-	        if(finalStatus.equals("Fail"))
-	              setFinalStatus=false;
-	        else if(finalStatus.equals("Pass"))
-	              setFinalStatus=true;
-	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();
-	       
+			if(finalStatus.equals("Fail"))
+				setFinalStatus=false;
+			else if(finalStatus.equals("Pass"))
+				setFinalStatus=true;
+			Verify.verify(setFinalStatus);
+			softAssert.assertAll();
+
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
-			 
+
 		}
 	}  
 
-	private boolean createInputJson(String packetHash, long packetSize, String regId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	/**
 	 * This method is used for fetching test case name
@@ -292,15 +305,15 @@ public class Sync extends BaseTestCase implements ITest {
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}
-			
-			
-	/*		if(result.getStatus()==ITestResult.SUCCESS) {
+
+
+		/*		if(result.getStatus()==ITestResult.SUCCESS) {
 				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
 				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
 				test.log(Status.PASS, m);
 				test.log(Status.PASS, m1);
 			}
-			
+
 			if(result.getStatus()==ITestResult.FAILURE) {
 				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
 				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());

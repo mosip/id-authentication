@@ -30,7 +30,7 @@ public class RegProcDataRead {
 	String auditLogConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\auditinteg.cfg.xml";
 	File auditLogConfigFile=new File(auditLogConfigFilePath);
 
-	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_int.cfg.xml";
+	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_qa.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 	
 	public SyncRegistrationDto regproc_dbDataInRegistrationList(String regId){

@@ -5,9 +5,10 @@
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 
-<listeners>
+<--<listeners>
 		<!-- <listener class-name="io.mosip.report.CustomTestNGReporter" /> -->
-		<!-- <listener class-name="io.mosip.report.ExtentReportListener"></listener> -->
+		<!-- <listener class-name="io.mosip.report.ExtentReportListener">
+		</listener> -->
 
 <!-- 
   Passing Group as parmeter unsing "testType"
