@@ -1740,9 +1740,12 @@ public class DemographicDetailController extends BaseController {
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
-			populateFieldValue(fullName, fullNameLocalLanguage,
-					registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName()
-							: registrationDTO.getRegistrationMetaDataDTO().getFullName());
+			List<ValuesDTO> fullNameValues = moroccoIdentity.getFullName();
+			if (registrationDTO.getSelectionListDTO() != null && !registrationDTO.isNameNotUpdated()) {
+
+				fullNameValues = registrationDTO.getRegistrationMetaDataDTO().getFullName();
+			}
+			populateFieldValue(fullName, fullNameLocalLanguage, fullNameValues);
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
