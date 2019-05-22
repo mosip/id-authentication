@@ -77,8 +77,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	 // Data Providers to read the input json files from the folders
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smoke");
 			
