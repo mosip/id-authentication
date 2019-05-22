@@ -64,4 +64,9 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDate start,
 			LocalDate end, String regCenterId);
 	
+	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,LocalDate regDate);
+	
+	
+	@Query("SELECT e FROM RegistrationBookingEntity e  WHERE e.registrationCenterId= ?1 and e.regDate>=?2")
+	public List<RegistrationBookingEntity> findByRegId(String registrationCenterId,LocalDate regDate);
 }

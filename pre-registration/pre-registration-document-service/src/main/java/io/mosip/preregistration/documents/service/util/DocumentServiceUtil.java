@@ -137,8 +137,14 @@ public class DocumentServiceUtil {
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
-		uploadReqDto.setRequesttime(
-				new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
+		if(!(documentData.get("requesttime")==null ||documentData.get("requesttime").toString().isEmpty())) {
+			uploadReqDto.setRequesttime(
+					new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
+		}
+		else
+		{
+			uploadReqDto.setRequesttime(null);
+		}
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
