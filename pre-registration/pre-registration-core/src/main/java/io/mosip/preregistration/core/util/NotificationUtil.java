@@ -162,9 +162,15 @@ public class NotificationUtil {
 		log.info("sessionId", "idType", "id", "In smsNotification method of NotificationUtil service");
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
-
-			String mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
+		String mergeTemplate =null;
+		if(acknowledgementDTO.isBatch()) {
+			mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, cancelAppoinment),
 					acknowledgementDTO);
+		}
+		else { 
+			mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, smsAcknowledgement),
+					acknowledgementDTO);
+		}
 			SMSRequestDTO smsRequestDTO = new SMSRequestDTO();
 			smsRequestDTO.setMessage(mergeTemplate);
 			smsRequestDTO.setNumber(acknowledgementDTO.getMobNum());
