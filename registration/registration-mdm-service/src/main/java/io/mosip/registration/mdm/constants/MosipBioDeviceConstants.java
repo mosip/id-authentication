@@ -28,4 +28,22 @@ public class MosipBioDeviceConstants {
 	public static final String VALUE_TOUCHLESS = "TOUCHLESS";
 	public static final String VALUE_DOUBLE = "DOUBLE";
 
+	public static final String ISO_FILE_NAME = "ISOTemplate";
+	public static final String ISO_IMAGE_FILE_NAME = "ISOImage";
+	public static final String ISO_FILE = "ISOTemplate.iso";
+	public static final String DUPLICATE_FINGER = "DuplicateFinger";
+	public static final String ISO_IMAGE_FILE = "ISOImage.iso";
+
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
+			"/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",
+			"/fingerprints/lefthand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS = new String[] {
+			"/fingerprints/righthand/rightIndex/", "/fingerprints/righthand/rightLittle/",
+			"/fingerprints/righthand/rightMiddle/", "/fingerprints/righthand/rightRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/Srighthand/rightIndex/",
+			"/fingerprints/Srighthand/rightLittle/", "/fingerprints/Srighthand/rightMiddle/",
+			"/fingerprints/Srighthand/rightRing/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
+			"/fingerprints/thumb/rightThumb/" };
+
 }
