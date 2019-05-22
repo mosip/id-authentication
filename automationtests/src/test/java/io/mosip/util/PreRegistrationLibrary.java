@@ -1144,104 +1144,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response BookAppointment(Response FetchCentreResponse, String preID) {
 		List<String> appointmentDetails = new ArrayList<>();
 
-<<<<<<< HEAD
-			}
-		}
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		ObjectNode copyDocForSrcPreId = JsonPath.using(config).parse(request.toString())
-				.set("$.sourcePrId", sourcePreId).json();
-		ObjectNode copyDocForDestPreId = JsonPath.using(config).parse(copyDocForSrcPreId.toString())
-				.set("$.destinationPreId", destPreId).json();
-		String copyDoc = copyDocForDestPreId.toString();
-		JSONObject copyDocRes = null;
-		try {
-			copyDocRes = (JSONObject) parser.parse(copyDoc);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(request);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.postModifiedGetRequest(preReg_CopyDocumentsURI, GetHeader.getHeader(copyDocRes));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return response;
-	}
-
-	/*
-	 * 
-	 * Generic method For Fetching the Registration center details
-	 * 
-	 */
-
-	public Response FetchCentre() {
-		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchCenterIDURI");
-		ObjectNode fetchAvailabilityrequest = null;
-		String regCenterId = randomRegistrationCenterId();
-
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					fetchAvailabilityrequest = JsonPath.using(config).parse(request.toJSONString())
-							.set("$.registration_center_id", regCenterId).json();
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		String fetchCenterReq = fetchAvailabilityrequest.toString();
-		JSONObject fetchCenterReqjson = null;
-		try {
-			fetchCenterReqjson = (JSONObject) parser.parse(fetchCenterReq);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			response = applnLib.getRequest(preReg_FetchCenterIDURI, GetHeader.getHeader(fetchCenterReqjson));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return response;
-	}
-	
-	public Response fetchCentreWithCerterId(String regCenterId) {
-		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		ObjectNode fetchAvailabilityrequest = null;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					fetchAvailabilityrequest = JsonPath.using(config).parse(request.toJSONString())
-							.set("$.registration_center_id", regCenterId).json();
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-=======
 		String regCenterId = null;
 		String appDate = null;
 		String timeSlotFrom = null;
@@ -1267,7 +1169,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				objArr.add(object);*/
 				request.replace(key, object);
 				request.put("requesttime", getCurrentDate());
->>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 			}
 		}
 
@@ -1706,20 +1607,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.remove(langCodeKey);
 			}
 		}
-<<<<<<< HEAD
-		
-		
-		 String value = (String)request.get(langCodeKey);
-		
-		request.remove(langCodeKey);
-		
-		//response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
-					
-=======
 		request.put("requesttime", getCurrentDate());
 		response = applnLib.postFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
 
->>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 		return response;
 	}
 

@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 [{"testType":"smoke","testCaseName":"smoke_FetchLicenseKeyPermissions","jiraId":"MOS-1004","tspId":"valid","lincenseKey":"valid","status":""}]
-=======
-[{"testType":"smoke","testCaseName":"smoke_FetchLicenseKeyPermissions","jiraId":"MOS-1003","tspId":"valid","lincenseKey":"valid","status":""}, {"testType":"regression","tspId":"invalid","lincenseKey":"valid","status":""}, {"testType":"regression","tspId":"valid","lincenseKey":"invalid","testCaseName":"invalid_lincenseKey","jiraId":"MOS-1002","status":""}]
->>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866
-=======
-[{"testType":"smoke","testCaseName":"smoke_FetchLicenseKeyPermissions","jiraId":"MOS-1004","tspId":"valid","lincenseKey":"valid","status":""}, {"testType":"regression","tspId":"invalid","testCaseName":"invalid_tspId","jiraId":"MOS-1003","lincenseKey":"valid","status":""}, {"testType":"regression","tspId":"valid","lincenseKey":"invalid","testCaseName":"invalid_lincenseKey","jiraId":"MOS-1002","status":""}]
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
+

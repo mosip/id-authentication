@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 {
   "timestamp": 1549879431373,
   "status": 200,
@@ -9,32 +8,5 @@
       "errorMessage": "SessionUserId size must be between 1 and 64"
     }
   ]
-=======
-{
-    "id": "string",
-    "version": "string",
-    "responsetime": "2019-04-16T12:55:32.332Z",
-    "metadata": null,
-    "response": null,
-    "errors": [
-        {
-            "errorCode": "KER-AUD-001",
-            "message": "Request.sessionUserId size must be between 1 and 64"
-        }
-    ]
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
-=======
-{
-    "id": "string",
-    "version": "string",
-    "responsetime": "2019-04-16T12:55:32.332Z",
-    "metadata": null,
-    "response": null,
-    "errors": [
-        {
-            "errorCode": "KER-AUD-001",
-            "message": "Request.sessionUserId size must be between 1 and 256"
-        }
-    ]
->>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
+
 }

@@ -1,19 +1,5 @@
 {
 	"identityRequest": {
-<<<<<<< HEAD
-		"identity": {
-		
-    "emailId": [
-             {
-         
-               "value": "LoganathanSekar@mindtree.com"
-             }
-                ]   
-		}
-	},
-  "tspID": "TSP00001"
-}
-=======
 		"demographics": {
 			"emailId": "test@test.com"
 		},
@@ -21,4 +7,3 @@
 	}
 }
 
->>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791

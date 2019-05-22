@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-[]
-=======
 [{"Jira ID":"MOS-961","langcode":"valid","Test case Name":"invalid_message_empty","status":"Fail"},{"Jira ID":"MOS-961","langcode":"valid","Test case Name":"invalid_number","status":"Fail"},{"Jira ID":"MOS-961","langcode":"valid","Test case Name":"valid_number_empty","status":"Fail"},{"Jira ID":"MOS-961","langcode":"valid","Test case Name":"valid_smoke","status":"Fail"}]
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429

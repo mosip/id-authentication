@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-{
-  "status": "failure",
-  "message": "VALIDATION_UNSUCCESSFUL"
-=======
 {
   "id": null,
   "version": null,
@@ -13,5 +8,4 @@
     "message": "VALIDATION_UNSUCCESSFUL"
   },
   "errors": null
->>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

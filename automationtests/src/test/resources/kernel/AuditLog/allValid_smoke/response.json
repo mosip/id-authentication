@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-{
-  "status": true
-=======
 {
   "id": "string",
   "version": "string",
@@ -11,5 +7,4 @@
     "status": true
   },
   "errors": null
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }

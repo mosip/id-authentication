@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-{
-  "otp": "312218",
-  "status": "GENERATION_SUCCESSFUL"
-=======
 {
     "id": "string",
     "version": "string",
@@ -13,5 +8,4 @@
         "status": "GENERATION_SUCCESSFUL"
     },
     "errors": null
->>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
 }

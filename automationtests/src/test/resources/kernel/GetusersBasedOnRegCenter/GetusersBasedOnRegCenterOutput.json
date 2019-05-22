@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 [{"testType":"smoke","testCaseName":"smoke","jiraId":"MOS-1003","regid":"valid","status":""}, {"testType":"regression","regid":"invalid","testCaseName":"invalid_regid","jiraId":"MOS-1002","status":""}]
-=======
-[]
->>>>>>> 7e4c0ab74513a172d5e69d4fc6df8b4c9a37d866
-=======
-[{"jiraId":"MOS-1003","testType":"smoke","regid":"valid","testCaseName":"smoke","status":"Pass"},{"jiraId":"MOS-1002","testType":"regression","regid":"invalid","testCaseName":"invalid_regid","status":"Pass"}]
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
+

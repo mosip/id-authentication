@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-{
-    "timestamp": 1549882377143,
-    "status": 200,
-    "errors": [
-        {
-            "errorCode": "KER-AUD-002",
-            "errorMessage": "JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String \"2018-12-12\": Text '2018-12-12' could not be parsed at index 10; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `java.time.LocalDateTime` from String \"2018-12-12\": Text '2018-12-12' could not be parsed at index 10\n at [Source: (PushbackInputStream); line: 1, column: 213] (through reference chain: io.mosip.kernel.auditmanager.request.AuditRequestDto[\"actionTimeStamp\"])"
-        }
-    ]
-=======
 {
     "id": "string",
     "version": "string",
@@ -21,5 +10,4 @@
             "message": "JSON parse error: Cannot deserialize value of type `java.time.LocalDateTime` from String \"2018-12-12\": Text '2018-12-12' could not be parsed at index 10; nested exception is com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type `java.time.LocalDateTime` from String \"2018-12-12\": Text '2018-12-12' could not be parsed at index 10\n at [Source: (PushbackInputStream); line: 1, column: 224] (through reference chain: io.mosip.kernel.core.http.RequestWrapper[\"request\"]->io.mosip.kernel.auditmanager.request.AuditRequestDto[\"actionTimeStamp\"])"
         }
     ]
->>>>>>> 41a8be82c6b761145ccf09f5d83e4553a6d4a429
 }
