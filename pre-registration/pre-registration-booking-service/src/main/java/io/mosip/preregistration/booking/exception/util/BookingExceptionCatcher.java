@@ -7,6 +7,8 @@ package io.mosip.preregistration.booking.exception.util;
 import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 
+import org.springframework.web.client.HttpClientErrorException;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -148,6 +150,9 @@ public class BookingExceptionCatcher {
 			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
 					((TableNotAccessibleException) ex).getErrorText(),mainResponseDTO);
 		}else if (ex instanceof RestCallException) {
+			throw new RestCallException(((RestCallException) ex).getErrorCode(),
+					((RestCallException) ex).getErrorText(),mainResponseDTO);
+		}else if (ex instanceof HttpClientErrorException) {
 			throw new RestCallException(((RestCallException) ex).getErrorCode(),
 					((RestCallException) ex).getErrorText(),mainResponseDTO);
 		}

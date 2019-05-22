@@ -32,13 +32,7 @@ export class DataStorageService {
     private configService: ConfigService
   ) {}
 
-  //need to remove
-  // BASE_URL = 'https://qa.mosip.io/';
-  // BASE_URL_LOCAL = 'http://A2ML29862:9092/demographic/applications';
-
   BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
-  // BASE_URL = 'https://devops.mosip.io/';
-  // BASE_URL = 'https://qa.mosip.io/';
   PRE_REG_URL = this.appConfigService.getConfig()['PRE_REG_URL'];
 
   getUsers(userId: string) {

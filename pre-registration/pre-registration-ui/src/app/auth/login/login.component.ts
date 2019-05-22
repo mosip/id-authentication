@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit {
   seconds: string;
   showSpinner = true;
   validationMessages = {};
+  textDir = localStorage.getItem('dir');
 
   constructor(
     private authService: AuthService,
@@ -149,6 +150,7 @@ export class LoginComponent implements OnInit {
     }
     localStorage.setItem('dir', this.dir);
     localStorage.setItem('secondaryDir', this.secondaryDir);
+    this.textDir = localStorage.getItem('dir');
   }
 
   setTimer() {
