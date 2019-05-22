@@ -424,16 +424,20 @@ public class IrisCaptureController extends BaseController {
 		switch (eyeType) {
 		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
 			eyeType = RegistrationConstants.IRIS_SINGLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.LEFT + RegistrationConstants.EYE);
 			break;
 		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
 			eyeType = RegistrationConstants.IRIS_SINGLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.RIGHT + RegistrationConstants.EYE);
 			break;
 		case RegistrationConstants.IRIS_DOUBLE:
 			eyeType = RegistrationConstants.IRIS_DOUBLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.IRIS_DOUBLE);
 			break;
 
 		default:
 			break;
+			
 		}
 		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
 		try {
@@ -485,8 +489,7 @@ public class IrisCaptureController extends BaseController {
 						ExceptionUtils.getStackTrace(runtimeException)));
 			}
 
-			// getIrisImage(irisDetailsDTO,
-			// irisType.concat(RegistrationConstants.EYE));
+//			 getIrisImage(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 
 			if (irisDetailsDTO.getIris() != null) {
 				// Display the Scanned Iris Image in the Scan pop-up screen

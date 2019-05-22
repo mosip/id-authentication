@@ -1202,7 +1202,6 @@ public class DemographicDetailController extends BaseController {
 					!hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, parentUinId, validation, parentUinIdLocalLanguage,
 					!hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, fullNameLocalLanguage, validation);
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
 					!hasToBeTransliterated);

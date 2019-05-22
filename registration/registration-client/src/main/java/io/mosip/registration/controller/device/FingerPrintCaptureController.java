@@ -1129,16 +1129,16 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 
 	public void getFingerPrintImage(FingerprintDetailsDTO detailsDTO, String fingerType) {
-		String type = fingerType;
+		String type=fingerType;
 		switch (fingerType) {
 		case RegistrationConstants.LEFTPALM:
-			fingerType = RegistrationConstants.FINGER_SINGLE;
+			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_LEFT";
 			break;
 		case RegistrationConstants.RIGHTPALM:
-			fingerType = RegistrationConstants.FINGER_SINGLE;
+			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_RIGHT";
 			break;
 		case RegistrationConstants.THUMBS:
-			fingerType = RegistrationConstants.FINGER_SLAP;
+			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_THUMB";
 			break;
 
 		default:
@@ -1148,7 +1148,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			byteMap = mosipBioDeviceManager.scan(fingerType);
 			if (byteMap != null) {
-				byte[] imageByte = byteMap.get(fingerType);
+				byte[] imageByte = byteMap.get(fingerType.replaceAll("_TYPE.*", ""));
 				if (imageByte != null) {
 					detailsDTO.setFingerPrint(imageByte);
 					detailsDTO.setFingerType(type);

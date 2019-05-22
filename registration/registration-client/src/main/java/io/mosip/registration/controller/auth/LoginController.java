@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.xml.sax.SAXException;
 
@@ -230,6 +231,9 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private JdbcSqlService jdbcSqlService;
 
+	@Value("${mdm.enable}")
+	private String mdmEnabled;
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -981,6 +985,69 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	private boolean validateFingerPrint() {
 
+		return validateFingerPrintNonMdm();
+
+	}
+	
+
+	/**
+	 * Validating User Biometrics using Minutia with MDM
+	 * 
+	 * @return boolean
+	 */
+	private boolean validateFingerPrintWithMdm() {
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
+
+		if (!fingerprintFacade.setIsoTemplate()) {
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
+
+			return false;
+		} else {
+
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
+
+
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"Validation of fingerprint through Minutia");
+
+			boolean fingerPrintStatus = false;
+
+			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinitiaThroughMdm())) {
+
+				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
+				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplateFromMdm());
+				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+
+				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+				authenticationValidatorDTO.setUserId(userId.getText());
+				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+				fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
+						authenticationValidatorDTO);
+
+			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
+				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
+				}
+			}
+			return fingerPrintStatus;
+		}
+
+	}
+
+
+
+	/**
+	 * Validating User Biometrics using Minutia without MDM
+	 * 
+	 * @return boolean
+	 */
+	private boolean validateFingerPrintNonMdm() {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
@@ -1031,7 +1098,6 @@ public class LoginController extends BaseController implements Initializable {
 			}
 			return fingerPrintStatus;
 		}
-
 	}
 
 	/**

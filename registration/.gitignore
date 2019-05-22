@@ -12,6 +12,8 @@ target/
 bin/
 tmp/
 *.tmp
+*.html
+*.json
 *.bak
 *.swp
 *~.nib
@@ -25,3 +27,5 @@ local.properties
 *.useq
 /PacketStore/*
 /PreRegPacketStore/*
+stylesheet.css
+*.js

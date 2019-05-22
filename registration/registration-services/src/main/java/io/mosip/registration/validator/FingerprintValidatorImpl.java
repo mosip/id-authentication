@@ -51,7 +51,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
 		List<UserBiometric> userFingerprintDetails = userDetailDAO
-				.getUserSpecificBioDetails(userId, RegistrationConstants.FINGERPRINT);
+				.getUserSpecificBioDetails(userId, "FIN");
 		return fingerprintFacade.validateFP(fingerprintDetailsDTO, userFingerprintDetails);
 	}
 

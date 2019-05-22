@@ -220,9 +220,10 @@ public class MosipBioDeviceManager {
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();
 		}
-
-		BioDevice bioDevice = deviceRegistry.get(deviceType);
+		BioDevice bioDevice = deviceRegistry.get(deviceType.replaceAll("_TYPE.*", ""));
 		if (bioDevice != null) {
+			if(deviceType.contains("TYPE"))
+				bioDevice.setDenomination(deviceType.replaceAll(".*(?<=TYPE_)", ""));
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
 			return bioDevice.capture();
