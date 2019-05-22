@@ -3,9 +3,11 @@ package io.mosip.registration.update;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -26,7 +28,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -39,6 +43,8 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
@@ -48,7 +54,7 @@ import io.mosip.registration.service.config.GlobalParamService;
  *
  */
 @Component
-public class SoftwareUpdateHandler {
+public class SoftwareUpdateHandler extends BaseService {
 
 	public SoftwareUpdateHandler() throws IOException {
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
@@ -86,6 +92,9 @@ public class SoftwareUpdateHandler {
 	private String latestVersionReleaseTimestamp;
 
 	private String lastUpdatedTag = "lastUpdated";
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	/**
 	 * Instance of {@link Logger}
@@ -468,5 +477,128 @@ public class SoftwareUpdateHandler {
 		calendar.set(year, month - 1, date, hourOfDay, minute, second);
 
 		return new Timestamp(calendar.getTime().getTime());
+	}
+
+	/**
+	 * Execute script files
+	 * 
+	 * @param latestVersion
+	 *            latest version
+	 * @param previousVersion
+	 *            previous version
+	 * @return response of sql execution
+	 */
+	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) {
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
+		if (resource != null) {
+
+			File sqlFile = getSqlFile(resource.getPath());
+
+			// execute sql file
+			try {
+
+				runSqlFile(sqlFile);
+
+			} catch (RuntimeException | IOException runtimeException) {
+
+				try {
+					File rollBackFile = getSqlFile(
+							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
+
+					if (rollBackFile.exists()) {
+						runSqlFile(rollBackFile);
+					}
+				} catch (RuntimeException | IOException exception) {
+					// Prepare Error Response
+					setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+
+				}
+				// Prepare Error Response
+				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+
+				// Replace with backup
+				rollbackSetup(responseDTO, previousVersion);
+
+			}
+		}
+
+		else {
+			// Update global param with current version
+			globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
+			setSuccessResponse(responseDTO, "Updated Version", null);
+
+		}
+
+		return responseDTO;
+	}
+
+	private File getSqlFile(String path) {
+
+		// Get File
+		return FileUtils.getFile(path);
+
+	}
+
+	private void runSqlFile(File sqlFile) throws IOException {
+
+		for (File file : sqlFile.listFiles()) {
+			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+
+				String str;
+				StringBuilder sb = new StringBuilder();
+				while ((str = bufferedReader.readLine()) != null) {
+					sb.append(str + "\n ");
+				}
+
+				List<String> statments = java.util.Arrays.asList(sb.toString().split(";"));
+
+				for (String stat : statments) {
+					if (!stat.trim().equals("")) {
+
+						jdbcTemplate.execute(stat);
+
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	//TODO will merge the rollbackSetup methods
+	private void rollbackSetup(ResponseDTO responseDTO, String previousVersion) {
+		File file = FileUtils.getFile(FilenameUtils.getFullPath(backUpPath), FilenameUtils.getName(backUpPath));
+
+		boolean isBackUpCompleted = false;
+		for (File backUpFolder : file.listFiles()) {
+			if (backUpFolder.getName().contains(previousVersion)) {
+
+				try {
+					FileUtils.copyDirectory(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
+							FileUtils.getFile(FilenameUtils.getName(binFolder)));
+					FileUtils.copyDirectory(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
+							FileUtils.getFile(FilenameUtils.getName(libFolder)));
+					FileUtils.copyFile(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
+							FileUtils.getFile(FilenameUtils.getName(manifestFile)));
+
+					isBackUpCompleted = true;
+					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
+				} catch (io.mosip.kernel.core.exception.IOException exception) {
+					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+				}
+				break;
+
+			}
+		}
+
+		if (!isBackUpCompleted) {
+			setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+		}
 	}
 }

@@ -63,7 +63,6 @@ import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
-import io.mosip.registration.service.sql.JdbcSqlService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.SoftwareUpdateHandler;
@@ -220,8 +219,7 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private HeaderController headerController;
 
-	@Autowired
-	private JdbcSqlService jdbcSqlService;
+	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -311,7 +309,7 @@ public class LoginController extends BaseController implements Initializable {
 		String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
 		if (!softwareUpdateHandler.getCurrentVersion().equals(version)) {
 			loginRoot.setDisable(true);
-			ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(softwareUpdateHandler.getCurrentVersion(), version);
+			ResponseDTO responseDTO = softwareUpdateHandler.executeSqlFile(softwareUpdateHandler.getCurrentVersion(), version);
 			loginRoot.setDisable(false);
 
 			if (responseDTO.getErrorResponseDTOs() != null) {
@@ -326,7 +324,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				}
 
-				System.exit(0);
+				restartApplication();
 			}
 		}
 
