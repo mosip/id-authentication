@@ -691,6 +691,15 @@ public enum PlatformErrorMessages {
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible"),
+	RPR_UGS_JSON__PARSER_ERROR(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "002",
+			"Error while parsing Json"),
+	RPR_UGS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "003",
+			"Not able to access the API resource"),
+	RPR_UGS_IO_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "004",
+			"IO exception"),
+	RPR_UGS_VID_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005",
+			"VID status is not active"),
+	
 	/** The rpr pgs file not present. */
 	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),
