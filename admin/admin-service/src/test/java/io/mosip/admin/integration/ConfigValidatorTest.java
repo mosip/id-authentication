@@ -41,10 +41,10 @@ public class ConfigValidatorTest {
 		String regProcResponse = "registration.processor.validateApplicantDocument=false";
 
 		MockRestServiceServer res = MockRestServiceServer.bindTo(restTemplate).build();
-		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.11.0_ADMIN/registration-dev.properties"))
+		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.12.0/registration-dev.properties"))
 				.andRespond(withSuccess().body(regResponse));
 		res.expect(requestTo(
-				"http://104.211.212.28:51000/registration-processor/dev/0.11.0_ADMIN/registration-processor-dev.properties"))
+				"http://104.211.212.28:51000/registration-processor/dev/0.12.0/registration-processor-dev.properties"))
 				.andRespond(withSuccess().body(regProcResponse));
 
 		boolean resu = processFVal.validateDocumentProcess();
@@ -58,10 +58,10 @@ public class ConfigValidatorTest {
 		String regProcResponse = "registration.processor.validateApplicantDocument=true";
 
 		MockRestServiceServer res = MockRestServiceServer.bindTo(restTemplate).build();
-		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.11.0_ADMIN/registration-dev.properties"))
+		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.12.0/registration-dev.properties"))
 				.andRespond(withSuccess().body(regResponse));
 		res.expect(requestTo(
-				"http://104.211.212.28:51000/registration-processor/dev/0.11.0_ADMIN/registration-processor-dev.properties"))
+				"http://104.211.212.28:51000/registration-processor/dev/0.12.0/registration-processor-dev.properties"))
 				.andRespond(withSuccess().body(regProcResponse));
 
 		boolean resu = processFVal.validateDocumentProcess();
@@ -74,7 +74,7 @@ public class ConfigValidatorTest {
 		String regResponse = "";
 
 		MockRestServiceServer res = MockRestServiceServer.bindTo(restTemplate).build();
-		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.11.0_ADMIN/registration-dev.properties"))
+		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.12.0/registration-dev.properties"))
 				.andRespond(withServerError());
 
 		processFVal.validateDocumentProcess();
@@ -87,10 +87,10 @@ public class ConfigValidatorTest {
 		String regProcResponse = "";
 
 		MockRestServiceServer res = MockRestServiceServer.bindTo(restTemplate).build();
-		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.11.0_ADMIN/registration-dev.properties"))
+		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.12.0/registration-dev.properties"))
 				.andRespond(withSuccess().body(regResponse));
 		res.expect(requestTo(
-				"http://104.211.212.28:51000/registration-processor/dev/0.11.0_ADMIN/registration-processor-dev.properties"))
+				"http://104.211.212.28:51000/registration-processor/dev/0.12.0/registration-processor-dev.properties"))
 				.andRespond(withServerError());
 
 		processFVal.validateDocumentProcess();
@@ -102,10 +102,10 @@ public class ConfigValidatorTest {
 		String regResponse = "mosip.registration.document_disable_flag=n";
 
 		MockRestServiceServer res = MockRestServiceServer.bindTo(restTemplate).build();
-		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.11.0_ADMIN/registration-dev.properties"))
+		res.expect(requestTo("http://104.211.212.28:51000/registration/dev/0.12.0/registration-dev.properties"))
 				.andRespond(withSuccess().body(regResponse));
 		res.expect(requestTo(
-				"http://104.211.212.28:51000/registration-processor/dev/0.11.0_ADMIN/registration-processor-dev.properties"))
+				"http://104.211.212.28:51000/registration-processor/dev/0.12.0/registration-processor-dev.properties"))
 				.andRespond(withSuccess().body(regResponse));
 
 		processFVal.validateDocumentProcess();
