@@ -4,17 +4,15 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.TimerTask;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
@@ -32,14 +30,13 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
-import io.mosip.registration.update.RegistrationUpdate;
+import io.mosip.registration.update.SoftwareUpdateHandler;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.concurrent.Service;
@@ -123,13 +120,11 @@ public class HeaderController extends BaseController {
 	private RestartController restartController;
 
 	@Autowired
-	private RegistrationUpdate registrationUpdate;
+	private SoftwareUpdateHandler softwareUpdateHandler;
 
 	@Autowired
 	private HomeController homeController;
 
-	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
 
 	ProgressIndicator progressIndicator;
 
@@ -367,44 +362,47 @@ public class HeaderController extends BaseController {
 	@FXML
 	public void hasUpdate(ActionEvent event) {
 
-		// Check for updates
-		if (hasUpdate()) {
-
-			update(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
-					RegistrationUIConstants.UPDATE_LATER, true);
-
-		}
-
-	}
-
-	private boolean hasUpdate() {
-		boolean hasUpdate = false;
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			try {
-				if (registrationUpdate.hasUpdate()) {
-					hasUpdate = true;
-				} else {
-					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
+			boolean hasUpdate = hasUpdate();
+			if (hasUpdate) {
 
-				}
+				softwareUpdate(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
+						RegistrationUIConstants.UPDATE_LATER, true);
 
-			} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
-				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
 
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_FIND_UPDATES);
 			}
 
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
+		// Check for updates
+
+	}
+
+	public boolean hasUpdate() {
+
+		boolean hasUpdate = false;
+		if (softwareUpdateHandler.hasUpdate()) {
+			hasUpdate = true;
+
+		} else {
+			hasUpdate = false;
+		}
+
+		Timestamp timestamp = hasUpdate ? softwareUpdateHandler.getLatestVersionReleaseTimestamp()
+				: Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+
+		globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
+
 		return hasUpdate;
 	}
 
-	private String update() {
+	private String softwareUpdate() {
 		try {
 
-			registrationUpdate.getWithLatestJars();
+			softwareUpdateHandler.update();
 			return RegistrationConstants.ALERT_INFORMATION;
 
 		} catch (Exception exception) {
@@ -496,7 +494,7 @@ public class HeaderController extends BaseController {
 		progressTask.start();
 	}
 	
-	public void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
+	public void executeSoftwareUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
 		pane.setDisable(true);
@@ -527,7 +525,7 @@ public class HeaderController extends BaseController {
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
-						return update();
+						return softwareUpdate();
 
 					}
 				};
@@ -546,7 +544,7 @@ public class HeaderController extends BaseController {
 				if (RegistrationConstants.ERROR.equalsIgnoreCase(taskService.getValue())) {
 					// generateAlert(RegistrationConstants.ERROR,
 					// RegistrationUIConstants.UNABLE_TO_UPDATE);
-					update(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, true);
+					softwareUpdate(pane, progressIndicator, RegistrationUIConstants.UNABLE_TO_UPDATE, true);
 				} else if (RegistrationConstants.ALERT_INFORMATION.equalsIgnoreCase(taskService.getValue())) {
 					// Update completed Re-Launch application
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.UPDATE_COMPLETED);
@@ -560,7 +558,7 @@ public class HeaderController extends BaseController {
 
 	}
 
-	public void update(Pane pane, ProgressIndicator progressIndicator, String context,
+	public void softwareUpdate(Pane pane, ProgressIndicator progressIndicator, String context,
 			boolean isPreLaunchTaskToBeStopped) {
 
 		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
@@ -573,7 +571,7 @@ public class HeaderController extends BaseController {
 		ButtonType result = updateAlert.getResult();
 		if (result == ButtonType.OK) {
 
-			executeUpdateTask(pane, progressIndicator);
+			executeSoftwareUpdateTask(pane, progressIndicator);
 		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
 			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
 					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
@@ -585,7 +583,7 @@ public class HeaderController extends BaseController {
 
 			if (alertResult == ButtonType.OK) {
 
-				executeUpdateTask(pane, progressIndicator);
+				executeSoftwareUpdateTask(pane, progressIndicator);
 			}
 		} else {
 			pane.setDisable(false);
