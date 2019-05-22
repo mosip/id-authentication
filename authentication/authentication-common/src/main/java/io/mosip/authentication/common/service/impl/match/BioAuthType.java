@@ -350,8 +350,4 @@ public enum BioAuthType implements AuthType {
 		return authTypeImpl;
 	}
 
-	public IntPredicate getCountPredicate() {
-		return countPredicate;
-	}
-
 }
