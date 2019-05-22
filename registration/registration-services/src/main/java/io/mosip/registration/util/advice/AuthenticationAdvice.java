@@ -6,8 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +38,16 @@ public class AuthenticationAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationAdvice.class);
 
 	/**
-	 * Validate the current user id details against the DB before proceeding the key methods
-	 * On successful validation only the method return to method handling
+	 * Validate the current user id details against the DB before proceeding the key
+	 * methods On successful validation only the method return to method handling
 	 * 
 	 * @param joinPoint
 	 * @return
+	 * @throws RegBaseCheckedException
 	 * @throws Throwable
 	 */
-	@Before("@annotation(PreAuthorizeUserId)")
-	public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
+	public void authorizeUserId() throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 				"Pre-Authorize the user id starting");
 
@@ -64,10 +63,15 @@ public class AuthenticationAdvice {
 				}
 			});
 
+			if (!(userDetail.getIsActive() && roleList.containsAll(securityContext.getRoles()))) {
+				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
+						"Pre-Authorize the user id got failed");
+
+				throw new RegBaseCheckedException("REG-SER-ATAD", "Invalid user id.");
+			}
+
 			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 					"Pre-Authorize the user id successfully completed");
-
-			if(userDetail.getIsActive() && roleList.containsAll(securityContext.getRoles())) return joinPoint.proceed();
 		}
 
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,

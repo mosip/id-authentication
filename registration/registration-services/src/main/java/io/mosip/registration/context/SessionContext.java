@@ -70,7 +70,7 @@ public class SessionContext {
 	 * @return sessionContext
 	 */
 	public static SessionContext create(UserDetail  userDetail){
-		if (sessionContext == null && userDetail != null) {
+		if (userDetail != null) {
 			List<String> roleList = new ArrayList<>();
 
 			userDetail.getUserRole().forEach(roleCode -> {
@@ -78,15 +78,6 @@ public class SessionContext {
 					roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
 				}
 			});
-			
-			sessionContext = new SessionContext();
-			sessionContext.setId(UUID.randomUUID());
-			sessionContext.setMapObject(new HashMap<>());
-			sessionContext.authTokenDTO = new AuthTokenDTO();
-			
-			
-			userContext = sessionContext.new UserContext();
-			userContext.setUserId(userDetail.getId());
 			
 			securityContext = sessionContext.new SecurityContext();
 			securityContext.setUserId(userDetail.getId());
