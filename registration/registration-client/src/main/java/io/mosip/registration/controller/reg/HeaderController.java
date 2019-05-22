@@ -120,13 +120,11 @@ public class HeaderController extends BaseController {
 	private RestartController restartController;
 
 	@Autowired
-	private SoftwareUpdateHandler registrationUpdate;
+	private SoftwareUpdateHandler softwareUpdateHandler;
 
 	@Autowired
 	private HomeController homeController;
 
-	@Autowired
-	private ServiceDelegateUtil serviceDelegateUtil;
 
 	ProgressIndicator progressIndicator;
 
@@ -386,14 +384,14 @@ public class HeaderController extends BaseController {
 	public boolean hasUpdate() {
 
 		boolean hasUpdate = false;
-		if (registrationUpdate.hasUpdate()) {
+		if (softwareUpdateHandler.hasUpdate()) {
 			hasUpdate = true;
 
 		} else {
 			hasUpdate = false;
 		}
 
-		Timestamp timestamp = hasUpdate ? registrationUpdate.getLatestVersionReleaseTimestamp()
+		Timestamp timestamp = hasUpdate ? softwareUpdateHandler.getLatestVersionReleaseTimestamp()
 				: Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
 		globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
@@ -404,7 +402,7 @@ public class HeaderController extends BaseController {
 	private String softwareUpdate() {
 		try {
 
-			registrationUpdate.update();
+			softwareUpdateHandler.update();
 			return RegistrationConstants.ALERT_INFORMATION;
 
 		} catch (Exception exception) {

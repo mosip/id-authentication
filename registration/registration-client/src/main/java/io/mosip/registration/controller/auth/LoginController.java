@@ -56,7 +56,6 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserDetailService;
@@ -174,9 +173,6 @@ public class LoginController extends BaseController implements Initializable {
 	private FaceFacade faceFacade;
 
 	@Autowired
-	private GlobalParamService globalParamService;
-
-	@Autowired
 	private Validations validations;
 
 	@Autowired
@@ -204,7 +200,7 @@ public class LoginController extends BaseController implements Initializable {
 	private boolean isInitialSetUp;
 
 	@Autowired
-	private SoftwareUpdateHandler registrationUpdate;
+	private SoftwareUpdateHandler softwareUpdateHandler;
 
 	private BorderPane loginRoot;
 
@@ -287,29 +283,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
-			if (!registrationUpdate.getCurrentVersion().equals(version)) {
-				loginRoot.setDisable(true);
-				ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(registrationUpdate.getCurrentVersion(),
-						version);
-				loginRoot.setDisable(false);
-
-				if (responseDTO.getErrorResponseDTOs() != null) {
-
-					ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-
-					if (RegistrationConstants.BACKUP_PREVIOUS_SUCCESS.equalsIgnoreCase(errorResponseDTO.getMessage())) {
-						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED
-										+ RegistrationUIConstants.RESTART_APPLICATION);
-					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-
-					}
-
-					System.exit(0);
-				}
-			}
+			executeSQLFile();
 
 			if (hasUpdate) {
 
@@ -329,6 +303,31 @@ public class LoginController extends BaseController implements Initializable {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		}
+	}
+
+	private void executeSQLFile() {
+		String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
+		if (!softwareUpdateHandler.getCurrentVersion().equals(version)) {
+			loginRoot.setDisable(true);
+			ResponseDTO responseDTO = jdbcSqlService.executeSqlFile(softwareUpdateHandler.getCurrentVersion(), version);
+			loginRoot.setDisable(false);
+
+			if (responseDTO.getErrorResponseDTOs() != null) {
+
+				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+
+				if (RegistrationConstants.BACKUP_PREVIOUS_SUCCESS.equalsIgnoreCase(errorResponseDTO.getMessage())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED
+							+ RegistrationUIConstants.RESTART_APPLICATION);
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+
+				}
+
+				System.exit(0);
+			}
+		}
+
 	}
 
 	/**
