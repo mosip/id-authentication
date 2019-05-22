@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -63,7 +64,7 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component("schema")
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
-	
+
 	private static final String OPERATION = "operation";
 
 	@Autowired
@@ -161,14 +162,14 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 								&& processingMessageAsJson.get(INSTANCE.getValue()).has(POINTER.getValue())) {
 							if (processingMessageAsJson.has(UNWANTED)
 									&& !processingMessageAsJson.get(UNWANTED).isNull()) {
-								errorList
-										.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), buildErrorMessage(
-												processingMessageAsJson, INVALID_INPUT_PARAMETER.getMessage(), UNWANTED)));
+								errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
+										buildErrorMessage(processingMessageAsJson, INVALID_INPUT_PARAMETER.getMessage(),
+												UNWANTED)));
 							} else if (processingMessageAsJson.has(MISSING)
 									&& !processingMessageAsJson.get(MISSING).isNull()) {
-								errorList
-										.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(), buildErrorMessage(
-												processingMessageAsJson, MISSING_INPUT_PARAMETER.getMessage(), MISSING)));
+								errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
+										buildErrorMessage(processingMessageAsJson, MISSING_INPUT_PARAMETER.getMessage(),
+												MISSING)));
 							}
 						}
 					}
@@ -202,16 +203,20 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			throw new IdObjectIOException(MANDATORY_FIELDS_NOT_FOUND.getErrorCode(),
 					String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(), operation.getOperation()));
 		}
-		Arrays.asList(StringUtils.split(fields, ',')).parallelStream()
-		.map(StringUtils::normalizeSpace)
-		.forEach(field -> {
-					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue())
-							|| !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(field)) {
-				errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
-						String.format(MISSING_INPUT_PARAMETER.getMessage(),
-								ROOT_PATH.getValue() + PATH_SEPERATOR.getValue() + field)));
-			}
-		});
+		Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
+			.forEach(field -> {
+				List<String> fieldNames = Arrays.asList(field.split("\\|"));
+				if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
+						.anyMatch(fieldName -> !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
+					errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
+							String.format(MISSING_INPUT_PARAMETER.getMessage(),
+									fieldNames
+										.parallelStream()
+										.map(fieldName -> ROOT_PATH.getValue()
+												.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+										.collect(Collectors.joining(" | ")))));
+				}
+			});
 	}
 
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
