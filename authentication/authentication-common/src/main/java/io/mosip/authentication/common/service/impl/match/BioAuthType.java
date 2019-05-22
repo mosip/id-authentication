@@ -237,9 +237,6 @@ public enum BioAuthType implements AuthType {
 
 	private AuthTypeImpl authTypeImpl;
 
-	/** The count. */
-	private int count;
-
 	private IntPredicate countPredicate;
 
 	/**
@@ -297,15 +294,6 @@ public enum BioAuthType implements AuthType {
 	}
 
 	/**
-	 * Gets the count.
-	 *
-	 * @return the count
-	 */
-	private int getCount() {
-		return count;
-	}
-
-	/**
 	 * To Get Matching Strategy
 	 */
 	@Override
@@ -346,10 +334,15 @@ public enum BioAuthType implements AuthType {
 	 */
 	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
 		BioAuthType[] values = BioAuthType.values();
-		return Stream.of(values).filter(authType -> {
-			int singleBioCount = 1;
-			return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
-		}).findAny();
+		return Stream.of(values)
+				.filter(authType -> {
+					int singleBioCount = 1;
+					return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
+				}).findAny();
+	}
+	
+	public IntPredicate getCountPredicate() {
+		return countPredicate;
 	}
 
 	@Override
