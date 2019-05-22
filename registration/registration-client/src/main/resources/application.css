@@ -967,7 +967,7 @@ Working on new Css by taleev
     -fx-background-color: #FFFFFF;
     -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
 	-fx-pref-height : 45.0;
-	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-padding: 10 0 10 0;
 	-fx-pref-width : 35.0;
     -fx-text-fill: #000000;
     -fx-border-width : 0.0 0.0 1.0 0.0;
@@ -978,7 +978,7 @@ Working on new Css by taleev
 	-fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #FF4081;
     -fx-pref-height : 45.0;
-	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-padding: 10 0 10 0;
 	-fx-pref-width : 35.0;
 }
 
@@ -996,7 +996,6 @@ Working on new Css by taleev
     -fx-background-color: #FFFFFF;
     -fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #E457A0;
-    -fx-padding : 0.0 0.0 0.0 15.0;	
 }
 
 .table-view .column-header .label{

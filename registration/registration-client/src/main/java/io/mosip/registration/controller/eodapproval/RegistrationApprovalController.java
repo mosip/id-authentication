@@ -102,11 +102,21 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private TableView<RegistrationApprovalVO> table;
 
+	/** Sl No column in the table. */
+
+	@FXML
+	private TableColumn<RegistrationApprovalVO, String> slno;
+	
 	/** Registration Id column in the table. */
 
 	@FXML
 	private TableColumn<RegistrationApprovalVO, String> id;
 
+	/** Date column in the table. */
+
+	@FXML
+	private TableColumn<RegistrationApprovalVO, String> date;
+	
 	/** status comment column in the table. */
 	@FXML
 	private TableColumn<RegistrationApprovalVO, String> statusComment;
@@ -211,8 +221,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		rejectionBtn.setVisible(false);
 		imageAnchorPane.setVisible(false);
 
+		slno.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_SLNO));
 		id.setCellValueFactory(
 				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		date.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_DATE));
 		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
 		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
@@ -293,8 +307,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO(approvalDTO.getId(),
-					approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)));
+			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO("    "+approvalDTO.getSlno(),approvalDTO.getId(),
+					approvalDTO.getDate(),approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)));
 			rowNum = 0;
 			listData.forEach(approvalDTO -> {
 				packetIds.put(approvalDTO.getId(), rowNum++);
@@ -305,9 +319,11 @@ public class RegistrationApprovalController extends BaseController implements In
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			observableList.clear();
+			if(observableList != null) {
+				observableList.clear();
+				wrapListAndAddFiltering(observableList);
+			}
 			filterField.clear();
-			wrapListAndAddFiltering(observableList);
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
@@ -391,7 +407,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			int row = packetIds.get(table.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
+					table.getSelectionModel().getSelectedItem().getSlno(),
 					table.getSelectionModel().getSelectedItem().getId(),
+					table.getSelectionModel().getSelectedItem().getDate(),
 					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);
 			observableList.set(row, approvalDTO);
@@ -399,7 +417,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			table.requestFocus();
 			table.getFocusModel().focus(focusedIndex);
 			table.getSelectionModel().select(focusedIndex);
-			// filterField.clear();
 
 		} else {
 			Stage primarystage = new Stage();

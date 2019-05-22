@@ -138,9 +138,6 @@ public class RegistrationConstants {
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
-	
-	public static final String FNR = "FNR";
-	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
 
@@ -308,8 +305,6 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_DATE_FORMAT = "dd-MM-yyyy";
 	public static final String EOD_PROCESS_SLNO = "slno";
 	public static final String EOD_PROCESS_DATE = "date";
-	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
-
 
 
 	// Packet Store Location Constants
@@ -1277,8 +1272,6 @@ public class RegistrationConstants {
 	public static final String LABEL_SMALL_CASE = "label";
 
 	public static final Object UI_SYNC_DATA = "mosip.registration.ui_sync_data";
-	public static final String MDM_ENABLED = "mosip.mdm.enabled";
-	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
 	public static final String DOB_MESSAGE = "dobMessage";
@@ -1349,11 +1342,4 @@ public class RegistrationConstants {
 	public static final String SQL_EXECUTION_FAILURE = "SQL EXECUTION FAILURE";
 	public static final String BACKUP_PREVIOUS_SUCCESS = "Backup Success";
 	public static final String BACKUP_PREVIOUS_FAILURE = "Backup Failed";
-	
-	public static final String PUBLICKEY="publicKey";
-	public static final String ISSUED_AT="issuedAt";
-	public static final String EXPIRY_AT="expiryAt";
-	public static final String SERVICE_NAME="policysync";
-	
-	
 }
