@@ -51,6 +51,7 @@ export class FileUploadComponent implements OnInit {
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
+  activeUsers: UserModel[] = [];
   documentCategory: string;
   documentType: string;
   loginId: string;
@@ -82,7 +83,7 @@ export class FileUploadComponent implements OnInit {
   step: number = 0;
   multipleApplicants: boolean = false;
   allApplicants: any[] = [];
-  applicants: any = [];
+  applicants: any[] = [];
   allowedFiles: string[];
   firstFile: Boolean = true;
   constructor(
@@ -90,7 +91,7 @@ export class FileUploadComponent implements OnInit {
     private dataStroage: DataStorageService,
     private router: Router,
     private config: ConfigService,
-    private domSanitizer: DomSanitizer,
+    public domSanitizer: DomSanitizer,
     private bookingService: BookingService,
     private translate: TranslateService,
     private dialog: MatDialog
@@ -105,8 +106,9 @@ export class FileUploadComponent implements OnInit {
       .split(',');
     this.getAllowedFileTypes(this.allowedFiles);
     this.loginId = this.registration.getLoginId();
-    this.getAllApplicants(); //for same as in POA
-    this.allApplicants = [];
+    // this.getAllApplicants(); //for same as in POA
+    this.setApplicants();
+    // this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['message']) this.fileUploadLanguagelabels = response['message'];
@@ -135,6 +137,7 @@ export class FileUploadComponent implements OnInit {
     this.isModify = localStorage.getItem('modifyDocument');
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+      this.activeUsers = this.registration.getUsers();
       console.log('users', this.users);
     }
   }
@@ -394,10 +397,47 @@ export class FileUploadComponent implements OnInit {
    */
   setApplicants() {
     this.applicants = this.bookingService.getAllApplicants();
+    this.updateApplicants();
     console.log('applicants', this.applicants);
     this.allApplicants = this.getApplicantsName(this.applicants);
     this.setNoneApplicant();
   }
+
+  updateApplicants() {
+    let flag: boolean = false;
+    let x: number = 0;
+    for (let i of this.activeUsers) {
+      for (let j of this.applicants) {
+        if (i.preRegId == j.preRegistrationId) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        this.activeUsers.splice(x, 1);
+      }
+      x++;
+    }
+    let user: Applicants = {
+      preRegistrationId: '',
+      fullname: []
+    };
+    let activeUsers: any[] = [];
+    console.log('this.activeUsers', this.activeUsers);
+
+    for (let i of this.activeUsers) {
+      user.preRegistrationId = i.preRegId;
+      user.fullname = i.request.demographicDetails.identity.fullName;
+      activeUsers.push(user);
+    }
+    console.log('activeUsers', activeUsers);
+
+    for (let i of activeUsers) {
+      this.applicants.push(i);
+    }
+    console.log('appplicants', this.applicants);
+  }
+
   /**
    *@description method to preview the first file.
    *
@@ -646,7 +686,7 @@ export class FileUploadComponent implements OnInit {
           this.updateUsers(response);
         } else {
           // alert(response['errors'].errorCode + ' Invalid document format supported');
-          this.displayMessage('Error', response['errors'][0].message);
+          this.displayMessage('Error', this.errorlabels.error);
         }
       },
       error => {
@@ -725,7 +765,7 @@ export class FileUploadComponent implements OnInit {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
             // alert(response['errors'].message);
-            this.displayMessage('Error', response['errors'][0].message);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg9);
           }
         },
         err => {
@@ -873,3 +913,31 @@ export interface DocumentCategory {
     name: string;
   };
 }
+
+export interface Applicants {
+  bookingRegistrationDTO?: string;
+  preRegistrationId: string;
+  fullname: FullName[];
+}
+export interface FullName {
+  language: string;
+  value: string;
+}
+export interface ProofOfAddress {
+  docId: string;
+  docName: string;
+  docCatCode: string;
+  docTypCode: string;
+  docFileFormat: string;
+}
+
+export interface DemographicMetaData {
+  fullname: FullName[];
+  proofOfAddress: ProofOfAddress;
+}
+
+// export interface Applicants {
+//   preRegistrationId: number;
+//   demographicMetadata: DemographicMetaData,
+//   fullname: FullName[];
+// }

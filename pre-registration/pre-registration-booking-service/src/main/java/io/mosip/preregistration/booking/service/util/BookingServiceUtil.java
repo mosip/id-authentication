@@ -27,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -69,6 +71,8 @@ import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.NotificationDTO;
+import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
@@ -119,6 +123,9 @@ public class BookingServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
+	
+	@Value("${notification.url}")
+	private String notificationResourseurl;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -131,7 +138,7 @@ public class BookingServiceUtil {
 	 * 
 	 * @return List of RegistrationCenterDto
 	 */
-	public List<RegistrationCenterDto> callRegCenterDateRestService() {
+	public List<RegistrationCenterDto> getRegCenterMasterData() {
 		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
@@ -173,7 +180,7 @@ public class BookingServiceUtil {
 	 * @param regDto
 	 * @return List of string
 	 */
-	public List<String> callGetHolidayListRestService(RegistrationCenterDto regDto) {
+	public List<String> getHolidayListMasterData(RegistrationCenterDto regDto) {
 		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
@@ -689,6 +696,35 @@ public class BookingServiceUtil {
 		entity.setSlotFromTime(LocalTime.parse(bookingRequestDTO.getSlotFromTime()));
 		entity.setSlotToTime(LocalTime.parse(bookingRequestDTO.getSlotToTime()));
 		return entity;
+	}
+	
+	/**
+	 * 
+	 * @param notificationDTO
+	 * @param langCode
+	 * @return NotificationResponseDTO
+	 */
+	public void emailNotification(NotificationDTO notificationDTO,
+			String langCode) {
+		String emailResourseUrl = notificationResourseurl+"/notify";
+		ResponseEntity<String> resp = null;
+		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
+		HttpHeaders headers = new HttpHeaders();
+		MainRequestDTO<NotificationDTO> request= new MainRequestDTO<>();
+		request.setRequest(notificationDTO);
+		request.setId("mosip.pre-registration.notification.notify");
+		request.setVersion("1.0");
+		request.setRequesttime(new Date());
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
+		// emailMap.add("attachments", doc);
+		emailMap.add("NotificationRequestDTO", request);
+		emailMap.add("langCode", langCode);
+		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
+		log.info("sessionId", "idType", "id",
+				"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
+		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity,String.class);
+
 	}
 
 }

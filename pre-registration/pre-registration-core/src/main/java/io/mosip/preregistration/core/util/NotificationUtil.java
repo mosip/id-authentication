@@ -52,6 +52,9 @@ public class NotificationUtil {
 	@Value("${sms.acknowledgement.template}")
 	private String smsAcknowledgement;
 	
+	@Value("${cancel.appoinment.template}")
+	private String cancelAppoinment;
+	
 	@Autowired
 	private TemplateUtil templateUtil;
 	
@@ -92,16 +95,27 @@ public class NotificationUtil {
 	public MainResponseDTO<NotificationResponseDTO> emailNotification(NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service");
+		HttpEntity<byte[]> doc=null;
+		String fileText=null;
+		if(file!=null) {
 		 LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
 		    pdfHeaderMap.add("Content-disposition", "form-data; name=attachments; filename=" + file.getOriginalFilename());
 		    pdfHeaderMap.add("Content-type", "text/plain");
-		    HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
-
+		    doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
+		}
 
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		String merseTemplate = null;
-			String fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
+		if(acknowledgementDTO.isBatch()) {
+			 fileText = templateUtil.getTemplate(langCode, cancelAppoinment);
+		}
+		else { 
+			
+			fileText = templateUtil.getTemplate(langCode, emailAcknowledgement);
+		
+		}
+		
 			merseTemplate =templateUtil.templateMerge(fileText, acknowledgementDTO);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
