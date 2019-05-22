@@ -65,16 +65,21 @@ import io.mosip.kernel.core.util.StringUtils;
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
 
+	/** The Constant OPERATION. */
 	private static final String OPERATION = "operation";
 
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The Constant MISSING. */
 	private static final String MISSING = "missing";
 
+	/** The Constant UNWANTED. */
 	private static final String UNWANTED = "unwanted";
 
 	/** The config server file storage URL. */
@@ -119,26 +124,15 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Validates a JSON object passed as string with the schema provided.
 	 *
-	 * @param idObject
-	 *            JSON as string that has to be Validated against the schema.
+	 * @param idObject            JSON as string that has to be Validated against the schema.
+	 * @param operation the operation
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
-	 * @throws IdObjectValidationFailedException
-	 *             JsonValidationProcessingException
-	 * @throws IdObjectIOException
-	 *             JsonIOException
-	 * @throws IdObjectSchemaIOException
-	 *             JsonSchemaIOException
-	 * @throws FileIOException
-	 *             FileIOException
-	 * @throws HttpRequestException
-	 *             HttpRequestException
-	 * @throws NullJsonNodeException
-	 *             NullJsonNodeException
-	 * @throws IdObjectValidationInterruptedException
-	 *             UnidentifiedJsonException
-	 * @throws ConfigServerConnectionException
-	 *             ConfigServerConnectionException
+	 * @throws IdObjectValidationFailedException             JsonValidationProcessingException
+	 * @throws IdObjectIOException             JsonIOException
+	 * @throws HttpRequestException             HttpRequestException
+	 * @throws NullJsonNodeException             NullJsonNodeException
+	 * @throws ConfigServerConnectionException             ConfigServerConnectionException
 	 */
 	@Override
 	public boolean validateIdObject(Object idObject, IdObjectValidatorSupportedOperations operation)
@@ -187,6 +181,14 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		}
 	}
 
+	/**
+	 * Validate mandatory fields.
+	 *
+	 * @param jsonObjectNode the json object node
+	 * @param operation the operation
+	 * @param errorList the error list
+	 * @throws IdObjectIOException the id object IO exception
+	 */
 	private void validateMandatoryFields(JsonNode jsonObjectNode, IdObjectValidatorSupportedOperations operation,
 			List<ServiceError> errorList) throws IdObjectIOException {
 		String appId = env.getProperty(APPLICATION_ID.getValue());
@@ -219,6 +221,14 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			});
 	}
 
+	/**
+	 * Builds the error message.
+	 *
+	 * @param processingMessageAsJson the processing message as json
+	 * @param messageBody the message body
+	 * @param field the field
+	 * @return the string
+	 */
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
 		return String.format(messageBody,
 				StringUtils.strip(
@@ -232,10 +242,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 * Gets the json schema node.
 	 *
 	 * @return the json schema node
-	 * @throws IdObjectSchemaIOException
-	 *             the id object schema IO exception
-	 * @throws FileIOException
-	 *             the file IO exception
+	 * @throws IdObjectIOException the id object IO exception
 	 */
 	private JsonNode getJsonSchemaNode() throws IdObjectIOException {
 		JsonNode jsonSchemaNode = null;
