@@ -103,7 +103,7 @@ public class BaseController {
 	@Autowired
 	protected AuditManagerService auditFactory;
 	@Autowired
-	private GlobalParamService globalParamService;
+	protected GlobalParamService globalParamService;
 
 	@Autowired
 	protected ServiceDelegateUtil serviceDelegateUtil;

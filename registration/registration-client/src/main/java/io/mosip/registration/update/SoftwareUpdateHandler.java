@@ -48,9 +48,9 @@ import io.mosip.registration.service.config.GlobalParamService;
  *
  */
 @Component
-public class RegistrationUpdate {
-	
-	public RegistrationUpdate() throws IOException {
+public class SoftwareUpdateHandler {
+
+	public SoftwareUpdateHandler() throws IOException {
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
@@ -65,15 +65,15 @@ public class RegistrationUpdate {
 
 	// TODO move to application.properties
 	private String backUpPath = "D://mosip/AutoBackUp";
-	private static String serverRegClientURL ;
-	private String serverMosipXmlFileUrl ;
+	private static String serverRegClientURL;
+	private String serverMosipXmlFileUrl;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";
 
 	private String currentVersion;
 
-	private String latestVersion ;
+	private String latestVersion;
 
 	private Manifest localManifest;
 
@@ -90,15 +90,26 @@ public class RegistrationUpdate {
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUpdate.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SoftwareUpdateHandler.class);
 
 	@Autowired
 	private GlobalParamService globalParamService;
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
+	/**
+	 * Check for updates
+	 * 
+	 * @return has update
+	 */
+	public boolean hasUpdate() {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking for updates");
-		return !getCurrentVersion().equals(getLatestVersion());
+		try {
+			return !getCurrentVersion().equals(getLatestVersion());
+		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			return false;
+		}
 
 	}
 
@@ -108,7 +119,7 @@ public class RegistrationUpdate {
 		// Get latest version using meta-inf.xml
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-		org.w3c.dom.Document metaInfXmlDocument = db.parse(new URL(serverMosipXmlFileUrl).openStream());
+		org.w3c.dom.Document metaInfXmlDocument = db.parse(getInputStreamOf(serverMosipXmlFileUrl));
 
 		setLatestVersion(getElementValue(metaInfXmlDocument, versionTag));
 		setLatestVersionReleaseTimestamp(getElementValue(metaInfXmlDocument, lastUpdatedTag));
@@ -134,13 +145,25 @@ public class RegistrationUpdate {
 
 	}
 
-	public String getCurrentVersion() throws IOException {
+	/**
+	 * Get Current version of setup
+	 * 
+	 * @return current version
+	 * @throws IOException
+	 */
+	public String getCurrentVersion() {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for current version started");
 
 		// Get Local manifest file
-		if (getLocalManifest() != null) {
-			setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
+		try {
+			if (getLocalManifest() != null) {
+				setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
+			}
+		} catch (IOException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -148,7 +171,12 @@ public class RegistrationUpdate {
 		return currentVersion;
 	}
 
-	public void getWithLatestJars() throws Exception {
+	/**
+	 * update the binaries
+	 * 
+	 * @throws Exception
+	 */
+	public void update() throws Exception {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating latest version started");
@@ -159,7 +187,7 @@ public class RegistrationUpdate {
 			getServerManifest();
 
 			// Back Current Application
-			backUp = backUpCurrentApplication();
+			backUp = backUpSetup();
 			// replace local manifest with Server manifest
 			serverManifest.write(new FileOutputStream(new File(manifestFile)));
 
@@ -221,7 +249,8 @@ public class RegistrationUpdate {
 		} catch (RuntimeException | IOException | ParserConfigurationException | SAXException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			replaceBackupWithCurrentApplication(backUp);
+			// Rollback setup
+			rollBackSetup(backUp);
 
 			throw exception;
 		}
@@ -229,7 +258,7 @@ public class RegistrationUpdate {
 				"Updating latest version started");
 	}
 
-	private Path backUpCurrentApplication() throws IOException, io.mosip.kernel.core.exception.IOException {
+	private Path backUpSetup() throws IOException, io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Backup of current version started");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -264,8 +293,7 @@ public class RegistrationUpdate {
 
 	}
 
-	private void replaceBackupWithCurrentApplication(Path currentApplicationbackUpPath)
-			throws io.mosip.kernel.core.exception.IOException {
+	private void rollBackSetup(Path currentApplicationbackUpPath) throws io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version started");
 		File backUpFolder = currentApplicationbackUpPath.toFile();
@@ -285,28 +313,22 @@ public class RegistrationUpdate {
 
 			String folder = jarFile.contains(mosip) ? binFolder : libFolder;
 
-			checkForJarFile(version, folder, jarFile);
+			File jarInFolder = new File(folder + jarFile);
+
+			if (!jarInFolder.exists()
+					|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
+							&& FileUtils.deleteQuietly(jarInFolder))) {
+
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Downloading jar : " + jarFile + " started");
+				// Download Jar
+				Files.copy(getInputStreamOfJar(version, jarFile), jarInFolder.toPath());
+
+			}
 
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Checking of jars completed");
-	}
-
-	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
-
-		File jarInFolder = new File(folderName + jarFileName);
-
-		if (!jarInFolder.exists()
-				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-						&& FileUtils.deleteQuietly(jarInFolder))) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-					"Downloading jar : " + jarFileName + " started");
-			// Download Jar
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
-
-		}
-
 	}
 
 	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
@@ -318,24 +340,20 @@ public class RegistrationUpdate {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Deletion of jars started");
 		for (String jarName : deletableJars) {
-			deleteJar(jarName);
+			File deleteFile = null;
+
+			String deleteFolder = jarName.contains(mosip) ? binFolder : libFolder;
+
+			deleteFile = new File(deleteFolder + jarName);
+
+			if (deleteFile.exists()) {
+				// Delete Jar
+				FileUtils.forceDelete(deleteFile);
+
+			}
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Deletion of jars completed");
 
-	}
-
-	private void deleteJar(String jarName) throws io.mosip.kernel.core.exception.IOException {
-		File deleteFile = null;
-
-		String deleteFolder = jarName.contains(mosip) ? binFolder : libFolder;
-
-		deleteFile = new File(deleteFolder + jarName);
-
-		if (deleteFile.exists()) {
-			// Delete Jar
-			FileUtils.forceDelete(deleteFile);
-
-		}
 	}
 
 	private Manifest getLocalManifest() throws IOException {
@@ -378,11 +396,11 @@ public class RegistrationUpdate {
 		this.serverManifest = serverManifest;
 	}
 
-	public void setCurrentVersion(String currentVersion) {
+	private void setCurrentVersion(String currentVersion) {
 		this.currentVersion = currentVersion;
 	}
 
-	public void setLatestVersion(String latestVersion) {
+	private void setLatestVersion(String latestVersion) {
 		this.latestVersion = latestVersion;
 	}
 
@@ -424,10 +442,15 @@ public class RegistrationUpdate {
 
 	}
 
-	public void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
+	private void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
 		this.latestVersionReleaseTimestamp = latestVersionReleaseTimestamp;
 	}
 
+	/**
+	 * Get timestamp when latest version has released
+	 * 
+	 * @return timestamp
+	 */
 	public Timestamp getLatestVersionReleaseTimestamp() {
 
 		Calendar calendar = Calendar.getInstance();

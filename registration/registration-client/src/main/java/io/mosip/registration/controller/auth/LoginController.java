@@ -18,12 +18,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -71,7 +67,7 @@ import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sql.JdbcSqlService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
-import io.mosip.registration.update.RegistrationUpdate;
+import io.mosip.registration.update.SoftwareUpdateHandler;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -208,7 +204,7 @@ public class LoginController extends BaseController implements Initializable {
 	private boolean isInitialSetUp;
 
 	@Autowired
-	private RegistrationUpdate registrationUpdate;
+	private SoftwareUpdateHandler registrationUpdate;
 
 	private BorderPane loginRoot;
 
@@ -234,20 +230,10 @@ public class LoginController extends BaseController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		try {
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-				hasUpdate = registrationUpdate.hasUpdate();
+			hasUpdate = headerController.hasUpdate();
 
-				Timestamp timestamp = hasUpdate ? registrationUpdate.getLatestVersionReleaseTimestamp()
-						: Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
-
-				globalParamService.updateSoftwareUpdateStatus(hasUpdate, timestamp);
-			}
-
-		} catch (IOException | ParserConfigurationException | SAXException | RuntimeException exception) {
-			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 		}
 
 		try {
@@ -328,7 +314,7 @@ public class LoginController extends BaseController implements Initializable {
 			if (hasUpdate) {
 
 				// Update Application
-				headerController.update(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,
+				headerController.softwareUpdate(loginRoot, progressIndicator, RegistrationUIConstants.UPDATE_LATER,
 						isInitialSetUp);
 
 			} else if (!isInitialSetUp) {
@@ -985,7 +971,6 @@ public class LoginController extends BaseController implements Initializable {
 		return validateFingerPrintNonMdm();
 
 	}
-	
 
 	/**
 	 * Validating User Biometrics using Minutia with MDM
@@ -1004,7 +989,6 @@ public class LoginController extends BaseController implements Initializable {
 		} else {
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
-
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Validation of fingerprint through Minutia");
@@ -1036,8 +1020,6 @@ public class LoginController extends BaseController implements Initializable {
 		}
 
 	}
-
-
 
 	/**
 	 * Validating User Biometrics using Minutia without MDM
