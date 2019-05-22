@@ -241,11 +241,17 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
   private getConsentMessage() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getGuidelineTemplate('consent').subscribe(response => {
-        console.log(response);
-        this.consentMessage = response['response']['templates'][0].fileText;
-        resolve(true);
-      });
+      this.dataStorageService.getGuidelineTemplate('consent').subscribe(
+        response => {
+          console.log(response);
+          if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
+          else this.onError();
+          resolve(true);
+        },
+        error => {
+          this.onError();
+        }
+      );
     });
   }
   /**
