@@ -192,7 +192,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 			JSONObject actReqInvRegCenter = preRegUtil.dynamicChangeOfRequest(mulBookWithInvalidPreId, "$.request.bookingRequest[0].preRegistrationId", "ABCD");
 			//(JSONObject) parser.parse(actReqInvRegCenter);
 			Response response = applicationLibrary.postRequest(actReqInvRegCenter, preReg_URI);
-			logger.info("MultipleBookAnAppointmentByPassingInvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
+			logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
 			outerKeys.add("responsetime");
 			
 			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
