@@ -7,15 +7,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.bioapi.model.BDBInfo;
-import io.mosip.kernel.core.bioapi.model.BiometricRecord;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
-import io.mosip.kernel.core.bioapi.model.QualityType;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
-import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * The Class BioApiImpl.
@@ -26,28 +24,27 @@ import io.mosip.kernel.core.util.StringUtils;
 public class BioApiImpl implements IBioApi{
 
 	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#checkQuality(io.mosip.kernel.core.bioapi.model.BiometricRecord, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
+	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#checkQuality(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public QualityScore checkQuality(BiometricRecord sample, KeyValuePair[] flags) {
+	public QualityScore checkQuality(BIRType sample, KeyValuePair[] flags) {
 		QualityScore qualityScore = new QualityScore();
-		int major = Optional.ofNullable(sample.getBdbInfo()).map(BDBInfo::getQuality).map(QualityType::getMajor)
-				.orElse(0);
+		int major = Optional.ofNullable(sample.getBDBInfo()).map(BDBInfoType::getQuality).orElse(0);
 		qualityScore.setInternalScore(major);
 		return qualityScore;
 	}
 
 	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#match(io.mosip.kernel.core.bioapi.model.BiometricRecord, io.mosip.kernel.core.bioapi.model.BiometricRecord[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
+	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#match(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public Score[] match(BiometricRecord sample, BiometricRecord[] gallery, KeyValuePair[] flags) {
+	public Score[] match(BIRType sample, BIRType[] gallery, KeyValuePair[] flags) {
 		Score matchingScore[] = new Score[gallery.length];
 		int count =0;
-		for (BiometricRecord recordedValue : gallery) {
+		for (BIRType recordedValue : gallery) {
 			matchingScore[count] = new Score();
-			if(recordedValue != null && !StringUtils.isEmpty(recordedValue.getBdb()) &&
-					recordedValue.getBdb().equalsIgnoreCase(sample.getBdb())) {
+			if(recordedValue != null && recordedValue.getBDB().length != 0 &&
+					Arrays.equals(recordedValue.getBDB(), sample.getBDB())) {
 				matchingScore[count].setInternalScore(90);
 			}else {
 				matchingScore[count].setInternalScore(ThreadLocalRandom.current().nextInt(10, 50));
@@ -58,18 +55,18 @@ public class BioApiImpl implements IBioApi{
 	}
 
 	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#compositeMatch(io.mosip.kernel.core.bioapi.model.BiometricRecord[], io.mosip.kernel.core.bioapi.model.BiometricRecord[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
+	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#compositeMatch(io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public CompositeScore compositeMatch(BiometricRecord[] sampleList, BiometricRecord[] recordList,
+	public CompositeScore compositeMatch(BIRType[] sampleList, BIRType[] recordList,
 			KeyValuePair[] flags) {
 		Score matchingScore[] = new Score[sampleList.length];
 		int count = 0;
-		for(BiometricRecord sampleValue : sampleList) {
+		for(BIRType sampleValue : sampleList) {
 			Score[] match = match(sampleValue, recordList, flags);
 			Optional<Score> max = Arrays.stream(match).max(Comparator.comparing(Score::getInternalScore));
 			if(max.isPresent()) {
-				matchingScore[count].setInternalScore(max.get().getInternalScore());
+				matchingScore[count] = max.get();
 				count++;
 			}
 		}
@@ -81,21 +78,21 @@ public class BioApiImpl implements IBioApi{
 	}
 
 	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#extractTemplate(io.mosip.kernel.core.bioapi.model.BiometricRecord, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
+	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#extractTemplate(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public BiometricRecord extractTemplate(BiometricRecord sample, KeyValuePair[] flags) {
+	public BIRType extractTemplate(BIRType sample, KeyValuePair[] flags) {
 		return sample;
 	}
 
 	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#segment(io.mosip.kernel.core.bioapi.model.BiometricRecord, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
+	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#segment(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public BiometricRecord[] segment(BiometricRecord sample, KeyValuePair[] flags) {
-		BiometricRecord[] biometricRecord = new BiometricRecord[1];
-		biometricRecord[0]= sample;
-		return biometricRecord;
+	public BIRType[] segment(BIRType sample, KeyValuePair[] flags) {
+		BIRType[] bir = new BIRType[1];
+		bir[0]= sample;
+		return bir;
 	}
 
 }
