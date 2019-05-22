@@ -1,8 +1,0 @@
-{
-	"err": {
-		"errorCode": "PRG_CORE_REQ_001",
-		"message": "INVALID_PRE_REGISTRATION_ID"
-	},
-	"response": null,
-	"status": false
-}
