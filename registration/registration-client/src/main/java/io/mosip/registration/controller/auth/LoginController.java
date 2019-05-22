@@ -228,6 +228,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
+			//Check for updates
 			hasUpdate = headerController.hasUpdate();
 
 		}
@@ -283,6 +284,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			//Execute SQL file (Script files on update)
 			executeSQLFile();
 
 			if (hasUpdate) {
