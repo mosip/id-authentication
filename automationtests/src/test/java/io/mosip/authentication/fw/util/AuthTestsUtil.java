@@ -36,7 +36,7 @@ import com.ibm.icu.text.Transliterator;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
-import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
  

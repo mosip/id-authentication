@@ -1,6 +1,6 @@
-package io.mosip.authentication.fw.util;
+package io.mosip.authentication.idRepositoty.fw.util;
 
-import java.io.File; 
+import java.io.File;   
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.dto.ErrorsDto;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.RunConfig;
 
 /**
  * The class hold all the run config path available in runconfiguration file
@@ -20,20 +22,16 @@ import io.mosip.authentication.fw.dto.ErrorsDto;
  * @author Vignesh
  *
  */
-public class IdaRunConfig extends RunConfig{
+public class IdRepoRunConfig extends RunConfig{
 	
-	private  Logger logger = Logger.getLogger(IdaRunConfig.class);
+	private  Logger logger = Logger.getLogger(IdRepoRunConfig.class);
 	private  String endPointUrl;
-	private  String ekycPath;
 	private  String encryptUtilBaseUrl;
 	private  String encryptionPath;
 	private  String encodePath;
 	private  String decodePath;
 	private  String scenarioPath;
 	private  String srcPath;
-	private  String authPath;
-	private  String internalAuthPath;
-	private  String otpPath;
 	private  String userDirectory;
 	private  String testDataPath;
 	private  String idRepoEndPointUrl;
@@ -42,10 +40,11 @@ public class IdaRunConfig extends RunConfig{
 	private  String dbKernelUserName;
 	private  String dbKernelPwd;
 	private  String testType;
-	private  String PinPath;
 	private  String generateUINPath;
 	private  String idRepoRetrieveDataPath;
 	private  String idRepoCreateUINRecordPath;
+	private  String IdRepoUpdateVIDStatusPath;
+	private  String idRepoCreateVIDRecordPath;
 	private  String storeUINDataPath;
 	private  String dbIdaTableName;
 	private  String dbIdaSchemaName;
@@ -64,39 +63,8 @@ public class IdaRunConfig extends RunConfig{
 	private  String testDataFolderName;
 	private  String authVersion;
 	private  String clientidsecretkey;
+	private String moduleFolderName;
 	
-	/**
-	 * The method get endpoint url for IDA
-	 * 
-	 * @return string
-	 */
-	public String getEndPointUrl() {
-		return endPointUrl;
-	}
-	/**
-	 * The method set endpoint url
-	 * 
-	 * @param endPointUrl
-	 */
-	public void setEndPointUrl(String endPointUrl) {
-		this.endPointUrl = endPointUrl.replace("$endpoint$", System.getProperty("env.endpoint"));
-	}
-	/**
-	 * The method get ekyc url path
-	 * 
-	 * @returnstring 
-	 */
-	public  String getEkycPath() {
-		return ekycPath;
-	}
-	/**
-	 * The method set ekyc url path
-	 * 
-	 * @param ekycPath
-	 */
-	public  void setEkycPath(String ekycPath) {
-		this.ekycPath = ekycPath.replace("$authVersion$", getAuthVersion());
-	}
 	/**
 	 * The method get encryption endpoint path
 	 * 
@@ -104,6 +72,14 @@ public class IdaRunConfig extends RunConfig{
 	 */
 	public  String getEncryptUtilBaseUrl() {
 		return encryptUtilBaseUrl;
+	}
+
+	public String getModuleFolderName() {
+		return moduleFolderName;
+	}
+
+	public void setModuleFolderName(String moduleFolderName) {
+		this.moduleFolderName = moduleFolderName;
 	}
 
 	/**
@@ -133,8 +109,8 @@ public class IdaRunConfig extends RunConfig{
 	 * 
 	 * @param encryptionPath
 	 */
-	public  void setEncryptionPath(String encrypPath) {
-		this.encryptionPath = encrypPath;
+	public  void setEncryptionPath(String encryptionPath) {
+		this.encryptionPath = encryptionPath;
 	}
 	/**
 	 * The method get encode path
@@ -149,8 +125,8 @@ public class IdaRunConfig extends RunConfig{
 	 * 
 	 * @param encodePath
 	 */
-	public  void setEncodePath(String encPath) {
-		this.encodePath = encPath;
+	public  void setEncodePath(String encodePath) {
+		this.encodePath = encodePath;
 	}
 	/**
 	 * The method get decode path 
@@ -191,62 +167,6 @@ public class IdaRunConfig extends RunConfig{
 	 */
 	public  String getSrcPath() {
 		return srcPath;
-	}
-	/**
-	 * The method set src path
-	 * 
-	 * @param srcPath
-	 */
-	public  void setSrcPath(String srcPath) {
-		this.srcPath = srcPath;
-	}
-	/**
-	 * The method get auth path
-	 * 
-	 * @return String
-	 */
-	public  String getAuthPath() {
-		return authPath;
-	}
-	/**
-	 * The method set auth path
-	 * 
-	 * @param authPath
-	 */
-	public  void setAuthPath(String authPath) {
-		this.authPath = authPath.replace("$authVersion$", getAuthVersion());
-	}
-	/**
-	 * The method get internal auth path
-	 * 
-	 * @return string
-	 */
-	public  String getInternalAuthPath() {
-		return internalAuthPath;
-	}
-	/**
-	 * The method set internal auth path
-	 * 
-	 * @param internalAuthPath
-	 */
-	public  void setInternalAuthPath(String internalAuthPath) {
-		this.internalAuthPath = internalAuthPath.replace("$authVersion$", getAuthVersion());
-	}
-	/**
-	 * The method get otp path
-	 * 
-	 * @return string
-	 */
-	public  String getOtpPath() {
-		return otpPath;
-	}
-	/**
-	 * The method set otp path
-	 * 
-	 * @param otpPath
-	 */
-	public  void setOtpPath(String otpPath) {
-		this.otpPath = otpPath.replace("$authVersion$", getAuthVersion());
 	}	
 	/**
 	 * The method get current test data path
@@ -306,48 +226,44 @@ public class IdaRunConfig extends RunConfig{
 	 * @param testType
 	 */
 	public  void setConfig(String testDataPath,String testDataFileName,String testType) {
-		setAuthVersion(AuthTestsUtil.getPropertyValue("authVersion"));
 		setEndPointUrl(AuthTestsUtil.getPropertyValue("endPointUrl"));
-		setEkycPath(AuthTestsUtil.getPropertyValue("ekycPath"));
-		setSrcPath(AuthTestsUtil.getPropertyValue("srcPath"));
-		setAuthPath(AuthTestsUtil.getPropertyValue("authPath"));
-		setInternalAuthPath(AuthTestsUtil.getPropertyValue("internalAuthPath"));
-		setOtpPath(AuthTestsUtil.getPropertyValue("otpPath"));
-		setEncryptUtilBaseUrl(AuthTestsUtil.getPropertyValue("encryptUtilBaseUrl"));
-		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
-		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));
-		setDecodePath(AuthTestsUtil.getPropertyValue("decodePath"));
+		setAuthVersion(IdRepoTestsUtil.getPropertyValue("authVersion"));
+		setSrcPath(IdRepoTestsUtil.getPropertyValue("srcPath"));
+		setEncryptUtilBaseUrl(IdRepoTestsUtil.getPropertyValue("encryptUtilBaseUrl"));
+		setEncryptionPath(IdRepoTestsUtil.getPropertyValue("encryptionPath"));
+		setEncodePath(IdRepoTestsUtil.getPropertyValue("encodePath"));
+		setDecodePath(IdRepoTestsUtil.getPropertyValue("decodePath"));
 		setUserDirectory();
 		setTestDataPath(testDataPath);	
-		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));
-		setIdRepoRetrieveDataPath(AuthTestsUtil.getPropertyValue("idRepoRetrieveDataPath"));
-		setDbKernelTableName(AuthTestsUtil.getPropertyValue("dbKernelTableName"));
-		setDbKernelSchemaName(AuthTestsUtil.getPropertyValue("dbKernelSchemaName"));
-		setDbKernelUserName(AuthTestsUtil.getPropertyValue("dbKernelUserName"));
-		setDbKernelPwd(AuthTestsUtil.getPropertyValue("dbKernelPwd"));
-		File testDataFilePath = new File(/*getUserDirectory() +*/ getSrcPath()
+		setIdRepoEndPointUrl(IdRepoTestsUtil.getPropertyValue("idRepoEndPointUrl"));
+		setIdRepoRetrieveDataPath(IdRepoTestsUtil.getPropertyValue("idRepoRetrieveDataPath"));
+		setDbKernelTableName(IdRepoTestsUtil.getPropertyValue("dbKernelTableName"));
+		setDbKernelSchemaName(IdRepoTestsUtil.getPropertyValue("dbKernelSchemaName"));
+		setDbKernelUserName(IdRepoTestsUtil.getPropertyValue("dbKernelUserName"));
+		setDbKernelPwd(IdRepoTestsUtil.getPropertyValue("dbKernelPwd"));
+		File testDataFilePath = new File(/*RunConfig.getUserDirectory() +*/ this.getSrcPath()
 		+ testDataPath + testDataFileName);
 		setFilePathFromTestdataFileName(testDataFilePath,testDataPath);
 		setTestType(testType);
-		setGenerateUINPath(AuthTestsUtil.getPropertyValue("generateUINPath"));
-		setPinPath(AuthTestsUtil.getPropertyValue("staticPinPath"));
-		setIdRepoCreateUINRecordPath(AuthTestsUtil.getPropertyValue("idRepoCreateUINRecordPath"));
-		setStoreUINDataPath(AuthTestsUtil.getPropertyValue("storeUINDataPath"));
-		setDbIdaTableName(AuthTestsUtil.getPropertyValue("dbIdaTableName"));
-		setDbIdaSchemaName(AuthTestsUtil.getPropertyValue("dbIdaSchemaName"));
-		setDbIdaUserName(AuthTestsUtil.getPropertyValue("dbIdaUserName"));
-		setDbIdaPwd(AuthTestsUtil.getPropertyValue("dbIdaPwd"));
-		setDbAuditTableName(AuthTestsUtil.getPropertyValue("dbAuditTableName"));
-		setDbAuditSchemaName(AuthTestsUtil.getPropertyValue("dbAuditSchemaName"));
-		setDbAuditUserName(AuthTestsUtil.getPropertyValue("dbAuditUserName"));
-		setDbAuditPwd(AuthTestsUtil.getPropertyValue("dbAuditPwd"));
-		setEncodeFilePath(AuthTestsUtil.getPropertyValue("encodeFilePath"));
-		setDecodeFilePath(AuthTestsUtil.getPropertyValue("decodeFilePath"));
-		setDbKernelUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbKernelUrl"));
-		setDbIdaUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbIdaUrl"));
-		setDbAuditUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbAuditUrl"));
-		setVidGenPath(AuthTestsUtil.getPropertyValue("vidGenPath"));
-		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
+		setGenerateUINPath(IdRepoTestsUtil.getPropertyValue("generateUINPath"));
+		setIdRepoCreateUINRecordPath(IdRepoTestsUtil.getPropertyValue("idRepoCreateUINRecordPath"));
+		setIdRepoCreateVIDRecordPath(IdRepoTestsUtil.getPropertyValue("idRepoCreateVIDRecordPath"));
+		setIdRepoUpdateVIDStatusPath(IdRepoTestsUtil.getPropertyValue("idRepoUpdateVIDStatusPath"));
+		setStoreUINDataPath(IdRepoTestsUtil.getPropertyValue("storeUINDataPath"));
+		setDbIdaTableName(IdRepoTestsUtil.getPropertyValue("dbIdaTableName"));
+		setDbIdaSchemaName(IdRepoTestsUtil.getPropertyValue("dbIdaSchemaName"));
+		setDbIdaUserName(IdRepoTestsUtil.getPropertyValue("dbIdaUserName"));
+		setDbIdaPwd(IdRepoTestsUtil.getPropertyValue("dbIdaPwd"));
+		setDbAuditTableName(IdRepoTestsUtil.getPropertyValue("dbAuditTableName"));
+		setDbAuditSchemaName(IdRepoTestsUtil.getPropertyValue("dbAuditSchemaName"));
+		setDbAuditUserName(IdRepoTestsUtil.getPropertyValue("dbAuditUserName"));
+		setDbAuditPwd(IdRepoTestsUtil.getPropertyValue("dbAuditPwd"));
+		setEncodeFilePath(IdRepoTestsUtil.getPropertyValue("encodeFilePath"));
+		setDecodeFilePath(IdRepoTestsUtil.getPropertyValue("decodeFilePath"));
+		setDbKernelUrl(IdRepoTestsUtil.getPropertyValue("dbKernelUrl"));
+		setDbIdaUrl(IdRepoTestsUtil.getPropertyValue("dbIdaUrl"));
+		setDbAuditUrl(IdRepoTestsUtil.getPropertyValue("dbAuditUrl"));
+		setClientidsecretkey(IdRepoTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
 	}	
@@ -430,14 +346,17 @@ public class IdaRunConfig extends RunConfig{
 			temp = temp + "/" + folderList[i];
 		}
 		String testDataFolderName = "";
+		String moduleFolderName="";
 		if (testDataPath.contains("\\")) {
 			String[] list = testDataPath.split(Pattern.quote("\\\\"));
 			testDataFolderName = list[1];
 		} else if (testDataPath.contains("/")) {
 			String[] list = testDataPath.split(Pattern.quote("/"));
+			moduleFolderName=list[0];
 			testDataFolderName = list[1];
 		}
 		setTestDataFolderName(testDataFolderName);
+		setModuleFolderName(moduleFolderName);
 		scenarioPath = temp;
 		setScenarioPath(scenarioPath);
 	}
@@ -457,22 +376,6 @@ public class IdaRunConfig extends RunConfig{
 	public  void setTestType(String testType) {
 		this.testType = testType;
 	}	
-	/**
-	 * The method get  pin path
-	 * 
-	 * @return string
-	 */
-	public  String getPinPath() {
-		return PinPath;
-	}
-	/**
-	 * The method set  pin path
-	 * 
-	 * @param PinPath
-	 */
-	public  void setPinPath(String PinPath) {
-		this.PinPath = PinPath.replace("$authVersion$", getAuthVersion());
-	}
 	/**
 	 * The method get UIN generation path
 	 * 
@@ -762,7 +665,7 @@ public class IdaRunConfig extends RunConfig{
 	 * @param vidGenPath
 	 */
 	public  void setVidGenPath(String vidGenPath) {
-		this.vidGenPath = vidGenPath.replace("$authVersion$", getAuthVersion());
+		this.vidGenPath = vidGenPath.replace("$authVersion$", this.getAuthVersion());
 	}	
 	/**
 	 * The method get test data folder name of current test execution
@@ -803,7 +706,7 @@ public class IdaRunConfig extends RunConfig{
 	 * @return string
 	 */
 	public  String getErrorsConfigPath() {
-		return "ida/" + getTestDataFolderName() + "/RunConfig/errorCodeMsg.yml";
+		return "idRepository/" + this.getTestDataFolderName() + "/RunConfig/errorCodeMsg.yml";
 	}
 	
 	/**
@@ -816,7 +719,7 @@ public class IdaRunConfig extends RunConfig{
 		try {
 			Yaml yaml = new Yaml();
 			InputStream inputStream = new FileInputStream(
-					new File("./" + getSrcPath() + path).getAbsoluteFile());
+					new File("./" + this.getSrcPath() + path).getAbsoluteFile());
 			ErrorsDto.setErrors((Map<String, Map<String, Map<String, String>>>) yaml.load(inputStream));
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -826,47 +729,109 @@ public class IdaRunConfig extends RunConfig{
 	public  String getClientidsecretkey() {
 		return clientidsecretkey;
 	}
-	public  void setClientidsecretkey(String cleintIdSecKey) {
-		this.clientidsecretkey = cleintIdSecKey;
+	public  void setClientidsecretkey(String clientidsecretkey) {
+		this.clientidsecretkey = clientidsecretkey;
 	}
+	/**
+	 * The method set src path
+	 * 
+	 * @param srcPath
+	 */
+	public  void setSrcPath(String srcPath) {
+		this.srcPath = srcPath;
+	}
+
 	@Override
-	public String getModuleFolderName() {
+	public String getEndPointUrl() {
+		// TODO Auto-generated method stub
+		return endPointUrl;
+	}
+
+	@Override
+	public void setEndPointUrl(String endPointUrl) {
+		 this.endPointUrl= endPointUrl.replace("$endpoint$", System.getProperty("env.endpoint"));
+		
+	}
+
+	@Override
+	public String getEkycPath() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
-	public void setModuleFolderName(String moduleFolderName) {
+	public void setEkycPath(String ekycPath) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getAuthPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAuthPath(String authPath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getInternalAuthPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setInternalAuthPath(String internalAuthPath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getOtpPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setOtpPath(String otpPath) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public String getGenerateVIDPath() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public void setGenerateVIDPath(String generateVIDPath) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public String getIdRepoCreateVIDRecordPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return idRepoCreateVIDRecordPath;
 	}
+
 	@Override
 	public void setIdRepoCreateVIDRecordPath(String idRepoCreateVIDRecordPath) {
-		// TODO Auto-generated method stub
+		this.idRepoCreateVIDRecordPath = idRepoCreateVIDRecordPath;
 		
 	}
+
 	@Override
-	public String getIdRepoUpdateVIDStatusPath() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getIdRepoUpdateVIDStatusPath() {		
+		return IdRepoUpdateVIDStatusPath;
 	}
+
 	@Override
 	public void setIdRepoUpdateVIDStatusPath(String IdRepoUpdateVIDStatusPath) {
-		// TODO Auto-generated method stub
+		this.IdRepoUpdateVIDStatusPath = IdRepoUpdateVIDStatusPath;
 		
 	}
 }
