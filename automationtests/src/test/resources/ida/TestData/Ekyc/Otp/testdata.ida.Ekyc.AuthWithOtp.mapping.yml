@@ -32,9 +32,9 @@ testdata:
     output.output-2-expected-y-res:
       output.2.response.responseTime: $TIMESTAMP$
       output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
-      output.2.response.response: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+      output.2.response.response.kycStatus: BOOLEAN:true
     output.output-3-expected-decoded-one-lang-kyc-res:
-      output.3.res.kyc.status: BOOLEAN:true
+      #output.3.res.kyc.status: BOOLEAN:true
       output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
       #output.3.res.kyc.valuepostalCode0: $idrepo~$input.ekyc-request:AuthReq.individualId$~postalCode$
       output.3.res.kyc.valuepostalCode0: $IGNORE$
@@ -92,9 +92,9 @@ testdata:
     output.output-2-expected-y-res:
       output.2.response.responseTime: $TIMESTAMP$
       output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
-      output.2.response.response: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+      output.2.response.response.kycStatus: BOOLEAN:true
     output.output-3-expected-decoded-one-lang-kyc-res:
-      output.3.res.kyc.status: BOOLEAN:true
+      #output.3.res.kyc.status: BOOLEAN:true
       output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
       #output.3.res.kyc.valuepostalCode0: $idrepo~$input.ekyc-request:AuthReq.individualId$~postalCode$
       output.3.res.kyc.valuepostalCode0: $IGNORE$
@@ -819,9 +819,9 @@ testdata:
     output.output-2-expected-y-res:
       output.2.response.responseTime: $TIMESTAMP$
       output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
-      output.2.response.response: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+      output.2.response.response.kycStatus: BOOLEAN:true
     output.output-3-expected-decoded-one-lang-kyc-res:
-      output.3.res.kyc.status: BOOLEAN:true
+      #output.3.res.kyc.status: BOOLEAN:true
       output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
       #output.3.res.kyc.valuepostalCode0: $idrepo~$input.ekyc-request:AuthReq.individualId$~postalCode$
       output.3.res.kyc.valuepostalCode0: $IGNORE$
@@ -879,9 +879,9 @@ testdata:
     output.output-2-expected-y-res:
       output.2.response.responseTime: $TIMESTAMP$
       output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
-      output.2.response.response: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+      output.2.response.response.kycStatus: BOOLEAN:true
     output.output-3-expected-decoded-one-lang-kyc-res:
-      output.3.res.kyc.status: BOOLEAN:true
+      #output.3.res.kyc.status: BOOLEAN:true
       output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
       #output.3.res.kyc.valuepostalCode0: $idrepo~$input.ekyc-request:AuthReq.individualId$~postalCode$
       output.3.res.kyc.valuepostalCode0: $IGNORE$
