@@ -175,6 +175,7 @@ public class LoginService {
 		catch(HttpServerErrorException | HttpClientErrorException ex){
 			log.info("sessionId", "idType", "id",
 					"In callsendOtp method of login service- " + ex.getResponseBodyAsString());
+			new LoginExceptionCatcher().handle(ex,"sendOtp",response);
 		}
 		catch(Exception ex){
 			log.error("sessionId", "idType", "id",
