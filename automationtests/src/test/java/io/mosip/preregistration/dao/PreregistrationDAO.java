@@ -35,16 +35,6 @@ public class PreregistrationDAO
 		int result = prereg_dbread.validateDBUpdate(hql);
 		return result;
 	}
-	/*public void setDate(String preRegId)
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar c = Calendar.getInstance();
-		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, -1); 
-		String date = sdf.format(c.getTime());
-		String hql="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
-		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "preregdev.cfg.xml", "preregqa.cfg.xml");
-	}*/
 	public void setDate(String preRegId)
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -55,12 +45,6 @@ public class PreregistrationDAO
 		String queryString="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
 		dbAccess.updateDbData(queryString, "prereg");
 	}
-	/*public List<Object> getAuditData(String userId)
-	{
-		String query = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
-		List<Object> auditData = prereg_dbread.dbConnection(query, Audit.class, "auditdev.cfg.xml", "auditqa.cfg.xml");
-		return auditData;
-	}*/
 	public List<String> getAuditData(String userId)
 	{
 		String queryString = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
