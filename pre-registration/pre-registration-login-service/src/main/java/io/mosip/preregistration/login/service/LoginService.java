@@ -23,6 +23,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -170,7 +172,11 @@ public class LoginService {
 				}
 			
 		}
-		catch(Exception ex) {
+		catch(HttpServerErrorException | HttpClientErrorException ex){
+			log.info("sessionId", "idType", "id",
+					"In callsendOtp method of login service- " + ex.getResponseBodyAsString());
+		}
+		catch(Exception ex){
 			log.error("sessionId", "idType", "id",
 					"In callsendOtp method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex,"sendOtp",response);	
