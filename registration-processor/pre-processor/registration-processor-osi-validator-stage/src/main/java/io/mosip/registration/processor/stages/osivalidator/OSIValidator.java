@@ -323,7 +323,7 @@ public class OSIValidator {
 
 				}
 				return flag;
-			} else if ((validateUIN(officerId)) && validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
+			} else if ( validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
 				return true;
 			} else {
 				registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
@@ -388,8 +388,7 @@ public class OSIValidator {
 					.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
 				}
 				return flag;
-			} else if ((validateUIN(supervisorId))
-					&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
+			} else if ( validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
 				return true;
 			} else {
 				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
@@ -550,17 +549,7 @@ public class OSIValidator {
 		this.setFingerBiometricDto(identityDTO, finger, biometricData);
 	}
 
-	/**
-	 * Validate UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return true, if successful
-	 */
-	private boolean validateUIN(String uin) {
-		// todo To call IAM rest API for UNI validation
-		return true;
-	}
+	
 
 	/**
 	 * Validate otp and pwd.
