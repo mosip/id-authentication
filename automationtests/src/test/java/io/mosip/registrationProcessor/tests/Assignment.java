@@ -251,7 +251,7 @@ public class Assignment extends BaseTestCase implements ITest{
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, Sync.testCaseName);
+			f.set(baseTestMethod, Assignment.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}

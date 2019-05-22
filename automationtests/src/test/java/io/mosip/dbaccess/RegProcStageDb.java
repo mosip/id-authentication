@@ -23,7 +23,7 @@ public class RegProcStageDb {
 	SessionFactory factory;
 	Session session;
 	private static Logger logger = Logger.getLogger(RegProcStageDb.class);
-	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_int.cfg.xml";
+	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 
 	/**
