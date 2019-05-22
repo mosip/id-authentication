@@ -720,7 +720,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				}else {
 					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
 				}
-				System.out.println("Hello"+ responseDTOForSync.getSuccessJobs().size() +" "+responseDTOForSync.getErrorJobs().size());
 			}
 		}
 

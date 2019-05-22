@@ -473,7 +473,6 @@ public class HeaderController extends BaseController {
 	
 	private void progressTask() {
 		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size();
-		System.out.println(totalJobs);
 		Service<String> progressTask = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
@@ -482,7 +481,6 @@ public class HeaderController extends BaseController {
 					protected String call() {
 						
 						while(responseDTOForSync.getErrorJobs().size()+responseDTOForSync.getSuccessJobs().size()!=totalJobs) {
-							System.out.println(responseDTOForSync.getSuccessJobs().size() +" "+responseDTOForSync.getErrorJobs().size());
 							packetHandlerController.syncProgressBar.setProgress(responseDTOForSync.getSuccessJobs().size()/totalJobs);
 						}
 						return null;
