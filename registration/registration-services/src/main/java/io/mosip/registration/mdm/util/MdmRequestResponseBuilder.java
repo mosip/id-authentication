@@ -64,7 +64,7 @@ public class MdmRequestResponseBuilder {
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubType());
 		mosipBioRequest.setFormat("");
 		mosipBioRequest.setPreviousHash("");
-		mosipBioRequest.setType("");
+		mosipBioRequest.setType(bioDevice.getDenomination());
 
 		List<CaptureRequestDeviceDetailDto> bioRequests = new ArrayList<>();
 		bioRequests.add(mosipBioRequest);

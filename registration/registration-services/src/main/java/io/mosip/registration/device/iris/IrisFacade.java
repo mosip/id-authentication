@@ -14,6 +14,7 @@ import java.util.WeakHashMap;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -25,6 +26,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 
 /**
  * It takes a decision based on the input provider name and initialize the
@@ -122,6 +124,9 @@ public class IrisFacade {
 		}
 	}
 
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
+	
 	/**
 	 * Capture Iris
 	 * 
@@ -130,8 +135,16 @@ public class IrisFacade {
 	public byte[] captureIris() {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
-
-		return RegistrationConstants.IRIS_STUB.getBytes();
+		
+		byte[] capturedByte=null;
+		
+		try {
+			capturedByte= mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
+			//capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
+		} catch (RegBaseCheckedException | RuntimeException e) {
+			e.printStackTrace();
+		}
+		return capturedByte;
 	}
 
 	/**

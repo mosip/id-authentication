@@ -8,13 +8,15 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 
 /**
  * It takes a decision based on the input provider name and initialize the
@@ -25,23 +27,31 @@ import io.mosip.registration.entity.UserBiometric;
  */
 @Component
 public class FaceFacade {
-	
+
 	private static final Logger LOGGER = AppConfig.getLogger(FaceFacade.class);
-	
-	
+
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
+
 	/**
 	 * Capture Face
 	 * 
 	 * @return byte[] of captured Face
 	 */
 	public byte[] captureFace() {
-		
-		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
-				"Stub data for Face");
-		
-		return RegistrationConstants.FACE.toLowerCase().getBytes();
+
+		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Face");
+		byte[] capturedByte = null;
+
+		try {
+			capturedByte = mosipBioDeviceManager.scan("FACE").get("FACE");
+			//capturedByte=RegistrationConstants.FACE.toLowerCase().getBytes();
+		} catch (RegBaseCheckedException | RuntimeException e) {
+			e.printStackTrace();
+		}
+		return capturedByte;
 	}
-	
+
 	/**
 	 * Validate Face
 	 * 
@@ -53,10 +63,10 @@ public class FaceFacade {
 	 * @return boolean of captured Face
 	 */
 	public boolean validateFace(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails) {
-		
+
 		LOGGER.info(LOG_REG_FACE_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing face details for user registration");
-		
+
 		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail.getFace(), face.getBioIsoImage()));
 	}
 

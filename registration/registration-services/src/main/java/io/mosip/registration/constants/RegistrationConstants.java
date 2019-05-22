@@ -138,6 +138,9 @@ public class RegistrationConstants {
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
+	
+	public static final String FNR = "FNR";
+	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
 
@@ -302,6 +305,10 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
 	public static final String EXPORT_FILE_NAME = "PendingApprovalList";
 	public static final String EXPORT_FILE_TYPE = ".csv";
+	public static final String EOD_PROCESS_DATE_FORMAT = "dd-MM-yyyy";
+	public static final String EOD_PROCESS_SLNO = "slno";
+	public static final String EOD_PROCESS_DATE = "date";
+
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";

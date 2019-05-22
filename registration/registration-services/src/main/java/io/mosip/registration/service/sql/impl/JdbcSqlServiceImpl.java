@@ -49,8 +49,8 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	// TODO move to application.properties
 	private String backUpPath = "D://mosip/AutoBackUp";
 
-	private static String libFolder = "lib/";
-	private String binFolder = "bin/";
+	private static String libFolder = "lib";
+	private String binFolder = "bin";
 
 	private String manifestFile = "MANIFEST.MF";
 
@@ -59,7 +59,6 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		// clearScheduler();
-
 		try (Connection connection = getConnection()) {
 			// Get JDBC Connection
 			this.derbyRegConnection = connection;
@@ -106,7 +105,8 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	private File getSqlFile(String path) {
 
 		// Get File
-		return new File(path);
+		return FileUtils.getFile(path);
+
 	}
 
 	private void runSqlFile(File sqlFile) throws IOException, SQLException {
@@ -149,7 +149,6 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 
 			} catch (RuntimeException | IOException | SQLException runtimeException) {
 
-				
 				try {
 					File rollBackFile = getSqlFile(
 							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
@@ -164,8 +163,8 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 				}
 				// Prepare Error Response
 				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
-				
-				//Replace with backup
+
+				// Replace with backup
 				replaceWithBackUpApplication(responseDTO, previousVersion);
 
 			}
@@ -180,19 +179,22 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 	}
 
 	private void replaceWithBackUpApplication(ResponseDTO responseDTO, String previousVersion) {
-		File file = new File(FilenameUtils.getFullPath(backUpPath), FilenameUtils.getName(backUpPath));
+		File file = FileUtils.getFile(FilenameUtils.getFullPath(backUpPath), FilenameUtils.getName(backUpPath));
 
 		boolean isBackUpCompleted = false;
 		for (File backUpFolder : file.listFiles()) {
 			if (backUpFolder.getName().contains(previousVersion)) {
 
 				try {
-					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
-							new File(FilenameUtils.getName(binFolder)));
-					FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
-							new File(FilenameUtils.getName(libFolder)));
-					FileUtils.copyFile(new File(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
-							new File(FilenameUtils.getName(manifestFile)));
+					FileUtils.copyDirectory(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
+							FileUtils.getFile(FilenameUtils.getName(binFolder)));
+					FileUtils.copyDirectory(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
+							FileUtils.getFile(FilenameUtils.getName(libFolder)));
+					FileUtils.copyFile(
+							FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
+							FileUtils.getFile(FilenameUtils.getName(manifestFile)));
 
 					isBackUpCompleted = true;
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
@@ -208,6 +210,5 @@ public class JdbcSqlServiceImpl extends BaseService implements JdbcSqlService {
 			setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 		}
 	}
-
 
 }

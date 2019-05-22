@@ -50,6 +50,7 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -689,6 +690,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		});
 
 	}
+	
+	@Autowired
+	ResponseDTOForSync responseDTOForSync;
 
 	/*
 	 * (non-Javadoc)
@@ -712,7 +716,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (jobResponse.getErrorResponseDTOs() != null) {
 					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
+					responseDTOForSync.getErrorJobs().add(syncJob.getKey());
+				}else {
+					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
 				}
+				System.out.println("Hello"+ responseDTOForSync.getSuccessJobs().size() +" "+responseDTOForSync.getErrorJobs().size());
 			}
 		}
 
@@ -721,6 +729,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		}
 
 		return responseDTO;
+		
 	}
 
 	/*

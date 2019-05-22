@@ -34,6 +34,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 
 /**
  * It takes a decision based on the input provider name and initialize the
@@ -51,6 +52,36 @@ public class FingerprintFacade {
 	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
 
+	byte[] isoTemplate;
+
+	public boolean setIsoTemplate() {
+		try {
+			this.isoTemplate = captureFingerPrintThroughMdm().get("FINGERPRINT_SINGLE");
+		} catch (NullPointerException exception) {
+			return false;
+		}
+		if (this.isoTemplate != null)
+			return true;
+		return false;
+	}
+
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
+
+	private Map<String, byte[]> captureFingerPrintThroughMdm() {
+		Map<String, byte[]> byteMap = null;
+		try {
+			byteMap = mosipBioDeviceManager.scan("FINGERPRINT_SINGLE");
+		} catch (RegBaseCheckedException e) {
+
+		}
+		return byteMap;
+	}
+
+	public byte[] getIsoTemplateFromMdm() {
+		return isoTemplate;
+	}
+
 	/**
 	 * provide the minutia of a finger.
 	 *
@@ -58,6 +89,13 @@ public class FingerprintFacade {
 	 */
 	public String getMinutia() {
 		return fingerprintProvider.getMinutia();
+	}
+	
+	private String minitia;
+	
+	public String getMinitiaThroughMdm() {
+		minitia = new FingerprintTemplate().convert(this.isoTemplate).serialize();
+		return minitia;
 	}
 
 	/**
@@ -82,9 +120,12 @@ public class FingerprintFacade {
 	/**
 	 * Gets the finger print image as DTO.
 	 *
-	 * @param fpDetailsDTO the fp details DTO
-	 * @param fingerType   the finger type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -92,7 +133,8 @@ public class FingerprintFacade {
 		Map<String, Object> fingerMap = null;
 
 		try {
-			// TODO : Currently stubbing the data. once we have the device, we can remove
+			// TODO : Currently stubbing the data. once we have the device, we
+			// can remove
 			// this.
 
 			if (fingerType.equals(RegistrationConstants.LEFTPALM)) {
@@ -104,8 +146,8 @@ public class FingerprintFacade {
 			}
 
 			if ((fingerMap != null)
-					&& ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || (fpDetailsDTO.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY))
-							)) {
+					&& ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) || (fpDetailsDTO
+							.getQualityScore() < (double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY)))) {
 				fpDetailsDTO.setFingerPrint((byte[]) fingerMap.get(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY));
 				fpDetailsDTO.setFingerprintImageName(fingerType.concat(RegistrationConstants.DOT)
 						.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
@@ -125,9 +167,12 @@ public class FingerprintFacade {
 	/**
 	 * Segment finger print image.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param filePath              the file path
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param filePath
+	 *            the file path
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath)
 			throws RegBaseCheckedException {
@@ -140,7 +185,8 @@ public class FingerprintFacade {
 	 * Assign all the Fingerprint providers which extends the
 	 * MosipFingerprintProvider to the list.
 	 *
-	 * @param make the make
+	 * @param make
+	 *            the make
 	 * @return the fingerprint provider factory
 	 */
 
@@ -156,7 +202,8 @@ public class FingerprintFacade {
 	/**
 	 * Sets the fingerprint providers.
 	 *
-	 * @param fingerprintProviders the new fingerprint providers
+	 * @param fingerprintProviders
+	 *            the new fingerprint providers
 	 */
 	@Autowired
 	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
@@ -164,12 +211,14 @@ public class FingerprintFacade {
 	}
 
 	/**
-	 * Stub method to get the finger print scanned image from local hard disk. Once
-	 * SDK and device avilable then we can remove it.
+	 * Stub method to get the finger print scanned image from local hard disk.
+	 * Once SDK and device avilable then we can remove it.
 	 *
-	 * @param path the path
+	 * @param path
+	 *            the path
 	 * @return the finger print scanned image
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Map<String, Object> getFingerPrintScannedImageWithStub(String path) throws RegBaseCheckedException {
 		try {
@@ -221,9 +270,12 @@ public class FingerprintFacade {
 	/**
 	 * {@code readFingerPrints} is to read the scanned fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param path                  the path
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param path
+	 *            the path
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
@@ -238,7 +290,7 @@ public class FingerprintFacade {
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.getBiometricExceptionDTO();
 			} else if (((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
-					.isUpdateUINChild() ||  (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+					.isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getIntroducerBiometricDTO()
 								.getBiometricExceptionDTO();
@@ -303,10 +355,13 @@ public class FingerprintFacade {
 	}
 
 	/**
-	 * Validate the Input Finger with the finger that is fetched from the Database.
+	 * Validate the Input Finger with the finger that is fetched from the
+	 * Database.
 	 *
-	 * @param fingerprintDetailsDTO  the fingerprint details DTO
-	 * @param userFingerprintDetails the user fingerprint details
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param userFingerprintDetails
+	 *            the user fingerprint details
 	 * @return true, if successful
 	 */
 	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails) {

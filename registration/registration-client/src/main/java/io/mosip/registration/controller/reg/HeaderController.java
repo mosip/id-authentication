@@ -30,6 +30,7 @@ import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
@@ -415,10 +416,9 @@ public class HeaderController extends BaseController {
 	}
 
 	private void executeSyncDataTask() {
+		progressTask();
 		progressIndicator = packetHandlerController.getProgressIndicator();
 		GridPane gridPane = homeController.getMainBox();
-		List<SyncJobDef> syncJobs = masterSyncDao.getSyncJobs();
-		double totalJobs = syncJobs.size();
 		gridPane.setDisable(true);
 		progressIndicator.setVisible(true);
 		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
@@ -441,14 +441,7 @@ public class HeaderController extends BaseController {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
-						double success = 1;
-						if (responseDto.getErrorResponseDTOs() == null
-								|| responseDto.getErrorResponseDTOs().size() == 0) {
-							packetHandlerController.syncProgressBar.setProgress(1);
-						} else {
-							success = totalJobs - responseDto.getErrorResponseDTOs().size();
-							packetHandlerController.syncProgressBar.setProgress(success / totalJobs);
-						}
+						
 						return responseDto;
 					}
 				};
@@ -477,6 +470,32 @@ public class HeaderController extends BaseController {
 
 	}
 
+	@Autowired
+	ResponseDTOForSync responseDTOForSync;
+	
+	private void progressTask() {
+		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size();
+		System.out.println(totalJobs);
+		Service<String> progressTask = new Service<String>() {
+			@Override
+			protected Task<String> createTask() {
+				 return new Task<String>() {
+					@Override
+					protected String call() {
+						
+						while(responseDTOForSync.getErrorJobs().size()+responseDTOForSync.getSuccessJobs().size()!=totalJobs) {
+							System.out.println(responseDTOForSync.getSuccessJobs().size() +" "+responseDTOForSync.getErrorJobs().size());
+							packetHandlerController.syncProgressBar.setProgress(responseDTOForSync.getSuccessJobs().size()/totalJobs);
+						}
+						return null;
+						
+					}
+				};
+			}
+		};
+		progressTask.start();
+	}
+	
 	public void executeUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);

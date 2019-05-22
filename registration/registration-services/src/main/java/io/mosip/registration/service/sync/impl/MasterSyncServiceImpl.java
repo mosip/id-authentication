@@ -9,7 +9,9 @@ import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,15 +28,18 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
+import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
@@ -438,5 +443,38 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			listOfIndividualDTO.add(individualDto);
 		});
 		return listOfIndividualDTO;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getBiometricType(java.lang.
+	 * String, java.lang.String)
+	 */
+	public List<BiometricAttributeDto> getBiometricType(String langCode){
+		
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		
+		if (RegistrationConstants.DISABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))) {
+			biometricType.remove(RegistrationConstants.FNR);
+		} else if (RegistrationConstants.DISABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
+			biometricType.remove(RegistrationConstants.IRS);
+		} 
+		
+		List<BiometricAttribute> masterBiometrics = masterSyncDao.getBiometricType(langCode, biometricType);
+		List<BiometricAttributeDto> listOfbiometricAttributeDTO = new ArrayList<>();
+		masterBiometrics.forEach(biometrics -> {
+			BiometricAttributeDto biometricsDto = new BiometricAttributeDto();
+			biometricsDto.setName(biometrics.getName());
+			biometricsDto.setCode(biometrics.getCode());
+			biometricsDto.setBiometricTypeCode(biometrics.getBiometricTypeCode());
+			biometricsDto.setLangCode(biometrics.getLangCode());
+			listOfbiometricAttributeDTO.add(biometricsDto);
+		});
+		return listOfbiometricAttributeDTO;
+		
 	}
 }

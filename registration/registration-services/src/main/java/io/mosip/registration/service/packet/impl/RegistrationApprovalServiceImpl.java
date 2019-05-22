@@ -3,7 +3,11 @@ package io.mosip.registration.service.packet.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +73,11 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
-					RegistrationConstants.EMPTY)));
+			int count = 1;
+			for (Registration detail : details) {
+				list.add(new RegistrationApprovalDTO(String.valueOf(count++), 
+						detail.getId(), regDateConversion(detail.getCrDtime()),detail.getAckFilename(), RegistrationConstants.EMPTY));
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
@@ -79,6 +85,19 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status ended");
 		return list;
+	}
+
+	/**
+	 * Registration date conversion.
+	 *
+	 * @param timestamp the timestamp
+	 * @return the string
+	 */
+	private String regDateConversion(Timestamp timestamp) {
+
+		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
+		Date date = new Date(timestamp.getTime());
+		return dateFormat.format(date);
 	}
 
 	/*
