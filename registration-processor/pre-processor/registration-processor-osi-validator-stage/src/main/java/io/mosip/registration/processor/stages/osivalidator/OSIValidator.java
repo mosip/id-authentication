@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,6 +34,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -72,6 +74,8 @@ import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
+import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -99,6 +103,7 @@ public class OSIValidator {
 	/** The registration status service. */
 	/** the application Id */
 	private static final String APP_ID = "registrationprocessor";
+	private static final String UIN="UIN";
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -280,10 +285,19 @@ public class OSIValidator {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				String result = httpServerException.getResponseBodyAsString();
 				this.registrationStatusDto.setStatusComment(result);
-				throw e;
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
 			} else {
 				throw e;
 			}
@@ -314,6 +328,7 @@ public class OSIValidator {
 			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 			String officerRegistrationId = getOperatorRid(officerId);
+			String officerUin=getOperatorUin(officerRegistrationId);
 			String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = null;// regOsi.getOfficerfingerType();
 			String iris = null;// regOsi.getOfficerIrisImageName();
@@ -380,6 +395,7 @@ public class OSIValidator {
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
 			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
 			String supervisorRegistrationId = getOperatorRid(supervisorId);
+			String supervisorUin=getOperatorUin(supervisorRegistrationId);
 			String fingerPrint = null;// regOsi.getSupervisorBiometricFileName();
 			String fingerPrintType = null;// regOsi.getSupervisorFingerType();
 			String iris = null;// regOsi.getSupervisorIrisImageName();
@@ -406,6 +422,8 @@ public class OSIValidator {
 		}
 		return true;
 	}
+
+	
 
 	/**
 	 * Checks if is valid introducer.
@@ -743,12 +761,66 @@ public class OSIValidator {
 				this.registrationStatusDto.setStatusComment(result);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
-				throw e;
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				String result = httpServerException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
 			} else {
 				throw e;
 			}
 
 		}
 		return null;
+	}
+	
+	private String getOperatorUin(String operatorRegistrationId) throws ApisResourceAccessException, IOException {
+		IdResponseDTO response;
+		String operatorUin=null;
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(operatorRegistrationId);
+		try {
+			response = (IdResponseDTO) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
+					"", "", IdResponseDTO.class);
+			if(response.getError() !=null) {
+			ObjectMapper mapper = new ObjectMapper();
+			String identityjson=mapper.writeValueAsString(response.getResponse().getIdentity());
+			JSONObject identity=JsonUtil.objectMapperReadValue(identityjson, JSONObject.class);
+			operatorUin= (String) identity.get(UIN);
+			}
+			else {
+				List<ErrorDTO> errors = response.getError();
+				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
+			}
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				String result = httpServerException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
+			} else {
+				throw e;
+			}
+		}
+		return operatorUin;
+		
 	}
 }
