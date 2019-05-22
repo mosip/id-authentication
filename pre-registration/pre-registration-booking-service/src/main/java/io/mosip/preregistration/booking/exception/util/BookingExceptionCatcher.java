@@ -152,9 +152,6 @@ public class BookingExceptionCatcher {
 		}else if (ex instanceof RestCallException) {
 			throw new RestCallException(((RestCallException) ex).getErrorCode(),
 					((RestCallException) ex).getErrorText(),mainResponseDTO);
-		}else if (ex instanceof HttpClientErrorException) {
-			throw new RestCallException(((RestCallException) ex).getErrorCode(),
-					((RestCallException) ex).getErrorText(),mainResponseDTO);
 		}
 
 	}
