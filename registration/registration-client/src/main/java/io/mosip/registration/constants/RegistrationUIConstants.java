@@ -156,6 +156,11 @@ public class RegistrationUIConstants {
 	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
 	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
 	public static final String SELECT = bundle.getString("SELECT");
+	public static final String LEFT_SLAP = bundle.getString("LEFT_SLAP");
+	public static final String RIGHT_SLAP = bundle.getString("RIGHT_SLAP");
+	public static final String THUMBS = bundle.getString("THUMBS");
+	public static final String RIGHT_IRIS = bundle.getString("RIGHT_IRIS");
+	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
