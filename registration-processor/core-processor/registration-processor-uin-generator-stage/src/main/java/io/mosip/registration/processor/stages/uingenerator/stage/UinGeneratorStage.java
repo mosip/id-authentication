@@ -393,10 +393,11 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
+	 * @throws VidCreationException 
 	 * @throws Exception
 	 */
 	private IdResponseDTO sendIdRepoWithUin(String regId, String uin)
-			throws ApisResourceAccessException, JsonParseException, JsonMappingException, IOException {
+			throws ApisResourceAccessException, JsonParseException, JsonMappingException, IOException, VidCreationException {
 
 		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
 		RequestDto requestDto = new RequestDto();
@@ -420,6 +421,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		try {
 			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
+			generateVid(uin);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
@@ -712,11 +714,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @param uinStatus
 	 *            the uin status
 	 * @throws ApisResourceAccessException
+	 * @throws JsonProcessingException 
 	 * @throws IOException 
 	 * @throws VidCreationException 
 	 */
 	private void sendResponseToUinGenerator(String uin, String uinStatus)
-			throws ApisResourceAccessException, IOException, VidCreationException {
+			throws ApisResourceAccessException, JsonProcessingException {
 		UinRequestDto uinRequest = new UinRequestDto();
 		UinResponseDto uinDto = new UinResponseDto();
 		uinDto.setUin(uin);
@@ -734,8 +737,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 			if (uinresponse.getResponse() != null) {
 				String uinSuccessDescription = "Kernel service called successfully to update the uin status as assigned";
-				Long uinNumber=Long.getLong(uin);
-				generateVid(uinNumber);
+				
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Success",
 						uinSuccessDescription);
@@ -797,15 +799,16 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	
 
 	@SuppressWarnings("unchecked")
-	private void generateVid(Long UIN) throws ApisResourceAccessException, IOException, VidCreationException {
+	private void generateVid(String UIN) throws ApisResourceAccessException, IOException, VidCreationException {
 		ObjectMapper mapper = new ObjectMapper();
 		VidRequestDto vidRequestDto = new VidRequestDto();
 		VidResponseDto vidResponseDto= new VidResponseDto();
-		VidGenRequest<VidRequestDto> request = new VidGenRequest<>();
-		VidGenResponse<VidResponseDto> response = new VidGenResponse<>();
+		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
+		ResponseWrapper<VidResponseDto> response;
 		try {
-		vidRequestDto.setUin(UIN);
-		vidRequestDto.setVidtype(vidType);
+			
+		vidRequestDto.setUIN(UIN);
+		vidRequestDto.setVidType(vidType);
 		request.setId(env.getProperty(VID_CREATE_ID));
 		request.setRequest(vidRequestDto);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
@@ -814,13 +817,13 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		request.setRequesttime(localdatetime);
 		request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 		
-		response=(VidGenResponse<VidResponseDto>) registrationProcessorRestClientService
-					.postApi(ApiName.CREATEVID, "", "", request, VidGenResponse.class);
+		response=(ResponseWrapper<VidResponseDto>) registrationProcessorRestClientService
+					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 		
 		vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
 				VidResponseDto.class);
 		
-		if(!vidResponseDto.getStatus().equalsIgnoreCase(VID_ACTIVE)) {
+		if( response.getErrors()!=null) {
 			throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),"VID creation exception");
 			
 		}

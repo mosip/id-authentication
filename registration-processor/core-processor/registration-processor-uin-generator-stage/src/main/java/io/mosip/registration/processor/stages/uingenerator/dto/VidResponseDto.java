@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.stages.uingenerator.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.ToString;
@@ -9,9 +11,10 @@ import lombok.ToString;
 @ApiModel(description = "Model representing a Vid Reponse")
 public class VidResponseDto {
 	
-	private String status;
+	private String vidStatus;
 	
-	private long VID;
+	@JsonProperty("VID")
+	private String VID;
 	
 
 }

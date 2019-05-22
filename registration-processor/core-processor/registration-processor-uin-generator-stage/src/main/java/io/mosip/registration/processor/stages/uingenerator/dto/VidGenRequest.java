@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
-public class VidGenRequest<T> {
+public class VidGenRequest {
 
 	private String id;
 	private String version;
@@ -18,5 +18,5 @@ public class VidGenRequest<T> {
 	private LocalDateTime requesttime;
 	@NotNull
 	@Valid
-	private T request;
+	private VidRequestDto request;
 }
