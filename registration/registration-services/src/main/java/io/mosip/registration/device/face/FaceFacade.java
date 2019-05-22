@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -44,8 +46,10 @@ public class FaceFacade {
 		byte[] capturedByte = null;
 
 		try {
-			capturedByte = mosipBioDeviceManager.scan("FACE").get("FACE");
-			//capturedByte=RegistrationConstants.FACE.toLowerCase().getBytes();
+			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)ApplicationContext.getInstance().map().get(RegistrationConstants.MDM_ENABLED))))
+				capturedByte = mosipBioDeviceManager.scan("FACE").get("FACE");
+			else
+				capturedByte=RegistrationConstants.FACE.toLowerCase().getBytes();
 		} catch (RegBaseCheckedException | RuntimeException e) {
 			e.printStackTrace();
 		}

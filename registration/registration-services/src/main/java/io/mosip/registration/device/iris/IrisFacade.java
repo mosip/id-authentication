@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
@@ -40,6 +41,10 @@ public class IrisFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(IrisFacade.class);
 
+
+	@Autowired
+	MosipBioDeviceManager mosipBioDeviceManager;
+	
 	/**
 	 * Gets the iris stub image as DTO.
 	 *
@@ -124,9 +129,6 @@ public class IrisFacade {
 		}
 	}
 
-	@Autowired
-	MosipBioDeviceManager mosipBioDeviceManager;
-	
 	/**
 	 * Capture Iris
 	 * 
@@ -139,8 +141,10 @@ public class IrisFacade {
 		byte[] capturedByte=null;
 		
 		try {
-			capturedByte= mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
-			//capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
+			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)ApplicationContext.getInstance().map().get(RegistrationConstants.MDM_ENABLED))))
+				capturedByte= mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
+			else
+				capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
 		} catch (RegBaseCheckedException | RuntimeException e) {
 			e.printStackTrace();
 		}

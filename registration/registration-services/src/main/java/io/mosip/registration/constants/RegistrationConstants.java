@@ -1275,6 +1275,8 @@ public class RegistrationConstants {
 	public static final String LABEL_SMALL_CASE = "label";
 
 	public static final Object UI_SYNC_DATA = "mosip.registration.ui_sync_data";
+	public static final String MDM_ENABLED = "mosip.mdm.enabled";
+	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
 	public static final String DOB_MESSAGE = "dobMessage";

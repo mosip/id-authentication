@@ -29,8 +29,10 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
+import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -147,6 +149,12 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private BaseController baseController;
+	
+	@Autowired
+	IrisFacade irisFacade;
+	
+	@Autowired
+	FaceFacade faceFacade;
 
 	/**
 	 * to generate OTP in case of OTP based authentication
@@ -716,6 +724,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
+		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+			return captureAndValidateFPWithMdm(userId);
 		return captureAndValidateFpNonMdm(userId);
 	}
 
@@ -858,7 +868,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIris(RegistrationConstants.IRIS_STUB.getBytes());
+		irisDetailsDTO.setIris(irisFacade.captureIris());
 		irisDetailsDTOs.add(irisDetailsDTO);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
@@ -899,7 +909,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace(RegistrationConstants.FACE.toLowerCase().getBytes());
+		faceDetailsDTO.setFace(faceFacade.captureFace());
 
 		if (!isEODAuthentication) {
 			if (isSupervisor) {

@@ -1012,9 +1012,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
-		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
-		// getFingerPrintImage(detailsDTO, fingerType);
+		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		 getFingerPrintImage(detailsDTO, fingerType);
+		else
+			fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
@@ -1132,13 +1134,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		String type=fingerType;
 		switch (fingerType) {
 		case RegistrationConstants.LEFTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_LEFT";
+			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.LEFT.toUpperCase();
 			break;
 		case RegistrationConstants.RIGHTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_RIGHT";
+			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.RIGHT.toUpperCase();
 			break;
 		case RegistrationConstants.THUMBS:
-			fingerType = RegistrationConstants.FINGER_SLAP+"_TYPE_THUMB";
+			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.THUMB.toUpperCase();
 			break;
 
 		default:

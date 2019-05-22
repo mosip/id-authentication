@@ -480,17 +480,19 @@ public class IrisCaptureController extends BaseController {
 					? RegistrationConstants.LEFT
 					: RegistrationConstants.RIGHT;
 
-			try {
-				irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
-			} catch (RegBaseCheckedException runtimeException) {
-				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
-						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
-						ExceptionUtils.getStackTrace(runtimeException)));
-			}
 
-//			 getIrisImage(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
-
+			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+				getIrisImage(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+			else
+				try {
+					irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+				} catch (RegBaseCheckedException runtimeException) {
+					LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+							RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
+							ExceptionUtils.getStackTrace(runtimeException)));
+				}
+				
 			if (irisDetailsDTO.getIris() != null) {
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));

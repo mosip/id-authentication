@@ -966,7 +966,11 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return boolean
 	 */
 	private boolean validateFingerPrint() {
-
+		
+		
+		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+			return validateFingerPrintWithMdm();
+		
 		return validateFingerPrintNonMdm();
 
 	}
