@@ -1,0 +1,1 @@
+[{"testType":"smoke","testCaseName":"Kernel_GenerateLicenseKey_smoke_generateLicenceKey","jiraId":"MOS-1006","tspId":"valid","licenseExpiryTime":"valid","Kernel_GenerateLicenseKey_invalid_timeFormat2":"valid","Kernel_GenerateLicenseKey_response_time":"valid","status":""}]
