@@ -92,11 +92,13 @@ public class NotificationUtil {
 	public MainResponseDTO<NotificationResponseDTO> emailNotification(NotificationDTO acknowledgementDTO,
 			String langCode, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In emailNotification method of NotificationUtil service");
+		HttpEntity<byte[]> doc=null;
+		if(file!=null) {
 		 LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
 		    pdfHeaderMap.add("Content-disposition", "form-data; name=attachments; filename=" + file.getOriginalFilename());
 		    pdfHeaderMap.add("Content-type", "text/plain");
-		    HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
-
+		    doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
+		}
 
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
