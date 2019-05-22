@@ -889,7 +889,7 @@ public class LoginController extends BaseController implements Initializable {
 		if (authInfo.equals(RegistrationConstants.ROLES_EMPTY)) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 		} else if (authInfo.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
-			SessionContext sessionContext = SessionContext.getInstance();
+			SessionContext sessionContext = SessionContext.create(userDetail);
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"Setting values for session context and user context");

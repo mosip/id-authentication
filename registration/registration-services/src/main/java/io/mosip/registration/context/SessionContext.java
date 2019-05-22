@@ -1,5 +1,6 @@
 package io.mosip.registration.context;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.entity.UserDetail;
 
 /**
  * Class for SessionContext details
@@ -34,6 +36,7 @@ public class SessionContext {
 
 	private UUID id;
 	private static UserContext userContext;
+	private static SecurityContext securityContext;
 	private Date loginTime;
 	private long refreshedLoginTime;
 	private long timeoutInterval;
@@ -53,6 +56,43 @@ public class SessionContext {
 			sessionContext.setMapObject(new HashMap<>());
 			userContext = sessionContext.new UserContext();
 			sessionContext.authTokenDTO = new AuthTokenDTO();
+			return sessionContext;
+		} else {
+			return sessionContext;
+		}
+	}
+	
+	/**
+	 * making sessionContext as singleton
+	 * 
+	 * @param : user ID
+	 * 
+	 * @return sessionContext
+	 */
+	public static SessionContext create(UserDetail  userDetail){
+		if (sessionContext == null && userDetail != null) {
+			List<String> roleList = new ArrayList<>();
+
+			userDetail.getUserRole().forEach(roleCode -> {
+				if (roleCode.getIsActive()) {
+					roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
+				}
+			});
+			
+			sessionContext = new SessionContext();
+			sessionContext.setId(UUID.randomUUID());
+			sessionContext.setMapObject(new HashMap<>());
+			sessionContext.authTokenDTO = new AuthTokenDTO();
+			
+			
+			userContext = sessionContext.new UserContext();
+			userContext.setUserId(userDetail.getId());
+			
+			securityContext = sessionContext.new SecurityContext();
+			securityContext.setUserId(userDetail.getId());
+			securityContext.setRoles(roleList);
+			securityContext.setSecurityAuthenticationMap(new HashMap<>());
+			
 			return sessionContext;
 		} else {
 			return sessionContext;
@@ -87,6 +127,15 @@ public class SessionContext {
 	 */
 	public static UserContext userContext() {
 		return sessionContext.getUserContext();
+	}
+	
+	/**
+	 * Reading SecurityContext from sessioncontext
+	 * 
+	 * @return securityContext
+	 */
+	public static SecurityContext securityContext() {
+		return sessionContext.getSecurityContext();
 	}
 
 	/**
@@ -214,6 +263,15 @@ public class SessionContext {
 	 */
 	public UserContext getUserContext() {
 		return userContext;
+	}
+	
+	/**
+	 * Getter for securityContext
+	 * 
+	 * @return securityContext
+	 */
+	public SecurityContext getSecurityContext() {
+		return securityContext;
 	}
 
 	/**
@@ -452,6 +510,85 @@ public class SessionContext {
 		 */
 		public void setUserMap(Map<String, Object> userMap) {
 			this.userMap = userMap;
+		}
+
+	}
+	
+	/**
+	 * class for User context
+	 *
+	 */
+	public class SecurityContext {
+		private String userId;
+		private List<String> roles;
+		private Map<String, Object> securityAuthenticationMap;
+
+		/**
+		 * Constructor for User context
+		 */
+		private SecurityContext() {
+
+		}
+
+		/**
+		 * Getter for userId
+		 * 
+		 * @return userId
+		 */
+		public String getUserId() {
+			if(userId==null) {
+				return RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
+			return userId;
+		}
+
+		/**
+		 * Setter for userId
+		 * 
+		 * @param userId
+		 *            id of the user
+		 */
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		/**
+		 * Getter for roles
+		 * 
+		 * @return list of roles
+		 */
+		public List<String> getRoles() {
+			return roles;
+		}
+
+		/**
+		 * Setter for roles
+		 * 
+		 * @param roles
+		 *            user roles
+		 */
+		public void setRoles(List<String> roles) {
+			this.roles = roles;
+		}
+
+
+		/**
+		 * Getter for userMap
+		 * 
+		 * @return userMap
+		 */
+		public Map<String, Object> getSecurityAuthenticationMap() {
+			return securityAuthenticationMap;
+		}
+
+		/**
+		 * Setter for userMap
+		 * 
+		 * @param userMap
+		 *            user map
+		 */
+		public void setSecurityAuthenticationMap(Map<String, Object> securityAuthenticationMap) {
+			this.securityAuthenticationMap = securityAuthenticationMap;
 		}
 
 	}
