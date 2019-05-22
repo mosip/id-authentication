@@ -138,6 +138,9 @@ public class RegistrationConstants {
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
+	
+	public static final String FNR = "FNR";
+	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
 
