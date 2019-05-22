@@ -543,8 +543,7 @@ public class RegistrationStatusServiceImpl
 
 	@Override
 	public Boolean checkUinAvailabilityForRid(String rid) {
-		Boolean uinAvailable = registrationStatusDao.checkUinAvailabilityForRid(rid);
-		return uinAvailable;
+		return registrationStatusDao.checkUinAvailabilityForRid(rid);
 	}
 
 
