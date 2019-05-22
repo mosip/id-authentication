@@ -285,6 +285,11 @@ public class RunConfigUtil {
 	
 	public static RunConfig objRunConfig;
 
+	/**
+	 * The method get object of runtime module config
+	 * 
+	 * @param moduleObject
+	 */
 	public static void getRunConfigObject(String module) {
 		if (module.equals("ida"))
 			objRunConfig = new IdaRunConfig();
@@ -293,6 +298,11 @@ public class RunConfigUtil {
 		
 	}
 	
+	/**
+	 * The method get environment
+	 * 
+	 * @return environment such as qa or int or dev or dev-int
+	 */
 	public static String getRunEvironment() {
 		return System.getProperty("env.user");
 	}
@@ -319,5 +329,14 @@ public class RunConfigUtil {
 			}
 		}
 		return "NoUINFound";
+	}
+	
+	/**
+	 * Get test type of execution such as smoke, regression or funtional etc
+	 * 
+	 * @return testLevel or testType
+	 */
+	public static String getTestLevel() {
+		return System.getProperty("env.testLevel");
 	}
 }

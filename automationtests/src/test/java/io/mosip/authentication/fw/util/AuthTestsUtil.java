@@ -589,7 +589,7 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	public String getContentFromFile(File file) throws IOException {
+	public static String getContentFromFile(File file) throws IOException {
 		return FileUtils.readFileToString(file.getAbsoluteFile());
 	}
 	
@@ -1197,6 +1197,16 @@ public class AuthTestsUtil extends BaseTestCase {
         }
         return randomNumber;
     }
+	
+	public static String getVidRequestContent() {
+		try {
+			return getContentFromFile(new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
+					+ RunConfigUtil.objRunConfig.getModuleFolderName() + "/TestData/VIDGeneration/input/vid-request.json"));
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception Occured in getting the VID request file" + e.getMessage());
+			return e.getMessage();
+		}
+	}
 } 
 
 
