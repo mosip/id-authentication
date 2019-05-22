@@ -95,7 +95,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	@DataProvider(name = "CancelAnBookedAppointment")
 	public Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

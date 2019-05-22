@@ -93,7 +93,7 @@ public class Sample extends BaseTestCase implements ITest {
 		dao.setDate(preID);
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);*/
 		//lib.expiredStatus();
-lib.pagination("1");
+//lib.pagination("1");
 	}
 
 
