@@ -36,12 +36,19 @@ import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.RidDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsDto;
+import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsResponseDto;
+import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -127,7 +134,7 @@ public class OSIValidatorTest {
 	private PacketMetaInfo packetMetaInfo;
 
 	/** The identity. */
-	Identity identity = new Identity();
+	private Identity identity = new Identity();
 
 	/**
 	 * Sets the up.
@@ -267,7 +274,7 @@ public class OSIValidatorTest {
 		
 		FieldValue supervisorId= new FieldValue();
 		supervisorId.setLabel(JsonConstant.SUPERVISORID);
-		supervisorId.setValue("false");
+		supervisorId.setValue("110016");
 		
 		FieldValue supervisorOtp= new FieldValue();
 		supervisorOtp.setLabel(JsonConstant.SUPERVISOROTPAUTHENTICATION);
@@ -275,9 +282,14 @@ public class OSIValidatorTest {
 		
 		FieldValue supervisorBiofileName = new FieldValue();
 		supervisorBiofileName.setLabel(JsonConstant.SUPERVISORBIOMETRICFILENAME);
-		officerBiofileName.setValue("supervisor_bio_CBEFF");
-
-		identity.setOsiData((Arrays.asList(officerBiofileName, officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword,supervisorId)));
+		supervisorBiofileName.setValue("supervisor_bio_CBEFF");
+		
+		FieldValue creationDate = new FieldValue();
+		creationDate.setLabel("creationDate");
+		creationDate.setValue("2019-04-30T12:42:03.541Z");
+		
+		identity.setOsiData((Arrays.asList(officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword,supervisorId,supervisorBiofileName)));
+		identity.setMetaData((Arrays.asList(creationDate)));
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 		FieldValueArray introducerBiometric = new FieldValueArray();
 		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
@@ -307,16 +319,35 @@ public class OSIValidatorTest {
 		demoJson.put("age", "10");
 		demoJson.put("parentOrGuardianRID", "12345678");
 		demoJson.put("parentOrGuardianUIN", "1234567");
+		UserResponseDto userResponseDto=new UserResponseDto();
+		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto=new UserDetailsDto();
+		userDetailsDto.setActive(true);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		RIDResponseDto ridResponseDto=new RIDResponseDto();
+		RidDto ridDto=new RidDto();	
+		ridDto.setRid("reg4567");
+		ridResponseDto.setResponse(ridDto);
+		IdResponseDTO idResponseDTO=new IdResponseDTO();
+		ResponseDTO responseDTO=new ResponseDTO();
+		String identityJson="{\"UIN\":\"uin123\"}";
+		Object iden= JsonUtil.objectMapperReadValue(identityJson, Object.class);
+		responseDTO.setIdentity(iden);
+		idResponseDTO.setResponse(responseDTO);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(12345678).thenReturn(123456789);
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn(identity.getMetaData().get(0).getValue());
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
-
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+				.thenReturn(userResponseDto).thenReturn(userResponseDto).
+				thenReturn(ridResponseDto).thenReturn(idResponseDTO);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertTrue(isValid);

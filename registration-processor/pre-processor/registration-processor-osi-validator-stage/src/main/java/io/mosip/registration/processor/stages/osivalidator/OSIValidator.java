@@ -50,6 +50,7 @@ import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -186,8 +187,7 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
-		boolean isValidOsi = false;
-		String creationDate = null;
+		boolean isValidOsi = false;		
 		demographicIdentity = getDemoIdentity(registrationId);
 		regProcessorIdentityJson = getIdentity();
 		Identity identity = osiUtils.getIdentity(registrationId);
@@ -205,12 +205,7 @@ public class OSIValidator {
 					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
 		}
-		for (int i = 0; i < identity.getMetaData().size(); i++) {
-			if ("creationDate".equals(identity.getMetaData().get(i).getLabel())) {
-				creationDate = identity.getMetaData().get(i).getValue();
-				break;
-			}
-		}
+		String creationDate = osiUtils.getMetaDataValue(JsonConstant.CREATIONDATE, identity);
 		if (creationDate != null && !creationDate.isEmpty()) {
 			if (!wereOperatorsActiveDuringPCT(officerId, creationDate, supervisorId)) {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
@@ -787,7 +782,7 @@ public class OSIValidator {
 		try {
 			response = (IdResponseDTO) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
 					"", "", IdResponseDTO.class);
-			if(response.getError() !=null) {
+			if(response.getError() ==null) {
 			ObjectMapper mapper = new ObjectMapper();
 			String identityjson=mapper.writeValueAsString(response.getResponse().getIdentity());
 			JSONObject identity=JsonUtil.objectMapperReadValue(identityjson, JSONObject.class);
