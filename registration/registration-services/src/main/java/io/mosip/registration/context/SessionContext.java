@@ -100,7 +100,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading map from sessioncontext
+	 * Reading map from sessionContext
 	 * 
 	 * @return map
 	 */
@@ -121,7 +121,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userContext from sessioncontext
+	 * Reading userContext from sessionContext
 	 * 
 	 * @return userContext
 	 */
@@ -139,7 +139,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userMap from sessioncontext
+	 * Reading userMap from sessionContext
 	 * 
 	 * @return userMap
 	 */
@@ -148,7 +148,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading refreshedLoginTime from sessioncontext
+	 * Reading refreshedLoginTime from sessionContext
 	 * 
 	 * @return refreshedLoginTime
 	 */
@@ -166,7 +166,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading timeoutInterval from sessioncontext
+	 * Reading timeoutInterval from sessionContext
 	 * 
 	 * @return timeoutInterval
 	 */
@@ -175,7 +175,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading idealTime from sessioncontext
+	 * Reading idealTime from sessionContext
 	 * 
 	 * @return idealTime
 	 */
@@ -190,11 +190,11 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		sessionContext.getInstance().authTokenDTO = authTokenDTO;
+		SessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**
-	 * Reading authTokenDTO from sessioncontext
+	 * Reading authTokenDTO from sessionContext
 	 * 
 	 * @return authTokenDTO
 	 */
@@ -203,7 +203,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userId from sessioncontext
+	 * Reading userId from sessionContext
 	 * 
 	 * @return userId
 	 */
@@ -216,7 +216,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userName from sessioncontext
+	 * Reading userName from sessionContext
 	 * 
 	 * @return userName
 	 */
@@ -229,7 +229,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading isSessionContextAvailable from sessioncontext
+	 * Reading isSessionContextAvailable from sessionContext
 	 * 
 	 * @return boolean
 	 */

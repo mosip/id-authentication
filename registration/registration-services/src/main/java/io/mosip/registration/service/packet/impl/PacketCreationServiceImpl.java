@@ -75,6 +75,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
+import io.mosip.registration.util.advice.PreAuthorizeUserId;
 import io.mosip.registration.util.hmac.HMACGeneration;
 
 /**
@@ -112,6 +113,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 * registration.dto.RegistrationDTO)
 	 */
 	@SuppressWarnings("unchecked")
+	@PreAuthorizeUserId
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
