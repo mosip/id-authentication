@@ -132,14 +132,19 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
-			/*	if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
+				boolean isNoRecordMsg = false;
+				if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
 						&& mainResponseDTO.getErrors().getMessage() != null) {
-					errMsg += " : " + mainResponseDTO.getErrors().getMessage();
-				}*/
+					if ("Record not found for date range and reg center id"
+							.equalsIgnoreCase(mainResponseDTO.getErrors().getMessage())) {
+						setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
+						isNoRecordMsg = true;
+					}
+				}
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, errMsg);
-
-				setErrorResponse(responseDTO, errMsg, null);
+				if (!isNoRecordMsg)
+					setErrorResponse(responseDTO, errMsg, null);
 			}
 
 		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException
