@@ -6,11 +6,11 @@ export const menuItems = [
   'Configuration'
 ];
 
-export const appId = 'admin';
-export const applicationVersion = 'v1';
-export const userIdType = 'USERID';
-export const loginOtpContext = 'auth-otp';
-
+export const APPLICATION_ID = 'admin';
+export const OTP_CONTEXT = 'auth-otp';
+export const USER_ID_TYPE = 'USERID';
+export const APP_VERSION = 'v1';
+export const OTP_CHANNEL = ['email', 'mobile'];
 
 
 

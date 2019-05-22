@@ -7,6 +7,7 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { loginURL, admin_base_url } from '../../app.constants';
 import { RequestModel } from '../models/request-model';
+import { Router } from '@angular/router';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json'
@@ -16,7 +17,7 @@ const httpOptions = {
 export class LoginServiceService {
   username: string;
   authtype: string[];
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router: Router) {}
 
   setAuthTypes(authType: string[]) {
     this.authtype = authType;
@@ -25,7 +26,6 @@ export class LoginServiceService {
   getAuthTypes() {
     return this.authtype;
   }
-
   setUserName(username: string) {
     this.username = username;
   }
