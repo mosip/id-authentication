@@ -1345,4 +1345,11 @@ public class RegistrationConstants {
 	public static final String SQL_EXECUTION_FAILURE = "SQL EXECUTION FAILURE";
 	public static final String BACKUP_PREVIOUS_SUCCESS = "Backup Success";
 	public static final String BACKUP_PREVIOUS_FAILURE = "Backup Failed";
+	
+	public static final String PUBLICKEY="publicKey";
+	public static final String ISSUED_AT="issuedAt";
+	public static final String EXPIRY_AT="expiryAt";
+	public static final String SERVICE_NAME="policysync";
+	
+	
 }
