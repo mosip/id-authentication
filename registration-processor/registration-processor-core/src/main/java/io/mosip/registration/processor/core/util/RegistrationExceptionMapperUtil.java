@@ -124,7 +124,12 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE, RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT,
 				RegistrationTransactionStatusCode.FAILED);
-
+		statusMap.put(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE,
+				RegistrationTransactionStatusCode.FAILED);
 		return unmodifiableMap;
 
 	}

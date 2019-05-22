@@ -190,9 +190,12 @@ public class OSIValidator {
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		String officerId = regOsi.getOfficerId();
 		String supervisorId = regOsi.getSupervisorId();
-		if (officerId == null && supervisorId == null) {
+		if ((officerId.isEmpty() || officerId == null) && (supervisorId.isEmpty() ||supervisorId == null)) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+			   .getStatusCode(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto
-			.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+			.setStatusComment(StatusMessage.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
@@ -205,11 +208,17 @@ public class OSIValidator {
 		}
 		if (creationDate != null && !creationDate.isEmpty()) {
 			if (!wereOperatorsActiveDuringPCT(officerId, creationDate, supervisorId)) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				return false;
 			}
 		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto
-			.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " packet creationDate is null");
+			.setStatusComment(StatusMessage.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "packet creationDate is null");
 
