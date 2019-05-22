@@ -2137,7 +2137,7 @@ public class DemographicDetailController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
 		}
 		if (isValid)
-			isValid = validation.validateUinOrRid(parentUinId, parentRegId, isChild, uinValidator, ridValidator);
+			isValid = validation.validateUinOrRid(parentFlowPane,parentUinId, parentRegId, isChild, uinValidator, ridValidator);
 
 		return isValid;
 

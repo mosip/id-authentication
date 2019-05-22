@@ -383,7 +383,7 @@ public class Validations extends BaseController {
 	 *            RID
 	 * @return <code>true</code> if UIN or RID is valid, else <code>false</code>
 	 */
-	public boolean validateUinOrRid(TextField uinId, TextField regId, boolean isChild,
+	public boolean validateUinOrRid(Pane parentPane,TextField uinId, TextField regId, boolean isChild,
 			UinValidator<String> uinValidator, RidValidator<String> ridValidator) {
 		boolean isIdValid = false;
 
@@ -392,7 +392,10 @@ public class Validations extends BaseController {
 				try {
 					isIdValid = uinValidator.validateId(uinId.getText());
 				} catch (InvalidIDException invalidUinException) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
+					
+					generateInvalidValueAlert(parentPane, uinId.getId(),
+							applicationLabelBundle.getString(uinId.getId()) + " " + applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004), false);
+					
 					LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 					uinId.requestFocus();
@@ -402,7 +405,8 @@ public class Validations extends BaseController {
 					try {
 						isIdValid = ridValidator.validateId(regId.getText());
 					} catch (InvalidIDException invalidRidException) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.RID_INVALID);
+						generateInvalidValueAlert(parentPane, regId.getId(),
+								applicationLabelBundle.getString(regId.getId()) + " " + applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004), false);
 						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 						regId.requestFocus();
