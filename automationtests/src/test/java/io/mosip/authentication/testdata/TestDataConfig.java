@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.testdata;
 
 /**
@@ -75,4 +74,3 @@ public class TestDataConfig {
 	}
 
 }
-

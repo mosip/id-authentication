@@ -39,55 +39,54 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Delete All Documents By PreRegID related Positive and Negative test cases
+ * Test Class to perform Delete All Documents By PreRegID related Positive and
+ * Negative test cases
  * 
  * @author Lavanya R
  * @since 1.0.0
  */
 
 public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest {
-	
+
 	/**
-	 *  Declaration of all variables
+	 * Declaration of all variables
 	 **/
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
-	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(DeleteAllDocumentsByPreRegID.class);
+	String preId = "";
+	SoftAssert softAssert = new SoftAssert();
+	static String testCaseName = "";
+	Logger logger = Logger.getLogger(DeleteAllDocumentsByPreRegID.class);
 	boolean status = false;
 	String finalStatus = "";
-	public static JSONArray arr = new JSONArray();
+	JSONArray arr = new JSONArray();
 	ObjectMapper mapper = new ObjectMapper();
-	static Response Actualresponse = null;
-	static JSONObject Expectedresponse = null;
-	static String dest = "";
-	static String folderPath = "preReg/DeleteAllDocumentsByPreRegID";
-	static String outputFile = "DeleteAllDocumentsByPreRegIDRequestOutput.json";
-	static String requestKeyFile = "DeleteAllDocumentsByPreRegIDRequest.json";
-	PreRegistrationLibrary preRegLib=new PreRegistrationLibrary();
-	private static String preReg_URI ;
-	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	
+	Response Actualresponse = null;
+	JSONObject Expectedresponse = null;
+	String dest = "";
+	String folderPath = "preReg/DeleteAllDocumentsByPreRegID";
+	String outputFile = "DeleteAllDocumentsByPreRegIDRequestOutput.json";
+	String requestKeyFile = "DeleteAllDocumentsByPreRegIDRequest.json";
+	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	String preReg_URI;
+	CommonLibrary commonLibrary = new CommonLibrary();
+	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+
+	/* implement,IInvokedMethodListener */
 	public DeleteAllDocumentsByPreRegID() {
 
 	}
-	
+
 	/**
-	 * Data Providers to read the input json files from the folders
+	 * This method is used for reading the test data based on the test case name
+	 * passed
+	 * 
 	 * @param context
-	 * @return input request file
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * @throws ParseException
+	 * @return object[][]
+	 * @throws Exception
 	 */
 	@DataProvider(name = "DeleteAllDocumentsByPreRegID")
-	public static Object[][] readData(ITestContext context) throws Exception {
-		
-		
+	public Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -97,85 +96,100 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		}
 	}
 
+	/*
+	 * Given Delete All Document By PreRegId valid request when I Send Delete request to
+	 * https://mosip.io/preregistration/v1/documents/preregistration/:preRegistrationId
+	 *  Then I should get success
+	 * response with elements defined as per specifications Given Invalid
+	 * request when I send Delete request to
+	 * https://mosip.io/preregistration/v1/documents/preregistration/:preRegistrationId Then I should get Error
+	 * response along with Error Code and Error messages as per Specification
+	 * 
+	 */
 	@Test(dataProvider = "DeleteAllDocumentsByPreRegID")
 	public void deleteAllDocumentsByPreRegID(String testSuite, Integer i, JSONObject object) throws Exception {
-	
+
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
+
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-	
-		
 
-		if(testCaseName.contains("smoke"))
-		{
-		
-		//Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
-		
-		//Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse);
-		
-		//PreId of Uploaded document
-		preId=docUploadResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		
-		//Delete All Document by Pre-Registration Id
-		Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
-		
-		
-	
-		
-		outerKeys.add("responsetime");
-		innerKeys.add("documnet_Id");
-		
-		
-		status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
-		
-		
+		if (testCaseName.contains("smoke")) {
+
+			// Creating the Pre-Registration Application
+			Response createApplicationResponse = preRegLib.CreatePreReg();
+
+			preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+
+			// Get PreId from Document upload response
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+
+			// Delete All Document by Pre-Registration Id
+			Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
+			outerKeys.add("responsetime");
+
+			logger.info("Dele Doc:" + delAllDocByPreId.asString());
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+
+		} else {
+			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
+
+			String preRegURI = preReg_URI + preRegistrationId;
+			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
+			outerKeys.add("responsetime");
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
 		}
-		else
-		{
-			 
-			 Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
-			 outerKeys.add("resTime");
-			 status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys); 
-			   
-		}
-		
+
 		if (status) {
-			finalStatus="Pass";		
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+
+		boolean setFinalStatus = false;
+
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
+
+		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		}
-		else {
-			finalStatus="Fail";
-		}
-		
-		boolean setFinalStatus=false;
-		
-		setFinalStatus = finalStatus.equals("Pass") ? true : false ;
-		
-        Verify.verify(setFinalStatus);
-        softAssert.assertAll();
-		
+
 	}
 
-	@BeforeMethod
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
 	
+	/**
+	  * This method is used for fetching test case name
+	  * @param method
+	  * @param testdata
+	  * @param ctx
+	  */
+	@BeforeMethod(alwaysRun = true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+
 		testCaseName = object.get("testCaseName").toString();
+
+		//Delete Document By PreregistrationId Resource URI
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
 		
-		 /**
-         * Document Upload Resource URI            
-         */
-        
-        preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
-		
+		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		authToken = preRegLib.getToken();
+
 	}
 
+	/**
+	 * This method is used for generating report
+	 * 
+	 * @param result
+	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -190,19 +204,20 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
-
+	/**
+	 * This method is used for generating output file with the test case result
+	 */
 	@AfterClass
 	public void statusUpdate() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
-		String configPath =  "src/test/resources/" + folderPath + "/"
-				+ outputFile;
+		String configPath = "src/test/resources/" + folderPath + "/" + outputFile;
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
 		String source = "src/test/resources/" + folderPath + "/";
-		//CommonLibrary.backUpFiles(source, folderPath);
-		//Add generated PreRegistrationId to list to be Deleted from DB AfterSuite 
+
+		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
 		preIds.add(preId);
 	}
 
@@ -210,6 +225,5 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 
 }

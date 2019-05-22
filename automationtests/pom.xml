@@ -3,11 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
 	<artifactId>automationtests</artifactId>
+<<<<<<< HEAD
 
+=======
+	<version>0.0.1-SNAPSHOT</version>
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 	<packaging>jar</packaging>
 
 	<name>automationtests</name>
 	<url>http://maven.apache.org</url>
+<<<<<<< HEAD
 
 
 	<parent>
@@ -16,12 +21,20 @@
 		<version>0.11.3</version>
 	</parent>
 
+=======
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.11.1</version>
+	</parent>
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 	<dependencies>
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
 			<artifactId>zjsonpatch</artifactId>
 			<version>0.4.7</version>
 		</dependency>
+<<<<<<< HEAD
 		
 		<!-- <dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -45,6 +58,15 @@
 			<version>0.9.0</version>
 		</dependency>  -->
 		
+=======
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -69,7 +91,7 @@
 			<artifactId>rest-assured</artifactId>
 			<version>3.0.7</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
@@ -182,9 +204,19 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.2</version>
 		</dependency>
+<<<<<<< HEAD
 
 
 		<!-- <dependency>
+=======
+		<!-- Encryption Decryption Util Jar -->
+		<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-partnerdemo-service</artifactId>
+			<version>0.11.1</version>
+		</dependency>
+		<dependency>
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-demo</artifactId>
 			<version>0.10.2</version>
@@ -369,6 +401,26 @@
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.6.2</version>
 		</dependency>
+<<<<<<< HEAD
+=======
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<!-- Extent Report Tabish-->
+		<dependency>
+			<groupId>com.aventstack</groupId>
+			<artifactId>extentreports</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<!-- Extent Report Arjun-->
+		<dependency>
+			<groupId>com.relevantcodes</groupId>
+			<artifactId>extentreports</artifactId>
+			<version>2.41.2</version>
+		</dependency>
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 	</dependencies>
 
 	<build>
@@ -383,7 +435,10 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 
 
 				<plugin>

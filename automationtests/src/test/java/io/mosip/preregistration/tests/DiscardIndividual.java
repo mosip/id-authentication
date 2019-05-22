@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.postgresql.ssl.jdbc4.LibPQFactory;
 import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -73,9 +74,11 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	static String folderPath = "preReg/Discard_Individual";
 	static String outputFile = "Discard_IndividualOutput.json";
 	static String requestKeyFile = "Discard_IndividualRequest.json";
+	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	public DiscardIndividual() {
 		super();	
 	}
+	
 	/**
 	 * Data Providers to read the input json files from the folders
 	 * @param context
@@ -92,7 +95,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
 		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smokeAndRegression") {
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
 			
@@ -118,22 +121,21 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			//Response createPregResponse = prl.CreatePreReg();
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = prl.createRequest(testSuite);
 			Response createPregResponse = prl.CreatePreReg(createPregRequest);
-			String preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
+			String preReg_Id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 			Actualresponse=prl.discardApplication(preReg_Id);
-			preId = Actualresponse.jsonPath().get("response[0].preRegistrationId").toString();
+			preId = Actualresponse.jsonPath().get("response.preRegistrationId").toString();
 			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
-			String message = getPreRegistrationDataResponse.jsonPath().get("err.message").toString();
-			prl.compareValues(message, "UNABLE_TO_FETCH_THE_PRE_REGISTRATION");
+			String message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
+			prl.compareValues(message, "No data found for the requested pre-registration id");
 			Assert.assertEquals(preId, preReg_Id);
 			status=true;
 		}
 		else {
 			outerKeys.add("responsetime");
-			Actualresponse = applicationLibrary.deleteRequest(preReg_URI, actualRequest);
+			Actualresponse = applicationLibrary.deleteRequestWithParm(preReg_URI, actualRequest);
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
 				if (status) {
@@ -165,7 +167,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			logger.info("Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
 		
 		}
-				preIds.add(preId);
+				//preIds.add(preId);
 	}
 	@AfterMethod(alwaysRun = true)
     public void setResultTestName(ITestResult result) {
@@ -180,13 +182,14 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
           } catch (Exception e) {
                 Reporter.log("Exception : " + e.getMessage());
           }
+          lib.logOut();
     }
-    @BeforeMethod
+    @BeforeMethod(alwaysRun=true)
     public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
           preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
-        
+          authToken=lib.getToken(); 
     }
     @Override
     public String getTestName() {

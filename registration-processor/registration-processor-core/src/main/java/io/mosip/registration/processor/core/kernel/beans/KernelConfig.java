@@ -3,6 +3,10 @@ package io.mosip.registration.processor.core.kernel.beans;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -37,7 +41,12 @@ public class KernelConfig {
 	public CbeffUtil getCbeffUtil() {
 		return new CbeffImpl();
 	}
-	
+
+	@Bean
+	@Primary
+	public ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
+	}
 	/*@Bean
 	@Primary
 	public SignatureUtil getSignatureUtil() {
@@ -49,12 +58,7 @@ public class KernelConfig {
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
-	
-	@Bean
-	@Primary
-	public ObjectMapper getObjectMapper() {
-		return new ObjectMapper().registerModule(new JavaTimeModule());
-	}
+
 	
 	@Bean
 	@Primary

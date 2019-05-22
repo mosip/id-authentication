@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.io.File; 
@@ -27,12 +26,12 @@ public class AuditValidation {
 	 */
 	public static Map<String, List<OutputValidationDto>> verifyAuditTxn(File[] listOfFiles, String keywordToFind) {
 		auth_txn_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);
-		Map<String, String> exp = IdaScriptsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
+		Map<String, String> exp = AuthTestsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
 		Map<String, String> act = DbConnection.getDataForQuery(
 				"select request_dtimes,response_dtimes,id,request_trn_id,auth_type_code,status_code,status_comment,lang_code,ref_id_type,ref_id,cr_dtimes from ida.auth_transaction where request_trn_id = '"
 						+ exp.get("request_trn_id") + "' order by cr_dtimes desc limit 1",
 				"IDA");
-		IdaScriptsUtil.generateMappingDic(auth_txn_file.getAbsolutePath().toString(), preconAuditKeywords(exp, act));
+		AuthTestsUtil.generateMappingDic(auth_txn_file.getAbsolutePath().toString(), preconAuditKeywords(exp, act));
 		return OutputValidationUtil.compareActuExpValue(act, exp, "Audit Transaction Validation");
 	}
 
@@ -45,10 +44,10 @@ public class AuditValidation {
 	 */
 	public static Map<String, List<OutputValidationDto>> verifyAuditLog(File[] listOfFiles, String keywordToFind) {
 		audit_log_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);
-		Map<String, String> exp = IdaScriptsUtil.getPropertyAsMap(audit_log_file.getAbsolutePath());
+		Map<String, String> exp = AuthTestsUtil.getPropertyAsMap(audit_log_file.getAbsolutePath());
 		Map<String, String> act = null;
 		if (FileUtil.verifyFilePresent(listOfFiles, "auth_transaction")) {
-			Map<String, String> exp_auth_txn = IdaScriptsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
+			Map<String, String> exp_auth_txn = AuthTestsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
 			if (exp_auth_txn.containsKey("request_dtimes") && exp_auth_txn.containsKey("response_dtimes")) {
 				act = DbConnection
 						.getDataForQuery(
@@ -82,7 +81,7 @@ public class AuditValidation {
 				String arr[] = temp.getValue().replace("$", "").split(Pattern.quote(":"));
 				String value = arr[1];
 				exp.put(temp.getKey(),
-						IdaScriptsUtil.getValueFromPropertyFile(auth_txn_file.getAbsolutePath().toString(), value));
+						AuthTestsUtil.getValueFromPropertyFile(auth_txn_file.getAbsolutePath().toString(), value));
 			}
 		}
 		return exp;

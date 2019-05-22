@@ -80,6 +80,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	@Autowired
 	MosipRouter router;
 
+
 	private String digitallySignedResponse="";
 
 	private String exceptionError="";
@@ -108,7 +109,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 	@Override
 	public void start() {
-		router.setRoute(this.postUrl(vertx));
+		router.setRoute(this.postUrl(vertx, null ,MessageBusAddress.MANUAL_VERIFICATION_BUS));
 		this.routes(router);
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
@@ -121,6 +122,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 			exceptionError=manualVerificationExceptionHandler.handler(handlerObj.failure());
 			//digitallySignedResponse=signatureUtil.signResponse(exceptionError).getData();
 			this.setResponse(handlerObj, exceptionError, APPLICATION_JSON);
+
 		});
 
 
@@ -168,14 +170,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 
 		});
 
-
-		router.get(contextPath+"/health").handler(ctx -> {
-			this.setResponse(ctx, "Server is up and running");
-		}).failureHandler(handlerObj -> {
-			this.setResponse(handlerObj, handlerObj.failure().getMessage());
-		});
-
-
 	}
 	/**
 	 * This is for health check up
@@ -198,6 +192,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,	env.getProperty(BIOMETRIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
 			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
+
 		}
 
 	}
@@ -229,7 +224,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
 			//digitallySignedResponse=signatureUtil.signResponse(responseData).getData();
 			this.setResponse(ctx,responseData,APPLICATION_JSON);
-
 		}
 
 	}

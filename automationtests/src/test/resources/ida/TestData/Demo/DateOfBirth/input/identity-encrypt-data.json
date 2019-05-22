@@ -1,5 +1,6 @@
 {
 	"identityRequest": {
+<<<<<<< HEAD
 		"identity": {
 		
     "dob": [
@@ -11,4 +12,11 @@
 		}
 	},
   "tspID": "TSP00001"
+=======
+		"demographics": {
+			"dob": "25/11/1990"
+		},
+		"timestamp": "2019-03-16T10:01:57.086+05:30"
+	}
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 }

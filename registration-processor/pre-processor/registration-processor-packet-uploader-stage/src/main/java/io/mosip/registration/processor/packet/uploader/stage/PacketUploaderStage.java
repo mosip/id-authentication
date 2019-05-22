@@ -8,6 +8,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
@@ -40,8 +41,6 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 */
 	private MosipEventBus mosipEventBus;
 
-	/** Mosip router for APIs */
-	private Router router;
 	/** The context path. */
 	@Value("${server.servlet.path}")
 	private String contextPath;
@@ -50,6 +49,10 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	@Autowired
 	PacketUploaderService<MessageDTO> packetUploaderService;
 
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+	
 	/**
 	 * Deploy verticle.
 	 */
@@ -64,10 +67,10 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 */
 	@Override
 	public void start() {
-		Router router = Router.router(vertx);
-		router.route().handler(BodyHandler.create());
+
+		router.setRoute(this.postUrl(vertx, null, MessageBusAddress.PACKET_UPLOADER_OUT));
 		this.routes(router);
-		this.createServer(router, Integer.parseInt(port));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/**
@@ -75,10 +78,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 *
 	 * @param router
 	 */
-	private void routes(Router router) {
-		router.post(contextPath + "/securezone").blockingHandler(this::processURL, false).failureHandler(this::failure);
-
-		router.get(contextPath + "/securezone/health").handler(this::health);
+	private void routes(MosipRouter router) {
+		router.post(contextPath + "/securezone");
+		router.nonSecureHandler(this::processURL, this::failure);
 
 	}
 
@@ -89,15 +91,6 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 */
 	private void failure(RoutingContext routingContext) {
 		this.setResponse(routingContext, routingContext.failure().getMessage());
-	}
-
-	/**
-	 * This is for health check up
-	 *
-	 * @param routingContext
-	 */
-	private void health(RoutingContext routingContext) {
-		this.setResponse(routingContext, "Server is up and running");
 	}
 
 	/**

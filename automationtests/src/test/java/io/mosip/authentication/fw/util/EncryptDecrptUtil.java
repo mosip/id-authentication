@@ -1,4 +1,3 @@
-
 package io.mosip.authentication.fw.util;
 
 import java.io.File;
@@ -20,7 +19,7 @@ import org.testng.Reporter;
  * @author Vignesh
  *
  */
-public class EncryptDecrptUtil extends IdaScriptsUtil{
+public class EncryptDecrptUtil extends AuthTestsUtil{
 	private static final Logger ENCRYPTION_DECRYPTION_LOGGER = Logger.getLogger(EncryptDecrptUtil.class);
 	private static String key="encryptedSessionKey";
 	private static String data="encryptedIdentity";
@@ -61,7 +60,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
 			Reporter.log("<b><u> Identity request:</u></b>");
 			Reporter.log("<pre>" + ReportUtil.getTextAreaJsonMsgHtml(objectData.toString())+"</pre>");
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl()+RunConfig.getEncryptionPath(), objectData.toJSONString(), MediaType.APPLICATION_JSON,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl()+RunConfigUtil.objRunConfig.getEncryptionPath(), objectData.toJSONString(), MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -78,7 +77,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	public static String getEncode(String filename) {
 		try {
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl()+RunConfig.getEncodePath(), objectData.toJSONString(), MediaType.TEXT_PLAIN,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl()+RunConfigUtil.objRunConfig.getEncodePath(), objectData.toJSONString(), MediaType.TEXT_PLAIN,
 					MediaType.TEXT_PLAIN).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -94,7 +93,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	public static String getCbeffEncode(String filename) {
 		try {
 			String objectData = FileUtil.readInput(filename);
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl()+RunConfig.getEncodePath(), objectData, MediaType.TEXT_PLAIN,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl()+RunConfigUtil.objRunConfig.getEncodePath(), objectData, MediaType.TEXT_PLAIN,
 					MediaType.TEXT_PLAIN).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -109,7 +108,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	 */
 	public static String getDecodeFile(String content) {
 		try {
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getDecodeFilePath(), content,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getDecodeFilePath(), content,
 					MediaType.TEXT_PLAIN, MediaType.APPLICATION_OCTET_STREAM).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -125,7 +124,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	 */
 	public static String getEncodeFile(File file) {
 		try {
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getEncodeFilePath(), file,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getEncodeFilePath(), file,
 					MediaType.MULTIPART_FORM_DATA, MediaType.TEXT_PLAIN).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -142,7 +141,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	public static String getDecodeFromFile(String filename) {
 		try {
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getDecodePath(),
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getDecodePath(),
 					objectData.toJSONString(), MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
@@ -158,7 +157,7 @@ public class EncryptDecrptUtil extends IdaScriptsUtil{
 	 */
 	public static String getDecodeFromStr(String content) {
 		try {
-			return RestClient.postRequest(RunConfig.getEncryptUtilBaseUrl() + RunConfig.getDecodePath(), content,
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getDecodePath(), content,
 					MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON).asString();
 		} catch (Exception e) {
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);

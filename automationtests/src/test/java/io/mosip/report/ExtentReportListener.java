@@ -54,4 +54,5 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 		reports.endTest(test);
 		reports.flush();
 	}
+
 }

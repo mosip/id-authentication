@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,23 +17,29 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONTokener;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.web.client.RestTemplate;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
@@ -41,18 +49,26 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.flipkart.zjsonpatch.JsonDiff;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-
 import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
+import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
@@ -71,8 +87,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	static String folder = "preReg";
 	static String testSuite = "";
-	static String userId="";
-	static String otp="";
+	public static String userId = "";
+	static String otp = "";
 	static Response createPregResponse;
 	static JSONObject createPregRequest;
 	static Response response;
@@ -80,11 +96,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	static JSONObject request1;
 	static String preReg_Id = "";
 	JSONParser parser = new JSONParser();
+	static String preReg_MultipleBookAppURI;
 	static ApplicationLibrary applnLib = new ApplicationLibrary();
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	private static String preReg_CreateApplnURI;
 
+/*	private static String preReg_CreateApplnURI;
+	PreregistrationDAO dao = new PreregistrationDAO();
 	private static String preReg_DataSyncnURI;
 	private static String preReg_NotifyURI;
 	private static String preReg_DocumentUploadURI;
@@ -105,13 +123,65 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String preReg_CancelAppointmentURI;
 	private static String preReg_ExpiredURI;
 	private static String preReg_ReverseDataSyncURI;
-	 private static String preReg_DiscardBookingURI;
-	 private static String preReg_SyncMasterDataURI;
-	 private static String otpSend_URI;
-	 private static String validateOTP_URI;
-	 private static String langCodeKey; 
-	 private static String preReg_AdminTokenURI;
-	 private static String preReg_translitrationRequestURI;
+	private static String preReg_DiscardBookingURI;
+	private static String preReg_SyncMasterDataURI;
+	private static String otpSend_URI;
+	private static String validateOTP_URI;
+	private static String langCodeKey;
+	private static String preReg_AdminTokenURI;
+	private static String preReg_translitrationRequestURI;
+	private static String invalidateToken_URI;
+	private static String preReg_GetDocByDocId;
+	private static String preReg_CancelAppointmenturi;
+	private static String preReg_RetriveBookedPreIdsByRegId;
+	private static String preReg_GetPreRegistrationConfigData;
+	private static String preReg_BookingAppointmenturi;
+	private static String uiConfigParams;
+	private static String preReg_syncAvailability;
+	private static String preReg_FecthAppointmentDetailsuri;
+*/
+	static String preReg_CreateApplnURI;
+	PreregistrationDAO dao = new PreregistrationDAO();
+	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+	static String preReg_DataSyncnURI;
+	static String preReg_NotifyURI;
+	static String preReg_DocumentUploadURI;
+	static String preReg_FetchRegistrationDataURI;
+	static String preReg_FetchCenterIDURI;
+	static String preReg_BookingAppointmentURI;
+	static String preReg_FecthAppointmentDetailsURI;
+	static String preReg_FetchAllDocumentURI;
+	static String prereg_DeleteDocumentByDocIdURI;
+	static String preReg_DeleteAllDocumentByPreIdURI;
+	static String preReg_CopyDocumentsURI;
+	static String preReg_ConsumedURI;
+	static String preReg_FetchBookedPreIdByRegIdURI;
+	static String preReg_FetchAllApplicationCreatedByUserURI;
+	static String preReg_DiscardApplnURI;
+	static String preReg_FetchStatusOfApplicationURI;
+	static String preReg_UpdateStatusAppURI;
+	static String preReg_CancelAppointmentURI;
+	static String preReg_ExpiredURI;
+	static String preReg_ReverseDataSyncURI;
+	static String preReg_DiscardBookingURI;
+	static String preReg_SyncMasterDataURI;
+	static String otpSend_URI;
+	static String validateOTP_URI;
+	static String langCodeKey;
+	static String preReg_AdminTokenURI;
+	static String preReg_translitrationRequestURI;
+	static String invalidateToken_URI;
+	static String preReg_GetDocByDocId;
+	static String preReg_CancelAppointmenturi;
+	static String preReg_RetriveBookedPreIdsByRegId;
+	static String preReg_GetPreRegistrationConfigData;
+	static String preReg_BookingAppointmenturi;
+	static String uiConfigParams;
+	static String preReg_syncAvailability;
+	static String preReg_FecthAppointmentDetailsuri;
+	static String qrCode_URI;
+	static String QRCodeFilePath;
+	static String preReg_GetDocByPreId;
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -123,37 +193,47 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Create Pre-Registration Application
 	 * 
 	 */
-	public static Response CreatePreReg() {
+	public Response CreatePreReg() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		request = getRequest(testSuite);
+		request.put("requesttime", getCurrentDate());
+		createPregResponse = applnLib.postRequest(request, preReg_CreateApplnURI);
+		return createPregResponse;
+	}
+
+	public static JSONObject getRequest(String testSuite) {
+		JSONObject request = null;
+		/**
+		 * Reading request body from configpath
+		 */
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
 				try {
-					createPregRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
 					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 
 			}
 		}
-
-		createPregResponse = applnLib.postRequest(createPregRequest, preReg_CreateApplnURI);
-		/*preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Assert.assertTrue(preReg_Id != null);*/
-		return createPregResponse;
+		return request;
 	}
+
 	/**
 	 * Request body for translitration service
+	 * 
 	 * @param testSuite
 	 * @param from_field_lang
 	 * @param from_field_value
 	 * @param to_field_lang
 	 * @return
 	 */
-	public JSONObject translitrationRequest(String testSuite,String from_field_lang,String from_field_value,String to_field_lang) {
+	public JSONObject translitrationRequest(String testSuite, String from_field_lang, String from_field_value,
+			String to_field_lang) {
 		JSONObject createPregRequest = null;
 		JSONObject translitrationRequest = null;
 		/**
@@ -184,11 +264,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				translitrationRequest.replace(key, object);
 			}
 		}
-
+		translitrationRequest.put("requesttime", getCurrentDate());
 		return translitrationRequest;
 	}
+
 	/**
 	 * method for translitration service
+	 * 
 	 * @param translitrationRequest
 	 * @return
 	 */
@@ -200,71 +282,74 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * Generate OTP
-	 * @return response
+	 * 
+	 * @return
 	 */
 	public static Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
 		return response;
 	}
-	
-	public String getToken()
-	{
-		
-		testSuite="generateOTP/generateOTP_smoke";
-		request=otpRequest(testSuite);
+
+	public String getToken() {
+
+		testSuite = "generateOTP/generateOTP_smoke";
+		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
-		logger.info("userid is ++++++++++++++"+userId);
-		String otpQueryStr = "SELECT E.otp FROM kernel.otp_transaction E WHERE id='"+userId+"'";
-		List<Object> otpData = prereg_dbread.fetchOTPFromDB(otpQueryStr, OtpEntity.class);
-		otp = otpData.get(0).toString();
-		logger.info("OTP is============"+otp);
+		logger.info("userid is ++++++++++++++" + userId);
+		otp = dao.getOTP(userId).get(0);
+		logger.info("OTP is============" + otp);
 		testSuite = "validateOTP/validateOTP_smoke";
-		request=validateOTPRequest(testSuite);
+		request = validateOTPRequest(testSuite);
 		Response validateOTPRes = validateOTP(request);
-	    String cookieValue = validateOTPRes.getCookie("Authorization");
-		String auth_token = cookieValue;
-		
-		return auth_token;
-	
+		String cookieValue = validateOTPRes.getCookie("Authorization");
+		return cookieValue;
+
 	}
+
 	/**
 	 * Fetching status of consumed application
-	 * @param PreID-PRID of the consumed application  
+	 * 
+	 * @param PreID-PRID
+	 *            of the consumed application
 	 * @return
 	 */
-	public String getConsumedStatus(String PreID)
-	{
-		String query="SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='"+PreID+"'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
-		String status=preId_status.get(0).toString();
+	public String getConsumedStatus(String PreID) {
+		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
+				+ "'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String status = preId_status.get(0).toString();
 		return status;
 	}
+
 	/**
 	 * Get Document Id for Consumed Application
+	 * 
 	 * @param PreID
 	 * @return
 	 */
-	public String getDocumentIdOfConsumedApplication(String PreID)
-	{
-		String query="SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='"+PreID+"'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
-		String documentId=preId_status.get(0).toString();
+	public String getDocumentIdOfConsumedApplication(String PreID) {
+		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String documentId = preId_status.get(0).toString();
 		return documentId;
 	}
-	
-	public String getRegCenterIdOfConsumedApplication(String PreID)
-	{
-		String query="SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='"+PreID+"'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "prereginteg.cfg.xml", "preregqa.cfg.xml");
-		String regCenterId=preId_status.get(0).toString();
+
+	public String getRegCenterIdOfConsumedApplication(String PreID) {
+		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
+		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String regCenterId = preId_status.get(0).toString();
 		return regCenterId;
 	}
-	
+
 	/**
 	 * VALIDATING OTP
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -272,31 +357,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		response = applnLib.postRequest(request, validateOTP_URI);
 		return response;
 	}
-	
+
 	/**
 	 * ValidateRequest
+	 * 
 	 * @return
 	 */
-	public JSONObject validateOTPRequest(String testSuite)
-	{
+	public JSONObject validateOTPRequest(String testSuite) {
 		JSONObject otpRequest = null;
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-				
-			}
-		}
+		otpRequest = getRequest(testSuite);
 		JSONObject object = null;
 		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {
@@ -305,7 +377,27 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("otp", otp);
 				otpRequest.replace(key, object);
 			}
-		}	
+		}
+		otpRequest.put("requesttime", getCurrentDate());
+		return otpRequest;
+	}
+
+	public JSONObject validateOTPRequest(String testSuite, String userID, String OTP) {
+		JSONObject otpRequest = null;
+		/**
+		 * Reading request body from configpath
+		 */
+		otpRequest = getRequest(testSuite);
+		JSONObject object = null;
+		for (Object key : otpRequest.keySet()) {
+			if (key.equals("request")) {
+				object = (JSONObject) otpRequest.get(key);
+				object.put("userId", userID);
+				object.put("otp", OTP);
+				otpRequest.replace(key, object);
+			}
+		}
+		otpRequest.put("requesttime", getCurrentDate());
 		return otpRequest;
 	}
 
@@ -328,99 +420,22 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	@SuppressWarnings("unchecked")
 	public Response discardApplication(String PreRegistrationId) {
 		testSuite = "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		request.put("pre_registration_id", PreRegistrationId);
+		request = getRequest(testSuite);
+		request.put("preRegistrationId", PreRegistrationId);
 		try {
-			return applnLib.deleteRequest(preReg_DiscardApplnURI, request);
+			return applnLib.deleteRequestWithParm(preReg_DiscardApplnURI, request);
 
 		} catch (Exception e) {
 			logger.info(e);
 		}
 		return null;
 	}
-	/**
-	 * Method for converting JSON object into HashMap
-	 * @param object
-	 * @return
-	 */
-	public static Map<String, Object> toMap(JSONObject object) {
-		Map<String, Object> map = new HashMap<String, Object>();
 
-		Iterator<String> keysItr = object.keySet().iterator();
-		while (keysItr.hasNext()) {
-			String key = keysItr.next();
-			Object value = object.get(key);
-
-			if (value instanceof JSONArray) {
-				value = toList((JSONArray) value);
-			}
-
-			else if (value instanceof JSONObject) {
-				value = toMap((JSONObject) value);
-			}
-			map.put(key, value);
-		}
-		return map;
-	}
-	/**
-	 * Converting JSON object into Map
-	 * @param json
-	 * @return
-	 */
-	public static Map<String, Object> jsonToMap(JSONObject json) {
-		Map<String, Object> retMap = new HashMap<String, Object>();
-
-		if (json != null) {
-			retMap = toMap(json);
-		}
-		return retMap;
-	}
-	/**
-	 * Method for converting JSONArray into List
-	 * @param array
-	 * @return
-	 */
-	public static List<Object> toList(JSONArray array) {
-		List<Object> list = new ArrayList<Object>();
-		for (int i = 0; i < array.size(); i++) {
-			Object value = array.get(i);
-			if (value instanceof JSONArray) {
-				value = toList((JSONArray) value);
-			}
-
-			else if (value instanceof JSONObject) {
-				value = toMap((JSONObject) value);
-			}
-			list.add(value);
-		}
-		return list;
-	}
-
-	/**
-	 * Converting byte zip array into zip and saving into preregdocs folder
-	 * 
-	 * @author Ashish
-	 * 
-	 * @param args
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 */
-	public boolean fetchDocs(Response response, String folderName) {
+	public boolean fetchDocs1(Response response, String folderName) {
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
-		File f = new File(folderName + "/" + folder);
+		String folderPath = "src/test/resources/" + "preReg" + "/" + folderName;
+		File f = new File(folderPath + "/" + folder);
 		f.mkdirs();
 		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
 		ZipEntry entry = null;
@@ -428,8 +443,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			while ((entry = zipStream.getNextEntry()) != null) {
 
 				String entryName = entry.getName();
-				logger.info("ASHISH" + entryName);
-				String path = folderName + "/" + folder + "/" + entryName;
+				System.out.println("ASHISH" + entryName);
+				String path = folderPath + "/" + folder + "/" + entryName;
 				FileOutputStream out = new FileOutputStream(path);
 
 				byte[] byteBuff = new byte[4096];
@@ -456,29 +471,101 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return true;
 	}
 
+	/**
+	 * Method for reading config property from config server
+	 * 
+	 * @param url-Url
+	 *            of config server
+	 * @param configParameter-keys
+	 *            which you want to read from config server
+	 * @return
+	 */
+	public HashMap<String, String> readConfigProperty(String url, String configParameter) {
+		List<String> reqParams = new ArrayList<>();
+		Map<String, String> configParamMap = new HashMap<>();
+		uiConfigParams = commonLibrary.fetch_IDRepo().get(configParameter);
+		String[] uiParams = uiConfigParams.split(",");
+		for (int i = 0; i < uiParams.length; i++) {
+			reqParams.add(uiParams[i]);
+		}
+		RestTemplate restTemplate = new RestTemplate();
+
+		String s = restTemplate.getForObject(url, String.class);
+		final Properties p = new Properties();
+		try {
+			p.load(new StringReader(s));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		for (Entry<Object, Object> e : p.entrySet()) {
+			if (reqParams.contains(String.valueOf(e.getKey()))) {
+				configParamMap.put(String.valueOf(e.getKey()), e.getValue().toString());
+			}
+
+		}
+		return (HashMap<String, String>) configParamMap;
+	}
+
+	/**
+	 * Converting byte zip array into zip and saving into preregdocs folder
+	 * 
+	 * @author Ashish
+	 * 
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public boolean fetchDocs(Response response, String folderName) {
+		String data = response.jsonPath().get("response.zip-bytes").toString();
+		String folder = response.jsonPath().get("response.zip-filename").toString();
+		String folderPath = "src/test/resources/" + "preReg" + "/" + folderName;
+		File f = new File(folderPath + "/" + folder);
+		f.mkdirs();
+		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
+		ZipEntry entry = null;
+		try {
+			while ((entry = zipStream.getNextEntry()) != null) {
+
+				String entryName = entry.getName();
+				logger.info("ASHISH" + entryName);
+				String path = folderPath + "/" + folder + "/" + entryName;
+				FileOutputStream out = new FileOutputStream(path);
+
+				byte[] byteBuff = new byte[4096];
+				int bytesRead = 0;
+				while ((bytesRead = zipStream.read(byteBuff)) != -1) {
+					out.write(byteBuff, 0, bytesRead);
+				}
+
+				out.close();
+				zipStream.closeEntry();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 	/*
 	 * Generic method to Fetch All Preregistration Created By User
 	 * 
 	 */
 
-	public Response fetchAllPreRegistrationCreatedByUser(String userId) {
-		testSuite = "Fetch_all_application_created_by_user/Fetch all application created User By using User ID_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					logger.info(e);
-				}
-			}
-		}
-		request.put("user_id", userId);
+	public Response fetchAllPreRegistrationCreatedByUser() {
 		try {
 			logger.info("=================================" + preReg_FetchAllApplicationCreatedByUserURI);
-			response = applnLib.getRequest(preReg_FetchAllApplicationCreatedByUserURI, GetHeader.getHeader(request));
+			response = applnLib.getRequestWithoutParm(preReg_FetchAllApplicationCreatedByUserURI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		return response;
+	}
+
+	public Response getPreRegistrationConfigData() {
+		try {
+			response = applnLib.getRequestWithoutParm(preReg_GetPreRegistrationConfigData);
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -509,40 +596,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = System.getProperty("user.dir") + "\\src\\test\\resources\\" + folder + "\\" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					reverseDataSyncRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-			}
-			/**
-			 * Adding preRegistrationIds in request
-			 */
-			for (Object key : reverseDataSyncRequest.keySet()) {
-				try {
-					reverseDataSyncRequest.get(key);
-					JSONObject innerKey = (JSONObject) reverseDataSyncRequest.get(key);
-					innerKey.put("preRegistrationIds", preRegistrationIds);
-					innerKey.put("createdBy", userId);
-					innerKey.put("updateBy", userId);
-
-				} catch (ClassCastException e) {
-					continue;
-				}
-			}
-
+		reverseDataSyncRequest = getRequest(testSuite);
+		/**
+		 * Adding preRegistrationIds in request
+		 */
+		for (Object key : reverseDataSyncRequest.keySet()) {
 			try {
-				response = applnLib.dataSyncPostRequest(reverseDataSyncRequest.toJSONString(), preReg_ReverseDataSyncURI);
-			} catch (Exception e) {
-				logger.info(e);
+				reverseDataSyncRequest.get(key);
+				JSONObject innerKey = (JSONObject) reverseDataSyncRequest.get(key);
+				innerKey.put("preRegistrationIds", preRegistrationIds);
+			} catch (ClassCastException e) {
+				continue;
 			}
+			reverseDataSyncRequest.put("requesttime", getCurrentDate());
 		}
+
+		response = applnLib.dataSyncPostRequest(reverseDataSyncRequest.toJSONString(), preReg_ReverseDataSyncURI);
+
 		return response;
 	}
 
@@ -589,48 +659,43 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public Response retrivePreRegistrationData(String preRegistrationId) {
 		testSuite = "Retrive_PreRegistration/Retrive Pre registration data of an applicant after booking an appointment_smoke";
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_DataSyncnURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					logger.info(e);
-				}
-			}
-		}
-		request.put("pre_registration_id", preRegistrationId);
+		request = getRequest(testSuite);
+		request.put("preRegistrationId", preRegistrationId);
 		try {
-			response = applnLib.getRequestDataSync(preReg_DataSyncnURI, GetHeader.getHeader(request));
+			response = applnLib.getRequestDataSync(preReg_DataSyncnURI, request);
 		} catch (Exception e) {
 			logger.info(e);
 		}
 		return response;
 	}
 
-	/*
-	 * Generic method to fetch dynamic request data
+	/**
+	 * Update demographic details method
 	 * 
+	 * @param body
+	 * @param pre_registration_id
 	 */
-	public JSONObject readRequest(String suite, String folderName) {
-		String configPath = "src/test/resources/" + folderName + "/" + testSuite;
 
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-			}
+	public Response updateDemographicDetails(JSONObject body, String pre_registration_id) {
+		testSuite = "Retrive_PreRegistration/Retrive Pre registration data of an applicant after booking an appointment_smoke";
+		request = getRequest(testSuite);
+		request.put("preRegistrationId", pre_registration_id);
+		response = applnLib.putRequestWithParameter(preReg_UpdateStatusAppURI, request, body);
+		return response;
+	}
+
+	public JSONObject objectToJSONObject(Object object) {
+		Object json = null;
+		JSONObject jsonObject = null;
+		try {
+			json = new JSONTokener(object.toString()).nextValue();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		return request;
+		if (json instanceof Object) {
+			jsonObject = (JSONObject) json;
+		}
+		return jsonObject;
 	}
 
 	/*
@@ -645,22 +710,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String appDate = null;
 		String timeSlotFrom = null;
 		String timeSlotTo = null;
-		testSuite = "BookingAppointment\\BookingAppointment_smoke";
-		String configPath = System.getProperty("user.dir") + "\\src\\test\\resources\\" + folder + "\\" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
 		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		testSuite = "BookingAppointment\\BookingAppointment_smoke";
+		request = getRequest(testSuite);
 		for (Object key : request.keySet()) {
 			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
@@ -672,31 +724,35 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
+				/*JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");
-				logger.info(preID);
-				object.put("preRegistrationId", preID);
+				json.get("preRegistrationId");*/
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getExpiredAppointmentDetails(FetchCentreResponse);
+
 				regCenterId = appointmentDetails.get(0);
 				appDate = appointmentDetails.get(1);
 				timeSlotFrom = appointmentDetails.get(2);
 				timeSlotTo = appointmentDetails.get(3);
 
-				innerData.put("registration_center_id", regCenterId);
-				innerData.put("appointment_date", appDate);
-				innerData.put("time_slot_from", timeSlotFrom);
-				innerData.put("time_slot_to", timeSlotTo);
-				object.put("newBookingDetails", innerData);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				// object.put("preRegistrationId", preID);
+				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
-				request.replace(key, objArr);
+				request.replace(key, object);
+				request.put("requesttime", getCurrentDate());
 
 			}
 		}
-		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
+		testSuite = "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", preID);
+		response = applnLib.postRequestWithParm(request, preReg_BookingAppointmenturi, parm);
 		return response;
 	}
 
@@ -720,15 +776,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public List<String> getExpiredAppointmentDetails(Response fetchCenterResponse) {
 
 		List<String> appointmentDetails = new ArrayList<>();
-		String date = getDate(-1);
+		String date = getDate(0);
 
-		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].fromTime");
+		fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime");
 		appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 		appointmentDetails.add(date);
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].fromTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].fromTime").toString());
 		appointmentDetails
-				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[20].toTime").toString());
+				.add(fetchCenterResponse.jsonPath().get("response.centerDetails[1].timeSlots[16].toTime").toString());
 		return appointmentDetails;
 	}
 
@@ -738,22 +794,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public Response getPreRegistrationStatus(String preRegistartionId) {
 		testSuite = "Fetch_the_status_of_a_application/Fetch Status of the application_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					logger.info(e);
-				}
-			}
-		}
-
-		request.put("pre_registration_id", preRegistartionId);
+		request = getRequest(testSuite);
+		request.put("preRegistrationId", preRegistartionId);
 		try {
-			response = applnLib.getRequest(preReg_FetchStatusOfApplicationURI, GetHeader.getHeader(request));
+			response = applnLib.getRequestParm(preReg_FetchStatusOfApplicationURI, request);
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -769,31 +813,29 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
+		request = getRequest(testSuite);
+		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
+		JSONObject parm = getRequest(testSuite);
+		String PreRegistrationId = responseCreate.jsonPath().get("response.preRegistrationId").toString();
+		parm.put("preRegistrationId", PreRegistrationId);
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		JSONObject object = null;
-		for (Object key : request.keySet()) {
-			if (key.equals("request")) {
-				object = (JSONObject) request.get(key);
-				object.put("pre_registartion_id",
-						responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
-				request.replace(key, object);
-			}
-		}
+		return response;
+	}
 
-		response = applnLib.putFileAndJson(preReg_DocumentUploadURI, request, file);
+	@SuppressWarnings("unchecked")
+	public Response documentUploadParm(Response responseCreate, String PreRegistrationId) {
+		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", PreRegistrationId);
 
+		testSuite = "DocumentUpload/DocumentUpload_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		File file = new File(configPath + "/AadhaarCard_POI.pdf");
+		request = getRequest(testSuite);
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 		return response;
 	}
 
@@ -823,7 +865,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
 				object.put("pre_registartion_id",
-						responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+						responseCreate.jsonPath().get("response.preRegistrationId").toString());
 				request.replace(key, object);
 			}
 		}
@@ -833,31 +875,19 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
+
 	/**
 	 * method to get Pre Registration admin auth token
+	 * 
 	 * @return
 	 */
-	public String preRegAdminToken()
-	{
+	public String preRegAdminToken() {
 		JSONObject preRegAdminTokenRequest = null;
 		testSuite = "preRegAdminToken/preRegAdminToken_smoke";
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					preRegAdminTokenRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-				
-			}
-		}
+		preRegAdminTokenRequest = getRequest(testSuite);
 		try {
 			response = applnLib.authPostRequest(preRegAdminTokenRequest.toJSONString(), preReg_AdminTokenURI);
 		} catch (Exception e) {
@@ -865,29 +895,16 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		String cookieValue = response.getCookie("Authorization");
 		String auth_token = cookieValue;
-		return auth_token;	
+		return auth_token;
 	}
-	public String regClientAdminToken()
-	{
+
+	public String regClientAdminToken() {
 		JSONObject regClientAdminTokenRequest = null;
 		testSuite = "regClientAdminToken/regClientAdminToken_smoke";
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					regClientAdminTokenRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-				
-			}
-		}
+		regClientAdminTokenRequest = getRequest(testSuite);
 		try {
 			response = applnLib.authPostRequest(regClientAdminTokenRequest.toJSONString(), preReg_AdminTokenURI);
 		} catch (Exception e) {
@@ -895,9 +912,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		String cookieValue = response.getCookie("Authorization");
 		String auth_token = cookieValue;
-		return auth_token;	
+		return auth_token;
 	}
 
+	public Response syncAvailability()
+	{
+
+		return response = applnLib.get_RequestSync(preReg_syncAvailability);
+	}
 
 	/*
 	 * Generic method to get the PreRegistration Data
@@ -906,23 +928,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	@SuppressWarnings("unchecked")
 	public Response getPreRegistrationData(String PreRegistrationId) {
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		request.put("pre_registration_id", PreRegistrationId);
+		request = getRequest(testSuite);
+		request.put("preRegistrationId", PreRegistrationId);
 		try {
 
-			response = applnLib.getRequest(preReg_FetchRegistrationDataURI, GetHeader.getHeader(request));
+			response = applnLib.getRequestParm(preReg_FetchRegistrationDataURI, request);
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -935,39 +945,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public Response updatePreReg(String preRegID, String updatedBy) {
-		testSuite = "Pre_Registration/smokePreReg1";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					createPregRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		}
-		logger.info("Pre Reg Request::" + createPregRequest);
-		JSONObject object = null;
-		for (Object key : createPregRequest.keySet()) {
-			if (key.equals("request")) {
-				object = (JSONObject) createPregRequest.get(key);
-				object.put("preRegistrationId", preRegID);
-				object.put("updatedBy", userId);
-				object.put("createdBy", userId);
-				object.put("updatedDateTime", "2019-01-08T17:05:48.953Z");
-				createPregRequest.replace(key, object);
-			}
-		}
-		logger.info("Request for update---------" + createPregRequest.toString());
-		createPregResponse = applnLib.postRequest(createPregRequest, preReg_CreateApplnURI);
-		preReg_Id = createPregResponse.jsonPath().get("response[0].preRegistrationId").toString();
-		Assert.assertTrue(preReg_Id != null);
-		return createPregResponse;
+	public Response updatePreReg(String preRegID) {
+		testSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
+		JSONObject updateRequest = getRequest(testSuite);
+		updateRequest.put("requesttime", getCurrentDate());
+		Response updateDemographicDetailsResponse = updateDemographicDetails(updateRequest, preRegID);
+		return updateDemographicDetailsResponse;
 	}
 
 	/*
@@ -987,53 +970,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Get All Documents For Pre-Registration Id
 	 * 
 	 */
+
 	public Response getAllDocumentForPreId(String preId) {
+		String preRegGetDocByPreIdURI = preReg_GetDocByPreId+preId;
+		response = applnLib.getRequestWithoutParm(preRegGetDocByPreIdURI);
+		return response;
+	}
 
-		testSuite = "GetAllDocumentForPreRegId/GetAllDocumentForPreRegId_smoke";
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchAllDocumentURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					e.printStackTrace();
-				}
+	/*
+	 * Generic method to Get All Documents For Pre-Registration Id
+	 * 
+	 */
+	public Response getAllDocumentForDocId(String preId, String DocId) {
+		HashMap<String, String> parm = new HashMap<>();
+		parm.put("preRegistrationId", preId);
 
-			}
-		}
-
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-
-		ObjectNode getAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preId).json();
-		String getAllDocForPreId = getAllDocForPreIdReq.toString();
-		JSONObject getAlldocJson = null;
-		try {
-			getAlldocJson = (JSONObject) parser.parse(getAllDocForPreId);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(getAlldocJson);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.getRequest(preReg_FetchAllDocumentURI, GetHeader.getHeader(getAlldocJson));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String preRegGetDocByDocId = preReg_GetDocByDocId + DocId;
+		response = applnLib.getRequestPathAndQueryParam(preRegGetDocByDocId, parm);
 		return response;
 	}
 
@@ -1041,107 +994,67 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Delete All Document by Pre-RegistrationId
 	 * 
 	 */
-	public Response deleteAllDocumentByPreId(String preId) {
 
-		testSuite = "DeleteAllDocumentsByPreRegID/DeleteAllDocumentForPreRegId_smoke";
-		// preReg_URI =
-		// commonLibrary.fetch_IDRepo("preReg_DeleteAllDocumentByPreIdURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	public Response deleteAllDocumentByDocId(String docId, String preId) {
 
-			}
-		}
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		ObjectNode deleteAllDocForPreIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preId).json();
-		String delDocForPreId = deleteAllDocForPreIdReq.toString();
-		JSONObject delDocByPreId = null;
+		HashMap<String, String> parm = new HashMap<>();
+		parm.put("preRegistrationId", preId);
+
+		String preregDeleteDocumentByDocIdURI = prereg_DeleteDocumentByDocIdURI + docId;
+		response = applnLib.deleteRequestPathAndQueryParam(preregDeleteDocumentByDocIdURI, parm);
+
+		return response;
+	}
+
+	public Response FetchCentre(String regCenterID) {
+		testSuite = "FetchAvailabilityDataOfRegCenters/prereg_FetchAvailabilityDataOfRegCenters_smoke";
+		request = getRequest(testSuite);
+		request.put("registrationCenterId", regCenterID);
 		try {
-			delDocByPreId = (JSONObject) parser.parse(delDocForPreId);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.deleteRequest(preReg_DeleteAllDocumentByPreIdURI, GetHeader.getHeader(delDocByPreId));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
+			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDuri");
+			response = applnLib.getRequestParm(preReg_FetchCenterIDURI, request);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return response;
 	}
 
 	/*
-	 * Generic method to Delete All Document by Document Id
+	 * Generic method to Copy uploaded document from One Pre-Registration Id to
+	 * another Pre-Registration Id
 	 * 
 	 */
 
-	public Response deleteAllDocumentByDocId(String documentId) {
+	public Response copyUploadedDocuments(String destPreId, String sourcePreId, String docCatCode) {
 
-		testSuite = "DeleteDocumentByDocId/DeleteDocumentByDocmentId_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("deleteDocumentByDocId_URI");
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					e.printStackTrace();
-				}
+		String preRegCopyDocumentsURI = preReg_CopyDocumentsURI + destPreId;
 
-			}
-		}
-
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-
-		ObjectNode deleteAllDocForDocIdReq = JsonPath.using(config).parse(request.toString())
-				.set("$.documentId", documentId).json();
-
-		String delDocForDocId = deleteAllDocForDocIdReq.toString();
-		JSONObject delDocByDocIdRes = null;
-		try {
-			delDocByDocIdRes = (JSONObject) parser.parse(delDocForDocId);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			response = applnLib.deleteRequest(prereg_DeleteDocumentByDocIdURI, GetHeader.getHeader(delDocByDocIdRes));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		HashMap<String, String> parm = new HashMap<>();
+		parm.put("catCode", docCatCode);
+		parm.put("sourcePreId", sourcePreId);
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preRegCopyDocumentsURI, parm);
 		return response;
 	}
-	public Response FetchCentre(String regCenterID) {
-		testSuite = "FetchAvailabilityDataOfRegCenters/FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 
+	/*
+	 * 
+	 * Generic method For Fetching the Registration center details
+	 * 
+	 */
+	
+	public Response FetchCentre() {
+
+		String regCenterId = randomRegistrationCenterId();		
+		
+		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
+		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
+		
+		return response;
+	}
+	public Response fetchCentreWithCerterId(String regCenterId) {
+		testSuite = "FetchAvailabilityDataOfRegCenters/prereg_FetchAvailabilityDataOfRegCenters_smoke";
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		ObjectNode fetchAvailabilityrequest = null;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
@@ -1149,9 +1062,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (f.getName().toLowerCase().contains("request")) {
 				try {
 					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					fetchAvailabilityrequest = JsonPath.using(config).parse(request.toJSONString())
-							.set("$.registration_center_id", regCenterID).json();
-
+					request.put("registrationCenterId", regCenterId);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1168,8 +1079,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 
 		try {
-			
-			String preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 			response = applnLib.getRequest(preReg_FetchCenterIDURI, GetHeader.getHeader(fetchCenterReqjson));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1178,26 +1087,64 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 
 	/*
-	 * Generic method to Copy uploaded document from One Pre-Registration Id to
-	 * another Pre-Registration Id
+	 * Generic method to Book An Appointment
 	 * 
 	 */
+	/*
+	 * @SuppressWarnings("unchecked") public Response BookAppointment(Response
+	 * DocumentUploadresponse, Response FetchCentreResponse, String preID) {
+	 * List<String> appointmentDetails = new ArrayList<>();
+	 * 
+	 * String regCenterId = null; String appDate = null; String timeSlotFrom = null;
+	 * String timeSlotTo = null; testSuite =
+	 * "BookingAppointment/BookingAppointment_smoke"; JSONObject object = null;
+	 * request = getRequest(testSuite); for (Object key : request.keySet()) { if
+	 * (key.toString().toLowerCase().equals("request")) { object = new JSONObject();
+	 * JSONObject resp = null;
+	 * 
+	 * try { resp = (JSONObject) new
+	 * JSONParser().parse(DocumentUploadresponse.asString()); } catch
+	 * (ParseException e) { e.printStackTrace(); }
+	 * 
+	 * JSONArray data = (JSONArray) resp.get("response"); JSONObject json =
+	 * (JSONObject) data.get(0); json.get("preRegistrationId");
+	 * //object.put("preRegistrationId", preID); JSONObject innerData = new
+	 * JSONObject();
+	 * 
+	 * appointmentDetails = getAppointmentDetails(FetchCentreResponse);
+	 * 
+	 * regCenterId = appointmentDetails.get(0); appDate = appointmentDetails.get(1);
+	 * timeSlotFrom = appointmentDetails.get(2); timeSlotTo =
+	 * appointmentDetails.get(3);
+	 * 
+	 * <<<<<<< HEAD object.put("registration_center_id", regCenterId);
+	 * object.put("appointment_date", appDate); object.put("time_slot_from",
+	 * timeSlotFrom); object.put("time_slot_to", timeSlotTo);
+	 * //object.put("preRegistrationId", preID); //object.put("newBookingDetails",
+	 * innerData); ======= innerData.put("registration_center_id", regCenterId);
+	 * innerData.put("appointment_date", appDate); innerData.put("time_slot_from",
+	 * timeSlotFrom); innerData.put("time_slot_to", timeSlotTo);
+	 * 
+	 * >>>>>>> 70dca8c4df8fd3054b43f2f2568bd23c25be9a4a JSONArray objArr = new
+	 * JSONArray(); objArr.add(object); request.replace(key, objArr);
+	 * request.put("requesttime", getCurrentDate());
+	 * 
+	 * 
+	 * } } testSuite =
+	 * "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke"
+	 * ; JSONObject parm = getRequest(testSuite); parm.put("preRegistrationId",
+	 * preID); response = applnLib.postRequestWithParm(request,
+	 * preReg_BookingAppointmentURI,parm); return response; }
+	 */
 
-	public Response copyUploadedDocuments(String sourcePreId, String destPreId) {
-		testSuite = "CopyUploadedDocument/CopyUploadedDocument_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_CopyDocumentsURI");
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
+	/*
+	 * Generic method to Book An Appointment
+	 * 
+	 */
+	public Response BookAppointment(Response FetchCentreResponse, String preID) {
+		List<String> appointmentDetails = new ArrayList<>();
 
-					e.printStackTrace();
-				}
-
+<<<<<<< HEAD
 			}
 		}
 		/*
@@ -1294,29 +1241,42 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+=======
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "BookingAppointment/BookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		for (Object key : request.keySet()) {
+			if (key.toString().toLowerCase().equals("request")) {
+				object = new JSONObject();
+				JSONObject innerData = new JSONObject();
+				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
+				regCenterId = appointmentDetails.get(0);
+				appDate = appointmentDetails.get(1);
+				timeSlotFrom = appointmentDetails.get(2);
+				timeSlotTo = appointmentDetails.get(3);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				//object.put("preRegistrationId", preID);
+				/*JSONArray objArr = new JSONArray();
+				objArr.add(object);*/
+				request.replace(key, object);
+				request.put("requesttime", getCurrentDate());
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 			}
 		}
 
-		String fetchCenterReq = fetchAvailabilityrequest.toString();
-		JSONObject fetchCenterReqjson = null;
-		try {
-			fetchCenterReqjson = (JSONObject) parser.parse(fetchCenterReq);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		System.out.println("Request::Value Of book App::" + request.toString());
 
-		try {
-			response = applnLib.getRequest(preReg_FetchCenterIDURI, GetHeader.getHeader(fetchCenterReqjson));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String preReg_BookingAppURI = preReg_BookingAppointmentURI + preID;
+		response = applnLib.postRequest(request, preReg_BookingAppURI);
 		return response;
 	}
-
-	/*
-	 * Generic method to Book An Appointment
-	 * 
-	 */
 
 	@SuppressWarnings("unchecked")
 	public Response BookAppointment(Response DocumentUploadresponse, Response FetchCentreResponse, String preID) {
@@ -1326,22 +1286,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String appDate = null;
 		String timeSlotFrom = null;
 		String timeSlotTo = null;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
 		testSuite = "BookingAppointment/BookingAppointment_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
 		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		request = getRequest(testSuite);
 		for (Object key : request.keySet()) {
 			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
@@ -1353,10 +1300,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
+				/*JSONArray data = (JSONArray) resp.get("response");
 				JSONObject json = (JSONObject) data.get(0);
 				json.get("preRegistrationId");
-				object.put("preRegistrationId", preID);
+*/				// object.put("preRegistrationId", preID);
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
@@ -1366,18 +1313,24 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				timeSlotFrom = appointmentDetails.get(2);
 				timeSlotTo = appointmentDetails.get(3);
 
-				innerData.put("registration_center_id", regCenterId);
-				innerData.put("appointment_date", appDate);
-				innerData.put("time_slot_from", timeSlotFrom);
-				innerData.put("time_slot_to", timeSlotTo);
-				object.put("newBookingDetails", innerData);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				// object.put("preRegistrationId", preID);
+				// object.put("newBookingDetails", innerData);
 				JSONArray objArr = new JSONArray();
 				objArr.add(object);
-				request.replace(key, objArr);
+				request.replace(key, object);
+				request.put("requesttime", getCurrentDate());
 
 			}
 		}
-		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
+
+		testSuite = "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", preID);
+		response = applnLib.postRequestWithParm(request, preReg_BookingAppointmenturi, parm);
 		return response;
 	}
 
@@ -1397,20 +1350,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String timeSlotTo = null;
 		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_BookingAppointmentURI");
 		testSuite = "BookingAppointment/BookingAppointment_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
 		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		request = getRequest(testSuite);
 		for (Object key : request.keySet()) {
 			if (key.toString().toLowerCase().equals("request")) {
 				object = new JSONObject();
@@ -1422,10 +1363,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					e.printStackTrace();
 				}
 
-				JSONArray data = (JSONArray) resp.get("response");
-				JSONObject json = (JSONObject) data.get(0);
-				json.get("preRegistrationId");
-				object.put("preRegistrationId", preID);
+				/*JSONArray data = (JSONArray) resp.get("response");
+				JSONObject json = (JSONObject) data.get(0);*/
+				/*
+				 * json.get("preRegistrationId"); object.put("preRegistrationId", preID);
+				 */
 				JSONObject innerData = new JSONObject();
 
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
@@ -1439,18 +1381,19 @@ public class PreRegistrationLibrary extends BaseTestCase {
 					Assert.fail("Centers unavailable");
 				}
 
-				innerData.put("registration_center_id", regCenterId);
-				innerData.put("appointment_date", "2019-27-27");
-				innerData.put("time_slot_from", timeSlotFrom);
-				innerData.put("time_slot_to", timeSlotTo);
-				object.put("newBookingDetails", innerData);
-				JSONArray objArr = new JSONArray();
-				objArr.add(object);
-				request.replace(key, objArr);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", "2019-27-27");
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				// object.put("newBookingDetails", innerData);
+				/*JSONArray objArr = new JSONArray();
+				objArr.add(object);*/
+				request.replace(key, object);
+				request.put("requesttime", getCurrentDate());
 
 			}
 		}
-		response = applnLib.postRequest(request, preReg_BookingAppointmentURI);
+		response = applnLib.postRequest(request, preReg_BookingAppointmentURI + preID);
 		return response;
 	}
 
@@ -1458,56 +1401,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Fetch Appointment Details
 	 * 
 	 */
-
 	public Response FetchAppointmentDetails(String preID) {
-		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FecthAppointmentDetailsURI");
 
-		// logger.info("Fetch app det::" + preReg_URI);
+		
+		String preRegFetchAppDet = preReg_FecthAppointmentDetailsURI+preID;
+		response = applnLib.getRequestWithoutParm(preRegFetchAppDet);
+		return response;
+	}
 
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					e.printStackTrace();
-				}
+	public Response CancelBookingAppointment(String preID) {
 
-			}
-		}
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		ObjectNode fetchAppDetails = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preID).json();
-		String fetchAppDetStr = fetchAppDetails.toString();
-		JSONObject fetchAppjson = null;
-		try {
-			fetchAppjson = (JSONObject) parser.parse(fetchAppDetStr);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			GetHeader.getHeader(fetchAppjson);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			response = applnLib.getRequest(preReg_FecthAppointmentDetailsURI, GetHeader.getHeader(fetchAppjson));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String preReg_CancelAppURI = preReg_CancelAppointmentURI + preID;
+		response = applnLib.putRequest_WithoutBody(preReg_CancelAppURI);
 		return response;
 	}
 
@@ -1515,22 +1420,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * Generic method to Cancel Booking Appointment Details
 	 * 
 	 */
-
 	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
-		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_CancelAppointmentURI");
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment1";
+		request = getRequest(testSuite);
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -1561,7 +1453,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		response = applnLib.putRequestWithBody(preReg_CancelAppointmentURI, cancelAppjson);
+		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", preID);
+		cancelAppjson.put("requesttime", getCurrentDate());
+		response = applnLib.putRequestWithParameter(preReg_CancelAppointmenturi, parm, cancelAppjson);
+		return response;
+	}
+
+	public Response deleteAllDocumentByPreId(String preId) {
+		HashMap<String, String> parm = new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		response = applnLib.deleteRequestWithParm(preReg_DeleteAllDocumentByPreIdURI, parm);
 		return response;
 	}
 
@@ -1570,82 +1473,40 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 
-	public Response ReBookAnAppointment(String preID, Response FetchAppDet, Response FetchCentreResponse)
-			throws FileNotFoundException, IOException, ParseException {
-		testSuite = "ReBookAnAppointment/ReBookAnAppointment_smoke";
-
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_ExpiredURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
+	public Response ReBookAnAppointment(Response FetchCentreResponse, String preID) {
+		List<String> appointmentDetails = new ArrayList<>();
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "BookingAppointment/BookingAppointment_smoke";
 		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					e.printStackTrace();
-				}
-
+		request = getRequest(testSuite);
+		for (Object key : request.keySet()) {
+			if (key.toString().toLowerCase().equals("request")) {
+				object = new JSONObject();
+				JSONObject innerData = new JSONObject();
+				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
+				regCenterId = appointmentDetails.get(0);
+				appDate = appointmentDetails.get(1);
+				timeSlotFrom = appointmentDetails.get(2);
+				timeSlotTo = appointmentDetails.get(3);
+				object.put("registration_center_id", regCenterId);
+				object.put("appointment_date", appDate);
+				object.put("time_slot_from", timeSlotFrom);
+				object.put("time_slot_to", timeSlotTo);
+				JSONArray objArr = new JSONArray();
+				objArr.add(object);
+				request.replace(key, objArr);
+				request.put("requesttime", getCurrentDate());
 			}
 		}
-		/*
-		 * 
-		 * Pass the configuration object to using method of JsonPath and pass the json
-		 * string to parse method which will return the parsed JSON. Then we pass the
-		 * json path of the value that needs to be updated and the new value that we
-		 * need in post Data to set method, which returns the updated POST (JSON) Data.
-		 *
-		 */
-		ObjectNode rebookPreRegId = JsonPath.using(config).parse(request.toJSONString())
-				.set("$.request[0].preRegistrationId", preID).json();
-		ObjectNode rebookAppointmetRegCenterDet = JsonPath.using(config).parse(rebookPreRegId.toString())
-				.set("$.request[0].oldBookingDetails.registration_center_id",
-						FetchAppDet.jsonPath().get("response.registration_center_id").toString())
-				.json();
-		ObjectNode rebookAppointmentAppDate = JsonPath.using(config).parse(rebookAppointmetRegCenterDet.toString())
-				.set("$.request[0].oldBookingDetails.appointment_date",
-						FetchAppDet.jsonPath().get("response.appointment_date").toString())
-				.json();
-		ObjectNode rebookTimeSlotFrom = JsonPath.using(config).parse(rebookAppointmentAppDate.toString())
-				.set("$.request[0].oldBookingDetails.time_slot_from",
-						FetchAppDet.jsonPath().get("response.time_slot_from").toString().toString())
-				.json();
-		ObjectNode rebookTimeSlotTo = JsonPath.using(config).parse(rebookTimeSlotFrom.toString())
-				.set("$.request[0].oldBookingDetails.time_slot_to",
-						FetchAppDet.jsonPath().get("response.time_slot_to").toString().toString())
-				.json();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar c1 = Calendar.getInstance();
-		c1.add(Calendar.DATE, 5);
-		String date = dateFormat.format(c1.getTime());
-
-		List<String> details = reBookGetAppointmentDetails(FetchCentreResponse, date);
-		String regCenterId = details.get(0);
-		String appDate = details.get(1);
-		String timeSlotFrom = details.get(2);
-		String timeSlotTo = details.get(3);
-
-		ObjectNode rebookNewAppRegCenterId = JsonPath.using(config).parse(rebookTimeSlotTo.toString())
-				.set("$.request[0].newBookingDetails.registration_center_id", regCenterId).json();
-		ObjectNode rebookNewAppointmentAppDate = JsonPath.using(config).parse(rebookNewAppRegCenterId.toString())
-				.set("$.request[0].newBookingDetails.appointment_date", appDate).json();
-		ObjectNode rebookNewAppointmentTimeSlotFrom = JsonPath.using(config)
-				.parse(rebookNewAppointmentAppDate.toString())
-				.set("$.request[0].newBookingDetails.time_slot_from", timeSlotFrom).json();
-		ObjectNode rebookNewAppointmentTimeSlotTo = JsonPath.using(config)
-				.parse(rebookNewAppointmentTimeSlotFrom.toString())
-				.set("$.request[0].newBookingDetails.time_slot_to", timeSlotTo).json();
-
-		String rebookApp = rebookNewAppointmentTimeSlotTo.toString();
-		JSONObject rebookAppjson = null;
-		try {
-			rebookAppjson = (JSONObject) parser.parse(rebookApp);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		response = applnLib.postRequest(rebookAppjson, preReg_BookingAppointmentURI);
+		testSuite = "Discard_Individual/Discard Individual Applicant By using Pre Registration ID_smoke";
+		JSONObject parm = getRequest(testSuite);
+		parm.put("preRegistrationId", preID);
+		response = applnLib.postRequestWithParm(request, preReg_BookingAppointmenturi, parm);
 		return response;
+
 	}
 
 	/**
@@ -1667,7 +1528,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		return response;
 	}
-	
+
+	public Response logOut() {
+		try {
+
+			response = applnLib.postRequestWithoutBody(invalidateToken_URI);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+		return response;
+	}
+
 	/**
 	 * Its a batch job service which changed the status of consumed application into
 	 * Consumed
@@ -1688,64 +1559,34 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return response;
 	}
 
-	
 	/*
 	 * Generic method to Retrieve All PreId By Registration Center Id
 	 * 
 	 */
-	
-	
-	public Response retriveAllPreIdByRegId(String regCenterId,String preId) throws FileNotFoundException, IOException, ParseException {
-		testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
-		
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 
-			}
-		}
+	public Response retriveAllPreIdByRegId(Response fetchAppDet, String preId)
+			throws FileNotFoundException, IOException, ParseException {
+
+		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
+		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
 		
-		ObjectNode setRegCenterId = JsonPath.using(config).parse(request.toJSONString())
-				.set("$.request.registartion_center_id", regCenterId).json();
+		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDate fromDate = currentTime.toLocalDate();
+
+		logger.info("Local Date:" + fromDate.toString());
+
+		logger.info("Form Date:" + fromDate);
+		HashMap<String, String> parm = new HashMap<>();
 		
-		ObjectNode setPreRegId = JsonPath.using(config).parse(setRegCenterId.toString())
-				.set("$.request.pre_registration_ids[0]",
-						preId)
-				.json();
+		parm.put("from_date", fromDate.toString());
+		parm.put("to_date", toDate);
+		String preReg_RetriveBookedPreIdsByRegIdURI = preReg_RetriveBookedPreIdsByRegId + regCenterId;
 		
-		String retPreIdDetStr = setPreRegId.toString();
-		
-		JSONObject retriveAllPreIdByRegIdjson = (JSONObject) parser.parse(retPreIdDetStr);
-		
-		response = applnLib.postRequest(retriveAllPreIdByRegIdjson, preReg_FetchBookedPreIdByRegIdURI);
+		response = applnLib.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
+
+
 		return response;
 	}
-	
-	
-	
-	
-	/*public Response retriveAllPreIdByRegId() throws FileNotFoundException, IOException, ParseException {
-		testSuite = "RetrivePreIdByRegCenterId/RetrivePreIdByRegCenterId_smoke";
-		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_FetchBookedPreIdByRegId_URI
-		// ");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		JSONObject object = null;
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-
-			}
-		}
-		JSONObject retriveAllPreIdByRegIdjson = (JSONObject) parser.parse(request.toString());
-		response = applnLib.postRequest(retriveAllPreIdByRegIdjson, preReg_FetchBookedPreIdByRegIdURI);
-		return response;
-	}*/
 
 	/*
 	 * Generic function to fetch the random registration centerId
@@ -1753,25 +1594,10 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public String randomRegistrationCenterId() {
 		Random rand = new Random();
-
-		/*
-		 * List<String> givenList =
-		 * Lists.newArrayList("10002","10020","10016","10014","10010","10006",
-		 * "10024","10019","10111","10017","10023","10005","10026","10009","10013",
-		 * "10015","10021","10004","10011","10008","10018","10022","10001","10012",
-		 * "10025","54321","10007","10003", "10027");
-		 */
-
-		/*List<String> givenList = Lists.newArrayList("10002", "10020", "10027", "10014", "10010", "10016", "10006",
-				"10024", "10111", "10019", "10017", "10023", "10045", "10037", "10042", "10005", "10029", "10026",
-				"10038", "10009",  "10030", "10013", "10015", "10021", "10004", "10035", "10034",
-				"10011", "10008", "10032",  "10018", "10001", "10022", "10012", "10033", "10025", "10007",
-				"10003");*/
-		List<String> givenList = Lists.newArrayList("10001","10002","10003","10004","10005","10006","10007","10008","10009","10010","10011","10012","10013","10014","10015");
+		List<String> givenList = Lists.newArrayList("10002", "10013", "10014", "10010", "10015", "10006", "10004",
+				"10011", "10008", "10001", "10012", "10005", "10003", "10007", "10009");
 		String s = null;
-
 		int numberOfElements = givenList.size();
-
 		for (int i = 0; i < numberOfElements; i++) {
 			int randomIndex = rand.nextInt(givenList.size());
 			s = givenList.remove(randomIndex);
@@ -1835,7 +1661,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
 				object.put("pre_registartion_id",
-						responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
+						responseCreate.jsonPath().get("response.preRegistrationId").toString());
 				request.replace(key, object);
 			}
 
@@ -1845,17 +1671,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		return response;
 	}
-	
-	
+
 	/*
 	 * Generic method to Upload Document
 	 * 
 	 */
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public Response TriggerNotification() {
-		testSuite = "TriggerNotification/TriggerNotification_smoke";
+		testSuite = "TriggerNotification/preReg_TriggerNotification_emailId_outlookAccount_smoke";
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
 
@@ -1871,17 +1695,18 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				}
 			}
 		}
-		
-		
+		String value = null;
 		JSONObject object = null;
 		for (Object key : request.keySet()) {
 			if (key.equals("request")) {
 				object = (JSONObject) request.get(key);
-				//object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
-				//request.replace(key, object);
-				//object.remove(langCodeKey);
+				value = (String) object.get(langCodeKey);
+				// object.put("pre_registartion_id",responseCreate.jsonPath().get("response.preRegistrationId").toString());
+				// request.replace(key, object);
+				object.remove(langCodeKey);
 			}
 		}
+<<<<<<< HEAD
 		
 		
 		 String value = (String)request.get(langCodeKey);
@@ -1890,43 +1715,40 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		//response =applnLib.putFileAndJsonParam(preReg_NotifyURI, request, file,langCodeKey,value);
 					
+=======
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.postFileAndJsonParam(preReg_NotifyURI, request, file, langCodeKey, value);
+
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 		return response;
 	}
-	
-	
+
 	/*
-	 * Generic method for dynamically change the request values in json file 
+	 * Generic method for dynamically change the request values in json file
 	 * 
 	 */
-	
-	
-	public ObjectNode dynamicJsonRequest(String jsonPathTraverse,String jsonSetVal,String readFilePath,String writeFilePath) {
-		
+
+	public ObjectNode dynamicJsonRequest(String jsonPathTraverse, String jsonSetVal, String readFilePath,
+			String writeFilePath) {
+
 		String yourActualJSONString = null;
 		ObjectNode newJson = null;
 		try {
 			yourActualJSONString = new String(Files.readAllBytes(Paths.get(readFilePath)), StandardCharsets.UTF_8);
-		    newJson=JsonPath.using(config).parse(yourActualJSONString).set(jsonPathTraverse,jsonSetVal).json();
+			newJson = JsonPath.using(config).parse(yourActualJSONString).set(jsonPathTraverse, jsonSetVal).json();
 			FileWriter writer = new FileWriter(new File(writeFilePath));
 			writer.append(newJson.toString());
 			writer.flush();
 			writer.close();
-			
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		return newJson;
-		
+
 	}
-	
-	
-	
-	
-	
 
 	/*
 	 * Generic method to fetch the dynamic request json
@@ -1954,65 +1776,29 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return request;
 
 	}
-	public JSONObject createRequest(String testSuite)
-	{
+
+	public JSONObject createRequest(String testSuite) {
 		JSONObject createPregRequest = null;
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		// testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					createPregRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-				
-			}
-		}
-		String createdBy = new Integer(createdBy()).toString();
-		JSONObject object = null;
-		for (Object key : createPregRequest.keySet()) {
-			if (key.equals("request")) {
-				object = (JSONObject) createPregRequest.get(key);
-				object.put("createdBy", userId);
-				createPregRequest.replace(key, object);
-			}
-		}
-		
-		
-		
+		createPregRequest = getRequest(testSuite);
+		createPregRequest.put("requesttime", getCurrentDate());
 		return createPregRequest;
 	}
-	public JSONObject otpRequest(String testSuite)
-	{
+
+	public JSONObject otpRequest(String testSuite) {
 		JSONObject otpRequest = null;
 		testSuite = "generateOTP/generateOTP_smoke";
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.error(e.getMessage());
-				}
-				
-			}
-		}
-		double d = (Math.random()*1000000000);
-		long l= (long)d;
-		userId = "9"+l ;
+		otpRequest = getRequest(testSuite);
+
+		long number = (long) Math.floor(Math.random() * 9_000_000_00L) + 1_000_000_00L;
+		userId = Long.toString(number);
+		userId = "9" + userId;
 		JSONObject object = null;
 		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {
@@ -2020,57 +1806,155 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object.put("userId", userId);
 				otpRequest.replace(key, object);
 			}
-		}	
+		}
+		otpRequest.put("requesttime", getCurrentDate());
 		return otpRequest;
 	}
-	public JSONObject getOtpRequest(String testSuite)
-	{
+
+	/**
+	 * Get Otp Request
+	 * 
+	 * @param testSuite
+	 * @return
+	 */
+	public JSONObject getOtpRequest(String testSuite) {
 		JSONObject otpRequest = null;
+		otpRequest = getRequest(testSuite);
 		/**
 		 * Reading request body from configpath
 		 */
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
+		request = getRequest(testSuite);
+		request.put("requesttime", getCurrentDate());
+		return request;
+	}
+
+	/**
+	 * This method compares bytes array response from retrieve pre registration data
+	 * with actual demographic data
+	 * 
+	 * @param retrivePreRegistrationDataResponse
+	 * @param PrID
+	 * @param expectedDemographicDetails
+	 * @return
+	 */
+	public boolean validateRetrivePreRegistrationData(Response response, String PrID, Response craeteResponse) {
+		boolean finalResult = false;
+		HashMap<String, String> expectedDemographicDetails = craeteResponse.jsonPath()
+				.get("response.demographicDetails");
+		String folderName = "PreRegDocs";
+		String data = response.jsonPath().get("response.zip-bytes").toString();
+		String folder = response.jsonPath().get("response.zip-filename").toString();
+		String folderPath = "src/test/resources/" + "preReg" + "/" + folderName;
+		File f = new File(folderPath + "/" + folder);
+		f.mkdirs();
+		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
+		ZipEntry entry = null;
+		try {
+			while ((entry = zipStream.getNextEntry()) != null) {
+
+				String entryName = entry.getName();
+				logger.info("ASHISH" + entryName);
+				String path = folderPath + "/" + folder + "/" + entryName;
+				FileOutputStream out = new FileOutputStream(path);
+
+				byte[] byteBuff = new byte[4096];
+				int bytesRead = 0;
+				while ((bytesRead = zipStream.read(byteBuff)) != -1) {
+					out.write(byteBuff, 0, bytesRead);
+				}
+
+				out.close();
+				zipStream.closeEntry();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject actualResponse = null;
+		testSuite = folderName + "/" + PrID;
+		JSONObject request = null;
+		/**
+		 * Reading request body from configpath
+		 */
+		String folder2 = "preReg";
+		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		File folder1 = new File(configPath);
+		File[] listOfFiles = folder1.listFiles();
+		for (File f1 : listOfFiles) {
+			if (f1.getName().contains("ID")) {
 				try {
-					otpRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					request = (JSONObject) new JSONParser().parse(new FileReader(f1.getPath()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(e.getMessage());
 				}
-				
+
 			}
+			Map<String, Object> actualDemographicDetails = jsonObjectToMap(request);
+			finalResult = actualDemographicDetails.keySet().equals(expectedDemographicDetails.keySet());
 		}
-		return otpRequest;
+		return finalResult;
 	}
 
-	
+	public Map<String, Object> jsonObjectToMap(JSONObject object) {
+		Gson gson = new Gson();
+		Type type = new TypeToken<Map<String, Object>>() {
+		}.getType();
+		Map<String, Object> map = gson.fromJson(object.toJSONString(), type);
+		return map;
+	}
+
 
 	/*
 	 * Generic method for Discard Booking
 	 * 
 	 */
-	
-	public Response discardBooking(String preId)  {
+	public static Map<String, Object> toMap(org.json.JSONObject object) throws JSONException {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		Iterator<String> keysItr = object.keys();
+		while (keysItr.hasNext()) {
+			String key = keysItr.next();
+			Object value = object.get(key);
+
+			if (value instanceof JSONArray) {
+				value = toList((org.json.JSONArray) value);
+			}
+
+			else if (value instanceof org.json.JSONObject) {
+				value = toMap((org.json.JSONObject) value);
+			}
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	public static List<Object> toList(org.json.JSONArray array) throws JSONException {
+		List<Object> list = new ArrayList<Object>();
+		for (int i = 0; i < array.length(); i++) {
+			Object value = array.get(i);
+			if (value instanceof org.json.JSONArray) {
+				value = toList((org.json.JSONArray) value);
+			}
+
+			else if (value instanceof JSONObject) {
+				value = toMap((org.json.JSONObject) value);
+			}
+			list.add(value);
+		}
+		return list;
+	}
+
+	public Response discardBooking(String preId) {
 
 		testSuite = "DiscardBooking/DiscardBooking_smoke";
-		//preReg_URI = commonLibrary.fetch_IDRepo("preReg_DeleteAllDocumentByPreIdURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-		}
+		request = getRequest(testSuite);
 		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
@@ -2079,8 +1963,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
 		 */
-		ObjectNode discardBooking = JsonPath.using(config).parse(request.toString())
-				.set("$.pre_registration_id", preId).json();
+		ObjectNode discardBooking = JsonPath.using(config).parse(request.toString()).set("$.pre_registration_id", preId)
+				.json();
 		String delBookPreId = discardBooking.toString();
 		JSONObject delBookByPreId = null;
 		try {
@@ -2097,27 +1981,227 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		return response;
 	}
-	
-	
-	
+
 	/*
 	 * Generic method for sync master data
 	 * 
 	 */
+	public static String getCurrentDate() {
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+				.format(Calendar.getInstance().getTime());
+		return timeStamp;
+	}
+
+	public void updateStatusCode(String statusCode, String preregId) {
+		dao.updateStatusCode(statusCode, preregId);
+	}
+
+	public List<? extends Object> preregFetchPreregDetails(String preregId) {
+		return dao.preregFetchPreregDetails(preregId);
+	}
+	public JSONObject getAuditData(List<? extends Object> objs, int data) {
+		List<Object> auditData = new ArrayList<>();
+		Map<String, String> map = new HashMap<>();
+		Object[] TestData = null;
+		for (Object obj : objs) {
+			TestData = (Object[]) obj;
+			int noOfData = TestData.length;
+			if (obj.equals(objs.get(data))) {
+				for (int i = 0; i < noOfData; i++) {
+					Object audit = TestData[i];
+					auditData.add(audit);
+				}
+			}
+
+		}
+
+		JSONObject object = getAuditData(auditData);
+		return object;
+	}
+
+	public JSONObject getAuditData(List<Object> auditDatas) {
+		JSONObject object = new JSONObject();
+		String log_desc = auditDatas.get(0).toString();
+		String event_id = auditDatas.get(1).toString();
+		String event_type = auditDatas.get(2).toString();
+		String event_name = auditDatas.get(3).toString();
+		String session_user_id = auditDatas.get(4).toString();
+		String module_name = auditDatas.get(5).toString();
+		String ref_id = auditDatas.get(6).toString();
+		String ref_id_type = auditDatas.get(7).toString();
+		object.put("log_desc", log_desc);
+		object.put("event_id", event_id);
+		object.put("event_type", event_type);
+		object.put("event_name", event_name);
+		object.put("session_user_id", session_user_id);
+		object.put("module_name", module_name);
+		object.put("ref_id", ref_id);
+		object.put("ref_id_type", ref_id_type);
+		return object;
+	}
+	public boolean jsonComparison(Object expectedResponseBody, Object actualResponseBody) {
+		JSONObject reqObj = (JSONObject) expectedResponseBody;
+		JSONObject resObj = (JSONObject) actualResponseBody;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode requestJson = mapper.readTree(reqObj.toString());
+			JsonNode responseJson = mapper.readTree(resObj.toString());
+			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
+
+			logger.error("======" + diffJson + "==========");
+			if (diffJson.toString().equals("[]")) {
+				logger.info("equal");
+				return true;
+			}
+
+			for (int i = 0; i < diffJson.size(); i++) {
+				JsonNode operation = diffJson.get(i);
+				if (!operation.get("op").toString().equals("\"move\"")) {
+					logger.error("not equal");
+					return false;
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.info("equal");
+		return true;
+
+	}
+
+	
+	
+	
+	
+	/*
+	 * Generic method to QR Code
+	 * 
+	 */
+
+	public Response QRCode() {
+		testSuite = QRCodeFilePath;
+		logger.info("Path Val:"+QRCodeFilePath);
+		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+		for (File f : listOfFiles) {
+			if (f.getName().contains("request")) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		request.put("requesttime", getCurrentDate());
+		response = applnLib.authPostRequest(request, qrCode_URI);
+
+		return response;
+	}
+
 	public Response syncMasterData() {
 		Response syncMasterDataRes = null;
 		try {
 
-			 syncMasterDataRes = applnLib.getRequestWithoutBody(preReg_SyncMasterDataURI);
+			//syncMasterDataRes = applnLib.get_RequestWithoutBody(preReg_SyncMasterDataURI);
+			syncMasterDataRes = applnLib.postRequestWithoutBody(preReg_SyncMasterDataURI);
 		} catch (Exception e) {
 			logger.info(e);
 		}
 
 		return syncMasterDataRes;
 	}
-	
 
 	
+	
+	
+	/*
+	 * Generic method to Book An Appointment
+	 * 
+	 */
+	public Response multipleBookApp(Response FetchCentreResponseOne,Response FetchCentreResponseTwo,String preIDFirstUsr,String preIDSecondUsr) {
+		List<String> appointmentDetailsFirstUsr = new ArrayList<>();
+		List<String> appointmentDetailsSecondUsr = new ArrayList<>();
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "MultipleBookingAppointment/MultipleBookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		
+		appointmentDetailsFirstUsr=getAppointmentDetails(FetchCentreResponseOne);
+		appointmentDetailsSecondUsr=getAppointmentDetails(FetchCentreResponseTwo);
+		
+		logger.info("My multiple book App::"+request);
+		ObjectNode mutBookPreIdFirstUsr = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.bookingRequest[0].preRegistrationId", preIDFirstUsr).json();
+		
+		ObjectNode mutBookAppDateFirstUsr = JsonPath.using(config).parse(mutBookPreIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.json();
+		ObjectNode mutBookRegCenterIdFirstUsr = JsonPath.using(config).parse(mutBookAppDateFirstUsr.toString())
+				.set("$.request.bookingRequest[0].registration_center_id", appointmentDetailsFirstUsr.get(0))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotFromFirstUsr = JsonPath.using(config).parse(mutBookRegCenterIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_from", appointmentDetailsFirstUsr.get(2))
+				.json();
+		ObjectNode mutBookAppTimeSlotToFirstUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_to", appointmentDetailsFirstUsr.get(3))
+				.json();
+		
+		
+		
+		
+		
+		ObjectNode mutBookPreIdSecondUsr = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.bookingRequest[1].preRegistrationId", preIDSecondUsr).json();
+		ObjectNode mutBookAppDateSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.json();
+		
+		ObjectNode mutBookRegCenterIdSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].registration_center_id", appointmentDetailsSecondUsr.get(0))
+				.json();
+		
+		
+		ObjectNode mutBookAppTimeSlotFromSecondUsr = JsonPath.using(config).parse(mutBookRegCenterIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_from", appointmentDetailsSecondUsr.get(1))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotToSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_to", appointmentDetailsSecondUsr.get(4))
+				.json();
+		
+		
+		String multiplBookAppDetStr = mutBookAppTimeSlotToSecondUsr.toString();
+		JSONObject multipleBookAppjson = null;
+		try {
+			multipleBookAppjson = (JSONObject) parser.parse(multiplBookAppDetStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("Request::Value Of book App::" + multipleBookAppjson);
+		logger.info("Request::Json value::" + request.toString());
+		String preReg_BookingAppURI = preReg_BookingAppointmentURI;
+		response = applnLib.postRequest(request, preReg_BookingAppURI);
+		return response;
+	}
+	
+	
+	
+	@Test
+	void myTest()
+	{
+		
+		//multipleBookApp("090909");
+	}
 	
 	
 	
@@ -2125,11 +2209,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public void PreRegistrationResourceIntialize() {
 		preReg_CreateApplnURI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
 		preReg_DocumentUploadURI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		preReg_BookingAppointmentURI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
 		preReg_DataSyncnURI = commonLibrary.fetch_IDRepo().get("preReg_DataSyncnURI");
 		preReg_FetchRegistrationDataURI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
-		preReg_FetchCenterIDURI = commonLibrary.fetch_IDRepo().get("preReg_FetchCenterIDURI");
 		preReg_FecthAppointmentDetailsURI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
 		preReg_FetchAllDocumentURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
 		prereg_DeleteDocumentByDocIdURI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
@@ -2143,16 +2225,31 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		preReg_ExpiredURI = commonLibrary.fetch_IDRepo().get("preReg_ExpiredURI");
 		preReg_ConsumedURI = commonLibrary.fetch_IDRepo().get("preReg_ConsumedURI");
 		preReg_ReverseDataSyncURI = commonLibrary.fetch_IDRepo().get("preReg_ReverseDataSyncURI");
-		preReg_FetchAllApplicationCreatedByUserURI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
-		 preReg_DiscardBookingURI=commonLibrary.fetch_IDRepo().get("preReg_DiscardBookingURI");
-		 preReg_SyncMasterDataURI=commonLibrary.fetch_IDRepo().get("preReg_SyncMasterDataURI");
-		 preReg_NotifyURI=commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
-		 langCodeKey=commonLibrary.fetch_IDRepo().get("langCode.key");
-		 otpSend_URI=commonLibrary.fetch_IDRepo().get("otpSend_URI");
-		 validateOTP_URI=commonLibrary.fetch_IDRepo().get("validateOTP_URI");
-		 preReg_AdminTokenURI=commonLibrary.fetch_IDRepo().get("preReg_AdminTokenURI");
-		 preReg_translitrationRequestURI=commonLibrary.fetch_IDRepo().get("preReg_translitrationRequestURI");
+		preReg_FetchAllApplicationCreatedByUserURI = commonLibrary.fetch_IDRepo()
+				.get("preReg_FetchAllApplicationCreatedByUserURI");
+		preReg_DiscardBookingURI = commonLibrary.fetch_IDRepo().get("preReg_DiscardBookingURI");
 		
-	}
+		langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
+		otpSend_URI = commonLibrary.fetch_IDRepo().get("otpSend_URI");
+		validateOTP_URI = commonLibrary.fetch_IDRepo().get("validateOTP_URI");
+		preReg_AdminTokenURI = commonLibrary.fetch_IDRepo().get("preReg_AdminTokenURI");
+		preReg_translitrationRequestURI = commonLibrary.fetch_IDRepo().get("preReg_translitrationRequestURI");
+		invalidateToken_URI = commonLibrary.fetch_IDRepo().get("invalidateToken_URI");
+		preReg_GetDocByDocId = commonLibrary.fetch_IDRepo().get("preReg_GetDocByDocId");
+		preReg_CancelAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmenturi");
+		preReg_GetPreRegistrationConfigData = commonLibrary.fetch_IDRepo().get("preReg_GetPreRegistrationConfigData");
+		preReg_BookingAppointmenturi = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmenturi");
+		preReg_syncAvailability = commonLibrary.fetch_IDRepo().get("preReg_syncAvailability");
+		preReg_FecthAppointmentDetailsuri = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsuri");
+		preReg_GetDocByPreId= commonLibrary.fetch_IDRepo().get("preReg_GetDocByPreId");
+		qrCode_URI = commonLibrary.fetch_IDRepo().get("qrCode_URI");
+		
+		preReg_RetriveBookedPreIdsByRegId = preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
+		QRCodeFilePath=preRegUtil.fetchPreregProp().get("QRCodeFilePath");
+		preReg_NotifyURI = preRegUtil.fetchPreregProp().get("preReg_NotifyURI");
+		preReg_SyncMasterDataURI = preRegUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
+		preReg_FetchCenterIDURI = preRegUtil.fetchPreregProp().get("preReg_FetchCenterIDURI");
+		preReg_MultipleBookAppURI = preRegUtil.fetchPreregProp().get("preReg_MultipleBooking");
+		}
 
 }

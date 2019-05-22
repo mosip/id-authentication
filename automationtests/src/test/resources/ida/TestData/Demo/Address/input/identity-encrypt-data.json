@@ -1,20 +1,42 @@
 {
 	"identityRequest": {
+<<<<<<< HEAD
 		"identity": {
 			"addressLine1": [
 				{
 					"language": "fre",
 					"value": "27 RUE PASTEUR"
+=======
+		"demographics": {
+			"addressLine1": [
+				{
+					"language": "ara",
+					"value": "كهِتتِ رُبُ رَُد"
+				},
+				{
+					"language": "fra",
+					"value": "Sravya Street"
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 				}
 			],
 			"addressLine2": [
 				{
+<<<<<<< HEAD
 					"language": "fre",
 					"value": "14390 CABOURG Street"
+=======
+					"language": "ara",
+					"value": "سرَڤيَ سترِِت هُُسِ"
+				},
+				{
+					"language": "fra",
+					"value": "Chitti Robo Nagar House"
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 				}
 			],
 			"addressLine3": [
 				{
+<<<<<<< HEAD
 					"language": "fre",
 					"value": "MOROCCO"
 				}
@@ -22,4 +44,47 @@
 		}
 	},
 	"tspID": "REF01"
+=======
+					"language": "ara",
+					"value": "ِڤِرِست"
+				},
+				{
+					"language": "fra",
+					"value": "Bangalore"
+				}
+			],
+			"location1": [
+				{
+					"language": "ara",
+					"value": "َفرِكَ"
+				},
+				{
+					"language": "fra",
+					"value": "LONDON"
+				}
+			],
+			"location3": [
+				{
+					"language": "ara",
+					"value": "نَڤَلُر"
+				},
+				{
+					"language": "fra",
+					"value": "AbuDhabi"
+				}
+			],
+			"location2": [
+				{
+					"language": "ara",
+					"value": "نَڤَلُر"
+				},
+				{
+					"language": "fra",
+					"value": "Taramani"
+				}
+			]
+		},
+		"timestamp": "2019-03-16T10:01:57.086+05:30"
+	}
+>>>>>>> 526ef14b68ce52295beed5299405f4f875dd9791
 }

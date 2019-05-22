@@ -16,7 +16,6 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * The class is to read content from email
  * 

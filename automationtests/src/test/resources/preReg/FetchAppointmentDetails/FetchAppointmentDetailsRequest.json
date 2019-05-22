@@ -1,0 +1,11 @@
+{
+             "prereg_FetchAppointmentDetails_preRegistrationId_withAlphabets":"",
+             "prereg_FetchAppointmentDetails_preRegistrationId_withAlphaNumeric":"",
+             "prereg_FetchAppointmentDetails_preRegistrationId_withAlphaNumericAndSpecialCharacters":"",
+             "prereg_FetchAppointmentDetails_preRegistrationId_withEmptyValue":"",
+             "prereg_FetchAppointmentDetails_preRegistrationId_withSpecialCharacters":"",
+             "prereg_FetchAppointmentDetails_preRegistrationId_withGreaterThanMaxLength":"",
+             "prereg_FetchAppointmentDetails_statusCode_withConsumed":"",
+             "prereg_FetchAppointmentDetails_statusCode_withExpired":"",
+             "prereg_FetchAppointmentDetails_statusCode_withPendingAppointment":""
+}
