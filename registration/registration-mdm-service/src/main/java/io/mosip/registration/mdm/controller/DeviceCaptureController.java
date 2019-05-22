@@ -40,17 +40,11 @@ public class DeviceCaptureController {
 
 		String deviceId = mosipBioRequest.getDeviceId();
 		String deviceSubId = mosipBioRequest.getDeviceSubId();
-		String type = mosipBioRequest.getType();
-
 		String bioType = deviceId;
-
 		if (deviceSubId != null && !deviceSubId.isEmpty()) {
 			bioType = deviceId + "_" + deviceSubId;
 		}
 		
-		if(type!=null && !type.isEmpty()) {
-			bioType=bioType+"_"+type;
-		}
 
 		MosipBioCaptureResponseDto mosipBioCaptureResponseDto = new MosipBioCaptureResponseDto();
 		List<MosipBioCaptureResponse> mosipBioCaptureResponses = new ArrayList<MosipBioCaptureResponse>();
@@ -60,7 +54,38 @@ public class DeviceCaptureController {
 		mosipBioCaptureResponse.setCaptureResponseData(captureResponseData);
 		mosipBioCaptureResponses.add(mosipBioCaptureResponse);
 		mosipBioCaptureResponseDto.setMosipBioDeviceDataResponses(mosipBioCaptureResponses);
-		stubImage(captureResponseData, mosipBioRequest, bioType);
+		switch (bioType) {
+		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SINGLE:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_LEFT:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_RIGHT:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_THUMB:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_TOUCHLESS:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_FACE:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_IRIS + "_"+ MosipBioDeviceConstants.VALUE_SINGLE:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_IRIS + "_" + MosipBioDeviceConstants.VALUE_DOUBLE:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		case MosipBioDeviceConstants.VALUE_VEIN:
+			stubImage(captureResponseData, mosipBioRequest, bioType);
+			break;
+		default:
+			break;
+		}
+
 		return mosipBioCaptureResponseDto;
 	}
 

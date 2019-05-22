@@ -135,11 +135,16 @@ public class MosipBioDeviceManager {
 									if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
 										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
 												+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-									} else if (MosipBioDeviceConstants.VALUE_SLAP.equalsIgnoreCase(deviceSubType)) {
+									} else if (MosipBioDeviceConstants.VALUE_SLAP_LEFT.equalsIgnoreCase(deviceSubType)) {
 										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_SLAP, bioDevice);
-									} else if (MosipBioDeviceConstants.VALUE_TOUCHLESS
-											.equalsIgnoreCase(deviceSubType)) {
+												+ MosipBioDeviceConstants.VALUE_SLAP_LEFT, bioDevice);
+									}else if (MosipBioDeviceConstants.VALUE_SLAP_RIGHT.equalsIgnoreCase(deviceSubType)) {
+										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+												+ MosipBioDeviceConstants.VALUE_SLAP_RIGHT, bioDevice);
+									} else if (MosipBioDeviceConstants.VALUE_SLAP_THUMB.equalsIgnoreCase(deviceSubType)) {
+										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+												+ MosipBioDeviceConstants.VALUE_SLAP_THUMB, bioDevice);
+									} else if (MosipBioDeviceConstants.VALUE_TOUCHLESS.equalsIgnoreCase(deviceSubType)) {
 										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
 												+ MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
 									}
@@ -220,10 +225,8 @@ public class MosipBioDeviceManager {
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();
 		}
-		BioDevice bioDevice = deviceRegistry.get(deviceType.replaceAll("_TYPE.*", ""));
+		BioDevice bioDevice = deviceRegistry.get(deviceType);
 		if (bioDevice != null) {
-			if(deviceType.contains("TYPE"))
-				bioDevice.setDenomination(deviceType.replaceAll(".*(?<=TYPE_)", ""));
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
 			return bioDevice.capture();

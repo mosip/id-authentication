@@ -34,7 +34,6 @@ public class BioDevice {
 	private String deviceMake;
 	private String firmWare;
 	private String deviceExpiry;
-	private String denomination;
 
 	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 

@@ -231,9 +231,6 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private JdbcSqlService jdbcSqlService;
 
-	@Value("${mdm.enable}")
-	private String mdmEnabled;
-	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
