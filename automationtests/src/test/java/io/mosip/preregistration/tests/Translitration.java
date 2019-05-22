@@ -103,12 +103,13 @@ public class Translitration extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
-	@BeforeMethod(alwaysRun=true)
-	public void run()
+	@BeforeMethod(alwaysRun = true)
+	public void login( Method method)
 	{
+		testCaseName="preReg_Translitration_" + method.getName();
+		authToken=lib.getToken();
 		
-	}
-	
+	}	
 
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {

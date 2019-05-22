@@ -61,11 +61,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
 	public PreregistrationDAO dao=new PreregistrationDAO();
 
-	@BeforeClass
-	public void readPropertiesFile() {
-		initialize();
-		authToken = lib.getToken();
-	}
+	
 	/**
 	 * Batch job service for expired application
 	 */
@@ -115,10 +111,12 @@ public class BatchJob extends BaseTestCase implements ITest {
 
 	}
 	@BeforeMethod(alwaysRun=true)
-	public void run()
+	public void login( Method method)
 	{
-		
+		authToken=lib.getToken();
+		testCaseName="preReg_BatchJob_" + method.getName();
 	}
+
 
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {

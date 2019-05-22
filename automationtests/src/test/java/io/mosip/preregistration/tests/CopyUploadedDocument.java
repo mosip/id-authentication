@@ -271,7 +271,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, CopyUploadedDocument.testCaseName);
+			//f.set(baseTestMethod, CopyUploadedDocument.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_CopyDocument_" +CopyUploadedDocument.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

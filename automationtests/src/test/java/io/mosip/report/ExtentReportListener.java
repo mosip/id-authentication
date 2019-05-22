@@ -3,6 +3,8 @@ package io.mosip.report;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -23,7 +25,7 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 
 	public void onTestStart(ITestResult result) {
 		reports.addSystemInfo("Environment", getAppEnvironment());
-		reports.addSystemInfo("Deployment Version", getAppDepolymentVersion());
+		reports.addSystemInfo("Build Number", getAppDepolymentVersion());
 		test = reports.startTest(result.getName());
 		test.log(LogStatus.INFO, result.getName() + "testcase is started");
 	}
@@ -46,13 +48,15 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 	}
 
 	public void onStart(ITestContext context) {
+			
 		reports = new ExtentReports(
 				"extent-report.html");
 	}
 
-	public void onFinish(ITestContext context) {
+	public void onFinish(ITestContext context) {		
 		reports.endTest(test);
-		reports.flush();
+		reports.flush();		
 	}
 
+	
 }

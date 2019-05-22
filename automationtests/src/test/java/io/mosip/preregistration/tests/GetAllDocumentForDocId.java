@@ -224,7 +224,8 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, GetAllDocumentForDocId.testCaseName);
+			//f.set(baseTestMethod, GetAllDocumentForDocId.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_GetAllDocumentForDocId_" +BookingAppointment.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

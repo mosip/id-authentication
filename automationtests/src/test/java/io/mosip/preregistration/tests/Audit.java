@@ -236,11 +236,12 @@ public class Audit extends BaseTestCase implements ITest {
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	public void run() {
-		authToken = lib.getToken();
-
+	public void login( Method method)
+	{
+		testCaseName="preReg_BatchJob_" + method.getName();
+		authToken=lib.getToken();
+		
 	}
-
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {
 		try {

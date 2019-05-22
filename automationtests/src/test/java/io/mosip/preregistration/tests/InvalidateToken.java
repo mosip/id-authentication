@@ -47,13 +47,14 @@ public class InvalidateToken extends BaseTestCase implements ITest {
 		String errorCode = createPreRegResponse.jsonPath().get("errors[0].errorCode").toString();
 		String errorMessage = createPreRegResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "KER-ATH-401");
-		lib.compareValues(errorMessage, "Auth token has been changed,Please try with new login");
+		lib.compareValues(errorMessage, "Invalid Token");
 		
 	}
 	@BeforeMethod(alwaysRun=true)
-	public void login()
+	public void login( Method method)
 	{
 		authToken=lib.getToken();
+		testCaseName="preReg_Authentication_" + method.getName();
 	}
 	@Override
 	public String getTestName() {
@@ -61,13 +62,14 @@ public class InvalidateToken extends BaseTestCase implements ITest {
 
 	}
 
-	@AfterMethod
+	@AfterMethod(alwaysRun=true)
 	public void setResultTestName(ITestResult result, Method method) {
 		try {
 			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
 			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(bm, "preReg_Authentication_" + method.getName());
+			
 		} catch (Exception ex) {
 			Reporter.log("ex" + ex.getMessage());
 		}

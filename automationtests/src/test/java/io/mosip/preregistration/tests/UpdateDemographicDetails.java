@@ -157,10 +157,12 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	public void getAuthToken() {
-		authToken = lib.getToken();
+	public void login( Method method)
+	{
+		testCaseName="preReg_Translitration_" + method.getName();
+		authToken=lib.getToken();
+		
 	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

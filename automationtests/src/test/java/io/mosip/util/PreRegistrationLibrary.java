@@ -1363,9 +1363,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 
 	public Response deleteAllDocumentByPreId(String preId) {
-		HashMap<String, String> parm = new HashMap<>();
-		parm.put("preRegistrationId", preId);
-		response = applnLib.deleteRequestWithParm(preReg_DeleteAllDocumentByPreIdURI, parm);
+		
+		String preRegURIDelDocByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
+		response =applnLib.deleteRequestWithPathParam(preRegURIDelDocByPreIdURI);
 		return response;
 	}
 
