@@ -109,13 +109,27 @@ public class UpdateUINController extends BaseController implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 
 		try {
-
 			FXUtils fxUtils = FXUtils.getInstance();
 			listenerOnFields(fxUtils);
 			listenerOnFieldsParentOrGuardian(fxUtils);
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				SelectionListDTO selectionListDTO = getRegistrationDTOFromSession().getSelectionListDTO();
+
+				uinId.setText(selectionListDTO.getUinId());
+				name.setSelected(selectionListDTO.isName());
+				age.setSelected(selectionListDTO.isAge());
+				gender.setSelected(selectionListDTO.isGender());
+				address.setSelected(selectionListDTO.isAddress());
+				phone.setSelected(selectionListDTO.isPhone());
+				email.setSelected(selectionListDTO.isEmail());
+				biometrics.setSelected(selectionListDTO.isBiometrics());
+				cnieNumber.setSelected(selectionListDTO.isCnieNumber());
+				parentOrGuardianDetails.setSelected(selectionListDTO.isParentOrGuardianDetails());
+				foreigner.setSelected(selectionListDTO.isForeigner());
+			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -192,7 +206,8 @@ public class UpdateUINController extends BaseController implements Initializable
 	/**
 	 * Submitting for UIN update after selecting the required fields.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	@FXML
 	public void submitUINUpdate(ActionEvent event) {

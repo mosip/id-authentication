@@ -2044,7 +2044,6 @@ public class DemographicDetailController extends BaseController {
 	private void back() {
 		try {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				clearRegistrationData();
 				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 				getScene(uinUpdate);
 			} else {
