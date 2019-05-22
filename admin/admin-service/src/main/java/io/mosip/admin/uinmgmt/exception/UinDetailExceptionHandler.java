@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+
 /**
  * 
  * Rest Controller Advice for Exception Handler
@@ -20,13 +21,14 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  */
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class UinStatusExceptionHandler {
+public class UinDetailExceptionHandler {
 
-	@ExceptionHandler(UinStatusException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> handlerError(UinStatusException e) {
+	@ExceptionHandler(UinDetailNotFoundException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> handlerError(UinDetailNotFoundException e) {
 		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		errorResponse.setErrors(Arrays.asList(error));
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
+
 }
