@@ -167,7 +167,7 @@ public class EkycPartnerAuthentication extends AuthTestsUtil implements ITest{
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl+" *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath() +extUrl, "request", "output-1-actual-res",200), true);
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath() +extUrl, "request", "output-1-actual-res",0), true);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
