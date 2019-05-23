@@ -807,6 +807,13 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }	
 
+
+
+.bioIris{
+	-fx-border-color : black;
+	-fx-border-width : 2.0;
+}
+
 .paneAtDisplayIris{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 600.0px;	
@@ -1533,9 +1540,7 @@ Working on new Css by taleev
 .removeBorderStyle{
 	-fx-border-color:white; 
 }
-.addBorderStyle{
-	-fx-border-color: black;
-}
+
 .onboardInfoDetails{
 	-fx-font-family: Roboto;
 	-fx-font-size: 12.0px;
