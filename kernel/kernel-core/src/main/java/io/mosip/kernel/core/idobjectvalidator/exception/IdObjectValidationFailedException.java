@@ -9,11 +9,12 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorCon
 /**
  * Exception class when there is any interrupt in processing JSON validation.
  * 
+ * @author Manoj SP
  * @author Swati Raj
  * @since 1.0.0
  *
  */
-public class IdObjectValidationProcessingException extends BaseCheckedException {
+public class IdObjectValidationFailedException extends BaseCheckedException {
 
 	/**
 	 * Generated serialization ID.
@@ -26,7 +27,7 @@ public class IdObjectValidationProcessingException extends BaseCheckedException 
 	 * @param errorCode    the error code of the exception.
 	 * @param errorMessage the error message associated with the exception.
 	 */
-	public IdObjectValidationProcessingException(String errorCode, String errorMessage) {
+	public IdObjectValidationFailedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 	
@@ -36,7 +37,7 @@ public class IdObjectValidationProcessingException extends BaseCheckedException 
 	 * @param errorConstant the error constant
 	 * @param errors the errors
 	 */
-	public IdObjectValidationProcessingException(IdObjectValidatorErrorConstant errorConstant,
+	public IdObjectValidationFailedException(IdObjectValidatorErrorConstant errorConstant,
 			List<ServiceError> errors) {
 		errors.parallelStream().forEach(error -> super.addInfo(error.getErrorCode(), error.getMessage()));
 	}

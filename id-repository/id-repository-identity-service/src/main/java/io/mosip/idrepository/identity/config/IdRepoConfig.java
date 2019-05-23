@@ -31,7 +31,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Configuration
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
 

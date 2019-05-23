@@ -30,7 +30,7 @@ public enum IdRepoConstants {
 	DATETIME_TIMEZONE("mosip.idrepo.datetime.timezone"),
 
 	/** The status registered. */
-	ACTIVE_STATUS("mosip.idrepo.uin-status.registered"),
+	ACTIVE_STATUS("mosip.idrepo.identity.uin-status.registered"),
 
 	/** The datetime pattern. */
 	DATETIME_PATTERN("mosip.utc-datetime-pattern"),
@@ -51,7 +51,7 @@ public enum IdRepoConstants {
 	JSON_SCHEMA_FILE_NAME("mosip.idrepo.json-schema-fileName"),
 	
 	/** The Json path value */
-	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.json.path"),
+	MOSIP_KERNEL_IDREPO_JSON_PATH("mosip.idrepo.identity.json.path"),
 	
 	VID_ACTIVE_STATUS("mosip.idrepo.vid.active-status"),
 	

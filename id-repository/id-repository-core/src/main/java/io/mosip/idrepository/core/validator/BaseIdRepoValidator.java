@@ -26,7 +26,7 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Component
-@ConfigurationProperties("mosip.idrepo.id")
+@ConfigurationProperties("mosip.idrepo.identity.id")
 public abstract class BaseIdRepoValidator {
 	
 	private static final String BASE_ID_REPO_VALIDATOR = "BaseIdRepoValidator";

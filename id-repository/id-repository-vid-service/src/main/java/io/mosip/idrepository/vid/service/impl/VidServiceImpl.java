@@ -71,7 +71,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	private Logger mosipLogger = IdRepoLogger.getLogger(VidServiceImpl.class);
 
 	/** The Constant EXPIRED. */
-	private static final String EXPIRED = "Expired";
+	private static final String EXPIRED = "EXPIRED";
 
 	/** The Constant ID_REPO_VID_SERVICE. */
 	private static final String ID_REPO_VID_SERVICE = "VidService";
@@ -221,6 +221,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			if (vidObject != null) {
 				checkExpiry(vidObject.getExpiryDTimes());
 				checkStatus(vidObject.getStatusCode());
+				checkUinStatus(vidObject.getUin());
 				VidResponseDTO resDTO = new VidResponseDTO();
 				resDTO.setUin(vidObject.getUin());
 				return buildResponse(resDTO, id.get("read"));
