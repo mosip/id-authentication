@@ -12,10 +12,9 @@
 
 
                       <test name="Kernel Tests">
-                     <parameter name="testType" value="smoke" />
-                     <parameter name="module" value="Kernel" />
+                      <parameter name="module" value="Kernel" />
                      <classes>
-                          <class name="io.mosip.kernel.tests.AuditLog" />   
+                          <class name="io.mosip.kernel.tests.EmailNotification" />
                           <!--   <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                             <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -75,6 +74,7 @@
   <test name="PreReg Tests">
 		<parameter name="testType" value="smoke" />
 		<classes>
+			<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
 		 <class name="io.mosip.preregistration.tests.BatchJob" />
 		 
 		<!-- <class name="io.mosip.preregistration.tests.CreatePreRegistration" />
