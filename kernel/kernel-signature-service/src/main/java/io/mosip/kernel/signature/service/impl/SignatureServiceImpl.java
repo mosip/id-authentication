@@ -18,6 +18,11 @@ import io.mosip.kernel.signature.exception.PublicKeyParseException;
 import io.mosip.kernel.signature.exception.SignatureFailureException;
 import io.mosip.kernel.signature.service.SignatureService;
 
+/**
+ * @author Uday Kumar
+ * @author Urvil
+ *
+ */
 @Service
 public class SignatureServiceImpl implements SignatureService {
 
@@ -27,9 +32,8 @@ public class SignatureServiceImpl implements SignatureService {
 	private SignatureUtil signatureUtil;
 
 	@Override
-	public SignatureResponse signResponse(SignRequestDto signResponseRequestDto) {
-		return (signatureUtil.sign(signResponseRequestDto.getData(), DateUtils.getUTCCurrentDateTimeString()));
-
+	public SignatureResponse signResponse(SignRequestDto signRequestDto) {
+		return signatureUtil.sign(signRequestDto.getData(),DateUtils.getUTCCurrentDateTimeString());
 	}
 
 	@Override
@@ -51,35 +55,12 @@ public class SignatureServiceImpl implements SignatureService {
 	}
 
 	@Override
-	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto) {
 
-		boolean status = signatureUtil.validate(timestampRequestDto.getSignature(), timestampRequestDto.getData(),
-				DateUtils.formatToISOString(timestampRequestDto.getTimestamp()));
-
-		if (status) {
-			ValidatorResponseDto response = new ValidatorResponseDto();
-			response.setMessage(VALIDATION_SUCCESSFUL);
-			response.setStatus(SUCCESS);
-			return response;
-		} else {
-			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
-					SignatureErrorCode.NOT_VALID.getErrorMessage(), null);
-		}
-
-	}
-
-	@Override
-	public SignatureResponse signCertificateResponse(SignRequestDto signRequestDto) {
-		return signatureUtil.signResponseByCertificate(signRequestDto.getData());
-	}
-
-	@Override
-	public ValidatorResponseDto certificateValidate(TimestampRequestDto timestampRequestDto) {
 		boolean status;
 		try {
-			status = signatureUtil.validateWithCertificate(timestampRequestDto.getSignature(),
-					timestampRequestDto.getData(), timestampRequestDto.getTimestamp());
+			status = signatureUtil.validate(timestampRequestDto.getSignature(),
+					timestampRequestDto.getData(), DateUtils.formatToISOString(timestampRequestDto.getTimestamp()));
 		} catch (InvalidKeySpecException| NoSuchAlgorithmException exception) {
 			throw new  PublicKeyParseException(SignatureErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), exception.getMessage(), exception);
 		}
@@ -93,6 +74,8 @@ public class SignatureServiceImpl implements SignatureService {
 			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
 					SignatureErrorCode.NOT_VALID.getErrorMessage(), null);
 		}
+
 	}
+
 
 }
