@@ -59,7 +59,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	/** server port number. */
 	@Value("${server.port}")
 	private String port;
-	
+
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -76,7 +76,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	/** The description. */
 	String description = "";
 
@@ -101,7 +101,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.vertx.core.AbstractVerticle#start()
 	 */
 	@Override
@@ -148,6 +148,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				object.setIsValid(true);
+				object.setInternalError(false);
 				isTransactionSuccessful = true;
 				description = PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getMessage() + " -- " + registrationId;
 				code = PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getCode();
@@ -157,6 +158,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(StatusMessage.EXTERNAL_STAGE_FAILURE);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				object.setIsValid(false);
+				object.setInternalError(false);
 				description = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + description;
 				code = PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getCode();
 			}
@@ -170,7 +172,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			regProcLogger.debug("", "", "sent to next stage --> ", ExceptionUtils.getStackTrace(e));
 		} finally {
 
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, description);
 			if (object.getInternalError()) {
@@ -182,8 +184,9 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+
 			}
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage()
 					: description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();

@@ -46,7 +46,6 @@ The update request will come from reg-client and resident portal. The update pac
 		1. registration-processor-packet-receiver-stage
 		2. registration-processor-packet-uploader-stage
 		3. registration-processor-packet-validator-stage
-		4. registration-processor-biometric-authentication-stage
 		5. registration-processor-demo-dedupe-stage
 		6. registration-processor-uin-update-stage
 		7. registration-processor-extractor-stage

@@ -156,6 +156,11 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 			if (!isIdentifyRequestPresent) {
 				List<AbisApplicationDto> abisApplicationDtoList = packetInfoManager.getAllAbisDetails();
+				if(abisApplicationDtoList.isEmpty()){
+					description = "Abis details not present in the table";
+					regProcLogger.error("Abis details not present in the table", "", "", "");
+					throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode());
+				}
 				List<RegBioRefDto> bioRefDtos = packetInfoManager.getBioRefIdByRegId(regId);
 
 				if (bioRefDtos.isEmpty()) {

@@ -27,14 +27,16 @@
 
       <div *ngIf="showContactDetails">
         <mat-form-field appearance="outline">
-          <input
-            autofocus="autofocus"
-            matInput
-            [(ngModel)]="inputContactDetails"
-            placeholder="{{ 'login.label_email_num' | translate }}"
-            id="inputFieldContact"
-            required
-          />
+          <div [dir]="textDir">
+            <input
+              autofocus="autofocus"
+              matInput
+              [(ngModel)]="inputContactDetails"
+              placeholder="{{ 'login.label_email_num' | translate }}"
+              id="inputFieldContact"
+              required
+            />
+          </div>
         </mat-form-field>
         <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
       </div>

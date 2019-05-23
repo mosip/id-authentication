@@ -1,0 +1,340 @@
+#keyword: <array of data>
+id_AddIdentity_valid:
+      - mosip.id.create
+id_CreateVid_valid:
+      - mosip.vid.create
+id_UpdateVid_valid:
+      - mosip.vid.update
+id_AddIdentity_Invalid:
+      - mosip.id.update
+      - mosip.ida.update
+indvId_Uin_valid:
+      - UIN
+indvId_Vid_valid:
+      - VID
+vidType_Temporary_valid:
+      - Temporary
+vidType_Perpetual_valid:
+      - Perpetual
+vidType_Temporary_Invalid:
+      - Temp
+      - 12345
+      - asd123%$
+indvId_invalid:
+      - VI
+      - UI
+      - A
+      - UVD
+      - 123
+      - ^UI
+id_version_invalid:
+      - 9.*
+      - A.0
+      - 8.D
+      - ^.*
+auth_Pass_status:
+      - BOOLEAN:true
+auth_Fail_status:
+      - BOOLEAN:false 
+timestamp_invalid:
+      - 2019-04-01T11:48:59.059+0530    
+      - 2019/04/01T11:48:59.059+05:30
+      - 2019-04/01T11:48:59.059+05:30
+      - 2019-04-0111:48:59.059+05:30
+      - 2019-04-01^11:48:59.059+05:30
+uin_invalid:
+      - 1234567890
+      - 2344567&70
+      - 1234R45780
+      - 87657
+      - AYGUI
+      - 9*(_%$$@!
+expired_vid_invalid:
+      - 9835845389149251
+vid_invalid:
+      - 9835845389149
+      - 983584538Q149251
+      - ASUUYUHLIDIYDVUY
+      - _&%$@!()**&&^*^S
+name_valid:
+      - Vignesh Ravi
+      - Mary Rose
+      - Bala CC
+      - Mindtree Mind
+      - Full Name
+      - Athila Banu
+      - Mosip Test
+      - Automation Test
+      - Arjun Chandra
+      - Dharini Chandra
+      - Yoga Lakshmi
+      - Ragav K
+      - Himaja H
+      - Chitti Robo
+      - Sravya S
+      - Arun Boss
+      - Dinesh Pudukottai
+      - Loga Lead
+      - Arthif Alan
+      - Mohammed Arshad
+      - Asif Jalaudeen
+french_lang_code_valid:
+      - fra
+arabic_lang_code_valid:
+      - ara
+english_lang_code_valid:
+      - eng
+dob_valid:
+      - 1965/04/11
+      - 1967/05/12
+      - 1970/06/13
+      - 1973/07/14
+      - 1976/08/15
+      - 1978/09/16
+      - 1982/10/17
+      - 1985/11/18
+      - 1990/12/19
+      - 1994/01/20
+      - 2001/02/11
+dob_Invalid:
+      - 1965-04-11
+      - 04-11-1965
+      - 06/13/1970
+      - 1973/07/14
+      - 09/1930/07
+
+male_gender_code_valid:
+      - MLE
+female_gender_code_valid:
+      - FLE
+other_gender_code_valid:
+      - OTH
+male_gender_english_valid:
+      - Male
+female_gender_english_valid:
+      - Female
+other_gender_english_valid:
+      - Others
+male_gender_french_valid:
+      - Mâle
+female_gender_french_valid:
+      - Femelle
+other_gender_french_valid:
+      - Dautres
+male_gender_arabic_valid:
+      - الذكر
+female_gender_arabic_valid:
+      - أنثى
+other_gender_arabic_valid:
+      - الآخرين
+addressLine1_valid:
+      - Dubai Main Road
+      - Annai Theresa Street
+      - Ramanujan IT Park
+      - MGR City
+      - Mount Read
+      - Magarpata City
+      - Bhaubali Street
+      - Vivek Street
+      - Mary Rose Street
+      - Sravya Street
+      - Chitti Robo Road
+      - Chitti Robo Street
+      - Chitti Robo Nagar
+addressLine2_valid:
+      - Dubai Cross Street
+      - Annai Illam
+      - Ramanjun House
+      - MGR City House
+      - Mount Read House
+      - Magarpata City House
+      - Bhaubali Street House
+      - Vivek Street House
+      - Mary Rose Street House
+      - Sravya Street House
+      - Chitti Robo Road House
+      - Chitti Robo Street House
+      - Chitti Robo Nagar House
+addressLine3_valid:
+      - Dubai-600063
+      - Chennai
+      - Bangalore
+      - Andaman
+      - Manali
+      - Antartica
+      - Everest
+      - Green Land
+      - Sentinal Island
+      - Havelock Island
+      - Ocean
+      - Pacific Ocean
+      - Kuwait
+      - Taramanai
+location1_valid:
+      - SYRIA
+      - CHENNAI
+      - DELHI
+      - PORT BLAIR
+      - KOCHI
+      - TRIVANDRUM
+      - AGRA
+      - GOA
+      - LONDON
+      - KUWAIT CITY
+      - DUBAI
+      - MOROCCO
+      - AFRICA
+location2_valid:
+      - AbuDhabi
+      - Taramani
+      - krishnarajapuram
+      - Brigade Road
+      - Kazhakuttam
+      - Navalur
+location3_valid:
+      - AbuDhabi
+      - Taramani
+      - krishnarajapuram
+      - Brigade Road
+      - Kazhakuttam
+      - Navalur
+phone_valid:
+      - 9003356540
+      - 9333356541
+      - 9343356542
+      - 9353356543
+      - 9363356544
+      - 9373356545
+      - 9383356546
+      - 9393356547
+      - 9103356548
+      - 9113356549
+phone_Invalid:
+      - 90033565401234
+      - 9333356541sadf
+      - asddggnklkj
+      - $%@@%_+-><@
+      - 1234adsf@$$
+      - asdfghjkmn
+postalcode_valid:
+      - 600031
+      - 600041
+      - 600051
+      - 600061
+      - 600071
+      - 600081
+postalcode_Invalid:
+      - 60001
+      - $00041
+      - 6000@1
+      - ad00061
+      - 600071214
+      - qwerty
+CNIENumber_valid:
+      - 6789545678909
+      - 6789545678910
+      - 6789545678911
+      - 6789545678912
+      - 6789545678913
+      - 6789545678914
+emailId_valid:
+      - vignesh.vijayakumar@mindtree.com
+      - athila.sirajudeen@mindtree.com
+      - Leonamary.Susairaja@mindtree.com
+emailId_Invalid:
+      - 123459086ytyfyf@4e4e
+      - mtyfytddxdrdjj
+      - aqaw4ee4e7@saes
+age_valid:
+      - LONG:32
+      - LONG:25
+      - LONG:34
+      - LONG:19
+      - LONG:09
+      - LONG:18
+      - LONG:40
+      - LONG:23
+      - LONG:11
+age_Invalid:
+      - qw
+      - $2
+      - LONG:1234
+email_Mismatch:
+      - athilabanu@gmail.com
+phone_Mismatch:
+      - 9446933347
+bio_face_subType:
+      - FACE
+bio_finger_LeftIndex_subType:
+      - LEFT_INDEX
+bio_face_type:
+      - FID
+bio_face_deviceCode:
+      - cogent
+bio_face_deviceProviderID:
+      - cogent
+boolean_true:
+      - BOOLEAN:true
+boolean_false:
+      - BOOLEAN:false
+invalid:
+      - ytyw
+      - 762k
+      - dj87
+      - DFR
+      - FTY
+primary_lang_code:
+      - fra
+secondary_lang_code:
+      - ara
+#Auth_transaction
+auth_transaction_FACE_authTypeCode:
+      - FACE-AUTH
+auth_transaction_success_statusCode:
+      - Y
+auth_transaction_fail_statusCode:
+      - N
+auth_transaction_FACE_success_statusComment:
+      - $REGEXP:.*Face.*Authentication.*Success.*$
+auth_transaction_FACE_fail_statusComment:
+      - $REGEXP:.*Face.*Authentication.*Failed.*$
+auth_transaction_UIN_idType:
+      - UIN
+#Audit_log
+audit_log_eventId:
+      - $REGEXP:.*IDA-EVT.*$
+audit_log_auth_eventName:
+      - AUTH_REQUEST_RESPONSE
+audit_log_ida_appId:
+      - IDA
+audit_log_ida_appName:
+      - ID-Authentication
+audit_log_ekyc_moduleName:
+      - EKYC_AUTH
+audit_log_face_moduleName:
+      - FACE_AUTH
+audit_log_UIN_refIdType:
+      - UIN
+name_tittle_UnMarriedfemale_english_lang:
+      - Miss.
+name_tittle_female_english_lang:
+      - Mrs.
+name_tittle_male_english_lang:
+      - Mr.
+name_tittle_UnMarriedfemale_primary_lang:
+      - Mademoiselle.
+name_tittle_female_primary_lang:
+      - Madame.
+name_tittle_male_primary_lang:
+      - Monsieur.
+name_tittle_UnMarriedfemale_secondary_lang:
+      - '.آنسة '
+name_tittle_female_secondary_lang:
+      - '.ست '
+name_tittle_male_secondary_lang:
+      - '.أستاذ '
+invalid_langCode:
+      - 123
+      - $@@
+      - 12@776
+     

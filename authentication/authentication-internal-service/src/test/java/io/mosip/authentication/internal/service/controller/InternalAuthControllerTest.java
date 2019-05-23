@@ -46,7 +46,6 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.internal.service.validator.InternalAuthRequestValidator;
 
@@ -97,7 +96,6 @@ public class InternalAuthControllerTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.setField(authController, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authfacade);
 		ReflectionTestUtils.setField(authfacade, "env", env);

@@ -1,9 +1,0 @@
-{
-  "id": "mosip.pre-registration.login.useridotp",
-  "version": "1.0",
-  "requesttime": "2019-04-10T14:58:40.841Z",
-  "request": {
-    "otp": "781412",
-    "userId": "9216541001"
-  }
-}

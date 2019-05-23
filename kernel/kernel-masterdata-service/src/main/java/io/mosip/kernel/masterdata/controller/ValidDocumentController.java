@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,8 @@ public class ValidDocumentController {
 	/**
 	 * Api to create valid document.
 	 * 
-	 * @param document the DTO for valid document.
+	 * @param document
+	 *            the DTO for valid document.
 	 * @return ValidDocumentID.
 	 */
 	@ResponseFilter
@@ -58,8 +60,10 @@ public class ValidDocumentController {
 	/**
 	 * Api to delete valid docuemnt.
 	 * 
-	 * @param docCatCode  the document category code.
-	 * @param docTypeCode the document type code.
+	 * @param docCatCode
+	 *            the document category code.
+	 * @param docTypeCode
+	 *            the document type code.
 	 * @return the PostValidDocumentResponseDto.
 	 */
 	@ResponseFilter
@@ -72,11 +76,22 @@ public class ValidDocumentController {
 		responseWrapper.setResponse(documentService.deleteValidDocuemnt(docCatCode, docTypeCode));
 		return responseWrapper;
 	}
-	
+
+	/**
+	 * Service to fetch all valid document categories and associated document types
+	 * for a languagecode
+	 * 
+	 * @param langCode
+	 *            language in which document categories and associated document
+	 *            types should be fetch
+	 * @return the valid documents
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/validdocuments/{languagecode}")
 	@ApiOperation(value = "Service to fetch all valid document categories and associated document types for a languagecode")
-	public ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> getValidDocumentByLangCode(@PathVariable("languagecode") String langCode) {
+	public ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> getValidDocumentByLangCode(
+			@PathVariable("languagecode") String langCode) {
 		ResponseWrapper<ValidDocCategoryAndDocTypeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.getValidDocumentByLangCode(langCode));
 		return responseWrapper;

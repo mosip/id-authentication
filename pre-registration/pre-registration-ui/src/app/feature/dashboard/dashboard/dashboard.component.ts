@@ -51,6 +51,7 @@ export class DashBoardComponent implements OnInit {
   modify = false;
   isNewApplication = false;
   isFetched = false;
+  allApplicants: any[];
 
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
@@ -141,7 +142,14 @@ export class DashBoardComponent implements OnInit {
 
         if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
           localStorage.setItem('newApplicant', 'false');
-          this.bookingService.addApplicants(applicants);
+
+          this.allApplicants =
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails];
+          this.bookingService.addApplicants(
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails]
+          );
+          console.log('allapplicants', this.bookingService.getAllApplicants());
+
           for (
             let index = 0;
             index <
@@ -232,8 +240,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    console.log('applicants test', applicants);
-
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     let primaryIndex = 0;
@@ -333,11 +339,30 @@ export class DashBoardComponent implements OnInit {
     return dialogRef;
   }
 
+  removeApplicant(preRegId: string) {
+    console.log('deleted pre-id', preRegId);
+
+    let x: number = -1;
+    for (let i of this.allApplicants) {
+      x++;
+      console.log('condition', i.preRegistrationId, 'equals', preRegId);
+      if (i.preRegistrationId == preRegId) {
+        console.log('condition', i.preRegistrationId, 'equals', preRegId);
+
+        this.allApplicants.splice(x, 1);
+        break;
+      }
+    }
+    console.log('all applicants after delete', this.allApplicants);
+    this.bookingService.addApplicants(this.allApplicants);
+  }
+
   deletePreregistration(element: any) {
     this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
       response => {
         console.log(response);
         if (!response['errors']) {
+          this.removeApplicant(element.applicationID);
           this.displayMessage(
             this.secondaryLanguagelabels.title_success,
             this.secondaryLanguagelabels.deletePreregistration.msg_deleted
@@ -404,24 +429,26 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.deletePreregistration(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
-            );
           }
+          // else {
+          //   this.displayMessage(
+          //     this.secondaryLanguagelabels.title_error,
+          //     this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
+          //   );
+          // }
         });
       } else if (selectedOption && Number(selectedOption) === 2) {
         dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
-            );
           }
+          // else {
+          //   this.displayMessage(
+          //     this.secondaryLanguagelabels.title_error,
+          //     this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
+          //   );
+          // }
         });
       }
     });
