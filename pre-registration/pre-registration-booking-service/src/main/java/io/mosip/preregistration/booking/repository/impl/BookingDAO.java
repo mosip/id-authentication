@@ -211,27 +211,7 @@ public class BookingDAO {
 		}
 		return entity;
 	}
-
-	/**
-	 * @param registrationCenterId
-	 * @param statusCode
-	 * @return List of RegistrationBookingEntity
-	 */
-	public List<RegistrationBookingEntity> findByRegistrationCenterId(String registrationCenterId) {
-		List<RegistrationBookingEntity> entityList;
-		try {
-			entityList = registrationBookingRepository.findByRegistrationCenterId(registrationCenterId);
-			if (entityList.isEmpty()) {
-				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.getCode(),
-						ErrorMessages.BOOKING_DATA_NOT_FOUND.getMessage());
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.getMessage());
-		}
-		return entityList;
-	}
-
+	
 	/**
 	 * @param regcntrId
 	 * @param regDate
@@ -322,21 +302,6 @@ public class BookingDAO {
 		return listOfPreIds;
 	}
 	
-	/**
-	 * 
-	 * @param regDate
-	 * @return list of date
-	 */
-	public List<LocalDate> findDateDistinct(LocalDate regDate) {
-		List<LocalDate> localDatList = null;
-		try {
-			localDatList = bookingAvailabilityRepository.findAvaialableDate(regDate);
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
-		}
-		return localDatList;
-	}
 	
 	/**
 	 * 
@@ -366,6 +331,143 @@ public class BookingDAO {
 		return demographicEntity;
 
 
+	}
+	
+	public boolean findRegistrationCenterId(String regCenterId) {
+		List<AvailibityEntity> entityList=null;
+		try {
+			entityList=bookingAvailabilityRepository.findByRegcntrId(regCenterId);
+			if(entityList==null||entityList.isEmpty()) {
+				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
+						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
+			}
+			return true;
+			
+			
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of regCenter
+	 */
+	public List<String> findRegCenter(LocalDate regDate) {
+		List<String> regCenterList = new ArrayList<>();
+		try {
+			regCenterList = bookingAvailabilityRepository.findAvaialableRegCenter(regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return regCenterList;
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of date
+	 */
+	public List<LocalDate> findDistinctDate(LocalDate regDate, String regID) {
+		List<LocalDate> localDatList = null;
+		try {
+			localDatList = bookingAvailabilityRepository.findAvaialableDate(regDate,regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of AvailibityEntity
+	 */
+	public List<AvailibityEntity> findSlots(LocalDate regDate, String regID) {
+		List<AvailibityEntity> localDatList = null;
+		try {
+			localDatList = bookingAvailabilityRepository.findAvaialableSlots(regDate,regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteSlots(String regId, LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = bookingAvailabilityRepository.deleteByRegcntrIdAndRegDate(regId,regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIds(String regId, LocalDate regDate) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = registrationBookingRepository.findByRegistrationCenterIdAndRegDate(regId,regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param date
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIdsByregID(String regId,LocalDate date) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = registrationBookingRepository.findByRegId(regId,date);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	
+	/**
+	 * 
+	 * Aparam regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteAllSlotsByRegId(String regId,LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = bookingAvailabilityRepository.deleteByRegcntrIdAndRegDateGreaterThanEqual(regId,regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
 	}
 
 }

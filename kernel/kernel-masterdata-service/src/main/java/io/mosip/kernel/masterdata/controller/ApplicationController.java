@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {
@@ -51,7 +53,8 @@ public class ApplicationController {
 	/**
 	 * API to fetch all Application details by language code
 	 * 
-	 * @param langCode the language code
+	 * @param langCode
+	 *            the language code
 	 * 
 	 * @return All Application details
 	 */
@@ -67,9 +70,11 @@ public class ApplicationController {
 	/**
 	 * API to fetch all Application details by language code
 	 * 
-	 * @param code     the code
+	 * @param code
+	 *            the code
 	 * 
-	 * @param langCode the language code
+	 * @param langCode
+	 *            the language code
 	 * 
 	 * @return Application detail
 	 */
@@ -85,7 +90,8 @@ public class ApplicationController {
 	/**
 	 * API to create Application detail
 	 * 
-	 * @param application the application detail
+	 * @param application
+	 *            the application detail
 	 * 
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */

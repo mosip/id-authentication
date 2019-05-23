@@ -251,22 +251,7 @@ public class ManualVerificationServiceTest {
 		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 		fileName = PacketFiles.DEMOGRAPHIC.name();
 		file = manualAdjudicationService.getApplicantFile(regId, fileName);
-		/*
-		 * fileName = PacketFiles.PROOFOFIDENTITY.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.EXCEPTIONPHOTO.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.RIGHTPALM.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.LEFTPALM.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.BOTHTHUMBS.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.LEFTEYE.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName); fileName =
-		 * PacketFiles.RIGHTEYE.name(); file =
-		 * manualAdjudicationService.getApplicantFile(regId, fileName);
-		 */
+
 	}
 
 	@Test(expected = InvalidFileNameException.class)

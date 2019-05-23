@@ -49,6 +49,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
  * The Class BioDedupeServiceImplTest.
@@ -96,6 +97,9 @@ public class BioDedupeServiceImplTest {
 	private ListAppender<ILoggingEvent> listAppender;
 
 	private Logger fooLogger;
+	
+	@Mock
+	private RegistrationStatusService registrationStatusService;
 
 	/**
 	 * Setup.
@@ -137,9 +141,9 @@ public class BioDedupeServiceImplTest {
 
 		List<DemographicInfoDto> demoList = new ArrayList<>();
 		DemographicInfoDto demo1 = new DemographicInfoDto();
-		demo1.setUin("123456789");
 		demoList.add(demo1);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demoList);
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(anyString())).thenReturn(true);
 		packetMetaInfo = new PacketMetaInfo();
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 		FieldValueArray introducerBiometric = new FieldValueArray();
@@ -273,7 +277,6 @@ public class BioDedupeServiceImplTest {
 
 		List<DemographicInfoDto> demoList = new ArrayList<>();
 		DemographicInfoDto demo1 = new DemographicInfoDto();
-		demo1.setUin("123456789");
 		demoList.add(demo1);
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demoList);
 

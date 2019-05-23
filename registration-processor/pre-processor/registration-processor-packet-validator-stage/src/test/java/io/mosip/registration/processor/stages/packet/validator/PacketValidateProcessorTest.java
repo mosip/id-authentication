@@ -347,10 +347,10 @@ public class PacketValidateProcessorTest {
 		statusResponseDto.setStatus("VALID");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
-		
+
 		List<SyncRegistrationEntity> synchRecordList = new ArrayList<>();
 		synchRecordList.add(new SyncRegistrationEntity());
-		
+
 		Mockito.when(registrationRepositary.getSyncRecordsByRegIdAndRegType(any(), any())).thenReturn(synchRecordList);
 
 	}

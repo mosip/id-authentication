@@ -104,6 +104,7 @@ public class MessageNotificationServiceImplTest {
 	@Mock
 	private Environment env;
 
+
 	@Mock
 	private ObjectMapper mapper;
 
@@ -188,7 +189,11 @@ public class MessageNotificationServiceImplTest {
 
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
-
+		Map<String, Long> map1 = new HashMap<>();
+		Long value1 = (long) 423072;
+		map1.put("UIN", value1);
+		JSONObject jsonObject1 = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject1);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 
 		InputStream in = IOUtils.toInputStream("Hi Alok, Your UIN is generated", "UTF-8");

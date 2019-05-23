@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -51,7 +52,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import lombok.Data;
 
 /**
- * 
+ *
  * @author Girish Yarru
  *
  */
@@ -115,12 +116,23 @@ public class Utilities {
 	private static final String PASSWORD = "password";
 	private static final String BROKERURL = "brokerUrl";
 	private static final String TYPEOFQUEUE = "typeOfQueue";
+	private static final String NAME = "name";
 
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
+	/**
+	 * get applicant age by registration id. Checks the id json if dob or age
+	 * present, if yes returns age if both dob or age are not present then retrieves
+	 * age from id repo
+	 * 
+	 * @param registrationId
+	 * @return
+	 * @throws IOException
+	 * @throws ApisResourceAccessException
+	 */
 	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
@@ -147,12 +159,20 @@ public class Utilities {
 
 	}
 
+	/**
+	 * retrieving identity json ffrom id repo by UIN
+	 * 
+	 * @param uin
+	 * @return
+	 * @throws ApisResourceAccessException
+	 * @throws IdRepoAppException
+	 */
 	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
 
 		if (uin != null) {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN ,
+			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN,
 					pathSegments, "", "", IdResponseDTO1.class);
 			if (idResponseDto == null)
 				return null;
@@ -169,37 +189,16 @@ public class Utilities {
 		return null;
 	}
 
-	public List<List<String>> getInboundOutBoundAddressList() throws RegistrationProcessorCheckedException {
+	/**
+	 * Returns all the list of queue details(inbound/outbound address,name,url,pwd)
+	 * from abisJson Also validates the abis json fileds(null or not)
+	 * 
+	 * @return
+	 * @throws RegistrationProcessorCheckedException
+	 */
+	public List<AbisQueueDetails> getAbisQueueDetails() throws RegistrationProcessorCheckedException {
+		List<AbisQueueDetails> abisQueueDetailsList = new ArrayList<>();
 		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
-		List<String> inBoundAddressList = new ArrayList<>();
-		List<String> outBountAddressList = new ArrayList<>();
-
-		List<List<String>> inboundOutBoundList = new ArrayList<>();
-		try {
-			JSONObject regProcessorAbisJson;
-
-			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
-
-			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
-			for (Object object : regProcessorAbisArray) {
-				JSONObject jsonObject = new JSONObject((Map) object);
-				inBoundAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, INBOUNDQUEUENAME));
-				outBountAddressList.add(validateAbisQueueJsonAndReturnValue(jsonObject, OUTBOUNDQUEUENAME));
-				inboundOutBoundList.add(inBoundAddressList);
-				inboundOutBoundList.add(outBountAddressList);
-
-			}
-		} catch (IOException e) {
-			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
-					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
-		}
-		return inboundOutBoundList;
-	}
-
-	public List<MosipQueue> getMosipQueuesForAbis() throws RegistrationProcessorCheckedException {
-		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
-		List<MosipQueue> mosipQueueList = new ArrayList<>();
-
 		JSONObject regProcessorAbisJson;
 		try {
 			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
@@ -207,42 +206,56 @@ public class Utilities {
 			JSONArray regProcessorAbisArray = JsonUtil.getJSONArray(regProcessorAbisJson, ABIS);
 
 			for (Object jsonObject : regProcessorAbisArray) {
+				AbisQueueDetails abisQueueDetails = new AbisQueueDetails();
 				JSONObject json = new JSONObject((Map) jsonObject);
 				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
 				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
 				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
 				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
+				String inboundQueueName = validateAbisQueueJsonAndReturnValue(json, INBOUNDQUEUENAME);
+				String outboundQueueName = validateAbisQueueJsonAndReturnValue(json, OUTBOUNDQUEUENAME);
+				String queueName = validateAbisQueueJsonAndReturnValue(json, NAME);
 				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
 						brokerUrl);
 				if (mosipQueue == null)
 					throw new QueueConnectionNotFound(
 							PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());
-				mosipQueueList.add(mosipQueue);
+
+				abisQueueDetails.setMosipQueue(mosipQueue);
+				abisQueueDetails.setInboundQueueName(inboundQueueName);
+				abisQueueDetails.setOutboundQueueName(outboundQueueName);
+				abisQueueDetails.setName(queueName);
+				abisQueueDetailsList.add(abisQueueDetails);
 
 			}
 		} catch (IOException e) {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
-		return mosipQueueList;
+		return abisQueueDetailsList;
 
 	}
 
-	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
-		String value = JsonUtil.getJSONValue(jsonObject, key);
-		if (value == null)
-			throw new RegistrationProcessorUnCheckedException(
-					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
-					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
-		return value;
-	}
-
+	/**
+	 * Gets registration processor mapping json from config and maps to
+	 * RegistrationProcessorIdentity java class
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public RegistrationProcessorIdentity getRegistrationProcessorIdentityJson() throws IOException {
 		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 	}
 
+	/**
+	 * Retrieves the identity json from HDFS by registrationId
+	 * 
+	 * @param registrationId
+	 * @return
+	 * @throws IOException
+	 */
 	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
@@ -260,21 +273,14 @@ public class Utilities {
 
 	}
 
-	private int calculateAge(String applicantDob) {
-		DateFormat sdf = new SimpleDateFormat(dobFormat);
-		Date birthDate = null;
-		try {
-			birthDate = sdf.parse(applicantDob);
-
-		} catch (ParseException e) {
-			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
-		}
-		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
-		Period p = Period.between(ld, LocalDate.now());
-		return p.getYears();
-
-	}
-
+	/**
+	 * Get UIN from identity json (used only for update/res update/activate/de
+	 * activate packets)
+	 * 
+	 * @param registrationId
+	 * @return
+	 * @throws IOException
+	 */
 	public Long getUIn(String registrationId) throws IOException {
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
 		if (demographicIdentity == null)
@@ -303,6 +309,57 @@ public class Utilities {
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
+	}
+
+	/**
+	 * retrieve UIN from IDRepo by registration id
+	 * 
+	 * @param regId
+	 * @return
+	 * @throws ApisResourceAccessException
+	 * @throws IdRepoAppException
+	 */
+	public JSONObject retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException {
+
+		if (regId != null) {
+			List<String> pathSegments = new ArrayList<>();
+			pathSegments.add(regId);
+			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
+					pathSegments, "", "", IdResponseDTO1.class);
+			if (!idResponseDto.getErrors().isEmpty())
+				throw new IdRepoAppException(
+						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
+
+			ObjectMapper objMapper = new ObjectMapper();
+			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+
+		}
+
+		return null;
+	}
+
+	private int calculateAge(String applicantDob) {
+		DateFormat sdf = new SimpleDateFormat(dobFormat);
+		Date birthDate = null;
+		try {
+			birthDate = sdf.parse(applicantDob);
+
+		} catch (ParseException e) {
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
+		}
+		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
+		Period p = Period.between(ld, LocalDate.now());
+		return p.getYears();
+
+	}
+
+	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
+		String value = JsonUtil.getJSONValue(jsonObject, key);
+		if (value == null)
+			throw new RegistrationProcessorUnCheckedException(
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
+					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
+		return value;
 	}
 
 }
