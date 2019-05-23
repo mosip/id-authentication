@@ -306,5 +306,25 @@ public class KeyManagerTest {
 		map.put("identity", readValue);
 		return map;
 	}
+	
+	@Test
+	public void SignResponseTest1() throws IDDataValidationException, IdAuthenticationAppException {
+		Map<String, Object> cryptoResMap = new HashMap<>();
+		cryptoResMap.put("signature", "-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj");
+		Map<String, Object> responseMap = new HashMap<>();
+		responseMap.put("response", cryptoResMap);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+		.thenReturn(getRestRequestDTOEncrypt());
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
+		assertNotNull(keyManager.signResponse("qweewq"));
+	}
+	
+	@Test(expected=IdAuthenticationAppException.class)
+	public void  SignResponseTest2() throws IDDataValidationException, IdAuthenticationAppException {
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+		.thenReturn(getRestRequestDTOEncrypt());
+		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
+		keyManager.signResponse("qweewq");
+	}
 
 }

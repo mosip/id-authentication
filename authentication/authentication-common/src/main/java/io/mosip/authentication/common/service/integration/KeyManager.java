@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.integration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -241,6 +242,35 @@ public class KeyManager {
 			return mapper.writerFor(Map.class).writeValueAsString(map);
 		} catch (JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+		}
+	}
+	
+	/**
+	 * Sign response.
+	 *
+	 * @param responseAsString the response as string
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@SuppressWarnings("unchecked")
+	public String signResponse(String responseAsString) throws IdAuthenticationAppException {
+		Map<String, Object> signResponse = new HashMap<>();
+		signResponse.put("data", responseAsString);
+		Map<String, Object> response;
+		RestRequestDTO restRequestDTO = null;
+		try {
+			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DIGITAL_SIGNATURE_SIGN_SERVICE,
+					RestRequestFactory.createRequest(signResponse), Map.class);
+			response = restHelper.requestSync(restRequestDTO);
+			if(response.containsKey(IdAuthCommonConstants.RESPONSE) && Objects.nonNull(response.get(IdAuthCommonConstants.RESPONSE))) {
+				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get("signature");
+			} else {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+		} catch (IDDataValidationException | RestServiceException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+		
 		}
 	}
 
