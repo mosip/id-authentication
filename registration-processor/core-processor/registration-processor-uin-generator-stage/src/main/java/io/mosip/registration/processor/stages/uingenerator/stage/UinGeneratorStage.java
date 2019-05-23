@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.VidGenRequest;
-import io.mosip.registration.processor.stages.uingenerator.dto.VidGenResponse;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.exception.VidCreationException;
