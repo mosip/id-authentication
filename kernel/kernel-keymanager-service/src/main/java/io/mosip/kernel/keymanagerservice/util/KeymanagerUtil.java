@@ -2,7 +2,10 @@ package io.mosip.kernel.keymanagerservice.util;
 
 import static java.util.Arrays.copyOfRange;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -21,6 +24,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +33,6 @@ import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
 import io.mosip.kernel.keymanagerservice.dto.CertificateEntry;
@@ -193,21 +196,23 @@ public class KeymanagerUtil {
 		}
 	}
 	
-	public PrivateKey privateKeyExtractor(File privateKeyFile) {
+	public PrivateKey privateKeyExtractor(InputStream privateKeyInputStream) {
 
 		KeyFactory kf = null;
 		PKCS8EncodedKeySpec keySpec = null;
 		PrivateKey privateKey = null;
-		byte[] privateKeyPEM;
+		//byte[] privateKeyPEM;
 		try {
-			privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
-			String privateKeyPEMString = new String(privateKeyPEM);
-			byte[] encoded = Base64.decodeBase64(privateKeyPEMString);
+			//privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
+			StringWriter stringWriter= new StringWriter();
+			IOUtils.copy(privateKeyInputStream, stringWriter, StandardCharsets.UTF_8);
+			String privateKeyPEMString= stringWriter.toString(); 
+			byte[] decodedKey = Base64.decodeBase64(privateKeyPEMString);
 			kf = KeyFactory.getInstance(asymmetricAlgorithmName);
-			keySpec = new PKCS8EncodedKeySpec(encoded);
+			keySpec = new PKCS8EncodedKeySpec(decodedKey);
 			privateKey = kf.generatePrivate(keySpec);
 
-		} catch (io.mosip.kernel.core.exception.IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch ( NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
 			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}

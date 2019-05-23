@@ -537,15 +537,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
-		byte[] certData = null;
+		//byte[] certData = null;
 		CertificateFactory cf = null;
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			certData = IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
+			//certData = IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
 			cf = CertificateFactory.getInstance(certificateType);
-			cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certData));
-			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getFile());
+			cert = (X509Certificate) cf.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
+			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getInputStream());
 		} catch (CertificateException | java.io.IOException e) {
 			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
