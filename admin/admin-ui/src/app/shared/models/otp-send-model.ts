@@ -1,4 +1,4 @@
-export interface OtpSendModel {
+export class OtpSendModel {
     appId: string ;
     context: string ;
     otpChannel: string[];
