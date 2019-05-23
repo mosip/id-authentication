@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class MoroccoIdentity extends Identity {
+public class IndividualIdentity extends Identity {
 
 	/** The uin. */
 	@JsonProperty("UIN")

@@ -515,24 +515,6 @@ public class LoginController extends BaseController implements Initializable {
 		UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
 		if (userDetail != null) {
-			// TODO: Since AuthN web-service not accepting Hash Password and SHA is not
-			// implemented, getting AuthZ Token by Client ID and Secret Key
-
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			// loginUserDTO.setUserId(userId.getText());
-			// loginUserDTO.setPassword(password.getText());
-
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				try {
-					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
-				} catch (Exception exception) {
-					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
-							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-
-				}
-			}
-
 			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
 			if (RegistrationConstants.SUCCESS.equals(status)) {
@@ -949,7 +931,7 @@ public class LoginController extends BaseController implements Initializable {
 	private boolean validateFingerPrint() {
 
 		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(((String) applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			return validateFingerPrintWithMdm();
 
 		return validateFingerPrintNonMdm();
