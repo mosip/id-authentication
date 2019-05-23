@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.abis.handler.stage.test;
+/*package io.mosip.registration.processor.abis.handler.stage.test;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -36,41 +36,41 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
 
 
-/**
+*//**
  * The Class AbisHandlerStageTest.
- */
+ *//*
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class AbisHandlerStageTest {
 
-	/** The audit log request builder. */
+	*//** The audit log request builder. *//*
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The registration status service. */
+	*//** The registration status service. *//*
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The packet info manager. */
+	*//** The packet info manager. *//*
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	/** The registration status dto. */
+	*//** The registration status dto. *//*
 	@Mock
 	private InternalRegistrationStatusDto registrationStatusDto;
 
-	/** The abis application dtos. */
+	*//** The abis application dtos. *//*
 	List<AbisApplicationDto> abisApplicationDtos = new ArrayList<>();
 	
-	/** The bio ref dtos. */
+	*//** The bio ref dtos. *//*
 	List<RegBioRefDto> bioRefDtos = new ArrayList<>();
 	
-	/** The reg demo dedupe list dto list. */
+	*//** The reg demo dedupe list dto list. *//*
 	List<RegDemoDedupeListDto> regDemoDedupeListDtoList = new ArrayList<>();
 
 	List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
 
-	/** The abis handler stage. */
+	*//** The abis handler stage. *//*
 	@InjectMocks
 	private AbisHandlerStage abisHandlerStage = new AbisHandlerStage() {
 		@Override
@@ -87,9 +87,9 @@ public class AbisHandlerStageTest {
 		}
 	};
 
-	/**
+	*//**
 	 * Sets the up.
-	 */
+	 *//*
 	@Before
 	public void setUp() {
 		ReflectionTestUtils.setField(abisHandlerStage, "maxResults", 30);
@@ -111,17 +111,17 @@ public class AbisHandlerStageTest {
 				.thenReturn(responseWrapper);
 	}
 
-	/**
+	*//**
 	 * Test deploy verticle.
-	 */
+	 *//*
 	@Test
 	public void testDeployVerticle() {
 		abisHandlerStage.deployVerticle();
 	}
 
-	/**
+	*//**
 	 * Test demo to abis handler TO middleware success.
-	 */
+	 *//*
 	@Test
 	public void testDemoToAbisHandlerTOMiddlewareSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -148,9 +148,9 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 
-	/**
+	*//**
 	 * Test bio to abis handler to middleware success.
-	 */
+	 *//*
 	@Test
 	public void testBioToAbisHandlerToMiddlewareSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -180,9 +180,9 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 	
-	/**
+	*//**
 	 * Test middleware to abis handler to demo success.
-	 */
+	 *//*
 	@Test
 	public void testMiddlewareToAbisHandlerToDemoSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -198,9 +198,9 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("demo-dedupe-bus-in"));
 	}
 	
-	/**
+	*//**
 	 * Test middleware to abis handler to bio success.
-	 */
+	 *//*
 	@Test
 	public void testMiddlewareToAbisHandlerToBioSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -216,9 +216,9 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("bio-dedupe-bus-in"));
 	}
 	
-	/**
+	*//**
 	 * Test demo dedupe data not found.
-	 */
+	 *//*
 	@Test
 	public void testDemoDedupeDataNotFound() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -276,3 +276,4 @@ public class AbisHandlerStageTest {
 	}
 
 }
+*/
