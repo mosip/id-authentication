@@ -236,45 +236,55 @@ public class OSIValidator {
 			throws ApisResourceAccessException {
 		boolean wasOfficerActiveDuringPCT = false;
 		boolean wasSupervisorActiveDuringPCT = false;
+		String statusMessage="";
 		if (officerId != null && !officerId.isEmpty()) {
-			wasOfficerActiveDuringPCT = wasOperatorActiveDuringPCT(officerId, creationDate);
-			if (!wasOfficerActiveDuringPCT) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.OFFICER_NOT_ACTIVE);
+			UserResponseDto officerResponse = wasOperatorActiveDuringPCT(officerId, creationDate);
+			if (officerResponse.getErrors() == null) {
+				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).isActive();
+				if (!wasOfficerActiveDuringPCT) {
+					statusMessage=statusMessage+" "+StatusMessage.OFFICER_NOT_ACTIVE;
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
+				}
+			} else {
+				List<ServerError> errors = officerResponse.getErrors();
+				statusMessage=statusMessage+" "+"Officer : "+errors.get(0).getMessage();
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
+			
 		}
 
 		if (supervisorId != null && !supervisorId.isEmpty()) {
-			wasSupervisorActiveDuringPCT = wasOperatorActiveDuringPCT(supervisorId, creationDate);
-			if (!wasSupervisorActiveDuringPCT) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_NOT_ACTIVE);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+			UserResponseDto supervisorResponse  = wasOperatorActiveDuringPCT(supervisorId, creationDate);
+			if (supervisorResponse.getErrors() == null) {
+				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).isActive();
+				if (!wasSupervisorActiveDuringPCT) {
+					statusMessage=statusMessage+" "+StatusMessage.SUPERVISOR_NOT_ACTIVE;
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
+				}
+			}
+			else {
+				List<ServerError> errors = supervisorResponse.getErrors();
+				statusMessage=statusMessage+" "+"Supervisor : "+errors.get(0).getMessage();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
 		}
-
+		this.registrationStatusDto.setStatusComment(statusMessage);
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private boolean wasOperatorActiveDuringPCT(String operatorId, String creationDate)
+	private UserResponseDto wasOperatorActiveDuringPCT(String operatorId, String creationDate)
 			throws ApisResourceAccessException {
-		boolean wasOperatorActive = false;
+		UserResponseDto userResponse;
 		List<String> pathSegments = new ArrayList<String>();
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
 		try {
-			UserResponseDto userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments,
+			 userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments,
 					"", "", UserResponseDto.class);
-			if (userResponse.getErrors() == null) {
-				wasOperatorActive = userResponse.getResponse().getUserResponseDto().get(0).isActive();
-
-			} else {
-				List<ServerError> errors = userResponse.getErrors();
-				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
-			}
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -298,7 +308,7 @@ public class OSIValidator {
 			}
 
 		}
-		return wasOperatorActive;
+		return userResponse;
 	}
 
 	/**
