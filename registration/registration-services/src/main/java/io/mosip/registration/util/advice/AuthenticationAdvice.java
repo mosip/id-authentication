@@ -73,10 +73,5 @@ public class AuthenticationAdvice {
 			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 					"Pre-Authorize the user id successfully completed");
 		}
-
-		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
-				"Pre-Authorize the user id got failed");
-
-		throw new RegBaseCheckedException("REG-SER-ATAD", "Invalid user id.");
 	}
 }
