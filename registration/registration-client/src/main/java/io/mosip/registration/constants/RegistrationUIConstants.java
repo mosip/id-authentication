@@ -153,6 +153,7 @@ public class RegistrationUIConstants {
 	public static final String FUTURE_DOB = bundle.getString("FUTURE_DOB");
 	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
 	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
+	public static final String SELECT = bundle.getString("SELECT");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");

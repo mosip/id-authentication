@@ -179,6 +179,7 @@
 		<module>kernel-signature-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-idobjectvalidator</module>
+		<module>kernel-bioapi-provider</module>
 	</modules>
 
 	<dependencies>
@@ -262,5 +263,3 @@
 		</plugins>
 	</build>
 </project>
-
-

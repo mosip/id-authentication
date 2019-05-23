@@ -263,9 +263,10 @@ export class AcknowledgementComponent implements OnInit {
         user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
         applicantNumber[0] === undefined ? null : applicantNumber[0],
-        additionalRecipient
+        additionalRecipient,
+        false
       );
-      console.log(notificationDto);
+      console.log('notificationDto', notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);
       console.log('notification request', model);
       console.log('stringified model', JSON.stringify(model).trim());

@@ -8,7 +8,7 @@ testdata:
       otpReq.individualId: $UIN$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
-      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
       otpReq.transactionID: $RANDOM:N:10$
       otpReq.version: $version$
@@ -175,7 +175,27 @@ testdata:
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
       #otpReq.phone: $TestData:otpChannel_MOBILE$
-      otpReq.requestTime: $TIMESTAMP$MINUTE-30
+      otpReq.requestTime: $TIMESTAMP$MINUTE-35
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-n-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      #output.1.y.res.ver: $version$
+      output.1.n.res.errorMessage: $errors:RequestTimeIsPast:errorMessage$
+      output.1.n.res.errorCode: $errors:RequestTimeIsPast:errorCode$
+      #output.1.y.res.status: $TestData:auth_Fail_status$
+      
+  Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      #otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$MINUTE+35
       otpReq.transactionID: $RANDOM:N:10$
       otpReq.version: $version$
     output.output-1-expected-n-res:

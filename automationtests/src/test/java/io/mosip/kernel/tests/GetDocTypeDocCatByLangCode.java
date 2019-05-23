@@ -72,9 +72,8 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDocType_DocCatByLangCode")
-	public Object[][] readData1(ITestContext context) throws Exception {
-		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+	public Object[][] readData1(ITestContext context) throws Exception {		 
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

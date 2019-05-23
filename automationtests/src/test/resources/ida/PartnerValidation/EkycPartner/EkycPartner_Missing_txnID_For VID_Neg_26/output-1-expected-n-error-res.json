@@ -1,0 +1,1 @@
+{"errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - transactionID"}],"responseTime":"$TIMESTAMP$","version":"1.0","response":{"kycStatus":false,"staticToken":"$IGNORE$","identity":"$IGNORE$"}}

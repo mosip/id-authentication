@@ -1,9 +1,9 @@
-**MOSIP Release Notes**
-#### 2. Registration Client
+# MOSIP Release Notes
+## 1. Registration Client
 
-#### 2.1 Introduction : <br><sub>This document highlights Sprint 11 features for Registration-Client that are released for QA phase.</sub></br>
+### 1.1 Introduction : <br><sub>This document highlights Sprint 11 features for Registration-Client that are released for QA phase.</sub></br>
 
-#### 2.2 Release Summary : 
+### 1.2 Release Summary : 
 |         |          |
 |----------|----------|
 SubmittedBy|Omsai Eswar M
@@ -18,7 +18,7 @@ Role/Job Title|Technical Lead
 RFC(s) #|	NA
 
 
-#### 2.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
+### 1.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
 MOS-67 |New|As the MOSIP registration client, I should be able to update the client software from the server
@@ -33,7 +33,7 @@ MOS-23288|New|Capture exception photo of Parent if exception is marked for a chi
 
 
 
-#### 2.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
+### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module/Files|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
 Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine.
@@ -68,7 +68,7 @@ kernel-transliteration-icu4j|NA|0.11.1|Used to transliterate the Arabic to Frenc
 kernel-applicanttype-api|NA|0.11.1|Used to get the applicant types 
 kernel-cbeffutil-api|NA|0.11.1|Used to generate the CBEFF file and validate against the schema also.
 
-#### 2.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
+### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
 Transliteration|English-Arabic Transliteration  won’t work because of non-availability of kernel library
@@ -77,7 +77,7 @@ MDM|Mosip Device Management partially implemented. It Span across the multiple s
 TPM|The application will work for only TPM 2.0. If machine having the TPM 1.2 version then disable the TPM from properties and test the application.
 
 
-#### 2.6 Defects list
+### 1.6 Defects list
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
 MOS-23733|FIXED|YES
@@ -129,7 +129,7 @@ MOS-18314|FIXED|YES
 MOS-14139|FIXED|YES
 
 
-#### 2.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
+### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
 --------------|-----------|-----------|-------------
 
