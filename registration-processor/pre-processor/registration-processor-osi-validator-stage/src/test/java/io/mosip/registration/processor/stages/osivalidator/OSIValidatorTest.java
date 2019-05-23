@@ -46,6 +46,7 @@ import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RidDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
@@ -104,6 +105,9 @@ public class OSIValidatorTest {
 	Environment env;
 	
 	@Mock
+	RegistrationProcessorIdentity registrationProcessorIdentity=new RegistrationProcessorIdentity();
+	
+	@Mock
 	private OSIUtils osiUtils;
 
 	/** The data. */
@@ -149,80 +153,178 @@ public class OSIValidatorTest {
 		
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 
-		String value = "{\n" +
-				"\t\"identity\": {\n" +
-				"\t\t\"name\": {\n" +
-				"\t\t\t\"value\": \"fullName\"\n" +
-				"\t\t},\n" +
-				"\t\t\"gender\": {\n" +
-				"\t\t\t\"value\": \"gender\"\n" +
-				"\t\t},\n" +
-				"\t\t\"dob\": {\n" +
-				"\t\t\t\"value\": \"dateOfBirth\"\n" +
-				"\t\t},\n" +
-				"\t\t\"parentOrGuardianRID\": {\n" +
-				"\t\t\t\"value\" : \"parentOrGuardianRID\"\n" +
-				"\t\t},\n" +
-				"\t\t\"parentOrGuardianUIN\": {\n" +
-				"\t\t\t\"value\" : \"parentOrGuardianUIN\"\n" +
-				"\t\t},\n" +
-				"\t\t\"poa\": {\n" +
-				"\t\t\t\"value\" : \"proofOfAddress\"\n" +
-				"\t\t},\n" +
-				"\t\t\"poi\": {\n" +
-				"\t\t\t\"value\" : \"proofOfIdentity\"\n" +
-				"\t\t},\n" +
-				"\t\t\"por\": {\n" +
-				"\t\t\t\"value\" : \"proofOfRelationship\"\n" +
-				"\t\t},\n" +
-				"\t\t\"pob\": {\n" +
-				"\t\t\t\"value\" : \"proofOfDateOfBirth\"\n" +
-				"\t\t},\n" +
-				"\t\t\"individualBiometrics\": {\n" +
-				"\t\t\t\"value\" : \"individualBiometrics\"\n" +
-				"\t\t},\n" +
-				"\t\t\"age\": {\n" +
-				"\t\t\t\"value\" : \"age\"\n" +
-				"\t\t},\n" +
-				"\t\t\"addressLine1\": {\n" +
-				"\t\t\t\"value\" : \"addressLine1\"\n" +
-				"\t\t},\n" +
-				"\t\t\"addressLine2\": {\n" +
-				"\t\t\t\"value\" : \"addressLine2\"\n" +
-				"\t\t},\n" +
-				"\t\t\"addressLine3\": {\n" +
-				"\t\t\t\"value\" : \"addressLine3\"\n" +
-				"\t\t},\n" +
-				"\t\t\"region\": {\n" +
-				"\t\t\t\"value\" : \"region\"\n" +
-				"\t\t},\n" +
-				"\t\t\"province\": {\n" +
-				"\t\t\t\"value\" : \"province\"\n" +
-				"\t\t},\n" +
-				"\t\t\"postalCode\": {\n" +
-				"\t\t\t\"value\" : \"postalCode\"\n" +
-				"\t\t},\n" +
-				"\t\t\"phone\": {\n" +
-				"\t\t\t\"value\" : \"phone\"\n" +
-				"\t\t},\n" +
-				"\t\t\"email\": {\n" +
-				"\t\t\t\"value\" : \"email\"\n" +
-				"\t\t},\n" +
-				"\t\t\"localAdministrativeAuthority\": {\n" +
-				"\t\t\t\"value\" : \"localAdministrativeAuthority\"\n" +
-				"\t\t},\n" +
-				"\t\t\"idschemaversion\": {\n" +
-				"\t\t\t\"value\" : \"IDSchemaVersion\"\n" +
-				"\t\t},\n" +
-				"\t\t\"cnienumber\": {\n" +
-				"\t\t\t\"value\" : \"CNIENumber\"\n" +
-				"\t\t},\n" +
-				"\t\t\"city\": {\n" +
-				"\t\t\t\"value\" : \"city\"\n" +
-				"\t\t}\n" +
-				"\t}\n" +
-				"}";
+//		String value = "{\n" +
+//				"\t\"identity\": {\n" +
+//				"\t\t\"name\": {\n" +
+//				"\t\t\t\"value\": \"fullName\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"gender\": {\n" +
+//				"\t\t\t\"value\": \"gender\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"dob\": {\n" +
+//				"\t\t\t\"value\": \"dateOfBirth\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"parentOrGuardianRID\": {\n" +
+//				"\t\t\t\"value\" : \"parentOrGuardianRID\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"parentOrGuardianUIN\": {\n" +
+//				"\t\t\t\"value\" : \"parentOrGuardianUIN\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"poa\": {\n" +
+//				"\t\t\t\"value\" : \"proofOfAddress\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"poi\": {\n" +
+//				"\t\t\t\"value\" : \"proofOfIdentity\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"por\": {\n" +
+//				"\t\t\t\"value\" : \"proofOfRelationship\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"pob\": {\n" +
+//				"\t\t\t\"value\" : \"proofOfDateOfBirth\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"individualBiometrics\": {\n" +
+//				"\t\t\t\"value\" : \"individualBiometrics\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"age\": {\n" +
+//				"\t\t\t\"value\" : \"age\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"addressLine1\": {\n" +
+//				"\t\t\t\"value\" : \"addressLine1\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"addressLine2\": {\n" +
+//				"\t\t\t\"value\" : \"addressLine2\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"addressLine3\": {\n" +
+//				"\t\t\t\"value\" : \"addressLine3\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"region\": {\n" +
+//				"\t\t\t\"value\" : \"region\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"province\": {\n" +
+//				"\t\t\t\"value\" : \"province\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"postalCode\": {\n" +
+//				"\t\t\t\"value\" : \"postalCode\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"phone\": {\n" +
+//				"\t\t\t\"value\" : \"phone\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"email\": {\n" +
+//				"\t\t\t\"value\" : \"email\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"localAdministrativeAuthority\": {\n" +
+//				"\t\t\t\"value\" : \"localAdministrativeAuthority\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"idschemaversion\": {\n" +
+//				"\t\t\t\"value\" : \"IDSchemaVersion\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"cnienumber\": {\n" +
+//				"\t\t\t\"value\" : \"CNIENumber\"\n" +
+//				"\t\t},\n" +
+//				"\t\t\"city\": {\n" +
+//				"\t\t\t\"value\" : \"city\"\n" +
+//				"\t\t}\n" +
+//				"\t}\n" +
+//				"}";
 
+		String value=
+				"{\r\n" + 
+				"	\"identity\": {\r\n" + 
+				"		\"name\": {\r\n" + 
+				"			\"value\": \"fullName\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"gender\": {\r\n" + 
+				"			\"value\": \"gender\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"dob\": {\r\n" + 
+				"			\"value\": \"dateOfBirth\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianRID\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianRID\"\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianUIN\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianUIN\"\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianName\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianName\"\r\n" + 
+				"		},\r\n" + 
+				"		\"poa\": {\r\n" + 
+				"			\"value\" : \"proofOfAddress\"\r\n" + 
+				"		},\r\n" + 
+				"		\"poi\": {\r\n" + 
+				"			\"value\" : \"proofOfIdentity\"\r\n" + 
+				"		},\r\n" + 
+				"		\"por\": {\r\n" + 
+				"			\"value\" : \"proofOfRelationship\"\r\n" + 
+				"		},\r\n" + 
+				"		\"pob\": {\r\n" + 
+				"			\"value\" : \"proofOfDateOfBirth\"\r\n" + 
+				"		},\r\n" + 
+				"		\"individualBiometrics\": {\r\n" + 
+				"			\"value\" : \"individualBiometrics\"\r\n" + 
+				"		},\r\n" + 
+				"		\"age\": {\r\n" + 
+				"			\"value\" : \"age\"\r\n" + 
+				"		},\r\n" + 
+				"		\"addressLine1\": {\r\n" + 
+				"			\"value\" : \"addressLine1\"\r\n" + 
+				"		},\r\n" + 
+				"		\"addressLine2\": {\r\n" + 
+				"			\"value\" : \"addressLine2\"\r\n" + 
+				"		},\r\n" + 
+				"		\"addressLine3\": {\r\n" + 
+				"			\"value\" : \"addressLine3\"\r\n" + 
+				"		},\r\n" + 
+				"		\"region\": {\r\n" + 
+				"			\"value\" : \"region\"\r\n" + 
+				"		},\r\n" + 
+				"		\"province\": {\r\n" + 
+				"			\"value\" : \"province\"\r\n" + 
+				"		},\r\n" + 
+				"		\"postalCode\": {\r\n" + 
+				"			\"value\" : \"postalCode\"\r\n" + 
+				"		},\r\n" + 
+				"		\"phone\": {\r\n" + 
+				"			\"value\" : \"phone\"\r\n" + 
+				"		},\r\n" + 
+				"		\"email\": {\r\n" + 
+				"			\"value\" : \"email\"\r\n" + 
+				"		},\r\n" + 
+				"		\"localAdministrativeAuthority\": {\r\n" + 
+				"			\"value\" : \"localAdministrativeAuthority\"\r\n" + 
+				"		},\r\n" + 
+				"		\"idschemaversion\": {\r\n" + 
+				"			\"value\" : \"IDSchemaVersion\"\r\n" + 
+				"		},\r\n" + 
+				"		\"cnienumber\": {\r\n" + 
+				"			\"value\" : \"CNIENumber\"\r\n" + 
+				"		},\r\n" + 
+				"		\"city\": {\r\n" + 
+				"			\"value\" : \"city\",\r\n" + 
+				"			\"isMandatory\" : true\r\n" + 
+				"		},\r\n" + 
+				"		\"parentOrGuardianBiometrics\": {\r\n" + 
+				"			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + 
+				"		}\r\n" + 
+				"	}\r\n" + 
+				"}  \r\n" + 
+				"© 2019 GitHub, Inc.\r\n" + 
+				"Terms\r\n" + 
+				"Privacy\r\n" + 
+				"Security\r\n" + 
+				"Status\r\n" + 
+				"Help\r\n" + 
+				"Contact GitHub\r\n" + 
+				"Pricing\r\n" + 
+				"API\r\n" + 
+				"Training\r\n" + 
+				"Blog\r\n" + 
+				"About\r\n" + 
+				"";
+		
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 		
@@ -337,7 +439,7 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(12345678).thenReturn(123456789);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(12345678).thenReturn(123456789);
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn(identity.getMetaData().get(0).getValue());

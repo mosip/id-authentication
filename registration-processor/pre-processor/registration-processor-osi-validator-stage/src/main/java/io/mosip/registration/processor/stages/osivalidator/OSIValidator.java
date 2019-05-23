@@ -459,7 +459,7 @@ public class OSIValidator {
 				String introducerBiometricsLabel = regProcessorIdentityJson.getIdentity()
 						.getParentOrGuardianBiometrics().getValue();
 				String introducerBiometricsFileName = JsonUtil.getJSONValue(demographicIdentity,
-						introducerBiometricsLabel);
+						introducerBiometricsLabel).toString();
 				BigInteger introducerUIN = numberToBigInteger(introducerUinNumber);
 				BigInteger introducerRID = numberToBigInteger(introducerRidNumber);
 				if (introducerUIN == null && introducerRID == null) {
@@ -709,7 +709,7 @@ public class OSIValidator {
 
 
 
-	public String getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
+	public String getBioInfoList (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
 
 		List<BioInfo> biometrics =new  ArrayList<>();
 
