@@ -21,13 +21,13 @@ import io.mosip.service.BaseTestCase;
 
 
 
-public class prereg_dbread {
+public class PreregDB {
 	public static SessionFactory factory;
 	static Session session;
-	private static Logger logger = Logger.getLogger(prereg_dbread.class);
+	private static Logger logger = Logger.getLogger(PreregDB.class);
 	
 	public PreRegistartionDataBaseAccess dbAccess=new PreRegistartionDataBaseAccess();
-	
+	public static String env = System.getProperty("env.user");
 	@SuppressWarnings("deprecation")
 	public static boolean prereg_dbconnectivityCheck()
 	{
@@ -369,11 +369,13 @@ public class prereg_dbread {
 	}
 	
 	
+	
 	public static List<?> validateDB(String queryStr)
 	{
 		List<?> flag;
 		
 		//factory = new Configuration().configure("preregqa.cfg.xml")
+		//factory = new Configuration().configure("preregint.cfg.xml")
 		factory = new Configuration().configure("preregint.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		session = factory.getCurrentSession();
@@ -388,9 +390,27 @@ public class prereg_dbread {
 	{
 		int flag;
 		
-		//factory = new Configuration().configure("preregqa.cfg.xml")
+		
 		factory = new Configuration().configure("preregint.cfg.xml")
 	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdataUpdate(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
+
+	}
+	
+	
+	public static int validateDBdata(String queryStr,String dbName)
+	{
+		int flag;
+		String dbConfigXml = dbName+env+".cfg.xml";
+		//factory = new Configuration().configure("preregqa.cfg.xml")
+		//factory = new Configuration().configure("preregint.cfg.xml")
+		factory = new Configuration().configure(dbConfigXml)
+				.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
 		/*factory = new Configuration().configure("prereg.cfg.xml")
 				.addAnnotatedClass(DemographicRequestDTO.class).buildSessionFactory();*/
 		session = factory.getCurrentSession();
@@ -401,6 +421,7 @@ public class prereg_dbread {
 		
 
 	}
+	
 	@SuppressWarnings("deprecation")
 	public static List<Object> dbConnection(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
 	{

@@ -69,7 +69,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	Response Actualresponse = null;
 	JSONObject Expectedresponse = null;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	String preReg_URI;
+	 String preReg_URI;
 	String dest = "";
 	String configPaths = "";
 	String folderPath = "preReg/MultipleBookingAppointment";
@@ -95,12 +95,12 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	 * should get Error response along with Error Code and Error messages as per
 	 * Specification
 	 */
-	@DataProvider(name = "bookAppointment")
+	@DataProvider(name = "multipleBookAppointment")
 	public  Object[][] readData(ITestContext context) throws Exception {
 		
 		
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -362,7 +362,8 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 
 		// Booking Appointment Resource URI 
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_MultipleBooking");
+		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_MultipleBooking");
+		//preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_MultipleBooking");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

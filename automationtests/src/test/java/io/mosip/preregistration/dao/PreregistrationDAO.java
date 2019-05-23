@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
 
-import io.mosip.dbaccess.prereg_dbread;
+import io.mosip.dbaccess.PreregDB;
 import io.mosip.dbdto.Audit;
 import io.mosip.dbentity.PreRegEntity;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
@@ -22,7 +22,7 @@ public class PreregistrationDAO
 	{
 		String hql = "SELECT preRegistrationId,statusCode FROM DemographicEntity E WHERE E.preRegistrationId = '"+preRegId+"'";
 		
-		List<? extends Object> result = prereg_dbread.validateDB(hql);
+		List<? extends Object> result = PreregDB.validateDB(hql);
 		//List<? extends Object> result = dbAccess.updateDbData(hql, "prereg");
 		return result;
 		
@@ -32,7 +32,20 @@ public class PreregistrationDAO
 	{
 		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
 		
-		int result = prereg_dbread.validateDBUpdate(hql);
+		//int result = prereg_dbread.validateDBUpdate(hql);
+		int result = PreregDB.validateDBdata(hql, "prereg");
+		//int result = prereg_dbread.validateDBUpdate(hql);
+		return result;
+	}
+	
+	public int updateStatusCode1(String statusCode,String preRegId)
+	{
+		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
+		
+		
+		//dbAccess.getConsumedStatus(hql, "prereg");
+		int result = PreregDB.validateDBdata(hql, "prereg");
+		//int result = prereg_dbread.validateDBUpdate(hql);
 		return result;
 	}
 	/*public void setDate(String preRegId)

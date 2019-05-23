@@ -63,7 +63,8 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import io.mosip.dbaccess.prereg_dbread;
+
+import io.mosip.dbaccess.PreregDB;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
@@ -319,7 +320,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public String getConsumedStatus(String PreID) {
 		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
 				+ "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+	
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String status = preId_status.get(0).toString();
 		return status;
@@ -333,7 +335,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public String getDocumentIdOfConsumedApplication(String PreID) {
 		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String documentId = preId_status.get(0).toString();
 		return documentId;
@@ -341,7 +343,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
 		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = prereg_dbread.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
 				"preregqa.cfg.xml");
 		String regCenterId = preId_status.get(0).toString();
 		return regCenterId;
@@ -2080,7 +2082,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		 multipleBookAppjson.put("requesttime", getCurrentDate());
 		 logger.info("Request::Multiple Book Appointment::" + multipleBookAppjson.toString());
-		
+		 JSONObject yuu = multipleBookAppjson;
 		String preReg_BookingAppURI = preReg_MultipleBookAppURI;
 		response = applnLib.postRequest(multipleBookAppjson, preReg_BookingAppURI);
 		return response;

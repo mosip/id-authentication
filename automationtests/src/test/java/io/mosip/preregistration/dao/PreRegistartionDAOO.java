@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import io.mosip.dbaccess.prereg_dbread;
+
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
 

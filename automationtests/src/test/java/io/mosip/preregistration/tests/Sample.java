@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
-import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.dao.PreRegistartionDAOO;
 import io.mosip.preregistration.dao.PreregistrationDAO;
