@@ -65,19 +65,16 @@ public class SignatureUtilImplTest {
 	@Value("${mosip.kernel.signature.signature-version-id}")
 	private String syncDataVersionId;
 
-	@Value("${mosip.kernel.signature.encrypt-url}")
+	@Value("${mosip.kernel.keymanager-service-sign-url}")
 	private String encryptUrl;
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 
-	@Value("${mosip.sign.header:response-signature}")
-	private String signedHeader;
-
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
 
-	@Value("${mosip.sign.refid:KER}")
+	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
 
 	@Autowired
