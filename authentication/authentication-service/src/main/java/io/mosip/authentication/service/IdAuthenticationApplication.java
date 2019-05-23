@@ -31,7 +31,6 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
@@ -39,7 +38,6 @@ import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -50,7 +48,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  */
 @SpringBootApplication
 @Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
-		PDFGeneratorImpl.class, DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class,
+		DecryptorImpl.class, CbeffImpl.class, VidGeneratorImpl.class, VidFilterUtils.class,
 		RestHelperImpl.class, RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class,
 		IdRepoManager.class, NotificationManager.class, NotificationServiceImpl.class, IdTemplateManager.class,
 		TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class, IdInfoFetcherImpl.class,

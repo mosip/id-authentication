@@ -49,10 +49,6 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 
-	private static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
-
-	private static final String REG_ID = "rid";
-
 	/**
 	 * The Constant Id Repo Errors
 	 */

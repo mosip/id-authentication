@@ -21,8 +21,6 @@ public class IrirsMatchingStrategyTest {
 	@Test
 	public void TestUnknownError() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = IrisMatchingStrategy.PARTIAL.getMatchFunction();
-		String reqValues;
-		String entityValues;
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put(IrisProvider.class.getSimpleName(), "TEst");
 		matchFunction.match("name", "name", matchProperties);

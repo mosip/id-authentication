@@ -344,6 +344,7 @@ public class IdRepoManagerTest {
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetUINByRID() throws IdAuthenticationBusinessException, RestServiceException {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
@@ -509,7 +510,6 @@ public class IdRepoManagerTest {
 	 */
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void testIDDataValaidationException() throws RestServiceException, IdAuthenticationBusinessException {
-		RestRequestDTO restReq=new RestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER));
 		idReposerviceImpl.getUINByVID("234433356");
 		}
