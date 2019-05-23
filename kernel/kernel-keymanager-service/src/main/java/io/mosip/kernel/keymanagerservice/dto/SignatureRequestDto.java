@@ -6,12 +6,9 @@
  */
 package io.mosip.kernel.keymanagerservice.dto;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -34,7 +31,7 @@ public class SignatureRequestDto {
 	 * Application id of decrypting module
 	 */
 	@ApiModelProperty(notes = "Application id of decrypting module", example = "REGISTRATION", required = true)
-	//@NotBlank(message = KeymanagerConstant.SIGNATURE_ALGORITHM)
+	@NotBlank(message = KeymanagerConstant.INVALID_REQUEST)
 	private String applicationId;
 	/**
 	 * Refrence Id
@@ -45,14 +42,13 @@ public class SignatureRequestDto {
 	 * Timestamp
 	 */
 	@ApiModelProperty(notes = "Timestamp as metadata", example = "2018-12-10T06:12:52.994Z", required = true)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	@NotNull
-	private LocalDateTime timeStamp;
+	@NotBlank(message = KeymanagerConstant.INVALID_REQUEST)
+	private String timeStamp;
 	/**
 	 * Data in BASE64 encoding to encrypt/decrypt
 	 */
 	@ApiModelProperty(notes = "Data to sign", required = true)
-	//@NotBlank(message = CryptomanagerConstant.INVALID_REQUEST)
+	@NotBlank(message = KeymanagerConstant.INVALID_REQUEST)
 	private String data;
 
 }
