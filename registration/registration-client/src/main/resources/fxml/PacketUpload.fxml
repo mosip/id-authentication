@@ -53,14 +53,15 @@
                      <children>
                         <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                            <columns>
-                              <TableColumn fx:id="checkBoxColumn" prefWidth="${tableContainer.width*5/100}">
+                              <TableColumn fx:id="checkBoxColumn" prefWidth="${tableContainer.width*2/100}">
                                  <graphic>
                                     <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox">
                                        </CheckBox>
                                  </graphic>
                               </TableColumn>
-                              <TableColumn  fx:id="fileNameColumn" prefWidth="${tableContainer.width*45/100}" styleClass="tableId" text="%files" />
-                              <TableColumn fx:id="regDate" prefWidth="${tableContainer.width*45/100}" styleClass="tableId" text="%registrationDate" />
+                               <TableColumn fx:id="slno" prefWidth="${tableContainer.width*3/100}" editable="false" sortable="false" styleClass="tableId" text="%slno" />
+                              <TableColumn fx:id="fileNameColumn" prefWidth="${tableContainer.width*20/100}" editable="false" sortable="false" styleClass="tableId" text="%files" />
+                              <TableColumn fx:id="regDate" editable="false" sortable="false" prefWidth="${tableContainer.width*67/100}" styleClass="tableId" text="%registrationDate" />
                            </columns>
                         </TableView>
                         <GridPane GridPane.rowIndex="1">

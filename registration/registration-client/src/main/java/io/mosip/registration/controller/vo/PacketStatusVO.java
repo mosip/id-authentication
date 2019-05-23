@@ -18,6 +18,7 @@ public class PacketStatusVO {
 	private String supervisorStatus;
 	private String supervisorComments;
 	private String createdTime;
+	private String slno;
 	
 	/**
 	 * @return the supervisorStatus
@@ -121,6 +122,14 @@ public class PacketStatusVO {
 
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public String getSlno() {
+		return slno;
+	}
+
+	public void setSlno(String slno) {
+		this.slno = slno;
 	}
 	
 }

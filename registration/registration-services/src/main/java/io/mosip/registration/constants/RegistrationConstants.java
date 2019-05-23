@@ -667,7 +667,9 @@ public class RegistrationConstants {
 
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
-
+	public static final String PACKET_UPLOAD_SNO = "slno";
+	public static final String PACKET_UPLOAD_DATE = "createdTime";
+	public static final String PACKET_UPLOAD_FILE = "fileName";
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String ICS_CODE_ONE = "REG-ICS‌-001";
