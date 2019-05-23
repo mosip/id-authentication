@@ -1,0 +1,1 @@
+{"transactionID":"2813071564","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"$REGEXP:Invalid Input Parameter - bioSubType - .* for bioType .*$"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
