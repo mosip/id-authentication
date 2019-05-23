@@ -202,6 +202,10 @@ public class LoginServiceImpl implements LoginService {
 		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
 				RegistrationConstants.OPT_TO_REG_MDS_J00001,
 				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {
+		}
 
 		ResponseDTO userResponseDTO = userDetailService
 				.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);

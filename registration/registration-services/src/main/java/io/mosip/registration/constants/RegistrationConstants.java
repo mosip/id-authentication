@@ -1074,6 +1074,8 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
+	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
+	public static final String MASTER_CENTER_PARAM="regcenterId";
 	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
 	public static final String MASTER_SYNC_LOGGER_INFO = "Entering into Master Sync Dao Impl...";
 	// POLICY SYNC
