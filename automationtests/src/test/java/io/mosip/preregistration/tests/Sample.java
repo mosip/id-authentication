@@ -79,19 +79,21 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test(groups = { "IntegrationScenarios" })
 	public void updatePreRegistrationDataForExpiredApplication()
 			throws FileNotFoundException, IOException, ParseException {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		lib.syncAvailability();
+		lib.FetchCentre("10006");
+	/*	testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 			Response createResponse = lib.CreatePreReg(createPregRequest);
-			
-
-	
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
-		/*Response avilibityResponse = lib.FetchCentre();
+		Response avilibityResponse = lib.FetchCentre("10006");
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		dao.setDate(preID);
-		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);*/
-		//lib.expiredStatus();
+		lib.syncAvailability();
+		lib.FetchAppointmentDetails(preID);
+		lib.getPreRegistrationStatus(preID);
+*/		//Response avilibityResponse = lib.FetchCentre("10006");
+	//	System.out.println("=========="+preID);
+		
 	}
 
 
