@@ -91,8 +91,9 @@ export const admin_base_url = `https://${base_url}/v1/admin/`;
 
 export const loginURL = {
   userRole: `${admin_base_url}security/authfactors/`,
-  userIdpasswd: `${admin_base_url}useridPwd`,
+  userIdpasswd: `${admin_base_url}login`,
   sendOtp: `https://${base_url}/v1/authmanager/authenticate/sendotp`,
-  verifyOtp: `https://${base_url}/v1/authmanager/authenticate/useridOTP`
+  verifyOtp: `https://${base_url}/v1/authmanager/authenticate/useridOTP`,
 };
 
+export const logoutUrl = `${admin_base_url}logout`;

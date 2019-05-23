@@ -71,7 +71,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         this.buttonDisabled = true;
       }
     }
-    if ( this.authTypes.length === 2) {
+    if (this.authTypes.length === 2) {
       if (this.otpStatus && this.passwordStatus) {
         this.buttonDisabled = true;
       }
@@ -167,7 +167,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   }
   validateUserOtp(otp) {
     console.log(otp);
-    if (otp.length === 6) {
+    if (otp.length === 6 ) {
       this.otpValidationDto = new OtpValidateDto();
       this.otpValidationDto.userId = this.userId;
       this.otpValidationDto.otp = otp;
@@ -186,7 +186,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             if (response.status === 'success') {
               this.otpStatus = true;
               this.otpErrorMessage = false;
-              localStorage.setItem(this.userId, ' true ');
+              localStorage.setItem('userName', this.userId);
+              localStorage.setItem('loggedIn', ' true ');
               this.enableButton();
             } else if (response.status === 'failure') {
               this.otpErrorMessage = true;
@@ -198,13 +199,21 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         });
     }
   }
-   onSubmit(values) {
+  onSubmit(values) {
     if (this.authTypes.includes('password') && this.authTypes.length === 1) {
       if (this.passwordStatus) {
+        localStorage.setItem('userName', this.userId);
+        localStorage.setItem('loggedIn', ' true ');
         this.router.navigateByUrl('admin/dashboard');
       }
-    } else if (this.authTypes.length === 2) {
+    } else if (
+      this.authTypes.includes('password') &&
+      this.authTypes.includes('otp') &&
+      this.authTypes.length === 2
+    ) {
       if (this.passwordStatus && this.otpStatus) {
+        localStorage.setItem('userName', this.userId);
+        localStorage.setItem('loggedIn', ' true ');
         this.router.navigateByUrl('admin/dashboard');
       }
     }
