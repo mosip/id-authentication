@@ -184,7 +184,7 @@ public class ClientJarDecryption extends Application {
 					try {
 						return checkForJars(true);
 					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-							| SAXException | IOException e) {
+							| SAXException | IOException exception) {
 						return false;
 					}
 
@@ -251,9 +251,9 @@ public class ClientJarDecryption extends Application {
 								FileUtils.deleteDirectory(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException e) {
+						} catch (IOException | InterruptedException exception) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							exception.printStackTrace();
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");

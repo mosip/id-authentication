@@ -1008,7 +1008,7 @@ public class BaseController {
 		GridPane HomePageRoot = null;
 		try {
 			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
-		} catch (IOException e) {
+		} catch (IOException ioException) {
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION,
 					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);

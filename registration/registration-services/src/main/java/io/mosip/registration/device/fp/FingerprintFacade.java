@@ -57,7 +57,7 @@ public class FingerprintFacade {
 	public boolean setIsoTemplate() {
 		try {
 			this.isoTemplate = captureFingerPrintThroughMdm().get("FINGERPRINT_SINGLE");
-		} catch (NullPointerException exception) {
+		} catch (NullPointerException nullPointerException) {
 			return false;
 		}
 		if (this.isoTemplate != null)
@@ -72,7 +72,7 @@ public class FingerprintFacade {
 		Map<String, byte[]> byteMap = null;
 		try {
 			byteMap = mosipBioDeviceManager.scan("FINGERPRINT_SINGLE");
-		} catch (RegBaseCheckedException e) {
+		} catch (RegBaseCheckedException regBaseCheckedException) {
 
 		}
 		return byteMap;

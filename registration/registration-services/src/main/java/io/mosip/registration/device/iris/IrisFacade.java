@@ -145,8 +145,8 @@ public class IrisFacade {
 				capturedByte= mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
 			else
 				capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
-		} catch (RegBaseCheckedException | RuntimeException e) {
-			e.printStackTrace();
+		} catch (RegBaseCheckedException | RuntimeException exception) {
+			exception.printStackTrace();
 		}
 		return capturedByte;
 	}

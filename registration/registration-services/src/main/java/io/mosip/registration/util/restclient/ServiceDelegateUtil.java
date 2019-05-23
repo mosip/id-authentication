@@ -276,7 +276,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setIsSignRequired(false);
 		try {
 			requestHTTPDTO.setUri(new URI(url));
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException uriSyntaxException) {
 		}
 		// set timeout
 		setTimeout(requestHTTPDTO);

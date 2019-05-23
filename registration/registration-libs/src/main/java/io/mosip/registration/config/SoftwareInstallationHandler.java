@@ -102,9 +102,9 @@ public class SoftwareInstallationHandler {
 					setLatestVersion(subList.item(0).getNodeValue());
 				}
 			}
-		} catch (NoRouteToHostException e) {
+		} catch (NoRouteToHostException noRouteToHostException) {
 			System.out.println("Error in connection");
-			throw e;
+			throw noRouteToHostException;
 		}
 
 		return latestVersion;
@@ -201,8 +201,8 @@ public class SoftwareInstallationHandler {
 						System.out.println("Current Thread*****" + Thread.currentThread());
 						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
 						checkForJarFile(version, folder, jarFile);
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (IOException ioException) {
+						ioException.printStackTrace();
 					}
 				}
 			});
@@ -211,8 +211,8 @@ public class SoftwareInstallationHandler {
 		try {
 			executorService.shutdown();
 			executorService.awaitTermination(500, TimeUnit.SECONDS);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 		Long t2 = System.currentTimeMillis() - t1;
 		System.out.println("Time in Millis-------->>>>" + t2 / (1000));
@@ -366,9 +366,9 @@ public class SoftwareInstallationHandler {
 			} else {
 				throw new IOException("No Disk Space");
 			}
-		} catch (NoRouteToHostException e) {
+		} catch (NoRouteToHostException noRouteToHostException) {
 			System.out.println("Error in connection");
-			throw e;
+			throw noRouteToHostException;
 		}
 		return is;
 	}
@@ -399,8 +399,8 @@ public class SoftwareInstallationHandler {
 		if (!deletableJars.isEmpty()) {
 			try {
 				deleteFiles(deletableJars);
-			} catch (io.mosip.kernel.core.exception.IOException e) {
-				e.printStackTrace();
+			} catch (io.mosip.kernel.core.exception.IOException ioException) {
+				ioException.printStackTrace();
 			}
 		}
 	}

@@ -102,8 +102,8 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 			writer.close();
 			scannedPdfFile = byteArrayOutputStream.toByteArray();
 			byteArrayOutputStream.close();
-		} catch (DocumentException | IOException e) {
-			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
+		} catch (DocumentException | IOException exception) {
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
 		return scannedPdfFile;
 

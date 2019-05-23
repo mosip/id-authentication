@@ -50,8 +50,8 @@ public class FaceFacade {
 				capturedByte = mosipBioDeviceManager.scan("FACE").get("FACE");
 			else
 				capturedByte=RegistrationConstants.FACE.toLowerCase().getBytes();
-		} catch (RegBaseCheckedException | RuntimeException e) {
-			e.printStackTrace();
+		} catch (RegBaseCheckedException | RuntimeException exception) {
+			exception.printStackTrace();
 		}
 		return capturedByte;
 	}
