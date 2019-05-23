@@ -24,6 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -84,6 +85,7 @@ public class AuthManagerExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError(e.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
@@ -92,6 +94,7 @@ public class AuthManagerExceptionHandler {
 			AuthManagerServiceException e) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		responseWrapper.getErrors().addAll(e.getList());
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 	
@@ -101,6 +104,7 @@ public class AuthManagerExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError("500", e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

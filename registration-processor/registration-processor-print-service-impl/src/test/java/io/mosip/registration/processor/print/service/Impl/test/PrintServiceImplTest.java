@@ -42,7 +42,7 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
-import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -51,9 +51,11 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class, CryptoUtil.class, FileUtils.class })
@@ -73,7 +75,7 @@ public class PrintServiceImplTest {
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The id response. */
-	private IdResponseDTO idResponse = new IdResponseDTO();
+	private IdResponseDTO1 idResponse = new IdResponseDTO1();
 
 	/** The response. */
 	private ResponseDTO response = new ResponseDTO();
@@ -113,11 +115,11 @@ public class PrintServiceImplTest {
 	public void setup() throws Exception {
 		ReflectionTestUtils.setField(printService, "primaryLang", "eng");
 		ReflectionTestUtils.setField(printService, "secondaryLang", "ara");
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "4238135072");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
 		
-		List<String> uinList = new ArrayList<>();
-		uinList.add("4238135072");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-
 		LinkedHashMap<String, Object> identityMap = new LinkedHashMap<>();
 		Map<String, String> map = new HashMap<>();
 		map.put("language", "eng");
@@ -215,7 +217,7 @@ public class PrintServiceImplTest {
 				+ "		\"city\": {\r\n" + "			\"value\" : \"city\"\r\n" + "		}\r\n" + "	}\r\n" + "} ";
 
 		PowerMockito.mockStatic(Utilities.class);
-		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
+		PowerMockito.when(Utilities.class, "getJson", any(), any()).thenReturn(value);
 		
 		byte[] qrcode = "QRCODE GENERATED".getBytes();
 		Mockito.when(qrCodeGenerator.generateQrCode(any(), any())).thenReturn(qrcode);
@@ -230,11 +232,13 @@ public class PrintServiceImplTest {
 	}
 	
 	@Test
-	public void testPdfGeneratedwithRIDSuccess() {
+	public void testPdfGeneratedwithRIDSuccess() throws IdRepoAppException, ApisResourceAccessException {
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "2046958192");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);		
 		byte[] expected = outputStream.toByteArray();
 		byte[] result = printService.getDocuments(IdType.UIN, uinList.get(0) ).get("uinPdf");
 		assertArrayEquals(expected, result);
@@ -242,13 +246,17 @@ public class PrintServiceImplTest {
 	
 	/**
 	 * Test UIN not found.
+	 * @throws ApisResourceAccessException 
+	 * @throws IdRepoAppException 
 	 */
 	@Test(expected = PDFGeneratorException.class)
-	public void testUINNotFound() {
+	public void testUINNotFound() throws IdRepoAppException, ApisResourceAccessException {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(null);
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", null);
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);	
 		printService.getDocuments(IdType.RID, "2046958192");
 	}
 	
@@ -267,23 +275,29 @@ public class PrintServiceImplTest {
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "2046958192");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);			
 		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
 	/**
 	 * Test PDF generator exception.
+	 * @throws ApisResourceAccessException 
+	 * @throws IdRepoAppException 
 	 */
 	@Test(expected = PDFGeneratorException.class)
-	public void testPDFGeneratorException() {
+	public void testPDFGeneratorException() throws IdRepoAppException, ApisResourceAccessException {
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
 		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "2046958192");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);			
 		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
@@ -300,20 +314,24 @@ public class PrintServiceImplTest {
 
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "2046958192");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);			
 		printService.getDocuments(IdType.UIN, uinList.get(0) );
 	}
 	
 	@Test(expected = PDFGeneratorException.class)
-	public void testQRCodeGenerationException() throws QrcodeGenerationException, IOException {
+	public void testQRCodeGenerationException() throws QrcodeGenerationException, IOException, IdRepoAppException, ApisResourceAccessException {
 		QrcodeGenerationException e = new QrcodeGenerationException(null,null,null);
 		Mockito.doThrow(e).when(qrCodeGenerator).generateQrCode(any(), any());
 		
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
-		Mockito.when(packetInfoManager.getUINByRid(anyString())).thenReturn(uinList);
-		
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("UIN", "2046958192");
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);			
 		printService.getDocuments(IdType.UIN, uinList.get(0) );
 		
 	}

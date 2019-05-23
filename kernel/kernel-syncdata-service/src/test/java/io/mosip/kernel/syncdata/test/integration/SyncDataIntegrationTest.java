@@ -1,10 +1,14 @@
 package io.mosip.kernel.syncdata.test.integration;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -15,8 +19,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -26,16 +32,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyRequestDto;
+import io.mosip.kernel.syncdata.dto.UploadPublicKeyResponseDto;
 import io.mosip.kernel.syncdata.entity.AppAuthenticationMethod;
 import io.mosip.kernel.syncdata.entity.AppDetail;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
@@ -110,6 +127,7 @@ import io.mosip.kernel.syncdata.repository.IdTypeRepository;
 import io.mosip.kernel.syncdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.syncdata.repository.LanguageRepository;
 import io.mosip.kernel.syncdata.repository.LocationRepository;
+import io.mosip.kernel.syncdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.syncdata.repository.MachineRepository;
 import io.mosip.kernel.syncdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.syncdata.repository.MachineTypeRepository;
@@ -147,6 +165,11 @@ public class SyncDataIntegrationTest {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	private Machine machine;
 
 	private List<Application> applications;
 	private List<Machine> machines;
@@ -276,6 +299,9 @@ public class SyncDataIntegrationTest {
 	private ProcessListRepository processListRepository;
 
 	@MockBean
+	private MachineHistoryRepository machineHistoryRepository;
+
+	@MockBean
 	private ScreenDetailRepository screenDetailRepo;
 	@MockBean
 	private SignatureUtil signatureUtil;
@@ -307,15 +333,25 @@ public class SyncDataIntegrationTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630";
-	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0";
-	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?serialnumber=NM532811463";
-	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata";
+	private String syncDataUrlMacAdress = "/masterdata?macaddress=e1:01:2b:c2:1d:b0&keyindex=abcd";
+	private String syncDataUrlSerialNum = "/masterdata?serialnumber=NM5328114630&keyindex=abcd";
+	private String syncDataUrl = "/masterdata?lastupdated=ssserialnumber=NM5328114630&macAddress=e1:01:2b:c2:1d:b0&keyindex=abcd";
+	private String syncDataUrlWithRegId = "/masterdata/{regcenterId}?macaddress=e1:01:2b:c2:1d:b0&serialnumber=NM532811463&keyindex=abcd";
+	private String syncDataUrlWithoutMacAddressAndSno = "/masterdata?keyindex=abcd";
+	private String syncDataUrlTPMPublicKey = "/tpm/publickey";
 	private SignatureResponse signResponse;
+
+	private String encodedTPMPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn4A-U6V4SpSeJmjl0xtBDgyFaHn1CvglvnpbczxiDakH6ks8tPvIYT4jDOU-9XaUYKuMFhLxS7G8qwJhv7GKpDQXphSXjgwv_l8A--KV6C1UVaHoAs4XuJPFdXneSd9uMH94GO6lWucyOyfaZLrf5F_--2Rr4ba4rBWw20OrAl1c7FrzjIQjzYXgnBMrvETXptxKKrMELwOOsuyc1Ju4wzPJHYjI0Em4q2BOcQLXqYjhsZhcYeTqBFxXjCOM3WQKLCIsh9RN8Hz-s8yJbQId6MKIS7HQNCTbhbjl1jdfwqRwmBaZz0Gt73I4_8SVCcCQzJWVsakLC1oJAFcmi3l_mQIDAQAB";
+	private byte[] tpmPublicKey = CryptoUtil.decodeBase64(encodedTPMPublicKey);
+	private String keyIndex = CryptoUtil.computeFingerPrint(tpmPublicKey, null);
+	private static final String ID = "mosip.syncdata.service";
+	private static final String VERSION = "V1.0";
+	private static final String MACHINE_NAME = "Machine 2";
+	private RequestWrapper<UploadPublicKeyRequestDto> reqWrapper;
 
 	@Before
 	public void setup() {
+
 		signResponse = new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
 		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
@@ -324,8 +360,9 @@ public class SyncDataIntegrationTest {
 		applications = new ArrayList<>();
 		applications.add(new Application("101", "ENG", "MOSIP", "MOSIP"));
 		machines = new ArrayList<>();
-		machines.add(new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG",
-				localdateTime, null));
+		machine = new Machine("1001", "Laptop", "9876427", "172.12.01.128", "21:21:21:12", "1001", "ENG", localdateTime,
+				tpmPublicKey, keyIndex, null);
+		machines.add(machine);
 		machineSpecification = new ArrayList<>();
 		machineSpecification.add(
 				new MachineSpecification("1001", "Laptop", "Lenovo", "T480", "1001", "1.0", "Laptop", "ENG", null));
@@ -596,10 +633,30 @@ public class SyncDataIntegrationTest {
 		screenDetailList = new ArrayList<>();
 		screenDetailList.add(screenDetail);
 
+		reqWrapper = new RequestWrapper<>();
+		UploadPublicKeyRequestDto uploadPublicKeyRequestDto = new UploadPublicKeyRequestDto();
+		uploadPublicKeyRequestDto.setMachineName(MACHINE_NAME);
+		uploadPublicKeyRequestDto.setPublicKey(encodedTPMPublicKey);
+		reqWrapper.setId(ID);
+		reqWrapper.setVersion(VERSION);
+		reqWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
+		reqWrapper.setRequest(uploadPublicKeyRequestDto);
 	}
 
 	private void mockSuccess() {
-
+		when(registrationCenterMachineRepository
+				.getRegistrationCenterMachineWithSerialNumberAndKeyIndex(Mockito.anyString(), Mockito.anyString()))
+						.thenReturn(objectArrayList);
+		;
+		when(registrationCenterMachineRepository
+				.getRegistrationCenterMachineWithMacAddressAndKeyIndex(Mockito.anyString(), Mockito.anyString()))
+						.thenReturn(objectArrayList);
+		;
+		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithMacAddressAndSerialNumAndKeyIndex(
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(objectArrayList);
+		;
+		when(registrationCenterMachineRepository.getRegistrationCenterMachineWithKeyIndex(Mockito.anyString()))
+				.thenReturn(objectArrayList);
 		when(registrationCenterRepository.findRegistrationCenterByIdAndIsActiveIsTrue(Mockito.anyString()))
 				.thenReturn(registrationCenters);
 		when(registrationCenterMachineRepository.getRegCenterIdWithRegIdAndMachineId(Mockito.anyString(),
@@ -781,9 +838,9 @@ public class SyncDataIntegrationTest {
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterDataInvalidTimeStampException() throws Exception {
 		mockSuccess();
-		mockMvc.perform(
-				get("/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33", "1001"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(
+				"/masterdata/{regcenterId}?lastupdated=2018-11-01T12:101:01.021Z&macaddress=00:11:22:33&keyindex=abcd",
+				"1001")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -1134,14 +1191,13 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/registrationcenteruser/1")).andExpect(status().isNotFound());
 	}
 
-	@Test
+	@Ignore
 	@WithUserDetails(value = "reg-officer")
-
 	public void IsMachineIdPresentServiceExceptionTest() throws Exception {
 		when(machineRepository.findByMachineIdAndIsActive(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
-		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isOk());
+		mockMvc.perform(get(syncDataUrlWithRegId, "1001")).andExpect(status().isInternalServerError());
 	}
 
 	// @Test
@@ -1161,7 +1217,7 @@ public class SyncDataIntegrationTest {
 	 * .thenThrow(DataRetrievalFailureException.class);
 	 * 
 	 * mockMvc.perform(get(syncDataUrlWithRegId,
-	 * "1001")).andExpect(status().isInternalServerError()); }
+	 * "1001")).andExpect(status().isOk()); }
 	 */
 
 	@Test
@@ -1232,7 +1288,7 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get(syncDataUrlWithoutMacAddressAndSno)).andExpect(status().isOk());
 	}
 
-	@Test
+	@Ignore
 	@WithUserDetails(value = "reg-officer")
 	public void syncMasterdataWithServiceException() throws Exception {
 		mockSuccess();
@@ -1327,6 +1383,56 @@ public class SyncDataIntegrationTest {
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
 		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
 		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncTPMPublicKey() throws Exception {
+		mockSuccess();
+		String requestBody = objectMapper.writeValueAsString(reqWrapper);
+		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenReturn(Optional.of(machine));
+		MvcResult mvcResult = mockMvc
+				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isOk()).andReturn();
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				ResponseWrapper.class);
+
+		UploadPublicKeyResponseDto uploadPublicKeyResponseDto = objectMapper.readValue(
+				objectMapper.writeValueAsString(responseWrapper.getResponse()), UploadPublicKeyResponseDto.class);
+
+		assertThat(uploadPublicKeyResponseDto.getKeyIndex(), isA(String.class));
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncTPMPublicKeyRequestException() throws Exception {
+		mockSuccess();
+		String requestBody = objectMapper.writeValueAsString(reqWrapper);
+		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenReturn(Optional.empty());
+		MvcResult mvcResult = mockMvc
+				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isOk()).andReturn();
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-SNC-155"));
+	}
+
+	@Test
+	@WithUserDetails(value = "reg-officer")
+	public void syncTPMPublicKeyDataAccessException() throws Exception {
+		mockSuccess();
+		String requestBody = objectMapper.writeValueAsString(reqWrapper);
+		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenThrow(
+				new DataAccessLayerException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
+						MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage(), null));
+		MvcResult mvcResult = mockMvc
+				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				.andExpect(status().isInternalServerError()).andReturn();
+		ResponseWrapper<?> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+				ResponseWrapper.class);
+
+		assertThat(responseWrapper.getErrors().get(0).getErrorCode(), is("KER-SNC-156"));
 	}
 
 }

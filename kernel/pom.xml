@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.11.5</version>
+		<version>0.12.0</version>
 	</parent>
 
 
@@ -178,6 +178,7 @@
 		<module>kernel-signature-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-idobjectvalidator</module>
+		<module>kernel-bioapi-provider</module>
 	</modules>
 
 	<dependencies>

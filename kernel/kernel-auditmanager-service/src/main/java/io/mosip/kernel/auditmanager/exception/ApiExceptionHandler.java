@@ -24,6 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
 import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -67,6 +68,7 @@ public class ApiExceptionHandler {
 							+ x.getDefaultMessage());
 			responseWrapper.getErrors().add(error);
 		});
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 
 	}
@@ -77,6 +79,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(AuditErrorCode.INVALIDFORMAT.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
@@ -86,6 +89,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(AuditErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

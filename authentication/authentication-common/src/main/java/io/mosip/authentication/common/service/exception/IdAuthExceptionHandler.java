@@ -183,27 +183,27 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			//Retrived error codes and error messages are in reverse order.
 			Collections.reverse(errorCodes);
 			Collections.reverse(errorMessages);
-				if (ex instanceof IDDataValidationException) {
-					IDDataValidationException validationException = (IDDataValidationException) ex;
-					List<Object[]> args = validationException.getArgs();
-					List<String> actionArgs = validationException.getActionargs();
-					errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(
-									i -> createAuthError(validationException, errorCodes.get(i),
-											args != null ? String.format(errorMessages.get(i), args)
-													: errorMessages.get(i),
-											actionArgs.get(i)))
-							.distinct().collect(Collectors.toList());
-				} else {
-					errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(
-									i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
-							.distinct().collect(Collectors.toList());
-				}
-				
-				response =  frameErrorResponse(requestReceived, errors);
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(), response.toString());
-				return response;
+			if (ex instanceof IDDataValidationException) {
+				IDDataValidationException validationException = (IDDataValidationException) ex;
+				List<Object[]> args = validationException.getArgs();
+				List<String> actionArgs = validationException.getActionargs();
+				errors = IntStream.range(0, errorCodes.size())
+						.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
+								args != null ? String.format(errorMessages.get(i), args) : errorMessages.get(i),
+								args != null && actionArgs != null && !actionArgs.contains(null)
+										? String.format(actionArgs.get(i), args.get(i))
+										: actionArgs.get(i)))
+						.distinct().collect(Collectors.toList());
+			} else {
+				errors = IntStream.range(0, errorCodes.size())
+						.mapToObj(i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
+						.distinct().collect(Collectors.toList());
+			}
+
+			response = frameErrorResponse(requestReceived, errors);
+			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
+					response.toString());
+			return response;
 		}
 
 		return null;

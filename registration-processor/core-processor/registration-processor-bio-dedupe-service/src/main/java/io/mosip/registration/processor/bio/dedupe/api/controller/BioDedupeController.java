@@ -33,7 +33,7 @@ public class BioDedupeController {
 
 	/** Token validator class */
 	@Autowired
-	TokenValidator tokenValidator;
+    private TokenValidator tokenValidator;
 	
 	/**
 	 * Gets the file.

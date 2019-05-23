@@ -5,8 +5,8 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 
 public class IdRepoAppException extends BaseUncheckedException {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+              /** The Constant serialVersionUID. */
+              private static final long serialVersionUID = 1L;
 
 	/**
 	 * Instantiates a new identity not found exception.

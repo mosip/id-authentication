@@ -24,7 +24,7 @@ public class RegistrationAbisConfig {
 	public AbisMessageQueueImpl getAbisMessageQueueImpl() {
 		return new AbisMessageQueueImpl();
 	}
-	
+
 	@Bean
 	public AbisService getAbisService() {
 		return new AbisServiceImpl() ;

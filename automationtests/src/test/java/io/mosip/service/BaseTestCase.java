@@ -63,7 +63,7 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	
+	public String testLevel;
 		
 	/**
 	 * Method that will take care of framework setup
@@ -115,8 +115,13 @@ public class BaseTestCase{
 			prop = new Properties();
 			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
 			prop.load(inputStream);
-			
-			logger.info("Setting test configs/TestEnvironment from " +  "src/config/test.properties");
+
+			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
+			// ApplnURI = prop.getProperty("testEnvironment");
+
+			testLevel = System.getProperty("env.testLevel");
+			logger.info("Test Level ======" + testLevel);
+			                    
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" +environment);
 			ApplnURI=System.getProperty("env.endpoint");
@@ -136,8 +141,47 @@ public class BaseTestCase{
 		// TESTNG BEFORE AND AFTER SUITE ANNOTATIONS
 		// ================================================================================================================
 
-		/**
-		 * Before entire test suite we need to setup everything we will need.
+	/**
+	 * Before entire test suite we need to setup everything we will need.
+	 */
+	@BeforeSuite(alwaysRun = true)
+	public void suiteSetup() {
+		logger.info("Test Framework for Mosip api Initialized");
+		logger.info("Logging initialized: All logs are located at " + "src/logs/mosip-api-test.log");
+		initialize();
+		logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
+
+
+		PreRegistrationLibrary pil = new PreRegistrationLibrary();
+		AuthTestsUtil.wakeDemoApp();
+		/*pil.PreRegistrationResourceIntialize();
+		*/
+
+	} // End suiteSetup
+
+	/**
+	 * After the entire test suite clean up rest assured
+	 */
+	@AfterSuite(alwaysRun = true)
+	public void testTearDown(ITestContext ctx) {
+
+		/* Calling up PreReg DB clean Up step */
+		if (preIds.size() >= 1) {
+			logger.info("Elements from PreId List are========");
+			for (String elem : preIds) {
+				logger.info(elem.toString());
+			}
+			boolean status = false;
+			status = PreRegDbread.prereg_db_CleanUp(preIds);
+			if (status)
+				logger.info("PreId is deleted from the DB");
+			else
+				logger.info("PreId is NOT deleted from the DB");
+
+		
+		}
+		/*
+		 * Saving TestNG reports to be published
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {

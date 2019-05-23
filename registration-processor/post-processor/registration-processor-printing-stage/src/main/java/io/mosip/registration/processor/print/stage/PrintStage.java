@@ -41,6 +41,7 @@ import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactor
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.dto.PrintQueueDTO;
@@ -90,6 +91,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The global exception handler. */
 	@Autowired
 	public PrintGlobalExceptionHandler globalExceptionHandler;
+	
+	@Autowired
+	public Utilities utilities;
 
 	/** The port. */
 	@Value("${server.port}")
@@ -177,6 +181,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private static final String SEPERATOR = "::";
 	
 	private MosipQueue queue;
+	
+	private static final String UIN = "UIN";
 
 	/**
 	 * Deploy verticle.
@@ -223,8 +229,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
-			String uin = packetInfoManager.getUINByRid(regId).get(0);
-
+			JSONObject jsonObject = utilities.retrieveUIN(regId);
+			Long value=JsonUtil.getJSONValue(jsonObject, UIN);
+			String uin= Long.toString(value);
+			
+			
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
@@ -233,7 +242,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
@@ -241,7 +249,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.UNABLE_TO_SENT_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
@@ -298,7 +305,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
-
 		return object;
 	}
 
@@ -400,7 +406,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
 				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, uin, status);
 				if (!responseMessageDto.getIsValid()) {
-					this.setResponse(ctx, RegistrationStatusCode.DOCUMENT_RESENT_TO_CAMEL_QUEUE);
+					this.setResponse(ctx, RegistrationStatusCode.PROCESSED);
 				} else {
 					this.setResponse(ctx, "Caught internal error in messageDto");
 				}
@@ -431,7 +437,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationId, "ConsumerStage::process()::exit");
 			if (status.equals(SUCCESS)) {
 				description = "Print and Post Completed for the regId : " + registrationId;
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PRINT_AND_POST_COMPLETED.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
@@ -439,7 +444,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			} else if (status.equals(RESEND)) {
 				description = "Re-Send uin card with regId " + registrationId + " for printing";
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.RESEND_UIN_CARD_FOR_PRINTING.toString());
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RESEND);
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
