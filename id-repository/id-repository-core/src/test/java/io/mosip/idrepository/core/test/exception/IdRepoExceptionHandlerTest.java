@@ -46,7 +46,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 public class IdRepoExceptionHandlerTest {
 
 	private Map<String, String> id;

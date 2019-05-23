@@ -42,6 +42,7 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
@@ -64,18 +65,21 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 public class IdRequestValidatorTest {
 
 	@InjectMocks
 	IdRequestValidator validator;
+	
+	@Mock
+	private BaseIdRepoValidator  baseValidator;
 
 	@Autowired
-	private Environment env;
+	Environment env;
 
 	private Map<String, String> id;
 
-	List<String> status;
+	private List<String> uinStatus;
 
 	List<String> allowedTypes;
 
@@ -107,26 +111,28 @@ public class IdRequestValidatorTest {
 		this.id = id;
 	}
 
-	public List<String> getStatus() {
-		return status;
+	public List<String> getUinStatus() {
+		return uinStatus;
 	}
 
-	public void setStatus(List<String> status) {
-		this.status = status;
+	public void setUinStatus(List<String> uinStatus) {
+		this.uinStatus = uinStatus;
 	}
 
 	Errors errors;
 
 	@Before
 	public void setup() {
-		status.add(env.getProperty("mosip.idrepo.status.registered"));
 		allowedTypes.add("bio,demo,all");
 		ReflectionTestUtils.setField(validator, "id", id);
-		ReflectionTestUtils.setField(validator, "uinStatus", status);
+		ReflectionTestUtils.setField(validator, "uinStatus", uinStatus);
+		ReflectionTestUtils.setField(baseValidator, "id", id);
 		ReflectionTestUtils.setField(validator, "env", env);
+		ReflectionTestUtils.setField(baseValidator, "env", env);
 		ReflectionTestUtils.setField(validator, "allowedTypes", allowedTypes);
 		ReflectionTestUtils.setField(validator, "mapper", mapper);
 		errors = new BeanPropertyBindingResult(new IdRequestDTO(), "idRequestDto");
+		uinStatus.add(env.getProperty("mosip.idrepo.identity.uin-status.registered"));
 	}
 
 	@Test

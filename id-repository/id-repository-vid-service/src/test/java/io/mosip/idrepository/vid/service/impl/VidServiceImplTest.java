@@ -452,6 +452,14 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
+		when(securityManager.hash(Mockito.any())).thenReturn("123");
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
+				.thenReturn(new RestRequestDTO());
+		IdResponseDTO identityResponse = new IdResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setStatus("ACTIVATED");
+		identityResponse.setResponse(response);
+		when(restHelper.requestSync(Mockito.any())).thenReturn(identityResponse);
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		service.retrieveUinByVid("12345678");
@@ -470,7 +478,7 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-002 --> Expired VID", e.getMessage());
+			assertEquals("IDR-VID-002 --> EXPIRED VID", e.getMessage());
 		}
 	}
 
