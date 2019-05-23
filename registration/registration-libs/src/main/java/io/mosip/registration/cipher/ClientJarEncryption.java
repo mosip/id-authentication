@@ -54,7 +54,6 @@ public class ClientJarEncryption {
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
 	private static final String MOSIP_BIN = "bin";
-	private static final String MOSIP_LOG = "log";
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
 	private static final String MOSIP_CER = "cer";
@@ -68,6 +67,10 @@ public class ClientJarEncryption {
 	private static final String MOSIP_CLIENT_APP_KEY = "mosip.registration.app.key = ";
 	private static final String MOSIP_CLIENT_DB_BOOT = "bW9zaXAxMjM0NQ==";
 	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration = N";
+	
+	private static final String MOSIP_ROLLBACK_PATH_PARAM = "mosip.rollback.path= ";
+	private static final String MOSIP_ROLLBACK_PATH = "D://mosip/AutoBackUp";
+	
 
 	/**
 	 * Encrypt the bytes
@@ -126,8 +129,7 @@ public class ClientJarEncryption {
 					// fileNameByBytes.put(encryptedFileToSave, encryptedFileBytes);
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
-					fileNameByBytes.put(MOSIP_LOG + SLASH, new byte[] {});
-
+					
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
 
 					// Certificate file
@@ -140,7 +142,7 @@ public class ClientJarEncryption {
 
 					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
 							+ "\n" + MOSIP_ENV_PARAM + MOSIP_ENV_VAL + "\n" + MOSIP_CLIENT_URL + MOSIP_CLIENT_URL_VAL
-							+ "\n" + MOSIP_XML_FILE_URL + MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM
+							+ "\n" +MOSIP_ROLLBACK_PATH_PARAM+MOSIP_ROLLBACK_PATH+ "\n" + MOSIP_XML_FILE_URL + MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM
 							+ MOSIP_PACKET_STORE_PATH + "\n" + MOSIP_CER_PARAM + MOSIP_CER_PATH + SLASH
 							+ mosipCertificateFile.getName() + "\n" + MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n")
 									.concat(MOSIP_CLIENT_DB_KEY).concat(MOSIP_CLIENT_DB_BOOT)

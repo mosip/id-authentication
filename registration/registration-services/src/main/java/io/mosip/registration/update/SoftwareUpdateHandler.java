@@ -63,14 +63,14 @@ public class SoftwareUpdateHandler extends BaseService {
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.client.url");
 		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+		backUpPath = properties.getProperty("mosip.rollback.path");
 	}
 
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
 
-	// TODO move to application.properties
-	private String backUpPath = "D://mosip/AutoBackUp";
+	private String backUpPath;
 	private static String serverRegClientURL;
 	private String serverMosipXmlFileUrl;
 
@@ -269,7 +269,7 @@ public class SoftwareUpdateHandler extends BaseService {
 				"Updating latest version started");
 	}
 
-	private Path backUpSetup() throws  io.mosip.kernel.core.exception.IOException {
+	private Path backUpSetup() throws io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Backup of current version started");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -303,8 +303,6 @@ public class SoftwareUpdateHandler extends BaseService {
 		return backUpFolder.toPath();
 
 	}
-
-	
 
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 
@@ -480,10 +478,10 @@ public class SoftwareUpdateHandler extends BaseService {
 	 * @return response of sql execution
 	 */
 	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) {
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"DB-Script files execution started" );
-		
+				"DB-Script files execution started");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
@@ -495,10 +493,10 @@ public class SoftwareUpdateHandler extends BaseService {
 			try {
 
 				runSqlFile(sqlFile);
-				
+
 				// Update global param with current version
 				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
-				
+
 			} catch (RuntimeException | IOException runtimeException) {
 
 				try {
@@ -528,9 +526,9 @@ public class SoftwareUpdateHandler extends BaseService {
 			setSuccessResponse(responseDTO, "Updated Version", null);
 
 		}
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"DB-Script files execution completed" );
+				"DB-Script files execution completed");
 
 		return responseDTO;
 	}
@@ -545,7 +543,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	private void runSqlFile(File sqlFile) throws IOException {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution started sql file : "+sqlFile.getName());
+				"Execution started sql file : " + sqlFile.getName());
 		for (File file : sqlFile.listFiles()) {
 			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
 
@@ -569,29 +567,25 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution completed sql file : "+sqlFile.getName());
+				"Execution completed sql file : " + sqlFile.getName());
 
 	}
 
-	
 	private void rollBackSetup(File backUpFolder) throws io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version started");
-		FileUtils.copyDirectory(
-				FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
+		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
 				FileUtils.getFile(FilenameUtils.getName(binFolder)));
-		FileUtils.copyDirectory(
-				FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
+		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
 				FileUtils.getFile(FilenameUtils.getName(libFolder)));
-		FileUtils.copyFile(
-				FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
+		FileUtils.copyFile(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
 				FileUtils.getFile(FilenameUtils.getName(manifestFile)));
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version completed");
 	}
-	
+
 	private void rollback(ResponseDTO responseDTO, String previousVersion) {
-		File file = FileUtils.getFile(FilenameUtils.getFullPath(backUpPath), FilenameUtils.getName(backUpPath));
+		File file = FileUtils.getFile(backUpPath);
 
 		boolean isBackUpCompleted = false;
 		for (File backUpFolder : file.listFiles()) {
@@ -599,7 +593,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 				try {
 					rollBackSetup(backUpFolder);
-					
+
 					isBackUpCompleted = true;
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
 				} catch (io.mosip.kernel.core.exception.IOException exception) {

@@ -47,6 +47,7 @@ public class SoftwareInstallationHandler {
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.client.url");
 		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+		
 		getLocalManifest();
 
 		if (localManifest != null) {
