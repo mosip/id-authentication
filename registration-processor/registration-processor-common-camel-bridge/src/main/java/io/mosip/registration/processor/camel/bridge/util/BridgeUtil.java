@@ -31,7 +31,7 @@ public class BridgeUtil {
 	 * This method gets all values from config server as a JsonObject and stores it
 	 * locally
 	 */
-	public static void getConfiguration() {
+	public static String getConfiguration() {
 		String url = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "url");
 		url=url+"/"+getActiveProfile()+"/"+getCloudConfigLabel();
 		String configServerTimer = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "config.server.timer");
@@ -63,6 +63,7 @@ public class BridgeUtil {
 			throw new ConfigurationServerFailureException(
 					PlatformErrorMessages.RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION.getMessage(), e);
 		}
+		return "";
 
 	}
 

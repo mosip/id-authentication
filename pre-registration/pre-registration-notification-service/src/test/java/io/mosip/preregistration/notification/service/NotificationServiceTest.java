@@ -124,6 +124,7 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
 		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setBatch(false);
 		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -232,7 +233,7 @@ public class NotificationServiceTest {
      	 ResponseEntity<String> respEntity=new ResponseEntity<String>(jsonObject.toJSONString(),HttpStatus.OK);
      	 notificationDTO.setAdditionalRecipient(false);
      	
-     	
+     	notificationDTO.setBatch(false);
      	 mainReqDto.setRequest(notificationDTO);
   		String stringjson = mapper.writeValueAsString(mainReqDto);
   		String langCode = "eng";

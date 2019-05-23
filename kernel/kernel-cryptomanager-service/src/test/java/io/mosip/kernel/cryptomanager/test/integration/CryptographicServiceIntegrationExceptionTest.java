@@ -47,7 +47,6 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
@@ -92,10 +91,6 @@ public class CryptographicServiceIntegrationExceptionTest {
 
 	private RequestWrapper<CryptomanagerRequestDto> requestWrapper;
 
-	private RequestWrapper<CryptoEncryptRequestDto> encryptRequestWrapper;
-
-	private CryptoEncryptRequestDto cryptoEncryptRequestDto;
-
 	private static final String ID = "mosip.crypto.service";
 	private static final String VERSION = "V1.0";
 
@@ -108,22 +103,11 @@ public class CryptographicServiceIntegrationExceptionTest {
 		requestWrapper.setId(ID);
 		requestWrapper.setVersion(VERSION);
 		requestWrapper.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
-
-		encryptRequestWrapper = new RequestWrapper<>();
-		encryptRequestWrapper.setId(ID);
-		encryptRequestWrapper.setVersion(VERSION);
-		encryptRequestWrapper.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
-		server = MockRestServiceServer.bindTo(restTemplate).build();
+        server = MockRestServiceServer.bindTo(restTemplate).build();
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
 		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId", "ref123");
-		cryptoEncryptRequestDto = new CryptoEncryptRequestDto();
-		cryptoEncryptRequestDto.setApplicationId("artvvfd");
-		cryptoEncryptRequestDto.setData("AbRCee-0eexcvsRe");
-		cryptoEncryptRequestDto.setReferenceId("REG");
-		cryptoEncryptRequestDto.setTimeStamp("2018-12-06T12:07:44.403Z");
-
 	}
 
 	@WithUserDetails("reg-processor")
@@ -250,44 +234,4 @@ public class CryptographicServiceIntegrationExceptionTest {
 		ResponseWrapper<CryptomanagerResponseDto> responseWrapper=objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<ResponseWrapper<CryptomanagerResponseDto>>(){});
 	    assertThat(responseWrapper.getErrors().get(0).getErrorCode(),is("KER-KMS-003"));
 	}
-
-	@WithUserDetails("reg-processor")
-	@Test
-	public void encryptDataExceptionTest() throws Exception {
-		ResponseWrapper<ServiceError> errorResponse = new ResponseWrapper<>();
-		ServiceError error = new ServiceError("KER-KMS-003", "No unique alias is found");
-		List<ServiceError> errors = new ArrayList<>();
-		errors.add(error);
-		errorResponse.setErrors(errors);
-		server.expect(requestTo(encryptUrl))
-				.andRespond(withSuccess(objectMapper.writeValueAsString(errorResponse), MediaType.APPLICATION_JSON));
-
-		encryptRequestWrapper.setId(ID);
-		encryptRequestWrapper.setVersion(VERSION);
-		encryptRequestWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
-		encryptRequestWrapper.setRequest(cryptoEncryptRequestDto);
-		String requestBody = objectMapper.writeValueAsString(encryptRequestWrapper);
-		MvcResult result =mockMvc.perform(post("/private/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError()).andReturn();
-		ResponseWrapper<CryptomanagerResponseDto> responseWrapper=objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<ResponseWrapper<CryptomanagerResponseDto>>(){});
-	    assertThat(responseWrapper.getErrors().get(0).getErrorCode(),is("KER-KMS-003"));
-	}
-
-	@WithUserDetails("reg-processor")
-	@Test
-	public void encryptParseException() throws Exception {
-		String response = " \"id\": \"string\",  \"version\": \"string\", \"responsetime\": \"2019-04-05T09:03:20.165Z\",\"metadata\": null,\"response\": { \"encryptedData\": \"UmtKDehMwCVj3BK64hlcu0xL_7vl47WM2yZLdXssLzGM0FZ2W4mCqPM_zxcpKSw2Qvj-exti0igFDWZejpYTzwCaA1FT2Z57C0tI1t2-wFuS083zQ_Vn9i--cQKSBXgTl7iCLEvNVbp_X7c9W4tUoIYdKNHw18t9Leq7MyOGOqj1_JFmTqV1dh3Okl6WG7qhq3jDd6gOkWMrtmv0qes-AH5u8eYjixMRzDD8uLhLjdMEgzfhPzk_ph4WCH7G1JjioPZ-FMD80QwlsWnWNiorB5xsdJyMwb8WU_woFakN1T3eYelGHIf9shQm0zeu9pdjVMsSSDif0a3imiYkMev8KQ\"}, \"errors\": null}";
-		server.expect(requestTo(encryptUrl)).andRespond(withSuccess().body(response));
-
-		encryptRequestWrapper.setId(ID);
-		encryptRequestWrapper.setVersion(VERSION);
-		encryptRequestWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
-		encryptRequestWrapper.setRequest(cryptoEncryptRequestDto);
-		String requestBody = objectMapper.writeValueAsString(encryptRequestWrapper);
-		MvcResult result = mockMvc.perform(post("/private/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError()).andReturn();
-		ResponseWrapper<CryptomanagerResponseDto> responseWrapper=objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<ResponseWrapper<CryptomanagerResponseDto>>(){});
-	    assertThat(responseWrapper.getErrors().get(0).getErrorCode(),is("KER-CRY-008"));
-	}
-
 }

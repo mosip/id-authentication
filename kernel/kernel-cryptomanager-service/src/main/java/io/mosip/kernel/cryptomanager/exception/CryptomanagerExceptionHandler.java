@@ -5,6 +5,7 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,6 +93,17 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(InvalidFormatException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> invalidFormatException(HttpServletRequest httpServletRequest,
 			final InvalidFormatException e) throws IOException {
+		return new ResponseEntity<>(
+				getErrorResponse(httpServletRequest, CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+						e.getMessage() + CryptomanagerConstant.WHITESPACE
+								+ CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
+						HttpStatus.OK),
+				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(DateTimeParseException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> dateTimeParseException(HttpServletRequest httpServletRequest,
+			final DateTimeParseException e) throws IOException {
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage() + CryptomanagerConstant.WHITESPACE

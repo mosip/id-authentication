@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import org.springframework.core.env.Environment;
 import io.mosip.admin.securitypolicy.constant.SecurityPolicyErrorConstant;
 import io.mosip.admin.securitypolicy.exception.SecurityPolicyException;
 import lombok.Getter;
+
 /**
  * containing security policy configurations
  * 
@@ -79,18 +81,19 @@ public class PolicyProperties {
 	}
 
 	private void validateAuthTypes() {
-		for (String policy : policyAuth.keySet()) {
-			Set<String> authTypes = policyAuth.get(policy);
+		for (Entry<String, Set<String>> policy : policyAuth.entrySet()) {
+			Set<String> authTypes = policy.getValue();
 			for (String auth : authTypes) {
 				boolean flag = Boolean.FALSE;
-				for (String authKey : authTypesMap.keySet()) {
-					Set<String> set = authTypesMap.get(authKey);
+				for (Entry<String, Set<String>> authKey : authTypesMap.entrySet()) {
+					Set<String> set = authKey.getValue();
 					if (set.contains(auth)) {
 						flag = true;
 					}
 				}
 				if (!flag) {
-					throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorCode(), SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorMessage() + auth);
+					throw new SecurityPolicyException(SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorCode(),
+							SecurityPolicyErrorConstant.NO_AUTH_TYPE_FOUND.errorMessage() + auth);
 				}
 
 			}

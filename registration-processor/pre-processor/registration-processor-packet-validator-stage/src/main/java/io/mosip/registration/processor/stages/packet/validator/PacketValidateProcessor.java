@@ -74,7 +74,9 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Service
@@ -93,7 +95,9 @@ public class PacketValidateProcessor {
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
-	/** Validator stage */
+	
+	@Autowired
+	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -427,10 +431,27 @@ public class PacketValidateProcessor {
 			return false;
 		}
 
+		// Check RegId  & regType are same or not From PacketMetaInfo by comparing with Sync list table
+		if (!validateRegIdAndTypeFromSyncTable(metadataList)) {
+			return false;
+		}		
+		
 		return true;
 
 	}
 
+	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
+		String regId = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONID);
+		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
+		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId, regType.toUpperCase());
+		
+		if(syncRecordList !=null && !syncRecordList.isEmpty()) 
+			return true;
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
+				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getCode(),
+				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getMessage());
+		return false;
+	}
 	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, JSONException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))

@@ -2,23 +2,37 @@ package io.mosip.kernel.keymanagerservice.util;
 
 import static java.util.Arrays.copyOfRange;
 
+import java.io.File;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
+import io.mosip.kernel.keymanagerservice.dto.CertificateEntry;
 import io.mosip.kernel.keymanagerservice.entity.BaseEntity;
 import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 
@@ -26,6 +40,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
  * Utility class for Keymanager
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -35,6 +50,11 @@ public class KeymanagerUtil {
 
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+	private static final String EMPTY="";
+	
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
+	private String asymmetricAlgorithmName;
+	
 	/**
 	 * KeySplitter for splitting key and data
 	 */
@@ -161,6 +181,38 @@ public class KeymanagerUtil {
 	 */
 	public LocalDateTime parseToLocalDateTime(String dateTime) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+	}
+	
+	
+	public void isCertificateValid(CertificateEntry<X509Certificate, PrivateKey> certificateEntry,Date inputDate) {
+		try {
+			certificateEntry.getChain()[0].checkValidity(inputDate);
+		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
+			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+		}
+	}
+	
+	public PrivateKey privateKeyExtractor(File privateKeyFile) {
+
+		KeyFactory kf = null;
+		PKCS8EncodedKeySpec keySpec = null;
+		PrivateKey privateKey = null;
+		byte[] privateKeyPEM;
+		try {
+			privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
+			String privateKeyPEMString = new String(privateKeyPEM);
+			byte[] encoded = Base64.decodeBase64(privateKeyPEMString);
+			kf = KeyFactory.getInstance(asymmetricAlgorithmName);
+			keySpec = new PKCS8EncodedKeySpec(encoded);
+			privateKey = kf.generatePrivate(keySpec);
+
+		} catch (io.mosip.kernel.core.exception.IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+		}
+
+		return privateKey;
 	}
 
 }
