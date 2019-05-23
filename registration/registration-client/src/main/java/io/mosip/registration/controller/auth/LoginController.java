@@ -956,9 +956,9 @@ public class LoginController extends BaseController implements Initializable {
 			try {
 				return validateFingerPrintWithMdm();
 			} catch (RegBaseCheckedException exception) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 				LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-						"%s Exception while getting the scanned finger details for user registration: %s caused by %s",
-						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
+						"%s Exception while getting the scanned finger details for login %s", exception.getMessage(),
 						ExceptionUtils.getStackTrace(exception)));
 				return false;
 			}
