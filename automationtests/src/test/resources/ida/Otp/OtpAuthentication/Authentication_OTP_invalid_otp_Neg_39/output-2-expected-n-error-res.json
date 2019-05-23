@@ -1,0 +1,1 @@
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-OTA-004","errorMessage":"OTP is invalid"}],"responseTime":"$IGNORE$","version":"1.0","transactionID":"7634014321","id":"mosip.identity.auth"}

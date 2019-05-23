@@ -105,6 +105,10 @@ public class NotificationService {
 	@Value("${preregistartion.identity.email}")
 	private String email;
 	
+	
+   @Value("${preregistartion.identity.fullName}")
+	private String fullName;
+	
 	@Value("${preregistartion.identity.phone}")
 	private String phone;
 
@@ -220,16 +224,12 @@ public class NotificationService {
 		JsonNode responseNode = mapper.readTree(responseEntity.getBody());
 
 		responseNode = responseNode.get(demographicResponse);
-		if (responseNode.isArray()) {
-			for (final JsonNode objNode : responseNode) {
-				responseNode = objNode.get(demographicDetails);
-				responseNode = responseNode.get(identity);
-			}
-		}else {
+
 			responseNode = responseNode.get(demographicDetails);
 			responseNode = responseNode.get(identity);
-		}
-
+		
+		notificationDto.setName(responseNode.get(fullName).get(0).get("value").asText());
+		
 		if (responseNode.get(email) != null) {
 			String emailId = responseNode.get(email).asText();
 			notificationDto.setEmailID(emailId);

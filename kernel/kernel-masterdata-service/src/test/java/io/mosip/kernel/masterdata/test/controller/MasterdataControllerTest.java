@@ -449,14 +449,14 @@ public class MasterdataControllerTest {
 
 	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void fetchAllBiometricTypeUsingLangCodeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString()))
 				.thenReturn(biometricTypeResponseDto);
@@ -507,7 +507,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------ApplicationControllerTest--------------------------//
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void fetchAllApplicationTest() throws Exception {
 		applicationResponseDto.setApplicationtypes(applicationDtoList);
 		Mockito.when(applicationService.getAllApplication()).thenReturn(applicationResponseDto);
@@ -589,7 +589,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentCategoryControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void fetchAllDocumentCategoryTest() throws Exception {
 		documentCategoryResponseDto.setDocumentcategories(documentCategoryDtoList);
 		Mockito.when(documentCategoryService.getAllDocumentCategory()).thenReturn(documentCategoryResponseDto);
@@ -655,7 +655,7 @@ public class MasterdataControllerTest {
 	// -------------------------------IdTypesControllerTest--------------------------
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void testIdTypeController() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);

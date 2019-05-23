@@ -133,7 +133,7 @@ public class MatchInputBuilder {
 	 * @param language       the language
 	 * @return the list
 	 */
-	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType,
+	private MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, MatchType matchType, AuthType authType,
 			String language) {
 
 		if (matchType.getCategory() == Category.BIO && !authType.isAuthTypeInfoAvailable(authRequestDTO)) {

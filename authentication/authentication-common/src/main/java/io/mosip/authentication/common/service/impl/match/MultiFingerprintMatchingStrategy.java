@@ -28,7 +28,7 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),
-								BioAuthType.FGR_MIN_MULTI.getDisplayName()));
+								BioAuthType.FGR_MIN_COMPOSITE.getDisplayName()));
 			}
 		}
 		return 0;
