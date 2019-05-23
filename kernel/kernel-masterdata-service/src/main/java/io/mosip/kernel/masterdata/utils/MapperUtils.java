@@ -22,6 +22,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
@@ -479,6 +480,41 @@ public class MapperUtils {
 
 		});
 		return deviceLangCodeDtypeDtoList;
+	}
+	
+	
+	public static List<MachineRegistrationCenterDto> mapMachineRegistrationDto(List<Object[]> objects) {
+		List<MachineRegistrationCenterDto> machineRegistrationCenterDtoList = new ArrayList<>();
+		objects.forEach(arr -> {
+			MachineRegistrationCenterDto machineRegistrationCenterDto = new MachineRegistrationCenterDto();
+			machineRegistrationCenterDto.setRegCentId((String) arr[0]);
+			machineRegistrationCenterDto.setMachineId((String) arr[1]);
+			machineRegistrationCenterDto.setName((String) arr[2]);
+			machineRegistrationCenterDto.setMacAddress((String) arr[3]);
+			machineRegistrationCenterDto.setSerialNum((String) arr[4]);
+			machineRegistrationCenterDto.setIpAddress((String) arr[5]);
+			machineRegistrationCenterDto.setMachineSpecId((String) arr[6]);
+			machineRegistrationCenterDto.setLangCode((String) arr[7]);
+			machineRegistrationCenterDto.setIsActive((boolean) arr[8]);
+			if (arr[9] != null) {
+				machineRegistrationCenterDto.setValidityEndDateTime(((Timestamp) arr[9]).toLocalDateTime());
+			}
+			machineRegistrationCenterDto.setCreatedBy((String) arr[10]);
+			if (arr[11] != null) {
+				machineRegistrationCenterDto.setCreatedDateTime(((Timestamp) arr[11]).toLocalDateTime());
+			}
+			machineRegistrationCenterDto.setUpdatedBy((String) arr[12]);
+			if (arr[13] != null) {
+				machineRegistrationCenterDto.setUpdatedDateTime(((Timestamp) arr[13]).toLocalDateTime());
+			}
+			/*machineRegistrationCenterDto.setIsDeleted((boolean)arr[14]);
+			if (arr[15] != null) {
+				machineRegistrationCenterDto.setDeletedDateTime(((Timestamp) arr[15]).toLocalDateTime());
+			}*/
+			machineRegistrationCenterDtoList.add(machineRegistrationCenterDto);
+
+		});
+		return machineRegistrationCenterDtoList;
 	}
 
 }

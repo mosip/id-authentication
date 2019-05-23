@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,8 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterMachineResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
 import io.swagger.annotations.Api;
@@ -69,6 +72,22 @@ public class RegistrationCenterMachineController {
 		ResponseWrapper<RegistrationCenterMachineID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
+		return responseWrapper;
+	}
+	
+	
+	@ResponseFilter
+	@GetMapping(value = "/{regCenterId}")
+	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Registration Center Id"),
+			@ApiResponse(code = 404, message = "When No Machine Details not mapped with the Given Registation Center ID"),
+			@ApiResponse(code = 500, message = "While retrieving Machine Detail any error occured") })
+	public ResponseWrapper<RegistrationCenterMachineResponseDto> getRegistrationCenterMachineMapping(
+			@PathVariable("regCenterId") String regCenterId) {
+
+		ResponseWrapper<RegistrationCenterMachineResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterMachineService.getRegistrationCenterMachineMapping(regCenterId));
 		return responseWrapper;
 	}
 }

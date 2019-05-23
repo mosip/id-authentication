@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterMachineResponseDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -11,6 +12,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * for registration center id and machine id.
  * 
  * @author Bal Vikash Sharma
+ * @author Megha Tanga
  * @since 1.0.0
  */
 public interface RegistrationCenterMachineService {
@@ -38,4 +40,13 @@ public interface RegistrationCenterMachineService {
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId);
+	
+	/**
+	 * Fetch all Machines which are mapped with the given registration center
+	 * 
+	 * @param regCenterId Registration center id to know the list of 
+	 * @param RegistrationCenterMachineResponseDto   response object which contain the 
+	 * @return {@link RegistrationCenterMachineID}
+	 */
+	public RegistrationCenterMachineResponseDto getRegistrationCenterMachineMapping(String regCenterId);
 }

@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
+import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterMachineResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
@@ -120,6 +123,32 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 							+ ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineID;
+	}
+
+	@Override
+	public RegistrationCenterMachineResponseDto getRegistrationCenterMachineMapping(String regCenterId) {
+		RegistrationCenterMachineResponseDto registrationCenterMachineResponseDto = new RegistrationCenterMachineResponseDto();
+		List<Object[]> objectList = null;
+		List<MachineRegistrationCenterDto> machineRegistrationCenterDtoList = null;
+
+		try {
+			objectList = registrationCenterMachineRepository
+					.findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNullMachine(regCenterId);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (objectList != null && !objectList.isEmpty()) {
+			machineRegistrationCenterDtoList = MapperUtils.mapMachineRegistrationDto(objectList);
+		} else {
+			throw new RequestException(RegistrationCenterMachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					RegistrationCenterMachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		registrationCenterMachineResponseDto.setMachines(machineRegistrationCenterDtoList);
+		return registrationCenterMachineResponseDto;
+
 	}
 
 }
