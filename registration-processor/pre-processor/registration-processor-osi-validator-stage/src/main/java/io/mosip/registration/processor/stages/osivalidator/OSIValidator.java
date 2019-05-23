@@ -195,7 +195,7 @@ public class OSIValidator {
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		String officerId = regOsi.getOfficerId();
 		String supervisorId = regOsi.getSupervisorId();
-		if ((officerId.isEmpty() || officerId == null) && (supervisorId.isEmpty() ||supervisorId == null)) {
+		if ((officerId == null || officerId.isEmpty()) && (supervisorId == null || supervisorId.isEmpty())) {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 			   .getStatusCode(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET));
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
