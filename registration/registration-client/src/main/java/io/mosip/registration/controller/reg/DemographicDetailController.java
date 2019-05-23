@@ -1468,8 +1468,9 @@ public class DemographicDetailController extends BaseController {
 								.with(identity -> identity.setFullName(buildDemoTextValues(platformLanguageCode,
 										localLanguageCode, fullName, fullNameLocalLanguage,
 										isNameNotRequired(fullName, registrationDTO.isNameNotUpdated()))))
-								.with(identity -> identity.setDateOfBirth(applicationAge.isDisable() ? null
-										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+								.with(identity -> identity.setDateOfBirth(applicationAge.isDisable()
+										|| (dd.getText().isEmpty() && ageField.getText().isEmpty() && lostUIN) ? null
+												: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 								.with(identity -> identity
 										.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
 												: Integer.parseInt(ageField.getText())))
@@ -1599,8 +1600,8 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	private boolean isCBEFFNotAvailable(BiometricInfoDTO personBiometric) {
-		return personBiometric.getFingerprintDetailsDTO().isEmpty()
-				&& personBiometric.getIrisDetailsDTO().isEmpty() && personBiometric.getFace().getFace() == null;
+		return personBiometric.getFingerprintDetailsDTO().isEmpty() && personBiometric.getIrisDetailsDTO().isEmpty()
+				&& personBiometric.getFace().getFace() == null;
 	}
 
 	/**
@@ -1716,7 +1717,8 @@ public class DemographicDetailController extends BaseController {
 			emailId.setText(individualIdentity.getEmail());
 			if (individualIdentity.getAge() != null) {
 				switchedOn.set(true);
-				ageField.setText(individualIdentity.getAge() == null ? "" : String.valueOf(individualIdentity.getAge()));
+				ageField.setText(
+						individualIdentity.getAge() == null ? "" : String.valueOf(individualIdentity.getAge()));
 			} else {
 				switchedOn.set(false);
 			}
@@ -2069,7 +2071,8 @@ public class DemographicDetailController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
 		}
 		if (isValid)
-			isValid = validation.validateUinOrRid(parentFlowPane,parentUinId, parentRegId, isChild, uinValidator, ridValidator);
+			isValid = validation.validateUinOrRid(parentFlowPane, parentUinId, parentRegId, isChild, uinValidator,
+					ridValidator);
 
 		return isValid;
 
