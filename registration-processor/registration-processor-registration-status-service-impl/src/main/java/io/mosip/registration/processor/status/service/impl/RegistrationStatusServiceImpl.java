@@ -39,7 +39,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
  */
 @Component
 public class RegistrationStatusServiceImpl
-		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	/** The threshold. */
 	@Value("${registration.processor.threshold}")
