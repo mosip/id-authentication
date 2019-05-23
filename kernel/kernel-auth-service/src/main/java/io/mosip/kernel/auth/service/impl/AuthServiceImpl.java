@@ -178,8 +178,10 @@ public class AuthServiceImpl implements AuthService {
 	public AuthNResponseDto authenticateWithOtp(OtpUser otpUser) throws Exception {
 		AuthNResponseDto authNResponseDto = null;
 		MosipUserDto mosipUser = null;
+		otpUser.getOtpChannel().replaceAll(String::toLowerCase);
+		otpUser.setOtpChannel(otpUser.getOtpChannel());
 		if (AuthConstant.APPTYPE_UIN.equals(otpUser.getUseridtype())) {
-			mosipUser = uinService.getDetailsFromUin(otpUser.getUserId());
+			mosipUser = uinService.getDetailsFromUin(otpUser);
 			authNResponseDto = oTPService.sendOTP(mosipUser, otpUser);
 			authNResponseDto.setStatus(authNResponseDto.getStatus());
 			authNResponseDto.setMessage(authNResponseDto.getMessage());
@@ -219,8 +221,8 @@ public class AuthServiceImpl implements AuthService {
 		if (mosipUser != null) {
 			mosipToken = oTPService.validateOTP(mosipUser, userOtp.getOtp());
 		} else {
-			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(),
-					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 		}
 		if (mosipToken != null && mosipToken.getMosipUserDto() != null) {
 			authNResponseDto.setMessage(mosipToken.getMessage());

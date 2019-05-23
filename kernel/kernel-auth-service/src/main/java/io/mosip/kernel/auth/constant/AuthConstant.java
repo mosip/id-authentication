@@ -66,4 +66,8 @@ public class AuthConstant {
 	public static final String INVALID_REQUEST = "should not be null or empty";
 
 	public static final String WHITESPACE = " ";
+	
+	public static final String SMS_NOTIFYTYPE = "SMS";
+	
+	public static final String EMAIL_NOTIFYTYPE = "EMAIL";
 }

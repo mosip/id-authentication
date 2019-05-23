@@ -338,7 +338,10 @@ public enum PlatformErrorMessages {
 
 	/** The unknown exception occured. */
 	UNKNOWN_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "005"," unknown exception occured"),
-    /** The packet bio dedupe failed. */
+	
+	/** ABIS_BATCH_ID_NOT_FOUND. */
+	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006"," abis batchId not found"),
+	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
 
