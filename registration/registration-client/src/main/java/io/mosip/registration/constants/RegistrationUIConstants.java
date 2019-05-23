@@ -270,6 +270,10 @@ public class RegistrationUIConstants {
 	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 	public static final String EOD_DETAILS_EXPORT_FAILURE = bundle.getString("EOD_DETAILS_EXPORT_FAILURE");
 	public static final String EOD_DETAILS_EXPORT_SUCCESS = bundle.getString("EOD_DETAILS_EXPORT_SUCCESS");
+	public static final String EOD_SLNO_LABEL = bundle.getString("EOD_SLNO_LABEL");
+	public static final String EOD_REGISTRATIONID_LABEL = bundle.getString("EOD_REGISTRATIONID_LABEL");
+	public static final String EOD_REGISTRATIONDATE_LABEL = bundle.getString("EOD_REGISTRATIONDATE_LABEL");
+	public static final String EOD_STATUS_LABEL = bundle.getString("EOD_STATUS_LABEL");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

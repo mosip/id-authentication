@@ -308,6 +308,8 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_DATE_FORMAT = "dd-MM-yyyy";
 	public static final String EOD_PROCESS_SLNO = "slno";
 	public static final String EOD_PROCESS_DATE = "date";
+	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
+
 
 
 	// Packet Store Location Constants
