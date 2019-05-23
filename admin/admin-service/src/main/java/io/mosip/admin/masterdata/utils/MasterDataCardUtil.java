@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,18 @@ public class MasterDataCardUtil {
 			languages = Arrays.asList(langCode.split(","));
 			Map<String, String> map = props.getCard();
 			if (map != null && !map.isEmpty()) {
-				Set<String> keys = map.keySet();
+				Set<Entry<String, String>> entrySet = map.entrySet();
 				for (String lang : languages) {
-					for (String key : keys) {
+					for (Map.Entry<String, String> entry : entrySet) {
+						String key = entry.getKey();
+						String value = entry.getValue();
 						if (key.endsWith(lang)) {
 							Map<String, String> dataMap = cardMap.get(lang);
 							if (dataMap == null) {
 								dataMap = new HashMap<>();
 								cardMap.put(lang, dataMap);
 							}
-							dataMap.put((key.substring(0, (key.length() - (lang.length() + 1)))), map.get(key));
+							dataMap.put((key.substring(0, (key.length() - (lang.length() + 1)))), value);
 						}
 					}
 				}

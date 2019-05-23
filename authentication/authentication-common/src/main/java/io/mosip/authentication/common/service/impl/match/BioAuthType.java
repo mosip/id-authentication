@@ -228,7 +228,7 @@ public enum BioAuthType implements AuthType {
 
 	/** The Constant COMPOSITE_THRESHOLD. */
 	private static final String COMPOSITE_THRESHOLD = ".composite.threshold";
-	
+
 	/** The Constant MULTI_THRESHOLD. */
 	private static final String MULTI_THRESHOLD = ".multi.threshold";
 
