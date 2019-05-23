@@ -20,7 +20,7 @@ import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException
 import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 
 
-/** Crypto Signature Util
+/** Crypto Signature Utils
  * 
  * @author Urvil Joshi
  *
