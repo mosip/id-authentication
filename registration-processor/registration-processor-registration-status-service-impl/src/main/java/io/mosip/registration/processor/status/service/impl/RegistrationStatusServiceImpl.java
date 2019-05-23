@@ -32,6 +32,7 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
+import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;
 
 /**
  * The Class RegistrationStatusServiceImpl.
@@ -70,7 +71,10 @@ public class RegistrationStatusServiceImpl
 
 	@Autowired
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
-	
+
+	@Autowired
+	private RegistrationExternalStatusUtility regexternalstatusUtil;
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusServiceImpl.class);
 
@@ -346,13 +350,20 @@ public class RegistrationStatusServiceImpl
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
+		if (entity.getStatusCode() != null) {
+			RegistrationExternalStatusCode registrationExternalStatusCode = regexternalstatusUtil
+					.getExternalStatus(entity);
 
-		RegistrationExternalStatusCode registrationExternalStatusCode = registrationStatusMapUtil
-				.getExternalStatus(entity);
-		String mappedValue = registrationExternalStatusCode.toString();
+			String mappedValue = registrationExternalStatusCode.toString();
 
-		registrationStatusDto.setStatusCode(mappedValue);
+			registrationStatusDto.setStatusCode(mappedValue);
+		} else {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					entity.getReferenceRegistrationId(),
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_STATUS_NOT_EXIST.getMessage());
+		}
 		return registrationStatusDto;
+
 	}
 
 	/**
@@ -546,6 +557,5 @@ public class RegistrationStatusServiceImpl
 		Boolean uinAvailable = registrationStatusDao.checkUinAvailabilityForRid(rid);
 		return uinAvailable;
 	}
-
 
 }

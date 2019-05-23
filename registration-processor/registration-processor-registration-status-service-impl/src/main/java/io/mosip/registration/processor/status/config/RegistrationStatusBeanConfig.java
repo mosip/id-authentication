@@ -41,6 +41,7 @@ import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
+import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @Configuration
@@ -144,6 +145,10 @@ public class RegistrationStatusBeanConfig {
 	@Bean
 	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
 		return new RegistrationStatusMapUtil();
+	}
+	@Bean
+	public RegistrationExternalStatusUtility getRegistrationExternalStatusUtility() {
+		return new RegistrationExternalStatusUtility();
 	}
 
 	@Bean
