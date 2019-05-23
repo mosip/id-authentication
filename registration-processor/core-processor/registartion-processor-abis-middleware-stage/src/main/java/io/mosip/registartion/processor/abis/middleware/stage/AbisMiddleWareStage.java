@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -105,32 +106,30 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	/** The url. */
 	private static final String SYSTEM = "SYSTEM";
 	private Map<Integer, String> failureReason = new HashMap<>();
-	private List<String> abisInboundAddresses;
-	private List<MosipQueue> mosipQueueList;
+	private List<AbisQueueDetails> abisQueueDetails;
 	private InternalRegistrationStatusDto internalRegDto;
 	private String registrationId;
 	private static final String REQUESTID = "requestId";
 	private static final String DEMOGRAPHIC_VERIFICATION = "DEMOGRAPHIC_VERIFICATION";
 	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
+	private static final String FOR_REQUESTID = "for resquestId ";
 
+	/**
+	 * Get all the abis queue details,register listener to outbound queue's
+	 */
 	public void deployVerticle() {
-		String regId = null;
-		MessageDTO messageDto = null;
 		try {
 			MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
-			mosipQueueList = utility.getMosipQueuesForAbis();
-			List<List<String>> inBoundOutBoundList = utility.getInboundOutBoundAddressList();
-			abisInboundAddresses = inBoundOutBoundList.get(0);
-			List<String> abisOutboundAddresses = inBoundOutBoundList.get(1);
-			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
-				String abisInBoundaddress = abisInboundAddresses.get(i);
-				MosipQueue queue = mosipQueueList.get(i);
+			abisQueueDetails = utility.getAbisQueueDetails();
+			for (AbisQueueDetails abisQueue : abisQueueDetails) {
+				String abisInBoundaddress = abisQueue.getInboundQueueName();
+				MosipQueue queue = abisQueue.getMosipQueue();
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
 						try {
-							consumerListener(message, abisInBoundaddress, queue, mosipEventBus, messageDto);
+							consumerListener(message, abisInBoundaddress, queue, mosipEventBus);
 						} catch (Exception e) {
 
 							regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -139,7 +138,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 						}
 					}
 				};
-				mosipQueueManager.consume(queue, abisOutboundAddresses.get(i), listener);
+				mosipQueueManager.consume(queue, abisQueue.getOutboundQueueName(), listener);
+
 			}
 
 		} catch (Exception e) {
@@ -191,32 +191,62 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 						PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getCode(),
 						PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getMessage());
 			}
-
+			// get all insert requests(already processed,in progress)
 			List<AbisRequestDto> abisInsertRequestList = abisInsertIdentifyList.stream()
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.INSERT.toString()))
+					.collect(Collectors.toList());
+			List<AbisRequestDto> abisInprogressInsertRequestList = abisInsertRequestList.stream()
+					.filter(dto -> dto.getStatusCode().equals(AbisStatusCode.IN_PROGRESS.toString()))
+					.collect(Collectors.toList());
+			List<AbisRequestDto> abisAlreadyprocessedInsertRequestList = abisInsertRequestList.stream()
+					.filter(dto -> dto.getStatusCode().equals(AbisStatusCode.ALREADY_PROCESSED.toString()))
 					.collect(Collectors.toList());
 			List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString()))
 					.collect(Collectors.toList());
+			// If all insert request are null then send all identify requests.
 			if (abisInsertRequestList == null || abisInsertRequestList != null && abisInsertRequestList.isEmpty()) {
-				for (int i = 0; i < abisIdentifyRequestList.size(); i++) {
+				for (AbisRequestDto abisIdentifyRequest : abisIdentifyRequestList) {
+					List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+							.filter(dto -> dto.getName().equals(abisIdentifyRequest.getAbisAppCode()))
+							.collect(Collectors.toList());
 
-					byte[] reqBytearray = abisIdentifyRequestList.get(i).getReqText();
+					byte[] reqBytearray = abisIdentifyRequest.getReqText();
 
-					boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
-							abisInboundAddresses.get(i));
+					boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+							abisQueue.get(0).getInboundQueueName());
 
-					updateAbisRequest(isAddedToQueue, abisIdentifyRequestList.get(i));
+					updateAbisRequest(isAddedToQueue, abisIdentifyRequest);
 				}
+
 			}
-			for (int i = 0; i < abisInsertRequestList.size(); i++) {
+			// send in progress insert requests to queue
+			for (AbisRequestDto abisInprogressRequest : abisInprogressInsertRequestList) {
+				List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+						.filter(dto -> dto.getName().equals(abisInprogressRequest.getAbisAppCode()))
+						.collect(Collectors.toList());
 
-				byte[] reqBytearray = abisInsertRequestList.get(i).getReqText();
+				byte[] reqBytearray = abisInprogressRequest.getReqText();
 
-				boolean isAddedToQueue = sendToQueue(mosipQueueList.get(i), new String(reqBytearray),
-						abisInboundAddresses.get(i));
+				boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+						abisQueue.get(0).getInboundQueueName());
 
-				updateAbisRequest(isAddedToQueue, abisInsertRequestList.get(i));
+				updateAbisRequest(isAddedToQueue, abisInprogressRequest);
+			}
+			// send all identify requests for already processed insert requests
+			for (AbisRequestDto abisAlreadyProcessedInsertRequest : abisAlreadyprocessedInsertRequestList) {
+				List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+						.filter(dto -> dto.getName().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
+						.collect(Collectors.toList());
+
+				List<AbisRequestDto> identifyRequest = abisIdentifyRequestList.stream()
+						.filter(dto -> dto.getAbisAppCode().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
+						.collect(Collectors.toList());
+				byte[] reqBytearray = identifyRequest.get(0).getReqText();
+				boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+						abisQueue.get(0).getInboundQueueName());
+				updateAbisRequest(isAddedToQueue, abisAlreadyProcessedInsertRequest);
+
 			}
 			object.setIsValid(true);
 			object.setInternalError(false);
@@ -266,8 +296,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		return object;
 	}
 
-	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus,
-			MessageDTO messageDto) throws RegistrationProcessorCheckedException {
+	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus)
+			throws RegistrationProcessorCheckedException {
 		InternalRegistrationStatusDto internalRegStatusDto;
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -276,11 +306,20 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
 		try {
-			JSONObject commonResponse = JsonUtil.objectMapperReadValue(response, JSONObject.class);
-			String requestId = JsonUtil.getJSONValue(commonResponse, REQUESTID);
-			// --get reg db details
+			JSONObject inserOrIdentifyResponse = JsonUtil.objectMapperReadValue(response, JSONObject.class);
+			String requestId = JsonUtil.getJSONValue(inserOrIdentifyResponse, REQUESTID);
 			String batchId = packetInfoManager.getBatchIdByRequestId(requestId);
+			if (batchId == null)
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.ABIS_BATCH_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.ABIS_BATCH_ID_NOT_FOUND.getMessage() + FOR_REQUESTID + requestId);
+
 			List<String> bioRefId = packetInfoManager.getReferenceIdByBatchId(batchId);
+			if (bioRefId == null || bioRefId.isEmpty())
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.ABIS_REFERENCE_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.ABIS_REFERENCE_ID_NOT_FOUND.getMessage() + FOR_REQUESTID + requestId);
+
 			List<String> registrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(bioRefId);
 			internalRegStatusDto = registrationStatusService.getRegistrationStatus(registrationIds.get(0));
 
@@ -288,6 +327,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
 
 			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);
+			// check for insert response,if success send corresponding identify request to
+			// queue
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.INSERT.toString())) {
 				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisInsertResponseDto.class);
@@ -298,11 +339,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					List<String> transactionIdList = packetInfoManager.getAbisTransactionIdByRequestId(requestId);
 					List<AbisRequestDto> abisIdentifyRequestList = packetInfoManager.getIdentifyReqListByTransactionId(
 							transactionIdList.get(0), AbisStatusCode.IDENTIFY.toString());
-					if (abisIdentifyRequestList == null || abisIdentifyRequestList.isEmpty()) {
-						throw new RegistrationProcessorUnCheckedException(
-								PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getCode(),
-								PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getMessage());
-					}
+					validateAbisIdentifyRequestList(abisIdentifyRequestList);
 					List<AbisRequestDto> abisIdentifyRequest = abisIdentifyRequestList.stream()
 							.filter(dto1 -> dto1.getAbisAppCode().equals(abisCommonRequestDto.getAbisAppCode()))
 							.collect(Collectors.toList());
@@ -310,18 +347,31 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					boolean isAddedToQueue = sendToQueue(queue, new String(abisIdentifyRequestDto.getReqText()),
 							abisInBoundAddress);
 					updateAbisRequest(isAddedToQueue, abisIdentifyRequestDto);
+				} else {
+					internalRegDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+					internalRegDto
+							.setStatusComment("Insert response failed for request Id" + abisCommonRequestDto.getId());
+					registrationStatusService.updateRegistrationStatus(internalRegDto);
 				}
 			}
+			// check if identify response,then if all identify requests are processed send
+			// to abis handler
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString())) {
 
 				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisIdentifyResponseDto.class);
+				if (abisIdentifyResponseDto.getReturnValue() != 1) {
+					internalRegDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+					internalRegDto
+							.setStatusComment("Insert response failed for request Id" + abisCommonRequestDto.getId());
+					registrationStatusService.updateRegistrationStatus(internalRegDto);
+				}
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
 				if (abisIdentifyResponseDto.getCandidateList() != null) {
 					CandidatesDto[] candidatesDtos = abisIdentifyResponseDto.getCandidateList().getCandidates();
-					for (CandidatesDto candidatesDto : candidatesDtos) {
-						updateAbisResponseDetail(candidatesDto, abisResponseDto);
-					}
+					saveCandiateDtos(candidatesDtos, abisResponseDto);
 				}
 
 				updteAbisRequestProcessed(abisIdentifyResponseDto, abisCommonRequestDto);
@@ -332,14 +382,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 							"",
 							"AbisMiddlewareStage::consumerListener()::All identify are requests processed sending to Abis handler");
 
-					if (bioRefId != null) {
-
-						messageDto = new MessageDTO();
-						messageDto.setRid(registrationIds.get(0));
-						messageDto.setReg_type(internalRegStatusDto.getRegistrationType());
-
-						this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
-					}
+					sendToAbisHandler(eventBus, bioRefId, registrationIds.get(0),
+							internalRegStatusDto.getRegistrationType());
 
 				}
 
@@ -364,6 +408,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisMiddlewareStage::consumerListener()::Exit()");
+	}
+
+	private void validateAbisIdentifyRequestList(List<AbisRequestDto> abisIdentifyRequestList) {
+		if (abisIdentifyRequestList == null || abisIdentifyRequestList.isEmpty()) {
+			throw new RegistrationProcessorUnCheckedException(
+					PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getCode(),
+					PlatformErrorMessages.IDENTIFY_REQUESTS_NOT_FOUND.getMessage());
+		}
 	}
 
 	private boolean sendToQueue(MosipQueue queue, String abisReqTextString, String abisQueueAddress)
@@ -398,7 +450,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			abisReqEntity.setStatusCode(AbisStatusCode.FAILED.toString());
 			abisReqEntity.setStatusComment("Request sent to ABIS is unsucessful");
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
-			internalRegDto.setStatusComment("Request sent to ABIS is unsucessful");
+			internalRegDto.setStatusComment(
+					"Insert/Identify Request sent is unsucessful for abis " + abisRequestDto.getAbisAppCode());
 		}
 		abisRequestRepositary.save(abisReqEntity);
 
@@ -470,6 +523,12 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	}
 
+	/**
+	 * get the failure reason for given key
+	 * 
+	 * @param key
+	 * @return
+	 */
 	private String getFaliureReason(Integer key) {
 		if (key == null)
 			return null;
@@ -537,6 +596,22 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 				return true;
 		}
 		return false;
+	}
+
+	private void sendToAbisHandler(MosipEventBus eventBus, List<String> bioRefId, String regId, String regType) {
+		if (bioRefId != null) {
+			MessageDTO messageDto = new MessageDTO();
+			messageDto.setRid(regId);
+			messageDto.setReg_type(regType);
+			this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
+		}
+
+	}
+
+	private void saveCandiateDtos(CandidatesDto[] candidatesDtos, AbisResponseDto abisResponseDto) {
+		for (CandidatesDto candidatesDto : candidatesDtos) {
+			updateAbisResponseDetail(candidatesDto, abisResponseDto);
+		}
 	}
 
 }

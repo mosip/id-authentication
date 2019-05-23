@@ -12,7 +12,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +20,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.cryptomanager.service.CryptomanagerService;
@@ -81,7 +78,7 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 	public CryptomanagerResponseDto encrypt(CryptomanagerRequestDto cryptoRequestDto) {
 		SecretKey secretKey = keyGenerator.getSymmetricKey();
 		final byte[] encryptedData;
-		if(cryptomanagerUtil.isValidReferenceId(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
+		if(cryptomanagerUtil.isValidSalt(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
 			encryptedData = encryptor.symmetricEncrypt(secretKey,
 					CryptoUtil.decodeBase64(cryptoRequestDto.getData()),CryptoUtil.decodeBase64(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt())));
 		}else {
@@ -114,7 +111,7 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		cryptoRequestDto.setData(CryptoUtil.encodeBase64(encryptedKey));
 		SecretKey decryptedSymmetricKey = cryptomanagerUtil.getDecryptedSymmetricKey(cryptoRequestDto);
 		final byte[] decryptedData;
-		if(cryptomanagerUtil.isValidReferenceId(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
+		if(cryptomanagerUtil.isValidSalt(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt()))) {
 			decryptedData = decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData,CryptoUtil.decodeBase64(CryptomanagerUtil.nullOrTrim(cryptoRequestDto.getSalt())));
 		}else {
 			decryptedData =  decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData);
@@ -122,22 +119,6 @@ public class CryptomanagerServiceImpl implements CryptomanagerService {
 		cryptoResponseDto
 				.setData(CryptoUtil.encodeBase64(decryptedData));
 		return cryptoResponseDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.kernel.cryptomanager.service.CryptomanagerService#enncyptWithPrivate
-	 * (io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto)
-	 */
-	@Override
-	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto) {
-		String encryptedData = cryptomanagerUtil.getEncryptedData(cryptoRequestDto);
-		CryptoEncryptResponseDto cryptoPublicResponseDto = new CryptoEncryptResponseDto();
-		cryptoPublicResponseDto.setData(encryptedData);
-
-		return cryptoPublicResponseDto;
 	}
 
 }

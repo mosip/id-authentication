@@ -11,6 +11,7 @@
 			"description": "This schema holds all the attributes of an Identity",
 			"type": "object",
 			"additionalProperties": false,
+			"required": ["UIN"],
 			"properties": {
 				"IDSchemaVersion": {
 					"type": "number",
