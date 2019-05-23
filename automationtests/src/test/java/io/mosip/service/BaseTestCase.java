@@ -95,13 +95,14 @@ public class BaseTestCase {
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
+			x
 			                    
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" + environment);
 			ApplnURI = System.getProperty("env.endpoint");
 			logger.info("Application URI ======" + ApplnURI);
+			testLevel = System.getProperty("env.testLevel");
+			logger.info("Test Level ======" + testLevel);
 
 
 			logger.info("Configs from properties file are set.");
