@@ -3,11 +3,7 @@ package io.mosip.registration.service.packet.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +21,7 @@ import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 
 /**
@@ -34,7 +31,7 @@ import io.mosip.registration.service.packet.RegistrationApprovalService;
  * @author Mahesh Kumar
  */
 @Service
-public class RegistrationApprovalServiceImpl implements RegistrationApprovalService {
+public class RegistrationApprovalServiceImpl extends BaseService implements RegistrationApprovalService {
 
 	/**
 	 * Object for Registration DAO
@@ -82,19 +79,6 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status ended");
 		return list;
-	}
-
-	/**
-	 * Registration date conversion.
-	 *
-	 * @param timestamp the timestamp
-	 * @return the string
-	 */
-	private String regDateConversion(Timestamp timestamp) {
-
-		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
-		Date date = new Date(timestamp.getTime());
-		return dateFormat.format(date);
 	}
 
 	/*
