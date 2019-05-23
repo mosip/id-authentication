@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -71,7 +72,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	private String manifestFile = "MANIFEST.MF";
 
 	private String backUpPath;
-	private static String serverRegClientURL;
+	private String serverRegClientURL;
 	private String serverMosipXmlFileUrl;
 
 	private static String libFolder = "lib/";
@@ -95,6 +96,12 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Value("${HTTP_API_READ_TIMEOUT}")
+	private int readTimeout;
+
+	@Value("${HTTP_API_WRITE_TIMEOUT}")
+	private int connectTimeout;
 
 	/**
 	 * Instance of {@link Logger}
@@ -430,6 +437,11 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private InputStream getInputStreamOf(String url) throws IOException {
 		URLConnection connection = new URL(url).openConnection();
+
+		connection.setConnectTimeout(connectTimeout);
+
+		connection.setReadTimeout(readTimeout);
+		
 
 		// Space Check
 		if (hasSpace(connection.getContentLength())) {
