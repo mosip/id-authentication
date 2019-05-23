@@ -316,20 +316,10 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 	@Override
 	public void storeAsymmetricKey(KeyPair keyPair, String alias, LocalDateTime validityFrom,
 			LocalDateTime validityTo) {
-
 		X509Certificate[] chain = new X509Certificate[1];
 		chain[0] = CertificateUtility.generateX509Certificate(keyPair, commonName, organizationalUnit, organization,
 				country, validityFrom, validityTo);
-		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
-		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
-
-		try {
-			keyStore.setEntry(alias, privateKeyEntry, password);
-			keyStore.store(null, keystorePass.toCharArray());
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			throw new KeystoreProcessingException(KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					KeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
-		}
+		storeCertificate(alias, chain, keyPair.getPrivate());
 	}
 
 	/*
@@ -406,12 +396,11 @@ public class KeyStoreImpl implements io.mosip.kernel.core.keymanager.spi.KeyStor
 		this.keyStore = keyStore;
 	}
 
-	
 	@Override
 	public void storeCertificate(String alias, Certificate[] chain, PrivateKey privateKey) {
-        PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(privateKey, chain);
+		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(privateKey, chain);
 		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
-    try {
+		try {
 			keyStore.setEntry(alias, privateKeyEntry, password);
 			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {

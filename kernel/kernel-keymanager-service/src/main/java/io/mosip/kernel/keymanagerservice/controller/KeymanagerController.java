@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiParam;
 @Api(tags = { "keymanager" }, value = "Operation related to Keymanagement")
 public class KeymanagerController {
 
-	@Value("${mosip.sign-certificate-refid:SIGN}")
+	@Value("${mosip.sign.refid:SIGN}")
 	private String certificateSignRefID;
 
 	/** The sign applicationid. */

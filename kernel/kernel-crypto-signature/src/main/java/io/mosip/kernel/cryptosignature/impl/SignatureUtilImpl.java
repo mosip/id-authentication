@@ -54,26 +54,22 @@ public class SignatureUtilImpl implements SignatureUtil {
 
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
-	
-	
+
 	/** The sync data request id. */
 	@Value("${mosip.kernel.signature.signature-request-id}")
-	private String syncDataRequestId;
+	private String signDataRequestId;
 
 	/** The sync data version id. */
 	@Value("${mosip.kernel.signature.signature-version-id}")
-	private String syncDataVersionId;
+	private String signDataVersionId;
 
 	/** The encrypt url. */
-	@Value("${mosip.kernel.signature.encrypt-url}")
-	private String encryptUrl;
+	@Value("${mosip.kernel.keymanager-service-sign-url}")
+	private String signUrl;
 
 	/** The get public key url. */
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
-	
-	@Value("${mosip.sign-certificate-refid:SIGN}")
-	private String certificateSignRefID;
 
 	/** The rest template. */
 	@Autowired
@@ -83,20 +79,17 @@ public class SignatureUtilImpl implements SignatureUtil {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	/** The signed header. */
-	@Value("${mosip.sign.header:response-signature}")
-	private String signedHeader;
+
 
 	/** The sign applicationid. */
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
 
 	/** The sign refid. */
-	@Value("${mosip.sign.refid:KER}")
+	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
-	
-	
-	private static final String RESPONSE_SOURCE="Keymanager";
+
+	private static final String RESPONSE_SOURCE = "Keymanager";
 
 	/** The decryptor. */
 	@Autowired
@@ -109,8 +102,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 	/** The key gen. */
 	@Autowired
 	KeyGenerator keyGen;
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -123,36 +115,35 @@ public class SignatureUtilImpl implements SignatureUtil {
 			throws InvalidKeySpecException, NoSuchAlgorithmException {
 		byte[] syncDataBytearray = HMACUtils.generateHash(data.getBytes());
 		String actualHash = CryptoUtil.encodeBase64(syncDataBytearray);
-		PublicKey key = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publickey)));
+		PublicKey key = KeyFactory.getInstance("RSA")
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publickey)));
 		byte[] decodedEncryptedData = CryptoUtil.decodeBase64(signature);
 		byte[] hashedEncodedData = decryptor.asymmetricPublicDecrypt(key, decodedEncryptedData);
 		String signedHash = CryptoUtil.encodeBase64(hashedEncodedData);
 		return signedHash.equals(actualHash);
 	}
 
-
 	@Override
-	public SignatureResponse sign(String response,String timestamp) {
+	public SignatureResponse sign(String response, String timestamp) {
 		String responseHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(response.getBytes()));
 		SignatureRequestDto signatureRequestDto = new SignatureRequestDto();
 		signatureRequestDto.setApplicationId(signApplicationid);
-		signatureRequestDto.setReferenceId(certificateSignRefID);
+		signatureRequestDto.setReferenceId(signRefid);
 		signatureRequestDto.setData(responseHash);
 		signatureRequestDto.setTimeStamp(timestamp);
 		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setId(syncDataRequestId);
-		requestWrapper.setVersion(syncDataVersionId);
+		requestWrapper.setId(signDataRequestId);
+		requestWrapper.setVersion(signDataVersionId);
 		requestWrapper.setRequest(signatureRequestDto);
 		ResponseEntity<String> responseEntity = null;
 
 		try {
-			responseEntity = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
+			responseEntity = restTemplate.postForEntity(signUrl, requestWrapper, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-
 			CryptosignatureUtil.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
-			
+
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
 			} else {
@@ -161,43 +152,46 @@ public class SignatureUtilImpl implements SignatureUtil {
 			}
 		}
 		CryptosignatureUtil.throwExceptionIfExist(responseEntity);
-		SignatureResponse signatureResponse=CryptosignatureUtil.getResponse(objectMapper, responseEntity, SignatureResponse.class);
+		SignatureResponse signatureResponse = CryptosignatureUtil.getResponse(objectMapper, responseEntity,
+				SignatureResponse.class);
 		signatureResponse.setData(signatureResponse.getData());
 		signatureResponse.setTimestamp(DateUtils.convertUTCToLocalDateTime(timestamp));
-        return signatureResponse;
+		return signatureResponse;
 	}
 
 	@Override
-	public boolean validate(String signature, String actualData, String timestamp) throws InvalidKeySpecException, NoSuchAlgorithmException {
-	
-	ResponseEntity<String> response = null;
-	Map<String, String> uriParams = new HashMap<>();
-	uriParams.put("applicationId", signApplicationid);
-	UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-			.queryParam("timestamp", timestamp)
-			.queryParam("referenceId",certificateSignRefID);
-	try {
-		response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
-				String.class);
-	} catch (HttpClientErrorException | HttpServerErrorException ex) {
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+	public boolean validate(String signature, String actualData, String timestamp)
+			throws InvalidKeySpecException, NoSuchAlgorithmException {
 
-		CryptosignatureUtil.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
-		
-		if (!validationErrorsList.isEmpty()) {
-			throw new SignatureUtilClientException(validationErrorsList);
-		} else {
-			throw new SignatureUtilException(SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorCode(),
-					SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorMessage());
+		ResponseEntity<String> response = null;
+		Map<String, String> uriParams = new HashMap<>();
+		uriParams.put("applicationId", signApplicationid);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
+				.queryParam("timestamp", timestamp).queryParam("referenceId", signRefid);
+		try {
+			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException ex) {
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+
+			CryptosignatureUtil.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
+
+			if (!validationErrorsList.isEmpty()) {
+				throw new SignatureUtilClientException(validationErrorsList);
+			} else {
+				throw new SignatureUtilException(SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorCode(),
+						SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorMessage());
+			}
+
 		}
-
-	}
-	CryptosignatureUtil.throwExceptionIfExist(response);
-	PublicKeyResponse publicKeyResponse= CryptosignatureUtil.getResponse(objectMapper,response, PublicKeyResponse.class);
-	PublicKey publicKey= KeyFactory.getInstance(asymmetricAlgorithmName)
-			.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponse.getPublicKey())));
-	String decryptedSignature=CryptoUtil.encodeBase64(decryptor.asymmetricPublicDecrypt(publicKey, CryptoUtil.decodeBase64(signature)));
-	String actualDataHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(actualData.getBytes()));
-	return decryptedSignature.equals(actualDataHash);
+		CryptosignatureUtil.throwExceptionIfExist(response);
+		PublicKeyResponse publicKeyResponse = CryptosignatureUtil.getResponse(objectMapper, response,
+				PublicKeyResponse.class);
+		PublicKey publicKey = KeyFactory.getInstance(asymmetricAlgorithmName)
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponse.getPublicKey())));
+		String decryptedSignature = CryptoUtil
+				.encodeBase64(decryptor.asymmetricPublicDecrypt(publicKey, CryptoUtil.decodeBase64(signature)));
+		String actualDataHash = CryptoUtil.encodeBase64(HMACUtils.generateHash(actualData.getBytes()));
+		return decryptedSignature.equals(actualDataHash);
 	}
 }

@@ -144,13 +144,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Autowired
 	KeymanagerUtil keymanagerUtil;
 
-	@Value("${mosip.kernel.keygenerator.certificate-file-path}")
+	@Value("${mosip.kernel.keymanager.certificate-file-path}")
 	private String certificateFilePath;
 
-	@Value("${mosip.kernel.keygenerator.privatekey-file-path}")
+	@Value("${mosip.kernel.keymanager.privatekey-file-path}")
 	private String privateKeyFilePath;
 
-	@Value("${mosip.kernel.keygenerator.certificate-type}")
+	@Value("${mosip.kernel.keymanager.certificate-type}")
 	private String certificateType;
 
 	/*
