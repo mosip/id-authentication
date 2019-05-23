@@ -1,7 +1,7 @@
 
 package io.mosip.registration.controller.auth;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_LOGIN;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -955,7 +955,11 @@ public class LoginController extends BaseController implements Initializable {
 				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			try {
 				return validateFingerPrintWithMdm();
-			} catch (RegBaseCheckedException e) {
+			} catch (RegBaseCheckedException exception) {
+				LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+						"%s Exception while getting the scanned finger details for user registration: %s caused by %s",
+						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
+						ExceptionUtils.getStackTrace(exception)));
 				return false;
 			}
 
