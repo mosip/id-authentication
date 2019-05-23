@@ -66,6 +66,7 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+import io.mosip.registration.processor.stages.uingenerator.dto.VidGenResponse;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
@@ -248,8 +249,9 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 		
-		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
-		responseVid.setErrors(null);
+		VidGenResponse<VidResponseDto> responseVid = new VidGenResponse<VidResponseDto>();
+		List<ErrorDTO> errors = new ArrayList<>();
+		responseVid.setErrors(errors);
 		responseVid.setVersion("v1");
 		responseVid.setMetadata(null);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -311,8 +313,9 @@ public class UinGeneratorStageTest {
 
 		
 		
-		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
-		responseVid.setErrors(null);
+		VidGenResponse<VidResponseDto> responseVid = new VidGenResponse<VidResponseDto>();
+		List<ErrorDTO> errors = new ArrayList<>();
+		responseVid.setErrors(errors);
 		responseVid.setVersion("v1");
 		responseVid.setMetadata(null);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -322,6 +325,9 @@ public class UinGeneratorStageTest {
 		VidResponseDto vidResponseDto= new VidResponseDto();
 		vidResponseDto.setVID("123456");
 		vidResponseDto.setVidStatus("ACTIVE");
+		vidResponseDto.setUpdatedVid(null);
+		vidResponseDto.setUpdatedVidStatus(null);
+		vidResponseDto.setUIN(null);
 		responseVid.setResponse(vidResponseDto);
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO).thenReturn(responseVid);
