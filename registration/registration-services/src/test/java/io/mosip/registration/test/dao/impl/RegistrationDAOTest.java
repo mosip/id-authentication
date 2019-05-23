@@ -36,7 +36,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -90,7 +90,7 @@ public class RegistrationDAOTest {
 		RegistrationMetaDataDTO registrationMetaDataDTO=new RegistrationMetaDataDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		MoroccoIdentity identity = new MoroccoIdentity();
+		IndividualIdentity identity = new IndividualIdentity();
 		List<ValuesDTO> fullNames = new ArrayList<>();
 		ValuesDTO valuesDTO = new ValuesDTO();
 		valuesDTO.setLanguage("eng");

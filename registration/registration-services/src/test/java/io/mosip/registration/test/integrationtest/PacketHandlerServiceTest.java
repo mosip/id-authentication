@@ -32,7 +32,7 @@ import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.impl.UserOnboardServiceImpl;
@@ -68,8 +68,8 @@ public class PacketHandlerServiceTest extends BaseIntegrationTest {
 
 		RegistrationDTO obj = mapper.readValue(
 				new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
-		MoroccoIdentity identity = mapper.readValue(
-				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+		IndividualIdentity identity = mapper.readValue(
+				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), IndividualIdentity.class);
 
 		
 		byte[] data = IOUtils.toByteArray(
