@@ -199,6 +199,26 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 
 			break;
 			
+			
+			
+           case "MultipleBookAnAppointmentByPassingInvalidRequestTime":
+			
+        	Response FetchCentResInvReqTime = preRegLib.FetchCentre();
+   			Response  FetchCentResInvReqTimeVal= preRegLib.FetchCentre();
+   			JSONObject mulBookWithInvReqTime= preRegLib.multipleBookAppRequest(FetchCentResInvReqTime, FetchCentResInvReqTimeVal, preIDFirstUsr, preIDSecondUsr);
+   			mulBookWithInvReqTime.put("requesttime", preRegLib.getCurrentDate());
+   			logger.info("Res::"+mulBookWithInvReqTime.toString());
+   			JSONObject actReqInvReqTime = preRegUtil.dynamicChangeOfRequest(mulBookWithInvReqTime, "$.request.bookingRequest[0].preRegistrationId", "ABCD");
+   			//(JSONObject) parser.parse(actReqInvRegCenter);
+   			Response resInvReqTime = applicationLibrary.postRequest(actReqInvReqTime, preReg_URI);
+   			//logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
+   			outerKeys.add("responsetime");
+   			
+   			//status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+			
+			
     /* case "MultipleBookAnAppointmentByPassingInvalidPreRegistrationId":
 			
 			String preRegId= actualRequest.get("preRegistrationId").toString();
