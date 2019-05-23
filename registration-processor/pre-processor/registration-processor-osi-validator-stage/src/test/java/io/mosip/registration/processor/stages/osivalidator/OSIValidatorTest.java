@@ -332,8 +332,7 @@ public class OSIValidatorTest {
 		IdResponseDTO idResponseDTO=new IdResponseDTO();
 		ResponseDTO responseDTO=new ResponseDTO();
 		String identityJson="{\"UIN\":\"uin123\"}";
-		Object iden= JsonUtil.objectMapperReadValue(identityJson, Object.class);
-		responseDTO.setIdentity(iden);
+		responseDTO.setIdentity(identityJson);
 		idResponseDTO.setResponse(responseDTO);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
@@ -346,8 +345,13 @@ public class OSIValidatorTest {
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(userResponseDto).thenReturn(userResponseDto).
-				thenReturn(ridResponseDto).thenReturn(idResponseDTO);
+				.thenReturn(userResponseDto)
+				.thenReturn(userResponseDto)
+				.thenReturn(ridResponseDto)
+				.thenReturn(idResponseDTO)
+				.thenReturn(ridResponseDto)				
+				.thenReturn(idResponseDTO)
+				;
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertTrue(isValid);
