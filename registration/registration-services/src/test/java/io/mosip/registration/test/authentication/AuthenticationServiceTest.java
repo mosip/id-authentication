@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 import io.mosip.registration.validator.OTPValidatorImpl;
@@ -23,7 +23,7 @@ import io.mosip.registration.validator.OTPValidatorImpl;
 public class AuthenticationServiceTest {
 
 	@InjectMocks
-	private AuthenticationService authenticationService;
+	private AuthenticationServiceImpl authenticationService;
 	
 	@Mock
 	FingerprintValidatorImpl fingerprintValidator;

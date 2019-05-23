@@ -33,13 +33,14 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
-import io.mosip.registration.device.fp.FingerPrintCaptureService;
 import io.mosip.registration.device.fp.FingerprintFacade;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -74,7 +75,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private FingerPrintCaptureService fingerPrintCaptureService;
+	private AuthenticationServiceImpl authenticationService;
 
 	/** The registration controller. */
 	@Autowired
@@ -1319,7 +1320,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs,
 			boolean isValid, List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			if (!fingerPrintCaptureService.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+			if (!validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 				isValid = true;
 			} else {
 				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
@@ -1544,5 +1545,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			str = ApplicationContext.applicationLanguageBundle().getString(str);
 			thumbSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
 		}
+	}
+	
+	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+		authenticationValidatorDTO.setAuthValidationType("multiple");
+		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
 	}
 }

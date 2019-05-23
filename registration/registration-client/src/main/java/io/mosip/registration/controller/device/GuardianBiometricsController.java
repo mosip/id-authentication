@@ -25,14 +25,15 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.device.fp.FingerPrintCaptureService;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -131,7 +132,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private FingerPrintCaptureService fingerPrintCaptureServiceImpl;
+	private AuthenticationServiceImpl authenticationService;
 
 	/** The finger print facade. */
 	@Autowired
@@ -685,7 +686,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 				segmentedFingerprintDetailsDTOs.add(segmentedFingerprintDetailsDTO);
 			}
 		}
-		if (!fingerPrintCaptureServiceImpl.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+		if (!validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 			isValid = true;
 		} else {
 			FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
@@ -834,6 +835,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 	
 	private void populateBiometrics() {
 		biometricTypecombo.getItems().addAll(masterSync.getBiometricType(ApplicationContext.applicationLanguage()));
+	}
+	
+	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+		authenticationValidatorDTO.setAuthValidationType("multiple");
+		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
 	}
 
 }

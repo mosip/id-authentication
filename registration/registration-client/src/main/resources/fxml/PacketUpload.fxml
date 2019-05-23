@@ -60,8 +60,8 @@
                                  </graphic>
                               </TableColumn>
                                <TableColumn fx:id="slno" editable="false" prefWidth="${tableContainer.width*5/100}" resizable="false" sortable="false" styleClass="tableId" text="%slno" />
-                              <TableColumn fx:id="fileNameColumn" editable="false" prefWidth="${tableContainer.width*20/100}" sortable="false" styleClass="tableId" text="%files" />
-                              <TableColumn fx:id="regDate" editable="false" prefWidth="${tableContainer.width*65/100}" sortable="false" styleClass="tableId" text="%registrationDate" />
+                              <TableColumn fx:id="fileNameColumn" editable="false" prefWidth="${tableContainer.width*20/100}" styleClass="tableId" text="%files" />
+                              <TableColumn fx:id="regDate" editable="false" prefWidth="${tableContainer.width*65/100}" styleClass="tableId" text="%registrationDate" />
                            </columns>
                         </TableView>
                         <GridPane GridPane.rowIndex="1">

@@ -45,7 +45,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
-import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -132,7 +132,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	private RegistrationController registrationController;
 
 	@Autowired
-	private AuthenticationService authService;
+	private AuthenticationServiceImpl authService;
 
 	@Autowired
 	private OTPManager otpGenerator;

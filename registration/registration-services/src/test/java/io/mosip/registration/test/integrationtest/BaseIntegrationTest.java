@@ -20,7 +20,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 	GlobalParamServiceTest.class,
 	DocumentScannerServiceTest.class,
-	FingerPrintServiceTest.class,
 	JobConfigurationServiceTest.class,
 	LoginServiceTest.class,
 	MasterSyncServiceTest.class,
