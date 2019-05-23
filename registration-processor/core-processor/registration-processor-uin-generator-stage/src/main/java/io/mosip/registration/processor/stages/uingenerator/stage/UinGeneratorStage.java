@@ -821,7 +821,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
 				VidResponseDto.class);
 		
-		if( response.getErrors()!=null) {
+		if(!response.getErrors().isEmpty()) {
 			throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),"VID creation exception");
 			
 		}

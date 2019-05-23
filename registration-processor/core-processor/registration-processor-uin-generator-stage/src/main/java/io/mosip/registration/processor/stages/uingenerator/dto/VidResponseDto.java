@@ -16,5 +16,12 @@ public class VidResponseDto {
 	@JsonProperty("VID")
 	private String VID;
 	
+	private String updatedVid;
+	
+	private String updatedVidStatus;
+	
+	@JsonProperty("UIN")
+	private String UIN;
+	
 
 }
