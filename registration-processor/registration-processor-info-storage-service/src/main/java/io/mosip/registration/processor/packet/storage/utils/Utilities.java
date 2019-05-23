@@ -97,8 +97,8 @@ public class Utilities {
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private long elapseTime;
 
-	//@Value("${registration.processor.abis.json}")
-	private String registrationProcessorAbisJson = "RegistrationProcessorAbis_qa.json";
+	@Value("${registration.processor.abis.json}")
+	private String registrationProcessorAbisJson;
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
