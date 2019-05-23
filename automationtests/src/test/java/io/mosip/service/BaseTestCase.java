@@ -42,7 +42,7 @@ public class BaseTestCase {
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	public String testLevel;
+	
 		
 
 	/**
@@ -55,6 +55,7 @@ public class BaseTestCase {
 	public static String regProcAuthToken;
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
+	public static String testLevel;
 
 	public static String SEPRATOR = "";
 
