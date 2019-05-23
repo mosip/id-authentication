@@ -38,7 +38,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
-import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
+import io.mosip.registration.service.security.impl.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -73,7 +73,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private AuthenticationServiceImpl authenticationService;
+	private AuthenticationService authenticationService;
 
 	/** The registration controller. */
 	@Autowired

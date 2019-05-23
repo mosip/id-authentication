@@ -33,7 +33,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
+import io.mosip.registration.service.security.impl.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -132,7 +132,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private AuthenticationServiceImpl authenticationService;
+	private AuthenticationService authenticationService;
 
 	/** The finger print facade. */
 	@Autowired

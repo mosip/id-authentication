@@ -59,7 +59,7 @@ import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
-import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
+import io.mosip.registration.service.security.impl.AuthenticationService;
 import io.mosip.registration.update.SoftwareUpdateHandler;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -146,7 +146,7 @@ public class LoginController extends BaseController implements Initializable {
 	private LoginService loginService;
 
 	@Autowired
-	private AuthenticationServiceImpl authService;
+	private AuthenticationService authService;
 
 	@Autowired
 	private OTPManager otpGenerator;

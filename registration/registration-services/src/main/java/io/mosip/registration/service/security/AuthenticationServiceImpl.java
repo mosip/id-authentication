@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
+import io.mosip.registration.service.security.impl.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.registration.validator.AuthenticationBaseValidator;
  *
  */
 @Service
-public class AuthenticationService implements AuthenticationServiceImpl {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private List<AuthenticationBaseValidator> authenticationBaseValidators;
 

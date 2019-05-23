@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
-public interface AuthenticationServiceImpl {
+public interface AuthenticationService {
 
 	/**
 	 * Common Validator for all the Authentications
