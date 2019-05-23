@@ -53,11 +53,7 @@ public enum IdRepoErrorConstants {
 
 	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-013", "Failed to store/retrieve files in DFS"),
 
-	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-014", "Failed to parse/process Identity"),
-
-	ID_OBJECT_SCHEMA_PROCESSING_FAILED("IDR-IDS-015", "Unable to process id object schema"),
-
-	ID_OBJECT_SCHEMA_RETRIEVAL_FAILED("IDR-IDS-016", "Unable to retrieve id object schema from server"),
+	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-014", "Failed to process Id Object using kernel Id Object validator"),
 
 	FILE_NOT_FOUND("IDR-IDS-020", "File(s) not found in DFS"),
 	
