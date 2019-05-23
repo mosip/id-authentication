@@ -77,7 +77,8 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetusersBasedOnRegCenter")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
+	 testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

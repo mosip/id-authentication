@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;
 
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
-
 /**
  * Authentication Tests Listener class
  * 
@@ -23,14 +21,10 @@ public class AuthenticationTestsListener extends AuthTestsUtil implements IAnnot
 	 */
 	@Override
 	public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
-		if (testMethod.toString().contains("io.mosip.authentication.tests."))
+		if (testMethod.toString().contains(".authentication."))
 			annotation.setInvocationCount(
 					Integer.parseInt(getPropertyAsMap(new File("./" + getRunConfigFile()).getAbsolutePath().toString())
-							.get(getNormalisedClassName(testMethod.getDeclaringClass().getName()) + ".invocationCount")));
-		else if (testMethod.toString().contains("io.mosip.idRepository.tests."))
-			annotation.setInvocationCount(
-					Integer.parseInt(getPropertyAsMap(new File("./" + IdRepoTestsUtil.getIdRepoRunConfigFile()).getAbsolutePath().toString())
-							.get(getNormalisedClassName(testMethod.getDeclaringClass().getName()) + ".invocationCount")));
+							.get(getNormalisedClassName(testMethod.toString()) + ".invocationCount")));
 	}
 	
 	/**
@@ -40,8 +34,7 @@ public class AuthenticationTestsListener extends AuthTestsUtil implements IAnnot
 	 * @return String - actual class name
 	 */
 	private String getNormalisedClassName(String testMethodName) {
-		String value[] = testMethodName.toString().split(Pattern.quote("."));
-		return value[value.length - 1].toString();
+		return testMethodName.split(Pattern.quote("."))[4];
 	}
 }
 

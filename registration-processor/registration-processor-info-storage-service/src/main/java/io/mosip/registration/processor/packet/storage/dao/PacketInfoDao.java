@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -261,32 +260,6 @@ public class PacketInfoDao {
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId) {
 		return abisRequestRepository.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 
-	}
-	
-	public List<String> getReferenceIdByBatchId(String batchId){
-		return abisRequestRepository.getReferenceIdByBatchId(batchId);
-		
-	}
-	
-	/**
-	 * Gets the abis transaction id by request id.
-	 *
-	 * @param requestId the request id
-	 * @return the abis transaction id by request id
-	 */
-	public List<String> getAbisTransactionIdByRequestId(String requestId){
-		return abisRequestRepository.getAbisTransactionIdByRequestId(requestId);
-	}
-	
-	/**
-	 * Gets the identify req list by transaction id.
-	 *
-	 * @param transactionId the transaction id
-	 * @param requestType the request type
-	 * @return the identify req list by transaction id
-	 */
-	public List<AbisRequestEntity> getIdentifyReqListByTransactionId(String transactionId,String requestType){
-		return abisRequestRepository.getIdentifyReqListByTransactionId(transactionId,requestType);
 	}
 
 	/**

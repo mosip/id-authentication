@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * Validator for internal authentication request
@@ -14,7 +15,18 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 @Component
 public class InternalAuthRequestValidator extends AuthRequestValidator {
 
-	private static final int FINGERPRINT_COUNT = 10;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.impl.indauth.validator.
+	 * BaseAuthRequestValidator#supports(java.lang.Class)
+	 */
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return clazz.equals(AuthRequestDTO.class);
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.common.service.validator.AuthRequestValidator#getAllowedAuthTypeProperty()
@@ -27,11 +39,6 @@ public class InternalAuthRequestValidator extends AuthRequestValidator {
 	@Override
 	protected String getAllowedIdTypesConfigKey() {
 		return IdAuthConfigKeyConstants.INTERNAL_AUTH_ALLOWED_IDTYPE;
-	}
-
-	@Override
-	protected int getMaxFingerCount() {
-		return FINGERPRINT_COUNT;
 	}
 
 }

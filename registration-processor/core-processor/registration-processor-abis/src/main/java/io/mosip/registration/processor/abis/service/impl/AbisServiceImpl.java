@@ -69,9 +69,9 @@ public class AbisServiceImpl implements AbisService {
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	private static Set<String> storedRefId = new HashSet<>();
-	
+
 	private static Set<String> actualStoredRefId = new HashSet<>();
-	
+
 	private String identifyReqId;
 
 	/** The Constant TESTFINGERPRINT. */
@@ -99,9 +99,6 @@ public class AbisServiceImpl implements AbisService {
 		if (storedRefId.size() < 1000)
 			storedRefId.add(referenceId);
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				" referenceId storeList " + storedRefId);
-
 		response.setId(ABIS_INSERT);
 		response.setRequestId(abisInsertRequestDto.getRequestId());
 		response.setTimestamp(abisInsertRequestDto.getTimestamp());
@@ -126,9 +123,6 @@ public class AbisServiceImpl implements AbisService {
 					response.setFailureReason(7);
 				}
 			} else {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"AbisServiceImpl():: unable to fect CBEF file ");
 				response.setReturnValue(2);
 				response.setFailureReason(7);
 			}
@@ -136,8 +130,6 @@ public class AbisServiceImpl implements AbisService {
 		} catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
 			response.setReturnValue(2);
 			response.setFailureReason(7);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "AbisServiceImpl():: Exception Occured ");
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url."
 							+ ExceptionUtils.getStackTrace(e));
@@ -273,25 +265,19 @@ public class AbisServiceImpl implements AbisService {
 		return response;
 	}
 
-	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest,
-			AbisIdentifyResponseDto response) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::addCandidateList()::Entry");
+	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest, AbisIdentifyResponseDto response) {
+
 		int count = 0;
 
 		CandidateListDto cd = new CandidateListDto();
 		CandidatesDto[] candidatesDto;
-		if (storedRefId.size() > 1) {
-			for (String refId : storedRefId) {
-				if (!identifyRequest.getReferenceId().equals(refId)) {
-					actualStoredRefId.add(refId);
+		if(storedRefId.size()>1) {
+			for(String refId :storedRefId) {
+				if(!identifyRequest.getReferenceId().equals(refId)) {
+					actualStoredRefId.add(identifyRequest.getReferenceId());
 				}
 			}
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::addCandidateList()::storedRefId" + storedRefId);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::addCandidateList()::actualStoredRefId" + actualStoredRefId);
 		ArrayList<String> storedRefIdList = new ArrayList<>(actualStoredRefId);
 		Collections.shuffle(storedRefIdList);
 		int loopLimit = storedRefIdList.size();
@@ -314,11 +300,8 @@ public class AbisServiceImpl implements AbisService {
 			cd.setCandidates(candidatesDto);
 			response.setCandidateList(cd);
 		}
-		if (storedRefId.size() < 1000)
-			storedRefId.add(identifyReqId);
-		
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::addCandidateList()::Exit");
+		if(storedRefId.size()<1000)
+		storedRefId.add(identifyReqId);
 
 	}
 
@@ -344,7 +327,7 @@ public class AbisServiceImpl implements AbisService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
 	 */
 	@Override

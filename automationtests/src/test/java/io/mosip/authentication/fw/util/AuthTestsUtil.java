@@ -36,7 +36,7 @@ import com.ibm.icu.text.Transliterator;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
  
@@ -589,7 +589,7 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
-	public static String getContentFromFile(File file) throws IOException {
+	public String getContentFromFile(File file) throws IOException {
 		return FileUtils.readFileToString(file.getAbsoluteFile());
 	}
 	
@@ -1197,16 +1197,6 @@ public class AuthTestsUtil extends BaseTestCase {
         }
         return randomNumber;
     }
-	
-	public static String getVidRequestContent() {
-		try {
-			return getContentFromFile(new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
-					+ RunConfigUtil.objRunConfig.getModuleFolderName() + "/TestData/VIDGeneration/input/vid-request.json"));
-		} catch (Exception e) {
-			IDASCRIPT_LOGGER.error("Exception Occured in getting the VID request file" + e.getMessage());
-			return e.getMessage();
-		}
-	}
 } 
 
 

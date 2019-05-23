@@ -13,15 +13,15 @@ import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
 import io.mosip.registration.processor.packet.storage.config.PacketStorageBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
-import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
 /**
  * The Class BioDedupeConfig.
  */
 @Configuration
-@ComponentScan(basePackages = { "io.mosip.registration.processor.bio.dedupe.api.controller"},
-excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				RegistrationStatusBeanConfig.class,RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class, KernelConfig.class }))
+@ComponentScan(basePackages = { "io.mosip.registration.processor.bio.dedupe.api.*",
+		"io.mosip.registration.processor.packet.storage.*", "io.mosip.registration.processor.rest.client.*",
+		"io.mosip.registration.processor.bio.dedupe.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+				RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class, KernelConfig.class }))
 public class BioDedupeConfigTest {
 
 	@MockBean

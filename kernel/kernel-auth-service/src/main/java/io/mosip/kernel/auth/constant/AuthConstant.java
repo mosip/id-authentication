@@ -51,8 +51,6 @@ public class AuthConstant {
 	
 	public static final String SUCCESS_STATUS = "success";
 	
-	public static final String IDA = "ida";
-	
 	public static final String COOKIE="Cookie";
 
 	public static final String FAILURE_STATUS = "failure";
@@ -66,8 +64,4 @@ public class AuthConstant {
 	public static final String INVALID_REQUEST = "should not be null or empty";
 
 	public static final String WHITESPACE = " ";
-	
-	public static final String SMS_NOTIFYTYPE = "SMS";
-	
-	public static final String EMAIL_NOTIFYTYPE = "EMAIL";
 }

@@ -411,8 +411,7 @@
       "msg5": "File name should not be more than 50 characters",
       "msg6": "Wrong file type, please upload again",
       "msg7": "The file could not be uploaded, please try again.",
-      "msg8": "Could not copy document",
-      "msg9": "Documents are missing"
+      "msg8": "Could not copy document"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",

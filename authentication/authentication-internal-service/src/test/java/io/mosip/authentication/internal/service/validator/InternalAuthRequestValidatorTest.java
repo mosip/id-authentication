@@ -32,7 +32,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -72,7 +71,7 @@ public class InternalAuthRequestValidatorTest {
 	private InternalAuthRequestValidator internalAuthRequestValidator;
 
 	@InjectMocks
-	private AuthRequestValidator baseAuthRequestValidator;
+	private BaseAuthRequestValidator baseAuthRequestValidator;
 
 	@Mock
 	IdInfoHelper idinfoHelper;

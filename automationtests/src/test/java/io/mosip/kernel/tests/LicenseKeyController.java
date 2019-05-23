@@ -82,8 +82,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "LicenseKeyGenerator")
-	public Object[][] readData1(ITestContext context) throws Exception {	 
-		switch (testLevel) {
+	public Object[][] readData1(ITestContext context) throws Exception {
+		 testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -163,7 +164,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "mapLicenseKey")
 	public Object[][] readData3(ITestContext context) throws Exception {
-		switch (testLevel) {
+	
+		 testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "smoke");
 		case "regression":
@@ -235,8 +238,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 }
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "fetchmapLicenseKey")
-	public Object[][] readData(ITestContext context) throws Exception {	 
-		switch (testLevel) {
+	public Object[][] readData(ITestContext context) throws Exception {
+		 testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smoke");
 		case "regression":

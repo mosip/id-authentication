@@ -81,7 +81,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = "Kernel_"+"SmsNotification_"+object.toString();
+		testCaseName = object.toString();
 		cookie=auth.getAuthForIndividual();
 	}
 
@@ -94,7 +94,8 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "FetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 

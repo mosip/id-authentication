@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,10 +48,8 @@ public class MachineController {
 	 * 
 	 * Function to fetch machine detail based on given Machine ID and Language code.
 	 * 
-	 * @param machineId
-	 *            pass Machine ID as String
-	 * @param langCode
-	 *            pass language code as String
+	 * @param machineId pass Machine ID as String
+	 * @param langCode  pass language code as String
 	 * @return MachineResponseDto machine detail based on given Machine ID and
 	 *         Language code {@link MachineResponseDto}
 	 */
@@ -75,8 +72,7 @@ public class MachineController {
 	 * 
 	 * Function to fetch machine detail based on given Language code
 	 * 
-	 * @param langCode
-	 *            pass language code as String
+	 * @param langCode pass language code as String
 	 * 
 	 * @return MachineResponseDto machine detail based on given Language code
 	 *         {@link MachineResponseDto}
@@ -99,7 +95,6 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail")
@@ -115,8 +110,7 @@ public class MachineController {
 	/**
 	 * Post API to insert a new row of Machine data
 	 * 
-	 * @param machine
-	 *            input from user Machine DTO
+	 * @param machine input from user Machine DTO
 	 * 
 	 * @return ResponseEntity Machine Id which is inserted successfully
 	 *         {@link ResponseEntity}
@@ -137,8 +131,7 @@ public class MachineController {
 	/**
 	 * Post API to update a row of Machine data
 	 * 
-	 * @param machine
-	 *            input from user Machine DTO
+	 * @param machine input from user Machine DTO
 	 * 
 	 * @return ResponseEntity Machine Id which is update successfully
 	 *         {@link ResponseEntity}
@@ -160,8 +153,7 @@ public class MachineController {
 	/**
 	 * Post API to deleted a row of Machine data
 	 * 
-	 * @param id
-	 *            input from user Machine id
+	 * @param id input from user Machine id
 	 * 
 	 * @return ResponseEntity Machine Id which is deleted successfully
 	 *         {@link ResponseEntity}

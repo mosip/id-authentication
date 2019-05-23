@@ -8,8 +8,6 @@
 	"responseTime": "2019-03-21T16:28:48.422+05:30",
 	"version": "$version$",
 	"response": {
-		"kycStatus": false,
-		"staticToken": "$IGNORE$",
-		"identity": "$IGNORE$"
+		"authStatus": false
 	}
 }

@@ -22,8 +22,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
+	
+	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(FingerprintProvider.class);
+	
 
 	/*
 	 * (non-Javadoc)
@@ -37,8 +40,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().convert(isoImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().convert(isoImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
-			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
-					"Threshold Value >>>" + matcher.index(template1).match(template2));
+			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException e) {
 			throw e;
@@ -58,8 +60,8 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintTemplate template1 = new FingerprintTemplate().deserialize(fingerImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().deserialize(fingerImage2);
 			FingerprintMatcher matcher = new FingerprintMatcher();
-			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
-					"Threshold Value >>>" + matcher.index(template1).match(template2));
+			logger.info(IdAuthCommonConstants.SESSION_ID,"IDA", "matchScoreCalculator", "Threshold Value >>>" + matcher.index(template1).match(template2));
+			System.err.println("Threshold Value >>>" + matcher.index(template1).match(template2));
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException | JsonSyntaxException e) {
 			throw e;
@@ -70,8 +72,10 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	/**
 	 * Match minutiae.
 	 *
-	 * @param reqInfo    the req info
-	 * @param entityInfo the entity info
+	 * @param reqInfo
+	 *            the req info
+	 * @param entityInfo
+	 *            the entity info
 	 * @return the double
 	 */
 	public double matchMinutiae(Object reqInfo, Object entityInfo) {
@@ -91,8 +95,10 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	/**
 	 * Match image.
 	 *
-	 * @param reqInfo    the req info
-	 * @param entityInfo the entity info
+	 * @param reqInfo
+	 *            the req info
+	 * @param entityInfo
+	 *            the entity info
 	 * @return the double
 	 */
 	public double matchImage(Object reqInfo, Object entityInfo) {
@@ -108,7 +114,8 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	/**
 	 * Decode value.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the byte[]
 	 */
 	static byte[] decodeValue(String value) {
@@ -125,32 +132,20 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	public double matchMultiMinutae(Map<String, String> reqInfo, Map<String, String> entityInfo) {
 		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
 			double matchScore = 0;
-			matchScore = matchMultiMinutaeKnownFinger(reqInfo, entityInfo, matchScore);
+			matchScore = matchMultiMinutaeKnownFinger(reqInfo, entityInfo, matchScore); 
 			return matchScore;
 		} else {
 			return matchMultiMinutaeUnKnownFinger(reqInfo, entityInfo);
 		}
 	}
 
-	public double matchMultiMinutaeAverage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-		if (reqInfo.keySet().stream().noneMatch(key -> key.startsWith(IdAuthCommonConstants.UNKNOWN_BIO))) {
-			double matchScore = 0;
-			matchScore = matchMultiMinutaeKnownFinger(reqInfo, entityInfo, matchScore);
-			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchMultiMinutaeAverage",
-					"Average Threshold Value >>>" + matchScore / reqInfo.keySet().size());
-			return matchScore / reqInfo.keySet().size();
-		} else {
-			return 0;
-		}
-	}
-
 	/**
 	 * Match multi minutae un known finger.
 	 *
-	 * @param reqInfo       the req info
-	 * @param entityInfo    the entity info
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
 	 * @param maxMatchScore the max match score
-	 * @param matchScore    the match score
+	 * @param matchScore the match score
 	 * @return the double
 	 */
 	private double matchMultiMinutaeUnKnownFinger(Map<String, String> reqInfo, Map<String, String> entityInfo) {
@@ -161,7 +156,8 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			if (!reqInfoEntry.getKey().startsWith(IdAuthCommonConstants.UNKNOWN_BIO)) {
 				Map<String, String> reqMap = new HashMap<>();
 				reqMap.put(reqInfoEntry.getKey(), reqInfoEntry.getValue());
-				matchScore = matchMultiMinutaeKnownFinger(reqMap, entityInfo, matchScore);
+				matchScore = matchMultiMinutaeKnownFinger(reqMap, entityInfo,
+						matchScore);
 			} else {
 				for (Map.Entry<String, String> e : entityInfo.entrySet()) {
 					String value1 = e.getValue();
@@ -181,13 +177,12 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	/**
 	 * Match multi minutae known finger.
 	 *
-	 * @param reqInfo    the req info
+	 * @param reqInfo the req info
 	 * @param entityInfo the entity info
 	 * @param matchScore the match score
 	 * @return the double
 	 */
-	private double matchMultiMinutaeKnownFinger(Map<String, String> reqInfo, Map<String, String> entityInfo,
-			double matchScore) {
+	private double matchMultiMinutaeKnownFinger(Map<String, String> reqInfo, Map<String, String> entityInfo, double matchScore) {
 		for (Map.Entry<String, String> e : reqInfo.entrySet()) {
 			String key = e.getKey();
 			String value1 = e.getValue();

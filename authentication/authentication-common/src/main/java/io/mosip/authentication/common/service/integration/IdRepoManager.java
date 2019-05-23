@@ -35,8 +35,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 public class IdRepoManager {
 
 	
-	private static final String VID2 = "vid";
-
 	/** The Constant EXPIRED_VID. */
 	private static final String EXPIRED_VID = "Expired VID";
 
@@ -222,7 +220,7 @@ public class IdRepoManager {
 		String uin = null;
 		try {
 			Map<String, String> params = new HashMap<>();
-			params.put(VID2, vid);
+			params.put("vid", vid);
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.VID_SERVICE, null, Map.class);
 			buildRequest.setPathVariables(params);
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
@@ -240,7 +238,7 @@ public class IdRepoManager {
 					if (vidErrorList.stream().anyMatch(
 							map -> map.containsKey(ERRORMESSAGE_VID)
 									&& ((String) map.get(ERRORMESSAGE_VID)).equalsIgnoreCase(
-											String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID2)))) {
+											IdRepoErrorConstants.INVALID_INPUT_PARAMETER_VID.getErrorMessage()))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID);
 					}
 

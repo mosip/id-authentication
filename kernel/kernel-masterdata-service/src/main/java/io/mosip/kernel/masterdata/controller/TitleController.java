@@ -45,7 +45,7 @@ public class TitleController {
 	 * 
 	 * @return list of all titles present in master DB
 	 */
-	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION')")
 	@ResponseFilter
 	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
@@ -57,9 +57,8 @@ public class TitleController {
 	/**
 	 * Method to return list of titles for a particular language code
 	 * 
-	 * @param langCode
-	 *            input to fetch all titles belonging to the particular language
-	 *            code
+	 * @param langCode input to fetch all titles belonging to the particular
+	 *                 language code
 	 * @return list of all titles for the particular language code
 	 */
 	@ResponseFilter
@@ -74,8 +73,7 @@ public class TitleController {
 	/**
 	 * Method to add a new row of title data
 	 * 
-	 * @param title
-	 *            input from user
+	 * @param title input from user
 	 * @return primary key of entered row
 	 */
 	@ResponseFilter
@@ -90,8 +88,7 @@ public class TitleController {
 	/**
 	 * Controller class to update title data
 	 * 
-	 * @param titles
-	 *            input DTO for updated row
+	 * @param titles input DTO for updated row
 	 * @return composite primary key of updated row
 	 */
 	@ResponseFilter
@@ -112,8 +109,7 @@ public class TitleController {
 	/**
 	 * Controller class to delete title data
 	 * 
-	 * @param code
-	 *            input from user
+	 * @param code input from user
 	 * @return composite key of deleted row of data
 	 */
 	@ResponseFilter

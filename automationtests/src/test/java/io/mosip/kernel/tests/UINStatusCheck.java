@@ -120,19 +120,24 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 
 			{
 				finalStatus="Pass";
+				
+			
+
 				if(status.equals("ISSUED"))
 				{
 					finalStatus="Pass";
 				}
 				else {
 					finalStatus="Fail";
-					logger.info("UIN status is not in Issued status");
 				}
 
 			}else {
 				finalStatus="Fail";
+
 			}
 		}
+		
+		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

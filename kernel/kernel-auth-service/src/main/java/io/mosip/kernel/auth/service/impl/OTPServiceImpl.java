@@ -444,7 +444,7 @@ public class OTPServiceImpl implements OTPService {
 			return authNResponseDto;
 		}
 		for (String channel : otpUser.getOtpChannel()) {
-			switch (channel.toLowerCase()) {
+			switch (channel) {
 			case AuthConstant.EMAIL:
 				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, token);
 				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(), token);

@@ -31,8 +31,6 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class AuthRequestValidator extends BaseAuthRequestValidator {
 
-	private static final int FINGERPRINT_COUNT = 2;
-
 	private static final String REQUEST_REQUEST_TIME = "request/timestamp";
 
 	/** The Constant AUTH_REQUEST. */
@@ -140,8 +138,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
 				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { reqDateMaxTimeLong },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+						String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(), env
+								.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES)));
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -176,11 +174,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 */
 	protected String getAllowedAuthTypeProperty() {
 		return ALLOWED_AUTH_TYPE;
-	}
-
-	@Override
-	protected int getMaxFingerCount() {
-		return FINGERPRINT_COUNT;
 	}
 
 }

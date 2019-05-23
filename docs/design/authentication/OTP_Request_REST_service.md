@@ -23,14 +23,46 @@ MOSIP Partner will request for an OTP on behalf of an Individual
 OTP Request REST service addresses the above requirement -  
 
 1.	MOSIP Partner to construct a POST request with below details and send to Request URL 
-`/idauthentication/v1/otp/` - [Sample Request Body](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1otp)
+`identity/otp/`
+Sample Request Body – 
+```JSON
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "requestTime": "2019-02-15T07:22:57.086+05:30",
+  "transactionID": "txn12345",
+  "individualId": "9830872690593682",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ]
+}
+```
+
 2.	Authenticate and Authorize MOSIP Partner.
 3.	Validate “reqTime” for incoming OTP Requests for valid format and timestamp < 20mins from current time
 4.	Integrate with kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
 5.	Create OTP using OTP key in the format using OtpUtil- <product_id>_<uin_ref_id>_<txn_id>_<mua_code>
 6.	Retrieve mode of communication with Individual using admin config to send generated OTP
 7.	Integrate with Kernel SmsNotifier and EmailNotifier to send the generated OTP to their stored phone/email respectively.
-8.	Respond to MOSIP Partner with [Success response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-2)
+8.	Respond to MOSIP Partner with below success OTP generation response - 
+```JSON
+{
+  //API Metadata
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "responseTime": "2019-02-15T07:23:19.590+05:30",
+  //Response Metadata
+  "transactionID": "txn12345",
+  //OTP Response
+  "response": {
+    "maskedMobile": "XXXXXXX123",
+    "maskedEmail": "abXXXXXXXXXcd@xyz.com"
+  },
+  "errors": null
+}
+```
 
 **2.1. Class Diagram**
 

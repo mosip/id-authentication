@@ -38,7 +38,7 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -52,7 +52,7 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 /**
- * Test class for {@link AuthRequestValidator}.
+ * Test class for {@link BaseAuthRequestValidator}.
  *
  * @author Rakesh Roshan
  */
@@ -78,8 +78,9 @@ public class BaseAuthRequestValidatorTest {
 	@Autowired
 	protected Environment environment;
 
+	/** The base auth request validator. */
 	@InjectMocks
-	AuthRequestValidator AuthRequestValidator;
+	BaseAuthRequestValidator baseAuthRequestValidator;
 
 	/** The id info helper. */
 	@InjectMocks
@@ -101,18 +102,18 @@ public class BaseAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.setField(AuthRequestValidator, "idInfoHelper", idInfoHelper);
-		ReflectionTestUtils.setField(AuthRequestValidator, "env", environment);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "env", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(AuthRequestValidator, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "initialize");
+		ReflectionTestUtils.setField(baseAuthRequestValidator, "masterDataManager", masterDataManager);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "initialize");
 
 	}
 
 	@Test
 	public void testSupportTrue() {
-		assertTrue(AuthRequestValidator.supports(AuthRequestDTO.class));
+		assertTrue(baseAuthRequestValidator.supports(AuthRequestDTO.class));
 	}
 
 	/**
@@ -120,11 +121,11 @@ public class BaseAuthRequestValidatorTest {
 	 */
 	@Test
 	public void testValidateVersionAndId() {
-		AuthRequestDTO baseAuthRequestDTO = new AuthRequestDTO();
+		BaseAuthRequestDTO baseAuthRequestDTO = new BaseAuthRequestDTO();
 		baseAuthRequestDTO.setId("123456");
 		baseAuthRequestDTO.setVersion("1.0");
-		AuthRequestValidator.validate(baseAuthRequestDTO, error);
-		assertTrue(error.hasErrors());
+		baseAuthRequestValidator.validate(baseAuthRequestDTO, error);
+		assertFalse(error.hasErrors());
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateId_HasId_NoError() {
 
 		String id = "12345678";
-		AuthRequestValidator.validateId(id, error);
+		baseAuthRequestValidator.validateId(id, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -145,7 +146,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidateId_NoId_HasError() {
 
 		String id = null;
-		AuthRequestValidator.validateId(id, error);
+		baseAuthRequestValidator.validateId(id, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -168,7 +169,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setBiometrics(bioInfo);
 		authRequestDTO.setRequest(request);
 		Set<String> allowedAuthtype = new HashSet<>();
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertTrue(error.hasErrors());
 
@@ -199,7 +200,7 @@ public class BaseAuthRequestValidatorTest {
 		dto.setBiometrics(null);
 		authRequestDTO.setRequest(dto);
 		Set<String> allowedAuthtype = new HashSet<>();
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertTrue(error.hasErrors());
 
@@ -232,7 +233,7 @@ public class BaseAuthRequestValidatorTest {
 		dto.setBiometrics(bioInfoList);
 		authRequestDTO.setRequest(dto);
 		Set<String> allowedAuthtype = new HashSet<>();
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertFalse(error.hasErrors());
 
@@ -292,7 +293,7 @@ public class BaseAuthRequestValidatorTest {
 		allowedAuthtype.add("FID");
 		allowedAuthtype.add("FIR");
 		allowedAuthtype.add("IIR");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertFalse(error.hasErrors());
 
@@ -339,7 +340,7 @@ public class BaseAuthRequestValidatorTest {
 
 		List<DataDTO> data = new ArrayList<DataDTO>();
 		data.add(dataDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFinger", authRequestDTO, data, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFinger", authRequestDTO, data, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -384,7 +385,7 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(dataDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -430,7 +431,7 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(dataDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIris", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -477,7 +478,7 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(faceData);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -516,7 +517,7 @@ public class BaseAuthRequestValidatorTest {
 		List<DataDTO> bioInfoList = new ArrayList<DataDTO>();
 		bioInfoList.add(faceData);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFace", authRequestDTO, bioInfoList, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -546,7 +547,7 @@ public class BaseAuthRequestValidatorTest {
 			}
 		};
 		@SuppressWarnings("unchecked")
-		boolean checkAnyIdInfoAvailable = AuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
+		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
 		assertTrue(checkAnyIdInfoAvailable);
 	}
 
@@ -574,7 +575,7 @@ public class BaseAuthRequestValidatorTest {
 			}
 		};
 		@SuppressWarnings("unchecked")
-		boolean checkAnyIdInfoAvailable = AuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
+		boolean checkAnyIdInfoAvailable = baseAuthRequestValidator.checkAnyIdInfoAvailable(authRequestDTO, fun);
 		assertFalse(checkAnyIdInfoAvailable);
 	}
 
@@ -590,7 +591,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioType(BioAuthType.FACE_IMG.getType());
 		dataDTO.setDeviceProviderID("provider001");
 		bioInfoList.add(dataDTO);
-		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "isAvailableBioType",
+		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isAvailableBioType",
 				bioInfoList, BioAuthType.FACE_IMG);
 		assertTrue(isBioTypeAvailable);
 
@@ -608,7 +609,7 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setBioType(BioAuthType.IRIS_COMP_IMG.getType());
 		dataDTO.setDeviceProviderID("provider001");
 		bioInfoList.add(dataDTO);
-		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "isAvailableBioType",
+		boolean isBioTypeAvailable = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isAvailableBioType",
 				bioInfoList, BioAuthType.FACE_IMG);
 		assertFalse(isBioTypeAvailable);
 
@@ -657,7 +658,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "isDuplicateBioType",
+		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioAuthType.IRIS_IMG);
 		assertTrue(isDuplicateBioType);
 	}
@@ -696,7 +697,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "isDuplicateBioType",
+		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioAuthType.IRIS_IMG);
 		assertTrue(isDuplicateBioType);
 	}
@@ -735,7 +736,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "isDuplicateBioType",
+		boolean isDuplicateBioType = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "isDuplicateBioType",
 				authRequestDTO, BioAuthType.FGR_IMG);
 		assertTrue(isDuplicateBioType);
 	}
@@ -759,7 +760,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
 				"FMR");
 		assertFalse(error.hasErrors());
 	}
@@ -808,7 +809,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setDemographics(identitydto);
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
 				"FMR");
 		assertTrue(error.hasErrors());
 	}
@@ -844,7 +845,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
 				"FIR");
 		assertTrue(error.hasErrors());
 	}
@@ -892,7 +893,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateFingerRequestCount", authRequestDTO, error,
 				"FMR");
 		assertTrue(error.hasErrors());
 	}
@@ -928,7 +929,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 
 		assertFalse(error.hasErrors());
 
@@ -966,7 +967,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -982,7 +983,7 @@ public class BaseAuthRequestValidatorTest {
 //		request.setOtp(otp);
 //		authRequestDTO.setRequest(request);
 //
-//		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 //		assertFalse(error.hasErrors());
 //	}
 //
@@ -993,7 +994,7 @@ public class BaseAuthRequestValidatorTest {
 //	public void testCheckOTPAuth_HasNullValue_HasError() {
 //		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 //
-//		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 //		assertTrue(error.hasErrors());
 //	}
 
@@ -1007,7 +1008,7 @@ public class BaseAuthRequestValidatorTest {
 //		RequestDTO request = new RequestDTO();
 //		request.setOtp(otp);
 //		authRequestDTO.setRequest(request);
-//		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
+//		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkOTPAuth", authRequestDTO, error);
 //		assertTrue(error.hasErrors());
 //	}
 
@@ -1023,7 +1024,7 @@ public class BaseAuthRequestValidatorTest {
 //		request.setOtp(otp);
 //		authRequestDTO.setRequest(request);
 //
-//		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(AuthRequestValidator, "getOtpValue",
+//		Optional<String> isOtp = ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "getOtpValue",
 //				authRequestDTO);
 //		assertTrue(isOtp.isPresent());
 //	}
@@ -1042,7 +1043,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateEmail", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1062,7 +1063,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateEmail", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1080,7 +1081,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequest(phoneRequest);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePhone", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -1099,7 +1100,7 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequest(phoneRequest);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePhone", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1156,7 +1157,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -1197,7 +1198,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -1238,7 +1239,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -1280,7 +1281,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1304,7 +1305,7 @@ public class BaseAuthRequestValidatorTest {
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateIrisRequestCount", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -1340,7 +1341,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 
 	}
@@ -1376,7 +1377,7 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateMultiIrisValue", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
 	}
@@ -1393,7 +1394,8 @@ public class BaseAuthRequestValidatorTest {
 		Set<String> availableAuthTypeInfos = new HashSet<>();
 		availableAuthTypeInfos.add("address");
 		availableAuthTypeInfos.add("fullAddress");
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdAndFullAd", availableAuthTypeInfos, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdAndFullAd", availableAuthTypeInfos,
+				error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1430,7 +1432,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkAge", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1463,7 +1465,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkAge", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1495,7 +1497,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDOB", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOB", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1527,7 +1529,7 @@ public class BaseAuthRequestValidatorTest {
 		reqDTO.setDemographics(idDTO);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDOB", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOB", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1546,7 +1548,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1565,7 +1567,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1584,7 +1586,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1603,7 +1605,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin(pin);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1622,7 +1624,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setOtp(otp);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1641,7 +1643,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO request = new RequestDTO();
 		request.setOtp(otp);
 		authRequestDTO.setRequest(request);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
 				error);
 	}
 
@@ -1655,7 +1657,8 @@ public class BaseAuthRequestValidatorTest {
 		dataDTO.setDeviceProviderID("provider001");
 		bioInfoList.add(dataDTO);
 		Set<String> allowedAuthtype = new HashSet<>();
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioType", bioInfoList, error, allowedAuthtype);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioType", bioInfoList, error,
+				allowedAuthtype);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1684,7 +1687,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setDemographics(dobIdentityDTO);
 		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDOBType", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOBType", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1723,7 +1726,7 @@ public class BaseAuthRequestValidatorTest {
 		RequestDTO reqDTO = new RequestDTO();
 		authRequestDTO.setRequest(reqDTO);
 		Set<String> allowedAuthtype = new HashSet<>();
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertTrue(error.hasErrors());
 
@@ -1758,7 +1761,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderType());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
 		assertFalse(error.hasErrors());
 	}
 
@@ -1791,7 +1794,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(fetchGenderTypeNull());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1818,7 +1821,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkGender", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 

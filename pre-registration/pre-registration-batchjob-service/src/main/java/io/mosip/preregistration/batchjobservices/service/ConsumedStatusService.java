@@ -54,7 +54,7 @@ public class ConsumedStatusService {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 	
-	@Value("${version}")
+	@Value("${ver}")
 	String versionUrl;
 
 	@Value("${mosip.preregistration.batchjob.service.consumed.id}")

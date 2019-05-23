@@ -42,7 +42,6 @@ public class BaseTestCase {
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	public String testLevel;
 		
 
 	/**
@@ -95,9 +94,6 @@ public class BaseTestCase {
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
-			                    
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" + environment);
 			ApplnURI = System.getProperty("env.endpoint");
@@ -130,9 +126,8 @@ public class BaseTestCase {
 
 
 		PreRegistrationLibrary pil = new PreRegistrationLibrary();
+		pil.PreRegistrationResourceIntialize();
 		AuthTestsUtil.wakeDemoApp();
-		/*pil.PreRegistrationResourceIntialize();
-		*/
 
 	} // End suiteSetup
 

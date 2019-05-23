@@ -1,7 +1,4 @@
-<div class="spinner" *ngIf="!dataIncomingSuccessful && !hasError">
-    <mat-spinner></mat-spinner>
-</div>
-<div *ngIf="secondaryLanguagelabels && dataIncomingSuccessful || hasError">
+<div *ngIf="secondaryLanguagelabels">
   <div class="wrapper">
     <div class="user">
       <header>{{ 'demographic.title' | translate }}</header>

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -441,7 +440,6 @@ public class IdRepoManagerTest {
 	 * @throws RestServiceException the rest service exception
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Ignore
 	@Test
 	public void testInvalidVID() throws RestServiceException, IdAuthenticationBusinessException {
 		  RestRequestDTO restReq=new RestRequestDTO();
@@ -449,8 +447,8 @@ public class IdRepoManagerTest {
 			Map<String, Object> responseBody = new HashMap<>();
 			List<Map<String, Object>> valuelist = new ArrayList<>();
 			Map<String, Object> errorcode = new HashMap<>();
-			errorcode.put("errorCode", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-			errorcode.put("message", String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid"));
+			errorcode.put("errorCode", "IDR-VID-001");
+			errorcode.put("message", "Invalid Input Parameter - %s");
 			valuelist.add(errorcode);
 			responseBody.put("errors", valuelist);
 			Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(

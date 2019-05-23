@@ -98,8 +98,9 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException { 
-		switch (testLevel) {
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
 

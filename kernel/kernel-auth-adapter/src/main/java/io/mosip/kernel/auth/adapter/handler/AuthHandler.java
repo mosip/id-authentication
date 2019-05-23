@@ -99,12 +99,16 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
-
-		response = getValidatedUserResponse(token);
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
+		try {
+			response = getValidatedUserResponse(token);
+			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+			if (!validationErrorsList.isEmpty()) {
+				throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
+			}
+		} catch (Exception e) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
+
 		try {
 			ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
 			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
@@ -120,17 +124,14 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
-	private ResponseEntity<String> getValidatedUserResponse(String token) {
+	private ResponseEntity<String> getValidatedUserResponse(String token)
+			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		HttpHeaders headers = new HttpHeaders();
 		System.out.println("\nInside Auth Handler");
 		System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		try {
-			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
-		}
+		return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
 	}
 
 	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {

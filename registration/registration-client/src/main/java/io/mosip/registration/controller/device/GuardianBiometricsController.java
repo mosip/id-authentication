@@ -136,8 +136,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private IrisFacade irisFacade;
 
 	private static final Map<String, String[]> bioMap = createMap();
-	
-	private String bioValue;
 
 	private static Map<String, String[]> createMap() {
 		Map<String, String[]> bioMap = new HashMap<>();
@@ -177,7 +175,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of Guardian Biometric screen started");
 
-		bioValue = RegistrationUIConstants.SELECT;
 		biometricBox.setVisible(false);
 		retryBox.setVisible(false);		
 		continueBtn.setDisable(true);
@@ -196,6 +193,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			}
 		});
+	}
+	
+	@FXML
+	private void chooseBiometicList() {
+		if (!(Boolean) SessionContext.userContext().getUserMap()
+				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+			addBiometricList();
+		}
 	}
 
 	private void addBiometricList() {
@@ -227,14 +232,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		if (bioMap.containsKey(biometricTypecombo.getValue())) {
 			String[] values = bioMap.get(biometricTypecombo.getValue());
-			if(!bioValue.equalsIgnoreCase(values[0])) {
-				updateBiometric(values[0], values[1], values[2], values[3]);
-				scanBtn.setDisable(false);
-				continueBtn.setDisable(true);
-				biometricBox.setVisible(true);
-				retryBox.setVisible(true);
-			}
+			updateBiometric(values[0], values[1], values[2], values[3]);
 		}
+
+		biometricBox.setVisible(true);
+		retryBox.setVisible(true);
+		scanBtn.setDisable(false);
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Parent/Guardian Biometrics captured");
@@ -386,7 +389,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating biometrics and clearing previous data");
-		bioValue = bioType;
+
 		clearCaptureData();
 		biometricType.setText(bioType);
 		biometricImage.setImage(new Image(this.getClass().getResourceAsStream(bioImage)));
@@ -441,6 +444,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		irisFacade.getIrisImageAsDTO(detailsDTO, irisType);
 
+		// irisCaptureController.getIrisImage(detailsDTO, irisType);
+
 		if (detailsDTO.getIris() != null) {
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
@@ -465,6 +470,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Iris scanning is completed");
 
 	}
+
+	@Autowired
+	FingerPrintCaptureController fingerPrintCaptureController;
+
+	@Autowired
+	IrisCaptureController irisCaptureController;
 
 	/**
 	 * Scan Fingers
@@ -518,6 +529,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 		}
 		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+
+		// fingerPrintCaptureController.getFingerPrintImage(detailsDTO,
+		// fingerType);
 
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
@@ -765,7 +779,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 		clearCaptureData();
 		biometricBox.setVisible(false);
 		retryBox.setVisible(false);
-		bioValue = RegistrationUIConstants.SELECT;
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Cleared the captured biometric data");
@@ -777,6 +790,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	 */
 	public void manageBiometricsListBasedOnExceptions() {
 
+		clearCapturedBioData();
 		if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 				.getBiometricExceptionDTO() != null
 				|| !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
@@ -812,11 +826,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 
 		}
-		biometricTypecombo.setPromptText(bioValue);
-		if(!bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
-			scanBtn.setDisable(true);
-			continueBtn.setDisable(false);
-		}
+		biometricBox.setVisible(false);
+		retryBox.setVisible(false);	
 	}
 
 }

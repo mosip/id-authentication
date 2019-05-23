@@ -162,7 +162,7 @@ public class PacketInfoMapper {
 			String applicantName = null;
 			if (demoDto.getName() != null) {
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
-				entity.setName(applicantName!=null?getHMACHashCode(applicantName.trim().toUpperCase()):null);
+				entity.setName(getHMACHashCode(applicantName.trim().toUpperCase()));
 			}
 
 			if (demoDto.getDateOfBirth() != null) {
@@ -188,7 +188,6 @@ public class PacketInfoMapper {
 	}
 
 	public static String getHMACHashCode(String value) {
-		if(value==null) return null;
 		return CryptoUtil.encodeBase64(HMACUtils.generateHash(value.getBytes()));
 
 	}

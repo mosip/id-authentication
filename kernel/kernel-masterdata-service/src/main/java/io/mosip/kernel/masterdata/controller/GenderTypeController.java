@@ -46,7 +46,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping("/gendertypes")
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
@@ -58,8 +58,7 @@ public class GenderTypeController {
 	/**
 	 * Get API to fetch all gender types for a particular language code
 	 * 
-	 * @param langCode
-	 *            the language code whose gender is to be returned
+	 * @param langCode the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
@@ -75,8 +74,7 @@ public class GenderTypeController {
 	/**
 	 * Post API to enter a new Gender Type Data
 	 * 
-	 * @param gender
-	 *            input dto to enter a new gender data
+	 * @param gender input dto to enter a new gender data
 	 * @return primary key of entered row of gender
 	 */
 	@ResponseFilter
@@ -92,8 +90,7 @@ public class GenderTypeController {
 	/**
 	 * Update a Gender Type
 	 * 
-	 * @param gender
-	 *            input dto to update a gender data
+	 * @param gender input dto to update a gender data
 	 * @return key of updated row
 	 */
 	@ResponseFilter
@@ -109,8 +106,7 @@ public class GenderTypeController {
 	/**
 	 * Delete a Gender Type
 	 * 
-	 * @param code
-	 *            the code whose gender is to be deleted
+	 * @param code the code whose gender is to be deleted
 	 * @return code of deleted rows
 	 */
 	@ResponseFilter
@@ -126,8 +122,7 @@ public class GenderTypeController {
 	/**
 	 * Validate Gender name
 	 * 
-	 * @param genderName
-	 *            gender Name
+	 * @param genderName gender Name
 	 * @return {@link StatusResponseDto } StatusResponseDto
 	 */
 	@ResponseFilter

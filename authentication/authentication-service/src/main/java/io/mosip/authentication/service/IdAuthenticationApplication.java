@@ -31,12 +31,10 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl;
 import io.mosip.kernel.idgenerator.vid.util.VidFilterUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
@@ -57,8 +55,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		BiometricProviderFactory.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class,
 		OTPAuthServiceImpl.class, AuditHelper.class, PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class,
 		AuthRequestValidator.class, AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class,
-		DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class,
-		IdObjectPatternValidator.class })
+		DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class })
 public class IdAuthenticationApplication {
 
 	/**

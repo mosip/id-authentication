@@ -70,14 +70,15 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "kernel_"+"CentetMachineUserMappingToMasterData_"+object.toString();
 		 cookie = auth.getAuthForRegistrationProcessor();
 	}
 	
 	 // Data Providers to read the input json files from the folders
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 switch (testLevel) {
+		 String testParam = context.getCurrentXmlTest().getParameter("testType");
+		 switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smoke");
 			

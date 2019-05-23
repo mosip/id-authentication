@@ -179,7 +179,6 @@ mat-select:focus {
   position: fixed;
   background: #ffffff;
   box-shadow: 10px 10px 10px 3px #808080;
-  z-index:22;
 }
 
 .user__btn {

@@ -100,37 +100,16 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the insert or identify request.
 	 *
-	 * @param bioRefId
-	 *            the abis ref id
-	 * @param refRegtrnId
-	 *            the ref regtrn id
+	 * @param bioRefId            the abis ref id
+	 * @param refRegtrnId the ref regtrn id
 	 * @return the insert or identify request
 	 */
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId);
 
 	/**
-	 * Gets the abis transaction id by request id.
-	 *
-	 * @param requestId
-	 *            the request id
-	 * @return the abis transaction id by request id
-	 */
-	public List<String> getAbisTransactionIdByRequestId(String requestId);
-
-	/**
-	 * Gets the identify req list by transaction id.
-	 *
-	 * @param transactionId the transaction id
-	 * @param requestType the request type
-	 * @return the identify req list by transaction id
-	 */
-	public List<AbisRequestDto> getIdentifyReqListByTransactionId(String transactionId, String requestType);
-
-	/**
 	 * Gets the abis request by request id.
 	 *
-	 * @param abisRequestId
-	 *            the abis request id
+	 * @param abisRequestId the abis request id
 	 * @return the abis request by request id
 	 */
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId);
@@ -138,8 +117,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the batch id by request id.
 	 *
-	 * @param abisRequestId
-	 *            the abis request id
+	 * @param abisRequestId the abis request id
 	 * @return the batch id by request id
 	 */
 	public String getBatchIdByRequestId(String abisRequestId);
@@ -147,32 +125,20 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the batch statusby batch id.
 	 *
-	 * @param batchId
-	 *            the batch id
+	 * @param batchId the batch id
 	 * @return the batch statusby batch id
 	 */
 	public List<String> getBatchStatusbyBatchId(String batchId);
 
 	/**
-	 * Gets the reference id by batch id.
-	 *
-	 * @param batchId the batch id
-	 * @return the reference id by batch id
-	 */
-	public List<String> getReferenceIdByBatchId(String batchId);
-
-	/**
 	 * Gets the insert or identify request.
 	 *
-	 * @param bioRefId
-	 *            the bio ref id
-	 * @param refRegtrnId
-	 *            the ref regtrn id
-	 * @param requestType
-	 *            the request type
+	 * @param bioRefId the bio ref id
+	 * @param refRegtrnId the ref regtrn id
+	 * @param requestType the request type
 	 * @return the insert or identify request
 	 */
-	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType);
+	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId,String requestType);
 
 	/**
 	 * Gets the identify by transaction id.
@@ -229,18 +195,15 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Save demo dedupe potential data.
 	 *
-	 * @param regDemoDedupeListDto
-	 *            the reg demo dedupe list dto
+	 * @param regDemoDedupeListDto the reg demo dedupe list dto
 	 */
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto);
 
 	/**
 	 * Gets the abis response records.
 	 *
-	 * @param latestTransactionId
-	 *            the latest transaction id
-	 * @param identify
-	 *            the identify
+	 * @param latestTransactionId the latest transaction id
+	 * @param identify the identify
 	 * @return the abis response records
 	 */
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String identify);
@@ -248,21 +211,17 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the abis response records.
 	 *
-	 * @param abisRefId
-	 *            the abis ref id
-	 * @param latestTransactionId
-	 *            the latest transaction id
-	 * @param identify
-	 *            the identify
+	 * @param abisRefId the abis ref id
+	 * @param latestTransactionId the latest transaction id
+	 * @param identify the identify
 	 * @return the abis response records
 	 */
-	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId, String latestTransactionId, String identify);
+	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String identify);
 
 	/**
 	 * Gets the abis response I ds.
 	 *
-	 * @param abisRequestId
-	 *            the abis request id
+	 * @param abisRequestId the abis request id
 	 * @return the abis response I ds
 	 */
 	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId);
@@ -270,8 +229,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the abis response det records.
 	 *
-	 * @param abisResponseDto
-	 *            the abis response dto
+	 * @param abisResponseDto the abis response dto
 	 * @return the abis response det records
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto);
@@ -279,8 +237,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the abis response det records.
 	 *
-	 * @param List
-	 *            abisResponseDto the abis response dto
+	 * @param List abisResponseDto the abis response dto
 	 * @return the abis response det records
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto);
@@ -288,8 +245,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the abis response details.
 	 *
-	 * @param abisResponseId
-	 *            the abis response id
+	 * @param abisResponseId the abis response id
 	 * @return the abis response details
 	 */
 	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId);
@@ -297,28 +253,24 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Save individual demographic dedupe update packet.
 	 *
-	 * @param demoDedupeData
-	 *            the demo dedupe data
-	 * @param regId
-	 *            the reg id
+	 * @param demoDedupeData the demo dedupe data
+	 * @param regId the reg id
 	 */
 	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demoDedupeData, String regId);
 
 	/**
 	 * Gets the identity keys and fetch values from JSON.
 	 *
-	 * @param demographicJsonString
-	 *            the demographic json string
+	 * @param demographicJsonString the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
 	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString);
 
-	/**
-	 * Gets the abis requests by bio ref id.
-	 *
-	 * @param bioRefId
-	 *            the bio ref id
-	 * @return the abis requests by bio ref id
-	 */
-	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId);
+    /**
+     * Gets the abis requests by bio ref id.
+     *
+     * @param bioRefId the bio ref id
+     * @return the abis requests by bio ref id
+     */
+    public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId);
 }

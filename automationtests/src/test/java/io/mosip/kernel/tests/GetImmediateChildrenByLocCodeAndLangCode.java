@@ -77,7 +77,9 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetImmediateChildrenByLocCodeAndLangCode")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
+		
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

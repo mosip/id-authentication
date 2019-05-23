@@ -46,7 +46,7 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(IdAuthCommonConstants.RESPONSE);
-			response.put(IDENTITY, keyManager.encryptData(response, mapper));
+			response.put(IDENTITY, keyManager.encryptData(response));
 			responseBody.put(IdAuthCommonConstants.RESPONSE, response);
 			return responseBody;
 		} catch (ClassCastException e) {

@@ -7,8 +7,6 @@ package io.mosip.preregistration.booking.exception.util;
 import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 
-import org.springframework.web.client.HttpClientErrorException;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;

@@ -8,10 +8,9 @@
 # Login
 
 * [GET /security/authfactors](#get-securityauthfactors)
-* [POST /login](#post-login)
+* [POST /useridPwd](#post-useridPwd)
 * [POST /sendotp](#post-sendotp)
 * [POST /useridOTP](#post-useridOTP)
-* [POST /logout](#post-logout)
 
 
 ### GET /security/authfactors
@@ -74,12 +73,12 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```
 
 
-### POST /login
+### POST /useridPwd
 
 This service will authenticate the username and password. This service will call the login service in the Auth API and will return the token back to the caller. 
 
 #### Resource URL
-<div>https://mosip.io/v1/admin/login</div>
+<div>https://mosip.io/v1/admin/useridPwd</div>
 
 #### Resource details
 
@@ -98,7 +97,7 @@ appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMI
 #### Example Request
 ```JSON
 {
-	"id": "mosip.admin.authentication.login",
+	"id": "mosip.admin.authentication.useridPwd",
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"request": {
@@ -120,7 +119,7 @@ Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlk
 
 JSON:
 {
-	"id": "mosip.admin.authentication.login",
+	"id": "mosip.admin.authentication.useridPwd",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"response": {
@@ -138,7 +137,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.authentication.login",
+	"id": "mosip.admin.authentication.useridPwd",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -155,7 +154,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.authentication.login",
+	"id": "mosip.admin.authentication.useridPwd",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -394,61 +393,7 @@ Error Responses
 		]
 }
 ```
-### POST /logout
 
-This service will logout the user. This service will call the logout service in the Auth API and will remove the token for the user.
-
-#### Resource URL
-<div>https://mosip.io/v1/admin/logout</div>
-
-#### Resource details
-
-Resource Details | Description
------------- | -------------
-Response format | The response will be sent in the Response Header and also a JSON message will be returned. 
-Requires Authentication | yes
-
-### Request 
-
-Cookie : Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlkdWFsIiwibW9iaWxlIjoiOTY2MzE3NTkyOCIsIm1haWwiOiJpbmRpdmlkdWFsQGdtYWlsLmNvbSIsInJvbGUiOiJwZXJzb24iLCJpYXQiOjE1NTEzNDU1NjUsImV4cCI6MTU1MTM1MTU2NX0.pCyibViXo31enOgRD60BnKjEpEA-78yzbWnZGChxCIZ5lTpYnhgm-0dtoT3neFebTJ8eAI7-o8jDWMCMqq6uSw; Max-Age=6000000; Expires=Wed, 08-May-2019 19:59:43 GMT; Path=/; Secure; HttpOnly
-
-#### Example Response
-
-Success Response 
-
-```
-JSON:
-{
-	"id": "mosip.admin.authentication.logout",
-	"ver": "1.0",
-	"responsetime": "2007-12-03T10:15:30Z",
-	"response": {
-                "status": "success",
-				"message":"Username has been logged out successfully"
-	}
-}
-
-```
-
-
-Error Responses
-
-1. Invalid token: If the passed token is not correct. 
-```JSON
-
-{
-	"id": "mosip.admin.authentication.logout",
-	"ver": "1.0",
-	"responsetime": "2007-12-03T10:15:30Z",
-	"errors":[
-			{
-				"errorCode": "ADMN_AUTH_ERR_INVALIDCREDENTIALS",
-				"message": "The passed in token is not correct"
-		  }	
-		]
-}
-
-```
 # Master Data
 
 * [GET /mastercards](#get-mastercards)
@@ -561,7 +506,7 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.unblockuser",
+	"id": "mosip.admin.unblockuser",
 	"version": "1.0",
 	"metadata": {},
 	"responsetime": "2007-12-03T10:15:30Z",
@@ -579,7 +524,7 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```JSON
 
 {
-  "id": "mosip.admin.accountmanagement.unblockuser",
+  "id": "mosip.admin.authfactors",
   "version": "1.0",
   "metadata": {},
   "responsetime": "2007-12-03T10:15:30Z",
@@ -619,7 +564,7 @@ appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMI
 #### Example Request
 ```JSON
 {
-	"id": "mosip.admin.accountmanagement.changepassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"request": {
@@ -642,7 +587,7 @@ Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlk
 
 JSON:
 {
-	"id": "mosip.admin.accountmanagement.changepassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"response": {
@@ -660,7 +605,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.changepassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -695,7 +640,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.changepassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -733,7 +678,7 @@ appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMI
 #### Example Request
 ```JSON
 {
-	"id": "mosip.admin.accountmanagement.resetpassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"request": {
@@ -755,7 +700,7 @@ Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlk
 
 JSON:
 {
-	"id": "mosip.admin.accountmanagement.resetpassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"response": {
@@ -773,7 +718,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.resetpassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -790,7 +735,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.resetpassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -808,7 +753,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.resetpassword",
+	"id": "mosip.admin.authentication.changepassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -825,7 +770,7 @@ Error Responses
 The user can get user-name from mobile number.
 
 #### Resource URL
-<div>https://mosip.io/v1/admin/actmgmt/username/{mobilenumber}</div>
+<div>https://mosip.io/v1/admin/username/{mobilenumber}</div>
 
 #### Resource details
 Resource Details | Description
@@ -840,7 +785,7 @@ mobilenumber |Yes|mobile number of the user| 325624646
 timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 
 #### Request
-<div>https://mosip.io/v1/admin/actmgmt/username/458575535 </div>
+<div>https://mosip.io/v1/admin/username/458575535 </div>
 
 #### Responses:
 ##### Success Response:
@@ -849,7 +794,7 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```JSON
 
 {
-	"id": "mosip.admin.accountmanagement.mobilenumber",
+	"id": "mosip.admin.unblockuser",
 	"version": "1.0",
 	"metadata": {},
 	"responsetime": "2007-12-03T10:15:30Z",
@@ -867,7 +812,7 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```JSON
 
 {
-  "id": "mosip.admin.accountmanagement.mobilenumber",
+  "id": "mosip.admin.authfactors",
   "version": "1.0",
   "metadata": {},
   "responsetime": "2007-12-03T10:15:30Z",
@@ -878,6 +823,294 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
     }
   ]
 }
+```
+# User Management
+
+* [POST /register](#post-register)
+* [POST /changepassword](#post-changepassword)
+* [POST /resetpassword](#post-resetpassword)
+
+### POST /register
+
+New User will be registered in ths service
+
+#### Resource URL
+<div>https://mosip.io/v1/admin/usermgmt/register</div>
+
+#### Resource details
+Resource Details | Description
+------------ | -------------
+Response format | JSON
+Requires Authentication | Yes
+
+#### Request Part Parameters
+Name | Required | Description |  Example
+-----|----------|-------------|--------
+userid |Yes|User id of the user| UDAE423
+timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
+
+#### Request
+<div>https://mosip.io/v1/admin/unblockuser?userid=UDAE423&timeStamp=2018-12-09T06%3A39%3A03.683Z </div>
+
+#### Responses:
+##### Success Response:
+###### Status code: '200'
+###### Description: List of auth factors are returned
+```JSON
+
+{
+	"id": "mosip.admin.unblockuser",
+	"version": "1.0",
+	"metadata": {},
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors": [],
+	"response": {
+		"Status":"SUCCESS",
+		"Message":"The user had been succesfully unblocked"
+	}
+}
+```
+
+##### Error Response:
+###### Status code: '200'
+###### Description: If the user is not found. 
+```JSON
+
+{
+  "id": "mosip.admin.authfactors",
+  "version": "1.0",
+  "metadata": {},
+  "responsetime": "2007-12-03T10:15:30Z",
+  "errors": [
+    {
+      "errorCode": "ADMN-ACC-USR-NOTFOUND",
+      "message": "The userid is not found in the system"
+    }
+  ]
+}
+```
+
+
+### POST /changepassword
+
+This service will change the password to new value. 
+
+#### Resource URL
+<div>https://mosip.io/v1/admin/changepassword</div>
+
+#### Resource details
+
+Resource Details | Description
+------------ | -------------
+Response format | The response will be sent in the Response Header and also a JSON message will be returned. 
+Requires Authentication | no
+
+#### Parameters
+Name | Required | Description | Default Value | Example
+-----|----------|-------------|---------------|--------
+username|Yes|This is the username of the user. | -NA- | M392380
+oldpassword|Yes|This is the old password of the user| -NA- | 6^S98sG#
+newpassword|Yes|This is the new password of the user| -NA- | hfsfs32#
+appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMIN
+
+
+#### Example Request
+```JSON
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"version":"1.0",	
+	"requesttime":"2007-12-03T10:15:30Z",
+	"request": {
+		"username": "M392380",
+		"oldpassword": "6^S98sG#",
+		"newpassword": "hfsfs32#",
+		"appid": "ADMIN"
+	}
+}
+```
+#### Example Response
+
+Success Response 
+
+```
+Response Cookie:
+
+Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlkdWFsIiwibW9iaWxlIjoiOTY2MzE3NTkyOCIsIm1haWwiOiJpbmRpdmlkdWFsQGdtYWlsLmNvbSIsInJvbGUiOiJwZXJzb24iLCJpYXQiOjE1NTEzNDU1NjUsImV4cCI6MTU1MTM1MTU2NX0.pCyibViXo31enOgRD60BnKjEpEA-78yzbWnZGChxCIZ5lTpYnhgm-0dtoT3neFebTJ8eAI7-o8jDWMCMqq6uSw; Max-Age=6000000; Expires=Wed, 08-May-2019 19:59:43 GMT; Path=/; Secure; HttpOnly
+
+
+JSON:
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"response": {
+        "status": "success",
+		"message":"New password been set successfully"
+	}
+}
+
+```
+
+
+Error Responses
+
+1. Invalid credentials: If the passed credentials is not correct. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN-ACC-INVLD-CRDNTIALS",
+				"message": "The passed in credentials is not correct"
+		  }	
+		]
+}
+
+```
+
+2. Password policy rule not met: If the new password is not meeting the password policy. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN_AUTH_ERR_LNGTH_NOT_STSFIED",
+				"message": "The length of the new password is lesser than expected"
+		  }	
+		]
+}
+
+```
+
+
+3. Invalid application ID: If the passed in application is not correct. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN_AUTH_ERR_INVALIDAPPID",
+				"message": "The passed in application ID is not correct"
+		  }	
+		]
+}
+
+```
+### POST /resetpassword
+
+This service will reset the password to new value. 
+
+#### Resource URL
+<div>https://mosip.io/v1/admin/resetpassword</div>
+
+#### Resource details
+
+Resource Details | Description
+------------ | -------------
+Response format | The response will be sent in the Response Header and also a JSON message will be returned. 
+Requires Authentication | no
+
+#### Parameters
+Name | Required | Description | Default Value | Example
+-----|----------|-------------|---------------|--------
+username|Yes|This is the username of the user. | -NA- | M392380
+newpassword|Yes|This is the new password of the user| -NA- | hfsfs32#
+appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMIN
+
+
+#### Example Request
+```JSON
+{
+	"id": "mosip.admin.authentication.changepassword",
+	"version":"1.0",	
+	"requesttime":"2007-12-03T10:15:30Z",
+	"request": {
+		"username": "M392380",
+		"newpassword": "hfsfs32#",
+		"appid": "ADMIN"
+	}
+}
+```
+#### Example Response
+
+Success Response 
+
+```
+JSON:
+{
+	"id": "mosip.admin.authentication.resetpassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"response": {
+        "status": "success",
+		"message":"Password been reset successfully"
+	}
+}
+
+```
+
+
+Error Responses
+
+1. Invalid credentials: If the passed credentials is not correct. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.resetpassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN-ACC-INVLD-CRDNTIALS",
+				"message": "The passed in credentials is not correct"
+		  }	
+		]
+}
+
+```
+
+2. Password policy rule not met: If the new password is not meeting the password policy. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.resetpassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN_AUTH_ERR_LNGTH_NOT_STSFIED",
+				"message": "The length of the new password is lesser than expected"
+		  }	
+		]
+}
+
+```
+
+
+3. Invalid application ID: If the passed in application is not correct. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.resetpassword",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN_AUTH_ERR_INVALIDAPPID",
+				"message": "The passed in application ID is not correct"
+		  }	
+		]
+}
+
 ```
 
 # User Management 
@@ -976,7 +1209,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.usermanagement.resetpassword",
+	"id": "mosip.admin.authentication.resetpassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -1066,7 +1299,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.usermanagement.resetpassword",
+	"id": "mosip.admin.authentication.resetpassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -1083,7 +1316,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.usermanagement.resetpassword",
+	"id": "mosip.admin.authentication.resetpassword",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -1287,7 +1520,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.uinmgmt.status",
+	"id": "mosip.admin.usermanagement.password",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -1299,3 +1532,4 @@ Error Responses
 }
 
 ```
+

@@ -1,4 +1,4 @@
-/*package io.mosip.registartion.processor.abis.middleware.stage;
+package io.mosip.registartion.processor.abis.middleware.stage;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -67,7 +67,7 @@ public class AbisMiddleWareStageTest {
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	*//** The core audit request builder. *//*
+	/** The core audit request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -279,4 +279,3 @@ public class AbisMiddleWareStageTest {
 		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, evenBus1);
 	}
 }
-*/

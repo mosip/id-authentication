@@ -84,10 +84,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 	}
 
 	private void validateOtpChannel(List<String> otpChannel, Errors errors) {
-		if (otpChannel == null || otpChannel.isEmpty() || otpChannel.get(0).isEmpty()) {
-			errors.reject(IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorCode(),
-					IdAuthenticationErrorConstants.OTP_CHANNEL_NOT_PROVIDED.getErrorMessage());
-		} else {
+		if (otpChannel != null && !otpChannel.isEmpty()) {
 			String channels = otpChannel.stream()
 					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
 					.collect(Collectors.joining(","));
@@ -121,12 +118,11 @@ public class OTPRequestValidator extends IdAuthValidator {
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_OTP_REQUEST_TIMESTAMP -- " + String.format(
-								IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
+								IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes() - Long.parseLong(maxTimeInMinutes)));
 				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						new Object[] { maxTimeInMinutes },
-						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, OTP_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,

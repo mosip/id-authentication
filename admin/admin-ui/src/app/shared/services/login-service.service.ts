@@ -5,7 +5,7 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { loginURL, admin_base_url } from '../../app.constants';
+import { loginURL } from '../../app.constants';
 import { RequestModel } from '../models/request-model';
 const httpOptions = {
   headers: new HttpHeaders({
@@ -51,9 +51,6 @@ export class LoginServiceService {
     return this.http
       .post(loginURL.verifyOtp, dto, httpOptions)
       .catch(this.errorHandler);
-  }
-  logout() {
-    return this.http.post(admin_base_url + 'invalidateToken', {});
   }
   errorHandler(error: HttpErrorResponse): Observable<any> {
     return Observable.throw(error.message || 'Server Error').catch(

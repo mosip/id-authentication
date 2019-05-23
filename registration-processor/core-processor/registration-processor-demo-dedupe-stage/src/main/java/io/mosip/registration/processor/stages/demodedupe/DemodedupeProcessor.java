@@ -129,7 +129,7 @@ public class DemodedupeProcessor {
 	byte[] bytesArray = null;
 
 	/** The is match found. */
-	private volatile boolean isMatchFound = false;
+	private boolean isMatchFound = false;
 
 	/** The description. */
 	private String description = "";
@@ -250,20 +250,8 @@ public class DemodedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			try {
-				if (isMatchFound) {
-					saveDuplicateDtoList(duplicateDtos, registrationStatusDto, object);
-				}
-			} catch (Exception e) {
-				registrationStatusDto.setRegistrationStageName(stageName);
-				registrationStatusDto
-						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
-				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-                description = "Duplicate data not saved in demo list table";
-                regProcLogger.error("Duplicate data not saved in demo list table", "", "", "");
-                object.setIsValid(Boolean.FALSE);
-                object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
-                object.setInternalError(Boolean.TRUE);
+			if (isMatchFound) {
+				saveDuplicateDtoList(duplicateDtos, registrationStatusDto);
 			}
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -414,9 +402,8 @@ public class DemodedupeProcessor {
 	 * @return true, if successful
 	 */
 	private boolean saveDuplicateDtoList(List<DemographicInfoDto> duplicateDtos,
-			InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
+			InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isDataSaved = false;
-		int numberOfProcessedPackets = 0;
 		for (DemographicInfoDto demographicInfoDto : duplicateDtos) {
 			InternalRegistrationStatusDto potentialMatchRegistrationDto = registrationStatusService
 					.getRegistrationStatus(demographicInfoDto.getRegId());
@@ -439,14 +426,10 @@ public class DemodedupeProcessor {
 				regDemoDedupeListDto.setCrBy(CREATED_BY);
 				packetInfoManager.saveDemoDedupePotentialData(regDemoDedupeListDto);
 				isDataSaved = true;
-				numberOfProcessedPackets++;
 			} else {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"The packet status is something different");
-			}
-			if (numberOfProcessedPackets == 0) {
-				object.setIsValid(Boolean.TRUE);
 			}
 		}
 		return isDataSaved;
