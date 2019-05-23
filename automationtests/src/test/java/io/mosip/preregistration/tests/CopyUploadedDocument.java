@@ -94,7 +94,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	@DataProvider(name = "CopyUploadedDocument")
 	public Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("regression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -194,6 +194,26 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+		case "CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded":
+
+			Response createApplicationResNoDocUpload = preRegLib.CreatePreReg();
+			srcPreID = createApplicationResNoDocUpload.jsonPath().get("response.preRegistrationId").toString();
+
+			
+			//srcPreID = actualRequest.get("sourcePrId").toString();
+			String preReg_URINoDocUpload = preReg_URI + destPreId;
+			HashMap<String, String> parmNoDocUpload= new HashMap<>();
+			parmNoDocUpload.put("catCode", docCatCode);
+			parmNoDocUpload.put("sourcePreId", srcPreID);
+			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URINoDocUpload, parmNoDocUpload);
+			logger.info("CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded:" + Actualresponse.asString()+"Test casename:"+testCaseName);
+			outerKeys.add("responsetime");
+			
+			//Asserting actual and expected response
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+
+			break;
+			
 		case "CopyUploadedDocumentByPassingInvalidSourcePreId":
 
 			srcPreID = actualRequest.get("sourcePrId").toString();

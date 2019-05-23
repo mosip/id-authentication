@@ -63,7 +63,8 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import io.mosip.dbaccess.prereg_dbread;
+
+import io.mosip.dbaccess.PreregDB;
 import io.mosip.dbentity.AccessToken;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.dbentity.PreRegEntity;
@@ -317,7 +318,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getConsumedStatus(String PreID) {
-		String status = dao.getConsumedStatus(PreID);
+		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
+				+ "'";
+	
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String status = preId_status.get(0).toString();
 		return status;
 	}
 
@@ -328,21 +334,19 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getDocumentIdOfConsumedApplication(String PreID) {
-		String documentId = dao.getDocumentIdOfConsumedApplication(PreID);
+		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String documentId = preId_status.get(0).toString();
 		return documentId;
 	}
 
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
-		String preId_status = dao.getRegCenterIdOfConsumedApplication(PreID);
-		return preId_status;
-	}
-	public Response pagination(String index)
-	{
-		HashMap<String, String> pageIndeex=new HashMap<String, String>();
-		pageIndeex.put("pageIndex", index);
-		response = applnLib.getRequest(preReg_FetchAllApplicationCreatedByUserURI, pageIndeex);
-		return response;
-		
+		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
+		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
+				"preregqa.cfg.xml");
+		String regCenterId = preId_status.get(0).toString();
+		return regCenterId;
 	}
 
 	/**
@@ -351,7 +355,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @param request
 	 * @return
 	 */
-	public  Response validateOTP(JSONObject request) {
+	public static Response validateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, validateOTP_URI);
 		return response;
 	}
@@ -1320,16 +1324,16 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
-		/*testSuite = "CancelAnBookedAppointment/CancelAnReBookedAppointment_smoke";
+		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment1";
 		request = getRequest(testSuite);
-		
+		/*
 		 * 
 		 * Pass the configuration object to using method of JsonPath and pass the json
 		 * string to parse method which will return the parsed JSON. Then we pass the
 		 * json path of the value that needs to be updated and the new value that we
 		 * need in post Data to set method, which returns the updated POST (JSON) Data.
 		 *
-		 
+		 */
 		ObjectNode cancelAppPreRegId = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.pre_registration_id", preID).json();
 		ObjectNode cancelAppRegCenterId = JsonPath.using(config).parse(cancelAppPreRegId.toString())
@@ -1353,19 +1357,17 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			e.printStackTrace();
 		}
 		testSuite = "FetchAppointmentDetails/FetchAppointmentDetails_smoke";
-		JSONObject parm = getRequest(testSuite);*/
-		HashMap<String, String> parm=new HashMap<String, String>();
-		
+		JSONObject parm = getRequest(testSuite);
 		parm.put("preRegistrationId", preID);
-		//cancelAppjson.put("requesttime", getCurrentDate());
-		response = applnLib.putRequestWithParameterWithoutBody(preReg_CancelAppointmenturi, parm);
+		cancelAppjson.put("requesttime", getCurrentDate());
+		response = applnLib.putRequestWithParameter(preReg_CancelAppointmenturi, parm, cancelAppjson);
 		return response;
 	}
 
 	public Response deleteAllDocumentByPreId(String preId) {
-		
-		String preRegURIDelDocByPreIdURI=preReg_DeleteAllDocumentByPreIdURI+preId;
-		response =applnLib.deleteRequestWithPathParam(preRegURIDelDocByPreIdURI);
+		HashMap<String, String> parm = new HashMap<>();
+		parm.put("preRegistrationId", preId);
+		response = applnLib.deleteRequestWithParm(preReg_DeleteAllDocumentByPreIdURI, parm);
 		return response;
 	}
 
@@ -2006,7 +2008,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	
 	/*
-	 * Generic method to Book An Appointment
+	 * Generic method to Multiple BookAn Appointment
 	 * 
 	 */
 	public Response multipleBookApp(Response FetchCentreResponseOne,Response FetchCentreResponseTwo,String preIDFirstUsr,String preIDSecondUsr) {
@@ -2020,10 +2022,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		JSONObject object = null;
 		request = getRequest(testSuite);
 		
+		
 		appointmentDetailsFirstUsr=getAppointmentDetails(FetchCentreResponseOne);
 		appointmentDetailsSecondUsr=getAppointmentDetails(FetchCentreResponseTwo);
 		
-		logger.info("My multiple book App::"+request);
+		
 		ObjectNode mutBookPreIdFirstUsr = JsonPath.using(config).parse(request.toJSONString())
 				.set("$.request.bookingRequest[0].preRegistrationId", preIDFirstUsr).json();
 		
@@ -2043,26 +2046,28 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		
 		
 		
+	
 		
-		
-		ObjectNode mutBookPreIdSecondUsr = JsonPath.using(config).parse(request.toJSONString())
+		ObjectNode mutBookPreIdSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotToFirstUsr.toString())
 				.set("$.request.bookingRequest[1].preRegistrationId", preIDSecondUsr).json();
+		
 		ObjectNode mutBookAppDateSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
-				.set("$.request.bookingRequest[1].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.set("$.request.bookingRequest[1].appointment_date", appointmentDetailsSecondUsr.get(1))
 				.json();
 		
-		ObjectNode mutBookRegCenterIdSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+		ObjectNode mutBookRegCenterIdSecondUsr = JsonPath.using(config).parse(mutBookAppDateSecondUsr.toString())
 				.set("$.request.bookingRequest[1].registration_center_id", appointmentDetailsSecondUsr.get(0))
 				.json();
 		
 		
 		ObjectNode mutBookAppTimeSlotFromSecondUsr = JsonPath.using(config).parse(mutBookRegCenterIdSecondUsr.toString())
-				.set("$.request.bookingRequest[1].time_slot_from", appointmentDetailsSecondUsr.get(1))
+				.set("$.request.bookingRequest[1].time_slot_from", appointmentDetailsSecondUsr.get(2))
 				.json();
 		
 		ObjectNode mutBookAppTimeSlotToSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromSecondUsr.toString())
-				.set("$.request.bookingRequest[1].time_slot_to", appointmentDetailsSecondUsr.get(4))
+				.set("$.request.bookingRequest[1].time_slot_to", appointmentDetailsSecondUsr.get(3))
 				.json();
+		
 		
 		
 		String multiplBookAppDetStr = mutBookAppTimeSlotToSecondUsr.toString();
@@ -2073,12 +2078,101 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("Request::Value Of book App::" + multipleBookAppjson);
-		logger.info("Request::Json value::" + request.toString());
-		String preReg_BookingAppURI = preReg_BookingAppointmentURI;
-		response = applnLib.postRequest(request, preReg_BookingAppURI);
+		
+		
+		 multipleBookAppjson.put("requesttime", getCurrentDate());
+		 logger.info("Request::Multiple Book Appointment::" + multipleBookAppjson.toString());
+		 JSONObject yuu = multipleBookAppjson;
+		String preReg_BookingAppURI = preReg_MultipleBookAppURI;
+		response = applnLib.postRequest(multipleBookAppjson, preReg_BookingAppURI);
 		return response;
 	}
+	
+	
+	
+	
+	
+	/*
+	 * Generic method to Multiple BookAn Appointment
+	 * 
+	 */
+	public JSONObject multipleBookAppRequest(Response FetchCentreResponseOne,Response FetchCentreResponseTwo,String preIDFirstUsr,String preIDSecondUsr) {
+		List<String> appointmentDetailsFirstUsr = new ArrayList<>();
+		List<String> appointmentDetailsSecondUsr = new ArrayList<>();
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+		testSuite = "MultipleBookingAppointment/MultipleBookingAppointment_smoke";
+		JSONObject object = null;
+		request = getRequest(testSuite);
+		
+		
+		appointmentDetailsFirstUsr=getAppointmentDetails(FetchCentreResponseOne);
+		appointmentDetailsSecondUsr=getAppointmentDetails(FetchCentreResponseTwo);
+		
+		
+		ObjectNode mutBookPreIdFirstUsr = JsonPath.using(config).parse(request.toJSONString())
+				.set("$.request.bookingRequest[0].preRegistrationId", preIDFirstUsr).json();
+		
+		ObjectNode mutBookAppDateFirstUsr = JsonPath.using(config).parse(mutBookPreIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].appointment_date", appointmentDetailsFirstUsr.get(1))
+				.json();
+		ObjectNode mutBookRegCenterIdFirstUsr = JsonPath.using(config).parse(mutBookAppDateFirstUsr.toString())
+				.set("$.request.bookingRequest[0].registration_center_id", appointmentDetailsFirstUsr.get(0))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotFromFirstUsr = JsonPath.using(config).parse(mutBookRegCenterIdFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_from", appointmentDetailsFirstUsr.get(2))
+				.json();
+		ObjectNode mutBookAppTimeSlotToFirstUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromFirstUsr.toString())
+				.set("$.request.bookingRequest[0].time_slot_to", appointmentDetailsFirstUsr.get(3))
+				.json();
+		
+		
+		
+	
+		
+		ObjectNode mutBookPreIdSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotToFirstUsr.toString())
+				.set("$.request.bookingRequest[1].preRegistrationId", preIDSecondUsr).json();
+		
+		ObjectNode mutBookAppDateSecondUsr = JsonPath.using(config).parse(mutBookPreIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].appointment_date", appointmentDetailsSecondUsr.get(1))
+				.json();
+		
+		ObjectNode mutBookRegCenterIdSecondUsr = JsonPath.using(config).parse(mutBookAppDateSecondUsr.toString())
+				.set("$.request.bookingRequest[1].registration_center_id", appointmentDetailsSecondUsr.get(0))
+				.json();
+		
+		
+		ObjectNode mutBookAppTimeSlotFromSecondUsr = JsonPath.using(config).parse(mutBookRegCenterIdSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_from", appointmentDetailsSecondUsr.get(2))
+				.json();
+		
+		ObjectNode mutBookAppTimeSlotToSecondUsr = JsonPath.using(config).parse(mutBookAppTimeSlotFromSecondUsr.toString())
+				.set("$.request.bookingRequest[1].time_slot_to", appointmentDetailsSecondUsr.get(3))
+				.json();
+		
+		
+		
+		String multiplBookAppDetStr = mutBookAppTimeSlotToSecondUsr.toString();
+		JSONObject multipleBookAppjson = null;
+		try {
+			multipleBookAppjson = (JSONObject) parser.parse(multiplBookAppDetStr);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		 multipleBookAppjson.put("requesttime", getCurrentDate());
+		 logger.info("Multiple Book App Res::"+multipleBookAppjson.toString());
+		return multipleBookAppjson;
+		
+	}
+	
+	
+	
 	
 	/*
 	 * Generic method to Book An Appointment

@@ -204,10 +204,12 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		case "BookAnAppointmentByPassingInvalidStatusCode":
 
+			//preRegLib.updateStatusCode("Consumed", preId);
 			preRegLib.updateStatusCode("Consumed", preId);
+			
 			/* Fetch availability[or]center details */
 			Response fetchCen = preRegLib.FetchCentre();
-
+			
 			/* Book An Appointment for the available data */
 			Response bookAppointmentRes = preRegLib.BookAppointment(fetchCen, preId.toString());
 			 logger.info("BookAnAppointmentByPassingInvalidStatusCode::"+bookAppointmentRes.asString());

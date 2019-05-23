@@ -19,7 +19,6 @@ import org.testng.internal.BaseTestMethod;
 
 import com.google.gson.JsonObject;
 
-import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
