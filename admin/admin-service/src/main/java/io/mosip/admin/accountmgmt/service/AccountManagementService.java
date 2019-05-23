@@ -5,6 +5,7 @@ import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
+import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,4 +67,13 @@ public interface AccountManagementService {
 	 * @return the user detail based on mobile number
 	 */
 	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile);
+	
+	
+	/**
+	 * Validate response dto.
+	 *
+	 * @param userId the user id
+	 * @return {@link ValidationResponseDto}
+	 */
+	public ValidationResponseDto validateUserName(String userId);
 }

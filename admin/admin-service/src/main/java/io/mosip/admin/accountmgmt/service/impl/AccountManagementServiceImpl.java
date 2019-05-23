@@ -26,6 +26,7 @@ import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
+import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
@@ -76,6 +77,10 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	/** The user detail url. */
 	@Value("${mosip.admin.accountmgmt.user-detail-url}")
 	private String userDetailUrl;
+	
+	/** The user detail url. */
+	@Value("${mosip.admin.accountmgmt.validate-url}")
+	private String validateUrl;
 
 	/** The object mapper. */
 	@Autowired
@@ -203,6 +208,18 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserFromResponse(response);
 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#validateResponseDto(java.lang.String)
+	 */
+	@Override
+	public ValidationResponseDto validateUserName(String userId) {
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(validateUrl + appId+"/").append(userId);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
+		return getValidateResponse(response);
 	}
 
 	/**
@@ -345,5 +362,36 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 		return userDetailDto;
 	}
+	
+	
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return the user detail from response
+	 */
+	private ValidationResponseDto getValidateResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		ValidationResponseDto validationResponseDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AccountServiceException(validationErrorsList);
+		}
+		ResponseWrapper<ValidationResponseDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<ValidationResponseDto>>() {
+			});
+			validationResponseDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
+					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		return validationResponseDto;
+	}
+
+	
 
 }

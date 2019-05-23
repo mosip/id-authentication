@@ -20,6 +20,7 @@ import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 
 /**
  * @author Ramadurai Pandian
@@ -54,5 +55,7 @@ public interface AuthService extends AuthZService, AuthNService {
 	public UserRoleDto getUserRole(String appId, String userId) throws Exception;
 
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
+	
+	public ValidationResponseDto validateUserName(String appId,String userName);
 
 }

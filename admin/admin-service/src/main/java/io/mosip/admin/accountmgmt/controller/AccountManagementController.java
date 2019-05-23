@@ -15,6 +15,7 @@ import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
+import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
@@ -48,8 +49,9 @@ public class AccountManagementController {
 	 */
 	@ResponseFilter
 	@PostMapping("/changepassword")
-	public ResponseWrapper<StatusResponseDto> changePassword(@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto) {
-		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+	public ResponseWrapper<StatusResponseDto> changePassword(
+			@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto) {
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.changePassword(passwordDto.getRequest()));
 		return responseWrapper;
 	}
@@ -64,7 +66,7 @@ public class AccountManagementController {
 	 */
 	@PostMapping("/resetpassword")
 	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<ResetPasswordDto> passwordDto) {
-		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.resetPassword(passwordDto.getRequest()));
 		return responseWrapper;
 	}
@@ -91,20 +93,20 @@ public class AccountManagementController {
 	 */
 	@ResponseFilter
 	@GetMapping("/unblockaccount/{userid}")
-	public ResponseWrapper<StatusResponseDto> unBlockAccount(@PathVariable("userid")String userId) {
-		ResponseWrapper<StatusResponseDto> responseWrapper= new ResponseWrapper<>();
+	public ResponseWrapper<StatusResponseDto> unBlockAccount(@PathVariable("userid") String userId) {
+		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.unBlockUserName(userId));
-		return responseWrapper ;
+		return responseWrapper;
 	}
 
 	@ResponseFilter
 	@GetMapping("/username/{mobilenumber}")
-	public ResponseWrapper<UserNameDto> getUserName(@PathVariable("mobilenumber") String mobile)  {
-		ResponseWrapper<UserNameDto> responseWrapper= new ResponseWrapper<>();
+	public ResponseWrapper<UserNameDto> getUserName(@PathVariable("mobilenumber") String mobile) {
+		ResponseWrapper<UserNameDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.getUserNameBasedOnMobileNumber(mobile));
-		return responseWrapper ;
+		return responseWrapper;
 	}
-	
+
 	/**
 	 * Gets the user detail.
 	 *
@@ -117,6 +119,15 @@ public class AccountManagementController {
 		ResponseWrapper<UserDetailDto> responseWrapper= new ResponseWrapper<>();
 		responseWrapper.setResponse(accountManagementService.getUserDetailBasedOnMobileNumber(mobile));
 		return responseWrapper ;
+	}
+
+	@ResponseFilter
+	@GetMapping(value = "/validate/{userid}")
+	public ResponseWrapper<ValidationResponseDto> validateUserName(@PathVariable("userid") String userId) {
+		ValidationResponseDto validationResponseDto = accountManagementService.validateUserName(userId);
+		ResponseWrapper<ValidationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(validationResponseDto);
+		return responseWrapper;
 	}
 
 

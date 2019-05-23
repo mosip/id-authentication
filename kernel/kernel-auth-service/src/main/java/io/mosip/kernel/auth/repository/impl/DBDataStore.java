@@ -33,6 +33,7 @@ import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
@@ -285,6 +286,12 @@ public class DBDataStore implements DataStore {
 
 @Override
 public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public ValidationResponseDto validateUserName(String userId) {
 	// TODO Auto-generated method stub
 	return null;
 }

@@ -20,6 +20,7 @@ import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 
 /**
@@ -59,6 +60,8 @@ public interface DataStore  {
 	public MosipUserDto getUserRoleByUserId(String username)throws Exception;
 	
 	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception;
+	
+	public ValidationResponseDto validateUserName(String userId);
 	
 
 }

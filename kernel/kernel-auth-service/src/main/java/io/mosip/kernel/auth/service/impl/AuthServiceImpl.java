@@ -34,6 +34,7 @@ import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.UserStoreFactory;
@@ -438,6 +439,11 @@ public class AuthServiceImpl implements AuthService {
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception {
 
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedonMobileNumber(mobileNumber);
+	}
+
+	@Override
+	public ValidationResponseDto validateUserName(String appId, String userName) {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).validateUserName(userName);
 	}
 
 }
