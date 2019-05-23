@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -39,7 +38,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,20 +48,13 @@ import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.cryptomanager.constant.CryptomanagerErrorCode;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
-import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptRequestDto;
-import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
-import io.mosip.kernel.cryptomanager.dto.PublicKeyResponse;
-import io.mosip.kernel.cryptomanager.dto.SignatureRequestDto;
-import io.mosip.kernel.cryptomanager.dto.SignatureResponseDto;
 import io.mosip.kernel.cryptomanager.exception.CryptoManagerSerivceException;
 import io.mosip.kernel.cryptomanager.exception.KeymanagerServiceException;
 import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
@@ -119,7 +110,7 @@ public class CryptomanagerUtil {
 	 * Keymanager URL to encryptdata
 	 */
 	@Value("${mosip.kernel.keymanager-service-encrypt-url}")
-	private String encryptUrl;
+	private String signUrl;
 
 	/**
 	 * Keymanager URL to Decrypt Symmetric key
@@ -139,11 +130,6 @@ public class CryptomanagerUtil {
 	@Value("${mosip.kernel.cryptomanager.request_version}")
 	private String cryptomanagerRequestVersion;
 	
-	@Value("${mosip.kernel.keymanager-service-encrypt-signature-url}")
-	private String signatureEncryptURL;
-	
-	@Value("${mosip.kernel.keymanager-service-publickey-signature-url}")
-	private String signaturePublicURL;
 	
 	
 	/**
@@ -180,17 +166,9 @@ public class CryptomanagerUtil {
 			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-			authExceptionHandler(ex, validationErrorsList, PUBLIC_KEY);
-			
-			if (!validationErrorsList.isEmpty()) {
-				throw new KeymanagerServiceException(validationErrorsList);
-			} else {
-				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-								+ ex.getResponseBodyAsString());
-			}
+			authExceptionHandler(ex, PUBLIC_KEY);
+
 		}
 		throwExceptionIfExist(response);
 		KeymanagerPublicKeyResponseDto keyManagerResponseDto = getResponse(response, KeymanagerPublicKeyResponseDto.class);
@@ -232,17 +210,7 @@ public class CryptomanagerUtil {
 			response = restTemplate.exchange(decryptSymmetricKeyUrl, HttpMethod.POST, keyManagerRequestEntity,
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
-			
-			if (!validationErrorsList.isEmpty()) {
-				throw new KeymanagerServiceException(validationErrorsList);
-			} else {
-				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-								+ ex.getResponseBodyAsString());
-			}
+          authExceptionHandler(ex,KEYMANAGER);
 		}
 		throwExceptionIfExist(response);
 		KeymanagerSymmetricKeyResponseDto keyManagerSymmetricKeyResponseDto = getResponse(response, KeymanagerSymmetricKeyResponseDto.class);
@@ -250,100 +218,8 @@ public class CryptomanagerUtil {
 		return new SecretKeySpec(symmetricKey, 0, symmetricKey.length, symmetricAlgorithmName);
 	}
 
-	 /**
-		 * Gets the encrypted data.
-		 *
-		 * @param cryptoEncryptRequestDto the cryptoEncrypt request dto
-		 * @return {@link String} encrypted data
-		 */
-		public String getEncryptedData(CryptoEncryptRequestDto cryptoEncryptRequestDto) {
-			String encryptedData = null;
-			RequestWrapper<KeyManagerEncryptRequestDto> requestWrapper = new RequestWrapper<>();
-			requestWrapper.setId(cryptomanagerRequestID);
-			requestWrapper.setVersion(cryptomanagerRequestVersion);
-
-			KeyManagerEncryptRequestDto keyManagerEncryptDataRequestDto = new KeyManagerEncryptRequestDto();
-			keyManagerEncryptDataRequestDto.setApplicationId(cryptoEncryptRequestDto.getApplicationId());
-			keyManagerEncryptDataRequestDto.setReferenceId(cryptoEncryptRequestDto.getReferenceId());
-			keyManagerEncryptDataRequestDto.setHashedData(cryptoEncryptRequestDto.getData());
-			keyManagerEncryptDataRequestDto.setTimeStamp(cryptoEncryptRequestDto.getTimeStamp());
-			requestWrapper.setRequest(keyManagerEncryptDataRequestDto);
-			ResponseEntity<String> response = null;
-			try {
-				response = restTemplate.postForEntity(encryptUrl, requestWrapper, String.class);
-			} catch (HttpClientErrorException | HttpServerErrorException ex) {
-				List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-				authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
-				
-				if (!validationErrorsList.isEmpty()) {
-					throw new KeymanagerServiceException(validationErrorsList);
-				} else {
-					throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-							CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-									+ ex.getResponseBodyAsString());
-				}
-			}
-			String responseBody = response.getBody();
-			List<ServiceError> validationErrorsList = null;
-			validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-
-			if (!validationErrorsList.isEmpty()) {
-				throw new KeymanagerServiceException(validationErrorsList);
-			}
-			KeyManagerEncryptResponseDto keyManagerResponseDto;
-			ResponseWrapper<KeyManagerEncryptResponseDto> responseObject;
-			try {
-
-				responseObject = objectMapper.readValue(response.getBody(),
-						new TypeReference<ResponseWrapper<KeyManagerEncryptResponseDto>>() {
-						});
-
-				keyManagerResponseDto = responseObject.getResponse();
-			} catch (IOException | NullPointerException exception) {
-				throw new ParseResponseException(CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + exception.getMessage(), exception);
-			}
-
-			encryptedData = keyManagerResponseDto.getEncryptedData();
-
-			return encryptedData;
-		}
 	
 
-	public SignatureResponseDto signatureEncrypt(SignatureRequestDto signatureRequestDto) {
-		RequestWrapper<SignatureRequestDto> requestWrapper = new RequestWrapper<>();
-		requestWrapper.setId(cryptomanagerRequestID);
-		requestWrapper.setVersion(cryptomanagerRequestVersion);
-		requestWrapper.setRequest(signatureRequestDto);
-		HttpHeaders keyManagerRequestHeaders = new HttpHeaders();
-		keyManagerRequestHeaders.setContentType(MediaType.APPLICATION_JSON);
-		ResponseEntity<String> response = null;
-		HttpEntity<RequestWrapper<SignatureRequestDto>> keyManagerRequestEntity = new HttpEntity<>(
-				requestWrapper, keyManagerRequestHeaders);
-		try {
-			response = restTemplate.exchange(signatureEncryptURL, HttpMethod.POST, keyManagerRequestEntity,
-					String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			authExceptionHandler(ex, validationErrorsList,KEYMANAGER);
-			
-			if (!validationErrorsList.isEmpty()) {
-				throw new KeymanagerServiceException(validationErrorsList);
-			} else {
-				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-								+ ex.getResponseBodyAsString());
-			}
-		}
-		
-		throwExceptionIfExist(response);
-		return getResponse(response, SignatureResponseDto.class);
-	}
-
-	
-	
 	
 	/**
 	 * Change Parameter form to trim if not null
@@ -361,38 +237,14 @@ public class CryptomanagerUtil {
 	 * @param salt salt
 	 * @return true if salt is valid, else false
 	 */
-	public boolean isValidReferenceId(String salt) {
+	public boolean isValidSalt(String salt) {
 		return salt != null && !salt.trim().isEmpty();
 	}
 	
-	public PublicKeyResponse getSignaturePublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> referenceId) {
-		ResponseEntity<String> response = null;
-		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put(APPLICATION_ID, applicationId);
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(signaturePublicURL)
-				.queryParam(TIMESTAMP, DateUtils.formatToISOString(timeStamp))
-				.queryParam(REFERENCE_ID,referenceId);
-		try {
-			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
-					String.class);
-		} catch (HttpClientErrorException | HttpServerErrorException ex) {
-			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			authExceptionHandler(ex, validationErrorsList, PUBLIC_KEY);
-			
-			if (!validationErrorsList.isEmpty()) {
-				throw new KeymanagerServiceException(validationErrorsList);
-			} else {
-				throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
-						CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
-								+ ex.getResponseBodyAsString());
-			}
-		}
-		throwExceptionIfExist(response);
-		return getResponse(response, PublicKeyResponse.class);
-	}
 	
-	private void authExceptionHandler(HttpStatusCodeException ex, List<ServiceError> validationErrorsList, String source) {
+	private void authExceptionHandler(HttpStatusCodeException ex, String source) {
+		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
+		
 		if (ex.getRawStatusCode() == 401) {
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthNException(validationErrorsList);
@@ -406,6 +258,15 @@ public class CryptomanagerUtil {
 			} else {
 				throw new AccessDeniedException(ACCESS_DENIED+source);
 			}
+		}
+		
+
+		if (!validationErrorsList.isEmpty()) {
+			throw new KeymanagerServiceException(validationErrorsList);
+		} else {
+			throw new CryptoManagerSerivceException(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
+					CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + " "
+							+ ex.getResponseBodyAsString());
 		}
 	}
 	
