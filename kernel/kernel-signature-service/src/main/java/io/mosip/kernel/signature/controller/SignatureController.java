@@ -82,10 +82,12 @@ public class SignatureController {
 	@ResponseFilter
 	@PostMapping(value = "/validate")
 	public ResponseWrapper<ValidatorResponseDto> validate(
-			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException {
+			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto) {
 		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(service.validate(timestampRequestDto.getRequest()));
 		return response;
 	}
+	
+	
+	
 }
