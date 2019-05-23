@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -47,7 +46,6 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -58,13 +56,9 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
-import io.mosip.registration.service.operator.UserDetailService;
 import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.service.operator.UserOnboardService;
-import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.security.AuthenticationService;
-import io.mosip.registration.service.sync.MasterSyncService;
-import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.update.SoftwareUpdateHandler;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.common.PageFlow;
@@ -177,15 +171,6 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private PageFlow pageFlow;
 
-	@Autowired
-	private MasterSyncService masterSyncService;
-
-	@Autowired
-	private UserDetailService userDetailService;
-
-	@Autowired
-	private UserSaltDetailsService userSaltDetailsService;
-
 	@FXML
 	private ProgressIndicator progressIndicator;
 
@@ -211,22 +196,17 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private UserMachineMappingService machineMappingService;
 
-	@Autowired
-	private PublicKeySyncImpl publicKeySyncImpl;
-
 	private boolean hasUpdate;
 
 	@Autowired
 	private HeaderController headerController;
-
-	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			//Check for updates
+			// Check for updates
 			hasUpdate = headerController.hasUpdate();
 
 		}
@@ -282,7 +262,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-			//Execute SQL file (Script files on update)
+			// Execute SQL file (Script files on update)
 			executeSQLFile();
 
 			if (hasUpdate) {
@@ -309,7 +289,8 @@ public class LoginController extends BaseController implements Initializable {
 		String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
 		if (!softwareUpdateHandler.getCurrentVersion().equals(version)) {
 			loginRoot.setDisable(true);
-			ResponseDTO responseDTO = softwareUpdateHandler.executeSqlFile(softwareUpdateHandler.getCurrentVersion(), version);
+			ResponseDTO responseDTO = softwareUpdateHandler.executeSqlFile(softwareUpdateHandler.getCurrentVersion(),
+					version);
 			loginRoot.setDisable(false);
 
 			if (responseDTO.getErrorResponseDTOs() != null) {
@@ -966,11 +947,11 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return boolean
 	 */
 	private boolean validateFingerPrint() {
-		
-		
-		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(((String) applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			return validateFingerPrintWithMdm();
-		
+
 		return validateFingerPrintNonMdm();
 
 	}
@@ -1262,35 +1243,7 @@ public class LoginController extends BaseController implements Initializable {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						List<String> val = new LinkedList<>();
-						ResponseDTO publicKeySyncResponse = publicKeySyncImpl
-								.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-						ResponseDTO responseDTO = getSyncConfigData();
-						SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-						if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
-							val.add(RegistrationConstants.RESTART);
-						}
-						ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-								RegistrationConstants.OPT_TO_REG_MDS_J00001,
-								RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-						ResponseDTO userResponseDTO = userDetailService
-								.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-						ResponseDTO userSaltResponse = userSaltDetailsService
-								.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-						if (((masterResponseDTO.getErrorResponseDTOs() != null
-								|| userResponseDTO.getErrorResponseDTOs() != null
-								|| userSaltResponse.getErrorResponseDTOs() != null)
-								|| responseDTO.getErrorResponseDTOs() != null
-								|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
-							val.add(RegistrationConstants.FAILURE);
-						} else {
-							val.add(RegistrationConstants.SUCCESS);
-						}
-						return val;
-
+						return loginService.initialSync();
 					}
 				};
 			}
@@ -1308,15 +1261,12 @@ public class LoginController extends BaseController implements Initializable {
 						loadInitialScreen(Initialization.getPrimaryStage());
 						return;
 					}
-				}
-				if (taskService.getValue().contains(RegistrationConstants.SUCCESS)) {
+				} else if (taskService.getValue().contains(RegistrationConstants.SUCCESS) && isInitialSetUp) {
 
-					if (isInitialSetUp) {
-						// update initial set up flag
+					// update initial set up flag
 
-						globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
-						restartApplication();
-					}
+					globalParamService.update(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.DISABLE);
+					restartApplication();
 
 				}
 

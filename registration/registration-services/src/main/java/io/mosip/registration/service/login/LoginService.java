@@ -65,4 +65,11 @@ public interface LoginService {
 	 */
 	void updateLoginParams(UserDetail userDetail);
 
+	/**
+	 * Execute initial sync
+	 * 
+	 * @return List of sync results
+	 */
+	List<String> initialSync();
+
 }
