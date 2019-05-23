@@ -1,5 +1,7 @@
 package io.mosip.kernel.keymanagerservice.dto;
 
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Class representing a Public Key Response")
-public class PublicKeyResponse<T> {
+public class SignatureCertificate {
 
 	/**
 	 * The string alias
@@ -34,7 +36,7 @@ public class PublicKeyResponse<T> {
 	 * Field for public key
 	 */
 	@ApiModelProperty(notes = "Public key in BASE64 encoding format", required = true)
-	private T publicKey;
+	private CertificateEntry<X509Certificate, PrivateKey> certificateEntry;
 
 	/**
 	 * Key creation time
@@ -49,5 +51,7 @@ public class PublicKeyResponse<T> {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@ApiModelProperty(notes = "Timestamp of expiry of public key", required = true)
 	private LocalDateTime expiryAt;
+	
+	
 
 }

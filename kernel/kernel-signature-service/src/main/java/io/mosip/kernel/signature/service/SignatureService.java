@@ -30,6 +30,10 @@ public interface SignatureService {
 	public ValidatorResponseDto validateWithPublicKey(PublicKeyRequestDto publicKeyRequestDto)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
 
-	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException;
+	/** Validate signature
+	 * @param timestampRequestDto {@link TimestampRequestDto}
+	 * @return {@link ValidatorResponseDto}
+	 */
+	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto);
+
 }

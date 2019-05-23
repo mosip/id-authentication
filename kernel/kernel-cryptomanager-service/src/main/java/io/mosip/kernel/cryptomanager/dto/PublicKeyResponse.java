@@ -1,4 +1,4 @@
-package io.mosip.kernel.keymanagerservice.dto;
+package io.mosip.kernel.cryptomanager.dto;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(description = "Class representing a Public Key Response")
-public class PublicKeyResponse<T> {
+public class PublicKeyResponse {
 
 	/**
 	 * The string alias
@@ -34,7 +34,7 @@ public class PublicKeyResponse<T> {
 	 * Field for public key
 	 */
 	@ApiModelProperty(notes = "Public key in BASE64 encoding format", required = true)
-	private T publicKey;
+	private String publicKey;
 
 	/**
 	 * Key creation time
