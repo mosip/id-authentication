@@ -1,9 +1,0 @@
-{
-   "id": "mosip.pre-registration.notification.notify",
-   "version" : "1.0",
-   "responsetime": "2019-01-16T17:31:04.021Z",
-   "response": {
-      "message": "Email and sms request successfully submitted"
-    },
-   "errors":null
-}

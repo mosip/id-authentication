@@ -44,12 +44,6 @@ public class VidController {
 	/** The data source. */
 	@Autowired
 	DataSource dataSource;
-	
-	/** The Constant UPDATE. */
-	private static final String UPDATE = "update";
-
-	/** The Constant CREATE. */
-	private static final String CREATE = "create";
 
 	/**  The Constant RETRIEVE_UIN_BY_VID. */
 	private static final String RETRIEVE_UIN_BY_VID = "retrieveUinByVid";
@@ -59,6 +53,11 @@ public class VidController {
 
 	/**  The Constant VID_CONTROLLER. */
 	private static final String VID_CONTROLLER = "VidController";
+	
+	private static final String CREATE = "create";
+
+	/** The Constant UPDATE. */
+	private static final String UPDATE = "update";
 	
 	/**  The Vid Service. */
 	@Autowired
@@ -94,7 +93,7 @@ public class VidController {
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
 			throws IdRepoAppException {
 		try {
-			validator.validateId(request.getId(), errors, CREATE);
+			validator.validateId(request.getId(), CREATE);
 			IdRepoLogger.setUin(request.getRequest().getUin());
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.createVid(request.getRequest()), HttpStatus.OK);
@@ -145,7 +144,7 @@ public class VidController {
 			throws IdRepoAppException {
 		try {
 			IdRepoLogger.setVid(vid);
-			validator.validateId(request.getId(), errors, UPDATE);
+			validator.validateId(request.getId(),UPDATE);
 			validator.validateVid(vid);
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.updateVid(vid, request.getRequest()), HttpStatus.OK);

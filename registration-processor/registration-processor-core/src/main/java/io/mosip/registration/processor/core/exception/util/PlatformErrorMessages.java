@@ -338,7 +338,10 @@ public enum PlatformErrorMessages {
 
 	/** The unknown exception occured. */
 	UNKNOWN_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "005"," unknown exception occured"),
-    /** The packet bio dedupe failed. */
+
+	/** ABIS_BATCH_ID_NOT_FOUND. */
+	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006"," abis batchId not found"),
+	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
 
@@ -699,7 +702,7 @@ public enum PlatformErrorMessages {
 			"IO exception"),
 	RPR_UGS_VID_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005",
 			"VID status is not active"),
-	
+
 	/** The rpr pgs file not present. */
 	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),

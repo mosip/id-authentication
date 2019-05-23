@@ -65,5 +65,50 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 	 */
 	@Query("SELECT DISTINCT e.regDate FROM AvailibityEntity e  WHERE e.regDate>= ?1")
 	public List<LocalDate> findAvaialableDate(LocalDate regDate);
+	
+	public List<AvailibityEntity> findByRegcntrId(String regCenterId);
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of available date
+	 */
+	@Query("SELECT DISTINCT e.regcntrId FROM AvailibityEntity e  WHERE e.regDate>= ?1")
+	public List<String> findAvaialableRegCenter(LocalDate regDate);
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regcntrId
+	 * @return list of available date
+	 */
+	@Query("SELECT DISTINCT e.regDate FROM AvailibityEntity e  WHERE e.regDate>= ?1 and e.regcntrId=?2")
+	public List<LocalDate> findAvaialableDate(LocalDate regDate, String regcntrId);
+	
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regcntrId
+	 * @return list of AvailibityEntity
+	 */
+	@Query("SELECT DISTINCT e FROM AvailibityEntity e  WHERE e.regDate= ?1 and e.regcntrId=?2")
+	public List<AvailibityEntity> findAvaialableSlots(LocalDate regDate, String regcntrId);
+	
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regcntrId
+	 * @return deleted number of slots
+	 */
+	public int deleteByRegcntrIdAndRegDate( String regcntrId ,LocalDate regDate);
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of regcntrId
+	 */
+	public int deleteByRegcntrIdAndRegDateGreaterThanEqual(String regcntrId, LocalDate regDate);
 
 }
