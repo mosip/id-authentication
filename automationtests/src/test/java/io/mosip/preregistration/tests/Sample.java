@@ -75,23 +75,25 @@ public class Sample extends BaseTestCase implements ITest {
 
 	/**
 	 * Batch job service for expired application
+	 * @throws InterruptedException 
 	 */
 	@Test(groups = { "IntegrationScenarios" })
 	public void updatePreRegistrationDataForExpiredApplication()
-			throws FileNotFoundException, IOException, ParseException {
-		lib.syncAvailability();
-		lib.FetchCentre("10006");
-	/*	testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+			throws FileNotFoundException, IOException, ParseException, InterruptedException {
+		
+		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 			Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10006");
+		Response avilibityResponse = lib.FetchCentre("10002");
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		lib.syncAvailability();
 		lib.FetchAppointmentDetails(preID);
-		lib.getPreRegistrationStatus(preID);
-*/		//Response avilibityResponse = lib.FetchCentre("10006");
+		lib.getPreRegistrationStatus(preID);*/
+		lib.syncAvailability();
+
+	
 	//	System.out.println("=========="+preID);
 		
 	}
