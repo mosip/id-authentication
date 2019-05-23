@@ -16,6 +16,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -541,6 +543,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Exporting Registration status details has been started");
 
+		String str = filterField.getText();
 		Stage stage = new Stage();
 		DirectoryChooser destinationSelector = new DirectoryChooser();
 		destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
@@ -550,14 +553,22 @@ public class RegistrationApprovalController extends BaseController implements In
 		File destinationPath = destinationSelector.showDialog(stage);
 		if (destinationPath != null) {
 
+			filterField.clear();
 			String fileData = table.getItems().stream()
-					.map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE)
-							.concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE)
+					.map(approvaldto -> approvaldto.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
+							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA)
+							.concat(approvaldto.getDate()).concat(RegistrationConstants.COMMA)
 							.concat(approvaldto.getStatusComment()))
-					.collect(Collectors.joining("\n"));
-
+					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
+			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_REGISTRATIONID_LABEL).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_STATUS_LABEL).concat(RegistrationConstants.NEW_LINE);
+			fileData = headers + fileData;
+			filterField.setText(str);
 			try (Writer writer = new BufferedWriter(new FileWriter(destinationPath + "/"
-					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
+					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.UNDER_SCORE)
+							.concat(getcurrentTimeStamp()).concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
 				writer.write(fileData);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
@@ -575,4 +586,16 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Exporting Registration status details has been ended");
 	}
+	
+	/**
+	 * This method gets the current timestamp in yyyymmddhhmmss format.
+	 * 
+	 * @return current timestamp in fourteen digits
+	 */
+	private String getcurrentTimeStamp() {
+		DateTimeFormatter format = DateTimeFormatter
+				.ofPattern(RegistrationConstants.EOD_PROCESS_DATE_FORMAT_FOR_FILE);
+		return LocalDateTime.now().format(format);
+	}
+
 }

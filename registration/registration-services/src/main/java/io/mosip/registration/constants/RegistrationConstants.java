@@ -138,6 +138,9 @@ public class RegistrationConstants {
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
+	
+	public static final String FNR = "FNR";
+	public static final String IRS = "IRS";
 
 	public static final String LOGIN_OTP_PARAM = "otp";
 
@@ -302,6 +305,12 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_REGISTRATIONAPPROVALCONTROLLER = "RegistrationApprovalController";
 	public static final String EXPORT_FILE_NAME = "PendingApprovalList";
 	public static final String EXPORT_FILE_TYPE = ".csv";
+	public static final String EOD_PROCESS_DATE_FORMAT = "dd-MM-yyyy";
+	public static final String EOD_PROCESS_SLNO = "slno";
+	public static final String EOD_PROCESS_DATE = "date";
+	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
+
+
 
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
@@ -744,7 +753,12 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_3 = "reg-ack-template-part3";
 	public static final String ACKNOWLEDGEMENT_TEMPLATE_PART_4 = "reg-ack-template-part4";
 	public static final String EMAIL_TEMPLATE = "reg-email-notification";
+	public static final String UPDATE_UIN_EMAIL_TEMPLATE = "updateUIN-email-notification";
+	public static final String LOST_UIN_EMAIL_TEMPLATE = "lostUIN-email-notification";
 	public static final String SMS_TEMPLATE = "reg-sms-notification";
+	public static final String UPDATE_UIN_SMS_TEMPLATE = "updateUIN-sms-notification";
+	public static final String LOST_UIN_SMS_TEMPLATE = "lostUIN-sms-notification";
+
 
 	// Notification Service
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
@@ -1058,8 +1072,6 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC = "MASTER_SYNC";
 	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
-	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
-	public static final String MASTER_CENTER_PARAM="regcenterId";
 	public static final String MASTER_DATA_LASTUPDTAE = "lastUpdated";
 	public static final String MASTER_SYNC_LOGGER_INFO = "Entering into Master Sync Dao Impl...";
 	// POLICY SYNC
@@ -1265,6 +1277,8 @@ public class RegistrationConstants {
 	public static final String LABEL_SMALL_CASE = "label";
 
 	public static final Object UI_SYNC_DATA = "mosip.registration.ui_sync_data";
+	public static final String MDM_ENABLED = "mosip.mdm.enabled";
+	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
 	public static final String DOB_MESSAGE = "dobMessage";
@@ -1328,6 +1342,18 @@ public class RegistrationConstants {
 	public static final byte[] NULL_VECTOR = new byte[0];
 	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
 	
-	public static final String FNR = "FNR";
-	public static final String IRS = "IRS";
+	//SQL Execution
+	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
+	public static final String ROLL_BACK_SQL_EXECUTION_SUCCESS = "ROLL BACK SQL EXECUTION SUCCESS";
+	public static final String ROLL_BACK_SQL_EXECUTION_FAILURE = "ROLL BACK SQL EXECUTION FAILURE";
+	public static final String SQL_EXECUTION_FAILURE = "SQL EXECUTION FAILURE";
+	public static final String BACKUP_PREVIOUS_SUCCESS = "Backup Success";
+	public static final String BACKUP_PREVIOUS_FAILURE = "Backup Failed";
+	
+	public static final String PUBLICKEY="publicKey";
+	public static final String ISSUED_AT="issuedAt";
+	public static final String EXPIRY_AT="expiryAt";
+	public static final String SERVICE_NAME="policysync";
+	
+	
 }
