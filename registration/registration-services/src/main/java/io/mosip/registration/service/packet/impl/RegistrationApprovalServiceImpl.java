@@ -73,11 +73,8 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			int count = 1;
-			for (Registration detail : details) {
-				list.add(new RegistrationApprovalDTO(String.valueOf(count++), 
-						detail.getId(), regDateConversion(detail.getCrDtime()),detail.getAckFilename(), RegistrationConstants.EMPTY));
-			}
+			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(),
+					regDateConversion(detail.getCrDtime()), detail.getAckFilename(), RegistrationConstants.EMPTY)));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
