@@ -76,7 +76,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * URL read from properties file
 	 */
-	@Value("${mosip.kernel.syncdata.public-key-url}")
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;
 
 	/*
