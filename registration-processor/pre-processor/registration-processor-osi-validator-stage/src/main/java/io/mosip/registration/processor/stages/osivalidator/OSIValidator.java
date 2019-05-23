@@ -649,7 +649,7 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			if (registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSING.toString())) {
+			if (introducerRegistrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSING.toString())) {
 
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
@@ -660,8 +660,8 @@ public class OSIValidator {
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, StatusMessage.PACKET_IS_ON_HOLD);
 				return false;
 
-			} else if (registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.REJECTED.toString())
-					|| registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.FAILED.toString())) {
+			} else if (introducerRegistrationStatusDto.getStatusCode().equals(RegistrationStatusCode.REJECTED.toString())
+					|| introducerRegistrationStatusDto.getStatusCode().equals(RegistrationStatusCode.FAILED.toString())) {
 
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT));
