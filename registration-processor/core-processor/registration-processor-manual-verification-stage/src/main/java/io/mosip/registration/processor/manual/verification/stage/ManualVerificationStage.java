@@ -6,7 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -28,7 +27,6 @@ import io.mosip.registration.processor.manual.verification.service.ManualVerific
 import io.mosip.registration.processor.manual.verification.util.ManualVerificationRequestValidator;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -170,7 +168,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		manualVerificationRequestValidator.validate(obj, env.getProperty(BIOMETRIC_SERVICE_ID));
 		ManualAppBiometricRequestDTO pojo = Json.mapper.convertValue(obj.getMap(), ManualAppBiometricRequestDTO.class);
 		byte[] packetInfo = manualAdjudicationService.getApplicantFile(pojo.getRequest().getRegId(),
-				pojo.getRequest().getFileName());
+				PacketFiles.BIOMETRIC.name());
 		if (packetInfo != null) {
 			String byteAsString = new String(packetInfo);
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(byteAsString,	env.getProperty(BIOMETRIC_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
@@ -199,8 +197,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 		ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
 				ManualVerificationAssignmentRequestDTO.class);
 		manualVerificationRequestValidator.validate(obj, env.getProperty(ASSIGNMENT_SERVICE_ID));
-		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest(),
-				pojo.getMatchType());
+		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(pojo.getRequest());
 		if (manualVerificationDTO != null) {
 			responseData=ManualVerificationResponseBuilder.buildManualVerificationSuccessResponse(manualVerificationDTO,env.getProperty(ASSIGNMENT_SERVICE_ID), env.getProperty(MVS_APPLICATION_VERSION),env.getProperty(DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx,responseData,APPLICATION_JSON);

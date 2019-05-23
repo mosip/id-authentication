@@ -19,5 +19,8 @@ public class UserDto implements Serializable {
 	
 	/** The user id. */
 	private String userId;
+	
+	/** The source name. */
+	private String matchType;
 
 }

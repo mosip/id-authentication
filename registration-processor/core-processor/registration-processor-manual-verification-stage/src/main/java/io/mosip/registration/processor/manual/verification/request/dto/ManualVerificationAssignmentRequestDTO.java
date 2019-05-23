@@ -22,8 +22,5 @@ public class ManualVerificationAssignmentRequestDTO extends BaseRestRequestDTO {
 	/** The request. */
 	private UserDto request;
 
-	/** The source name. */
-	private String matchType;
-
 		
 }
