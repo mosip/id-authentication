@@ -1,8 +1,9 @@
-package io.mosip.kernel.core.idobjectvalidator.constant;
+package io.mosip.kernel.idobjectvalidator.constant;
 
 /**
  * This enum provides all the constants for property source to be used.
  * 
+ * @author Manoj SP
  * @author Swati Raj
  *
  */
@@ -18,6 +19,7 @@ public enum IdObjectValidatorConstant {
 	PATH_SEPERATOR("/"),
 	CNIE_NUMBER_REGEX("^([0-9]{10,30})$"),
 	INVALID_ATTRIBUTE("Invalid attribute"),
+	ROOT_PATH("identity"),
 	IDENTITY_CNIE_NUMBER_PATH("identity.CNIENumber"),
 	IDENTITY_LANGUAGE_PATH("identity.*.*.language"),
 	IDENTITY_POSTAL_CODE_PATH("identity.postalCode"),
@@ -38,7 +40,9 @@ public enum IdObjectValidatorConstant {
 	MASTERDATA_DOCUMENT_CATEGORIES_URI("mosip.kernel.idobjectvalidator.masterdata.documentcategories.rest.uri"),
 	MASTERDATA_DOCUMENT_TYPES_URI("mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri"),
 	MASTERDATA_LOCATIONS_URI("mosip.kernel.idobjectvalidator.masterdata.locations.rest.uri"),
-	MASTERDATA_LOCATION_HIERARCHY_URI("mosip.kernel.idobjectvalidator.masterdata.locationhierarchy.rest.uri");
+	MASTERDATA_LOCATION_HIERARCHY_URI("mosip.kernel.idobjectvalidator.masterdata.locationhierarchy.rest.uri"),
+	APPLICATION_ID("application.id"),
+	FIELD_LIST("mosip.kernel.idobjectvalidator.mandatory-attributes.%s.%s");
 
 	/**
 	 * The property present in Report.
