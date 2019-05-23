@@ -134,9 +134,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
 				boolean isNoRecordMsg = false;
 				if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
-						&& mainResponseDTO.getErrors().getMessage() != null) {
+						&& !mainResponseDTO.getErrors().isEmpty()
+						&& mainResponseDTO.getErrors().get(0).getMessage() != null) {
 					if ("Record not found for date range and reg center id"
-							.equalsIgnoreCase(mainResponseDTO.getErrors().getMessage())) {
+							.equalsIgnoreCase(mainResponseDTO.getErrors().get(0).getMessage())) {
 						setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
 						isNoRecordMsg = true;
 					}
