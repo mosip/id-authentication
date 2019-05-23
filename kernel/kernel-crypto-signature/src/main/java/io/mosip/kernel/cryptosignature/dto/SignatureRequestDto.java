@@ -45,9 +45,8 @@ public class SignatureRequestDto {
 	 * Timestamp
 	 */
 	@ApiModelProperty(notes = "Timestamp as metadata", example = "2018-12-10T06:12:52.994Z", required = true)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@NotNull
-	private LocalDateTime timeStamp;
+	private String timeStamp;
 	/**
 	 * Data in BASE64 encoding to encrypt/decrypt
 	 */
