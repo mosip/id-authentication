@@ -55,11 +55,6 @@ public class KeymanagerUtil {
 	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 	
-	@Value("${mosip.kernel.private-key-init}")
-	private String privateKeyInit;
-	
-	@Value("${mosip.kernel.private-key-end}")
-	private String privateKeyEnd;
 	/**
 	 * KeySplitter for splitting key and data
 	 */
@@ -188,15 +183,6 @@ public class KeymanagerUtil {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 	
-
-	public void isCertificateValid(CertificateEntry<X509Certificate, PrivateKey> certificateEntry) {
-		try {
-			certificateEntry.getChain()[0].checkValidity();
-		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
-			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
-					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
-		}
-	}
 	
 	public void isCertificateValid(CertificateEntry<X509Certificate, PrivateKey> certificateEntry,Date inputDate) {
 		try {
@@ -216,8 +202,6 @@ public class KeymanagerUtil {
 		try {
 			privateKeyPEM = FileUtils.readFileToByteArray(privateKeyFile);
 			String privateKeyPEMString = new String(privateKeyPEM);
-			privateKeyPEMString = privateKeyPEMString.replace(privateKeyInit, EMPTY);
-			privateKeyPEMString = privateKeyPEMString.replace(privateKeyEnd, EMPTY);
 			byte[] encoded = Base64.decodeBase64(privateKeyPEMString);
 			kf = KeyFactory.getInstance(asymmetricAlgorithmName);
 			keySpec = new PKCS8EncodedKeySpec(encoded);
