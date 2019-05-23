@@ -1,6 +1,7 @@
 package io.mosip.registration.controller.device;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -1014,11 +1015,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 		}
 
-		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-		 getFingerPrintImage(detailsDTO, fingerType);
-		else
+		try {
+
 			fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
+		} catch (Exception exception) {
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s Exception while getting the scanned finger details for user registration: %s caused by %s",
+					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
+					ExceptionUtils.getStackTrace(exception)));		}
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
 		if (detailsDTO.getFingerPrint() != null) {
@@ -1120,49 +1125,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR);
 		}
 
-	}
-
-	/**
-	 * Scan fingers by making the call to service Api.
-	 *
-	 * @param detailsDTO
-	 *            the details DTO
-	 * @param fingerType
-	 *            the finger type
-	 */
-
-	public void getFingerPrintImage(FingerprintDetailsDTO detailsDTO, String fingerType) {
-		String type=fingerType;
-		switch (fingerType) {
-		case RegistrationConstants.LEFTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.LEFT.toUpperCase();
-			break;
-		case RegistrationConstants.RIGHTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.RIGHT.toUpperCase();
-			break;
-		case RegistrationConstants.THUMBS:
-			fingerType = RegistrationConstants.FINGER_SLAP+RegistrationConstants.UNDER_SCORE+RegistrationConstants.THUMB.toUpperCase();
-			break;
-
-		default:
-			break;
-		}
-		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
-		try {
-			byteMap = mosipBioDeviceManager.scan(fingerType);
-			if (byteMap != null) {
-				byte[] imageByte = byteMap.get(fingerType.replaceAll("_TYPE.*", ""));
-				if (imageByte != null) {
-					detailsDTO.setFingerPrint(imageByte);
-					detailsDTO.setFingerType(type);
-					detailsDTO.setQualityScore(80);
-				}
-			}
-		} catch (RegBaseCheckedException exception) {
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-		}
 	}
 
 	/**
@@ -1546,9 +1508,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			thumbSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
 		}
 	}
-	
+
 	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
-		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");

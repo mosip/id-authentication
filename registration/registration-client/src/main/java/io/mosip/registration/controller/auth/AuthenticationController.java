@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.auth;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_LOGIN;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -760,47 +761,55 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
-		if (!fingerprintFacade.setIsoTemplate()) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-		} else {
-			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinitiaThroughMdm())) {
-				// if FP data fetched then retrieve the user specific detail from db.
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplateFromMdm());
-				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-				if (!isEODAuthentication) {
-					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-								.get(RegistrationConstants.REGISTRATION_DATA);
-						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
-								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-								.get(RegistrationConstants.REGISTRATION_DATA);
-						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
-								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+		try {
+			if (!fingerprintFacade.setIsoTemplate()) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
+			} else {
+				if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinitiaThroughMdm())) {
+					// if FP data fetched then retrieve the user specific detail from db.
+					AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+					List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
+					FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+					fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplateFromMdm());
+					fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+					if (!isEODAuthentication) {
+						if (isSupervisor) {
+							RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+									.get(RegistrationConstants.REGISTRATION_DATA);
+							registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
+									.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+						} else {
+							RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+									.get(RegistrationConstants.REGISTRATION_DATA);
+							registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+									.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+						}
 					}
-				}
-				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-				authenticationValidatorDTO.setUserId(userId);
-				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fpMatchStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
-						authenticationValidatorDTO);
+					authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+					authenticationValidatorDTO.setUserId(userId);
+					authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+					fpMatchStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
+							authenticationValidatorDTO);
 
-				if (fpMatchStatus) {
-					if (isSupervisor) {
-						fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
-								.concat(fingerprintDetailsDTO.getFingerType())
-								.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
-					} else {
-						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
-										RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+					if (fpMatchStatus) {
+						if (isSupervisor) {
+							fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
+									.concat(fingerprintDetailsDTO.getFingerType())
+									.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+						} else {
+							fingerprintDetailsDTO.setFingerprintImageName(
+									RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
+											RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+						}
 					}
 				}
 			}
+		} catch (RegBaseCheckedException exception) {
+			LOGGER.error(LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s Exception while getting the scanned finger %s",
+					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
+					ExceptionUtils.getStackTrace(exception)));
+			return false;
 		}
 		return fpMatchStatus;
 	}

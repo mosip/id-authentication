@@ -1,6 +1,7 @@
 
 package io.mosip.registration.controller.auth;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_LOGIN;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -493,7 +494,8 @@ public class LoginController extends BaseController implements Initializable {
 					}
 
 					// // Execute Sync
-					// executePreLaunchTask(credentialsPane, passwordProgressIndicator);
+					// executePreLaunchTask(credentialsPane,
+					// passwordProgressIndicator);
 
 				} catch (Exception exception) {
 					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
@@ -515,6 +517,25 @@ public class LoginController extends BaseController implements Initializable {
 		UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
 		if (userDetail != null) {
+			// TODO: Since AuthN web-service not accepting Hash Password and SHA
+			// is not
+			// implemented, getting AuthZ Token by Client ID and Secret Key
+
+			LoginUserDTO loginUserDTO = new LoginUserDTO();
+			// loginUserDTO.setUserId(userId.getText());
+			// loginUserDTO.setPassword(password.getText());
+
+			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				try {
+					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				} catch (Exception exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
+							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
+
+				}
+			}
+
 			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
 			if (RegistrationConstants.SUCCESS.equals(status)) {
@@ -932,7 +953,11 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-			return validateFingerPrintWithMdm();
+			try {
+				return validateFingerPrintWithMdm();
+			} catch (RegBaseCheckedException e) {
+				return false;
+			}
 
 		return validateFingerPrintNonMdm();
 
@@ -943,7 +968,7 @@ public class LoginController extends BaseController implements Initializable {
 	 * 
 	 * @return boolean
 	 */
-	private boolean validateFingerPrintWithMdm() {
+	private boolean validateFingerPrintWithMdm() throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
@@ -1007,8 +1032,10 @@ public class LoginController extends BaseController implements Initializable {
 
 			return false;
 		} else {
-			// Thread to wait until capture the bio image/ minutia from FP. based on the
-			// error code or success code the respective action will be taken care.
+			// Thread to wait until capture the bio image/ minutia from FP.
+			// based on the
+			// error code or success code the respective action will be taken
+			// care.
 			waitToCaptureBioImage(5, 2000, fingerprintFacade);
 
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");

@@ -1,5 +1,6 @@
 package io.mosip.registration.device.fp;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -51,31 +53,17 @@ public class FingerprintFacade {
 
 	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
+	
+	@Autowired
+	private MosipBioDeviceManager mosipBioDeviceManager;
 
-	byte[] isoTemplate;
+	private byte[] isoTemplate;
 
-	public boolean setIsoTemplate() {
-		try {
-			this.isoTemplate = captureFingerPrintThroughMdm().get("FINGERPRINT_SINGLE");
-		} catch (NullPointerException nullPointerException) {
-			return false;
-		}
-		if (this.isoTemplate != null)
+	public boolean setIsoTemplate() throws RegBaseCheckedException {
+		isoTemplate = mosipBioDeviceManager.scan("FINGERPRINT_SINGLE").get("FINGERPRINT_SINGLE");
+		if (isoTemplate != null)
 			return true;
 		return false;
-	}
-
-	@Autowired
-	MosipBioDeviceManager mosipBioDeviceManager;
-
-	private Map<String, byte[]> captureFingerPrintThroughMdm() {
-		Map<String, byte[]> byteMap = null;
-		try {
-			byteMap = mosipBioDeviceManager.scan("FINGERPRINT_SINGLE");
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-
-		}
-		return byteMap;
 	}
 
 	public byte[] getIsoTemplateFromMdm() {
@@ -90,9 +78,9 @@ public class FingerprintFacade {
 	public String getMinutia() {
 		return fingerprintProvider.getMinutia();
 	}
-	
+
 	private String minitia;
-	
+
 	public String getMinitiaThroughMdm() {
 		minitia = new FingerprintTemplate().convert(this.isoTemplate).serialize();
 		return minitia;
@@ -130,6 +118,25 @@ public class FingerprintFacade {
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, fingerType);
+		else
+			getFingerPrintImageAsDTONonMdm(fpDetailsDTO, fingerType);
+	}
+
+	/**
+	 * Gets the finger print image as DTO without MDM.
+	 *
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	private void getFingerPrintImageAsDTONonMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
+			throws RegBaseCheckedException {
 		Map<String, Object> fingerMap = null;
 
 		try {
@@ -162,6 +169,41 @@ public class FingerprintFacade {
 			if (fingerMap != null && !fingerMap.isEmpty())
 				fingerMap.clear();
 		}
+	}
+
+	/**
+	 * Gets the finger print image as DTO with MDM
+	 *
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+	private void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
+			throws RegBaseCheckedException {
+		String type=fingerType;
+		switch (fingerType) {
+		case RegistrationConstants.LEFTPALM:
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.LEFT.toUpperCase();
+			break;
+		case RegistrationConstants.RIGHTPALM:
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.RIGHT.toUpperCase();
+			break;
+		case RegistrationConstants.THUMBS:
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.THUMB.toUpperCase();
+			break;
+		default:
+			break;
+		}
+		byte[] fingerPrintByte = mosipBioDeviceManager.scan(fingerType).get(fingerType);
+		fpDetailsDTO.setFingerPrint(fingerPrintByte);
+		fpDetailsDTO.setFingerType(type);
+		fpDetailsDTO.setQualityScore(80);
 	}
 
 	/**

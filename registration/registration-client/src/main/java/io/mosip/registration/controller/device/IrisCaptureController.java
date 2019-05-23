@@ -126,10 +126,9 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Button backBtn;
-	
+
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
-
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -413,50 +412,6 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	/**
-	 * Scan irises by making the  call to service Api.
-	 *
-	 * @param detailsDTO             the details DTO
-	 * @param fingerType             the eye type
-	 */
-	public void getIrisImage(IrisDetailsDTO detailsDTO, String eyeType) {
-		String type = eyeType;
-		switch (eyeType) {
-		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.LEFT + RegistrationConstants.EYE);
-			break;
-		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.RIGHT + RegistrationConstants.EYE);
-			break;
-		case RegistrationConstants.IRIS_DOUBLE:
-			eyeType = RegistrationConstants.IRIS_DOUBLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.IRIS_DOUBLE);
-			break;
-
-		default:
-			break;
-			
-		}
-		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
-		try {
-			byteMap = mosipBioDeviceManager.scan(eyeType);
-			if (byteMap != null) {
-				byte[] imageByte = byteMap.get(eyeType);
-				if (imageByte != null) {
-					detailsDTO.setIris(imageByte);
-					detailsDTO.setIrisType(type);
-					detailsDTO.setQualityScore(80);
-				}
-			}
-		} catch (RegBaseCheckedException exception) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
-					ExceptionUtils.getStackTrace(exception)));
-		}
-	}
-
 	@Override
 	public void scan(Stage popupStage) {
 		try {
@@ -480,19 +435,15 @@ public class IrisCaptureController extends BaseController {
 					? RegistrationConstants.LEFT
 					: RegistrationConstants.RIGHT;
 
+			try {
+				irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+			} catch (RegBaseCheckedException runtimeException) {
+				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
+						ExceptionUtils.getStackTrace(runtimeException)));
+			}
 
-			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-				getIrisImage(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
-			else
-				try {
-					irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
-				} catch (RegBaseCheckedException runtimeException) {
-					LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-							"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
-							RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
-							ExceptionUtils.getStackTrace(runtimeException)));
-				}
-				
 			if (irisDetailsDTO.getIris() != null) {
 				// Display the Scanned Iris Image in the Scan pop-up screen
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIris()));

@@ -1,5 +1,6 @@
 package io.mosip.registration.device.iris;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -17,6 +18,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -41,18 +43,41 @@ public class IrisFacade {
 
 	private static final Logger LOGGER = AppConfig.getLogger(IrisFacade.class);
 
-
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
-	
+
 	/**
 	 * Gets the iris stub image as DTO.
 	 *
-	 * @param irisDetailsDTO the iris details DTO
-	 * @param irisType       the iris type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisType
+	 *            the iris type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
+
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+			getIrisImageAsDTOWithMdm(irisDetailsDTO, irisType);
+		else
+			getIrisImageAsDTONonMdm(irisDetailsDTO, irisType);
+	}
+
+	/**
+	 * Gets the iris stub image as DTO without MDM
+	 *
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisType
+	 *            the iris type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
+
+	private void getIrisImageAsDTONonMdm(IrisDetailsDTO irisDetailsDTO, String irisType)
+			throws RegBaseCheckedException {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration");
@@ -86,6 +111,34 @@ public class IrisFacade {
 					String.format("Exception while stubbing the iris details for user registration: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
+	}
+
+	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType) throws RegBaseCheckedException {
+
+		String type = eyeType;
+		switch (eyeType) {
+		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
+			eyeType = RegistrationConstants.IRIS_SINGLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.LEFT + RegistrationConstants.EYE);
+			break;
+		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
+			eyeType = RegistrationConstants.IRIS_SINGLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.RIGHT + RegistrationConstants.EYE);
+			break;
+		case RegistrationConstants.IRIS_DOUBLE:
+			eyeType = RegistrationConstants.IRIS_DOUBLE;
+			detailsDTO.setIrisImageName(RegistrationConstants.IRIS_DOUBLE);
+			break;
+
+		default:
+			break;
+
+		}
+		byte[] irisByte = mosipBioDeviceManager.scan(eyeType).get(eyeType);
+		detailsDTO.setIris(irisByte);
+		detailsDTO.setIrisType(type);
+		detailsDTO.setQualityScore(80);
+
 	}
 
 	private Map<String, Object> getIrisScannedImage(String irisType) throws RegBaseCheckedException {
@@ -137,12 +190,13 @@ public class IrisFacade {
 	public byte[] captureIris() {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
-		
-		byte[] capturedByte=null;
-		
+
+		byte[] capturedByte = null;
+
 		try {
-			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)ApplicationContext.getInstance().map().get(RegistrationConstants.MDM_ENABLED))))
-				capturedByte= mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+				capturedByte = mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
 			else
 				capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
 		} catch (RegBaseCheckedException | RuntimeException exception) {
@@ -154,9 +208,10 @@ public class IrisFacade {
 	/**
 	 * Validate Iris
 	 * 
-	 * @param irisDetailsDTO  the {@link IrisDetailsDTO} to be validated
-	 * @param userIrisDetails the list of {@link IrisDetailsDTO} available in
-	 *                        database
+	 * @param irisDetailsDTO
+	 *            the {@link IrisDetailsDTO} to be validated
+	 * @param userIrisDetails
+	 *            the list of {@link IrisDetailsDTO} available in database
 	 * 
 	 * @return the validation result. <code>true</code> if match is found, else
 	 *         <code>false</code>
