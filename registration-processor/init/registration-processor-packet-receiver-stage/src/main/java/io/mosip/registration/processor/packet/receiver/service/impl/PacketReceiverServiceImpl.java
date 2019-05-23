@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -47,6 +48,7 @@ import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequ
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -57,6 +59,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -256,7 +259,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setRegistrationId(registrationId);
 		dto.setRegistrationType(regEntity.getRegistrationType());
 		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_RECEIVED.toString());
+		dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 		dto.setLangCode("eng");
 		dto.setStatusComment(StatusMessage.PACKET_RECEIVED);
 		dto.setReProcessRetryCount(0);
@@ -302,7 +305,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			if (!isInputFileClean) {
 				description = "Packet virus scan failed  in packet receiver for registrationId ::" + registrationId
 						+ PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage();
-				dto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+				dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
 				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
@@ -313,7 +316,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			return isInputFileClean;
 		} catch (VirusScannerException e) {
 			description = "Virus scanner service failed ::" + registrationId;
-			dto.setStatusCode(RegistrationStatusCode.VIRUS_SCANNER_SERVICE_FAILED.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
@@ -454,7 +457,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			}
 			if (scanningFlag) {
 				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray), DirectoryPathDto.LANDING_ZONE);
-				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+				dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				messageDTO.setIsValid(Boolean.TRUE);
@@ -477,7 +480,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, "Error while updating status : "
 							+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
 		} catch (PacketDecryptionFailureException e) {
-			dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
+			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));

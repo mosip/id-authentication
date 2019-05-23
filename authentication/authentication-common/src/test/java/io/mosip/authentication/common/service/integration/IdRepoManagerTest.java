@@ -447,8 +447,8 @@ public class IdRepoManagerTest {
 			Map<String, Object> responseBody = new HashMap<>();
 			List<Map<String, Object>> valuelist = new ArrayList<>();
 			Map<String, Object> errorcode = new HashMap<>();
-			errorcode.put("errorCode", "IDR-VID-001");
-			errorcode.put("message", "Invalid Input Parameter - %s");
+			errorcode.put("errorCode", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+			errorcode.put("message", String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "vid"));
 			valuelist.add(errorcode);
 			responseBody.put("errors", valuelist);
 			Mockito.when(restHelper.requestSync(restReq)).thenThrow(new RestServiceException(

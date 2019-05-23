@@ -110,7 +110,7 @@
                                           <GridPane fx:id="ContentHeader">
                                              <children>
                                                 <Label alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%guardianBiometric" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-                                                <ComboBox fx:id="biometricTypecombo" onAction="#displayBiometric" onMouseClicked="#chooseBiometicList" prefWidth="150.0" promptText="Select" styleClass="demographicCombobox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                                <ComboBox fx:id="biometricTypecombo" onAction="#displayBiometric" prefWidth="150.0" promptText="Select" styleClass="demographicCombobox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                                              </children>
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />

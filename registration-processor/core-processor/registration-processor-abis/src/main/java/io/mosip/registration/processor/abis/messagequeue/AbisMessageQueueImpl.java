@@ -33,12 +33,13 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
  * The AbisMessageQueueImpl class.
+ * 
  * @author jyoti-prakash
  * @author Kiran Raj
  */
 @Component
 public class AbisMessageQueueImpl {
-	
+
 	/** The username. */
 	@Value("${registration.processor.queue.username}")
 	private String username;
@@ -91,8 +92,9 @@ public class AbisMessageQueueImpl {
 	/**
 	 * Run abis queue.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws RegistrationProcessorCheckedException 
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws RegistrationProcessorCheckedException
 	 */
 	public void runAbisQueue() throws RegistrationProcessorCheckedException {
 
@@ -101,51 +103,55 @@ public class AbisMessageQueueImpl {
 
 		List<List<String>> inboundOutBoundAddressList;
 		List<MosipQueue> mosipQueseList;
-		
-			inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
-			mosipQueseList = utilities.getMosipQueuesForAbis();
-			if (mosipQueseList != null) {
 
-				abisInboundAddresses = inboundOutBoundAddressList.get(0);
-				abisOutboundAddresses = inboundOutBoundAddressList.get(1);
-				for (int i = 0; i < abisOutboundAddresses.size(); i++) {
-					String outBoundAddress = abisOutboundAddresses.get(i);
-					MosipQueue queue = mosipQueseList.get(i);
-					QueueListener listener = new QueueListener() {
-						@Override
-						public void setListener(Message message) {
-							consumeLogic(message, outBoundAddress,queue);
-						}
-					};
-					mosipQueueManager.consume(mosipQueseList.get(i), abisInboundAddresses.get(i), listener);
-				}
+		inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
+		mosipQueseList = utilities.getMosipQueuesForAbis();
+		if (mosipQueseList != null) {
 
-				isConnection = true;
-			} else {
-				throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
+			abisInboundAddresses = inboundOutBoundAddressList.get(0);
+			abisOutboundAddresses = inboundOutBoundAddressList.get(1);
+			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
+				String outBoundAddress = abisOutboundAddresses.get(i);
+				MosipQueue queue = mosipQueseList.get(i);
+				QueueListener listener = new QueueListener() {
+					@Override
+					public void setListener(Message message) {
+						consumeLogic(message, outBoundAddress, queue);
+					}
+				};
+				mosipQueueManager.consume(mosipQueseList.get(i), abisInboundAddresses.get(i), listener);
 			}
-		
-		
-		
+
+			isConnection = true;
+		} else {
+			throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
+		}
+
 	}
 
 	/**
 	 * Consume logic.
 	 *
-	 * @param message the message
-	 * @param abismiddlewareaddress the abismiddlewareaddress
-	 * @param queue the queue
+	 * @param message
+	 *            the message
+	 * @param abismiddlewareaddress
+	 *            the abismiddlewareaddress
+	 * @param queue
+	 *            the queue
 	 * @return true, if successful
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean consumeLogic(Message message, String abismiddlewareaddress,MosipQueue queue) {
+	public boolean consumeLogic(Message message, String abismiddlewareaddress, MosipQueue queue) {
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"AbisMessageQueueImpl::consumeLogic()::Entry()");
 		boolean isrequestAddedtoQueue = false;
 		String response = null;
 
 		String request = new String(((ActiveMQBytesMessage) message).getContent().data);
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"---received---" + request);
+				"---request received from abis middle ware ---" + request);
 		try {
 			JSONObject object = JsonUtil.objectMapperReadValue(request, JSONObject.class);
 			ObjectMapper obj = new ObjectMapper();
@@ -154,21 +160,26 @@ public class AbisMessageQueueImpl {
 				abisInsertRequestDto = JsonUtil.objectMapperReadValue(request, AbisInsertRequestDto.class);
 				AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
 				response = obj.writeValueAsString(abisInsertResponseDto);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"---response sent to abis middle ware ---" + response);
 			}
 
 			else if (id.matches(ABIS_IDENTIFY)) {
 				identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
 				AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
 				response = obj.writeValueAsString(identifyResponseDto);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"---response sent to abis middle ware ---" + response);
 			}
 
 			else {
 				object.put("respoQueueConnectionNotFoundnse", "invalid request");
 				response = obj.writeValueAsString(object);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", "---invalid request received ---" + response);
 			}
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "---response---" + response);
 
 			isrequestAddedtoQueue = mosipQueueManager.send(queue, response.getBytes("UTF-8"), abismiddlewareaddress);
 		} catch (Exception e) {

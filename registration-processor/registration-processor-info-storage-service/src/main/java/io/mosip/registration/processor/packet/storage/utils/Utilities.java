@@ -49,27 +49,28 @@ import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import lombok.Data;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 
 /**
- * 
+*
  * @author Girish Yarru
- *
- */
+*
+*/
 @Component
 @Data
 public class Utilities {
 
-	private static final String UIN = "UIN";
-	public static final String FILE_SEPARATOR = "\\";
-	private static final String RE_PROCESSING = "re-processing";
-	private static final String HANDLER = "handler";
-	private static final String NEW_PACKET = "New-packet";
+              private static final String UIN = "UIN";
+              public static final String FILE_SEPARATOR = "\\";
+              private static final String RE_PROCESSING = "re-processing";
+              private static final String HANDLER = "handler";
+              private static final String NEW_PACKET = "New-packet";
 
-	@Autowired
-	private FileSystemAdapter adapter;
+              @Autowired
+              private FileSystemAdapter adapter;
 
-	@Autowired
-	private RegistrationProcessorRestClientService<Object> restClientService;
+              @Autowired
+              private RegistrationProcessorRestClientService<Object> restClientService;
 
 	@Autowired
 	private MosipQueueConnectionFactory<MosipQueue> mosipConnectionFactory;
@@ -78,26 +79,26 @@ public class Utilities {
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
 
-	@Value("${registration.processor.identityjson}")
-	private String getRegProcessorIdentityJson;
+              @Value("${registration.processor.identityjson}")
+              private String getRegProcessorIdentityJson;
 
-	@Value("${registration.processor.demographic.identity}")
-	private String getRegProcessorDemographicIdentity;
+              @Value("${registration.processor.demographic.identity}")
+              private String getRegProcessorDemographicIdentity;
 
-	@Value("${registration.processor.document.category}")
-	private String getRegProcessorDocumentCategory;
+              @Value("${registration.processor.document.category}")
+              private String getRegProcessorDocumentCategory;
 
-	@Value("${registration.processor.applicant.type}")
-	private String getRegProcessorApplicantType;
+              @Value("${registration.processor.applicant.type}")
+              private String getRegProcessorApplicantType;
 
-	@Value("${registration.processor.applicant.dob.format}")
-	private String dobFormat;
+              @Value("${registration.processor.applicant.dob.format}")
+              private String dobFormat;
 
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private long elapseTime;
 
-	@Value("${registration.processor.abis.json}")
-	private String registrationProcessorAbisJson;
+	//@Value("${registration.processor.abis.json}")
+	private String registrationProcessorAbisJson = "RegistrationProcessorAbis_dev.json";
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -121,31 +122,32 @@ public class Utilities {
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
 	}
 
-	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException {
-		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
-		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
-		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
+              public int getApplicantAge(String registrationId)
+                                           throws IOException, ApisResourceAccessException {
+                             RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
+                             String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
+                             String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
 
-		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
-		Integer applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-		if (applicantDob != null) {
-			return calculateAge(applicantDob);
-		} else if (applicantAge != null) {
-			return applicantAge;
+                             JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
+                             String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
+                             Integer applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+                             if (applicantDob != null) {
+                                           return calculateAge(applicantDob);
+                             } else if (applicantAge != null) {
+                                           return applicantAge;
 
-		} else {
-			Long uin = getUIn(registrationId);
-			JSONObject identityJSONOject = retrieveIdrepoJson(uin);
-			String idRepoApplicantDob = JsonUtil.getJSONValue(identityJSONOject, dobKey);
-			if (idRepoApplicantDob != null)
-				return calculateAge(idRepoApplicantDob);
-			Integer idRepoApplicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
-			return idRepoApplicantAge != null ? idRepoApplicantAge : 0;
+                             } else {
+                                           Long uin = getUIn(registrationId);
+                                           JSONObject identityJSONOject = retrieveIdrepoJson(uin);
+                                           String idRepoApplicantDob = JsonUtil.getJSONValue(identityJSONOject, dobKey);
+                                           if (idRepoApplicantDob != null)
+                                                          return calculateAge(idRepoApplicantDob);
+                                           Integer idRepoApplicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+                                           return idRepoApplicantAge != null ? idRepoApplicantAge : 0;
 
-		}
+                             }
 
-	}
+              }
 
 	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
 
@@ -243,46 +245,46 @@ public class Utilities {
 		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 	}
 
-	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException {
+              public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException {
 
-		InputStream idJsonStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
-		String jsonString = new String(bytearray);
-		JSONObject demographicIdentityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicIdentityJson,
-				getRegProcessorDemographicIdentity);
+                             InputStream idJsonStream = adapter.getFile(registrationId,
+                                                          PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+                             byte[] bytearray = IOUtils.toByteArray(idJsonStream);
+                             String jsonString = new String(bytearray);
+                             JSONObject demographicIdentityJson = (JSONObject) JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+                             JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicIdentityJson,
+                                                          getRegProcessorDemographicIdentity);
 
-		if (demographicIdentity == null)
-			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+                             if (demographicIdentity == null)
+                                           throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-		return demographicIdentity;
+                             return demographicIdentity;
 
-	}
+              }
 
-	private int calculateAge(String applicantDob) {
-		DateFormat sdf = new SimpleDateFormat(dobFormat);
-		Date birthDate = null;
-		try {
-			birthDate = sdf.parse(applicantDob);
+    private int calculateAge(String applicantDob) {
+        DateFormat sdf = new SimpleDateFormat(dobFormat);
+        Date birthDate = null;
+        try {
+            birthDate = sdf.parse(applicantDob);
 
-		} catch (ParseException e) {
-			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
-		}
-		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
-		Period p = Period.between(ld, LocalDate.now());
-		return p.getYears();
+        } catch (ParseException e) {
+            throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
+        }
+        LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
+        Period p = Period.between(ld, LocalDate.now());
+        return p.getYears();
 
-	}
+    }
 
-	public Long getUIn(String registrationId) throws IOException {
-		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		if (demographicIdentity == null)
-			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
-		return number != null ? number.longValue() : null;
+              public Long getUIn(String registrationId) throws IOException {
+                             JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
+                             if (demographicIdentity == null)
+                                           throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+                             Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
+                             return number != null ? number.longValue() : null;
 
-	}
+              }
 
 	public String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
 
@@ -304,5 +306,24 @@ public class Utilities {
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
 	}
+	
+    public JSONObject retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException {
+
+        if (regId != null) {
+                      List<String> pathSegments = new ArrayList<>();
+                      pathSegments.add(regId);
+                      IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
+                                                   pathSegments, "", "", IdResponseDTO1.class);
+                      if (!idResponseDto.getErrors().isEmpty())
+                                     throw new IdRepoAppException(
+                                                                 PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
+
+                      ObjectMapper objMapper = new ObjectMapper();
+                      return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
+
+        }
+
+        return null;
+}
 
 }

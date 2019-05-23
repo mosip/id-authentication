@@ -178,7 +178,9 @@ public enum ApiName {
     /** The ridgeneration. */
 	RIDGENERATION,
     /** The retrieveidentity. */
-	RETRIEVEIDENTITY,
+    RETRIEVEIDENTITY,
+    /** The retrieveidentity using rid. */
+	RETRIEVEIDENTITYFROMRID,
     /** The digitalsignature */
 	DIGITALSIGNATURE;
 
