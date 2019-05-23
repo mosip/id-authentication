@@ -82,34 +82,12 @@ public class SignatureController {
 	@ResponseFilter
 	@PostMapping(value = "/validate")
 	public ResponseWrapper<ValidatorResponseDto> validate(
-			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException {
+			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto) {
 		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(service.validate(timestampRequestDto.getRequest()));
 		return response;
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
-	@ResponseFilter
-	@PostMapping(value = "certificate/sign")
-	public ResponseWrapper<SignResponseDto> certificateSign(@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
-		SignatureResponse signatureResponse = service.signCertificateResponse(requestDto.getRequest());
-		SignResponseDto signResponse = new SignResponseDto();
-		signResponse.setTimestamp(signatureResponse.getTimestamp());
-		signResponse.setSignature(signatureResponse.getData());
-		ResponseWrapper<SignResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(signResponse);
-		return response;
-	}
 	
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
-	@ResponseFilter
-	@PostMapping(value = "certificate/validate")
-	public ResponseWrapper<ValidatorResponseDto> certificateValidate(
-			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto){
-		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(service.certificateValidate(timestampRequestDto.getRequest()));
-		return response;
-	}
 }
