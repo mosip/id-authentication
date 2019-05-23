@@ -466,7 +466,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Expired() {
+	public void testRetrieveUinByVidExpired() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime();
@@ -478,12 +478,14 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-002 --> EXPIRED VID", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_VID.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "EXPIRED"),
+					e.getErrorText());
 		}
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Blocked() {
+	public void testRetrieveUinByVidBlocked() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -495,12 +497,14 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-002 --> Blocked VID", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_VID.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "Blocked"),
+					e.getErrorText());
 		}
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Invalid_NoRecordsFound() {
+	public void testRetrieveUinByVidInvalidNoRecordsFound() {
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		try {
@@ -511,7 +515,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_valid() throws IdRepoAppException {
+	public void testUpdateVidvalid() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -533,7 +537,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_valid_REVOKE() throws IdRepoAppException {
+	public void testUpdateVidvalidREVOKE() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -566,7 +570,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_Invalid() {
+	public void testUpdateVidInvalid() {
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		VidRequestDTO request = new VidRequestDTO();
