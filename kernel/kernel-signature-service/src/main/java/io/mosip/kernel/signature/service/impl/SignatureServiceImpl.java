@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.signature.constant.SignatureConstant;
 import io.mosip.kernel.signature.constant.SignatureErrorCode;
 import io.mosip.kernel.signature.dto.PublicKeyRequestDto;
 import io.mosip.kernel.signature.dto.SignRequestDto;
@@ -26,13 +27,11 @@ import io.mosip.kernel.signature.service.SignatureService;
 @Service
 public class SignatureServiceImpl implements SignatureService {
 
-	private static final String SUCCESS = "success";
-	private static final String VALIDATION_SUCCESSFUL = "VALIDATION_SUCCESSFUL";
 	@Autowired
 	private SignatureUtil signatureUtil;
 
 	@Override
-	public SignatureResponse signResponse(SignRequestDto signRequestDto) {
+	public SignatureResponse sign(SignRequestDto signRequestDto) {
 		return signatureUtil.sign(signRequestDto.getData(),DateUtils.getUTCCurrentDateTimeString());
 	}
 
@@ -45,8 +44,8 @@ public class SignatureServiceImpl implements SignatureService {
 
 		if (status) {
 			ValidatorResponseDto response = new ValidatorResponseDto();
-			response.setMessage(VALIDATION_SUCCESSFUL);
-			response.setStatus(SUCCESS);
+			response.setMessage(SignatureConstant.VALIDATION_SUCCESSFUL);
+			response.setStatus(SignatureConstant.SUCCESS);
 			return response;
 		} else {
 			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
@@ -67,8 +66,8 @@ public class SignatureServiceImpl implements SignatureService {
 
 		if (status) {
 			ValidatorResponseDto response = new ValidatorResponseDto();
-			response.setMessage(VALIDATION_SUCCESSFUL);
-			response.setStatus(SUCCESS);
+			response.setMessage(SignatureConstant.VALIDATION_SUCCESSFUL);
+			response.setStatus(SignatureConstant.SUCCESS);
 			return response;
 		} else {
 			throw new SignatureFailureException(SignatureErrorCode.NOT_VALID.getErrorCode(),
