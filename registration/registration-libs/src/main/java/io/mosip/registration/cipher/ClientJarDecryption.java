@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
-import io.mosip.registration.config.RegistrationUpdate;
+import io.mosip.registration.config.SoftwareInstallationHandler;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
 import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
@@ -119,7 +119,7 @@ public class ClientJarDecryption extends Application {
 
 	private static boolean checkForJars(boolean isToBeDownloaded)
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+		SoftwareInstallationHandler registrationUpdate = new SoftwareInstallationHandler();
 
 		if (registrationUpdate.getCurrentVersion() != null && registrationUpdate.hasRequiredJars()) {
 

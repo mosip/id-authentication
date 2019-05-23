@@ -38,9 +38,9 @@ import io.mosip.kernel.core.util.HMACUtils;
  *
  */
 @Component
-public class RegistrationUpdate {
+public class SoftwareInstallationHandler {
 
-	public RegistrationUpdate() throws IOException {
+	public SoftwareInstallationHandler() throws IOException {
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
