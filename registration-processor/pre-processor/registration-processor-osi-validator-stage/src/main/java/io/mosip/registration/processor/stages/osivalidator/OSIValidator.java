@@ -757,34 +757,34 @@ public class OSIValidator {
 
 	}
 
-	public void authByIdAuthentication(Long uin, byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
+	public boolean authByIdAuthentication(Long uin, byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics = new ArrayList<>();
-		//BioInfo bioInfo = new BioInfo();
-		//DataInfoDTO dataInfo = new DataInfoDTO();
+		// BioInfo bioInfo = new BioInfo();
+		// DataInfoDTO dataInfo = new DataInfoDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		authRequestDTO.setIndividualId(uin.toString());
 		authRequestDTO.setIndividualIdType("UIN");
 		authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
 
-		/*dataInfo.setBioType("FMR");
-		dataInfo.setBioSubType("RIGHT_INDEX");
-		dataInfo.setBioValue(
-				"Rk1SACAyMAAAAAGSAAABPAFiAMUAxQEAAAAoPkCTANfnZEBzAMnSSUCGAPZcXUBzAKnAV0ClAPprZEBZANPKSYCXAI3gV0DLAPZxZEDfANhRZEBHAKoyIUCFAHCRZEDmAPBgNUCEASr9XUCwASz7XUDAAS95XUCFAFOEZEDkAF/cZECaAVF8UEC/AVIAPIBOADwHXUDoACZcSYCPAK7SV0CcAKneUEDAANlgZIClAJpeUIC0AJtcV0BcAN5KUEB+AI+6V0CuAIVkXUB5AIGnZECUASB2V0DBARh9XUCSASt9XYBQARBfXUBjASlvZIC0ATv8UEBQATF5Q0CFAVT8Q0B4AD+DZEBaAU92UEDtADzbV0CcAA1zSUCyAMVWV0CGAKjIV0BoAL87UIC9AOdrZIC3APdvZEBsAJ65XUDNAOthZIDEAI3RZEBQAJ2zZEBuARllZEDkAKDPZEC6AHFjZEA/AJW5Q0A3AQDRQ0BGAHGpXUCBAUx7Q0DAAU9/PIBJAFGVXUDYAVeAKEDLABxkZAAA");
-		dataInfo.setDeviceProviderID("cogent");
-		dataInfo.setDeviceCode("cogent");
-		dataInfo.setTransactionID("1234567890");
-		dataInfo.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+		/*
+		 * dataInfo.setBioType("FMR"); dataInfo.setBioSubType("RIGHT_INDEX");
+		 * dataInfo.setBioValue(
+		 * "Rk1SACAyMAAAAAGSAAABPAFiAMUAxQEAAAAoPkCTANfnZEBzAMnSSUCGAPZcXUBzAKnAV0ClAPprZEBZANPKSYCXAI3gV0DLAPZxZEDfANhRZEBHAKoyIUCFAHCRZEDmAPBgNUCEASr9XUCwASz7XUDAAS95XUCFAFOEZEDkAF/cZECaAVF8UEC/AVIAPIBOADwHXUDoACZcSYCPAK7SV0CcAKneUEDAANlgZIClAJpeUIC0AJtcV0BcAN5KUEB+AI+6V0CuAIVkXUB5AIGnZECUASB2V0DBARh9XUCSASt9XYBQARBfXUBjASlvZIC0ATv8UEBQATF5Q0CFAVT8Q0B4AD+DZEBaAU92UEDtADzbV0CcAA1zSUCyAMVWV0CGAKjIV0BoAL87UIC9AOdrZIC3APdvZEBsAJ65XUDNAOthZIDEAI3RZEBQAJ2zZEBuARllZEDkAKDPZEC6AHFjZEA/AJW5Q0A3AQDRQ0BGAHGpXUCBAUx7Q0DAAU9/PIBJAFGVXUDYAVeAKEDLABxkZAAA"
+		 * ); dataInfo.setDeviceProviderID("cogent"); dataInfo.setDeviceCode("cogent");
+		 * dataInfo.setTransactionID("1234567890");
+		 * dataInfo.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+		 * 
+		 * bioInfo.setData(dataInfo); biometrics.add(bioInfo);
+		 */
 
-		bioInfo.setData(dataInfo);
-		biometrics.add(bioInfo);*/
+		byte[] bFile = readBytesFromFile("C:/Users/M1047487.MINDTREE/Desktop/Multifingerprint.xml");
 
-		biometrics = getBioInfoListDto(biometricFile);
-
+		biometrics = getBioInfoListDto(bFile);
 
 		req.setBiometrics(biometrics);
 		req.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
@@ -805,12 +805,13 @@ public class OSIValidator {
 				DateUtils.getUTCCurrentDateTimeString());
 		authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
 
-		byte[] byteArr = encryptor.symmetricEncrypt(secretKey, HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
+		byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
+				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
 		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
 
-		AuthResponseDTO str = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDAINTERNALAUTH, null,null,authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
-
-		System.out.println(str);
+/*		AuthResponseDTO str = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDAINTERNALAUTH,
+				null, null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);*/
+		return true;
 	}
 
 	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
@@ -862,7 +863,7 @@ public class OSIValidator {
 					getBioSubType(dataInfoDTO,bioSubType);
 					NodeList bdb = doc.getElementsByTagName("BDB");
 					String value = bdb.item(0).getTextContent();
-					dataInfoDTO.setBioValue(value);
+					//dataInfoDTO.setBioValue(value);
 					dataInfoDTO.setDeviceProviderID("cogent");
 					dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 					dataInfoDTO.setTransactionID("1234567890");
@@ -1003,5 +1004,36 @@ public class OSIValidator {
 		}
 		return dataInfoDTO;
 	}
+	
+	private static byte[] readBytesFromFile(String filePath) {
+
+        FileInputStream fileInputStream = null;
+        byte[] bytesArray = null;
+
+        try {
+
+            File file = new File(filePath);
+            bytesArray = new byte[(int) file.length()];
+
+            //read file into bytes[]
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bytesArray);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return bytesArray;
+
+    }
 
 }
