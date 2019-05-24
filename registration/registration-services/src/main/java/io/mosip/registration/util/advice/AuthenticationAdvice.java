@@ -56,7 +56,7 @@ public class AuthenticationAdvice {
 	 * @throws Throwable
 	 */
 	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
-	public void authorizeUserId(JoinPoint joinPoint, PreAuthorizeUserId preAuthorizeUserId)
+	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId)
 			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 				"Pre-Authorize the user id starting");
