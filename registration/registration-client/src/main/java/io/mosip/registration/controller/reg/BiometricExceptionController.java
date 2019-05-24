@@ -362,13 +362,6 @@ public class BiometricExceptionController extends BaseController implements Init
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
-				if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-					if (fingerList.size() == 10 && irisList.size() == 2) {
-						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
-					} else {
-						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
-					}
-				}
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION, getPageDetails(
 						RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
 			}
