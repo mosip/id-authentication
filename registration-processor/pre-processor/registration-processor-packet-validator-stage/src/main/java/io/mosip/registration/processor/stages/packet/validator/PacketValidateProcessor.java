@@ -95,7 +95,7 @@ public class PacketValidateProcessor {
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
-	
+
 	@Autowired
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
@@ -173,6 +173,8 @@ public class PacketValidateProcessor {
 	boolean isApplicantDocumentValidation = false;
 	boolean isFilesValidated = false;
 	boolean isMasterDataValidation = false;
+	boolean isMandatoryValidation = false;
+	boolean isRIdAndTypeSynched = false;
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	public MessageDTO process(MessageDTO object, String stageName) {
@@ -225,10 +227,13 @@ public class PacketValidateProcessor {
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
 						: 1;
-				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated
-						+ ")/Applicant Document Validation(" + isApplicantDocumentValidation
-						+ ")/Master Data Validation(" + isMasterDataValidation + ") failed for registrationId "
-						+ registrationId;
+				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated+ ")"
+						+ "/Applicant Document Validation(" + isApplicantDocumentValidation+ ")"
+						+ "/Schema Validation(" + isSchemaValidated+ ")"
+						+ "/Master Data Validation(" + isMasterDataValidation + ")"
+						+ "/MandatoryField Validation(" + isMandatoryValidation +")"
+						+ "/isRidAndType Sync Validation(" + isRIdAndTypeSynched +")"
+						+ " failed for registrationId "+ registrationId;
 				isTransactionSuccessful = false;
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -431,11 +436,12 @@ public class PacketValidateProcessor {
 			return false;
 		}
 
-		// Check RegId  & regType are same or not From PacketMetaInfo by comparing with Sync list table
+		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
+		// Sync list table
 		if (!validateRegIdAndTypeFromSyncTable(metadataList)) {
 			return false;
-		}		
-		
+		}
+
 		return true;
 
 	}
@@ -443,21 +449,26 @@ public class PacketValidateProcessor {
 	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
 		String regId = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONID);
 		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
-		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId, regType.toUpperCase());
-		
-		if(syncRecordList !=null && !syncRecordList.isEmpty()) 
-			return true;
+		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId,
+				regType.toUpperCase());
+
+		if (syncRecordList != null && !syncRecordList.isEmpty()) {
+			isRIdAndTypeSynched=true;
+			return isRIdAndTypeSynched;
+		}
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
 				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getCode(),
 				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getMessage());
-		return false;
+		return isRIdAndTypeSynched;
 	}
+
 	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, JSONException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
-		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+		 isMandatoryValidation = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+		return isMandatoryValidation;
 	}
 
 	private boolean schemaValidation(String jsonString)
