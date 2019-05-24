@@ -1,4 +1,4 @@
-**Design -- Pre-Registration sync**
+**Design - Pre-Registration sync**
 
 **Background**
 
