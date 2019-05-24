@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -44,14 +45,11 @@ import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.softhsm.constant.KeymanagerErrorCode;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerConstant;
 import io.mosip.kernel.keymanagerservice.constant.KeymanagerErrorConstant;
 import io.mosip.kernel.keymanagerservice.dto.CertificateEntry;
-import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
-import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
 import io.mosip.kernel.keymanagerservice.dto.SignatureCertificate;
 import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
@@ -539,17 +537,16 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
-		byte[] certData = null;
+		//byte[] certData = null;
 		CertificateFactory cf = null;
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			File file = resourceLoader.getResource(certificateFilePath).getFile();
-			certData = FileUtils.readFileToByteArray(file);
+			//certData = IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
 			cf = CertificateFactory.getInstance(certificateType);
-			cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certData));
-			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getFile());
-		} catch (CertificateException | IOException | java.io.IOException e) {
+			cert = (X509Certificate) cf.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
+			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getInputStream());
+		} catch (CertificateException | java.io.IOException e) {
 			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
@@ -563,7 +560,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto) {
 		SignatureCertificate certificateResponse = getSigningCertificate(signatureRequestDto.getApplicationId(),
 				Optional.of(signatureRequestDto.getReferenceId()), signatureRequestDto.getTimeStamp());
-		keymanagerUtil.isCertificateValid(certificateResponse.getCertificateEntry(),DateUtils.parseUTCToDate(signatureRequestDto.getTimeStamp()));
+		keymanagerUtil.isCertificateValid(certificateResponse.getCertificateEntry(),
+				DateUtils.parseUTCToDate(signatureRequestDto.getTimeStamp()));
 		byte[] encryptedSignedData = null;
 		if (certificateResponse.getCertificateEntry() != null) {
 			encryptedSignedData = encryptor.asymmetricPrivateEncrypt(
@@ -573,7 +571,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		return new SignatureResponseDto(CryptoUtil.encodeBase64(encryptedSignedData));
 	}
 
-	//TODO:  To Be Removed once upload certificate functionality is implemented
+	// TODO: To Be Removed once upload certificate functionality is implemented
 	@PostConstruct
 	private void loadCertificateIfNotExist() {
 
