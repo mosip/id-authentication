@@ -37,7 +37,7 @@ public class BioDevice {
 
 	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
-	public Map<String, byte[]> capture() throws RegBaseCheckedException {
+	public CaptureResponseDto capture() throws RegBaseCheckedException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
 

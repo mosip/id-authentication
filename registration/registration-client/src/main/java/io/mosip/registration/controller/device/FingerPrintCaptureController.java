@@ -1017,10 +1017,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
 		} catch (Exception exception) {
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-					"%s Exception while getting the scanned finger details for user registration: %s ", exception.getMessage(),
-					ExceptionUtils.getStackTrace(exception)));		}
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
+							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+		}
+		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
 
 		if (detailsDTO.getFingerPrint() != null) {
 

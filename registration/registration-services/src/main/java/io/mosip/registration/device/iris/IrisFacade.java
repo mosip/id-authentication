@@ -27,6 +27,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 
 /**
@@ -132,7 +133,9 @@ public class IrisFacade {
 			break;
 
 		}
-		byte[] irisByte = mosipBioDeviceManager.scan(eyeType).get(eyeType);
+
+		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
+		byte[] irisByte = mosipBioDeviceManager.extractSingleBiometric(captureResponseDto);
 		detailsDTO.setIris(irisByte);
 		detailsDTO.setIrisType(type);
 		detailsDTO.setQualityScore(80);
@@ -192,11 +195,12 @@ public class IrisFacade {
 		byte[] capturedByte = null;
 
 		try {
-			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-					((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-				capturedByte = mosipBioDeviceManager.scan("IRIS_SINGLE").get("IRIS_SINGLE");
-			else
-				capturedByte=RegistrationConstants.IRIS_STUB.getBytes();
+			if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
+				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan("IRIS_SINGLE");
+				capturedByte = mosipBioDeviceManager.extractSingleBiometric(captureResponseDto);
+			} else
+				capturedByte = RegistrationConstants.IRIS_STUB.getBytes();
 		} catch (RegBaseCheckedException | RuntimeException exception) {
 			exception.printStackTrace();
 		}

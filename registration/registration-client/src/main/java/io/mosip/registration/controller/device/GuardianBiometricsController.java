@@ -512,7 +512,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
 
 		if (detailsDTO.getFingerPrint() != null) {
 

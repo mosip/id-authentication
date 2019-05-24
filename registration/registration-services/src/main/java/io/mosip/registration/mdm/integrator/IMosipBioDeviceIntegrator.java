@@ -55,7 +55,7 @@ public interface IMosipBioDeviceIntegrator {
 	 * @return Map<String, byte[]> - the captured biometric details
 	 * @throws RegBaseCheckedException
 	 */
-	Map<String, byte[]> capture(String url, Object request, Class<?> responseType) throws RegBaseCheckedException;
+	CaptureResponseDto capture(String url, Object request, Class<?> responseType) throws RegBaseCheckedException;
 
 	CaptureResponseDto getFrame();
 

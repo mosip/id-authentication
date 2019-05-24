@@ -29,6 +29,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.dto.BioDevice;
+import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
@@ -214,7 +216,7 @@ public class MosipBioDeviceManager {
 	 * @return Map<String, byte[]> - captured biometric values from the device
 	 * @throws RegBaseCheckedException
 	 */
-	public Map<String, byte[]> scan(String deviceType) throws RegBaseCheckedException {
+	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException {
 
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID, "Enter scan method");
 
@@ -237,6 +239,19 @@ public class MosipBioDeviceManager {
 
 	}
 
+	public byte[] extractSingleBiometric(CaptureResponseDto captureResponseDto) {
+		byte[] capturedByte = null;
+		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
+				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
+
+			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
+			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
+				return captureResponseBioDtos.getCaptureResponseData().getBioValue();
+			}
+		}
+		return capturedByte;
+	}
+	
 	/**
 	 * discovers the device for the given device type
 	 * 

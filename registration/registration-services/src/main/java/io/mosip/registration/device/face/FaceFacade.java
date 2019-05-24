@@ -18,6 +18,8 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 
 /**
@@ -46,10 +48,12 @@ public class FaceFacade {
 		byte[] capturedByte = null;
 
 		try {
-			if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)ApplicationContext.getInstance().map().get(RegistrationConstants.MDM_ENABLED))))
-				capturedByte = mosipBioDeviceManager.scan("FACE").get("FACE");
-			else
-				capturedByte=RegistrationConstants.FACE.toLowerCase().getBytes();
+			if (RegistrationConstants.ENABLE
+					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
+				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan("FACE");
+				capturedByte= mosipBioDeviceManager.extractSingleBiometric(captureResponseDto);
+			} else
+				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
 		} catch (RegBaseCheckedException | RuntimeException exception) {
 			exception.printStackTrace();
 		}

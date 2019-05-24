@@ -745,7 +745,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
-		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)applicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		if(RegistrationConstants.ENABLE.equalsIgnoreCase(((String)ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			return captureAndValidateFPWithMdm(userId);
 		return captureAndValidateFpNonMdm(userId);
 	}
