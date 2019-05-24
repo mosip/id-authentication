@@ -167,7 +167,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", signApplicationid);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timestamp", timestamp).queryParam("referenceId", signRefid);
+				.queryParam("timeStamp", timestamp).queryParam("referenceId", signRefid);
 		try {
 			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
