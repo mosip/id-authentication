@@ -291,7 +291,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	private void executeSQLFile() {
 		String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
-		if (!softwareUpdateHandler.getCurrentVersion().equals(version)) {
+		if (!version.equalsIgnoreCase(softwareUpdateHandler.getCurrentVersion())) {
 			loginRoot.setDisable(true);
 			ResponseDTO responseDTO = softwareUpdateHandler.executeSqlFile(softwareUpdateHandler.getCurrentVersion(),
 					version);
