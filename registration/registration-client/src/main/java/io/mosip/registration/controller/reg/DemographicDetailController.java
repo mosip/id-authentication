@@ -1269,10 +1269,10 @@ public class DemographicDetailController extends BaseController {
 			residenceLblLocalLanguage.setText(localProperties.getString("residence"));
 			nationalLocalLanguage.setText(localProperties.getString("national"));
 			foreignerLocalLanguage.setText(localProperties.getString("foreigner"));
-			localAdminAuthorityLocalLanguage.setPromptText(localProperties.getString("select"));
-			cityLocalLanguage.setPromptText(localProperties.getString("select"));
-			regionLocalLanguage.setPromptText(localProperties.getString("select"));
-			provinceLocalLanguage.setPromptText(localProperties.getString("select"));
+			localAdminAuthorityLocalLanguage.setPromptText(localProperties.getString("localAdminAuthority"));
+			cityLocalLanguage.setPromptText(localProperties.getString("city"));
+			regionLocalLanguage.setPromptText(localProperties.getString("region"));
+			provinceLocalLanguage.setPromptText(localProperties.getString("province"));
 			ddLocalLanguage.setPromptText(localProperties.getString("dd"));
 			mmLocalLanguage.setPromptText(localProperties.getString("mm"));
 			yyyyLocalLanguage.setPromptText(localProperties.getString("yyyy"));
@@ -1384,7 +1384,8 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language code
+	 * To load the localAdminAuthorities selection list based on the language
+	 * code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -2089,7 +2090,14 @@ public class DemographicDetailController extends BaseController {
 		try {
 			date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 					Integer.parseInt(dd.getText()));
-		} catch (NumberFormatException exception) {
+		} catch (NumberFormatException | DateTimeException exception) {
+			if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
+				dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
+			} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
+				dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
+			} else {
+				dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
+			}
 			if (dd.getText().isEmpty()) {
 				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
 			} else if (mm.getText().isEmpty()) {
@@ -2104,27 +2112,16 @@ public class DemographicDetailController extends BaseController {
 
 		if (localDate.compareTo(date) >= 0) {
 
-			try {
-				age = Period.between(date, localDate).getYears();
-				if (age <= maxAge) {
-					ageField.setText(age + "");
-					ageFieldLocalLanguage.setText(age + "");
-				} else {
-					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
-					dobMessage.setVisible(true);
-					isValid = false;
-				}
-			} catch (DateTimeException exception) {
-				if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
-					dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
-				} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
-					dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
-				} else {
-					dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
-				}
+			age = Period.between(date, localDate).getYears();
+			if (age <= maxAge) {
+				ageField.setText(age + "");
+				ageFieldLocalLanguage.setText(age + "");
+			} else {
+				dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 				dobMessage.setVisible(true);
 				isValid = false;
 			}
+
 		} else {
 			ageField.clear();
 			ageFieldLocalLanguage.clear();
