@@ -55,7 +55,7 @@ public class AuthenticationAdvice {
 	 * @throws RegBaseCheckedException
 	 * @throws Throwable
 	 */
-	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
+	@Before(value = "@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
 	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId) throws RegBaseCheckedException {
 		boolean roleFound = false;
 
