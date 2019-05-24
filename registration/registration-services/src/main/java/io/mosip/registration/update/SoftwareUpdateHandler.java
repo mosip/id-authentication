@@ -57,14 +57,22 @@ import io.mosip.registration.service.config.GlobalParamService;
 @Component
 public class SoftwareUpdateHandler extends BaseService {
 
-	public SoftwareUpdateHandler() throws IOException {
-		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-		serverRegClientURL = properties.getProperty("mosip.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
-		backUpPath = properties.getProperty("mosip.rollback.path");
+	public SoftwareUpdateHandler() {
+
+		try {
+			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+			Properties properties = new Properties();
+			properties.load(fileInputStream);
+			serverRegClientURL = properties.getProperty("mosip.client.url");
+			serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+			backUpPath = properties.getProperty("mosip.rollback.path");
+
+		} catch (IOException exception) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+		}
 	}
 
 	private static String SLASH = "/";
@@ -415,8 +423,10 @@ public class SoftwareUpdateHandler extends BaseService {
 		String checkSum;
 		try {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
-			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
-					.get(Attributes.Name.CONTENT_TYPE);
+
+			// Get Check sum
+			String manifestCheckSum = getCheckSum(jarFile.getName(), manifest);
+
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Checking of checksum completed for jar :" + jarFile.getName());
 			return manifestCheckSum.equals(checkSum);
@@ -613,5 +623,34 @@ public class SoftwareUpdateHandler extends BaseService {
 		if (!isBackUpCompleted) {
 			setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 		}
+	}
+
+	/**
+	 * Get checksum
+	 * 
+	 * @param jarName
+	 *            jarName
+	 * @param manifest
+	 *            localManifestFile
+	 * @return
+	 */
+	public String getCheckSum(String jarName, Manifest manifest) {
+
+		// Get Local manifest
+		manifest = manifest != null ? manifest : localManifest;
+
+		if (manifest == null) {
+
+			try {
+				manifest = getLocalManifest();
+			} catch (IOException exception) {
+				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+			}
+		}
+
+		// checksum (content-type)
+		return (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
 	}
 }

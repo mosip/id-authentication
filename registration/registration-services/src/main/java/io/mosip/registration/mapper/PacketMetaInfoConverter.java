@@ -170,6 +170,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 			// Set Checksum
 			List<FieldValue> checkSums = new LinkedList<>();
+			
 			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
