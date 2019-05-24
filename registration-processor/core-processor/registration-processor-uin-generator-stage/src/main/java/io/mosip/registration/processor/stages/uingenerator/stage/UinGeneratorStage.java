@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.VidGenResponse;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.exception.VidCreationException;
@@ -803,7 +802,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		VidRequestDto vidRequestDto = new VidRequestDto();
 		VidResponseDto vidResponseDto= new VidResponseDto();
 		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-		VidGenResponse<VidResponseDto> response;
+		ResponseWrapper<VidResponseDto> response;
 		try {
 			
 		vidRequestDto.setUIN(UIN);
@@ -816,8 +815,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		request.setRequesttime(localdatetime);
 		request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 		
-		response=(VidGenResponse<VidResponseDto>) registrationProcessorRestClientService
-					.postApi(ApiName.CREATEVID, "", "", request, VidGenResponse.class);
+		response=(ResponseWrapper<VidResponseDto>) registrationProcessorRestClientService
+					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 		
 		vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
 				VidResponseDto.class);

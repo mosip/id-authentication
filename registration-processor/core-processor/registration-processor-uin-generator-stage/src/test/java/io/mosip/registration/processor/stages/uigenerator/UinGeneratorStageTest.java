@@ -66,10 +66,9 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
-import io.mosip.registration.processor.stages.uingenerator.dto.VidGenResponse;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
+//import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
@@ -77,6 +76,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ IOUtils.class, HMACUtils.class, Utilities.class,Gson.class })
@@ -249,7 +249,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 		
-		VidGenResponse<VidResponseDto> responseVid = new VidGenResponse<VidResponseDto>();
+		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
 		List<ErrorDTO> errors = new ArrayList<>();
 		responseVid.setErrors(errors);
 		responseVid.setVersion("v1");
@@ -313,7 +313,7 @@ public class UinGeneratorStageTest {
 
 		
 		
-		VidGenResponse<VidResponseDto> responseVid = new VidGenResponse<VidResponseDto>();
+		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
 		List<ErrorDTO> errors = new ArrayList<>();
 		responseVid.setErrors(errors);
 		responseVid.setVersion("v1");
