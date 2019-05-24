@@ -42,7 +42,6 @@ import io.mosip.registration.processor.status.service.impl.RegistrationStatusSer
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
 import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
@@ -65,7 +64,7 @@ public class RegistrationStatusBeanConfig {
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
-					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+			.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
@@ -142,10 +141,6 @@ public class RegistrationStatusBeanConfig {
 		return new SyncRegistrationEntity();
 	}
 
-	@Bean
-	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
-		return new RegistrationStatusMapUtil();
-	}
 	@Bean
 	public RegistrationExternalStatusUtility getRegistrationExternalStatusUtility() {
 		return new RegistrationExternalStatusUtility();

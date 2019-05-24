@@ -20,7 +20,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 @Component
 public class RegistrationExternalStatusUtility {
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusMapUtil.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationExternalStatusUtility.class);
 
 	/** The threshold time. */
 	@Value("${registration.processor.threshold}")
@@ -29,6 +29,13 @@ public class RegistrationExternalStatusUtility {
 	/** The elapsed time. */
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private int elapsedTime;
+	
+	/**
+	 * Instantiates a new registration external status utility.
+	 */
+	public RegistrationExternalStatusUtility() {
+		super();
+	}
 
 	/**
 	 * Gets the external status.

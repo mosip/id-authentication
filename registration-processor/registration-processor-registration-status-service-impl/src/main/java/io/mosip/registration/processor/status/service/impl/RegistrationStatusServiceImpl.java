@@ -3,11 +3,12 @@ package io.mosip.registration.processor.status.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import io.mosip.kernel.core.logger.spi.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -21,7 +22,6 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
-import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -31,7 +31,6 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;
 
 /**
@@ -68,9 +67,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
-
-	@Autowired
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	@Autowired
 	private RegistrationExternalStatusUtility regexternalstatusUtil;
