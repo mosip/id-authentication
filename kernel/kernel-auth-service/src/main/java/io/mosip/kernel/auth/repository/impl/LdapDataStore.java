@@ -609,76 +609,74 @@ public class LdapDataStore implements DataStore {
 	}
 
 	@Override
-    public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
-          Dn userDn = null;
-          DirContext context = null;
-          try {
-                 context = getDirContext();
-                 userDn = createUserDn(userCreationRequestDto.getUserName());
-                 List<Attribute> attributes = new ArrayList<>();
-                 attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
-                 attributes.add(new BasicAttribute(LdapConstants.SN, userCreationRequestDto.getUserName()));
-                 attributes.add(new BasicAttribute(LdapConstants.MAIL, userCreationRequestDto.getEmailID()));
-                 attributes.add(new BasicAttribute(LdapConstants.MOBILE, userCreationRequestDto.getContactNo()));
-                 attributes.add(new BasicAttribute(LdapConstants.DOB, userCreationRequestDto.getDateOfBirth().toString()));
-                 attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
-                 attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
-                 attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
-                 attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
-                 Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
-                 oc.add(LdapConstants.INET_ORG_PERSON);
-                 oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
-                 oc.add(LdapConstants.PERSON);
-                 oc.add(LdapConstants.TOP);
-                 oc.add(LdapConstants.USER_DETAILS);
-                 attributes.add(oc);
-                 
-                 BasicAttributes entry = new BasicAttributes();
-                 attributes.parallelStream().forEach(entry::put);
-                 context.createSubcontext(userDn.getName(), entry);
-                 
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+		Dn userDn = null;
+		DirContext context = null;
+		try {
+			context = getDirContext();
+			userDn = createUserDn(userCreationRequestDto.getUserName());
+			List<Attribute> attributes = new ArrayList<>();
+			attributes.add(new BasicAttribute(LdapConstants.CN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.SN, userCreationRequestDto.getUserName()));
+			attributes.add(new BasicAttribute(LdapConstants.MAIL, userCreationRequestDto.getEmailID()));
+			attributes.add(new BasicAttribute(LdapConstants.MOBILE, userCreationRequestDto.getContactNo()));
+			attributes.add(new BasicAttribute(LdapConstants.DOB, userCreationRequestDto.getDateOfBirth().toString()));
+			attributes.add(new BasicAttribute(LdapConstants.FIRST_NAME, userCreationRequestDto.getFirstName()));
+			attributes.add(new BasicAttribute(LdapConstants.LAST_NAME, userCreationRequestDto.getLastName()));
+			attributes.add(new BasicAttribute(LdapConstants.GENDER_CODE, userCreationRequestDto.getGender()));
+			attributes.add(new BasicAttribute(LdapConstants.IS_ACTIVE, LdapConstants.FALSE));
+			Attribute oc = new BasicAttribute(LdapConstants.OBJECT_CLASS);
+			oc.add(LdapConstants.INET_ORG_PERSON);
+			oc.add(LdapConstants.ORGANIZATIONAL_PERSON);
+			oc.add(LdapConstants.PERSON);
+			oc.add(LdapConstants.TOP);
+			oc.add(LdapConstants.USER_DETAILS);
+			attributes.add(oc);
 
-          } catch (NameAlreadyBoundException exception) {
-                 throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
-                              AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
-          } catch (NameNotFoundException exception) {
-                 rollbackUser(userDn, context);
-                 throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
-                              AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
-          } catch (NamingException exception) {
-                 throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
-                              AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
-          }catch (LdapInvalidDnException exception) {
-                 throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
-                              AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
-          }
-          try {
-          Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
-          ModificationItem[] mods = new ModificationItem[1];
-          mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
-                       new BasicAttribute(LdapConstants.ROLE_OCCUPANT, userDn.getName()));
-          context.modifyAttributes(roleOccupant.getName(), mods);
-          }catch (NameAlreadyBoundException exception) {
-                 rollbackUser(userDn, context);
-                 throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
-                              AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
-          } catch (NameNotFoundException exception) {
-                 rollbackUser(userDn, context);
-                 throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
-                              AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
-          } catch (NamingException exception) {
-                 rollbackUser(userDn, context);
-                 throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
-                              AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
-          }catch (LdapInvalidDnException exception) {
-                 rollbackUser(userDn, context);
-                 throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
-                              AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
-          }
-          return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
+			BasicAttributes entry = new BasicAttributes();
+			attributes.parallelStream().forEach(entry::put);
+			context.createSubcontext(userDn.getName(), entry);
 
-    }
+		} catch (NameAlreadyBoundException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
+					AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
+		} catch (NameNotFoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
+		} catch (NamingException exception) {
+			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
+		} catch (LdapInvalidDnException exception) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		try {
+			Dn roleOccupant = createRoleDn(userCreationRequestDto.getRole());
+			ModificationItem[] mods = new ModificationItem[1];
+			mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE,
+					new BasicAttribute(LdapConstants.ROLE_OCCUPANT, userDn.getName()));
+			context.modifyAttributes(roleOccupant.getName(), mods);
+		} catch (NameAlreadyBoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.USER_ALREADY_EXIST.getErrorCode(),
+					AuthErrorCode.USER_ALREADY_EXIST.getErrorMessage());
+		} catch (NameNotFoundException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.ROLE_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.ROLE_NOT_FOUND.getErrorMessage() + exception.getMessage());
+		} catch (NamingException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.USER_CREATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.USER_CREATE_EXCEPTION.getErrorMessage() + exception.getMessage());
+		} catch (LdapInvalidDnException exception) {
+			rollbackUser(userDn, context);
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
+		}
+		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
 
+	}
 
 	private DirContext getDirContext() throws NamingException {
 		Hashtable<String, String> env = new Hashtable<>();
@@ -713,13 +711,13 @@ public class LdapDataStore implements DataStore {
 		} catch (NamingException exception) {
 			throw new AuthManagerException(AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorCode(),
 					AuthErrorCode.USER_PASSWORD_EXCEPTION.getErrorMessage() + exception.getMessage());
-		}catch (LdapInvalidDnException exception) {
+		} catch (LdapInvalidDnException exception) {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
 		return new UserPasswordResponseDto(userPasswordRequestDto.getUserName());
 	}
-	
+
 	private void rollbackUser(Dn userDn, DirContext context) {
 		try {
 			context.destroySubcontext(userDn.getName());
@@ -794,4 +792,5 @@ public class LdapDataStore implements DataStore {
 		context.close();
 		return searchResult;
 	}
+
 }
