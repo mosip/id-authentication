@@ -622,6 +622,7 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph.jpg";
 	public static final String APPLICANT_IMAGE = "Applicant Image";
 	public static final String EXCEPTION_IMAGE = "Exception Image";
+	public static final String GUARDIAN_IMAGE = "Guardian Image";
 	public static final String APPLICANT_PHOTO_PANE = "applicantImagePane";
 	public static final String EXCEPTION_PHOTO_PANE = "exceptionImagePane";
 	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
@@ -629,6 +630,7 @@ public class RegistrationConstants {
 	public static final String WEBCAM_LIBRARY_NAME = "mosip.registration.webcam_library_name";
 	public static final String PHOTO_CAPTUREPANES_SELECTED = "photoCapturePanesSelected";
 	public static final String DEFAULT_EXCEPTION_IMAGE_PATH = "/images/ExceptionPhoto.png";
+	public static final String IMAGE_PATH = "/images/Photo.png";
 
 	// Acknowledgement Form
 	public static final String ACKNOWLEDGEMENT_FORM_TITLE = "Registration Acknowledgement";
@@ -959,6 +961,7 @@ public class RegistrationConstants {
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";
 	public static final String RIGHTSLAPCOUNT = "rightSlapCount";
 	public static final String THUMBCOUNT = "thumbCount";
+	public static final String EXCEPTIONCOUNT = "exceptionCount";
 
 	
 	/** Exception codes **/

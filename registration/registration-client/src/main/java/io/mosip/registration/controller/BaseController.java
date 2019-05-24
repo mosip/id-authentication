@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1217,7 +1219,7 @@ public class BaseController {
 	/**
 	 * Exception fingers count.
 	 */
-	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount,int rightSlapCount,int thumbCount) {
+	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount, int irisCount) {
 		
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
@@ -1248,10 +1250,15 @@ public class BaseController {
 					&& biometricExceptionDTO.isMarkedAsException())) {
 				thumbCount++;
 			}
+			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
+					&& biometricExceptionDTO.isMarkedAsException())) {
+				irisCount++;
+			}
 		}
 		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
 		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
 		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
+		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT, leftSlapCount+rightSlapCount+thumbCount+irisCount);
 
 		return exceptionCountMap;
 	}
@@ -1277,6 +1284,15 @@ public class BaseController {
 	protected boolean anyIrisException(String iris) {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
+	}
+	
+	/**
+	 * To get the current timestamp
+	 * 
+	 * @return Timestamp returns the current timestamp
+	 */
+	protected Timestamp getCurrentTimestamp() {
+		return Timestamp.from(Instant.now());
 	}
 
 }
