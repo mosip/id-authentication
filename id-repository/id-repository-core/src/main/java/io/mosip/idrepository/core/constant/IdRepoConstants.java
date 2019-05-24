@@ -69,7 +69,9 @@ public enum IdRepoConstants {
 	
 	VID_POLICY_SCHEMA_URL("mosip.idrepo.vid.policy-schema-url"),
 	
-	VID_UNLIMITED_TRANSATION_STATUS("mosip.idrepo.vid.unlimited-txn-status");
+	VID_UNLIMITED_TRANSATION_STATUS("mosip.idrepo.vid.unlimited-txn-status"),
+	
+	VID_REGENERATE_ALLOWED_STATUS("mosip.idrepo.vid.regenerate.allowedstatus");
 	/** The value. */
 	private final String value;
 
