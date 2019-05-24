@@ -189,8 +189,8 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public List<String> initialSync() {
-		LOGGER.info("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Fetching list of login modes");
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Started Initial sync");
 		List<String> val = new LinkedList<>();
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
@@ -222,6 +222,10 @@ public class LoginServiceImpl implements LoginService {
 		} else {
 			val.add(RegistrationConstants.SUCCESS);
 		}
+		
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"completed Initial sync");
+	
 		return val;
 
 	}

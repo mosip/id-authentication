@@ -38,7 +38,6 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.update.SoftwareUpdateHandler;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -125,7 +124,6 @@ public class HeaderController extends BaseController {
 	@Autowired
 	private HomeController homeController;
 
-
 	ProgressIndicator progressIndicator;
 
 	@Autowired
@@ -180,8 +178,7 @@ public class HeaderController extends BaseController {
 
 		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
-		if (SessionContext.authTokenDTO().getCookie() != null
-				&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+		if (SessionContext.authTokenDTO().getCookie() != null && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
 			serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
 
@@ -193,7 +190,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Logout clean up.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public void logoutCleanUp() {
 
@@ -449,7 +447,7 @@ public class HeaderController extends BaseController {
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
 						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
-						
+
 						return responseDto;
 					}
 				};
@@ -480,28 +478,30 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	ResponseDTOForSync responseDTOForSync;
-	
+
 	private void progressTask() {
 		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size();
 		Service<String> progressTask = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
-				 return new Task<String>() {
+				return new Task<String>() {
 					@Override
 					protected String call() {
-						
-						while(responseDTOForSync.getErrorJobs().size()+responseDTOForSync.getSuccessJobs().size()!=totalJobs) {
-							packetHandlerController.syncProgressBar.setProgress(responseDTOForSync.getSuccessJobs().size()/totalJobs);
+
+						while (responseDTOForSync.getErrorJobs().size()
+								+ responseDTOForSync.getSuccessJobs().size() != totalJobs) {
+							packetHandlerController.syncProgressBar
+									.setProgress(responseDTOForSync.getSuccessJobs().size() / totalJobs);
 						}
 						return null;
-						
+
 					}
 				};
 			}
 		};
 		progressTask.start();
 	}
-	
+
 	public void executeSoftwareUpdateTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
@@ -579,7 +579,8 @@ public class HeaderController extends BaseController {
 		ButtonType result = updateAlert.getResult();
 		if (result == ButtonType.OK) {
 
-			executeSoftwareUpdateTask(pane, progressIndicator);
+			softwareUpdateInitiate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
+
 		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
 			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
 					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
@@ -591,7 +592,7 @@ public class HeaderController extends BaseController {
 
 			if (alertResult == ButtonType.OK) {
 
-				executeSoftwareUpdateTask(pane, progressIndicator);
+				softwareUpdateInitiate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
 			}
 		} else {
 			pane.setDisable(false);
@@ -601,5 +602,15 @@ public class HeaderController extends BaseController {
 			}
 		}
 
+	}
+
+	private void softwareUpdateInitiate(Pane pane, ProgressIndicator progressIndicator, String context,
+			boolean isPreLaunchTaskToBeStopped) {
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			executeSoftwareUpdateTask(pane, progressIndicator);
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+			softwareUpdate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
+		}
 	}
 }

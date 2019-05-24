@@ -441,7 +441,6 @@ public class SoftwareUpdateHandler extends BaseService {
 		connection.setConnectTimeout(connectTimeout);
 
 		connection.setReadTimeout(readTimeout);
-		
 
 		// Space Check
 		if (hasSpace(connection.getContentLength())) {
@@ -509,6 +508,8 @@ public class SoftwareUpdateHandler extends BaseService {
 				// Update global param with current version
 				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
 
+				setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
+
 			} catch (RuntimeException | IOException runtimeException) {
 
 				try {
@@ -530,13 +531,6 @@ public class SoftwareUpdateHandler extends BaseService {
 				rollback(responseDTO, previousVersion);
 
 			}
-		}
-
-		else {
-			// Update global param with current version
-			globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
-			setSuccessResponse(responseDTO, "Updated Version", null);
-
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,

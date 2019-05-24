@@ -210,6 +210,9 @@ public class LoginController extends BaseController implements Initializable {
 			// Check for updates
 			hasUpdate = headerController.hasUpdate();
 
+		} else {
+			hasUpdate = RegistrationConstants.ENABLE.equalsIgnoreCase(
+					getValueFromApplicationContext(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
 		}
 
 		try {
@@ -957,9 +960,9 @@ public class LoginController extends BaseController implements Initializable {
 				return validateFingerPrintWithMdm();
 			} catch (RegBaseCheckedException exception) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-				LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-						"%s Exception while getting the scanned finger details for login %s", exception.getMessage(),
-						ExceptionUtils.getStackTrace(exception)));
+				LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						String.format("%s Exception while getting the scanned finger details for login %s",
+								exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
 				return false;
 			}
 
