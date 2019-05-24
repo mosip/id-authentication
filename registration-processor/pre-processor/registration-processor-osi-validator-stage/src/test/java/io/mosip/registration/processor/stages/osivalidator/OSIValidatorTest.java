@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
@@ -28,11 +30,14 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
+import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -54,6 +59,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -100,13 +106,17 @@ public class OSIValidatorTest {
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
+	@Mock
+	private ABISHandlerUtil abisHandlerUtil;
+
+	
 	/** The env. */
 	@Mock
 	Environment env;
-	
+
 	@Mock
 	RegistrationProcessorIdentity registrationProcessorIdentity=new RegistrationProcessorIdentity();
-	
+
 	@Mock
 	private OSIUtils osiUtils;
 
@@ -125,7 +135,7 @@ public class OSIValidatorTest {
 	/** The osi validator. */
 	@InjectMocks
 	OSIValidator osiValidator;
-	
+
 	@Mock
 	private Utilities utility;
 
@@ -150,185 +160,185 @@ public class OSIValidatorTest {
 	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(osiValidator, "ageLimit", "5");
 		ReflectionTestUtils.setField(osiValidator, "dobFormat", "yyyy/MM/dd");
-		
+
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
 
-//		String value = "{\n" +
-//				"\t\"identity\": {\n" +
-//				"\t\t\"name\": {\n" +
-//				"\t\t\t\"value\": \"fullName\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"gender\": {\n" +
-//				"\t\t\t\"value\": \"gender\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"dob\": {\n" +
-//				"\t\t\t\"value\": \"dateOfBirth\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"parentOrGuardianRID\": {\n" +
-//				"\t\t\t\"value\" : \"parentOrGuardianRID\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"parentOrGuardianUIN\": {\n" +
-//				"\t\t\t\"value\" : \"parentOrGuardianUIN\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"poa\": {\n" +
-//				"\t\t\t\"value\" : \"proofOfAddress\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"poi\": {\n" +
-//				"\t\t\t\"value\" : \"proofOfIdentity\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"por\": {\n" +
-//				"\t\t\t\"value\" : \"proofOfRelationship\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"pob\": {\n" +
-//				"\t\t\t\"value\" : \"proofOfDateOfBirth\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"individualBiometrics\": {\n" +
-//				"\t\t\t\"value\" : \"individualBiometrics\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"age\": {\n" +
-//				"\t\t\t\"value\" : \"age\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"addressLine1\": {\n" +
-//				"\t\t\t\"value\" : \"addressLine1\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"addressLine2\": {\n" +
-//				"\t\t\t\"value\" : \"addressLine2\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"addressLine3\": {\n" +
-//				"\t\t\t\"value\" : \"addressLine3\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"region\": {\n" +
-//				"\t\t\t\"value\" : \"region\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"province\": {\n" +
-//				"\t\t\t\"value\" : \"province\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"postalCode\": {\n" +
-//				"\t\t\t\"value\" : \"postalCode\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"phone\": {\n" +
-//				"\t\t\t\"value\" : \"phone\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"email\": {\n" +
-//				"\t\t\t\"value\" : \"email\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"localAdministrativeAuthority\": {\n" +
-//				"\t\t\t\"value\" : \"localAdministrativeAuthority\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"idschemaversion\": {\n" +
-//				"\t\t\t\"value\" : \"IDSchemaVersion\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"cnienumber\": {\n" +
-//				"\t\t\t\"value\" : \"CNIENumber\"\n" +
-//				"\t\t},\n" +
-//				"\t\t\"city\": {\n" +
-//				"\t\t\t\"value\" : \"city\"\n" +
-//				"\t\t}\n" +
-//				"\t}\n" +
-//				"}";
+		//		String value = "{\n" +
+		//				"\t\"identity\": {\n" +
+		//				"\t\t\"name\": {\n" +
+		//				"\t\t\t\"value\": \"fullName\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"gender\": {\n" +
+		//				"\t\t\t\"value\": \"gender\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"dob\": {\n" +
+		//				"\t\t\t\"value\": \"dateOfBirth\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"parentOrGuardianRID\": {\n" +
+		//				"\t\t\t\"value\" : \"parentOrGuardianRID\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"parentOrGuardianUIN\": {\n" +
+		//				"\t\t\t\"value\" : \"parentOrGuardianUIN\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"poa\": {\n" +
+		//				"\t\t\t\"value\" : \"proofOfAddress\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"poi\": {\n" +
+		//				"\t\t\t\"value\" : \"proofOfIdentity\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"por\": {\n" +
+		//				"\t\t\t\"value\" : \"proofOfRelationship\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"pob\": {\n" +
+		//				"\t\t\t\"value\" : \"proofOfDateOfBirth\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"individualBiometrics\": {\n" +
+		//				"\t\t\t\"value\" : \"individualBiometrics\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"age\": {\n" +
+		//				"\t\t\t\"value\" : \"age\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"addressLine1\": {\n" +
+		//				"\t\t\t\"value\" : \"addressLine1\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"addressLine2\": {\n" +
+		//				"\t\t\t\"value\" : \"addressLine2\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"addressLine3\": {\n" +
+		//				"\t\t\t\"value\" : \"addressLine3\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"region\": {\n" +
+		//				"\t\t\t\"value\" : \"region\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"province\": {\n" +
+		//				"\t\t\t\"value\" : \"province\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"postalCode\": {\n" +
+		//				"\t\t\t\"value\" : \"postalCode\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"phone\": {\n" +
+		//				"\t\t\t\"value\" : \"phone\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"email\": {\n" +
+		//				"\t\t\t\"value\" : \"email\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"localAdministrativeAuthority\": {\n" +
+		//				"\t\t\t\"value\" : \"localAdministrativeAuthority\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"idschemaversion\": {\n" +
+		//				"\t\t\t\"value\" : \"IDSchemaVersion\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"cnienumber\": {\n" +
+		//				"\t\t\t\"value\" : \"CNIENumber\"\n" +
+		//				"\t\t},\n" +
+		//				"\t\t\"city\": {\n" +
+		//				"\t\t\t\"value\" : \"city\"\n" +
+		//				"\t\t}\n" +
+		//				"\t}\n" +
+		//				"}";
 
 		String value=
 				"{\r\n" + 
-				"	\"identity\": {\r\n" + 
-				"		\"name\": {\r\n" + 
-				"			\"value\": \"fullName\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"gender\": {\r\n" + 
-				"			\"value\": \"gender\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"dob\": {\r\n" + 
-				"			\"value\": \"dateOfBirth\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianRID\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianRID\"\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianUIN\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianUIN\"\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianName\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianName\"\r\n" + 
-				"		},\r\n" + 
-				"		\"poa\": {\r\n" + 
-				"			\"value\" : \"proofOfAddress\"\r\n" + 
-				"		},\r\n" + 
-				"		\"poi\": {\r\n" + 
-				"			\"value\" : \"proofOfIdentity\"\r\n" + 
-				"		},\r\n" + 
-				"		\"por\": {\r\n" + 
-				"			\"value\" : \"proofOfRelationship\"\r\n" + 
-				"		},\r\n" + 
-				"		\"pob\": {\r\n" + 
-				"			\"value\" : \"proofOfDateOfBirth\"\r\n" + 
-				"		},\r\n" + 
-				"		\"individualBiometrics\": {\r\n" + 
-				"			\"value\" : \"individualBiometrics\"\r\n" + 
-				"		},\r\n" + 
-				"		\"age\": {\r\n" + 
-				"			\"value\" : \"age\"\r\n" + 
-				"		},\r\n" + 
-				"		\"addressLine1\": {\r\n" + 
-				"			\"value\" : \"addressLine1\"\r\n" + 
-				"		},\r\n" + 
-				"		\"addressLine2\": {\r\n" + 
-				"			\"value\" : \"addressLine2\"\r\n" + 
-				"		},\r\n" + 
-				"		\"addressLine3\": {\r\n" + 
-				"			\"value\" : \"addressLine3\"\r\n" + 
-				"		},\r\n" + 
-				"		\"region\": {\r\n" + 
-				"			\"value\" : \"region\"\r\n" + 
-				"		},\r\n" + 
-				"		\"province\": {\r\n" + 
-				"			\"value\" : \"province\"\r\n" + 
-				"		},\r\n" + 
-				"		\"postalCode\": {\r\n" + 
-				"			\"value\" : \"postalCode\"\r\n" + 
-				"		},\r\n" + 
-				"		\"phone\": {\r\n" + 
-				"			\"value\" : \"phone\"\r\n" + 
-				"		},\r\n" + 
-				"		\"email\": {\r\n" + 
-				"			\"value\" : \"email\"\r\n" + 
-				"		},\r\n" + 
-				"		\"localAdministrativeAuthority\": {\r\n" + 
-				"			\"value\" : \"localAdministrativeAuthority\"\r\n" + 
-				"		},\r\n" + 
-				"		\"idschemaversion\": {\r\n" + 
-				"			\"value\" : \"IDSchemaVersion\"\r\n" + 
-				"		},\r\n" + 
-				"		\"cnienumber\": {\r\n" + 
-				"			\"value\" : \"CNIENumber\"\r\n" + 
-				"		},\r\n" + 
-				"		\"city\": {\r\n" + 
-				"			\"value\" : \"city\",\r\n" + 
-				"			\"isMandatory\" : true\r\n" + 
-				"		},\r\n" + 
-				"		\"parentOrGuardianBiometrics\": {\r\n" + 
-				"			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + 
-				"		}\r\n" + 
-				"	}\r\n" + 
-				"}  \r\n" + 
-				"© 2019 GitHub, Inc.\r\n" + 
-				"Terms\r\n" + 
-				"Privacy\r\n" + 
-				"Security\r\n" + 
-				"Status\r\n" + 
-				"Help\r\n" + 
-				"Contact GitHub\r\n" + 
-				"Pricing\r\n" + 
-				"API\r\n" + 
-				"Training\r\n" + 
-				"Blog\r\n" + 
-				"About\r\n" + 
-				"";
-		
+						"	\"identity\": {\r\n" + 
+						"		\"name\": {\r\n" + 
+						"			\"value\": \"fullName\",\r\n" + 
+						"			\"isMandatory\" : true\r\n" + 
+						"		},\r\n" + 
+						"		\"gender\": {\r\n" + 
+						"			\"value\": \"gender\",\r\n" + 
+						"			\"isMandatory\" : true\r\n" + 
+						"		},\r\n" + 
+						"		\"dob\": {\r\n" + 
+						"			\"value\": \"dateOfBirth\",\r\n" + 
+						"			\"isMandatory\" : true\r\n" + 
+						"		},\r\n" + 
+						"		\"parentOrGuardianRID\": {\r\n" + 
+						"			\"value\" : \"parentOrGuardianRID\"\r\n" + 
+						"		},\r\n" + 
+						"		\"parentOrGuardianUIN\": {\r\n" + 
+						"			\"value\" : \"parentOrGuardianUIN\"\r\n" + 
+						"		},\r\n" + 
+						"		\"parentOrGuardianName\": {\r\n" + 
+						"			\"value\" : \"parentOrGuardianName\"\r\n" + 
+						"		},\r\n" + 
+						"		\"poa\": {\r\n" + 
+						"			\"value\" : \"proofOfAddress\"\r\n" + 
+						"		},\r\n" + 
+						"		\"poi\": {\r\n" + 
+						"			\"value\" : \"proofOfIdentity\"\r\n" + 
+						"		},\r\n" + 
+						"		\"por\": {\r\n" + 
+						"			\"value\" : \"proofOfRelationship\"\r\n" + 
+						"		},\r\n" + 
+						"		\"pob\": {\r\n" + 
+						"			\"value\" : \"proofOfDateOfBirth\"\r\n" + 
+						"		},\r\n" + 
+						"		\"individualBiometrics\": {\r\n" + 
+						"			\"value\" : \"individualBiometrics\"\r\n" + 
+						"		},\r\n" + 
+						"		\"age\": {\r\n" + 
+						"			\"value\" : \"age\"\r\n" + 
+						"		},\r\n" + 
+						"		\"addressLine1\": {\r\n" + 
+						"			\"value\" : \"addressLine1\"\r\n" + 
+						"		},\r\n" + 
+						"		\"addressLine2\": {\r\n" + 
+						"			\"value\" : \"addressLine2\"\r\n" + 
+						"		},\r\n" + 
+						"		\"addressLine3\": {\r\n" + 
+						"			\"value\" : \"addressLine3\"\r\n" + 
+						"		},\r\n" + 
+						"		\"region\": {\r\n" + 
+						"			\"value\" : \"region\"\r\n" + 
+						"		},\r\n" + 
+						"		\"province\": {\r\n" + 
+						"			\"value\" : \"province\"\r\n" + 
+						"		},\r\n" + 
+						"		\"postalCode\": {\r\n" + 
+						"			\"value\" : \"postalCode\"\r\n" + 
+						"		},\r\n" + 
+						"		\"phone\": {\r\n" + 
+						"			\"value\" : \"phone\"\r\n" + 
+						"		},\r\n" + 
+						"		\"email\": {\r\n" + 
+						"			\"value\" : \"email\"\r\n" + 
+						"		},\r\n" + 
+						"		\"localAdministrativeAuthority\": {\r\n" + 
+						"			\"value\" : \"localAdministrativeAuthority\"\r\n" + 
+						"		},\r\n" + 
+						"		\"idschemaversion\": {\r\n" + 
+						"			\"value\" : \"IDSchemaVersion\"\r\n" + 
+						"		},\r\n" + 
+						"		\"cnienumber\": {\r\n" + 
+						"			\"value\" : \"CNIENumber\"\r\n" + 
+						"		},\r\n" + 
+						"		\"city\": {\r\n" + 
+						"			\"value\" : \"city\",\r\n" + 
+						"			\"isMandatory\" : true\r\n" + 
+						"		},\r\n" + 
+						"		\"parentOrGuardianBiometrics\": {\r\n" + 
+						"			\"value\" : \"parentOrGuardianBiometrics\"\r\n" + 
+						"		}\r\n" + 
+						"	}\r\n" + 
+						"}  \r\n" + 
+						"© 2019 GitHub, Inc.\r\n" + 
+						"Terms\r\n" + 
+						"Privacy\r\n" + 
+						"Security\r\n" + 
+						"Status\r\n" + 
+						"Help\r\n" + 
+						"Contact GitHub\r\n" + 
+						"Pricing\r\n" + 
+						"API\r\n" + 
+						"Training\r\n" + 
+						"Blog\r\n" + 
+						"About\r\n" + 
+						"";
+
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
-		
-		
+
+
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		regOsiDto.setOfficerId("O1234");
 		regOsiDto.setOfficerHashedPin("officerHashedPin");
@@ -338,7 +348,7 @@ public class OSIValidatorTest {
 		demographicDedupeDtoList.add(demographicInfoDto);
 
 		Mockito.when(env.getProperty("registration.processor.fingerType")).thenReturn("LeftThumb");
-		
+
 		Mockito.when(env.getProperty("mosip.kernel.applicant.type.age.limit")).thenReturn("5");
 
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
@@ -349,7 +359,7 @@ public class OSIValidatorTest {
 
 		authResponseDTO.setStatus("y");
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(authResponseDTO);
+		.thenReturn(authResponseDTO);
 
 		registrationStatusDto.setRegistrationId("reg1234");
 		registrationStatusDto.setApplicantType("Child");
@@ -365,31 +375,31 @@ public class OSIValidatorTest {
 		FieldValue officerPassword= new FieldValue();
 		officerPassword.setLabel(JsonConstant.OFFICERPWR);
 		officerPassword.setValue("false");
-		
+
 		FieldValue officerOtp= new FieldValue();
 		officerOtp.setLabel(JsonConstant.OFFICEROTPAUTHENTICATION);
 		officerOtp.setValue("false");
-		
+
 		FieldValue supervisorPassword= new FieldValue();
 		supervisorPassword.setLabel(JsonConstant.SUPERVISORPWR);
 		supervisorPassword.setValue("true");
-		
+
 		FieldValue supervisorId= new FieldValue();
 		supervisorId.setLabel(JsonConstant.SUPERVISORID);
 		supervisorId.setValue("110016");
-		
+
 		FieldValue supervisorOtp= new FieldValue();
 		supervisorOtp.setLabel(JsonConstant.SUPERVISOROTPAUTHENTICATION);
 		supervisorOtp.setValue("false");
-		
+
 		FieldValue supervisorBiofileName = new FieldValue();
 		supervisorBiofileName.setLabel(JsonConstant.SUPERVISORBIOMETRICFILENAME);
 		supervisorBiofileName.setValue("supervisor_bio_CBEFF");
-		
+
 		FieldValue creationDate = new FieldValue();
 		creationDate.setLabel("creationDate");
 		creationDate.setValue("2019-04-30T12:42:03.541Z");
-		
+
 		identity.setOsiData((Arrays.asList(officerBiofileName,officerOtp,officerPassword,supervisorOtp,supervisorPassword,supervisorId,supervisorBiofileName)));
 		identity.setMetaData((Arrays.asList(creationDate)));
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
@@ -403,7 +413,7 @@ public class OSIValidatorTest {
 		packetMetaInfo.setIdentity(identity);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-				.thenReturn(packetMetaInfo);
+		.thenReturn(packetMetaInfo);
 
 	}
 
@@ -419,8 +429,8 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorHashedPwd("true");
 		JSONObject demoJson = new JSONObject();
 		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "1234567");
+		demoJson.put("parentOrGuardianRID", 12345678);
+		demoJson.put("parentOrGuardianUIN", 1234567);
 		UserResponseDto userResponseDto=new UserResponseDto();
 		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
 		UserDetailsDto userDetailsDto=new UserDetailsDto();
@@ -447,13 +457,15 @@ public class OSIValidatorTest {
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(userResponseDto)
-				.thenReturn(userResponseDto)
-				.thenReturn(ridResponseDto)
-				.thenReturn(idResponseDTO)
-				.thenReturn(ridResponseDto)				
-				.thenReturn(idResponseDTO)
-				;
+		.thenReturn(userResponseDto)
+		.thenReturn(userResponseDto)
+		.thenReturn(ridResponseDto)
+		.thenReturn(idResponseDTO)
+		.thenReturn(ridResponseDto)				
+		.thenReturn(idResponseDTO)
+		;
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
 		assertTrue(isValid);
@@ -470,8 +482,8 @@ public class OSIValidatorTest {
 	public void testOfficerDetailsNull() throws Exception {
 		JSONObject demoJson = new JSONObject();
 		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "1234567");
+		demoJson.put("parentOrGuardianRID", 12345678);
+		demoJson.put("parentOrGuardianUIN", 1234567);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
@@ -497,8 +509,8 @@ public class OSIValidatorTest {
 	public void testIntroducerDetailsNull() throws Exception {
 		JSONObject demoJson = new JSONObject();
 		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "1234567");
+		demoJson.put("parentOrGuardianRID", 12345678);
+		demoJson.put("parentOrGuardianUIN", 1234567);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
@@ -523,8 +535,8 @@ public class OSIValidatorTest {
 	public void testisValidOSIFailure() throws Exception {
 		JSONObject demoJson = new JSONObject();
 		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "1234567");
+		demoJson.put("parentOrGuardianRID", 12345678);
+		demoJson.put("parentOrGuardianUIN", 1234567);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
@@ -534,7 +546,7 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(authResponseDTO);
+		.thenReturn(authResponseDTO);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
@@ -551,8 +563,8 @@ public class OSIValidatorTest {
 	public void testIntroducerUIN() throws Exception {
 		JSONObject demoJson = new JSONObject();
 		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "1234567");
+		demoJson.put("parentOrGuardianRID", 12345678);
+		demoJson.put("parentOrGuardianUIN", 1234567);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
@@ -575,24 +587,54 @@ public class OSIValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
-	@Ignore
-	public void tesAllIntroducerRIDOnHold() throws ApisResourceAccessException, IOException, Exception{
+	public void testIntroducerRIDFailedOnHold() throws ApisResourceAccessException, IOException, Exception{
 		regOsiDto.setSupervisorHashedPwd("true");
 		regOsiDto.setOfficerHashedPwd("true");
-
 		JSONObject demoJson = new JSONObject();
-		demoJson.put("age", "10");
-		demoJson.put("parentOrGuardianRID", "12345678");
-		demoJson.put("parentOrGuardianUIN", "12345678");
-		List<String> ridList=new ArrayList<>();
-		
+
+		Map<String,String> map = new LinkedHashMap<>();
+		map.put("value","biometreics");
+
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn("2015/01/01").thenReturn(null).thenReturn(12345678);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(123456789)
+		.thenReturn(map);
 
 		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
 		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn("2015/01/01");
+
+		registrationStatusDto.setStatusCode("FAILED");
+
+		Mockito.when(registrationStatusService
+				.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		UserResponseDto userResponseDto=new UserResponseDto();
+		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto=new UserDetailsDto();
+		userDetailsDto.setActive(true);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		RIDResponseDto ridResponseDto=new RIDResponseDto();
+		RidDto ridDto=new RidDto();	
+		ridDto.setRid("reg4567");
+		ridResponseDto.setResponse(ridDto);
+		IdResponseDTO idResponseDTO=new IdResponseDTO();
+		ResponseDTO responseDTO=new ResponseDTO();
+		String identityJson="{\"UIN\":\"uin123\"}";
+		responseDTO.setIdentity(identityJson);
+		idResponseDTO.setResponse(responseDTO);
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+		.thenReturn(userResponseDto)
+		.thenReturn(userResponseDto)
+		.thenReturn(ridResponseDto)
+		.thenReturn(idResponseDTO)
+		.thenReturn(ridResponseDto)				
+		.thenReturn(idResponseDTO)
+		;
+
 		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
@@ -600,4 +642,173 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	@Test
+	public void testIntroducerRIDOnHoldProccessing() throws ApisResourceAccessException, IOException, Exception{
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerHashedPwd("true");
+		JSONObject demoJson = new JSONObject();
+
+		Map<String,String> map = new LinkedHashMap<>();
+		map.put("value","biometreics");
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(123456789)
+		.thenReturn(map);
+
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn("2015/01/01");
+
+		registrationStatusDto.setStatusCode("PROCESSING");
+
+		Mockito.when(registrationStatusService
+				.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		UserResponseDto userResponseDto=new UserResponseDto();
+		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto=new UserDetailsDto();
+		userDetailsDto.setActive(true);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		RIDResponseDto ridResponseDto=new RIDResponseDto();
+		RidDto ridDto=new RidDto();	
+		ridDto.setRid("reg4567");
+		ridResponseDto.setResponse(ridDto);
+		IdResponseDTO idResponseDTO=new IdResponseDTO();
+		ResponseDTO responseDTO=new ResponseDTO();
+		String identityJson="{\"UIN\":\"uin123\"}";
+		responseDTO.setIdentity(identityJson);
+		idResponseDTO.setResponse(responseDTO);
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+		.thenReturn(userResponseDto)
+		.thenReturn(userResponseDto)
+		.thenReturn(ridResponseDto)
+		.thenReturn(idResponseDTO)
+		.thenReturn(ridResponseDto)				
+		.thenReturn(idResponseDTO)
+		;
+
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+
+	@Test
+	public void testIntroducerUINProcessed() throws ApisResourceAccessException, IOException, Exception{
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerHashedPwd("true");
+		JSONObject demoJson = new JSONObject();
+
+		Map<String,String> map = new LinkedHashMap<>();
+		map.put("value","biometreics");
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(123456789)
+		.thenReturn(map);
+
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn("2015/01/01");
+
+		registrationStatusDto.setStatusCode("PROCESSED");
+
+		Mockito.when(registrationStatusService
+				.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		UserResponseDto userResponseDto=new UserResponseDto();
+		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto=new UserDetailsDto();
+		userDetailsDto.setActive(true);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		RIDResponseDto ridResponseDto=new RIDResponseDto();
+		RidDto ridDto=new RidDto();	
+		ridDto.setRid("reg4567");
+		ridResponseDto.setResponse(ridDto);
+		IdResponseDTO idResponseDTO=new IdResponseDTO();
+		ResponseDTO responseDTO=new ResponseDTO();
+		String identityJson="{\"UIN\":\"uin123\"}";
+		responseDTO.setIdentity(identityJson);
+		idResponseDTO.setResponse(responseDTO);
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+		.thenReturn(userResponseDto)
+		.thenReturn(userResponseDto)
+		.thenReturn(ridResponseDto)
+		.thenReturn(idResponseDTO)
+		.thenReturn(ridResponseDto)				
+		.thenReturn(idResponseDTO)
+		;
+
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		
+		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+	
+	@Test
+	public void testIntroducerNotInRegProc() throws ApisResourceAccessException, IOException, Exception{
+		regOsiDto.setSupervisorHashedPwd("true");
+		regOsiDto.setOfficerHashedPwd("true");
+		JSONObject demoJson = new JSONObject();
+
+		Map<String,String> map = new LinkedHashMap<>();
+		map.put("value","biometreics");
+
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", anyString(), anyObject()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(123456789)
+		.thenReturn(map);
+
+		Mockito.when(osiUtils.getIdentity(anyString())).thenReturn(identity);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(),any())).thenReturn(regOsiDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(),any())).thenReturn("2015/01/01");
+
+		registrationStatusDto=null;
+
+		Mockito.when(registrationStatusService
+				.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+
+		UserResponseDto userResponseDto=new UserResponseDto();
+		UserDetailsResponseDto userDetailsResponseDto=new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto=new UserDetailsDto();
+		userDetailsDto.setActive(true);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		RIDResponseDto ridResponseDto=new RIDResponseDto();
+		RidDto ridDto=new RidDto();	
+		ridDto.setRid("reg4567");
+		ridResponseDto.setResponse(ridDto);
+		IdResponseDTO idResponseDTO=new IdResponseDTO();
+		ResponseDTO responseDTO=new ResponseDTO();
+		String identityJson="{\"UIN\":\"uin123\"}";
+		responseDTO.setIdentity(identityJson);
+		idResponseDTO.setResponse(responseDTO);
+
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))
+		.thenReturn(userResponseDto)
+		.thenReturn(userResponseDto)
+		.thenReturn(ridResponseDto)
+		.thenReturn(idResponseDTO)
+		.thenReturn(ridResponseDto)				
+		.thenReturn(idResponseDTO)
+		;
+
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
 }

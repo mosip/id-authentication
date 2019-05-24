@@ -526,7 +526,8 @@ public class OSIValidator {
 
 				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
 
-					introducerUIN = abisHandlerUtil.getUinFromIDRepo(introducerRID).toString();
+					introducerUinNumber = abisHandlerUtil.getUinFromIDRepo(introducerRID);
+					introducerUIN=numberToString(introducerUinNumber);
 					if (introducerUIN == null) {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
