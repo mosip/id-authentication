@@ -181,7 +181,7 @@
                                                             <Label styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label styleClass="exceptionLabel" text="-" />
@@ -335,7 +335,7 @@
                                     		<Label layoutX="40.0" layoutY="-3.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="40.0" layoutY="55.0" styleClass="completedPage" text="%fingerPrintTracker" />
                                     		<Label layoutX="40.0" layoutY="111.0" styleClass="completedPage" text="%irisTracker" />
-                                    		<Label layoutX="40.0" layoutY="161.0" styleClass="pendingPage" text="%photoTracker" />
+                                    		<Label layoutX="40.0" layoutY="161.0" styleClass="currentPage" text="%photoTracker" />
                                 		 </children>
                              		 </AnchorPane>                                	 
                                 </children>
