@@ -61,6 +61,9 @@ public final class DemoNormalizer {
 	/** The Constant patterns. */
 	private static final Map<Pattern, String> ADDRESS_NORM_PATTERNS;
 	
+	/** The Constant NAME_NORM_PATTERNS. */
+	private static final Map<Pattern, String> NAME_NORM_PATTERNS;
+	
 	static {
 		ADDRESS_NORM_PATTERNS  =  new LinkedHashMap<>();
 		ADDRESS_NORM_PATTERNS.put(Pattern.compile(REGEX_CARE_OF_LABLE), "");
@@ -89,6 +92,10 @@ public final class DemoNormalizer {
 		ADDRESS_NORM_PATTERNS.put(Pattern.compile("8[tT][hH]"), "8");
 		ADDRESS_NORM_PATTERNS.put(Pattern.compile("9[tT][hH]"), "9");
 		ADDRESS_NORM_PATTERNS.put(Pattern.compile("0[tT][hH]"), "0");
+		
+		NAME_NORM_PATTERNS = new LinkedHashMap<>();
+		NAME_NORM_PATTERNS.put(Pattern.compile(REGEX_SPECIAL_CHARACTERS), "");
+		NAME_NORM_PATTERNS.put(Pattern.compile(REGEX_WHITE_SPACE), " ");
 	}
 
 	/**
@@ -109,28 +116,51 @@ public final class DemoNormalizer {
 	 * @return the string
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public static String normalizeName(String nameInfo, String language, MasterDataFetcher titleFetcher) throws IdAuthenticationBusinessException {
+	public static String normalizeName(String nameInfo, String language, MasterDataFetcher titleFetcher)
+			throws IdAuthenticationBusinessException {
 		Map<String, List<String>> fetchTitles = titleFetcher.get();
-		
-		String name = nameInfo;
+
+		StringBuilder nameBuilder = new StringBuilder(nameInfo);
 		List<String> titlesList = fetchTitles.get(language);
 		if (null != titlesList) {
 			Collections.sort(titlesList, Comparator.comparing(String::length).reversed());
 			for (String title : titlesList) {
 				String title1 = title + ".";
-				if (name.toLowerCase().contains(title1.toLowerCase())) {
-					name = name.replace(title1, "").replace(title1.toLowerCase(), "").replace(title1.toUpperCase(), "");
-				}
-				
-				if (name.toLowerCase().contains(title.toLowerCase())) {
-					name = name.replace(title, "").replace(title.toLowerCase(), "").replace(title.toUpperCase(), "");
-				}
-			} 
+				removeAllCases(nameBuilder, title1);
+				removeAllCases(nameBuilder, title);
+			}
 		}
-		name = name.replaceAll(REGEX_SPECIAL_CHARACTERS, "")
-				.replaceAll(REGEX_WHITE_SPACE, " ")
-				.trim();
-		return name;
+		normalize(nameBuilder, NAME_NORM_PATTERNS);
+
+		return nameBuilder.toString().trim();
+	}
+
+
+
+	/**
+	 * Removes the all cases.
+	 *
+	 * @param nameInfo the name info
+	 * @param nameBuilder the name builder
+	 * @param title1 the title 1
+	 */
+	private static void removeAllCases(StringBuilder nameBuilder, String title1) {
+		while(nameBuilder.toString().toLowerCase().contains(title1.toLowerCase())) {
+			int index = nameBuilder.indexOf(title1);
+			if(index >= 0) {
+				nameBuilder.replace(index, index+title1.length(), "");
+			}
+			
+			index = nameBuilder.indexOf(title1.toLowerCase());
+			if(index >= 0) {
+				nameBuilder.replace(index, index+title1.length(), "");
+			}
+			
+			index = nameBuilder.indexOf(title1.toUpperCase());
+			if(index >= 0) {
+				nameBuilder.replace(index, index+title1.length(), "");
+			}
+		}
 	}
 
 	/**
@@ -140,8 +170,34 @@ public final class DemoNormalizer {
 	 * @return the string output after normalization
 	 */
 	public static String normalizeAddress(String address) {
-		StringBuilder addressBuilder = new StringBuilder(address);
-		for(Map.Entry<Pattern,String> addressEntry : ADDRESS_NORM_PATTERNS.entrySet()) {
+		return normalize(address, ADDRESS_NORM_PATTERNS);
+	}
+
+
+
+	/**
+	 * Normalize
+	 *
+	 * @param data the data to be normalized either name or address
+	 * @param normalizePatterns the address norm patterns
+	 * @return the string
+	 */
+	private static String normalize(String data, Map<Pattern, String> normalizePatterns) {
+		StringBuilder addressBuilder = new StringBuilder(data);
+		normalize(addressBuilder, normalizePatterns);
+		return addressBuilder.toString().trim();
+	}
+
+
+
+	/**
+	 * Normalize.
+	 *
+	 * @param addressBuilder the address builder
+	 * @param addressNormPatterns the address norm patterns
+	 */
+	private static void normalize(StringBuilder addressBuilder,Map<Pattern, String> addressNormPatterns) {
+		for(Map.Entry<Pattern,String> addressEntry : addressNormPatterns.entrySet()) {
 			Matcher m = addressEntry.getKey().matcher(addressBuilder);
 			//Find from start
 			int findStart = 0;
@@ -153,6 +209,5 @@ public final class DemoNormalizer {
 				findStart = start + replacement.length();
 			}
 		}
-		return addressBuilder.toString().trim();
 	}
 }
