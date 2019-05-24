@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,12 +51,14 @@ public class DeviceSpecificationController {
 	/**
 	 * Function to fetch list of device specification details based on language code
 	 * 
-	 * @param langCode pass language code as String
+	 * @param langCode
+	 *            pass language code as String
 	 * 
 	 * @return DeviceSpecificationResponseDto all device Specification details based
 	 *         on given language code
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}")
 	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code")
@@ -77,8 +80,10 @@ public class DeviceSpecificationController {
 	 * Function to fetch list of device specification details based on language code
 	 * and device Type Code
 	 * 
-	 * @param langCode       pass language code as String
-	 * @param deviceTypeCode pass deviceTypeCode as String
+	 * @param langCode
+	 *            pass language code as String
+	 * @param deviceTypeCode
+	 *            pass deviceTypeCode as String
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
@@ -102,7 +107,8 @@ public class DeviceSpecificationController {
 	/**
 	 * Post API to insert a new row of DeviceSpecification data
 	 * 
-	 * @param deviceSpecification input parameter deviceRequestDto
+	 * @param deviceSpecification
+	 *            input parameter deviceRequestDto
 	 * 
 	 * @return {@link IdResponseDto}
 	 */

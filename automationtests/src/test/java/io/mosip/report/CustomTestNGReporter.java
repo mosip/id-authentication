@@ -1,3 +1,4 @@
+
 package io.mosip.report;
 
 import org.testng.IReporter;
@@ -587,3 +588,4 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	}
 
 }
+

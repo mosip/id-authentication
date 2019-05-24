@@ -1,11 +1,15 @@
 package io.mosip.kernel.core.exception;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public final class ExceptionUtils {
+
+	private static final Logger logger = LoggerFactory.getLogger(ExceptionUtils.class);
 
 	private ExceptionUtils() {
 
@@ -106,5 +112,18 @@ public final class ExceptionUtils {
 			return node.get(propName).asText();
 		}
 		return null;
+	}
+
+	public static void logRootCause(Throwable exception) {
+		System.out.println("\n\n");
+		Optional<Throwable> rootCause = Stream.iterate(exception, Throwable::getCause)
+				.filter(element -> element.getCause() == null).findFirst();
+		if (rootCause.isPresent()) {
+			logger.error("Exception : " + exception.getMessage());
+			logger.error("RootCause Exception : ", rootCause.get());
+		} else {
+			logger.error("Exception : ", exception);
+		}
+		System.out.println("\n\n");
 	}
 }

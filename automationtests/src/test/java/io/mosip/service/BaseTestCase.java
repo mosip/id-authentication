@@ -44,6 +44,7 @@ public class BaseTestCase {
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
+	
 		
 
 	/**
@@ -52,10 +53,11 @@ public class BaseTestCase {
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
 	public static String ApplnURI;
-	public static String authToken;
+	protected static String authToken;
 	public static String regProcAuthToken;
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
+	public static String testLevel;
 
 	public static String SEPRATOR = "";
 
@@ -93,10 +95,13 @@ public class BaseTestCase {
 
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
+
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" + environment);
 			ApplnURI = System.getProperty("env.endpoint");
 			logger.info("Application URI ======" + ApplnURI);
+			testLevel = System.getProperty("env.testLevel");
+			logger.info("Test Level ======" + testLevel);
 
 
 			logger.info("Configs from properties file are set.");
@@ -125,7 +130,8 @@ public class BaseTestCase {
 
 		PreRegistrationLibrary pil = new PreRegistrationLibrary();
 		pil.PreRegistrationResourceIntialize();
-		//AuthTestsUtil.wakeDemoApp();
+
+		/*AuthTestsUtil.wakeDemoApp();*/
 
 	} // End suiteSetup
 

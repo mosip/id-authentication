@@ -102,7 +102,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
-/*	private static String preReg_CreateApplnURI;
+	private static String preReg_CreateApplnURI;
 	PreregistrationDAO dao = new PreregistrationDAO();
 	private static String preReg_DataSyncnURI;
 	private static String preReg_NotifyURI;
@@ -140,8 +140,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String uiConfigParams;
 	private static String preReg_syncAvailability;
 	private static String preReg_FecthAppointmentDetailsuri;
-*/
-	static String preReg_CreateApplnURI;
+	private static String preReg_GetDocByPreId;
+	private static String QRCodeFilePath;
+	private static String qrCode_URI;
+	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+	/*static String preReg_CreateApplnURI;
 	PreregistrationDAO dao = new PreregistrationDAO();
 	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
 	static String preReg_DataSyncnURI;
@@ -166,7 +169,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	static String preReg_ReverseDataSyncURI;
 	static String preReg_DiscardBookingURI;
 	static String preReg_SyncMasterDataURI;
-	static String otpSend_URI;
+	public static String otpSend_URI="";
 	static String validateOTP_URI;
 	static String langCodeKey;
 	static String preReg_AdminTokenURI;
@@ -182,7 +185,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	static String preReg_FecthAppointmentDetailsuri;
 	static String qrCode_URI;
 	static String QRCodeFilePath;
-	static String preReg_GetDocByPreId;
+	static String preReg_GetDocByPreId;*/
 
 	/*
 	 * We configure the jsonProvider using Configuration builder.
@@ -289,7 +292,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 * @return
 	 */
-	public static Response generateOTP(JSONObject request) {
+	public  Response generateOTP(JSONObject request) {
 		response = applnLib.postRequest(request, otpSend_URI);
 		return response;
 	}

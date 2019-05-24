@@ -123,6 +123,7 @@ input[type='radio'] {
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 .user-book_later-btn {
   color: #fd518c;

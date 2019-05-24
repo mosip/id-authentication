@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -61,7 +62,8 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  * @author RakeshRoshan
  * 
  */
-public class BaseAuthRequestValidator extends IdAuthValidator {
+@Component
+public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	
 	private static final String BIOMETRICS_TIMESTAMP = "biometrics/timestamp";
 	
@@ -520,14 +522,21 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					IdAuthenticationErrorConstants.DUPLICATE_FINGER.getErrorMessage());
 		}
 
+		validateMaxFingerCount(errors, fingerSubtypesCountsMap);
+	}
+
+	private void validateMaxFingerCount(Errors errors, Map<String, Long> fingerSubtypesCountsMap) {
 		Long fingerCountExceeding = fingerSubtypesCountsMap.values().stream().mapToLong(l -> l).sum();
-		if (fingerCountExceeding > 2) {
+		int maxFingerCount = getMaxFingerCount();
+		if (fingerCountExceeding > maxFingerCount) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "finger count is exceeding to 2");
+					IdAuthCommonConstants.VALIDATE, "finger count is exceeding to " + maxFingerCount);
 			errors.reject(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.FINGER_EXCEEDING.getErrorMessage()));
 		}
 	}
+
+	protected abstract int getMaxFingerCount();
 
 	private Map<String, Long> getBioSubtypeCount(List<BioIdentityInfoDTO> idendityInfoList) {
 		return idendityInfoList.stream().map(BioIdentityInfoDTO::getData)

@@ -29,6 +29,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -63,8 +65,10 @@ import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.print.PrintStageApplication;
 import io.mosip.registration.processor.print.exception.QueueConnectionNotFound;
 import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.print.stage.PrintStage;
@@ -135,6 +139,12 @@ public class PrintStageTest {
 	@Mock
 	private UinValidator<String> uinValidatorImpl;
 
+	@Mock
+	public Utilities utilities;
+
+	@Mock
+	public JsonUtil jsonUtil;
+
 	@InjectMocks
 	private PrintStage stage = new PrintStage() {
 		@Override
@@ -169,7 +179,10 @@ public class PrintStageTest {
 		System.setProperty("registration.processor.queue.address", "test");
 		System.setProperty("mosip.kernel.xsdstorage-uri", "http://104.211.212.28:51000");
 		System.setProperty("mosip.kernel.xsdfile", "mosip-cbeff.xsd");
-
+		Map<String, Long> map1 = new HashMap<>();
+		map1.put("UIN", 423072L);
+		JSONObject jsonObject = new JSONObject(map1);
+		Mockito.when(utilities.retrieveUIN(any())).thenReturn(jsonObject);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 
 		byte[] pdfbytes = "UIN Card Template pdf".getBytes();
@@ -186,9 +199,6 @@ public class PrintStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setStatusCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setStatusComment(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
-		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
-		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
-		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 		
 		QueueListener listener = new QueueListener() {
 			@Override
@@ -269,9 +279,6 @@ public class PrintStageTest {
 	public void testPrintStageSuccess() {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
-		List<String> uinList = new ArrayList<>();
-		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getIsValid());
@@ -284,25 +291,19 @@ public class PrintStageTest {
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
 		
-		List<String> uinList = new ArrayList<>();
-		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
+		List<Long> uinList = new ArrayList<>();
+		uinList.add(3051738163L);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 
 		MessageDTO result = stage.process(dto);
 		assertFalse(result.getIsValid());
 	}
 
-	@Test
+	@Test(expected = QueueConnectionNotFound.class)
 	public void testQueueConnectionNull() {
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(null);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("1234567890987654321");
-
-		MessageDTO result = stage.process(dto);
-		assertTrue(result.getInternalError());
+		stage.deployVerticle();
 	}
 
 	@Test
@@ -315,7 +316,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -330,7 +330,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -345,7 +344,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -360,7 +358,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
@@ -375,7 +372,6 @@ public class PrintStageTest {
 		dto.setRid("1234567890987654321");
 		List<String> uinList = new ArrayList<>();
 		uinList.add("3051738163");
-		Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
 		doNothing().when(printPostService).generatePrintandPostal(any(),any(),any());
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());

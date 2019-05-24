@@ -99,11 +99,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
-		try {
-			response = getValidatedUserResponse(token);
-		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
-		}
+
+		response = getValidatedUserResponse(token);
 		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 		if (!validationErrorsList.isEmpty()) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
@@ -113,7 +110,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
 					MosipUserDto.class);
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
@@ -123,15 +120,17 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
-	private ResponseEntity<String> getValidatedUserResponse(String token)
-			throws RestClientException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		System.out.println("Token details " + System.currentTimeMillis() + " : " + token);
-		System.out.println("Validate Url " + validateUrl);
+		System.out.println("\nInside Auth Handler");
+		System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-
+		try {
+			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
+		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
+		}
 	}
 
 	private RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
@@ -200,7 +199,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 				httpServerResponse.putHeader(AuthAdapterConstant.AUTH_HEADER_SET_COOKIE, token);
 				routingContext.next();
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 		});
 	}

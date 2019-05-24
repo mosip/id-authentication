@@ -29,10 +29,10 @@ import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
 import io.mosip.authentication.testdata.keywords.IdRepoKeywordUtil;
 import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
-import io.mosip.idRepositoty.fw.util.IdRepoTestsUtil;
 
 /**
  * Precondtion json file according to the input and mapping provided in test

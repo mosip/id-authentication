@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
@@ -84,9 +85,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
-	/** The Constant TABLE_NOT_ACCESSIBLE. */
-	private static final String TABLE_NOT_ACCESSIBLE = "TABLE IS NOT ACCESSIBLE.";
-
 	/** The Reg abis ref repository. */
 	@Autowired
 	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
@@ -147,8 +145,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
-	/** The meta data. */
-	private List<FieldValue> metaData;
+	@Value("${registration.processor.demodedupe.manualverification.status}")
+	private String manualVerificationStatus;
 
 	/** The reg id. */
 	private String regId;
@@ -156,17 +154,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The pre reg id. */
 	private String preRegId;
 
-	/** The demographic identity. */
-	private JSONObject demographicIdentity = null;
-
-	/** The Constant LANGUAGE. */
-	private static final String LANGUAGE = "language";
-
-	/** The Constant VALUE. */
-	private static final String VALUE = "value";
-
 	/** The Constant MATCHED_REFERENCE_TYPE. */
-	private static final String MATCHED_REFERENCE_TYPE = "uin";
+	private static final String MATCHED_REFERENCE_TYPE = "rid";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketInfoManagerImpl.class);
@@ -252,6 +241,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
+	@Override
 	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -265,7 +255,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					RegistrationProcessorIdentity.class);
 			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
 					JSONObject.class);
-			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
@@ -351,11 +341,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveIndividualDemographicDedupeUpdatePacket(io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveIndividualDemographicDedupeUpdatePacket(io.mosip.registration.processor.
+	 * core.packet.dto.demographicinfo.IndividualDemographicDedupe,
+	 * java.lang.String)
 	 */
-	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData, String registrationId ) {
+	@Override
+	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData,
+			String registrationId) {
 		boolean isTransactionSuccessful = false;
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
@@ -453,30 +451,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getRegIdByUIN(java.lang.String)
-	 */
-	@Override
-	public List<String> getRegIdByUIN(String uin) {
-		return packetInfoDao.getRegIdByUIN(uin);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getUINByRid(java.lang.String)
-	 */
-	@Override
-	public List<String> getUINByRid(String rid) {
-		return packetInfoDao.getUINByRid(rid);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
 	 * saveManualAdjudicationData(java.util.Set, java.lang.String)
 	 */
 	@Override
@@ -499,7 +473,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setMatchedScore(null);
 				manualVerificationEntity.setMvUsrId(null);
 				manualVerificationEntity.setReasonCode("Potential Match");
-				manualVerificationEntity.setStatusCode("PENDING");
+				if (sourceName.equals(DedupeSourceName.DEMO)) {
+					manualVerificationEntity.setStatusCode(manualVerificationStatus);
+
+				} else {
+					manualVerificationEntity.setStatusCode("PENDING");
+
+				}
 				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
@@ -612,50 +592,92 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId) {
-		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId,refRegtrnId);
+		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchStatusbyBatchId(java.lang.String)
+
+	@Override
+	public List<String> getReferenceIdByBatchId(String batchId) {
+		return packetInfoDao.getReferenceIdByBatchId(batchId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisTransactionIdByRequestId(java.lang.String)
 	 */
 	@Override
-	public List<String> getBatchStatusbyBatchId(String batchId){
-		return packetInfoDao.getBatchStatusbyBatchId(batchId);
-		
+	public List<String> getAbisTransactionIdByRequestId(String requestId) {
+		return packetInfoDao.getAbisTransactionIdByRequestId(requestId);
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestByRequestId(java.lang.String)
+
+	@Override
+	public List<AbisRequestDto> getIdentifyReqListByTransactionId(String transactionId, String requestType) {
+		List<AbisRequestEntity> abisRequestList = packetInfoDao.getIdentifyReqListByTransactionId(transactionId,
+				requestType);
+		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getBatchStatusbyBatchId(java.lang.String)
+	 */
+	@Override
+	public List<String> getBatchStatusbyBatchId(String batchId) {
+		return packetInfoDao.getBatchStatusbyBatchId(batchId);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisRequestByRequestId(java.lang.String)
 	 */
 	@Override
 	public AbisRequestDto getAbisRequestByRequestId(String abisRequestId) {
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getAbisRequestByRequestId(abisRequestId);
 		List<AbisRequestDto> abisRequestDtoList = PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
-		if(!abisRequestDtoList.isEmpty()) {
+		if (!abisRequestDtoList.isEmpty()) {
 			return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList).get(0);
-		}else {
+		} else {
 			return null;
 
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getBatchIdByRequestId(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getBatchIdByRequestId(java.lang.String)
 	 */
 	@Override
 	public String getBatchIdByRequestId(String abisRequestId) {
 		return packetInfoDao.getBatchIdByRequestId(abisRequestId);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getInsertOrIdentifyRequest(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getInsertOrIdentifyRequest(java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
+	@Override
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType) {
-		List<AbisRequestEntity> abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,requestType);
-		return  PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntities);
+		List<AbisRequestEntity> abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,
+				requestType);
+		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntities);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -692,7 +714,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public List<AbisApplicationDto> getAllAbisDetails() {
-		List<AbisApplicationEntity> abisApplicationEntityList = regAbisApplicationRepository.findAll(AbisApplicationEntity.class);
+		List<AbisApplicationEntity> abisApplicationEntityList = regAbisApplicationRepository
+				.findAll(AbisApplicationEntity.class);
 		return PacketInfoMapper.convertAbisApplicationEntityListToDto(abisApplicationEntityList);
 	}
 
@@ -746,15 +769,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
 	 * getDemoListByTransactionId(java.lang.String)
 	 */
+	@Override
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId) {
 		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList = packetInfoDao
 				.getDemoListByTransactionId(transactionId);
 		return PacketInfoMapper.convertDemoDedupeEntityListToDto(regDemoDedupeListEntityList);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveDemoDedupePotentialData(io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveDemoDedupePotentialData(io.mosip.registration.processor.core.packet.dto.
+	 * abis.RegDemoDedupeListDto)
 	 */
+	@Override
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
 
@@ -773,7 +803,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			}
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Demo dedupe potential match data" + "::" + e.getMessage();
+			description = "DataAccessLayerException while saving Demo dedupe potential match data" + "::"
+					+ e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -790,57 +821,90 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				regId, "PacketInfoManagerImpl::saveDemoDedupePotentialData()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"PacketInfoManagerImpl::saveDemoDedupePotentialData()::exit");
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseRecords(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisResponseRecords(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<AbisResponseDto> getAbisResponseRecords(String latestTransactionId, String requestType) {
 		return packetInfoDao.getAbisResponseRecords(latestTransactionId, requestType);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseRecords(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisResponseRecords(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId,String latestTransactionId, String requestType) {
-		return packetInfoDao.getAbisResponseRecords(abisRefId,latestTransactionId,requestType);
+	public List<AbisResponseDto> getAbisResponseRecords(String abisRefId, String latestTransactionId,
+			String requestType) {
+		return packetInfoDao.getAbisResponseRecords(abisRefId, latestTransactionId, requestType);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseDetRecords(io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisResponseDetRecords(io.mosip.registration.processor.core.packet.dto.
+	 * abis.AbisResponseDto)
 	 */
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetRecords(AbisResponseDto abisResponseDto) {
 		return packetInfoDao.getAbisResponseDetailedRecords(abisResponseDto);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseIDs(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisResponseIDs(java.lang.String)
 	 */
 	@Override
 	public List<AbisResponseDto> getAbisResponseIDs(String abisRequestId) {
 		return PacketInfoMapper.convertAbisResponseEntityListToDto(packetInfoDao.getAbisResponseIDs(abisRequestId));
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisResponseDetails(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisResponseDetails(java.lang.String)
 	 */
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetails(String abisResponseId) {
-		return PacketInfoMapper.convertAbisResponseDetEntityListToDto(packetInfoDao.getAbisResponseDetails(abisResponseId));
+		return PacketInfoMapper
+				.convertAbisResponseDetEntityListToDto(packetInfoDao.getAbisResponseDetails(abisResponseId));
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getAbisRequestsByBioRefId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getAbisRequestsByBioRefId(java.lang.String)
 	 */
 	@Override
-	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId){
+	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId) {
 		List<AbisRequestEntity> abisRequestEntityList = packetInfoDao.getAbisRequestsByBioRefId(bioRefId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntityList);
+	}
+
+	@Override
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
+			String processed) {
+		return packetInfoDao.getAbisProcessedRequestsAppCodeByBioRefId(bioRefId, requestType, processed);
 	}
 
 	@Override

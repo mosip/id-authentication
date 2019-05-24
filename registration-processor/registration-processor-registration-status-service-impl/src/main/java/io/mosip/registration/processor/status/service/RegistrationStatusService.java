@@ -92,4 +92,10 @@ public interface RegistrationStatusService<T, U, D> {
 	public Integer getUnProcessedPacketsCount(long elapseTime,
 			Integer reprocessCount, List<String> status);
 	
+	/**
+	 * Check Rid if uin is available
+	 *
+	 * 
+	 */
+	public Boolean checkUinAvailabilityForRid(String rid);
 }

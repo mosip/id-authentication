@@ -1,0 +1,1 @@
+{"transactionID":"5255810830","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-014","errorMessage":"Individual's Consent is not available"}],"responseTime":"2019-05-23T12:07:07.133+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

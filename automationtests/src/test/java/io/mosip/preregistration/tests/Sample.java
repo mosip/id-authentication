@@ -79,8 +79,8 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test(groups = { "IntegrationScenarios" })
 	public void updatePreRegistrationDataForExpiredApplication()
 			throws FileNotFoundException, IOException, ParseException, InterruptedException {
+		authToken = lib.getToken();
 		
-dao.makeregistartionCenterActive("10003");
 
 	}
 

@@ -78,9 +78,8 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "otpGenerate")
-	public Object[][] readData1(ITestContext context) throws Exception {
-		 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+	public Object[][] readData1(ITestContext context) throws Exception { 
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -114,7 +113,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		innerKeys.add("otp");
 		
 	    //making key as frozen key        
-    	  if(testCaseName.equalsIgnoreCase("invalid_key_frozen"))
+    	  if(testCaseName.equalsIgnoreCase("Kernel_otpGenerate_key_frozen"))
     	  {
     		// Calling the post method 
     		  res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);

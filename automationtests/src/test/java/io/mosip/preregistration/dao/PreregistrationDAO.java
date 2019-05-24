@@ -94,6 +94,11 @@ public class PreregistrationDAO
 		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 	}
+	public void makeregistartionCenterDeActive(String registartionCenter)
+	{
+		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
 
 
 

@@ -794,8 +794,6 @@ public class CommonLibrary extends BaseTestCase {
 
 		Map<String, String> mapProp = prop.entrySet().stream()
 				.collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
-
-		System.out.println("mapProp::"+mapProp);
 		return mapProp;
 
 	}

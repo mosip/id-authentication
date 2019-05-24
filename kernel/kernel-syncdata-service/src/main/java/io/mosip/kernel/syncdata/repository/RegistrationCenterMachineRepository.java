@@ -78,4 +78,15 @@ public interface RegistrationCenterMachineRepository
 	@Query(value = "select * from reg_center_machine where regcntr_id=?1 and machine_id=?2 and is_active=true", nativeQuery = true)
 	RegistrationCenterMachine getRegCenterIdWithRegIdAndMachineId(String regCenterId, String machineId);
 
+	@Query(value="select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and (mm.mac_address=?1 and mm.serial_num=?2) and mm.key_index=?3 and rcm.is_active=true",nativeQuery=true)
+	List<Object[]>getRegistrationCenterMachineWithMacAddressAndSerialNumAndKeyIndex(String macAddress, String serialNum,String keyIndex);
+
+	@Query(value="select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and mm.mac_address=?1 and mm.key_index=?2 and rcm.is_active=true",nativeQuery=true)
+	List<Object[]> getRegistrationCenterMachineWithMacAddressAndKeyIndex(String macAddress,String keyIndex);
+
+	@Query(value="select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id and mm.serial_num=?1 and mm.key_index=?2 and rcm.is_active=true",nativeQuery=true)
+	List<Object[]> getRegistrationCenterMachineWithSerialNumberAndKeyIndex(String serialNumber,String keyIndex);
+
+	@Query(value="select distinct rcm.regcntr_id , rcm.machine_id from master.reg_center_machine rcm, master.machine_master mm where rcm.machine_id=mm.id  and mm.key_index=?1 and rcm.is_active=true",nativeQuery=true)
+	List<Object[]> getRegistrationCenterMachineWithKeyIndex(String keyIndex);
 }
