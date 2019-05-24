@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
@@ -214,7 +215,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
 				boolean isIDObjectValid = idObjectValidator.validateIdObject(
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO());
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 				if (!isIDObjectValid) {
 					throw new RegBaseCheckedException(
 							RegistrationExceptionConstants.ID_OBJECT_SCHEMA_VALIDATOR.getErrorCode(),

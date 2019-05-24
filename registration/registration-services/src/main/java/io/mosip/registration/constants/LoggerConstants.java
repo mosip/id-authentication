@@ -163,5 +163,6 @@ public class LoggerConstants {
 	public static final String LOG_REG_MAC_ADDRESS = "MAC_ADDRESS_UTILL";
 
 	public static final String ID_OBJECT_SCHEMA_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_SCHEMA_VALIDATOR";
+	public static final String ID_OBJECT_PATTERN_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_PATTERN_VALIDATOR";
 
 }

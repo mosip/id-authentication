@@ -1,5 +1,8 @@
 package io.mosip.registration.test.service;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,9 +51,6 @@ import io.mosip.registration.service.packet.impl.PacketCreationServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.validator.RegIdObjectValidator;
-
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class, SessionContext.class })
@@ -131,7 +131,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(devices);
@@ -155,7 +155,7 @@ public class PacketCreationServiceTest {
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes()))
 				.thenThrow(new Exception("Invalid BIR"));
-		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -168,7 +168,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any()))
+		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any()))
 				.thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
@@ -187,7 +187,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
@@ -216,7 +216,7 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 

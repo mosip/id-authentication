@@ -88,7 +88,7 @@ public class PreRegZipHandlingServiceTest {
 
 	@Test
 	public void extractPreRegZipFileTest() throws Exception {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
@@ -98,7 +98,7 @@ public class PreRegZipHandlingServiceTest {
 
 	@Test(expected = RegBaseCheckedException.class)
 	public void extractPreRegZipFileTestFail() throws Exception {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(false);
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(false);
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
@@ -118,7 +118,7 @@ public class PreRegZipHandlingServiceTest {
 			zipOutputStream.flush();
 			zipOutputStream.closeEntry();
 
-			Mockito.when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
+			Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 			Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 			preRegZipHandlingServiceImpl.extractPreRegZipFile(byteArrayOutputStream.toByteArray());
 		}
