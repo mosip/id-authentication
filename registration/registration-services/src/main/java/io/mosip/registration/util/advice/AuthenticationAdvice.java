@@ -35,7 +35,7 @@ import io.mosip.registration.service.login.LoginService;
 @Aspect
 @Component
 public class AuthenticationAdvice {
-	
+
 	public static final String OFFICER_ROLE = "REGISTRATION_OFFICER";
 	public static final String SUPERVISOR_ROLE = "REGISTRATION_SUPERVISOR";
 	public static final String ADMIN_ROLE = "REGISTRATION_ADMIN";
@@ -56,10 +56,9 @@ public class AuthenticationAdvice {
 	 * @throws Throwable
 	 */
 	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
-	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId)
-			throws RegBaseCheckedException {
+	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId) throws RegBaseCheckedException {
 		boolean roleFound = false;
-		
+
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 				"Pre-Authorize the user id starting");
 
@@ -70,13 +69,13 @@ public class AuthenticationAdvice {
 
 			List<String> roleList = userDetail.getUserRole().stream().map(UserRole::getUserRoleID)
 					.collect(Collectors.toList()).stream().map(UserRoleID::getRoleCode).collect(Collectors.toList());
-			
-			for(String role:preAuthorizeUserId.roles()) {
+
+			for (String role : preAuthorizeUserId.roles()) {
 				roleFound = roleList.stream().anyMatch(dbrole -> dbrole.equalsIgnoreCase(role));
-				if(roleFound) break;
+				if (roleFound)
+					break;
 			}
-			
-					
+
 			if (!(userDetail.getIsActive() && roleFound)) {
 				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 						"Pre-Authorize the user id got failed");
@@ -86,6 +85,11 @@ public class AuthenticationAdvice {
 
 			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 					"Pre-Authorize the user id successfully completed");
+		} else {
+			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
+					"Pre-Authorize the user id got failed");
+
+			throw new RegBaseCheckedException("REG-SER-ATAD", "Invalid user id.");
 		}
 	}
 }

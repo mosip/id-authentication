@@ -66,13 +66,6 @@ public interface LoginService {
 	void updateLoginParams(UserDetail userDetail);
 	
 	/**
-	 * Initial Sync for the login
-	 * 
-	 * @return success/failures responses
-	 */
-	public List<String> initialSync();
-
-	/**
 	 * Execute initial sync
 	 * 
 	 * @return List of sync results

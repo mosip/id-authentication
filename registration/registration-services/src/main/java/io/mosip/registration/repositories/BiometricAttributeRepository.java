@@ -16,5 +16,4 @@ public interface BiometricAttributeRepository extends BaseRepository<BiometricAt
 	
 	List<BiometricAttribute> findByLangCodeAndBiometricTypeCodeIn(String langCode, List<String> biometricType);
 
-	List<BiometricAttribute> findByLangCodeAndBiometricTypeCodeIn(String langCode, List<String> biometricType); 
 }
