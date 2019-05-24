@@ -339,7 +339,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 
 	private void checkRegenerateStatus(String statusCode) throws IdRepoAppException {
 		String allowedStatus = env.getProperty(IdRepoConstants.VID_REGENERATE_ALLOWED_STATUS.getValue());
-		List<String> allowedStatusList = new ArrayList<String>(Arrays.asList(allowedStatus.split(",")));
+		List<String> allowedStatusList = Arrays.asList(allowedStatus.split(","));
 		if (!allowedStatusList.contains(statusCode)) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkRegenerateStatus",
 					"throwing " + statusCode + " VID");
