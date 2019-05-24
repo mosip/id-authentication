@@ -67,8 +67,11 @@ public class RegistrationExternalStatusUtility {
 		long timeElapsedinPacketreceiver = checkElapsedTime(entity);
 		if ((entity.getLatestTransactionTypeCode()
 				.equalsIgnoreCase(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString()))
-				&& (timeElapsedinPacketreceiver > elapsedTime) && (entity.getRetryCount() < thresholdTime)) {
-			return RegistrationExternalStatusCode.RESEND;
+				&& (timeElapsedinPacketreceiver > elapsedTime)){
+			if((entity.getRetryCount() < thresholdTime)) {
+				return RegistrationExternalStatusCode.RESEND;
+			}
+			return RegistrationExternalStatusCode.REREGISTER;
 		} else {
 			return RegistrationExternalStatusCode.PROCESSING;
 		}
