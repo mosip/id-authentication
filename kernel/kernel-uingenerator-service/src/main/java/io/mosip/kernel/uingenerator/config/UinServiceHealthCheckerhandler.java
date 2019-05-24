@@ -45,7 +45,7 @@ import io.vertx.ext.web.RoutingContext;
  * @since 1.0.0
  *
  */
-public class UINHealthCheckerhandler implements HealthCheckHandler {
+public class UinServiceHealthCheckerhandler implements HealthCheckHandler {
 
 	private HealthChecks healthChecks;
 	private final AuthProvider authProvider;
@@ -59,13 +59,13 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 
 	private static final String DEFAULT_QUERY = "SELECT 1";
 
-	private UINHealthCheckerhandler.JSONResultBuilder resultBuilder;
+	private UinServiceHealthCheckerhandler.JSONResultBuilder resultBuilder;
 	/**
 	 * The field for Logger
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(UINHealthCheckerhandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UinServiceHealthCheckerhandler.class);
 
-	public UINHealthCheckerhandler(Vertx vertx, AuthProvider provider, ObjectMapper objectMapper,
+	public UinServiceHealthCheckerhandler(Vertx vertx, AuthProvider provider, ObjectMapper objectMapper,
 			Environment environment) {
 		this.healthChecks = new HealthChecksImpl(vertx);
 		this.authProvider = provider;
@@ -75,7 +75,7 @@ public class UINHealthCheckerhandler implements HealthCheckHandler {
 		this.username = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_USER);
 		this.password = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_PASS);
 		this.currentWorkingDirPath = new File(System.getProperty(UinGeneratorConstant.CURRENT_WORKING_DIRECTORY));
-		this.resultBuilder = new UINHealthCheckerhandler.JSONResultBuilder();
+		this.resultBuilder = new UinServiceHealthCheckerhandler.JSONResultBuilder();
 	}
 
 	@Override

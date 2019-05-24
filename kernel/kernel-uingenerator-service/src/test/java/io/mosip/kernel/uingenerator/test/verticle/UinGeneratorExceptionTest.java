@@ -22,9 +22,9 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.uingenerator.config.UinGeneratorConfiguration;
+import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
-import io.mosip.kernel.uingenerator.verticle.UinGeneratorServerVerticle;
+import io.mosip.kernel.uingenerator.verticle.HttpServerVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -56,10 +56,10 @@ public class UinGeneratorExceptionTest {
 		port = socket.getLocalPort();
 		socket.close();
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		context = new AnnotationConfigApplicationContext(UinGeneratorConfiguration.class);
+		context = new AnnotationConfigApplicationContext(UinServiceConfiguration.class);
 		vertx = Vertx.vertx();
 		// Without UinGeneratorVerticle deployed
-		Verticle[] verticles = { new UinGeneratorServerVerticle(context) };
+		Verticle[] verticles = { new HttpServerVerticle(context) };
 		Stream.of(verticles)
 				.forEach(verticle -> vertx.deployVerticle(verticle, options, testContext.asyncAssertSuccess()));
 		cleanAllUins();
