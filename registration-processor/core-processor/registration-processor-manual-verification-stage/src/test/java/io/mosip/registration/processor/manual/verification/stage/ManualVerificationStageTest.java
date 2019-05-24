@@ -161,7 +161,7 @@ public class ManualVerificationStageTest{
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.assignment");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		ManualVerificationDTO manualVerificationDTO= new ManualVerificationDTO();
-		Mockito.when(manualAdjudicationService.assignApplicant(any(UserDto.class),any(String.class))).thenReturn(manualVerificationDTO);
+		Mockito.when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
 		manualverificationstage.processAssignment(ctx);
 	}
 	private void testProcessDecision()
