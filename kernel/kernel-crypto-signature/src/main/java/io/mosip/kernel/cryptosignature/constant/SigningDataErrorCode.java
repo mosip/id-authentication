@@ -1,5 +1,10 @@
 package io.mosip.kernel.cryptosignature.constant;
 
+/**
+ * @author Srinivasan
+ * @author Urvil Joshi
+ *
+ */
 public enum SigningDataErrorCode {
 
 	RESPONSE_PARSE_EXCEPTION("KER-SGN-100", "Error occured while parsing data"),

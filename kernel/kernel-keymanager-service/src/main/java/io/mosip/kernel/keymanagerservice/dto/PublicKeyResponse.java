@@ -2,6 +2,7 @@ package io.mosip.kernel.keymanagerservice.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
@@ -38,12 +39,14 @@ public class PublicKeyResponse<T> {
 	/**
 	 * Key creation time
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@ApiModelProperty(notes = "Timestamp of issuance of public key", required = true)
 	private LocalDateTime issuedAt;
 
 	/**
 	 * Key expiry time
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	@ApiModelProperty(notes = "Timestamp of expiry of public key", required = true)
 	private LocalDateTime expiryAt;
 

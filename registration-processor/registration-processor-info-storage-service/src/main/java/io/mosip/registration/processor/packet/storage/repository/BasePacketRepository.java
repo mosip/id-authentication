@@ -118,7 +118,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
-
 	/**
 	 * Gets the reference id by rid.
 	 *
@@ -152,6 +151,31 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.bioRefId =:bioRefId  and abisreq.refRegtrnId =:refRegtrnId")
 	public List<AbisRequestEntity> getInsertOrIdentifyRequest(@Param("bioRefId") String bioRefId,
 			@Param("refRegtrnId") String refRegtrnId);
+
+	@Query("SELECT abisreq.bioRefId FROM AbisRequestEntity abisreq WHERE abisreq.reqBatchId =:reqBatchId")
+	public List<String> getReferenceIdByBatchId(@Param("reqBatchId") String reqBatchId);
+
+	/**
+	 * Get transaction id from Abis request table
+	 *
+	 * @param id
+	 * @return
+	 */
+	@Query("SELECT abisreq.refRegtrnId FROM AbisRequestEntity abisreq WHERE abisreq.id.id =:id")
+	public List<String> getAbisTransactionIdByRequestId(@Param("id") String id);
+
+	/**
+	 * Gets the identify req list by transaction id.
+	 *
+	 * @param refRegtrnId
+	 *            the ref regtrn id
+	 * @param requestType
+	 *            the request type
+	 * @return the identify req list by transaction id
+	 */
+	@Query("SELECT abisreq FROM AbisRequestEntity abisreq WHERE abisreq.refRegtrnId =:refRegtrnId and abisreq.requestType =:requestType")
+	public List<AbisRequestEntity> getIdentifyReqListByTransactionId(@Param("refRegtrnId") String refRegtrnId,
+			@Param("requestType") String requestType);
 
 	/**
 	 * Gets the abis request by request id.
@@ -251,7 +275,13 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
 
-
+	/**
+	 * Gets the abis response details list.
+	 *
+	 * @param responseId
+	 *            the response id
+	 * @return the abis response details list
+	 */
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId in :abisRespIds")
 	public List<AbisResponseDetEntity> getAbisResponseDetailsList(@Param("abisRespIds") List<String> responseId);
 
@@ -330,4 +360,19 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisReq FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:insert")
 	public List<AbisRequestEntity> getAbisRequestsByBioRefId(@Param("bioRefId") String bioRefId,
 			@Param("insert") String insert);
+
+	/**
+	 * Gets the abis processed requests app code by bio ref id.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param requestType
+	 *            the request type
+	 * @param statusCode
+	 *            the status code
+	 * @return the abis processed requests app code by bio ref id
+	 */
+	@Query("SELECT abisReq.abisAppCode FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:requestType and abisReq.statusCode =:statusCode")
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(@Param("bioRefId") String bioRefId,
+			@Param("requestType") String requestType, @Param("statusCode") String statusCode);
 }

@@ -1,4 +1,4 @@
-Design - Registration Center Configuration Sync Service
+**Design - Registration Center Configuration Sync Service**
 
 
 **Background**

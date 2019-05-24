@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
@@ -115,6 +116,20 @@ public interface MasterSyncDao {
 	 */
 	List<IndividualType> getIndividulType(String code,String langCode);
 	
+	/**
+	 * Get All the Active Sync JOBS
+	 * 
+	 * @return active sync jobs
+	 */
 	List<SyncJobDef> getSyncJobs();
+	
+	/**
+	 * Gets the biometric type.
+	 *
+	 * @param biometricType the biometricType
+	 * @param langCode the lang code
+	 * @return the biometric type
+	 */
+	List<BiometricAttribute> getBiometricType(String langCode, List<String> biometricType);
 
 }
