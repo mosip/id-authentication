@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.aopalliance.intercept.Joinpoint;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -55,12 +56,12 @@ public class AuthenticationAdvice {
 	 * @throws RegBaseCheckedException
 	 * @throws Throwable
 	 */
-	@Before(value = "@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
+	@Before(value = "@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId) && args(preAuthorizeUserId,..)")
 	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId) throws RegBaseCheckedException {
 		boolean roleFound = false;
 
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
-				"Pre-Authorize the user id starting");
+				"Pre-Authorize the user id starting with roles " + preAuthorizeUserId.roles());
 
 		if (SessionContext.isSessionContextAvailable()) {
 			SecurityContext securityContext = SessionContext.securityContext();
