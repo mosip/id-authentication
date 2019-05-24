@@ -32,7 +32,7 @@ public class DataInfoDTO {
 	
 	private String mosipProcess;
 	
-	private LocalDateTime timestamp;
+	private String timestamp;
 	
 	private String transactionID;
 	

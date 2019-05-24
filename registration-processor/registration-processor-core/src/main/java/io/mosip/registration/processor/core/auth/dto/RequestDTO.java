@@ -7,13 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class RequestDTO {
 
 	private List<BioInfo> biometrics;
 	
 	private String otp;
 	
-	private LocalDateTime timestamp;
+	private String timestamp;
 
 }

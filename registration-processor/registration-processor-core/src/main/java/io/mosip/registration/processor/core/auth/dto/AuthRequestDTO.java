@@ -15,13 +15,13 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 	
 	private String keyIndex;
 
-	private RequestDTO request;
+	private String request;
 
 	private String requestHMAC;
 	
 	private String requestSessionKey;
 	
-	private LocalDateTime requestTime;
+	private String requestTime;
 	
 	private AuthTypeDTO requestedAuth;
 	

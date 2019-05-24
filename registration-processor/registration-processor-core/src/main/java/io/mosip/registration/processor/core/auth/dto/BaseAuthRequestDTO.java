@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BaseAuthRequestDTO {
 
-	private String consentObtained;
+	private boolean consentObtained = true;
 	
 	private String id;
 	

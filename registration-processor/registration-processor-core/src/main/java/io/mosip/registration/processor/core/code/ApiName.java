@@ -186,6 +186,8 @@ public enum ApiName {
 	/** The user details */
 	USERDETAILS, 
 	/** get operator rid from id */
-	GETRIDFROMUSERID;
+	GETRIDFROMUSERID,
+	
+	IDAINTERNALAUTH;
 
 }

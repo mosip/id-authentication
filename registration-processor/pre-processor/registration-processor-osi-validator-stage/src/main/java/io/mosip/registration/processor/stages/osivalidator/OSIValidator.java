@@ -2,27 +2,43 @@ package io.mosip.registration.processor.stages.osivalidator;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.crypto.SecretKey;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -38,16 +54,23 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
+import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.BioInfo;
 import io.mosip.registration.processor.core.auth.dto.DataInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
+import io.mosip.registration.processor.core.auth.dto.PublicKeyResponseDto;
+import io.mosip.registration.processor.core.auth.dto.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
@@ -56,6 +79,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -73,6 +97,10 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.stages.osivalidator.utils.BioSubType;
+import io.mosip.registration.processor.stages.osivalidator.utils.BioSubTypeMapperUtil;
+import io.mosip.registration.processor.stages.osivalidator.utils.BioType;
+import io.mosip.registration.processor.stages.osivalidator.utils.BioTypeMapperUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
@@ -82,7 +110,6 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class OSIValidator.
  */
@@ -173,6 +200,29 @@ public class OSIValidator {
 	@Autowired
 	private KeyGenerator keyGenerator;
 
+	/** The encryptor. */
+	@Autowired
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+
+	/** The registration processor rest client service. */
+	@Autowired
+	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
+
+	private ObjectMapper mapper=new ObjectMapper();
+
+	/** The Constant APPLICATION_ID. */
+	public static final String IDA_APP_ID = "IDA";
+
+	/** The Constant RSA. */
+	public static final String RSA = "RSA";
+
+	/** The Constant RSA. */
+	public static final String PARTNER_ID = "PARTNER";
+
+	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
+
+	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
+
 	/**
 	 * Checks if is valid OSI.
 	 *
@@ -187,7 +237,7 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
-		boolean isValidOsi = false;		
+		boolean isValidOsi = false;
 		demographicIdentity = getDemoIdentity(registrationId);
 		regProcessorIdentityJson = getIdentity();
 		Identity identity = osiUtils.getIdentity(registrationId);
@@ -252,7 +302,7 @@ public class OSIValidator {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
-			
+
 		}
 
 		if (supervisorId != null && !supervisorId.isEmpty()) {
@@ -428,7 +478,7 @@ public class OSIValidator {
 		return true;
 	}
 
-	
+
 
 	/**
 	 * Checks if is valid introducer.
@@ -581,7 +631,7 @@ public class OSIValidator {
 		this.setFingerBiometricDto(identityDTO, finger, biometricData);
 	}
 
-	
+
 
 	/**
 	 * Validate otp and pwd.
@@ -707,9 +757,85 @@ public class OSIValidator {
 
 	}
 
+	public void authByIdAuthentication(Long uin, byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
+
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+
+		RequestDTO req = new RequestDTO();
+		List<BioInfo> biometrics = new ArrayList<>();
+		//BioInfo bioInfo = new BioInfo();
+		//DataInfoDTO dataInfo = new DataInfoDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIndividualId(uin.toString());
+		authRequestDTO.setIndividualIdType("UIN");
+		authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
+
+		/*dataInfo.setBioType("FMR");
+		dataInfo.setBioSubType("RIGHT_INDEX");
+		dataInfo.setBioValue(
+				"Rk1SACAyMAAAAAGSAAABPAFiAMUAxQEAAAAoPkCTANfnZEBzAMnSSUCGAPZcXUBzAKnAV0ClAPprZEBZANPKSYCXAI3gV0DLAPZxZEDfANhRZEBHAKoyIUCFAHCRZEDmAPBgNUCEASr9XUCwASz7XUDAAS95XUCFAFOEZEDkAF/cZECaAVF8UEC/AVIAPIBOADwHXUDoACZcSYCPAK7SV0CcAKneUEDAANlgZIClAJpeUIC0AJtcV0BcAN5KUEB+AI+6V0CuAIVkXUB5AIGnZECUASB2V0DBARh9XUCSASt9XYBQARBfXUBjASlvZIC0ATv8UEBQATF5Q0CFAVT8Q0B4AD+DZEBaAU92UEDtADzbV0CcAA1zSUCyAMVWV0CGAKjIV0BoAL87UIC9AOdrZIC3APdvZEBsAJ65XUDNAOthZIDEAI3RZEBQAJ2zZEBuARllZEDkAKDPZEC6AHFjZEA/AJW5Q0A3AQDRQ0BGAHGpXUCBAUx7Q0DAAU9/PIBJAFGVXUDYAVeAKEDLABxkZAAA");
+		dataInfo.setDeviceProviderID("cogent");
+		dataInfo.setDeviceCode("cogent");
+		dataInfo.setTransactionID("1234567890");
+		dataInfo.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+
+		bioInfo.setData(dataInfo);
+		biometrics.add(bioInfo);*/
+
+		biometrics = getBioInfoListDto(biometricFile);
 
 
-	public String getBioInfoList (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
+		req.setBiometrics(biometrics);
+		req.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+
+		authType.setBio(Boolean.TRUE);
+		authRequestDTO.setRequestedAuth(authType);
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+
+		String identityBlock = mapper.writeValueAsString(req);
+
+		final SecretKey secretKey = keyGenerator.getSymmetricKey();
+
+		byte[] encryptedIdentityBlock = encryptor.symmetricEncrypt(secretKey, identityBlock.getBytes());
+		authRequestDTO.setRequest(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
+
+		byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(), PARTNER_ID,
+				DateUtils.getUTCCurrentDateTimeString());
+		authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
+
+		byte[] byteArr = encryptor.symmetricEncrypt(secretKey, HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
+		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
+
+		AuthResponseDTO str = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDAINTERNALAUTH, null,null,authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
+
+		System.out.println(str);
+	}
+
+	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
+			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
+
+		// encrypt AES Session Key using RSA public key
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(IDA_APP_ID);
+		ResponseWrapper<?> responseWrapper;
+		PublicKeyResponseDto publicKeyResponsedto=null;
+
+		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
+				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
+		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
+
+		PublicKey publicKey = KeyFactory.getInstance(RSA)
+				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
+
+		return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
+
+	}
+
+
+
+	public List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException {
 
 		List<BioInfo> biometrics =new  ArrayList<>();
 
@@ -729,18 +855,23 @@ public class OSIValidator {
 				Node bdbInfoList = bdbInfo.item(bi);
 				if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) bdbInfoList;
-					dataInfoDTO.setBioType(eElement.getElementsByTagName("Type").item(0).getTextContent());
-					dataInfoDTO.setBioSubType(eElement.getElementsByTagName("Subtype").item(0).getTextContent());
+					String bioType = eElement.getElementsByTagName("Type").item(0).getTextContent();
+					getBioType(dataInfoDTO,bioType);
+
+					String bioSubType = eElement.getElementsByTagName("Subtype").item(0).getTextContent();
+					getBioSubType(dataInfoDTO,bioSubType);
 					NodeList bdb = doc.getElementsByTagName("BDB");
 					String value = bdb.item(0).getTextContent();
 					dataInfoDTO.setBioValue(value);
+					dataInfoDTO.setDeviceProviderID("cogent");
+					dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+					dataInfoDTO.setTransactionID("1234567890");
 				}
 				bioInfo.setData(dataInfoDTO);
 				biometrics.add(bioInfo);
 			}
 		}
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(biometrics);
+		return biometrics;
 	}
 
 	private String getOperatorRid(String operatorId) throws ApisResourceAccessException {
@@ -783,49 +914,94 @@ public class OSIValidator {
 		}
 		return null;
 	}
-	
-	private String getOperatorUin(String operatorRegistrationId) throws ApisResourceAccessException, IOException {
-		IdResponseDTO response;
-		String operatorUin=null;
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(operatorRegistrationId);
-		try {
-			response = (IdResponseDTO) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
-					"", "", IdResponseDTO.class);
-			if(response.getError() ==null) {
-			ObjectMapper mapper = new ObjectMapper();
-			String identityjson=mapper.writeValueAsString(response.getResponse().getIdentity());
-			JSONObject identity=JsonUtil.objectMapperReadValue(identityjson, JSONObject.class);
-			operatorUin= (String) identity.get(UIN);
-			}
-			else {
-				List<ErrorDTO> errors = response.getError();
-				this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
-			}
-		} catch (ApisResourceAccessException e) {
-			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				String result = httpClientException.getResponseBodyAsString();
-				this.registrationStatusDto.setStatusComment(result);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
-				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
-						httpClientException);
-			} else if (e.getCause() instanceof HttpServerErrorException) {
-				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				String result = httpServerException.getResponseBodyAsString();
-				this.registrationStatusDto.setStatusComment(result);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
-				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
-						httpServerException);
-			} else {
-				throw e;
-			}
+
+    private String getOperatorUin(String operatorRegistrationId) throws ApisResourceAccessException, IOException {
+        IdResponseDTO response;
+        String operatorUin=null;
+        List<String> pathsegments = new ArrayList<>();
+        pathsegments.add(operatorRegistrationId);
+        try {
+            response = (IdResponseDTO) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
+                    "", "", IdResponseDTO.class);
+            if(response.getError() ==null) {
+                ObjectMapper mapper = new ObjectMapper();
+                String identityjson=mapper.writeValueAsString(response.getResponse().getIdentity());
+                JSONObject identity=JsonUtil.objectMapperReadValue(identityjson, JSONObject.class);
+                operatorUin= (String) identity.get(UIN);
+            }
+            else {
+                List<ErrorDTO> errors = response.getError();
+                this.registrationStatusDto.setStatusComment(errors.get(0).getMessage());
+                regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+                        LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
+            }
+        } catch (ApisResourceAccessException e) {
+            if (e.getCause() instanceof HttpClientErrorException) {
+                HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+                String result = httpClientException.getResponseBodyAsString();
+                this.registrationStatusDto.setStatusComment(result);
+                regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+                        LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+                throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+                        httpClientException);
+            } else if (e.getCause() instanceof HttpServerErrorException) {
+                HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+                String result = httpServerException.getResponseBodyAsString();
+                this.registrationStatusDto.setStatusComment(result);
+                regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+                        LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+                throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+                        httpServerException);
+            } else {
+                throw e;
+            }
+        }
+        return operatorUin;
+
+    }
+
+	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
+		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
+			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
+		}else if(bioType.equalsIgnoreCase(BioType.FACE.toString())){
+			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FACE));
+		}else if(bioType.equalsIgnoreCase(BioType.IRIS.toString())) {
+			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.IRIS));
 		}
-		return operatorUin;
-		
+		return dataInfoDTO;
 	}
+
+	private DataInfoDTO getBioSubType(DataInfoDTO dataInfoDTO, String bioSubType) {
+		if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_INDEX_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_LITTLE_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_MIDDLE_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_MIDDLE_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_RING_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_RING_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_INDEX_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_INDEX_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_LITTLE_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_LITTLE_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_MIDDLE_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_MIDDLE_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_RING_FINGER.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_RING_FINGER));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_THUMB.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_THUMB));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_THUMB.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_THUMB));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.IRIS_LEFT.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_LEFT));
+		}else if(bioSubType.equalsIgnoreCase(BioSubType.IRIS_RIGHT.getBioType())) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_RIGHT));
+		}else if(bioSubType.equalsIgnoreCase("")) {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
+		}else {
+			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
+		}
+		return dataInfoDTO;
+	}
+
 }
