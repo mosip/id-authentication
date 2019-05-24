@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,6 +79,7 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	public ResponseWrapper<PacketRejectionReasonResponseDto> getAllReasons() {
 
 		ResponseWrapper<PacketRejectionReasonResponseDto> responseWrapper = new ResponseWrapper<>();

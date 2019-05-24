@@ -1,0 +1,1 @@
+{"identityRequest":{"timestamp":"2019-05-23T12:18:13.013+05:30","otp":"select otp from kernel.otp_transaction where id like '%org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'%':5","transactionID":"3642212580"}}

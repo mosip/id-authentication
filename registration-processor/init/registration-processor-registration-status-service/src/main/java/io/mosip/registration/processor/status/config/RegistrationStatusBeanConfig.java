@@ -140,12 +140,13 @@ public class RegistrationStatusBeanConfig {
 	public BaseRegistrationEntity baseSyncRegistrationEntity() {
 		return new SyncRegistrationEntity();
 	}
+	
 	@Bean
 	public RegistrationExternalStatusUtility getRegistrationExternalStatusUtility()
 	{
 		return new RegistrationExternalStatusUtility();
 	}
-	
+
 	@Bean
 	public Decryptor decryptor() {
 		return new Decryptor();

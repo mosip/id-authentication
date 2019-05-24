@@ -37,6 +37,7 @@ import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
+import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationPreviewController;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -146,6 +147,9 @@ public class BaseController {
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
+	
+	@Autowired
+	private HeaderController headerController;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
@@ -679,6 +683,8 @@ public class BaseController {
 
 		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
 		// TO DO-- Yet to implement SSHA512
+		/*HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
+				userDetail.getSalt().getBytes()).equals(userDetail)*/
 		if ("E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262"
 				.equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
@@ -985,6 +991,7 @@ public class BaseController {
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+						headerController.logoutCleanUp();
 					} else {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);

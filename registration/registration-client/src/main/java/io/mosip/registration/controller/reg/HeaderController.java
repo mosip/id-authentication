@@ -179,18 +179,29 @@ public class HeaderController extends BaseController {
 	 *            logout event
 	 */
 	public void logout(ActionEvent event) {
+		auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
+
+		if (SessionContext.authTokenDTO().getCookie() != null
+				&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
+			serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
+
+		}
+
+		logoutCleanUp();
+	}
+
+	/**
+	 * Logout clean up.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void logoutCleanUp() {
+
 		try {
-			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
-					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
-
-			if (SessionContext.authTokenDTO().getCookie() != null) {
-
-				serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
-
-			}
-
 			ApplicationContext.map().remove(RegistrationConstants.USER_DTO);
 
 			SessionContext.destroySession();
@@ -199,7 +210,6 @@ public class HeaderController extends BaseController {
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
 			getScene(loginpage);
-
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
@@ -356,6 +366,11 @@ public class HeaderController extends BaseController {
 	}
 
 	public void intiateRemapProcess() {
+		
+		masterSyncService.getMasterSync(
+				RegistrationConstants.OPT_TO_REG_MDS_J00001,
+				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		
 		if (!isMachineRemapProcessStarted()) {
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
