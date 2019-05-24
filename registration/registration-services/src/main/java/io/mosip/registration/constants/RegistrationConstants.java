@@ -797,10 +797,10 @@ public class RegistrationConstants {
 	public static final String PKT_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
 	public static final String MODE_OF_COMM = "mosip.registration.mode_of_communication";
 	public static final String PWORD_LENGTH = "mosip.registration.username_pwd_length";
-	public static final String DOC_DISABLE_FLAG = "mosip.registration.document_disable_flag";
-	public static final String FINGERPRINT_DISABLE_FLAG = "mosip.registration.fingerprint_disable_flag";
-	public static final String IRIS_DISABLE_FLAG = "mosip.registration.iris_disable_flag";
-	public static final String FACE_DISABLE_FLAG = "mosip.registration.face_disable_flag";
+	public static final String DOC_DISABLE_FLAG = "mosip.registration.document_enable_flag";
+	public static final String FINGERPRINT_DISABLE_FLAG = "mosip.registration.fingerprint_enable_flag";
+	public static final String IRIS_DISABLE_FLAG = "mosip.registration.iris_enable_flag";
+	public static final String FACE_DISABLE_FLAG = "mosip.registration.face_enable_flag";
 	public static final String GPS_SERIAL_PORT_WINDOWS = "mosip.registration.gps_serial_port_windows";
 	public static final String GPS_PORT_TIMEOUT = "mosip.registration.gps_port_timeout";
 	public static final String GPS_PORT_LINUX = "mosip.registration.gps_serial_port_linux";
