@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,10 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -45,14 +43,11 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.provider.bio.CogentFaceProvider;
-import io.mosip.authentication.core.spi.provider.bio.CogentFingerprintProvider;
-import io.mosip.authentication.core.spi.provider.bio.CogentIrisProvider;
-import io.mosip.authentication.core.spi.provider.bio.MantraFingerprintProvider;
-import io.mosip.authentication.core.spi.provider.bio.MorphoFaceProvider;
-import io.mosip.authentication.core.spi.provider.bio.MorphoIrisProvider;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -63,6 +58,9 @@ public class BioAuthServiceTest {
 	private BioAuthServiceImpl bioAuthServiceImpl;
 
 	@InjectMocks
+	private BioMatcherUtil bioMatcherUtil;
+
+	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
 	@InjectMocks
@@ -70,27 +68,6 @@ public class BioAuthServiceTest {
 
 	@InjectMocks
 	private IdInfoFetcherImpl idInfoFetcherImpl;
-
-	@InjectMocks
-	private BiometricProviderFactory biometricProviderFactory;
-
-	@InjectMocks
-	private MantraFingerprintProvider mantraFingerprintProvider;
-
-	@InjectMocks
-	private CogentFingerprintProvider cogentFingerprintProvider;
-
-	@InjectMocks
-	private CogentIrisProvider cogentIrisProvider;
-
-	@InjectMocks
-	private MorphoIrisProvider morphoIrisProvider;
-
-	@InjectMocks
-	private CogentFaceProvider cogentFaceProvider;
-
-	@InjectMocks
-	private MorphoFaceProvider morphoFaceProvider;
 
 	@Autowired
 	Environment environment;
@@ -101,6 +78,9 @@ public class BioAuthServiceTest {
 	@Mock
 	private CbeffUtil cbeffUtil;
 
+	@InjectMocks
+	private BioApiImpl bioApi;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
@@ -108,22 +88,13 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
+		ReflectionTestUtils.setField(matchInputBuilder, "bioMatcherUtil", bioMatcherUtil);
+		ReflectionTestUtils.setField(bioMatcherUtil, "environment", environment);
+		ReflectionTestUtils.setField(bioMatcherUtil, "bioApi", bioApi);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
-		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "cogentIrisProvider", cogentIrisProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "morphoIrisProvider", morphoIrisProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFaceProvider", cogentFaceProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "morphoFaceProvider", morphoFaceProvider);
-		ReflectionTestUtils.setField(biometricProviderFactory, "environment", environment);
-		ReflectionTestUtils.setField(cogentIrisProvider, "environment", environment);
-		ReflectionTestUtils.setField(morphoIrisProvider, "environment", environment);
-		ReflectionTestUtils.setField(cogentFaceProvider, "environment", environment);
-		ReflectionTestUtils.setField(morphoFaceProvider, "environment", environment);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
