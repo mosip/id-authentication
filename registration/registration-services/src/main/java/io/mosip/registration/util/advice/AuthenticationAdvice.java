@@ -36,9 +36,9 @@ import io.mosip.registration.service.login.LoginService;
 @Component
 public class AuthenticationAdvice {
 	
-	public static final String OFFICER_ROLE = "REGISTRTAION_OFFICER";
-	public static final String SUPERVISOR_ROLE = "REGISTTRAION_SUPERVISIOR";
-	public static final String ADMIN_ROLE = "ADMIN";
+	public static final String OFFICER_ROLE = "REGISTRATION_OFFICER";
+	public static final String SUPERVISOR_ROLE = "REGISTRATION_SUPERVISOR";
+	public static final String ADMIN_ROLE = "REGISTRATION_ADMIN";
 
 	@Autowired
 	private LoginService loginService;
@@ -58,6 +58,8 @@ public class AuthenticationAdvice {
 	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
 	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId)
 			throws RegBaseCheckedException {
+		boolean roleFound = false;
+		
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 				"Pre-Authorize the user id starting");
 
@@ -68,8 +70,14 @@ public class AuthenticationAdvice {
 
 			List<String> roleList = userDetail.getUserRole().stream().map(UserRole::getUserRoleID)
 					.collect(Collectors.toList()).stream().map(UserRoleID::getRoleCode).collect(Collectors.toList());
-
-			if (!(userDetail.getIsActive() && roleList.containsAll(Arrays.asList(preAuthorizeUserId.roles())))) {
+			
+			for(String role:preAuthorizeUserId.roles()) {
+				roleFound = roleList.stream().anyMatch(dbrole -> dbrole.equalsIgnoreCase(role));
+				if(roleFound) break;
+			}
+			
+					
+			if (!(userDetail.getIsActive() && roleFound)) {
 				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 						"Pre-Authorize the user id got failed");
 
