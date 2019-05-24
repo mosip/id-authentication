@@ -26,7 +26,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	/**
 	 * Field for UinGeneratorRouter
 	 */
-	private UinServiceRouter uinGeneratorRouter;
+	private UinServiceRouter uinServiceRouter;
 
 	private AuthHandler authHandler;
 
@@ -37,7 +37,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	 */
 	public HttpServerVerticle(final ApplicationContext context) {
 		authHandler = (AuthHandler) context.getBean("authHandler");
-		uinGeneratorRouter = (UinServiceRouter) context.getBean("uinGeneratorRouter");
+		uinServiceRouter = (UinServiceRouter) context.getBean("uinServiceRouter");
 		environment = context.getEnvironment();
 	}
 
@@ -50,11 +50,11 @@ public class HttpServerVerticle extends AbstractVerticle {
 	public void start(Future<Void> future) {
 		HttpServer httpServer = vertx.createHttpServer();
 		authHandler.addCorsFilter(httpServer, vertx);
-		httpServer.requestHandler(uinGeneratorRouter.createRouter(vertx));
+		httpServer.requestHandler(uinServiceRouter.createRouter(vertx));
 		httpServer.listen(config().getInteger(UinGeneratorConstant.HTTP_PORT,
 				Integer.parseInt(environment.getProperty(UinGeneratorConstant.SERVER_PORT))), result -> {
 					if (result.succeeded()) {
-						uinGeneratorRouter.checkAndGenerateUins(vertx);
+						uinServiceRouter.checkAndGenerateUins(vertx);
 						future.complete();
 					} else {
 						future.fail(result.cause());

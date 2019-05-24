@@ -743,20 +743,20 @@ public class BookingServiceUtil {
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				if (localDate.isBefore(LocalDate.now())) {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-							ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage(), null);
+							ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
 				} else if (localDate.isEqual(LocalDate.now())
 						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
 								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
 					if (localTime.isBefore(LocalTime.now())) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage(), null);
+								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
 					}
 				}
 			}
 		} catch (Exception ex) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage(), null);
+					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for preregistration id - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
 		}
 		return true;
 	}

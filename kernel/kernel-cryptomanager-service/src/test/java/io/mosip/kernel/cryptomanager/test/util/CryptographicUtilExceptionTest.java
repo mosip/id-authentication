@@ -41,7 +41,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
-import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -53,7 +53,7 @@ public class CryptographicUtilExceptionTest {
 	private String publicKeyUrl;
 
 	@Autowired
-	CryptomanagerUtil cryptomanagerUtil;
+	CryptomanagerUtils cryptomanagerUtil;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -76,7 +76,7 @@ public class CryptographicUtilExceptionTest {
 		ReflectionTestUtils.setField(cryptomanagerUtil, "asymmetricAlgorithmName", "test");
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
-		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timestamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId", "ref123");
 	}
 

@@ -88,7 +88,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
 				throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage());
+						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),e);
 			}
 			return otpGenerateResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -98,21 +98,23 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthNException(validationErrorsList);
 				} else {
-					throw new BadCredentialsException("Authentication failed from Internal token services");
+					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
 				} else {
-					throw new AccessDeniedException("Access denied from Internal token services");
+					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
 			}
 		} 
 	}
@@ -143,12 +145,12 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				otpGenerateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
 			}
 			return otpGenerateResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException exp) {
 			System.out.println(exp.getResponseBodyAsString());
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage(),exp);
 		}
 	}
 
