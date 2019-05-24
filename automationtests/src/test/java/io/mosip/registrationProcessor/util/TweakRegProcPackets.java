@@ -1,7 +1,6 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,12 +20,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.annotations.Test;
 
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
+
 
 /**
  * 

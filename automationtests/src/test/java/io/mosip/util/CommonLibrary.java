@@ -8,19 +8,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -33,16 +28,9 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.mortbay.util.ajax.JSON;
-import org.postgresql.ssl.jdbc4.LibPQFactory;
-
-import com.google.common.io.Files;
-import com.google.gson.Gson;
 
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
-import io.restassured.http.Cookie.Builder;
-import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 public class CommonLibrary extends BaseTestCase {
@@ -51,7 +39,8 @@ public class CommonLibrary extends BaseTestCase {
 
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
-			throws Exception {
+	public static void configFileWriter(String folderPath, String requestKeyFile, String generationType,
+			String baseFileName)	throws Exception {
 		String splitRegex = Pattern.quote(System.getProperty("file.separator"));
 
 		String requestFilePath = "src/test/resources/" + folderPath + "/" + requestKeyFile;
@@ -351,42 +340,42 @@ public class CommonLibrary extends BaseTestCase {
 	 * @param jsonString
 	 * @param serviceUri
 	 * @return
-	 */
-		Response postResponse=null;
-		if(jsonString.get("attachments").toString().isEmpty()) {
-			postResponse = given().relaxedHTTPSValidation().contentType("multipart/form-data")
-					.post(serviceUri)
-					.then()
-					.log()
-					.all()
-					.extract()
-					.response();
-		}else {
+	 */       public Response post_RequestWithBodyAsMultipartFormData(JSONObject jsonString, String serviceUri) {
+         Response postResponse = null;
+         if (jsonString.get("attachments").toString().isEmpty()) {
+                 postResponse = given().relaxedHTTPSValidation().contentType("multipart/form-data")
+                               .multiPart("mailContent", (String) jsonString.get("mailContent"))
+                               .multiPart("mailTo", (String) jsonString.get("mailTo"))
+                               .multiPart("mailSubject", (String) jsonString.get("mailSubject"))
+                               .multiPart("mailCc", (String) jsonString.get("mailCc")).post(serviceUri).then().log().all()
+                               .extract().response();
+         } else {
+                 postResponse = given().relaxedHTTPSValidation().contentType("multipart/form-data")
+                               .multiPart("attachments", new File((String) jsonString.get("attachments")))
+                               .multiPart("mailContent", (String) jsonString.get("mailContent"))
+                               .multiPart("mailTo", (String) jsonString.get("mailTo"))
+                               .multiPart("mailSubject", (String) jsonString.get("mailSubject"))
+                               .multiPart("mailCc", (String) jsonString.get("mailCc")).post(serviceUri).then().log().all()
+                               .extract().response();
+         }
 
-					.multiPart("mailCc", (String) jsonString.get("mailCc")).post(serviceUri).then().log().all()
-					.extract().response();
-		} else {
+         // log then response
+         logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+         logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+         return postResponse;
+  }
 
-			postResponse = given().relaxedHTTPSValidation().contentType("multipart/form-data")
-					.multiPart("attachments", new File((String) jsonString.get("attachments")))
-					.multiPart("mailContent", (String) jsonString.get("mailContent"))
-					.multiPart("mailTo", (String) jsonString.get("mailTo"))
-					.multiPart("mailSubject", (String) jsonString.get("mailSubject"))
-					.multiPart("mailCc", (String) jsonString.get("mailCc")).post(serviceUri).then().log().all()
-					.extract().response();
-		}
+  public Response put_Request(String url, Object body, String contentHeader, String acceptHeader) {
 
-		// log then response
-		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
-		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
-		return postResponse;
-	}
-
-
-		Response putResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
-
-				.accept(acceptHeader).log().all().when().put(url).then().log().all().extract().response();
-		// log then response
+         Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+         Response putResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body)
+                        .contentType(contentHeader).accept(acceptHeader).log().all().when().put(url).then().log().all()
+                        .extract().response();
+         // log then response
+         logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
+         logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
+         return putResponse;
+  }
 
 	/**
 	 * REST ASSURED GET request method

@@ -144,42 +144,12 @@ public class BaseTestCase{
 	/**
 	 * Before entire test suite we need to setup everything we will need.
 	 */
-	@BeforeSuite(alwaysRun = true)
-	public void suiteSetup() {
-		logger.info("Test Framework for Mosip api Initialized");
-		logger.info("Logging initialized: All logs are located at " + "src/logs/mosip-api-test.log");
-		initialize();
-		logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
-
-
-		PreRegistrationLibrary pil = new PreRegistrationLibrary();
-		AuthTestsUtil.wakeDemoApp();
-		/*pil.PreRegistrationResourceIntialize();
-		*/
-
-	} // End suiteSetup
+ // End suiteSetup
 
 	/**
 	 * After the entire test suite clean up rest assured
 	 */
-	@AfterSuite(alwaysRun = true)
-	public void testTearDown(ITestContext ctx) {
 
-		/* Calling up PreReg DB clean Up step */
-		if (preIds.size() >= 1) {
-			logger.info("Elements from PreId List are========");
-			for (String elem : preIds) {
-				logger.info(elem.toString());
-			}
-			boolean status = false;
-			status = PreRegDbread.prereg_db_CleanUp(preIds);
-			if (status)
-				logger.info("PreId is deleted from the DB");
-			else
-				logger.info("PreId is NOT deleted from the DB");
-
-		
-		}
 		/*
 		 * Saving TestNG reports to be published
 		 */
