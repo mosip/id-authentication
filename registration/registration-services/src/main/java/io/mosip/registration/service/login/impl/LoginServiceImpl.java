@@ -3,19 +3,23 @@ package io.mosip.registration.service.login.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
@@ -228,5 +232,91 @@ public class LoginServiceImpl implements LoginService {
 	
 		return val;
 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
+	 * registration.entity.UserDetail,java.lang.String,integer,integer)
+	 */
+	public String validateInvalidLogin(UserDetail userDetail, String errorMessage, int invalidLoginCount, int invalidLoginTime) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "validating invalid login params");
+
+		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
+				? userDetail.getUnsuccessfulLoginCount().intValue()
+				: RegistrationConstants.PARAM_ZERO;
+
+		Timestamp loginTime = userDetail.getUserlockTillDtimes();
+
+		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
+
+			loginCount = RegistrationConstants.PARAM_ZERO;
+			userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
+
+			updateLoginParams(userDetail);
+
+		}
+
+		if (loginCount >= invalidLoginCount) {
+
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"validating login count and time ");
+
+			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
+
+				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
+
+				updateLoginParams(userDetail);
+
+			} else {
+				return RegistrationConstants.ERROR;
+			}
+			return "false";
+
+		} else {
+			if (!errorMessage.isEmpty()) {
+
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"updating login count and time for invalid login attempts");
+				loginCount = loginCount + RegistrationConstants.PARAM_ONE;
+				userDetail.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				userDetail.setUnsuccessfulLoginCount(loginCount);
+
+				updateLoginParams(userDetail);
+
+				if (loginCount >= invalidLoginCount) {					
+					return RegistrationConstants.ERROR;
+				} else {
+					return errorMessage;
+				}
+			}
+			return "true";
+		}
+	}
+
+	/**
+	 * Validating login time and count
+	 * 
+	 * @param loginCount
+	 *            number of invalid attempts
+	 * @param invalidLoginCount
+	 *            count from global param
+	 * @param loginTime
+	 *            login time from table
+	 * @param invalidLoginTime
+	 *            login time from global param
+	 * @return boolean
+	 */
+	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
+			int invalidLoginTime) {
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Comparing timestamps in case of invalid login attempts");
+
+		return (loginCount >= invalidLoginCount
+				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
+						- loginTime.getTime()) > invalidLoginTime);
 	}
 }

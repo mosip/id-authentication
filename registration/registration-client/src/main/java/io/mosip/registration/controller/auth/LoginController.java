@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -520,24 +519,6 @@ public class LoginController extends BaseController implements Initializable {
 		UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
 		if (userDetail != null) {
-			// TODO: Since AuthN web-service not accepting Hash Password and SHA
-			// is not
-			// implemented, getting AuthZ Token by Client ID and Secret Key
-
-			LoginUserDTO loginUserDTO = new LoginUserDTO();
-			// loginUserDTO.setUserId(userId.getText());
-			// loginUserDTO.setPassword(password.getText());
-
-			ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				try {
-					serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
-				} catch (Exception exception) {
-					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
-							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
-
-				}
-			}
 
 			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 
@@ -1120,116 +1101,6 @@ public class LoginController extends BaseController implements Initializable {
 		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
 	}
 
-	/**
-	 * Validating invalid number of login attempts
-	 * 
-	 * @param userDetail
-	 *            user details
-	 * @param userId
-	 *            entered userId
-	 * @return boolean
-	 */
-	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fetching invalid login params");
-
-		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
-				? userDetail.getUnsuccessfulLoginCount().intValue()
-				: RegistrationConstants.PARAM_ZERO;
-
-		int invalidLoginCount = Integer
-				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_COUNT));
-
-		int invalidLoginTime = Integer
-				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_TIME));
-
-		Timestamp loginTime = userDetail.getUserlockTillDtimes();
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "validating invalid login params");
-
-		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
-
-			loginCount = RegistrationConstants.PARAM_ZERO;
-			userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
-
-			loginService.updateLoginParams(userDetail);
-
-		}
-
-		String unlockMessage = String.format("%s %s %s %s %s", RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER,
-				String.valueOf(invalidLoginCount), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE,
-				String.valueOf(invalidLoginTime), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES);
-
-		if (loginCount >= invalidLoginCount) {
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"validating login count and time ");
-
-			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
-
-				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
-
-				loginService.updateLoginParams(userDetail);
-
-			} else {
-
-				generateAlert(RegistrationConstants.ERROR, unlockMessage);
-				loadLoginScreen();
-
-			}
-			return false;
-
-		} else {
-			if (!errorMessage.isEmpty()) {
-
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						"updating login count and time for invalid login attempts");
-				loginCount = loginCount + RegistrationConstants.PARAM_ONE;
-				userDetail.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userDetail.setUnsuccessfulLoginCount(loginCount);
-
-				loginService.updateLoginParams(userDetail);
-
-				if (loginCount >= invalidLoginCount) {
-
-					generateAlert(RegistrationConstants.ERROR, unlockMessage);
-					loadLoginScreen();
-
-				} else {
-
-					generateAlert(RegistrationConstants.ERROR, errorMessage);
-
-				}
-				return false;
-			}
-			return true;
-		}
-	}
-
-	/**
-	 * Validating login time and count
-	 * 
-	 * @param loginCount
-	 *            number of invalid attempts
-	 * @param invalidLoginCount
-	 *            count from global param
-	 * @param loginTime
-	 *            login time from table
-	 * @param invalidLoginTime
-	 *            login time from global param
-	 * @return boolean
-	 */
-	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
-			int invalidLoginTime) {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Comparing timestamps in case of invalid login attempts");
-
-		return (loginCount >= invalidLoginCount
-				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
-						- loginTime.getTime()) > invalidLoginTime);
-	}
-
 	public void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
@@ -1294,6 +1165,50 @@ public class LoginController extends BaseController implements Initializable {
 			}
 
 		});
+
+	}
+	
+	/**
+	 * Validating invalid number of login attempts
+	 * 
+	 * @param userDetail
+	 *            user details
+	 * @param userId
+	 *            entered userId
+	 * @return boolean
+	 */
+	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
+
+		boolean validate = false;
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fetching invalid login params");
+
+		int invalidLoginCount = Integer
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_COUNT));
+
+		int invalidLoginTime = Integer
+				.parseInt(getValueFromApplicationContext(RegistrationConstants.INVALID_LOGIN_TIME));
+
+		String unlockMessage = String.format("%s %s %s %s %s", RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER,
+				String.valueOf(invalidLoginCount), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE,
+				String.valueOf(invalidLoginTime), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES);
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Invoking validation of login attempts");
+
+		String val = loginService.validateInvalidLogin(userDetail, errorMessage, invalidLoginCount, invalidLoginTime);
+		
+		if (val.equalsIgnoreCase(RegistrationConstants.ERROR)) {
+			generateAlert(RegistrationConstants.ERROR, unlockMessage);
+			loadLoginScreen();
+		} else if (val.equalsIgnoreCase(errorMessage)) {
+			generateAlert(RegistrationConstants.ERROR, errorMessage);
+		} else {
+			validate = Boolean.valueOf(val);
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Validated number of login attempts");
+
+		return validate;
 
 	}
 
