@@ -171,7 +171,7 @@ public class FingerprintFacadeTest {
 		
 		((RegistrationDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
-		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS);
+		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
@@ -208,7 +208,7 @@ public class FingerprintFacadeTest {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
 		((BiometricDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
-		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS);
+		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
@@ -245,7 +245,7 @@ public class FingerprintFacadeTest {
 		
 		((RegistrationDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
-		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS);
+		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
 
 		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
 		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
@@ -268,7 +268,7 @@ public class FingerprintFacadeTest {
 				"/fingerprints/lefthand/leftLittle/" };
 		PowerMockito.mockStatic(IOUtils.class);
 		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new IOException("Invalid"));
-		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS);
+		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS,null);
 
 	}
 
@@ -278,7 +278,7 @@ public class FingerprintFacadeTest {
 				"/fingerprints/lefthand/leftLittle/" };
 		PowerMockito.mockStatic(IOUtils.class);
 		Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenThrow(new RuntimeException("Invalid"));
-		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS);
+		fingerprintFacade.segmentFingerPrintImage(null, LEFTHAND_SEGMNTD_FILE_PATHS,null);
 
 	}
 
