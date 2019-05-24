@@ -23,6 +23,5 @@ public interface PacketCreationService {
 	 *             the checked exception
 	 * @return the zip file as bytes
 	 */
-	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
 	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
 }
