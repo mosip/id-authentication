@@ -45,8 +45,11 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
@@ -67,7 +70,6 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinGenResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinRequestDto;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
@@ -292,6 +294,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					idResponseDTO = reActivateUin(registrationId, uinFieldCheck, object);
 				} else if ((RegistrationType.DEACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
 					idResponseDTO = deactivateUin(registrationId, uinFieldCheck, object);
+				}else if(RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type())
+						|| (RegistrationType.RESUPDATE.toString().equalsIgnoreCase(object.getReg_type()))) {
+					idResponseDTO = uinUpdate(registrationId, uinFieldCheck, object);
 				}
 			}
 			registrationStatusDto.setUpdatedBy(USER);
@@ -479,6 +484,83 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		documentsInfoDto.setCategory(idDocLabel);
 		return 	documentsInfoDto;
 	}
+	
+	/**
+	 * Update id repo wit uin.
+	 *
+	 * @param regId the reg id
+	 * @param uin the uin
+	 * @param object the object
+	 * @return the id response DTO
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RegistrationProcessorCheckedException 
+	 */
+	private IdResponseDTO uinUpdate(String regId, Long uin, MessageDTO object)
+			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException {
+		IdResponseDTO result;
+		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
+		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, uin, documentInfo);
+		if (result != null && result.getResponse() != null) {
+
+			if ((RegistrationType.ACTIVATED.toString().toUpperCase()).equalsIgnoreCase(result.getResponse().getStatus())) {
+				isTransactionSuccessful = true;
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());
+				registrationStatusDto
+						.setStatusComment(UinStatusMessage.UIN_UPDATION_SUCCESS + " for registration Id:  " + regId);
+				description = UinStatusMessage.UIN_UPDATION_SUCCESS + " for registration Id:  " + regId;
+				object.setIsValid(Boolean.TRUE);
+			}
+		} else {
+			String statusComment = result != null && result.getErrors() != null ? result.getErrors().get(0).getMessage()
+					: NULL_IDREPO_RESPONSE;
+			registrationStatusDto.setStatusComment(statusComment);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+
+			description = UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
+					? result.getErrors().get(0).getMessage()
+					: NULL_IDREPO_RESPONSE;
+			object.setIsValid(Boolean.FALSE);
+		}
+		return result;
+	}
+	
+	/**
+	 * Id repo request builder.
+	 *
+	 * @param status the status
+	 * @param regId the reg id
+	 * @param uin the uin
+	 * @param documentInfo the document info
+	 * @return the id response DTO
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 */
+	private IdResponseDTO idRepoRequestBuilder(String status, String regId, Long uin, List<Documents> documentInfo)
+			throws ApisResourceAccessException {
+		IdResponseDTO idResponseDto;
+		List<String> pathsegments = new ArrayList<>();
+		RequestDto requestDto = new RequestDto();
+
+		if (documentInfo != null) {
+			requestDto.setDocuments(documentInfo);
+		}
+
+		requestDto.setRegistrationId(regId);
+		requestDto.setStatus(status);
+		requestDto.setIdentity(demographicIdentity);
+
+//		pathsegments.add(Long.toString(uin));
+		idRequestDTO.setId(idRepoUpdate);
+		idRequestDTO.setMetadata(null);
+		idRequestDTO.setRequest(requestDto);
+		idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+		idRequestDTO.setVersion(idRepoApiVersion);
+
+		idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
+				pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
+		return idResponseDto;
+	}
+
 
 	/**
 	 * Re activate uin.
@@ -741,7 +823,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,MessageBusAddress.UIN_GENERATION_BUS_OUT);
-
 	}
 
 	@Override

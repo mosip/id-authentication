@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.uingenerator.idrepo.dto;
 
 import java.util.List;
 
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import lombok.Data;
 
 /**

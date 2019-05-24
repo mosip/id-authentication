@@ -2,6 +2,7 @@ package io.mosip.registration.processor.packet.storage.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,14 +26,17 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -108,6 +112,11 @@ public class Utilities {
 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	JSONObject idJson = null;
+
+ 	@Autowired
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
 	private static final String OUTBOUNDQUEUENAME = "outboundQueueName";
@@ -116,7 +125,7 @@ public class Utilities {
 	private static final String PASSWORD = "password";
 	private static final String BROKERURL = "brokerUrl";
 	private static final String TYPEOFQUEUE = "typeOfQueue";
-
+	
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(configServerFileStorageURL + uri, String.class);
@@ -325,5 +334,52 @@ public class Utilities {
 
         return null;
 }
+    
+    public PacketMetaInfo getPacketMetaInfo(String registrationId) throws UnsupportedEncodingException {
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+		return (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
+	}
+    
+    public List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
+		List<Documents> applicantDocuments = new ArrayList<>();
+
+ 		idJson = getDemographicIdentityJSONObject(regId);
+		regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
+		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
+		String proofOfDateOfBirthLabel =regProcessorIdentityJson.getIdentity().getPob().getValue();
+		String proofOfIdentityLabel = regProcessorIdentityJson.getIdentity().getPoi().getValue();
+		String proofOfRelationshipLabel =regProcessorIdentityJson.getIdentity().getPor().getValue();
+		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
+
+ 		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJson, proofOfAddressLabel);
+		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJson, proofOfDateOfBirthLabel);
+		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJson, proofOfIdentityLabel);
+		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJson, proofOfRelationshipLabel);
+		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJson, applicantBiometricLabel);
+		if(proofOfAddress!=null) {
+			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+		}
+		if(proofOfDateOfBirth!=null) {
+			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+		}
+		if(proofOfIdentity!=null) {
+			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+		}
+		if(proofOfRelationship!=null) {
+			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+		}
+		if(applicantBiometric!=null) {
+			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
+		}
+		return applicantDocuments;
+	}
+
+ 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
+		Documents documentsInfoDto = new Documents();;
+		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
+		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
+		documentsInfoDto.setCategory(idDocLabel);
+		return 	documentsInfoDto;
+	}
 
 }
