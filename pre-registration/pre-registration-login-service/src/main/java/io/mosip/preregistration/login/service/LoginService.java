@@ -303,12 +303,12 @@ public class LoginService {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"User sucessfully logedin ",
+						"User sucessfully logedout ",
 						AuditLogVariables.NO_ID.toString(),userId,
 						userId);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"User failed to logedin", AuditLogVariables.NO_ID.toString(),
+						"User failed to logedout", AuditLogVariables.NO_ID.toString(),
 						userId, userId);
 	}
 		
