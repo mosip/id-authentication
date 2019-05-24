@@ -74,8 +74,7 @@
   <test name="PreReg Tests">
 		<parameter name="testType" value="smoke" />
 		<classes>
-			<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
-		 <class name="io.mosip.preregistration.tests.BatchJob" />
+		
 		 
 		<!-- <class name="io.mosip.preregistration.tests.CreatePreRegistration" />
 		

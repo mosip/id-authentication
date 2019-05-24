@@ -272,7 +272,7 @@ public class AuthServiceImpl implements AuthService {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
 				} else {
-					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage());
+					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
