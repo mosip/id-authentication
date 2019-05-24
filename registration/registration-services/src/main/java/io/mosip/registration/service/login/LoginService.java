@@ -71,5 +71,20 @@ public interface LoginService {
 	 * @return List of sync results
 	 */
 	List<String> initialSync();
+	
+	
+	/**
+	 * Validating login attempts
+	 * 
+	 * @param userDetail
+	 *            user details
+	 * @param errorMessage
+	 *            error message
+	 * @param invalidLoginCount
+	 *            invalid login count
+	 * @param invalidLoginTime
+	 *            invalid login time
+	 */
+	String validateInvalidLogin(UserDetail userDetail, String errorMessage, int invalidLoginCount, int invalidLoginTime);
 
 }

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
@@ -48,13 +47,12 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.remap.CenterMachineReMapService;
+import io.mosip.registration.service.security.impl.AuthenticationService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
@@ -113,7 +111,7 @@ public class BaseController {
 	protected FXComponents fXComponents;
 
 	@Autowired
-	private LoginService loginService;
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
@@ -651,45 +649,14 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
 		} else {
-			String hashPassword = null;
-
-			// password hashing
-			if (!(password.isEmpty())) {
-				byte[] bytePassword = password.getBytes();
-				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-			}
-
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
-			authenticationValidatorDTO.setPassword(hashPassword);
+			authenticationValidatorDTO.setPassword(password);
 
-			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
+			if (authenticationService.validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
 				return RegistrationConstants.SUCCESS;
 			}
 			return RegistrationConstants.FAILURE;
-		}
-	}
-
-	/**
-	 * to validate the password and send appropriate message to display.
-	 *
-	 * @param authenticationValidatorDTO
-	 *            - DTO which contains the username and password entered by the user
-	 * @return appropriate message after validation
-	 */
-	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-				"Validating credentials using database");
-
-		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		// TO DO-- Yet to implement SSHA512
-		/*HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
-				userDetail.getSalt().getBytes()).equals(userDetail)*/
-		if ("E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262"
-				.equals(authenticationValidatorDTO.getPassword())) {
-			return RegistrationConstants.PWD_MATCH;
-		} else {
-			return RegistrationConstants.PWD_MISMATCH;
 		}
 	}
 

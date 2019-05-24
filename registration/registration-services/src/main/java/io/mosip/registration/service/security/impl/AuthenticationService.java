@@ -2,8 +2,6 @@ package io.mosip.registration.service.security.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
@@ -22,5 +20,12 @@ public interface AuthenticationService {
 	 * @param authBaseValidators List of validators
 	 */
 	void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators);
+	
+	/**
+	 * This method is used to validate pwd authentication
+	 * @param authenticationValidatorDTO The authentication validation inputs
+	 * @return String
+	 */
+	String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO);
 
 }
