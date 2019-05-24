@@ -366,10 +366,16 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NumberFormatException 
 	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
-			throws IOException, ApisResourceAccessException {
-
+			throws IOException, ApisResourceAccessException, NumberFormatException, 
+			InvalidKeySpecException, NoSuchAlgorithmException, ParserConfigurationException, SAXException {
+		
 		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
 			// officer password and otp check
@@ -377,29 +383,43 @@ public class OSIValidator {
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 			String officerRegistrationId = getOperatorRid(officerId);
 			String officerUin = getOperatorUin(officerRegistrationId);
-			String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
-			String fingerPrintType = null;// regOsi.getOfficerfingerType();
-			String iris = null;// regOsi.getOfficerIrisImageName();
-			String irisType = null;// regOsi.getOfficerIrisType();
-			String face = null;// regOsi.getOfficerPhotoName();
-			String pin = null;// regOsi.getOfficerHashedPin();
-
-			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
-				if (flag) {
-					registrationStatusDto
+			//String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
+			//String fingerPrintType = null;// regOsi.getOfficerfingerType();
+			//String iris = null;// regOsi.getOfficerIrisImageName();
+			//String irisType = null;// regOsi.getOfficerIrisType();
+			//String face = null;// regOsi.getOfficerPhotoName();
+			//String pin = null;// regOsi.getOfficerHashedPin();
+			String officerBiometricFileName=regOsi.getOfficerBiometricFileName();
+			
+			if (officerBiometricFileName != null && (!officerBiometricFileName.trim().isEmpty())) {
+				InputStream biometricStream = adapter.getFile(registrationId,
+						PacketStructure.BIOMETRIC + officerBiometricFileName.toUpperCase());
+				byte[] officerbiometric=IOUtils.toByteArray(biometricStream);
+				//TODO change parameter and fix once finalized
+				if (authByIdAuthentication(Long.valueOf(officerUin), officerbiometric)) {
+					boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
+					if (flag) {
+						registrationStatusDto
 							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
-				} else {
-					registrationStatusDto
+					} else {
+						registrationStatusDto
 							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
-
+					}
+						return flag;
+				}  else {
+					registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+					return false;
 				}
-				return flag;
-			} else if (validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
-				return true;
-			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+			}
+			else {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.OFFICER_BIOMETRIC_NOT_IN_PACKET));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.OFFICER_BIOMETRIC_NOT_IN_PACKET + registrationId);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, StatusMessage.OFFICER_BIOMETRIC_NOT_IN_PACKET);
 				return false;
+				
 			}
 		}
 		return true;
@@ -434,38 +454,60 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NumberFormatException 
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
-			throws IOException, ApisResourceAccessException {
+			throws IOException, ApisResourceAccessException, NumberFormatException,
+			InvalidKeySpecException, NoSuchAlgorithmException, ParserConfigurationException, SAXException {
 		String supervisorId = regOsi.getSupervisorId();
 		if (supervisorId != null) {
 			// superVisior otp and password
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
 			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
 			String supervisorRegistrationId = getOperatorRid(supervisorId);
-			String supervisorUin = getOperatorUin(supervisorRegistrationId);
-			String fingerPrint = null;// regOsi.getSupervisorBiometricFileName();
-			String fingerPrintType = null;// regOsi.getSupervisorFingerType();
-			String iris = null;// regOsi.getSupervisorIrisImageName();
-			String irisType = null;// regOsi.getSupervisorIrisType();
-			String face = null;// regOsi.getSupervisorPhotoName();
-			String pin = null;// regOsi.getSupervisorHashedPin();
-
-			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
-				if (flag) {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
-				} else {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
+			String supervisorUin=getOperatorUin(supervisorRegistrationId);
+			//String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
+			//String fingerPrintType = null;// regOsi.getOfficerfingerType();
+			//String iris = null;// regOsi.getOfficerIrisImageName();
+			//String irisType = null;// regOsi.getOfficerIrisType();
+			//String face = null;// regOsi.getOfficerPhotoName();
+			//String pin = null;// regOsi.getOfficerHashedPin();
+			String SupervisorBiometricFileName=regOsi.getSupervisorBiometricFileName();
+			
+			if (SupervisorBiometricFileName != null && (!SupervisorBiometricFileName.trim().isEmpty())) {
+				InputStream biometricStream = adapter.getFile(registrationId,
+						PacketStructure.BIOMETRIC + SupervisorBiometricFileName.toUpperCase());
+				byte[] supervisorbiometric=IOUtils.toByteArray(biometricStream);
+				//TODO change parameter and fix once finalized
+				if (authByIdAuthentication(Long.valueOf(supervisorUin), supervisorbiometric)) {
+					boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
+					if (flag) {
+						registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
+					} else {
+						registrationStatusDto
+							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
+					}
+						return flag;
+				}  else {
+					registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+					return false;
 				}
-				return flag;
-			} else if (validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
-				return true;
-			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
+			}
+			else {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_BIOMETRIC_NOT_IN_PACKET));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_BIOMETRIC_NOT_IN_PACKET + registrationId);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						registrationId, StatusMessage.SUPERVISOR_BIOMETRIC_NOT_IN_PACKET);
+
 				return false;
+				
 			}
 		}
 		return true;

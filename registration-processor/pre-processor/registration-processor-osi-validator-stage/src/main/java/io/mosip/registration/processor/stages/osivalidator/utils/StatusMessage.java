@@ -122,4 +122,10 @@ public class StatusMessage {
 	public static final String SUPERVISOR_OR_OFFICER_WAS_INACTIVE = "officer or supervisor was inactive during packet creation time";
 
 	public static final String PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET = "packet creationDate is null in packet";
+
+	public static final String OFFICER_BIOMETRIC_NOT_IN_PACKET = "Officer biometric file not present in file";
+	
+	public static final String SUPERVISOR_BIOMETRIC_NOT_IN_PACKET = "Supervisor biometric file not present in file";
+	
+	
 }
