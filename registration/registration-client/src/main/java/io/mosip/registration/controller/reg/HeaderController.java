@@ -360,6 +360,11 @@ public class HeaderController extends BaseController {
 	}
 
 	public void intiateRemapProcess() {
+		
+		masterSyncService.getMasterSync(
+				RegistrationConstants.OPT_TO_REG_MDS_J00001,
+				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		
 		if (!isMachineRemapProcessStarted()) {
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
