@@ -45,6 +45,8 @@ public enum RestServicesConstants {
 	
 	VID_SERVICE("vid-service.vid-uin"),
 	
+	VID_UPDATE_STATUS_SERVICE("id-repo-service-vidupdate-status"),
+	
 	TOKEN_ID_GENERATOR("token-id-generator"),
 	
 	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service");
