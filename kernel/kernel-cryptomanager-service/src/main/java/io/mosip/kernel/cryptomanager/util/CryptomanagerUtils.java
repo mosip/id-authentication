@@ -79,7 +79,7 @@ public class CryptomanagerUtils {
 
 	private static final String REFERENCE_ID = "referenceId";
 
-	private static final String TIMESTAMP = "timeStamp";
+	private static final String TIMESTAMP = "timestamp";
 
 	private static final String APPLICATION_ID = "applicationId";
 
