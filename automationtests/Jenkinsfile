@@ -35,7 +35,7 @@ stage ('---------- mvn-clean-test ---------------') {
       allowMissing: false,
       alwaysLinkToLastBuild: false,
       keepAll: true,
-      reportDir: branch+"/"+projectToBuild+"/src/test/resources",
+      reportDir: branch+"/"+projectToBuild+"/target/surefire-reports",
       reportFiles: 'customize-emailable-report.html',
       reportName: "Tests Report"
   ])
