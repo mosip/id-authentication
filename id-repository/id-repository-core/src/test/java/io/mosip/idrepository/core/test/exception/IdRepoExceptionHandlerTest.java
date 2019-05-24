@@ -229,4 +229,19 @@ public class IdRepoExceptionHandlerTest {
 			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorMessage(), e.getMessage());
 		});
 	}
+	
+	@Test
+	public void testHandleIdAppExceptionWithOperation() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST,
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST),"regenerate");
+		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
+				ex, request);
+		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
+		List<ServiceError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
+		});
+	}
 }
