@@ -4,8 +4,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
+import io.mosip.kernel.uingenerator.config.UinServiceRouter;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
-import io.mosip.kernel.uingenerator.router.UinGeneratorRouter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServer;
@@ -19,14 +19,14 @@ import io.vertx.core.http.HttpServer;
  *
  */
 
-public class UinGeneratorServerVerticle extends AbstractVerticle {
+public class HttpServerVerticle extends AbstractVerticle {
 
 	Environment environment;
 
 	/**
 	 * Field for UinGeneratorRouter
 	 */
-	private UinGeneratorRouter uinGeneratorRouter;
+	private UinServiceRouter uinGeneratorRouter;
 
 	private AuthHandler authHandler;
 
@@ -35,9 +35,9 @@ public class UinGeneratorServerVerticle extends AbstractVerticle {
 	 * 
 	 * @param context context
 	 */
-	public UinGeneratorServerVerticle(final ApplicationContext context) {
+	public HttpServerVerticle(final ApplicationContext context) {
 		authHandler = (AuthHandler) context.getBean("authHandler");
-		uinGeneratorRouter = (UinGeneratorRouter) context.getBean("uinGeneratorRouter");
+		uinGeneratorRouter = (UinServiceRouter) context.getBean("uinGeneratorRouter");
 		environment = context.getEnvironment();
 	}
 
