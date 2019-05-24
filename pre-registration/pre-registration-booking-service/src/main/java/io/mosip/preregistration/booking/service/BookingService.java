@@ -336,6 +336,7 @@ public class BookingService {
 					Map<String, String> dateMap = new HashMap<>();
 					dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
 					dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
+					dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
 					if (serviceUtil.validateAppointmentDate(dateMap)) {
 						/* Getting Status From Demographic */
 						String preRegStatusCode = serviceUtil.callGetStatusRestService(preRegistrationId);
@@ -453,6 +454,8 @@ public class BookingService {
 						Map<String, String> dateMap = new HashMap<>();
 						dateMap.put(RequestCodes.REG_DATE.getCode(), bookingRequestDTO.getRegDate());
 						dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), bookingRequestDTO.getSlotFromTime());
+						dateMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(),
+								bookingRequestDTO.getPreRegistrationId());
 						if (serviceUtil.validateAppointmentDate(dateMap)) {
 							/* Getting Status From Demographic */
 							String preRegStatusCode = serviceUtil
