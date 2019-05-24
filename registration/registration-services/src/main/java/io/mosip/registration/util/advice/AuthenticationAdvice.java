@@ -4,8 +4,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.SecurityContext;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.entity.UserRole;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
 
@@ -30,6 +35,10 @@ import io.mosip.registration.service.login.LoginService;
 @Aspect
 @Component
 public class AuthenticationAdvice {
+	
+	public static final String OFFICER_ROLE = "REGISTRTAION_OFFICER";
+	public static final String SUPERVISOR_ROLE = "REGISTTRAION_SUPERVISIOR";
+	public static final String ADMIN_ROLE = "ADMIN";
 
 	@Autowired
 	private LoginService loginService;
@@ -47,7 +56,8 @@ public class AuthenticationAdvice {
 	 * @throws Throwable
 	 */
 	@Before("@annotation(io.mosip.registration.util.advice.PreAuthorizeUserId)")
-	public void authorizeUserId() throws RegBaseCheckedException {
+	public void authorizeUserId(JoinPoint joinPoint, PreAuthorizeUserId preAuthorizeUserId)
+			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 				"Pre-Authorize the user id starting");
 
@@ -55,15 +65,11 @@ public class AuthenticationAdvice {
 			SecurityContext securityContext = SessionContext.securityContext();
 
 			UserDetail userDetail = loginService.getUserDetail(securityContext.getUserId());
-			List<String> roleList = new ArrayList<>();
 
-			userDetail.getUserRole().forEach(roleCode -> {
-				if (roleCode.getIsActive()) {
-					roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
-				}
-			});
+			List<String> roleList = userDetail.getUserRole().stream().map(UserRole::getUserRoleID)
+					.collect(Collectors.toList()).stream().map(UserRoleID::getRoleCode).collect(Collectors.toList());
 
-			if (!(userDetail.getIsActive() && roleList.containsAll(securityContext.getRoles()))) {
+			if (!(userDetail.getIsActive() && roleList.containsAll(Arrays.asList(preAuthorizeUserId.roles())))) {
 				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 						"Pre-Authorize the user id got failed");
 

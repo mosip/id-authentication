@@ -8,5 +8,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PreAuthorizeUserId {
- 
+	/**
+	 * List of the roles which needs to accessed for method
+	 * 
+	 * @return
+	 */
+	public String[] roles() default {""};
+	
 }

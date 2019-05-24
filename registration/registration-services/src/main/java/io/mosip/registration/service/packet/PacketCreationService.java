@@ -2,6 +2,8 @@ package io.mosip.registration.service.packet;
 
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.util.advice.AuthenticationAdvice;
+import io.mosip.registration.util.advice.PreAuthorizeUserId;
 
 /**
  * Class for creating the Resident Registration as zip file
@@ -21,5 +23,6 @@ public interface PacketCreationService {
 	 *             the checked exception
 	 * @return the zip file as bytes
 	 */
+	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
 	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
 }
