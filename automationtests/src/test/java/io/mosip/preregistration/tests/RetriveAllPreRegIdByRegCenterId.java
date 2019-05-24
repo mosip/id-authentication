@@ -92,9 +92,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	 */
 	@DataProvider(name = "RetrivePreIdByRegCenterId")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smoke") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

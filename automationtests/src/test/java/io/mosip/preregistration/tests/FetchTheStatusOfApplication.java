@@ -93,8 +93,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	@DataProvider(name = "Fetch_the_status_of_a_application")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 

@@ -91,8 +91,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 
 	@DataProvider(name = "Retrive_PreRegistration")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch ("smoke") {
+		 switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 

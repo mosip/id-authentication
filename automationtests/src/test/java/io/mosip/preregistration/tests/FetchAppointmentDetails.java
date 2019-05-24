@@ -92,8 +92,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "FetchAppointmentDetails")
 	public Object[][] readData(ITestContext context) throws Exception {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
