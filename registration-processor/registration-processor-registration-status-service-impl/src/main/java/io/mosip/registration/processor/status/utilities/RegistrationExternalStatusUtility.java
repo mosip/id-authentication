@@ -14,7 +14,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 
-
 /**
  * The Class RegistrationExternalStatusUtility.
  */
@@ -34,7 +33,8 @@ public class RegistrationExternalStatusUtility {
 	/**
 	 * Gets the external status.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the external status
 	 */
 	public RegistrationExternalStatusCode getExternalStatus(RegistrationStatusEntity entity) {
@@ -60,15 +60,16 @@ public class RegistrationExternalStatusUtility {
 	/**
 	 * Check statusfor packet receiver.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the registration external status code
 	 */
 	private RegistrationExternalStatusCode checkStatusforPacketReceiver(RegistrationStatusEntity entity) {
 		long timeElapsedinPacketreceiver = checkElapsedTime(entity);
 		if ((entity.getLatestTransactionTypeCode()
 				.equalsIgnoreCase(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString()))
-				&& (timeElapsedinPacketreceiver > elapsedTime)){
-			if((entity.getRetryCount() < thresholdTime)) {
+				&& (timeElapsedinPacketreceiver > elapsedTime)) {
+			if ((entity.getRetryCount() < thresholdTime)) {
 				return RegistrationExternalStatusCode.RESEND;
 			}
 			return RegistrationExternalStatusCode.REREGISTER;
@@ -81,7 +82,8 @@ public class RegistrationExternalStatusUtility {
 	/**
 	 * Check status for packet uploader.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the registration external status code
 	 */
 	private RegistrationExternalStatusCode checkStatusforPacketUploader(RegistrationStatusEntity entity) {
@@ -98,7 +100,8 @@ public class RegistrationExternalStatusUtility {
 	/**
 	 * Check elapsed time.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the long
 	 */
 	private Long checkElapsedTime(RegistrationStatusEntity entity) {
