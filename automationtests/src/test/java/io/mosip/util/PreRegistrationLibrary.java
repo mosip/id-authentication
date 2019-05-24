@@ -1687,6 +1687,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		long number = (long) Math.floor(Math.random() * 9_000_000_00L) + 1_000_000_00L;
 		userId = Long.toString(number);
 		userId = "9" + userId;
+		userId="ashish.rastogi@mindtree.com";
 		JSONObject object = null;
 		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {

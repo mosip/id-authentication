@@ -89,6 +89,12 @@ public class PreregistrationDAO
 		String documentId = preId_status.get(0).toString();
 		return documentId;
 	}
+	public void makeregistartionCenterActive(String registartionCenter)
+	{
+		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
+
 
 
 	

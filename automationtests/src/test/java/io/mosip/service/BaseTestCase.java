@@ -125,7 +125,7 @@ public class BaseTestCase {
 
 		PreRegistrationLibrary pil = new PreRegistrationLibrary();
 		pil.PreRegistrationResourceIntialize();
-		AuthTestsUtil.wakeDemoApp();
+		//AuthTestsUtil.wakeDemoApp();
 
 	} // End suiteSetup
 

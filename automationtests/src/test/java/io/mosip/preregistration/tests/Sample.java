@@ -37,9 +37,9 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.mongodb.internal.thread.DaemonThreadFactory;
 
 import io.mosip.dbentity.OtpEntity;
-import io.mosip.preregistration.dao.PreRegistartionDAOO;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -64,12 +64,12 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
-	PreRegistartionDAOO dao = new PreRegistartionDAOO();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
+	PreregistrationDAO dao=new PreregistrationDAO();
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 	}
 
 	/**
@@ -80,21 +80,7 @@ public class Sample extends BaseTestCase implements ITest {
 	public void updatePreRegistrationDataForExpiredApplication()
 			throws FileNotFoundException, IOException, ParseException, InterruptedException {
 		
-		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-			Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10002");
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		lib.syncAvailability();
-		lib.FetchAppointmentDetails(preID);
-		lib.getPreRegistrationStatus(preID);*/
-		lib.syncAvailability();
-
-	
-	//	System.out.println("=========="+preID);
-		
+dao.makeregistartionCenterActive("10003");
 
 	}
 
