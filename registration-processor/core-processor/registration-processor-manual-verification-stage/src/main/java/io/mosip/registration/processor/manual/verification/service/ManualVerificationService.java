@@ -25,7 +25,7 @@ public interface ManualVerificationService {
 	 * @return {@link ManualVerificationDTO}
 	 */
 
-	public ManualVerificationDTO assignApplicant(UserDto dto, String matchType);
+	public ManualVerificationDTO assignApplicant(UserDto dto);
 
 	/**
 	 * This method returns a file related to a regId.

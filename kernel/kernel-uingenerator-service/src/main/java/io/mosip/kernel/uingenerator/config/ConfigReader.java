@@ -1,11 +1,9 @@
-package io.mosip.kernel.uingenerator.util;
+package io.mosip.kernel.uingenerator.config;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,12 +18,12 @@ import io.mosip.kernel.uingenerator.exception.UinGeneratorServiceException;
  * @since 1.0.0
  *
  */
-public class ConfigUtil {
+public class ConfigReader {
 
 	/**
 	 * Private constructor to prevent instantiation.
 	 */
-	private ConfigUtil() {
+	private ConfigReader() {
 
 	}
 
@@ -69,7 +67,7 @@ public class ConfigUtil {
 				return value;
 		}
 		Properties prop = new Properties();
-		try (InputStream input = ConfigUtil.class.getClassLoader().getResourceAsStream(propertyFileName)) {
+		try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(propertyFileName)) {
 			if (input == null) {
 				throw new UinGeneratorServiceException("", "File Not Available : " + propertyFileName);
 			}

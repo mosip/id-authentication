@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.status.entity.BaseRegistrationEntity;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 
 /**
  * The Interface RegistrationRepositary.
@@ -30,5 +31,9 @@ public interface RegistrationRepositary<T extends BaseRegistrationEntity, E> ext
 	@Query("SELECT registration.id FROM RegistrationStatusEntity registration WHERE registration.id in :regIds and registration.latestTransactionStatusCode =:statusCode")
 	public List<String> getProcessedOrProcessingRegIds(@Param("regIds") List<String> regIds,
 			@Param("statusCode") String statusCode);
+	
+	@Query("SELECT registrationList FROM SyncRegistrationEntity registrationList WHERE registrationList.registrationId =:regId and registrationList.registrationType =:regType")
+	public List<SyncRegistrationEntity> getSyncRecordsByRegIdAndRegType(@Param("regId") String regId,
+			@Param("regType") String regType);
 
 }

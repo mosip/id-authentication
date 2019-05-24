@@ -704,7 +704,7 @@ public class DemographicService {
 	 */
 	public void statusCheck(DemographicEntity demographicEntity, String status, String userId) {
 		if (demographicEntity != null) {
-			userValidation(userId, demographicEntity.getCreatedBy());
+			//userValidation(userId, demographicEntity.getCreatedBy());
 			if (serviceUtil.isStatusValid(status)) {
 				demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
 				demographicRepository.update(demographicEntity);
