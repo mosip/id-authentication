@@ -52,7 +52,7 @@ import io.mosip.kernel.cryptomanager.exception.CryptoManagerSerivceException;
 import io.mosip.kernel.cryptomanager.exception.KeymanagerServiceException;
 import io.mosip.kernel.cryptomanager.exception.ParseResponseException;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
-import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
@@ -69,7 +69,7 @@ public class CryptographicUtilTest {
 	private String malformedURL="localhost:9090/malformedURL";
 
 	@Autowired
-	private CryptomanagerUtil cryptomanagerUtil;
+	private CryptomanagerUtils cryptomanagerUtil;
 
 	@MockBean
 	private ObjectMapper objectMapper;

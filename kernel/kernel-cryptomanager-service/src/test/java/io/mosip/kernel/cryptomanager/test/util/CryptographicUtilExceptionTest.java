@@ -41,7 +41,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
-import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -53,7 +53,7 @@ public class CryptographicUtilExceptionTest {
 	private String publicKeyUrl;
 
 	@Autowired
-	CryptomanagerUtil cryptomanagerUtil;
+	CryptomanagerUtils cryptomanagerUtil;
 
 	@Autowired
 	private ObjectMapper objectMapper;
