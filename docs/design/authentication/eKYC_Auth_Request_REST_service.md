@@ -39,7 +39,7 @@ Partner can use eKYC service to authenticate an Individual by using one or more 
 **2. Pre-requisites**   
 Below admin configurations should be available before implementing the solution.
 -	eKYC REST service supports only certain authentication types which are allowed in the country specific configuration among the authentications supported by Identity Authenticatoin Service.
--	The KYC details returned to the partner are limited to the attributes allowed to the partner in the policy associated to a Partner while Partner Registration in Partner Management Service
+-	The KYC details returned to a partner are limited to the attributes allowed in the policy associated to the Partner while Partner Registration in Partner Management Service
 
 **3. Solution**   
 KYC Auth REST service addresses the above requirements as explained below.
@@ -58,7 +58,7 @@ KYC Auth REST service addresses the above requirements as explained below.
 8.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 9.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel’s SmsNotifier and EmailNotifier to their stored phone/email respectively.
 10.	Respond to Partner with below success KYC Auth response - 
-[ID Authentication API - Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-1)
+[Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-1)
 
 **3.1. Class Diagram:**   
 The below class diagram shows relationship between all the classes which are required for KYC authentication service.
@@ -78,4 +78,4 @@ Below are the proxy implementations used in ID-Authentication:
 - ***Digital Signature*** - Any digital signature added in the Authentication request is currently not validated.
 - ***Encrypted KYC response*** - KYC Response is encrypted using mocked MOSIP public key using referenceID **"PARTNER"**, and the same should be used to decrypt the response.
 - ((TBD))***secondaryLangCode***
-- ((TBD))***BioValue is only encrypted, not encoded
+- ((TBD))***BioValue*** is only encrypted, not encoded
