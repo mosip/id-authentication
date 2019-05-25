@@ -4,22 +4,22 @@
 **1. Background**
 
 
-OTP Auth REST service can be used to authenticate an Individual using OTP sent to the individual using the [OTP Request REST API](OTP_Request_REST_service.md).
+OTP Auth REST service can be used to authenticate an Individual using OTP sent to the individual using the [OTP Request REST Service](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#otp-request-service-public).
 
-**1.1.Target users **  
-TSP can use Auth service to authenticate an Individual by using one or more types of authentication supported by MOSIP and retrieve Auth details as a response.
+**1.1.Target users**  
+Partner can use Auth service to authenticate an Individual by using one or more types of authentication supported by MOSIP and retrieve Auth details as a response.
 
 
- **1.2. Key requirements **   
--	TSP can authenticate an Individual using one or more authentication types
--	TSP will send Individual's UIN/VID to enable authentication of Individual
--	TSP will send muaCode and msaCode to authenticate and authorize a TSP to authenticate an Individual
+ **1.2. Key requirements**   
+-	Partner can authenticate an Individual using one or more authentication types
+-	Partner will send Individual's UIN/VID to enable authentication of Individual
+-	Partner will send Partner ID and MISP License Key to authenticate and authorize a Partner to authenticate an Individual
 -	Check Individual's UIN/VID for authenticity and validity
--	Validate demographic details of the Individual against the one stored in database
+-	Validate OTP value of the Individual against the one in the generated in the earlier OTP request
 -	Inform authentication status (success/failure) to the Individual in the form of message and/or email
 
 
-**1.3. Key non-functional requirements **   
+**1.3. Key non-functional requirements**   
 -	Log :
 	-	Log each stage of authentication process
 	-	Log all the exceptions along with error code and short error message
@@ -37,23 +37,28 @@ TSP can use Auth service to authenticate an Individual by using one or more type
 
 
 **2. Solution**   
-1.	TSP needs to construct a POST request with below details and send to Request URL identity/auth    
-[ID Authentication API - Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#sample-request)
-2.	Authenticate and Authorize TSP <<TBD>>
-3.	Validate 'reqTime' for incoming Auth Requests for valid format and timestamp < 24 hours (configurable value) from current time
-4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
-5.	Once the above validations are successful, Auth request is then validated based on biometric - Name, Address, Date of birth,Gender, Phone and Email-ID - authentications present in input request. For these types of authentications   
-6.	Retrieve Identity details of the Individual based on UIN from ID Repository
+1.	Partner needs to construct a POST request with below details and send to Request URL /idauthentication/v1/identity/auth/    
+[ID Authentication API - Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauth)
+2.	Authenticate and Authorize Partner and MISP using their Policy and LicenseKey respectively
+3.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
+4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 
+5.	Once the above validations are successful, Auth request is then validated based on OTP value present in input request.
+6.	For this authentication retrieve Identity details of the Individual based on UIN from ID Repository. Validate UIN/VID for authenticity.
 7.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 8.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel's SmsNotifier and EmailNotifier to their stored phone/email respectively.
-9.	Respond to TSP with below success Auth response - 
-[ID Authentication API - Sample Response] https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#sample-response
+9.	Respond to Partner with below success Auth response - 
+[ID Authentication API - Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response)
 
 
 **2.1. Class Diagram:**   
 The below class diagram shows relationship between all the classes which are required for Bio authentication service.
 
-![Demo Auth Class Diagram](_images/Demo_Auth_Class_Diagram.PNG)
+![OTP Auth Class Diagram](_images/OTP_Auth_Class_Diagram.PNG)
 
 **2.2. Sequence Diagram:**   
-![Demo Auth Sequence Diagram](_images/Demo_Auth_Sequence_Diagram.PNG)
+![OTP Auth Sequence Diagram](_images/OTP_Auth_Sequence_Diagram.PNG)
+
+**3. Proxy Implementations -**   
+Below are the proxy implementations used in ID-Authentication:
+- ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
+- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the Demographic Authentication request is allowed.
