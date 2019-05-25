@@ -127,12 +127,12 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 			// Delete All Document by Pre-Registration Id
-			Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
+			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
 
-			logger.info("Dele Doc:" + delAllDocByPreId.asString());
+			logger.info("Dele Doc:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
 			
