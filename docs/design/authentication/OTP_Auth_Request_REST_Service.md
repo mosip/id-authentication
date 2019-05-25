@@ -19,7 +19,7 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 -	Inform authentication status (success/failure) to the Individual in the form of message and/or email
 
 
-**1.3. Key non-functional requirements **   
+**1.3. Key non-functional requirements**   
 -	Log :
 	-	Log each stage of authentication process
 	-	Log all the exceptions along with error code and short error message
@@ -57,3 +57,8 @@ The below class diagram shows relationship between all the classes which are req
 
 **2.2. Sequence Diagram:**   
 ![OTP Auth Sequence Diagram](_images/OTP_Auth_Sequence_Diagram.PNG)
+
+**3. Proxy Implementations -**   
+Below are the proxy implementations used in ID-Authentication:
+- ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
+- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the Demographic Authentication request is allowed.
