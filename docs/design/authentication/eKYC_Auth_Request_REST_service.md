@@ -22,7 +22,7 @@ Partner can use eKYC service to authenticate an Individual by using one or more 
 -	Logging :
 	-	Log each stage of authentication process
 	-	Log all the exceptions along with error code and short error message
-	-	As a security measure, Individual’s UIN or PI/PA should not be logged
+	-	As a security measure, Individual’s UIN should not be logged
 -	Audit :
 	-	Audit all transaction details during authentication process in database
 	-	Individual’s UIN or PI/PA details should not be audited
