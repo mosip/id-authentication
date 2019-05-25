@@ -72,6 +72,7 @@ import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
@@ -247,11 +248,10 @@ public class LdapDataStore implements DataStore {
 						.setMobile(userLookup.get("mobile") != null ? userLookup.get("mobile").get().toString() : null);
 				mosipUserDto.setMail(userLookup.get("mail") != null ? userLookup.get("mail").get().toString() : null);
 				if (userLookup.get("userPassword") != null) {
-					PasswordDetails password = PasswordUtil
-							.splitCredentials(userLookup.get("userPassword").get().getBytes());
-					mosipUserDto.setUserPassword(
-							userLookup.get("userPassword") != null ? HMACUtils.digestAsPlainText(password.getPassword())
-									: null);
+
+					mosipUserDto.setUserPassword(userLookup.get("userPassword") != null
+							? CryptoUtil.encodeBase64(userLookup.get("userPassword").get().getBytes())
+							: null);
 				}
 				// mosipUserDto.setLangCode(userLookup.get("preferredLanguage").get().toString());
 				mosipUserDto.setName(userLookup.get("cn").get().toString());
@@ -373,7 +373,7 @@ public class LdapDataStore implements DataStore {
 			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
-					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
+					saltDetails.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 				}
 			}
 			mosipUserDtos.add(saltDetails);
