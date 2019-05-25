@@ -130,7 +130,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
 
-			logger.info("Dele Doccument Res:" + delAllDocByPreIdRes.asString());
+			logger.info("Dele Doccument Response:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 
