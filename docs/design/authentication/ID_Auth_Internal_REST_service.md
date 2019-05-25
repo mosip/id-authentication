@@ -50,10 +50,10 @@ c.	Face – Image based
 **2.1. Class Diagram:**   
 The below class diagram shows relationship between all the classes which are required for Bio authentication service.
 
-![Bio Auth Class Diagram](_images/Bio_Auth_Class_Diagram.PNG)
+![Internal Auth Class Diagram](_images/Internal_Auth_Class_Diagram.PNG)
 
 **2.2. Sequence Diagram:**   
-![Bio Auth Sequence Diagram](_images/Bio_Auth_Sequence_Diagram.PNG)
+![Internal Auth Sequence Diagram](_images/Internal_Auth_Sequence_Diagram.PNG)
 
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
