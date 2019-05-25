@@ -39,7 +39,7 @@ Partner can use eKYC service to authenticate an Individual by using one or more 
 **2. Pre-requisites**   
 Below admin configurations should be available before implementing the solution.
 -	eKYC REST service supports only certain authentication types which are allowed in the country specific configuration among the authentications supported by Identity Authenticatoin Service.
--	The KYC details returned to a partner are limited to the attributes allowed in the policy associated to the Partner while Partner Registration in Partner Management Service
+-	The KYC details returned to the partner are limited to the attributes allowed to the partner in the policy associated to a Partner while Partner Registration in Partner Management Service
 
 **3. Solution**   
 KYC Auth REST service addresses the above requirements as explained below.
@@ -77,5 +77,5 @@ Below are the proxy implementations used in ID-Authentication:
 - ***keyIndex*** - No validation has been added for keyIndex which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
 - ***Digital Signature*** - Any digital signature added in the Authentication request is currently not validated.
 - ***Encrypted KYC response*** - KYC Response is encrypted using mocked MOSIP public key using referenceID **"PARTNER"**, and the same should be used to decrypt the response.
-- ((TBD))***secondaryLangCode***
-- ((TBD))***BioValue*** is only encrypted, not encoded
+- ***secondaryLangCode***<<TBD>>
+- ***BioValue*** is only encrypted, not encoded<<TBD>>

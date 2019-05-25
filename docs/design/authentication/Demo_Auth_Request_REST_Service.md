@@ -36,11 +36,11 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 	-	Individual's UIN should not be audited
 	-	Audit any invalid UIN or VID incidents
 -	Exception :
-	-	Any failure in authentication/authorization of TSP and validation of UIN and VID needs to be handled with appropriate error code and message in Auth response
+	-	Any failure in authentication/authorization of Partner and validation of UIN and VID needs to be handled with appropriate error code and message in Auth response
 	-	Any error in Individual authentication also should be handled with appropriate error code and message in Auth Response 
 -	Security
-	-	Auth details of an individual is a sensitive information, hence should be encrypted before sending to TSP
-	-	Auth Request contains sensitive identity information of an Individual. This information should be encrypted by TSP before sending to IDA. On receiving this request, TSP should decrypt identity element before validating Individual's details for authentication purpose 
+	-	Auth details of an individual is a sensitive information, hence should be encrypted before sending to Partner
+	-	Auth Request contains sensitive identity information of an Individual. This information should be encrypted by Partner before sending to IDA. On receiving this request, Partner should decrypt identity element before validating Individual's details for authentication purpose 
 
 
 **2. Solution**   
@@ -54,7 +54,7 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 7.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 8.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel's SmsNotifier and EmailNotifier to their stored phone/email respectively.
 9.	Respond to Partner with below success Auth response - 
-[ID Authentication API - Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response)
+[Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response)
 
 
 **2.1. Class Diagram:**   

@@ -12,7 +12,7 @@ MOSIP Partner will request for an OTP on behalf of an Individual
  ***1.2. Key requirements -***   
 -	MOSIP Partner can authenticate an Individual using OTP sent to the Individual by OTP Request API
 -	MOSIP Partner will capture Individual’s UIN/VID and construct OTP Request
--	Once OTP Request is received, authenticate and authorize TSP
+-	Once OTP Request is received, authenticate and authorize Partner
 -	Check Individual’s UIN/VID for authenticity and validity
 -	Create and send OTP to the Individual via message and/or email
 
@@ -39,7 +39,7 @@ OTP Request REST service addresses the above requirement -
 Below are details on the above classes –
 -	***OTPRequestDTO*** – Request object with input request for OTP
 -	***OTPResponseDTO*** – Response object with success or failure to generate and send OTP
--	***IDAuthFilter*** – Spring filter to intercept OTP Request and Response in order to authenticate/authorize TSP
+-	***IDAuthFilter*** – Spring filter to intercept OTP Request and Response in order to authenticate/authorize Partner
 -	***OTPController*** – Spring Controller to receive OTP Request
 -	***OTPRequestValidator*** – Spring Validator to validate input request object OTPRequestDTO
 -	***OTPService*** – Spring Service that interacts with OTPManager and OTPUtil to generate OTP
