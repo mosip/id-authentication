@@ -68,7 +68,7 @@ The below class diagram shows relationship between all the classes which are req
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
 - ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
-- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the OTP Authentication request is allowed.
+- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the Demographic Authentication request is allowed.
 - ***MOSIP public key for encrypting Request block*** - The public key used for decrypting the request would be published in Partner Management Service, which is currently mocked using referenceID **"PARTNER"**, and the same should be used while encrypting the request.
 - ***keyIndex*** - No validation has been added for keyIndex which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
 - ***Digital Signature*** - Any digital signature added in the Authentication request is currently not validated.
