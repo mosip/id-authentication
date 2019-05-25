@@ -29,16 +29,16 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 	-	Individual's UIN should not be audited
 	-	Audit any invalid UIN or VID incidents
 -	Exception :
-	-	Any failure in authentication/authorization of Partner and validation of UIN and VID needs to be handled with appropriate error code and message in Auth response
+	-	Any failure in authentication/authorization of TSP and validation of UIN and VID needs to be handled with appropriate error code and message in Auth response
 	-	Any error in Individual authentication also should be handled with appropriate error code and message in Auth Response 
 -	Security
-	-	Auth details of an individual is a sensitive information, hence should be encrypted before sending to Partner
-	-	Auth Request contains sensitive identity information of an Individual. This information should be encrypted by Partner before sending to IDA. On receiving this request, Partner should decrypt identity element before validating Individual's details for authentication purpose 
+	-	Auth details of an individual is a sensitive information, hence should be encrypted before sending to TSP
+	-	Auth Request contains sensitive identity information of an Individual. This information should be encrypted by TSP before sending to IDA. On receiving this request, TSP should decrypt identity element before validating Individual's details for authentication purpose 
 
 
 **2. Solution**   
 1.	Partner needs to construct a POST request with below details and send to Request URL /idauthentication/v1/identity/auth/    
-[ID Authentication API - Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauth)
+[Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauth)
 2.	Authenticate and Authorize Partner and MISP using their Policy and LicenseKey respectively
 3.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
 4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 

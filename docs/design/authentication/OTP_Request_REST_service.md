@@ -17,7 +17,17 @@ MOSIP Partner will request for an OTP on behalf of an Individual
 -	Create and send OTP to the Individual via message and/or email
 
  ***1.3. Key non-functional requirements -***   
-<TBD>
+-	Logging :
+	-	Log each stage of OTP Request processing
+	-	Log all the exceptions along with error code and short error message
+	-	As a security measure, Individual’s UIN or PI/PA should not be logged
+-	Audit :
+	-	Audit all transaction details in database during OTP Request processing
+	-	Individual’s UIN or PI/PA details should not be audited
+	-	Audit any invalid UIN or VID incidents
+-	Exception :
+	-	Any failure in authentication/authorization of Partner and validation of UIN and VID needs to be handled with appropriate error code and message in KYC’s auth response
+	-	Any error in Individual authentication also should be handled with appropriate error code and message in Kyc Auth Response 
 
 **2. Solution**   
 OTP Request REST service addresses the above requirement -  
@@ -30,7 +40,7 @@ OTP Request REST service addresses the above requirement -
 5.	Create OTP using OTP key in the format using OtpUtil- <product_id>_<uin_ref_id>_<txn_id>_<mua_code>
 6.	Retrieve mode of communication with Individual using admin config to send generated OTP
 7.	Integrate with Kernel SmsNotifier and EmailNotifier to send the generated OTP to their stored phone/email respectively.
-8.	Respond to MOSIP Partner with [Success response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-2)
+8.	Respond to MOSIP Partner with success Auth response - [Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response-2)
 
 **2.1. Class Diagram**
 

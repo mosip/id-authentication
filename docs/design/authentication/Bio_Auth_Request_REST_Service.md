@@ -41,8 +41,7 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 
 
 **2. Solution**   
-1.	Partner needs to construct a POST request with below details and send to Request URL /idauthentication/v1/identity/auth/    
-[ID Authentication API - Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauth)
+1.	Partner needs to construct a POST request with below details and send to Request URL `/idauthentication/v1/identity/auth/` - [Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#post-idauthenticationv1identityauth)
 2.	Authenticate and Authorize Partner and MISP using their Policy and LicenseKey respectively
 3.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
 4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 
@@ -53,8 +52,7 @@ c.	Face – Image based
 6.	Retrieve Identity details of the Individual based on UIN from ID Repository
 7.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 8.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel's SmsNotifier and EmailNotifier to their stored phone/email respectively.
-9.	Respond to Partner with below success Auth response - 
-[Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response)
+9.	Respond to Partner with below success Auth response - [Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#success-response)
 
 
 **2.1. Class Diagram:**   
@@ -75,4 +73,4 @@ Below are the proxy implementations used in ID-Authentication:
 - ***Biometric data*** - The biometric data such as Fingerprint/Iris/Face are stubbed.
 - ***BioAPI Provider*** - The Biometric API provider used for matching the stubbed Fingerprint/Iris/Face data is mocked with stubbed BioAPI provider implementation.
 - ***Device Specific Attributes*** - The Device Specific attributes in the Biometric Authentication request such as timestamp, transactionID, deviceCode,deviceProviderID, etc... are not validated. Only biometric attributes validated are bioType, bioSubType and bioValue.
-- ***BioValue*** is only encrypted, not encoded<<TBD>>
+- ***BioValue*** is only encrypted, not encoded&lt;&lt;TBD&gt;&gt;
