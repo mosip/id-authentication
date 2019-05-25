@@ -51,13 +51,13 @@ Below are details on the above classes –
 -	***RestHelper*** – Helper class used to make REST API calls
 
 
-**2.2. Sequence Diagram:**
+**2.2. Sequence Diagram -**
 
 ![OTP Request Sequence diagram](_images/OTP_Request_Sequence_Diagram.PNG)
 
 
-**3. Proxy Implementations**   
+**3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
 - ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
-- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the request is allowed.
+- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the OTP request is allowed.
 
