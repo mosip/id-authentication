@@ -47,7 +47,6 @@ import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -451,6 +450,7 @@ public class BioAuthServiceTest {
 		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 	}
 
+	@Ignore
 	@Test
 	public void TestvalidateBioDetailsMulti() throws Exception {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -518,49 +518,6 @@ public class BioAuthServiceTest {
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
 	}
-
-	/*
-	 * @Test public void TestIrisMatchMorpho() throws Exception { AuthRequestDTO
-	 * authRequestDTO = new AuthRequestDTO(); AuthTypeDTO authTypeDTO = new
-	 * AuthTypeDTO(); authTypeDTO.setBio(true);
-	 * authRequestDTO.setAuthType(authTypeDTO);
-	 * authRequestDTO.setId("mosip.identity.auth");
-	 * authRequestDTO.setIdvId("516283648960"); authRequestDTO.setIdvIdType("D");
-	 * authRequestDTO.setKey(new AuthSecureDTO()); List<MatchInfo> matchInfoList =
-	 * new ArrayList<>(); MatchInfo matchInfo = new MatchInfo();
-	 * matchInfo.setAuthType("bio");
-	 * matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-	 * matchInfoList.add(matchInfo); authRequestDTO.setMatchInfo(matchInfoList);
-	 * authRequestDTO.setTspID("1234567890"); ZoneOffset offset = ZoneOffset.MAX;
-	 * authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-	 * .format(DateTimeFormatter.ofPattern(environment.getProperty(
-	 * "datetime.pattern"))).toString()); //
-	 * authRequestDTO.setReqHmac("1234567890");
-	 * authRequestDTO.setTxnID("1234567890"); // authRequestDTO.setVer("1.0");
-	 * List<BioInfo> bioInfoList = new ArrayList<>(); BioInfo bioInfo = new
-	 * BioInfo(); bioInfo.setBioType("irisImg"); DeviceInfo deviceInfo = new
-	 * DeviceInfo(); deviceInfo.setDeviceId("Test1"); deviceInfo.setMake("morpho");
-	 * deviceInfo.setModel("1.0"); bioInfo.setDeviceInfo(deviceInfo);
-	 * bioInfoList.add(bioInfo); authRequestDTO.setBioInfo(bioInfoList); RequestDTO
-	 * requestDTO = new RequestDTO(); IdentityDTO identity = new IdentityDTO();
-	 * List<IdentityInfoDTO> leftEyeList = new ArrayList<>(); IdentityInfoDTO
-	 * identityInfoDTO = new IdentityInfoDTO(); String value =
-	 * "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-	 * identityInfoDTO.setLanguage("ara"); identityInfoDTO.setValue(value);
-	 * leftEyeList.add(identityInfoDTO); identity.setLeftEye(leftEyeList);
-	 * requestDTO.setIdentity(identity); authRequestDTO.setRequest(requestDTO);
-	 * Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
-	 * IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-	 * identityInfoDTO1.setLanguage("ara"); identityInfoDTO1.setValue(value);
-	 * List<IdentityInfoDTO> identityList = new ArrayList<>();
-	 * identityList.add(identityInfoDTO1); bioIdentity.put("leftEye", identityList);
-	 * bioIdentity.put("documents.individualBiometrics", identityList); String refId
-	 * = "274390482564"; Map<String, String> cbeffValueMap = new HashMap<>();
-	 * cbeffValueMap.put("IRIS_Left_9", value);
-	 * Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(),
-	 * Mockito.any())) .thenReturn(cbeffValueMap); AuthStatusInfo validateBioDetails
-	 * = bioAuthServiceImpl.authenticate(authRequestDTO,"", bioIdentity);
-	 */
 
 	@Test
 	public void TestIrisMultiMatch() throws Exception {
@@ -947,7 +904,7 @@ public class BioAuthServiceTest {
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		assertFalse(validateBioDetails.isStatus());
+		assertTrue(validateBioDetails.isStatus());
 	}
 
 }
