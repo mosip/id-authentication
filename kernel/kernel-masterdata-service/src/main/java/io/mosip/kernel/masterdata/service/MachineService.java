@@ -1,9 +1,13 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -99,5 +103,17 @@ public interface MachineService {
 	 * 
 	 */
 	IdResponseDto deleteMachine(String id);
+	
+	/**
+	 * Fetch all Machines which are mapped with the given registration center
+	 * 
+	 * @param regCenterId Registration center id to know the list of 
+	 * @param RegistrationCenterMachineResponseDto   response object which contain the 
+	 * @return {@link RegistrationCenterMachineID}
+	 */
+	public List<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId);
+	
+	
+	
 
 }

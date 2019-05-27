@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "Machine", description = "Machine Detail resource")
-public class MachineDto {
+public class MachineDto extends BaseDto{
 
 	/**
 	 * Field for machine id

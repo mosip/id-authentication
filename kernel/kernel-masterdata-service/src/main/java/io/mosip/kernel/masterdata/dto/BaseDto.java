@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 /**
@@ -10,22 +10,21 @@ import lombok.Data;
  */
 @Data
 public class BaseDto {
-	
-	@NotNull
+
 	private Boolean isActive;
-	
+
 	/**
 	 * Field to hold date and time for Validity Date Time
 	 */
 	private LocalDateTime validityEndDateTime;
-		
+
 	/**
 	 * Field to hold creator by name
 	 */
 	private String createdBy;
 
 	/**
-	 * Field to hold date and time of the creation 
+	 * Field to hold date and time of the creation
 	 */
 	private LocalDateTime createdDateTime;
 
@@ -35,7 +34,7 @@ public class BaseDto {
 	private String updatedBy;
 
 	/**
-	 * Field to hold updated date and time 
+	 * Field to hold updated date and time
 	 */
 	private LocalDateTime updatedDateTime;
 
@@ -45,10 +44,8 @@ public class BaseDto {
 	private Boolean isDeleted;
 
 	/**
-	 * Field to hold date and time of the deletion 
+	 * Field to hold date and time of the deletion
 	 */
 	private LocalDateTime deletedDateTime;
-	
 
-	
 }

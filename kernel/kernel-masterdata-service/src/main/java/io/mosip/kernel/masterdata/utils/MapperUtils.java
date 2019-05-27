@@ -30,6 +30,7 @@ import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
+import io.mosip.kernel.masterdata.dto.BaseDto;
 
 /**
  * MapperUtils class provides methods to map or copy values from source object
@@ -230,6 +231,17 @@ public class MapperUtils {
 		// object
 		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
 		String objectClassName = Object.class.getName();// object class fully qualified name
+		
+		String baseDtoClassName = BaseDto.class.getName();// base entity fully qualified name
+
+		if (sourceSupername.equals(baseEntityClassName) && destinationSupername.equals(baseDtoClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			sourceFields = source.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+			return;
+		}
 
 		// if source is an entity
 		if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
@@ -268,6 +280,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
+		
 		mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
@@ -488,7 +501,7 @@ public class MapperUtils {
 		objects.forEach(arr -> {
 			MachineRegistrationCenterDto machineRegistrationCenterDto = new MachineRegistrationCenterDto();
 			machineRegistrationCenterDto.setRegCentId((String) arr[0]);
-			machineRegistrationCenterDto.setMachineId((String) arr[1]);
+			machineRegistrationCenterDto.setId((String) arr[1]);
 			machineRegistrationCenterDto.setName((String) arr[2]);
 			machineRegistrationCenterDto.setMacAddress((String) arr[3]);
 			machineRegistrationCenterDto.setSerialNum((String) arr[4]);

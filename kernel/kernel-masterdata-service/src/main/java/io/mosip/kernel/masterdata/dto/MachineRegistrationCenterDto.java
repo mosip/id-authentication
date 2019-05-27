@@ -1,20 +1,30 @@
 package io.mosip.kernel.masterdata.dto;
 
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+/**
+ * 
+ * @author M1047717
+ *
+ */
 @Data
-public class MachineRegistrationCenterDto {
-	
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class MachineRegistrationCenterDto extends BaseDto{
+	/**
+	 * Field for registration Center Id
+	 */
 	@NotBlank
 	@Size(min = 1, max = 10)
+	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String regCentId;
 	/**
 	 * Field for machine id
@@ -22,7 +32,7 @@ public class MachineRegistrationCenterDto {
 	@NotBlank
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
-	private String machineId;
+	private String id;
 	/**
 	 * Field for machine name
 	 */
@@ -66,44 +76,7 @@ public class MachineRegistrationCenterDto {
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
-	/**
-	 * Field for is active
-	 */
-	@NotNull
-	private Boolean isActive;
 	
-	/**
-	 * Field to hold date and time for Validity of the Machine
-	 */
-	private LocalDateTime validityEndDateTime;
-		
-	/**
-	 * Field to hold Machine creator by name
-	 */
-	private String createdBy;
 
-	/**
-	 * Field to hold date and time for creation of the Machine
-	 */
-	private LocalDateTime createdDateTime;
 
-	/**
-	 * Field to hold Machine updater by name
-	 */
-	private String updatedBy;
-
-	/**
-	 * Field to hold updated date and time of the Machine
-	 */
-	private LocalDateTime updatedDateTime;
-
-	/**
-	 * Field to hold Machine is deleted or not
-	 *//*
-	private Boolean isDeleted;
-
-	*//**
-	 * Field to hold date and time for deletion of the Machine
-	 *//*
-	private LocalDateTime deletedDateTime;*/
 }
