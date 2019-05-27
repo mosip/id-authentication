@@ -1,6 +1,6 @@
 <div id="print-section">
 <div *ngFor="let user of usersInfo">
-  <mat-card class="ack-container">
+  <mat-card [ngClass]="usersInfo.length === 1 ? 'ack-container' : 'ack-container bottom-margin'">
       <mat-card-header class="ack__header-container">
           <div class="ack__header">
             <p>{{'acknowledgement.title'|translate}}</p>

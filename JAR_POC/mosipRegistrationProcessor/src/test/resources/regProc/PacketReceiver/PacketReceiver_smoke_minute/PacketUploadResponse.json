@@ -1,0 +1,9 @@
+{
+    "response": {
+        "status": "PACKET_UPLOADED_TO_VIRUS_SCAN"
+    },
+    "error": null,
+    "id": "mosip.registration.packet",
+    "version": "1.0",
+    "responseTimestamp": "2019-02-26T10:50:56.211Z"
+}

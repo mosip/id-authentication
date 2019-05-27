@@ -2,96 +2,97 @@ package io.mosip.registration.controller.vo;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class PacketStatusVO {
 
-
-
-	private String fileName;
-	private String packetClientStatus;
-	private String packetServerStatus;
+	private SimpleStringProperty fileName;
+	private SimpleStringProperty packetClientStatus;
+	private SimpleStringProperty packetServerStatus;
 	private BooleanProperty status = new SimpleBooleanProperty(false);
-	private String packetPath;
-	private String uploadStatus;
-	private String clientStatusComments;
-	private String packetStatus;
-	private String supervisorStatus;
-	private String supervisorComments;
+	private SimpleStringProperty packetPath;
+	private SimpleStringProperty uploadStatus;
+	private SimpleStringProperty clientStatusComments;
+	private SimpleStringProperty packetStatus;
+	private SimpleStringProperty supervisorStatus;
+	private SimpleStringProperty supervisorComments;
+	private SimpleStringProperty createdTime;
+	private SimpleStringProperty slno;
 	
 	/**
 	 * @return the supervisorStatus
 	 */
 	public String getSupervisorStatus() {
-		return supervisorStatus;
+		return supervisorStatus.get();
 	}
 
 	/**
 	 * @param supervisorStatus the supervisorStatus to set
 	 */
 	public void setSupervisorStatus(String supervisorStatus) {
-		this.supervisorStatus = supervisorStatus;
+		this.supervisorStatus = new SimpleStringProperty(supervisorStatus);
 	}
 
 	/**
 	 * @return the supervisorComments
 	 */
 	public String getSupervisorComments() {
-		return supervisorComments;
+		return supervisorComments.get();
 	}
 
 	/**
 	 * @param supervisorComments the supervisorComments to set
 	 */
 	public void setSupervisorComments(String supervisorComments) {
-		this.supervisorComments = supervisorComments;
+		this.supervisorComments = new SimpleStringProperty(supervisorComments);
 	}
 
 	public String getFileName() {
-		return fileName;
+		return fileName.get();
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.fileName = new SimpleStringProperty(fileName);
 	}
 
 	public String getPacketClientStatus() {
-		return packetClientStatus;
+		return packetClientStatus.get();
 	}
 
 	public void setPacketClientStatus(String packetClientStatus) {
-		this.packetClientStatus = packetClientStatus;
+		this.packetClientStatus = new SimpleStringProperty(packetClientStatus);
 	}
 
 	public String getPacketServerStatus() {
-		return packetServerStatus;
+		return packetServerStatus.get();
 	}
 
 	public void setPacketServerStatus(String packetServerStatus) {
-		this.packetServerStatus = packetServerStatus;
+		this.packetServerStatus = new SimpleStringProperty(packetServerStatus);
 	}
 
 	public String getPacketPath() {
-		return packetPath;
+		return packetPath.get();
 	}
 
 	public void setPacketPath(String packetPath) {
-		this.packetPath = packetPath;
+		this.packetPath = new SimpleStringProperty(packetPath);
 	}
 
 	public String getUploadStatus() {
-		return uploadStatus;
+		return uploadStatus.get();
 	}
 
 	public void setUploadStatus(String uploadStatus) {
-		this.uploadStatus = uploadStatus;
+		this.uploadStatus = new SimpleStringProperty(uploadStatus);
 	}
 
 	public String getClientStatusComments() {
-		return clientStatusComments;
+		return clientStatusComments.get();
 	}
 
 	public void setClientStatusComments(String clientStatusComments) {
-		this.clientStatusComments = clientStatusComments;
+		this.clientStatusComments = new SimpleStringProperty(clientStatusComments);
 	}
 
 	public Boolean getStatus() {
@@ -107,12 +108,27 @@ public class PacketStatusVO {
 	}
 
 	public String getPacketStatus() {
-		return packetStatus;
+		return packetStatus.get();
 	}
 
 	public void setPacketStatus(String packetStatus) {
-		this.packetStatus = packetStatus;
+		this.packetStatus = new SimpleStringProperty(packetStatus);
 	}
-	
+
+	public String getCreatedTime() {
+		return createdTime.get();
+	}
+
+	public void setCreatedTime(String createdTime) {
+		this.createdTime = new SimpleStringProperty(createdTime);
+	}
+
+	public String getSlno() {
+		return slno.get();
+	}
+
+	public void setSlno(String slno) {
+		this.slno = new SimpleStringProperty(slno);
+	}
 	
 }

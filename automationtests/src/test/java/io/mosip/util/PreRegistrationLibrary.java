@@ -1420,7 +1420,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response expiredStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
+
+			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1448,7 +1450,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response consumedStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
+
+			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1479,7 +1483,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		parm.put("to_date", toDate);
 		String preReg_RetriveBookedPreIdsByRegIdURI = preReg_RetriveBookedPreIdsByRegId + regCenterId;
 		
-		response = applnLib.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
 
 
 		return response;
