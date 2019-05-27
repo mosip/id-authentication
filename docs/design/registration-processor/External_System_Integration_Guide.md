@@ -26,12 +26,11 @@ Below are the option system integrator team has to integrate external system wit
 2. *Using Vert.x Stage*
 
 **1. Using Apache Camel HTTP end points**
-1.1	Create REST API service which will be consumed by apache camel
-1.2 Download and open MOSIP project sournce code in ecliplse
-1.3 Add handler "PacketDetailsRequestHandler.java" in "registration-processor-common-camel-bridge" to feach data and construct request to be send to REST service
-1.4 Also add handler "PacketDetailResponseHandler.java" in "registration-processor-common-camel-bridge" to read REST API response and construct payload which will be passed to stage
-1.5 Open "registration-processor-camel-routes.xml" from "config" project from MOSIP source code and update it by adding handlers and REST end point as shown below:
-
+1. Create REST API service which will be consumed by apache camel
+1. Download and open MOSIP project sournce code in ecliplse
+1. Add handler "PacketDetailsRequestHandler.java" in "registration-processor-common-camel-bridge" to feach data and construct request to be send to REST service
+1. Also add handler "PacketDetailResponseHandler.java" in "registration-processor-common-camel-bridge" to read REST API response and construct payload which will be passed to stage
+1. Open "registration-processor-camel-routes.xml" from "config" project from MOSIP source code and update it by adding handlers and REST end point as shown below:
 ```xml
 <route id="packet-validator-->osi-validator route">
 		<from uri="vertx:packet-validator-bus-out" />
@@ -62,7 +61,18 @@ Below are the option system integrator team has to integrate external system wit
 		</choice>
 	</route>
 ```
-1.6 Commit changes and deploy project
-1.7 Logical view after adding changes:
+
+1. Commit changes and deploy project
+
+
+**Logical View of External Inegration using Apache Camel HTTP end points**
+
+------------
 
 ![abis-http-external-integration-logical-view](_images/abis-http-external-integration-logical-view.png)
+
+**2. Using Vert.x Stage**
+1. Create REST API service which will be consumed by vert.x stage
+1. Download and open MOSIP project sournce code in ecliplse
+1. Add java class by extending MosipVerticleAPIManager and provide implementation for abstract method as shown in example
+1. Add logic to fetch packet information and connect to HTTP external system by passing packet data

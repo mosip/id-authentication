@@ -901,5 +901,5 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Override
 	public List<BiometricAttribute> getBiometricType(String langCode, List<String> biometricType) {
 		return biometricAttributeRepository.findByLangCodeAndBiometricTypeCodeIn(langCode, biometricType);
-	} 
+	}
 }
