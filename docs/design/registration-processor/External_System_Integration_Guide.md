@@ -122,7 +122,7 @@ Below are the option system integrator team has to integrate external system wit
 		</choice>
 	</route>
 	```
-	
+
 8. Commit and deploy changes.
 
 
