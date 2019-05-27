@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "PRG_BOOK_RCI_008",
-    "message": "BOOKING_DATE_TIME_NOT_SELECTED"
-  },
-  "status": false,
-  "resTime": "2019-02-03T04:52:00.180Z",
-  "response": null
-}

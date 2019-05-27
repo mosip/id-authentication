@@ -1,1 +1,0 @@
-{"transactionID":"5412170344","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-008","errorMessage":"License key of MISP has expired"}],"responseTime":"2019-05-23T11:50:10.698+05:30","response":{"authStatus":false,"staticToken":null}}
