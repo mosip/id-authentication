@@ -63,7 +63,7 @@ public class KycServiceImpl implements KycService {
 			Map<String, String> idEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
 					null);
 			List<IdentityInfoDTO> bioValue = null;
-			String face = idEntityInfoMap.get(CbeffDocType.FACE.getName());
+			String face = Objects.nonNull(idEntityInfoMap) ? idEntityInfoMap.get(CbeffDocType.FACE.getName()) : null;
 			if (Objects.nonNull(idEntityInfoMap)) {
 				bioValue = new ArrayList<>();
 				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
