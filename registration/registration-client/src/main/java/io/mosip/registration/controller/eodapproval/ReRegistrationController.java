@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -47,6 +49,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -91,6 +94,11 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	@FXML
 	private TableColumn<PacketStatusVO, String> date;
+	/**
+	 * ReRegistration Status column in the table
+	 */
+	@FXML
+	private TableColumn<PacketStatusVO, String> status;
 	
 	@FXML
 	private ToggleButton informedBtn;
@@ -99,7 +107,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private ToggleButton notInformedBtn;
 
 	@FXML
-	private Button submitBtn;
+	private Button authenticateBtn;
 	/** The image view. */
 	@FXML
 	private WebView webView;
@@ -114,7 +122,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@FXML
 	private TextField filterField;
 
-	private Map<String, String> reRegisterStatusMap = new HashMap<>();
+	private Map<String, String> reRegisterStatusMap;
 
 	@Autowired
 	private AuthenticationController authenticationController;
@@ -123,12 +131,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	private ObservableList<PacketStatusVO> observableList;
 
-	private SortedList<PacketStatusVO> sortedList;
+	private Map<String, Integer> packetIds = new HashMap<>();
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * @see javafx.	fxml.Initializable#initialize(java.net.URL,
 	 * java.util.ResourceBundle)
 	 */
 	@Override
@@ -136,10 +144,28 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - PAGE_LOADING - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		reloadTableView();
-		id.setResizable(false);
-		acknowledgementFormPath.setResizable(false);
+		tableCellColorChangeListener();
 	}
 
+	private void tableCellColorChangeListener() {
+		status.setCellFactory(column -> {
+			return new TableCell<PacketStatusVO, String>() {
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					setText(item);
+					if (item != null && item.equals(RegistrationUIConstants.INFORMED)) {
+						setTextFill(Color.GREEN);
+					} else if (item != null && item.equals(RegistrationUIConstants.CANTINFORMED)) {
+						setTextFill(Color.RED);
+					} else {
+						setTextFill(Color.BLACK);
+					}
+				}
+			};
+		});
+	}
+	
 	/**
 	 * This method is used to load the ui table
 	 * 
@@ -147,13 +173,23 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private void reloadTableView() {
 		LOGGER.info("REGISTRATION - LOADING_TABLE - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the table in the ui");
+		
+		reRegisterStatusMap = new WeakHashMap<>();
+		authenticateBtn.setDisable(true);
+		informedBtn.setVisible(false);
+		notInformedBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
+		
 		reRegisterStatusMap.clear();
-		setInvisible();
+
 		slno.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("slno"));
 		id.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("fileName"));
 		date.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("createdTime"));
 		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("sourcePath"));
+		status.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("packetStatus"));
+		
 		showReregisterdPackets();
+		
 		table.getSelectionModel().selectFirst();
 
 		if (table.getSelectionModel().getSelectedItem() != null) {
@@ -183,17 +219,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			informedBtn.setVisible(true);
 			notInformedBtn.setVisible(true);
 			imageAnchorPane.setVisible(true);
-			informedBtn.setSelected(false);
-			notInformedBtn.setSelected(false);
-			for (Map.Entry<String, String> statusMap : reRegisterStatusMap.entrySet()) {
-				if (statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
-					if (statusMap.getValue().equals("informed")) {
-						informedBtn.setSelected(true);
-					} else if (statusMap.getValue().equals("notinformed")) {
-						notInformedBtn.setSelected(true);
-					}
-				}
-			}
+		
 			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 			try (FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getPacketPath()))) {
@@ -220,20 +246,48 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Informed Button
 	 */
 	public void informedToUser() {
-		submitBtn.setDisable(false);
+		authenticateBtn.setDisable(false);
 		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
-		informedBtn.setSelected(true);
-		notInformedBtn.setSelected(false);
+		
+		int focusedIndex = table.getSelectionModel().getFocusedIndex();
+
+		int row = packetIds.get(table.getSelectionModel().getSelectedItem().getFileName());
+		PacketStatusVO packetStatusVO = new PacketStatusVO();
+		packetStatusVO.setSlno(table.getSelectionModel().getSelectedItem().getSlno());
+		packetStatusVO.setFileName(table.getSelectionModel().getSelectedItem().getFileName());
+		packetStatusVO.setCreatedTime(table.getSelectionModel().getSelectedItem().getCreatedTime());
+		packetStatusVO.setPacketPath(table.getSelectionModel().getSelectedItem().getPacketPath());
+		packetStatusVO.setPacketStatus(RegistrationUIConstants.INFORMED);
+		observableList.set(row, packetStatusVO);
+		
+		wrapListAndAddFiltering(observableList);
+		table.requestFocus();
+		table.getFocusModel().focus(focusedIndex);
+		table.getSelectionModel().select(focusedIndex);
 	}
 
 	/**
 	 * This method will call on click of Not Informed Button
 	 */
 	public void notInformedToUser() {
-		submitBtn.setDisable(false);
+		authenticateBtn.setDisable(false);
 		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
-		informedBtn.setSelected(false);
-		notInformedBtn.setSelected(true);
+
+		int focusedIndex = table.getSelectionModel().getFocusedIndex();
+
+		int row = packetIds.get(table.getSelectionModel().getSelectedItem().getFileName());
+		PacketStatusVO packetStatusVO = new PacketStatusVO();
+		packetStatusVO.setSlno(table.getSelectionModel().getSelectedItem().getSlno());
+		packetStatusVO.setFileName(table.getSelectionModel().getSelectedItem().getFileName());
+		packetStatusVO.setCreatedTime(table.getSelectionModel().getSelectedItem().getCreatedTime());
+		packetStatusVO.setPacketPath(table.getSelectionModel().getSelectedItem().getPacketPath());
+		packetStatusVO.setPacketStatus(RegistrationUIConstants.CANTINFORMED);
+		observableList.set(row, packetStatusVO);
+
+		wrapListAndAddFiltering(observableList);
+		table.requestFocus();
+		table.getFocusModel().focus(focusedIndex);
+		table.getSelectionModel().select(focusedIndex);
 	}
 
 	/**
@@ -295,8 +349,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
-		List<PacketStatusVO> listDetails = new ArrayList<>();
-		setInvisible();
+		List<PacketStatusVO> packetStatusVOs = new ArrayList<>();
+
 		if (!reRegistrationPacketsList.isEmpty()) {
 
 			int count = 1;
@@ -306,40 +360,42 @@ public class ReRegistrationController extends BaseController implements Initiali
 				packetStatusVO.setFileName(reRegisterPacket.getFileName());
 				packetStatusVO.setPacketPath(reRegisterPacket.getPacketPath());
 				packetStatusVO.setCreatedTime(reRegisterPacket.getCreatedTime());
-				listDetails.add(packetStatusVO);
+				packetStatusVO.setPacketStatus(RegistrationUIConstants.PENDING);
+				packetStatusVOs.add(packetStatusVO);
 			}
-
-			observableList = FXCollections.observableArrayList(listDetails);
-			wrapListAndAddFiltering();
-			table.setItems(sortedList);
+			int rowNum = 0;
+			for(PacketStatusDTO packetStatusDTO : reRegistrationPacketsList) {
+				packetIds.put(packetStatusDTO.getFileName(), rowNum++);
+			}
+			observableList = FXCollections.observableArrayList(packetStatusVOs);
+			wrapListAndAddFiltering(observableList);
 		} else {
 			reRegistrationChildPane.disableProperty().set(true);
-		if(observableList != null) {
-			observableList.clear();
-			wrapListAndAddFiltering();
-		}
-			table.setItems(sortedList);
+			if (observableList != null) {
+				observableList.clear();
+				wrapListAndAddFiltering(observableList);
+			}
+			filterField.clear();
 		}
 		LOGGER.info("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
 	}
 
-	private void wrapListAndAddFiltering() {
-		FilteredList<PacketStatusVO> filteredList = new FilteredList<>(observableList, p -> true);
+	private void wrapListAndAddFiltering(ObservableList<PacketStatusVO> oList) {
+		FilteredList<PacketStatusVO> filteredList = new FilteredList<>(oList, p -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes.
-		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filterData(newValue, filteredList);
-		});
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> filterData(newValue, filteredList));
 		if (!filterField.getText().isEmpty()) {
 			filterData(filterField.getText(), filteredList);
 		}
 
 		// 3. Wrap the FilteredList in a SortedList.
-		sortedList = new SortedList<>(filteredList);
+		SortedList<PacketStatusVO> sortedList = new SortedList<>(filteredList);
 
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
+		table.setItems(sortedList);
 	}
 
 	private void filterData(String newValue, FilteredList<PacketStatusVO> filteredList) {
@@ -363,13 +419,5 @@ public class ReRegistrationController extends BaseController implements Initiali
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
 		}
-	}
-
-	private void setInvisible() {
-		informedBtn.setVisible(false);
-		notInformedBtn.setVisible(false);
-		submitBtn.setDisable(true);
-		imageAnchorPane.setVisible(false);
-		webView.getEngine().loadContent(RegistrationConstants.EMPTY);
 	}
 }

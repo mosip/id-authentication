@@ -109,6 +109,8 @@ public class RegistrationUIConstants {
 	public static final String APPROVED = bundle.getString("APPROVED");
 	public static final String REJECTED = bundle.getString("REJECTED");
 	public static final String PENDING = bundle.getString("PENDING");
+	public static final String INFORMED = bundle.getString("INFORMED");
+	public static final String CANTINFORMED = bundle.getString("CANTINFORMED");
 
 	// CAMERA
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
