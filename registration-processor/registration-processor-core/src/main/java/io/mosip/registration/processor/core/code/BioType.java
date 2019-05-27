@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.registration.processor.stages.osivalidator.utils;
+package io.mosip.registration.processor.core.code;
 
 /**
  * @author Ranjitha Siddegowda

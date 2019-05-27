@@ -5,6 +5,7 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +44,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -57,7 +64,12 @@ import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.PublicKeyResponseDto;
+import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.auth.util.BioSubTypeMapperUtil;
+import io.mosip.registration.processor.core.auth.util.BioTypeMapperUtil;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.BioSubType;
+import io.mosip.registration.processor.core.code.BioType;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -70,6 +82,7 @@ import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.ServerError;
@@ -84,10 +97,6 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.BioSubType;
-import io.mosip.registration.processor.stages.osivalidator.utils.BioSubTypeMapperUtil;
-import io.mosip.registration.processor.stages.osivalidator.utils.BioType;
-import io.mosip.registration.processor.stages.osivalidator.utils.BioTypeMapperUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -210,6 +219,10 @@ public class OSIValidator {
 	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 
 	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
+
+	IBioApi bioAPi =  new BioApiImpl ();
+
+	CbeffUtil cbeffUtil = new CbeffImpl();
 
 	/**
 	 * Checks if is valid OSI.
@@ -776,128 +789,24 @@ public class OSIValidator {
 
 	}
 
-	public boolean authByIdAuthentication(Long uin, byte[] biometricFile) throws ApisResourceAccessException,
-			InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
-
-		/*
-		 * AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		 * 
-		 * RequestDTO req = new RequestDTO(); List<BioInfo> biometrics = new
-		 * ArrayList<>(); // BioInfo bioInfo = new BioInfo(); // DataInfoDTO dataInfo =
-		 * new DataInfoDTO(); AuthTypeDTO authType = new AuthTypeDTO();
-		 * authRequestDTO.setId("mosip.identity.auth");
-		 * authRequestDTO.setIndividualId(uin.toString());
-		 * authRequestDTO.setIndividualIdType("UIN");
-		 * authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
-		 * 
-		 * 
-		 * dataInfo.setBioType("FMR"); dataInfo.setBioSubType("RIGHT_INDEX");
-		 * dataInfo.setBioValue(
-		 * "Rk1SACAyMAAAAAGSAAABPAFiAMUAxQEAAAAoPkCTANfnZEBzAMnSSUCGAPZcXUBzAKnAV0ClAPprZEBZANPKSYCXAI3gV0DLAPZxZEDfANhRZEBHAKoyIUCFAHCRZEDmAPBgNUCEASr9XUCwASz7XUDAAS95XUCFAFOEZEDkAF/cZECaAVF8UEC/AVIAPIBOADwHXUDoACZcSYCPAK7SV0CcAKneUEDAANlgZIClAJpeUIC0AJtcV0BcAN5KUEB+AI+6V0CuAIVkXUB5AIGnZECUASB2V0DBARh9XUCSASt9XYBQARBfXUBjASlvZIC0ATv8UEBQATF5Q0CFAVT8Q0B4AD+DZEBaAU92UEDtADzbV0CcAA1zSUCyAMVWV0CGAKjIV0BoAL87UIC9AOdrZIC3APdvZEBsAJ65XUDNAOthZIDEAI3RZEBQAJ2zZEBuARllZEDkAKDPZEC6AHFjZEA/AJW5Q0A3AQDRQ0BGAHGpXUCBAUx7Q0DAAU9/PIBJAFGVXUDYAVeAKEDLABxkZAAA"
-		 * ); dataInfo.setDeviceProviderID("cogent"); dataInfo.setDeviceCode("cogent");
-		 * dataInfo.setTransactionID("1234567890");
-		 * dataInfo.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-		 * 
-		 * bioInfo.setData(dataInfo); biometrics.add(bioInfo);
-		 * 
-		 * 
-		 * biometrics = getBioInfoListDto(biometricFile);
-		 * 
-		 * req.setBiometrics(biometrics);
-		 * req.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-		 * 
-		 * authType.setBio(Boolean.TRUE); authRequestDTO.setRequestedAuth(authType);
-		 * authRequestDTO.setTransactionID("1234567890");
-		 * authRequestDTO.setVersion("1.0");
-		 * 
-		 * String identityBlock = mapper.writeValueAsString(req);
-		 * 
-		 * final SecretKey secretKey = keyGenerator.getSymmetricKey();
-		 * 
-		 * byte[] encryptedIdentityBlock = encryptor.symmetricEncrypt(secretKey,
-		 * identityBlock.getBytes());
-		 * authRequestDTO.setRequest(Base64.encodeBase64URLSafeString(
-		 * encryptedIdentityBlock));
-		 * 
-		 * byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(),
-		 * PARTNER_ID, DateUtils.getUTCCurrentDateTimeString());
-		 * authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(
-		 * encryptedSessionKeyByte));
-		 * 
-		 * byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
-		 * HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes()))
-		 * .getBytes());
-		 * authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
-		 * 
-		 * 
-		 * AuthResponseDTO str = (AuthResponseDTO)
-		 * registrationProcessorRestClientService.postApi(ApiName.IDAINTERNALAUTH, null,
-		 * null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
-		 */
-		return true;
-	}
-
-	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
-			IOException {
-
-		// encrypt AES Session Key using RSA public key
-		List<String> pathsegments = new ArrayList<>();
-		pathsegments.add(IDA_APP_ID);
-		ResponseWrapper<?> responseWrapper;
-		PublicKeyResponseDto publicKeyResponsedto = null;
-
-		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
-				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
-		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
-				PublicKeyResponseDto.class);
-
-		PublicKey publicKey = KeyFactory.getInstance(RSA)
-				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
-
-		return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
+	/**
+	 * Gets the identity.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return the identity
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+				PacketMetaInfo.class);
+		return packetMetaInfo.getIdentity();
 
 	}
 
-	public List<BioInfo> getBioInfoListDto(byte[] cbefByteFile)
-			throws ParserConfigurationException, SAXException, IOException {
 
-		List<BioInfo> biometrics = new ArrayList<>();
-
-		String byteFileStr = new String(cbefByteFile);
-		InputSource is = new InputSource();
-		is.setCharacterStream(new StringReader(byteFileStr));
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(is);
-		doc.getDocumentElement().normalize();
-		if (doc != null) {
-			NodeList bdbInfo = doc.getElementsByTagName("BDBInfo");
-			for (int bi = 0; bi < bdbInfo.getLength(); bi++) {
-				BioInfo bioInfo = new BioInfo();
-				DataInfoDTO dataInfoDTO = new DataInfoDTO();
-				Node bdbInfoList = bdbInfo.item(bi);
-				if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
-					Element eElement = (Element) bdbInfoList;
-					String bioType = eElement.getElementsByTagName("Type").item(0).getTextContent();
-					getBioType(dataInfoDTO, bioType);
-
-					String bioSubType = eElement.getElementsByTagName("Subtype").item(0).getTextContent();
-					getBioSubType(dataInfoDTO, bioSubType);
-					NodeList bdb = doc.getElementsByTagName("BDB");
-					String value = bdb.item(0).getTextContent();
-					// dataInfoDTO.setBioValue(value);
-					dataInfoDTO.setDeviceProviderID("cogent");
-					dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-					dataInfoDTO.setTransactionID("1234567890");
-				}
-				bioInfo.setData(dataInfoDTO);
-				biometrics.add(bioInfo);
-			}
-		}
-		return biometrics;
-	}
 
 	private String getOperatorRid(String operatorId) throws ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<String>();
@@ -982,50 +891,6 @@ public class OSIValidator {
 		}
 		return operatorUin;
 
-	}
-
-	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
-		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
-			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
-		} else if (bioType.equalsIgnoreCase(BioType.FACE.toString())) {
-			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FACE));
-		} else if (bioType.equalsIgnoreCase(BioType.IRIS.toString())) {
-			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.IRIS));
-		}
-		return dataInfoDTO;
-	}
-
-	private DataInfoDTO getBioSubType(DataInfoDTO dataInfoDTO, String bioSubType) {
-		if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_INDEX_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_LITTLE_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_MIDDLE_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_MIDDLE_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_RING_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_RING_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_INDEX_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_INDEX_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_LITTLE_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_LITTLE_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_MIDDLE_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_MIDDLE_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_RING_FINGER.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_RING_FINGER));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_THUMB.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_THUMB));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_THUMB.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_THUMB));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.IRIS_LEFT.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_LEFT));
-		} else if (bioSubType.equalsIgnoreCase(BioSubType.IRIS_RIGHT.getBioType())) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_RIGHT));
-		} else if (bioSubType.equalsIgnoreCase("")) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
-		} else {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
-		}
-		return dataInfoDTO;
 	}
 
 }

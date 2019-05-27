@@ -188,6 +188,6 @@ public enum ApiName {
 	/** get operator rid from id */
 	GETRIDFROMUSERID,
 	
-	IDAINTERNALAUTH;
+	INTERNALAUTH;
 
 }

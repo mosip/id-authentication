@@ -16,6 +16,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidator;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
+import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 
 @Configuration
@@ -50,4 +51,10 @@ public class OSIConfigBean{
 	public Encryptor<PrivateKey, PublicKey, SecretKey> getEncryptor() {
 		return new EncryptorImpl();
 	}
+	
+	@Bean
+	public AuthUtil getAuthUtil() {
+		return new AuthUtil();
+	}
+	
 }

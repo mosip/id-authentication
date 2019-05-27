@@ -1,10 +1,11 @@
-package io.mosip.registration.processor.stages.osivalidator.utils;
+package io.mosip.registration.processor.core.auth.util;
 
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
 import io.mosip.registration.processor.core.auth.dto.AuthBioSubType;
+import io.mosip.registration.processor.core.code.BioSubType;
 
 public class BioSubTypeMapperUtil {
 	/** The status map. */
