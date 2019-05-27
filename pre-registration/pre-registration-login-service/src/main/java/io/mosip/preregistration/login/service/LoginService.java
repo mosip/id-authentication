@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -326,12 +327,16 @@ public class LoginService {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+		try {
 		String tokenUrl=sendOtpResourceUrl+"/authenticate/clientidsecretkey";
 		ClientSecretDTO clientSecretDto=new ClientSecretDTO(clientId, secretKey, appId);
 		RequestWrapper<ClientSecretDTO> requestKernel=new RequestWrapper<>();
 		requestKernel.setRequest(clientSecretDto);
 		requestKernel.setRequesttime(LocalDateTime.now());
-		ResponseEntity<?> response=loginCommonUtil.callAuthService(tokenUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, requestKernel,null,ResponseWrapper.class);
+		ResponseEntity<ResponseWrapper<AuthNResponse>> response=(ResponseEntity<ResponseWrapper<AuthNResponse>>) loginCommonUtil.callAuthService(tokenUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, requestKernel,null,ResponseWrapper.class);
+		if(!response.getBody().getErrors().isEmpty()) {
+			throw new LoginServiceException(response.getBody().getErrors(),null);
+		}
 		String token=response.getHeaders().get("Set-Cookie").get(0);
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
@@ -344,6 +349,13 @@ public class LoginService {
 		auditRequestDto.setModuleId(AuditLogVariables.AUTHENTICATION.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.AUTHENTICATION_SERVICE.toString());
 		auditLogUtil.saveAuditDetails(auditRequestDto,token);
+		}
+		catch(LoginServiceException ex) {
+			log.error("sessionId", "idType", "id","In setAuditvalue of login service:"+StringUtils.join(ex.getValidationErrorList(),",") );
+		}
+		catch(Exception ex) {
+			log.error("sessionId", "idType", "id","In setAuditvalue of login service:"+ ex.getMessage());
+		}
 	}
 	
 	/**
