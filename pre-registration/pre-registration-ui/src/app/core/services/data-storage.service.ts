@@ -59,10 +59,10 @@ export class DataStorageService {
    * @returns an `Observable` of the body as an `Object`
    * @memberof DataStorageService
    */
-  getGenderDetails() {
-    const url = this.BASE_URL + appConstants.APPEND_URL.gender;
-    return this.httpClient.get(url);
-  }
+  getResidentDetails() {
+    const url = this.BASE_URL + appConstants.APPEND_URL.resident;
+    return this.httpClient.get(url);
+    }
 
   /**
    * @description This method is responsible for doing the transliteration for a given word.
