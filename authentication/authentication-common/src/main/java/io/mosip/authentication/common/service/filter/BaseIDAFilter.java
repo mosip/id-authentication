@@ -217,7 +217,7 @@ public abstract class BaseIDAFilter implements Filter {
 		responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, MOSIP_IDA_API_VERSION)));
 		
 		try {
-			responseWrapper.setHeader("response-authorization", keyManager.signResponse(mapper.writeValueAsString(responseMap)));
+			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), keyManager.signResponse(mapper.writeValueAsString(responseMap)));
 		} catch (IdAuthenticationAppException e) {
 			if (responseMap.containsKey(IdAuthCommonConstants.ERRORS) && responseMap.get(IdAuthCommonConstants.ERRORS) instanceof List) {
 				List<Object> errors = (List<Object>) responseMap.get(IdAuthCommonConstants.ERRORS);
@@ -456,7 +456,7 @@ public abstract class BaseIDAFilter implements Filter {
 				}
 			}
 			String responseAsString = mapper.writeValueAsString(transformResponse(responseMap));
-			responseWrapper.setHeader("response-authorization", keyManager.signResponse(responseAsString));
+			responseWrapper.setHeader(env.getProperty(IdAuthConfigKeyConstants.SIGN_RESPONSE), keyManager.signResponse(responseAsString));
 			logTime((String) getResponseBody(responseAsString).get(RES_TIME), IdAuthCommonConstants.RESPONSE, requestTime);
 			return responseAsString;
 		} catch (IdAuthenticationAppException | IOException e) {
