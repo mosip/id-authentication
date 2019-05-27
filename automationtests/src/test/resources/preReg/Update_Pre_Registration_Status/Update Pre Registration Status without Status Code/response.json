@@ -1,0 +1,8 @@
+{
+	"err": {
+		"errorCode": "PRG_CORE_REQ_001",
+		"message": "INVALID_STATUS_CODE"
+	},
+	"response": null,
+	"status": false
+}

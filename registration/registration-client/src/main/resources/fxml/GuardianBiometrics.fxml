@@ -110,7 +110,7 @@
                                           <GridPane fx:id="ContentHeader">
                                              <children>
                                                 <Label alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%guardianBiometric" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-                                                <ComboBox fx:id="biometricTypecombo" onAction="#displayBiometric" prefWidth="150.0" promptText="Select" styleClass="demographicCombobox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                                                <ComboBox fx:id="biometricTypecombo" onAction="#displayBiometric" prefWidth="150.0" promptText="%select" styleClass="demographicCombobox" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                                              </children>
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
@@ -182,7 +182,7 @@
                                                 <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
-                                          <GridPane GridPane.rowIndex="4">
+                                          <GridPane fx:id="thresholdBox" GridPane.rowIndex="4">
                                              <children>
                                                 <Label styleClass="threshHoldLabel" text="%threshold" GridPane.halignment="LEFT" />
                                                 <Label styleClass="qualityLabel" text="%quality" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
@@ -224,6 +224,7 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
+                                          <Label fx:id="photoAlert" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />

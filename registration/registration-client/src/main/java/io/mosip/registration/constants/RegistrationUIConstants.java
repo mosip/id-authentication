@@ -109,6 +109,8 @@ public class RegistrationUIConstants {
 	public static final String APPROVED = bundle.getString("APPROVED");
 	public static final String REJECTED = bundle.getString("REJECTED");
 	public static final String PENDING = bundle.getString("PENDING");
+	public static final String INFORMED = bundle.getString("INFORMED");
+	public static final String CANTINFORMED = bundle.getString("CANTINFORMED");
 
 	// CAMERA
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
@@ -154,6 +156,13 @@ public class RegistrationUIConstants {
 	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
 	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
 	public static final String SELECT = bundle.getString("SELECT");
+	public static final String LEFT_SLAP = bundle.getString("LEFT_SLAP");
+	public static final String RIGHT_SLAP = bundle.getString("RIGHT_SLAP");
+	public static final String THUMBS = bundle.getString("THUMBS");
+	public static final String RIGHT_IRIS = bundle.getString("RIGHT_IRIS");
+	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
+	public static final String PHOTO = bundle.getString("PHOTO");
+	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO"); 
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
@@ -265,6 +274,10 @@ public class RegistrationUIConstants {
 	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 	public static final String EOD_DETAILS_EXPORT_FAILURE = bundle.getString("EOD_DETAILS_EXPORT_FAILURE");
 	public static final String EOD_DETAILS_EXPORT_SUCCESS = bundle.getString("EOD_DETAILS_EXPORT_SUCCESS");
+	public static final String EOD_SLNO_LABEL = bundle.getString("EOD_SLNO_LABEL");
+	public static final String EOD_REGISTRATIONID_LABEL = bundle.getString("EOD_REGISTRATIONID_LABEL");
+	public static final String EOD_REGISTRATIONDATE_LABEL = bundle.getString("EOD_REGISTRATIONDATE_LABEL");
+	public static final String EOD_STATUS_LABEL = bundle.getString("EOD_STATUS_LABEL");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

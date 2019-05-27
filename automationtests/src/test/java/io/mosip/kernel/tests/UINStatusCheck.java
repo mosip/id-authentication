@@ -103,11 +103,13 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		List<String>list=dbConnection.getDbData( query,"kernel");
 
 		
+
 		// Calling the GET method with no parameters 
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 		//Getting the UIN from response
 		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
 		//Getting the status of the UIN 
+
 		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
 
 		List<String> status_list = dbConnection.getDbData( query1,"kernel");

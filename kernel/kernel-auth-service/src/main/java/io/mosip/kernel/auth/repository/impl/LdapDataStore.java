@@ -72,6 +72,7 @@ import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * @author Ramadurai Pandian
@@ -372,7 +373,7 @@ public class LdapDataStore implements DataStore {
 			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
-					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
+					saltDetails.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 				}
 			}
 			mosipUserDtos.add(saltDetails);
