@@ -307,8 +307,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO("    "+approvalDTO.getSlno(),approvalDTO.getId(),
-					approvalDTO.getDate(),approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)));
+			int count=1;
+			for (RegistrationApprovalDTO approvalDTO : listData) {
+				registrationApprovalVO.add(new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
+								approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
+			}
 			rowNum = 0;
 			listData.forEach(approvalDTO -> {
 				packetIds.put(approvalDTO.getId(), rowNum++);

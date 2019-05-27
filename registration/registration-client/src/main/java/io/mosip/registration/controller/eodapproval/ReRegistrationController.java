@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
+import io.mosip.registration.controller.vo.PacketStatusVO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.ReRegistrationService;
@@ -68,18 +70,28 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * Table to display the created packets
 	 */
 	@FXML
-	private TableView<PacketStatusDTO> table;
+	private TableView<PacketStatusVO> table;
 	/**
 	 * Registration Id column in the table
 	 */
 	@FXML
-	private TableColumn<PacketStatusDTO, String> id;
+	private TableColumn<PacketStatusVO, String> slno;
+	/**
+	 * Registration Id column in the table
+	 */
+	@FXML
+	private TableColumn<PacketStatusVO, String> id;
 	/**
 	 * Acknowledgement form column in the table
 	 */
 	@FXML
-	private TableColumn<PacketStatusDTO, String> acknowledgementFormPath;
-
+	private TableColumn<PacketStatusVO, String> acknowledgementFormPath;
+	/**
+	 * Registration Id column in the table
+	 */
+	@FXML
+	private TableColumn<PacketStatusVO, String> date;
+	
 	@FXML
 	private ToggleButton informedBtn;
 
@@ -109,9 +121,9 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	private Stage primaryStage;
 
-	private ObservableList<PacketStatusDTO> observableList;
+	private ObservableList<PacketStatusVO> observableList;
 
-	private SortedList<PacketStatusDTO> sortedList;
+	private SortedList<PacketStatusVO> sortedList;
 
 	/*
 	 * (non-Javadoc)
@@ -137,8 +149,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 				"Loading the table in the ui");
 		reRegisterStatusMap.clear();
 		setInvisible();
-		id.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("fileName"));
-		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("sourcePath"));
+		slno.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("slno"));
+		id.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("fileName"));
+		date.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("createdTime"));
+		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PacketStatusVO, String>("sourcePath"));
 		showReregisterdPackets();
 		table.getSelectionModel().selectFirst();
 
@@ -281,16 +295,29 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
-
+		List<PacketStatusVO> listDetails = new ArrayList<>();
 		setInvisible();
 		if (!reRegistrationPacketsList.isEmpty()) {
-			observableList = FXCollections.observableArrayList(reRegistrationPacketsList);
+
+			int count = 1;
+			for (PacketStatusDTO reRegisterPacket : reRegistrationPacketsList) {
+				PacketStatusVO packetStatusVO = new PacketStatusVO();
+				packetStatusVO.setSlno(String.valueOf("    "+count++));
+				packetStatusVO.setFileName(reRegisterPacket.getFileName());
+				packetStatusVO.setPacketPath(reRegisterPacket.getPacketPath());
+				packetStatusVO.setCreatedTime(reRegisterPacket.getCreatedTime());
+				listDetails.add(packetStatusVO);
+			}
+
+			observableList = FXCollections.observableArrayList(listDetails);
 			wrapListAndAddFiltering();
 			table.setItems(sortedList);
 		} else {
 			reRegistrationChildPane.disableProperty().set(true);
+		if(observableList != null) {
 			observableList.clear();
 			wrapListAndAddFiltering();
+		}
 			table.setItems(sortedList);
 		}
 		LOGGER.info("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
@@ -298,13 +325,13 @@ public class ReRegistrationController extends BaseController implements Initiali
 	}
 
 	private void wrapListAndAddFiltering() {
-		FilteredList<PacketStatusDTO> filteredList = new FilteredList<>(observableList, p -> true);
+		FilteredList<PacketStatusVO> filteredList = new FilteredList<>(observableList, p -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes.
 		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
 			filterData(newValue, filteredList);
 		});
-		if(!filterField.getText().isEmpty()) {
+		if (!filterField.getText().isEmpty()) {
 			filterData(filterField.getText(), filteredList);
 		}
 
@@ -315,7 +342,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 		sortedList.comparatorProperty().bind(table.comparatorProperty());
 	}
 
-	private void filterData(String newValue, FilteredList<PacketStatusDTO> filteredList) {
+	private void filterData(String newValue, FilteredList<PacketStatusVO> filteredList) {
 		filteredList.setPredicate(reg -> {
 			// If filter text is empty, display all ID's.
 			if (newValue == null || newValue.isEmpty()) {

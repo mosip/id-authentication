@@ -7,7 +7,6 @@ package io.mosip.registration.dto;
  */
 public class RegistrationApprovalDTO {
 
-	private String slno;
 	private String id;
 	private String date;
 	private String acknowledgementFormPath;
@@ -23,22 +22,14 @@ public class RegistrationApprovalDTO {
 	 * @param statusComment 
 	 * 				the status comment
 	 */
-	public RegistrationApprovalDTO(String slno, String id, String date, String acknowledgementFormPath, String statusComment) {
+	public RegistrationApprovalDTO(String id, String date, String acknowledgementFormPath, String statusComment) {
 		super();
 		
-		this.slno = slno;
 		this.id = id;		
 		this.date = date;
 		this.acknowledgementFormPath =acknowledgementFormPath;
 		this.statusComment = statusComment;
 		}
-
-	/**
-	 * @return the slno
-	 */
-	public String getSlno() {
-		return slno;
-	}
 	
 	/**
 	 * Gets the id.
