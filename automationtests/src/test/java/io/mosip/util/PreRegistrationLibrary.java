@@ -321,13 +321,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getConsumedStatus(String PreID) {
-		String query = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID
-				+ "'";
-	
-		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String status = preId_status.get(0).toString();
-		return status;
+		return dao.getConsumedStatus(PreID);
 	}
 
 	/**
@@ -337,19 +331,12 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return
 	 */
 	public String getDocumentIdOfConsumedApplication(String PreID) {
-		String query = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String documentId = preId_status.get(0).toString();
-		return documentId;
+		
+		return dao.getDocumentIdOfConsumedApplication(PreID);
 	}
 
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
-		String query = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
-		List<Object> preId_status = PreregDB.getConsumedStatus(query, PreRegEntity.class, "preregdev.cfg.xml",
-				"preregqa.cfg.xml");
-		String regCenterId = preId_status.get(0).toString();
-		return regCenterId;
+		return dao.getRegCenterIdOfConsumedApplication(PreID);
 	}
 
 	/**
@@ -1328,7 +1315,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public Response CancelBookingAppointment(Response FetchAppDet, String preID) {
-		testSuite = "CancelAnBookedAppointment/CancelAnBookedAppointment1";
+		testSuite = "CancelAnBookedAppointment/CancelAnReBookedAppointment_smoke";
 		request = getRequest(testSuite);
 		/*
 		 * 
@@ -1691,7 +1678,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		long number = (long) Math.floor(Math.random() * 9_000_000_00L) + 1_000_000_00L;
 		userId = Long.toString(number);
 		userId = "9" + userId;
-		//userId="ashish.rastogi@mindtree.com";
 		JSONObject object = null;
 		for (Object key : otpRequest.keySet()) {
 			if (key.equals("request")) {

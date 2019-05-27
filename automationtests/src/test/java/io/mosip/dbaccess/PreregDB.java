@@ -326,7 +326,7 @@ public class PreregDB {
 	public static List<Object> getConsumedStatus(String queryStr, Class dtoClass,String devdbConfig,String qadbConfig )
 	{
 		List<Object> objs =null;
-		if(BaseTestCase.environment.equalsIgnoreCase("dev-int"))
+		if(BaseTestCase.environment.equalsIgnoreCase("int"))
 			factory = new Configuration().configure(devdbConfig)
 		.addAnnotatedClass(dtoClass).buildSessionFactory();	
 				else

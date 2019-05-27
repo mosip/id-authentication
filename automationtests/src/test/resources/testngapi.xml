@@ -7,9 +7,14 @@
 	<listeners>
 		<listener class-name="io.mosip.report.CustomTestNGReporter" />
 		<listener class-name="io.mosip.report.ExtentReportListener" />
+<<<<<<< HEAD
 		<listener
 			class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
 	</listeners>
+=======
+		
+	</listeners>  
+>>>>>>> 4f54885c0583f6270e5aa4fd51ec7e1452684b2e
 
 
 	<!-- <test name="Kernel Tests"> <parameter name="module" value="Kernel" 
@@ -46,6 +51,7 @@
 
 
 
+<<<<<<< HEAD
 
 	<test name="PreReg Tests">
 		<!-- <parameter name="testType" value="smoke" /> -->
@@ -56,6 +62,15 @@
 			<class name="io.mosip.preregistration.tests.BatchJob" />
 			<class name="io.mosip.preregistration.tests.MultipleBookingAppointment" />
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
+=======
+                     
+  <test name="PreReg Tests">
+		<parameter name="testType" value="smokeAndRegression" />
+		<classes>
+		<class name="io.mosip.preregistration.tests.Audit" /> 
+ 		 <class name="io.mosip.preregistration.tests.BatchJob" />
+		  <class name="io.mosip.preregistration.tests.BookingAppointment" />
+>>>>>>> 4f54885c0583f6270e5aa4fd51ec7e1452684b2e
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
 			<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
