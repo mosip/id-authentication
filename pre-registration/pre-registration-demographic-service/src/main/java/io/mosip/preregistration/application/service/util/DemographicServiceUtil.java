@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,6 @@ import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
-import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
@@ -44,7 +42,6 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
-import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for DemographicService
