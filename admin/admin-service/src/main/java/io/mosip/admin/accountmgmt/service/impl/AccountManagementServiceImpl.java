@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -28,6 +30,8 @@ import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
 import io.mosip.admin.accountmgmt.exception.AccountServiceException;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
+import io.mosip.kernel.auth.adapter.exception.AuthNException;
+import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -69,11 +73,11 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 	@Value("${mosip.admin.app-id}")
 	private String appId;
-
+	
 	/** The user detail url. */
 	@Value("${mosip.admin.accountmgmt.user-detail-url}")
 	private String userDetailUrl;
-
+	
 	/** The user detail url. */
 	@Value("${mosip.admin.accountmgmt.validate-url}")
 	private String validateUrl;
@@ -110,7 +114,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto unBlockUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + appId + "/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
 		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getSuccessResponse(response);
 
@@ -156,7 +160,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto changePassword(PasswordDto passwordDto) {
 		passwordDto.setHashAlgo("SSHA-256");
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(changePassword + appId + "/");
+		urlBuilder.append(authManagerBaseUrl).append(changePassword + appId+"/");
 		HttpEntity<RequestWrapper<?>> passwordHttpEntity = getChangePasswordHttpRequest(passwordDto);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, passwordHttpEntity);
 
@@ -189,36 +193,31 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + appId + "/").append(mobile);
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + appId+"/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#
-	 * getUserDetailBasedOnMobileNumber(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#getUserDetailBasedOnMobileNumber(java.lang.String)
 	 */
 	@Override
 	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userDetailUrl + appId + "/").append(mobile);
+		urlBuilder.append(authManagerBaseUrl).append(userDetailUrl + appId+"/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserFromResponse(response);
 
 	}
-
+	
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#
-	 * validateResponseDto(java.lang.String)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#validateResponseDto(java.lang.String)
 	 */
 	@Override
 	public ValidationResponseDto validateUserName(String userId) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(validateUrl + appId + "/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(validateUrl + appId+"/").append(userId);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getValidateResponse(response);
 	}
@@ -243,7 +242,22 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-			if (validationErrorsList != null && !validationErrorsList.isEmpty()) {
+			if (ex.getRawStatusCode() == 401) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthNException(validationErrorsList);
+				} else {
+					throw new BadCredentialsException("Authentication failed from AuthManager");
+				}
+			}
+			if (ex.getRawStatusCode() == 403) {
+				if (!validationErrorsList.isEmpty()) {
+					throw new AuthZException(validationErrorsList);
+				} else {
+					throw new AccessDeniedException("Access denied from AuthManager");
+				}
+			}
+
+			if (validationErrorsList != null) {
 				throw new AccountServiceException(validationErrorsList);
 			} else {
 				throw new AccountManagementServiceException(
@@ -320,7 +334,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
 
 	}
-
+	
 	/**
 	 * Gets the user detail from response.
 	 *
@@ -348,7 +362,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 		return userDetailDto;
 	}
-
+	
+	
 	/**
 	 * Gets the user detail from response.
 	 *
@@ -366,9 +381,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		ResponseWrapper<ValidationResponseDto> responseObject = null;
 		try {
 
-			responseObject = objectMapper.readValue(responseBody,
-					new TypeReference<ResponseWrapper<ValidationResponseDto>>() {
-					});
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<ValidationResponseDto>>() {
+			});
 			validationResponseDto = responseObject.getResponse();
 		} catch (IOException | NullPointerException exception) {
 			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
@@ -377,5 +391,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
 		return validationResponseDto;
 	}
+
+	
 
 }

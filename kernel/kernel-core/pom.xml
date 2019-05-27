@@ -96,11 +96,6 @@
 			<version>${findbugs.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.directory.api</groupId>
-			<artifactId>api-all</artifactId>
-			<version>${apache.directory.api.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
 			<version>${swagger.annotations.version}</version>
