@@ -6,7 +6,6 @@
 \ir ddl/regprc-registration_transaction.sql
 
 \ir ddl/regprc-reg_manual_verification.sql
-\ir ddl/regprc-reg_uin.sql
 \ir ddl/regprc-transaction_type.sql
 \ir ddl/regprc-rid_seq.sql
 \ir ddl/regprc-reg_bio_ref.sql
