@@ -1,5 +1,6 @@
 package io.mosip.preregistration.generateqrcode.exception.util;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -32,8 +33,9 @@ import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
-import io.mosip.preregistration.generateqrcode.exception.IOException;
+import io.mosip.preregistration.generateqrcode.exception.QrCodeIOException;
 import io.mosip.preregistration.generateqrcode.exception.IllegalParamException;
+
 
 /**
  * Exception Handler for acknowledgement application.
@@ -52,8 +54,8 @@ public class QRcodeExceptionHandler {
 	 * @param request
 	 * @return response of MandatoryFieldRequiredException
 	 */
-	@ExceptionHandler(IOException.class)
-	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldrequired(final IOException e) {
+	@ExceptionHandler(QrCodeIOException.class)
+	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldrequired(final QrCodeIOException e) {
 
 		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 	}
