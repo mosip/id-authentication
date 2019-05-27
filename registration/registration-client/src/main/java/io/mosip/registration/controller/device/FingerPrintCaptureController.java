@@ -811,7 +811,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.LEFTPALM),
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, leftHandPalmImageview,
 						leftSlapQualityScore, popupStage, leftHandPalmPane,
 						Double.parseDouble(
@@ -820,7 +820,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.RIGHTPALM),
 
 						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, rightHandPalmImageview,
 
@@ -831,7 +831,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.THUMBS),
 
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD, thumbImageview, thumbsQualityScore,
 						popupStage, thumbPane,
@@ -858,6 +858,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
+	}
+
+	protected String getOnboardFingertype(String fingerType) {
+		if (fingerPrintFacade.isMdmEnabled()) {
+			fingerType = fingerType + "_onboard";
+		}
+		return fingerType;
 	}
 
 	/**

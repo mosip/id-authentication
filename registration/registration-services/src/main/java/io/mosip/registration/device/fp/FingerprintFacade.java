@@ -120,11 +120,15 @@ public class FingerprintFacade {
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		if (isMdmEnabled())
 			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, fingerType);
 		else
 			getFingerPrintImageAsDTONonMdm(fpDetailsDTO, fingerType);
+	}
+
+	public boolean isMdmEnabled() {
+		return RegistrationConstants.ENABLE
+				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)));
 	}
 
 	/**
@@ -209,6 +213,18 @@ public class FingerprintFacade {
 		case RegistrationConstants.THUMBS:
 			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
 					+ RegistrationConstants.THUMB.toUpperCase();
+			break;
+		case RegistrationConstants.LEFTPALM + "_onboard":
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.LEFT.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
+			break;
+		case RegistrationConstants.RIGHTPALM + "_onboard":
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.RIGHT.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
+			break;
+		case RegistrationConstants.THUMBS + "_onboard":
+			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.THUMB.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
 			break;
 		default:
 			break;
@@ -352,8 +368,7 @@ public class FingerprintFacade {
 								.getBiometricExceptionDTO();
 			}
 
-			if (RegistrationConstants.ENABLE
-					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
+			if (isMdmEnabled()) {
 
 				prepareSegmentedBiometricsFromMdm(fingerprintDetailsDTO, fingerType);
 			}

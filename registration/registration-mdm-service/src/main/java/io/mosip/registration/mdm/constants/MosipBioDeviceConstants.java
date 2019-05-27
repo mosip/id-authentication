@@ -25,6 +25,9 @@ public class MosipBioDeviceConstants {
 	public static final String VALUE_SLAP_LEFT = "SLAP_LEFT";
 	public static final String VALUE_SLAP_RIGHT = "SLAP_RIGHT";
 	public static final String VALUE_SLAP_THUMB = "SLAP_THUMB";
+	public static final String VALUE_SLAP_LEFT_ONBOARD = "SLAP_LEFT_ONBOARD";
+	public static final String VALUE_SLAP_RIGHT_ONBOARD = "SLAP_RIGHT_ONBOARD";
+	public static final String VALUE_SLAP_THUMB_ONBOARD = "SLAP_THUMB_ONBOARD";
 	public static final String VALUE_TOUCHLESS = "TOUCHLESS";
 	public static final String VALUE_DOUBLE = "DOUBLE";
 
@@ -45,5 +48,14 @@ public class MosipBioDeviceConstants {
 			"/fingerprints/righthand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
+
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
+			"/UserOnboard/leftHand/leftIndex/", "/UserOnboard/leftHand/leftLittle/",
+			"/UserOnboard/leftHand/leftMiddle/", "/UserOnboard/leftHand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] {
+			"/UserOnboard/rightHand/rightIndex/", "/UserOnboard/rightHand/rightLittle/",
+			"/UserOnboard/rightHand/rightMiddle/", "/UserOnboard/rightHand/rightRing/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/UserOnboard/thumb/leftThumb/",
+			"/UserOnboard/thumb/rightThumb/" };
 
 }
