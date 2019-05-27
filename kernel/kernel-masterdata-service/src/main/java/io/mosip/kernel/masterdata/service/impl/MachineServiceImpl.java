@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
@@ -292,8 +291,8 @@ public class MachineServiceImpl implements MachineService {
 			returnEntity = machineRepository.findMachineByRegCenterId(regCenterId);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage()
+					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (returnEntity != null && !returnEntity.isEmpty()) {
@@ -302,8 +301,8 @@ public class MachineServiceImpl implements MachineService {
 				machineRegistrationCenterDto1.setRegCentId(regCenterId);
 			}
 		} else {
-			throw new RequestException(RegistrationCenterMachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					RegistrationCenterMachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		return machineRegistrationCenterDto1List;
 

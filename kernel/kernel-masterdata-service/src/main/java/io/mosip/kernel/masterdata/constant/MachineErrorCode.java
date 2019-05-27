@@ -13,7 +13,10 @@ public enum MachineErrorCode {
 	MACHINE_INSERT_EXCEPTION("KER-MSD-063", "Error occurred while inserting Machine details"),
 	MACHINE_UPDATE_EXCEPTION("KER-MSD-087", "Error occurred while updating Machine details"),
 	MACHINE_DELETE_EXCEPTION("KER-MSD-088", "Error occurred while deleting Machine details"),
-	DEPENDENCY_EXCEPTION("KER-MSD-148", "Cannot delete as dependency found");
+	DEPENDENCY_EXCEPTION("KER-MSD-148", "Cannot delete as dependency found"),
+	REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION("KER-MSD-XXX",
+			"Error occurred while fetching a Machine details mapped with the given Registration Center"),
+	MACHINE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Machine Not Found");
 
 	private final String errorCode;
 	private final String errorMessage;
