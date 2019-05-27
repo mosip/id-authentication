@@ -828,10 +828,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 							.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
 							&& excepCount == 10)
 					|| excepCount == 12) {
+				bioValue = RegistrationUIConstants.SELECT;
 				biometricBox.setVisible(true);
 				biometricTypecombo.setVisible(false);
 				thresholdBox.setVisible(false);
 				scanBtn.setText(RegistrationUIConstants.TAKE_PHOTO);
+				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
+				retryBox.setVisible(false);
 				if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null) {
 					updateBiometric(RegistrationUIConstants.PHOTO, RegistrationConstants.IMAGE_PATH, "",
 							String.valueOf(RegistrationConstants.PARAM_ZERO));
@@ -841,6 +844,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 				biometricBox.setVisible(false);
 				thresholdBox.setVisible(true);
 				scanBtn.setText(RegistrationUIConstants.SCAN);
+				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
+				photoAlert.setVisible(false);
 					if (exceptionCount.get(RegistrationConstants.LEFTSLAPCOUNT) == 4) {
 						modifyBiometricType(RegistrationUIConstants.LEFT_SLAP);	
 					}
