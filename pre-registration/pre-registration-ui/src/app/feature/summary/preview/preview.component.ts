@@ -23,6 +23,11 @@ export class PreviewComponent implements OnInit {
   files = [];
   documentTypes = [];
   documentMapObject = [];
+  sameAs = '';
+  residentTypeMapping = {
+    primary: {},
+    secondary: {}
+  }
 
   constructor(
     private dataStorageService: DataStorageService,
@@ -74,7 +79,12 @@ export class PreviewComponent implements OnInit {
 
   setResidentStatus() {
     this.previewData['residenceStatus'].forEach(element => {
-      element.name = appConstants.residentTypesMapping[element.value][element.language];
+      if (element.language === localStorage.getItem('langCode')) {
+        element.name = this.residentTypeMapping.primary[element.value];
+      } else {
+        element.name = this.residentTypeMapping.secondary[element.value];
+      }
+   //   element.name = appConstants.residentTypesMapping[element.value][element.language];
     });
   }
 
@@ -85,7 +95,7 @@ export class PreviewComponent implements OnInit {
         const file = this.files.filter(file => file.docCatCode === type.code);
         if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
           const obj = {
-            docName: appConstants.sameAs[localStorage.getItem('langCode')]
+            docName: this.sameAs
           };
           file.push(obj);
         }
@@ -113,8 +123,17 @@ export class PreviewComponent implements OnInit {
       .getSecondaryLanguageLabels(localStorage.getItem('secondaryLangCode'))
       .subscribe(response => {
         this.secondaryLanguagelabels = response['preview'];
+        this.residentTypeMapping.secondary = response['residentTypesMapping'];
         console.log(this.secondaryLanguagelabels);
       });
+  }
+
+  getPrimaryLanguageData() {
+    this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode'))
+    .subscribe(response => {
+      this.sameAs = response['sameAs'];
+      this.residentTypeMapping.primary = response['residentTypesMapping'];
+    })
   }
 
   calculateAge() {

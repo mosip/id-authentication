@@ -473,6 +473,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 		 * check if the applicant has biometric exception
 		 */
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+			hasBiometricException = false;
+			
 			boolean hasMissingBiometrics = (Boolean) SessionContext.userContext().getUserMap()
 					.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
