@@ -127,6 +127,8 @@ public class UinGenerationStatusServiceImpl implements UinGenerationStatusServic
 			ServiceError error = respDto.getBody().getErrors().get(0);
 			throw new UinGenerationStatusException(error.getErrorCode(), error.getMessage());
 		}
+		
+		//System.out.println("PROCESSED");
 
 		return respDto.getBody();
 		 
