@@ -6,6 +6,7 @@ import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
+import { of } from 'rxjs';
 
 /**
  * @description This class is responsible for sending or receiving data to the service.
@@ -38,6 +39,51 @@ export class DataStorageService {
   getUsers(userId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
     return this.httpClient.get<Applicant[]>(url);
+    // let obj = {
+    //   id: 'mosip.pre-registration.demographic.retrieve.basic',
+    //   version: '1.0',
+    //   responsetime: '2019-05-20T07:10:24.850Z',
+    //   response: {
+    //     basicDetails: [
+    //       {
+    //         preRegistrationId: '32042841521591',
+    //         statusCode: 'Pending_Appointment',
+    //         demographicMetadata: {
+    //           fullname: [
+    //             {
+    //               language: 'fra',
+    //               value: 'Rakesh P'
+    //             },
+    //             {
+    //               language: 'ara',
+    //               value: 'سهَسهَنك '
+    //             }
+    //           ],
+    //           postalCode: '56059',
+    //           proofOfAddress: {
+    //             docId: '97d252c7-7aea-11e9-a0d7-071c4b8ebbdf',
+    //             docName: 'IdCard.pdf',
+    //             docCatCode: 'POA',
+    //             docTypCode: 'address',
+    //             docFileFormat: 'pdf'
+    //           }
+    //         },
+    //         bookingMetadata: {
+    //           appointment_date: '2019-05-22',
+    //           registration_center_id: '10001',
+    //           time_slot_from: '09:00',
+    //           time_slot_to: '09:15'
+    //         }
+    //       }
+    //     ],
+
+    //     totalRecords: '2',
+    //     noOfRecords: '0',
+    //     pageIndex: '0'
+    //   },
+    //   errors: null
+    // };
+    // return of(obj);
   }
 
   /**
@@ -52,28 +98,28 @@ export class DataStorageService {
     return this.httpClient.get(url);
   }
 
-/**
-* @description This methos returns the list of available genders
-*
-*
-* @returns an `Observable` of the body as an `Object`
-* @memberof DataStorageService
-*/
-getGenderDetails() {
-  const url = this.BASE_URL + appConstants.APPEND_URL.gender;
-  return this.httpClient.get(url);
+  /**
+   * @description This methos returns the list of available genders
+   *
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
+  getGenderDetails() {
+    const url = this.BASE_URL + appConstants.APPEND_URL.gender;
+    return this.httpClient.get(url);
   }
 
   /**
-  * @description This methos returns the list of available genders
-  *
-  *
-  * @returns an `Observable` of the body as an `Object`
-  * @memberof DataStorageService
-  */
+   * @description This methos returns the list of available genders
+   *
+   *
+   * @returns an `Observable` of the body as an `Object`
+   * @memberof DataStorageService
+   */
   getResidentDetails() {
-  const url = this.BASE_URL + appConstants.APPEND_URL.resident;
-  return this.httpClient.get(url);
+    const url = this.BASE_URL + appConstants.APPEND_URL.resident;
+    return this.httpClient.get(url);
   }
 
   /**
@@ -90,16 +136,7 @@ getGenderDetails() {
   }
 
   getUserDocuments(preRegId) {
-    console.log('documents fetched for : ', preRegId);
-
-    return this.httpClient.get(
-      this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId
-      //   ,{
-      //   observe: 'body',
-      //   responseType: 'json',
-      //   params: new HttpParams().append(appConstants.PARAMS_KEYS.getDocument, preRegId)
-      // }
-    );
+    return this.httpClient.get(this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.document + preRegId);
   }
 
   /**
@@ -130,11 +167,9 @@ getGenderDetails() {
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + preRegId,
       formdata
     );
-    // console.log('servvice called', formdata);
   }
 
   deleteRegistration(preId: string) {
-    // const url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preId;
     return this.httpClient.delete(
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.delete_application + preId
     );
@@ -189,7 +224,6 @@ getGenderDetails() {
   }
 
   makeBooking(request: RequestModel) {
-    console.log('request inside service', request);
     return this.httpClient.post(
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.booking_appointment,
       request
@@ -249,7 +283,6 @@ getGenderDetails() {
       appConstants.PARAMS_KEYS.POA +
       '&sourcePreId=' +
       sourceId;
-    console.log('copy document URL', url);
     const params = new URLSearchParams().set(appConstants.PARAMS_KEYS.catCode, appConstants.PARAMS_KEYS.POA);
     // params.set(appConstants.PARAMS_KEYS.sourcePrId, sourceId);
 
@@ -301,7 +334,6 @@ getGenderDetails() {
     if (url.charAt(url.length - 1) === '&') {
       url = url.substring(0, url.length - 1);
     }
-    console.log(url);
     return this.httpClient.get(url);
   }
 
@@ -347,10 +379,7 @@ getGenderDetails() {
   }
 
   sendOtp(userId: string) {
-    console.log(userId);
-
     const req = {
-      // langCode: localStorage.getItem('langCode'),
       userId: userId
     };
 

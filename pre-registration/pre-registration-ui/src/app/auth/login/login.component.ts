@@ -208,6 +208,7 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     this.loginIdValidator();
+    this.inputOTP = '';
     if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
       this.showResend = true;
       this.showOTP = true;
@@ -274,7 +275,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          this.showOtpMessage();
+          this.showErrorMessage();
         }
       );
     }
