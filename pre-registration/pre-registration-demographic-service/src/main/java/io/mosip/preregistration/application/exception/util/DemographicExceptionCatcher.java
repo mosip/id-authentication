@@ -132,9 +132,6 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof OperationNotAllowedException) {
 			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),
 					((OperationNotAllowedException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof EncryptionFailedException) {
-			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),
-					((EncryptionFailedException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof DecryptionFailedException) {
 			throw new DecryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),
 					((DecryptionFailedException) ex).getErrorText(), mainResponsedto);
@@ -171,6 +168,9 @@ public class DemographicExceptionCatcher {
 		}else if (ex instanceof ConfigServerConnectionException) {
 			throw new SchemaValidationException(((ConfigServerConnectionException) ex).getErrorCode(),
 					((ConfigServerConnectionException) ex).getErrorText(), mainResponsedto);
+		}
+		else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), mainResponsedto);
 		}
 	}
 
