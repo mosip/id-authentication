@@ -87,6 +87,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(BeanCreationException.class)
 	protected ResponseEntity<Object> handleBeanCreationException(BeanCreationException ex, WebRequest request) {
+		//BeanCreationException is handled because IdObjetMasterDataValidator is loaded lazily and
+		// maskes use of RestTemplate in PostConstruct. When RestTemplate throws any exception inside PostConstruct,
+		// it is wrapped as BeanCreationException and thrown by Spring.
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleBeanCreationException - \n" + ExceptionUtils.getStackTrace(ex));
 		Throwable rootCause = org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex);
