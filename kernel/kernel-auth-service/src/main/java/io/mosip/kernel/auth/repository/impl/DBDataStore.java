@@ -27,6 +27,7 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -285,6 +286,12 @@ public class DBDataStore implements DataStore {
 
 @Override
 public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public UserDetailsDto getUserDetailBasedOnUid(String userId) {
 	// TODO Auto-generated method stub
 	return null;
 }

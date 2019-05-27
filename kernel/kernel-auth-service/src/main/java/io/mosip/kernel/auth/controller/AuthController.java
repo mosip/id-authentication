@@ -33,6 +33,7 @@ import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsDto;
 import io.mosip.kernel.auth.dto.UserDetailsRequestDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
@@ -491,6 +492,24 @@ public class AuthController {
 		MosipUserDto mosipUserDto = authService.getUserDetailBasedonMobileNumber(appId, mobile);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
+	}
+
+	
+	/**
+	 * Gets the user detail based on user id.
+	 *
+	 * @param appId the app id
+	 * @param userId the user id
+	 * @return {@link UserDetailsDto}
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/userdetail/userid/{appid}/{userid}")
+	public ResponseWrapper<UserDetailsDto> getUserDetailBasedOnUserId(@PathVariable("appid") String appId,
+			@PathVariable("userid") String userId) {
+		UserDetailsDto userDetailsDto = authService.getUserDetailBasedOnUserId(appId, userId);
+		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(userDetailsDto);
 		return responseWrapper;
 	}
 }

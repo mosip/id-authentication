@@ -4,6 +4,8 @@
 package io.mosip.kernel.auth.repository.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,6 +42,7 @@ import org.apache.directory.api.ldap.model.password.PasswordUtil;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.JodaTimeConverters.LocalDateTimeToDateConverter;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
@@ -60,6 +63,7 @@ import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.Role;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -71,6 +75,7 @@ import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
@@ -399,7 +404,6 @@ public class LdapDataStore implements DataStore {
 		return ridDto;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
 
@@ -791,6 +795,78 @@ public class LdapDataStore implements DataStore {
 		}
 		context.close();
 		return searchResult;
+	}
+
+	@Override
+	public UserDetailsDto getUserDetailBasedOnUid(String userId) {
+		UserDetailsDto userDetailsDto = null;
+		try {
+			userDetailsDto = new UserDetailsDto();
+			NamingEnumeration<SearchResult> searchResult = getSearchResultBasedOnId(userId);
+			while (searchResult.hasMore()) {
+				SearchResult result = searchResult.next();
+				userDetailsDto.setUserName(userId);
+				userDetailsDto = setUserDetail(result);
+			}
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getCause());
+		} catch (LdapInvalidDnException e) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + " " + e.getCause());
+		}
+		return userDetailsDto;
+	}
+    
+	/**
+	 * 
+	 * @param userId - userId
+	 * @return {@link NamingEnumeration}
+	 * @throws NamingException
+	 * @throws LdapInvalidDnException
+	 */
+	private NamingEnumeration<SearchResult> getSearchResultBasedOnId(String userId)
+			throws NamingException, LdapInvalidDnException {
+
+		LdapContext context = getContext();
+		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		return context.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+	}
+
+	private UserDetailsDto setUserDetail(SearchResult result) throws NamingException {
+		UserDetailsDto userDetailsDto = new UserDetailsDto();
+
+		if (result.getAttributes().get(LdapConstants.USER_PASSWORD) != null) {
+			userDetailsDto.setUserPassword((byte[]) result.getAttributes().get(LdapConstants.USER_PASSWORD).get());
+		}
+		userDetailsDto.setContactNo((String) result.getAttributes().get(LdapConstants.MOBILE).get());
+		userDetailsDto.setEmailID((String) result.getAttributes().get(LdapConstants.MAIL).get());
+		userDetailsDto.setName((String) result.getAttributes().get(LdapConstants.CN).get());
+		if (result.getAttributes().get(LdapConstants.FIRST_NAME) != null) {
+			userDetailsDto.setFirstName((String) result.getAttributes().get(LdapConstants.FIRST_NAME).get());
+		}
+		if (result.getAttributes().get(LdapConstants.LAST_NAME) != null) {
+			userDetailsDto.setLastName((String) result.getAttributes().get(LdapConstants.FIRST_NAME).get());
+		}
+		if (result.getAttributes().get(LdapConstants.GENDER_CODE) != null) {
+			userDetailsDto.setGender((String) result.getAttributes().get(LdapConstants.GENDER_CODE).get());
+		}
+		if (result.getAttributes().get(LdapConstants.IS_ACTIVE) != null) {
+			userDetailsDto.setIsActive((String) result.getAttributes().get(LdapConstants.IS_ACTIVE).get());
+		}
+		if (result.getAttributes().get(LdapConstants.DOB) != null) {
+			String dob = (String) result.getAttributes().get(LdapConstants.DOB).get();
+			LocalDate dobInLocalDate = LocalDate.parse(dob);
+			userDetailsDto.setDateOfBirth(dobInLocalDate);
+		}
+		if (result.getAttributes().get(LdapConstants.RID) != null) {
+			userDetailsDto.setRId((String) result.getAttributes().get(LdapConstants.RID).get());
+		}
+
+		return userDetailsDto;
 	}
 
 }

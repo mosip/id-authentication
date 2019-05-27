@@ -29,11 +29,13 @@ public class UserDetailsDto {
 	
 	private String langCode;
 	
-	private String userPassword;
+	private byte[] userPassword;
 	
 	private String name;
 	
 	private String role;
 	
 	private String rId;
+	
+	private String isActive;
 }
