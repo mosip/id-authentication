@@ -64,6 +64,8 @@ import io.mosip.kernel.core.util.StringUtils;
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
 
+	private static final String OPERATION = "operation";
+
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -187,32 +189,34 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 */
 	private void validateMandatoryFields(JsonNode jsonObjectNode, IdObjectValidatorSupportedOperations operation,
 			List<ServiceError> errorList) throws IdObjectIOException {
-		if (Objects.nonNull(operation)) {
-			String appId = env.getProperty(APPLICATION_ID.getValue());
-			if (Objects.isNull(appId)) {
-				throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
-						String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
-			}
-			String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
-			if (Objects.isNull(fields)) {
-				throw new IdObjectIOException(MANDATORY_FIELDS_NOT_FOUND.getErrorCode(),
-						String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(), operation.getOperation()));
-			}
-			Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
-				.forEach(field -> {
-					List<String> fieldNames = Arrays.asList(field.split("\\|"));
-					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
-							.anyMatch(fieldName -> !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
-						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
-								String.format(MISSING_INPUT_PARAMETER.getMessage(),
-										fieldNames
-											.parallelStream()
-											.map(fieldName -> ROOT_PATH.getValue()
-													.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
-											.collect(Collectors.joining(" | ")))));
-					}
-				});
+		if (Objects.isNull(operation)) {
+			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getMessage(), OPERATION));
 		}
+		String appId = env.getProperty(APPLICATION_ID.getValue());
+		if (Objects.isNull(appId)) {
+			throw new IdObjectIOException(MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
+		}
+		String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
+		if (Objects.isNull(fields)) {
+			throw new IdObjectIOException(MANDATORY_FIELDS_NOT_FOUND.getErrorCode(),
+					String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(), operation.getOperation()));
+		}
+		Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
+			.forEach(field -> {
+				List<String> fieldNames = Arrays.asList(field.split("\\|"));
+				if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
+						.anyMatch(fieldName -> !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
+					errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
+							String.format(MISSING_INPUT_PARAMETER.getMessage(),
+									fieldNames
+										.parallelStream()
+										.map(fieldName -> ROOT_PATH.getValue()
+												.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+										.collect(Collectors.joining(" | ")))));
+				}
+			});
 	}
 
 	/**
