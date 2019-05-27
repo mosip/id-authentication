@@ -7,7 +7,7 @@
 	<listeners>
 		<listener class-name="io.mosip.report.CustomTestNGReporter" />
 		<listener class-name="io.mosip.report.ExtentReportListener" />
-		<listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
+		
 	</listeners>  
 
 
@@ -72,7 +72,7 @@
 
                      
   <test name="PreReg Tests">
-		<parameter name="testType" value="smoke" />
+		<parameter name="testType" value="smokeAndRegression" />
 		<classes>
 		<class name="io.mosip.preregistration.tests.Audit" /> 
  		 <class name="io.mosip.preregistration.tests.BatchJob" />

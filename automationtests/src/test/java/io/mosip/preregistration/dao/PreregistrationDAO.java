@@ -1,5 +1,6 @@
 package io.mosip.preregistration.dao;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -96,7 +97,33 @@ public class PreregistrationDAO
 	}
 	public void makeregistartionCenterDeActive(String registartionCenter)
 	{
-		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
+		String queryString="update master.registration_center set is_active= "+Boolean.FALSE+ " where id='"+registartionCenter+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
+	public Date MakeDayAsHoliday() throws ParseException
+	{
+		Date date1 = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date()); // Now use today date.
+		c.add(Calendar.DATE, 4); 
+		String date = sdf.format(c.getTime());
+		try {
+			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		String sDate1="2019-06-05";  
+	    Date date3=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);  
+		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+		return date1;
+	}
+	public void updateHoliday(Date date) throws ParseException
+	{
+		String sDate1="2019-06-05";  
+	    Date date3=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);  
+		String queryString="update master.loc_holiday set is_active= '"+date3+"' where id='"+date+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 	}
 

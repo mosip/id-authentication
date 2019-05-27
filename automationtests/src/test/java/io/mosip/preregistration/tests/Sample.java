@@ -65,7 +65,8 @@ public class Sample extends BaseTestCase implements ITest {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
-	PreregistrationDAO dao=new PreregistrationDAO();
+	PreregistrationDAO dao = new PreregistrationDAO();
+
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
@@ -74,24 +75,36 @@ public class Sample extends BaseTestCase implements ITest {
 
 	/**
 	 * Batch job service for expired application
-	 * @throws InterruptedException 
+	 * @throws java.text.ParseException 
+	 * 
+	 * 
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void updatePreRegistrationDataForExpiredApplication()
-			throws FileNotFoundException, IOException, ParseException, InterruptedException {
-		authToken = lib.getToken();
+	@Test
+	public void makeRegCntrInactiveToActive() throws java.text.ParseException {
+		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre("10009");
+		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
+		dao.makeregistartionCenterDeActive("10009");
+		Response syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		dao.makeregistartionCenterActive("10009");
+		avilibityResponse = lib.FetchCentre("10009");
+		lib.compareValues(avilibityResponse.jsonPath().get("response.regCenterId").toString(),"10009");*/
+		Date date = dao.MakeDayAsHoliday();
+		dao.updateHoliday(date);
 		
+	}
+
+	@BeforeMethod(alwaysRun = true)
+	public void run() {
 
 	}
 
-
-	
-
-	@BeforeMethod(alwaysRun=true)
-	public void run()
-	{
-		
-	}
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

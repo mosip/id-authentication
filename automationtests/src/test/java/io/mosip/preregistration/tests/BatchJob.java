@@ -104,7 +104,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

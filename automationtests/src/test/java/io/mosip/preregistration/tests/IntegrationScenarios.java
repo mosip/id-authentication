@@ -478,7 +478,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		lib.expiredStatus();
 		lib.getPreRegistrationStatus(preID);
-		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
+		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(
 				preID);
 		String msg = CancelBookingAppointmentResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(msg, "Appointment cannot be canceled");
@@ -508,7 +508,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response updateResponse = lib.updatePreReg(preID);
 		String updatePreId = updateResponse.jsonPath().get("response.preRegistrationId").toString();
 		lib.compareValues(updatePreId, preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
+		lib.CancelBookingAppointment( preID);
 	}
 
 	/**
@@ -825,13 +825,14 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetails, preID);
+		lib.CancelBookingAppointment (preID);
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
 		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].message"),
 				"Booking data not found");
 		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].errorCode"), "PRG_BOOK_RCI_013");
 
 	}
+
 
 	/**
 	 * @author Ashish Retrive Pre Registration After uploading demographic details
