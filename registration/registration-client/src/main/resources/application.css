@@ -436,11 +436,21 @@
 	-fx-pref-width: 625.0px;
 }
 
-.reRegToggle{
+.reRegInformToggle{
 	-fx-pref-height: 30.0px; 
-	-fx-pref-width: 86.0px;
+	-fx-pref-width: 120.0px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;
 }
 
+.reRegCantInformToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 120.0px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
 	-fx-pref-width: 850.0px;
