@@ -17,7 +17,7 @@
 		<module>authentication</module>
 		<module>id-repository</module>
          <module>admin</module>
-		<!-- <module>automationtests</module> -->
+		<module>automationtests</module>
 
   </modules>
 </project>
