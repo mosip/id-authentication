@@ -16,11 +16,8 @@
 		<module>registration-processor</module>
 		<module>authentication</module>
 		<module>id-repository</module>
-<<<<<<< HEAD
          <module>admin</module>
-		<module>automationtests</module>
-=======
-		<module>admin</module>
->>>>>>> 9977873c752e3a54c0203d2f06fdd93156978b0d
+		<!-- <module>automationtests</module> -->
+
   </modules>
 </project>

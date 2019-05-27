@@ -10,12 +10,12 @@
       <url>http://maven.apache.org</url>
 
 
-      <parent>
+	      <parent>
             <groupId>io.mosip</groupId>
             <artifactId>mosip-parent</artifactId>
-            <version>0.12.0</version>
+            <version>0.12.2</version>
       </parent>
-
+ 
       <dependencies>
             <dependency>
                   <groupId>com.flipkart.zjsonpatch</groupId>
