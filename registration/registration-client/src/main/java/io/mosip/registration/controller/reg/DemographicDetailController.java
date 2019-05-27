@@ -746,6 +746,8 @@ public class DemographicDetailController extends BaseController {
 	private void genderSettings() {
 		textMale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
 				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getGenderName();
+		textMaleCode = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
+				.filter(dto -> dto.getCode().equals(RegistrationConstants.MALE_CODE)).findFirst().get().getCode();
 		textFemale = masterSyncService.getGenderDtls(ApplicationContext.applicationLanguage()).stream()
 				.filter(dto -> dto.getCode().equals(RegistrationConstants.FEMALE_CODE)).findFirst().get()
 				.getGenderName();
