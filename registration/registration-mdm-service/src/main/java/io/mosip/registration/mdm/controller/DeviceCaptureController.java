@@ -73,19 +73,22 @@ public class DeviceCaptureController {
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_LEFT_ONBOARD:
 
-			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(
+					MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_LEFT));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD);
 
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_RIGHT_ONBOARD:
-			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(
+					MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_RIGHT));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD);
 
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_THUMB_ONBOARD:
-			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(
+					MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_THUMB));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD);
 
