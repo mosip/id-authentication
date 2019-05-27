@@ -334,7 +334,7 @@ public class LoginService {
 		requestKernel.setRequest(clientSecretDto);
 		requestKernel.setRequesttime(LocalDateTime.now());
 		ResponseEntity<ResponseWrapper<AuthNResponse>> response=(ResponseEntity<ResponseWrapper<AuthNResponse>>) loginCommonUtil.callAuthService(tokenUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, requestKernel,null,ResponseWrapper.class);
-		if(!response.getBody().getErrors().isEmpty()) {
+		if(!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
 			throw new LoginServiceException(response.getBody().getErrors(),null);
 		}
 		String token=response.getHeaders().get("Set-Cookie").get(0);

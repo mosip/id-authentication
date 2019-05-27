@@ -68,7 +68,7 @@ public class CryptoUtil {
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
 					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
 					});
-			if(!response.getBody().getErrors().isEmpty()) {
+			if(!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
 				throw new EncryptionFailedException(response.getBody().getErrors(), null);
 			}
 			encryptedBytes = response.getBody().getResponse().getData().getBytes();
