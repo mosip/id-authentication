@@ -1,8 +1,8 @@
 package io.mosip.registration.processor.status.api.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
@@ -26,6 +26,7 @@ import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
@@ -37,8 +38,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
-import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 
 /**
  * The Class RegistrationStatusController.
@@ -80,31 +79,33 @@ public class RegistrationStatusController {
 	@Autowired
 	private DigitalSignatureUtility digitalSignatureUtility;
 
-
-
 	/**
 	 * Search.
 	 *
-	 * @param registrationIds the registration ids
+	 * @param registrationIds
+	 *            the registration ids
 	 * @return the response entity
 	 * @throws RegStatusAppException
 	 */
-	@GetMapping(path = "/search", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
-	public ResponseEntity<Object> search(@RequestParam(name = "request", required = true) String jsonRequest,
-			@CookieValue(value = "Authorization") String token
-			)throws RegStatusAppException {
+	public ResponseEntity<Object> search(
+			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO,
+			@CookieValue(value = "Authorization") String token) throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
-			RegistrationStatusRequestDTO registrationStatusRequestDTO = gson.fromJson(jsonRequest,RegistrationStatusRequestDTO.class);
-			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,env.getProperty(REG_STATUS_SERVICE_ID));
-			List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationStatusRequestDTO.getRequest());
-			if(isEnabled) {
+			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
+					env.getProperty(REG_STATUS_SERVICE_ID));
+			List<RegistrationStatusDto> registrations = registrationStatusService
+					.getByIds(registrationStatusRequestDTO.getRequest());
+			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildRegistrationStatusResponse(registrations)));
-				return ResponseEntity.status(HttpStatus.OK).headers(headers).body(buildRegistrationStatusResponse(registrations));
+				headers.add(RESPONSE_SIGNATURE,
+						digitalSignatureUtility.getDigitalSignature(buildRegistrationStatusResponse(registrations)));
+				return ResponseEntity.status(HttpStatus.OK).headers(headers)
+						.body(buildRegistrationStatusResponse(registrations));
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
