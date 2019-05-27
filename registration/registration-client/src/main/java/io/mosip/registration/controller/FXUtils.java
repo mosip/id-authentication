@@ -454,7 +454,7 @@ public class FXUtils {
 	 *            hidden
 	 */
 	private void hideErrorMessageLabel(Pane parentPane, TextField field) {
-		if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+		if (field.getId().matches("ageField|dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			toggleUIField(parentPane, RegistrationConstants.DOB_MESSAGE, false);
 		} else {
 			toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, false);

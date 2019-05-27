@@ -749,7 +749,7 @@ public class LoginController extends BaseController implements Initializable {
 		case RegistrationConstants.PWORD:
 			credentialsPane.setVisible(true);
 			break;
-		case RegistrationConstants.FINGERPRINT:
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			fingerprintPane.setVisible(true);
 			break;
 		case RegistrationConstants.IRIS:

@@ -195,7 +195,7 @@ public class FingerprintFacade {
 		if (captureResponseDto != null) {
 			byte[] fingerPrintByte = captureResponseDto.getSlapImage();
 			fpDetailsDTO.setFingerPrint(fingerPrintByte);
-			fpDetailsDTO.setFingerType(type);
+			fpDetailsDTO.setFingerType(type.replace("_onboard", ""));
 			fpDetailsDTO.setQualityScore(80);
 		}
 	}

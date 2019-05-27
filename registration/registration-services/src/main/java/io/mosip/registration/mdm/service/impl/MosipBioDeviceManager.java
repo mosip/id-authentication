@@ -133,23 +133,25 @@ public class MosipBioDeviceManager {
 
 							case MosipBioDeviceConstants.VALUE_FINGERPRINT:
 								if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
-
-									if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-									} else if (MosipBioDeviceConstants.VALUE_SLAP_LEFT.equalsIgnoreCase(deviceSubType)) {
-										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_SLAP_LEFT, bioDevice);
-									}else if (MosipBioDeviceConstants.VALUE_SLAP_RIGHT.equalsIgnoreCase(deviceSubType)) {
-										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_SLAP_RIGHT, bioDevice);
-									} else if (MosipBioDeviceConstants.VALUE_SLAP_THUMB.equalsIgnoreCase(deviceSubType)) {
-										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_SLAP_THUMB, bioDevice);
-									} else if (MosipBioDeviceConstants.VALUE_TOUCHLESS.equalsIgnoreCase(deviceSubType)) {
-										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-												+ MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
-									}
+									deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
+											bioDevice);
+									
+//									if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
+//										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+//												+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
+//									} else if (MosipBioDeviceConstants.VALUE_SLAP_LEFT.equalsIgnoreCase(deviceSubType)) {
+//										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+//												+ MosipBioDeviceConstants.VALUE_SLAP_LEFT, bioDevice);
+//									}else if (MosipBioDeviceConstants.VALUE_SLAP_RIGHT.equalsIgnoreCase(deviceSubType)) {
+//										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+//												+ MosipBioDeviceConstants.VALUE_SLAP_RIGHT, bioDevice);
+//									} else if (MosipBioDeviceConstants.VALUE_SLAP_THUMB.equalsIgnoreCase(deviceSubType)) {
+//										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+//												+ MosipBioDeviceConstants.VALUE_SLAP_THUMB, bioDevice);
+//									} else if (MosipBioDeviceConstants.VALUE_TOUCHLESS.equalsIgnoreCase(deviceSubType)) {
+//										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+//												+ MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
+//									}
 
 								}
 

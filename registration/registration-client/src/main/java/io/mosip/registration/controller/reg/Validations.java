@@ -287,10 +287,12 @@ public class Validations extends BaseController {
 				isInputValid = false;
 				generateInvalidValueAlert(parentPane, id, String.format("%s %s", node.getText(), errorMessage), showAlert);
 			} else {
-				String bWords = String.join(", ",
-						Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(
-								word -> blackListedWords.stream().anyMatch(bWord -> bWord.equalsIgnoreCase(word)))
-								.collect(Collectors.toList()));
+				
+				List<String> invalidWorlds = blackListedWords.stream().flatMap(l1->Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(l2->{
+					return l1.equalsIgnoreCase(l2) || l1.contains(l2);
+				})).collect(Collectors.toList());
+				
+				String bWords = String.join(", ", invalidWorlds);
 				if (bWords.length() > 0) {
 					generateInvalidValueAlert(parentPane, id, String.format("%s %s", bWords, errorMessage), showAlert);
 				} else {
