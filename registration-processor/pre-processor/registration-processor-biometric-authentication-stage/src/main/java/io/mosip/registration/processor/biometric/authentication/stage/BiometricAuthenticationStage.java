@@ -105,26 +105,38 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 				
 				JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
 				JSONObject individualBioMetricLabel = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUALBIOMETRICS);
-				String individualBioMetricValue = (String) individualBioMetricLabel.get(VALUE);
-				
-				if (individualBioMetricValue != null && individualBioMetricValue.isEmpty()) {
-					
-					InputStream inputStream = adapter.getFile(registrationId,
-							PacketFiles.DEMOGRAPHIC + FILE_SEPERATOR + individualBioMetricValue.toUpperCase());
-						
-					if(inputStream == null) {
-						isTransactionSuccessful = false;
-					}
-					else {
-						isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
-						description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage():PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
-					}
-					
-					
-				} else {
-					isTransactionSuccessful = true;
-					description = PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage();
+				if(individualBioMetricLabel == null) {
+					isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
+					description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage():PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
 				}
+				else {
+					String individualBioMetricValue = (String) individualBioMetricLabel.get(VALUE);
+					
+					if (individualBioMetricValue != null && !individualBioMetricValue.isEmpty()) {
+						
+						InputStream inputStream = adapter.getFile(registrationId,
+								PacketFiles.DEMOGRAPHIC + FILE_SEPERATOR + individualBioMetricValue.toUpperCase());
+							
+						if(inputStream == null) {
+							isTransactionSuccessful = false;
+						}
+						else {
+							isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
+							description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage():PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
+						}
+						
+						
+					} else {
+						isTransactionSuccessful = true;
+						description = PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage();
+					}
+				}
+				}
+				
+			else {
+				object.setIsValid(true);
+				object.setInternalError(false);
+				description="The packet is child packet for registration id" +registrationId;
 			}
 
 		} catch (IOException e) {
