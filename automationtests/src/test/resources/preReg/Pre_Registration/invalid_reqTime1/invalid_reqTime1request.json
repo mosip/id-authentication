@@ -1,0 +1,165 @@
+{
+		"id": "mosip.pre-registration.demographic.create",
+		"ver" :"1.0",
+		"reqTime" : "2019-01-22T09:35:42.720Z",
+		"request" :
+	     {
+			"preRegistrationId": "",
+			"createdBy": "9900806086",
+			"createdDateTime": "2019-01-22T09:35:42.473Z",
+			"updatedBy": "",
+			"updatedDatetime": "",
+			"statusCode": "Pending_Appointment",
+			"langCode": "fr",
+			"demographicDetails":
+			{
+				"identity":
+				{
+					"fullName": [
+					{
+						"language": "ar",
+						"value": "رُسِ"
+					},
+					{
+						"language": "fr",
+						"value": "rose"
+					}
+				],
+				"dateOfBirth": [
+					{
+						"language": "fr",
+						"value": "14/12/1899"
+					},
+					{
+						"language": "ar",
+						"value": "14/12/1899"
+					}
+					
+				],
+				"gender":[
+					{
+						"language": "fr",
+						"value": "F"
+					},
+					{
+						"language": "ar",
+						"value": "ف"
+					}
+					
+				],
+				"addressLine1": [
+					{
+						"language": "ar",
+						"value": "٢٨٣"
+					},
+					{
+						"language": "fr",
+						"value": "283"
+					}
+					
+				],
+				"addressLine2": [
+					{
+						"language": "ar",
+						"value": "رُِ َبُُ ِسهَك ِل َُُججَج مَّƒَٓ¢َرِف"
+					},
+					{
+						"language": "fr",
+						"value": "Rue Abou Ishak El Ouajjaj MÃƒÂ¢arif"
+					}
+				],
+				"addressLine3": [
+					{
+						"language": "fr",
+						"value": "AllÃƒâ‚¬e Des Citronniers"
+					},
+					{
+						"language": "ar",
+						"value": "َللَّƒَٓ‚¬ِ دِس سِترُننِِرس"
+					}
+					
+				],
+				"region": [
+					{
+						"language": "ar",
+						"value": "سكهِرَت"
+					},
+					{
+						"language": "fr",
+						"value": "Skhirat"
+					}
+				],
+				"province": [
+					{
+						"language": "ar",
+						"value": "َزِلَل پرُڤِنسِ"
+					},
+					{
+						"language": "fr",
+						"value": "Azilal Province"
+					}
+				],
+				"city": [
+					{
+						"language": "fr",
+						"value": "FÃ¨Â³Â­MeknÃ¨Â³"
+					},
+					{
+						"language": "ar",
+						"value": "فَّ¨َٓ³َٓ­مِكنَّ¨َٓ³"
+					}
+				],
+				"postalcode": [
+					{
+						"language": "ar",
+						"value": "٧٨٩٠١"
+					},
+					{
+						"language": "fr",
+						"value": "78901"
+					}
+				],
+				"localAdministrativeAuthority": [
+					{
+						"language": "fr",
+						"value": "(District)YACOUB EL MANSSOUR/(Annexes administratives)7 EME ARRONDISSEMENT"
+					},
+					{
+						"language": "ar",
+						"value": "(دِسترِكت)يَكُُب ِل مَنسسُُر/(َننِكسِس َدمِنِسترَتِڤِس)٧ ِمِ َررُندِسسِمِنت"
+					}
+				],
+				"emailId": [
+					{
+						"language": "fr",
+						"value": "jyoti.kori@mindtree.com"
+					},
+					{
+						"language": "ar",
+						"value": "jyoti.kori@mindtree.com"
+					}
+				],
+				"mobileNumber":[
+					{
+						"language": "ar",
+						"value": "7736223978"
+					},
+					{
+						"language": "fr",
+						"value": "7736223978"
+					}
+				],
+				"CNEOrPINNumber": [
+					{
+						"language": "fr",
+						"value": "20050"
+					},
+					{
+						"language": "ar",
+						"value": "٢٠٠٥٠"
+					}
+				]
+			}
+		}
+	}
+}

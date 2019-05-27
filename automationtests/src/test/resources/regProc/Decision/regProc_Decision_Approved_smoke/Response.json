@@ -1,0 +1,13 @@
+{
+    "response": {
+        "regId": "60012783330000520190114162541",
+        "mvUsrId": "123555",
+        "statusCode": "APPROVED",
+        "matchedRefId": "60012783330000520190114161234",
+        "matchedRefType": "uin",
+        "reasonCode": "Problem with biometrics"
+    },
+    "id": "mosip.manual.verification.decision",
+    "version": "1.0",
+    "responsetime": "2019-05-18T09:14:09.863Z"
+}

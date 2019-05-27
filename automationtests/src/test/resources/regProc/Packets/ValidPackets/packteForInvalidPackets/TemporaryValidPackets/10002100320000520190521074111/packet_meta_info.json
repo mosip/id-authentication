@@ -1,0 +1,213 @@
+{
+  "identity" : {
+    "biometric" : {
+      "applicant" : {
+        "leftEye" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "93a93eaf-0f21-4cdb-9de7-49c3ec996a2d"
+        },
+        "rightEye" : {
+          "numRetry" : 3,
+          "forceCaptured" : false,
+          "BIRIndex" : "a1a3a300-7b1b-4c1b-b335-142732f74f31"
+        },
+        "leftThumb" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "23b620be-7a5d-412f-803a-e9aa23ca4818"
+        },
+        "rightThumb" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "736c91e1-5c3f-47ed-9c4f-a1e4b1f6f721"
+        },
+        "leftIndex" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "e4053a4f-c00e-4b8d-8d6b-a0ef506443cd"
+        },
+        "leftMiddle" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "77c492bc-752b-4889-8396-aacbf5b18552"
+        },
+        "leftRing" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "7960560c-eedd-4971-86bc-8a087b363524"
+        },
+        "leftLittle" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "49523c51-ec27-416b-9951-9866349a291c"
+        },
+        "rightIndex" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "25386441-33e3-4738-bd56-2803a172bb85"
+        },
+        "rightMiddle" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "48bdd444-0e29-4245-93a7-44a4f10759c7"
+        },
+        "rightRing" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "6f465b6d-961c-4f0d-9db7-b389be7f3b31"
+        },
+        "rightLittle" : {
+          "numRetry" : 1,
+          "forceCaptured" : false,
+          "BIRIndex" : "2547c9c6-9dee-4a46-9681-ffc24be6f718"
+        }
+      }
+    },
+    "exceptionBiometrics" : [ {
+      "type" : "iris",
+      "missingBiometric" : "RightEye",
+      "reason" : "Low quality of biometrics",
+      "exceptionType" : "Temporary",
+      "individualType" : "INDIVIDUAL"
+    } ],
+    "applicantPhotograph" : {
+      "numRetry" : 0,
+      "BIRIndex" : "a1fe56db-bd94-4483-9224-a8fd0134e877"
+    },
+    "exceptionPhotograph" : {
+      "individualType" : "INDIVIDUAL",
+      "photoName" : "individual_exception_photo",
+      "numRetry" : 0
+    },
+    "documents" : [ ],
+    "metaData" : [ {
+      "label" : "geoLocLatitude",
+      "value" : "0.0"
+    }, {
+      "label" : "geoLoclongitude",
+      "value" : "0.0"
+    }, {
+      "label" : "registrationType",
+      "value" : "New"
+    }, {
+      "label" : "preRegistrationId",
+      "value" : null
+    }, {
+      "label" : "registrationId",
+      "value" : "10002100320000520190521074111"
+    }, {
+      "label" : "machineId",
+      "value" : "10032"
+    }, {
+      "label" : "dongleId",
+      "value" : "FB5962911665"
+    }, {
+      "label" : "macId",
+      "value" : "F4-30-B9-D4-CD-6F"
+    }, {
+      "label" : "centerId",
+      "value" : "10002"
+    }, {
+      "label" : "previousRID",
+      "value" : null
+    }, {
+      "label" : "introducerType",
+      "value" : null
+    }, {
+      "label" : "consentOfApplicant",
+      "value" : "Yes"
+    }, {
+      "label" : "creationDate",
+      "value" : "2019-05-21T13:15:07.188Z"
+    }, {
+      "label" : "authenticationBiometricFileName",
+      "value" : null
+    } ],
+    "osiData" : [ {
+      "label" : "officerId",
+      "value" : "110021"
+    }, {
+      "label" : "officerBiometricFileName",
+      "value" : null
+    }, {
+      "label" : "supervisorId",
+      "value" : "110021"
+    }, {
+      "label" : "supervisorBiometricFileName",
+      "value" : null
+    }, {
+      "label" : "supervisorPassword",
+      "value" : "true"
+    }, {
+      "label" : "officerPassword",
+      "value" : "true"
+    }, {
+      "label" : "supervisorPIN",
+      "value" : null
+    }, {
+      "label" : "officerPIN",
+      "value" : null
+    }, {
+      "label" : "supervisorOTPAuthentication",
+      "value" : "false"
+    }, {
+      "label" : "officerOTPAuthentication",
+      "value" : "false"
+    } ],
+    "hashSequence1" : [ {
+      "label" : "applicantBiometricSequence",
+      "value" : [ "applicant_bio_CBEFF" ]
+    }, {
+      "label" : "introducerBiometricSequence",
+      "value" : [ ]
+    }, {
+      "label" : "applicantDemographicSequence",
+      "value" : [ "ID", "POR_Passport", "POA_Rental contract", "POI_CNIE card" ]
+    } ],
+    "hashSequence2" : [ {
+      "label" : "otherFiles",
+      "value" : [ "audit", "individual_exception_photo" ]
+    } ],
+    "capturedRegisteredDevices" : [ {
+      "label" : "Finger Print Scanner",
+      "value" : "3000121"
+    }, {
+      "label" : "Iris Scanner",
+      "value" : "3000130"
+    }, {
+      "label" : "Camera",
+      "value" : "3000139"
+    }, {
+      "label" : "Document Scanner",
+      "value" : "3000148"
+    }, {
+      "label" : "Printer",
+      "value" : "3000157"
+    }, {
+      "label" : "Finger Print Scanner",
+      "value" : "3000176"
+    }, {
+      "label" : "Iris Scanner",
+      "value" : "3000177"
+    }, {
+      "label" : "Camera",
+      "value" : "3000178"
+    }, {
+      "label" : "Document Scanner",
+      "value" : "3000179"
+    }, {
+      "label" : "Printer",
+      "value" : "3000180"
+    } ],
+    "capturedNonRegisteredDevices" : null,
+    "checkSum" : [ {
+      "label" : "registration-service.jar",
+      "value" : "65gfhab67586cjhsabcjk78"
+    }, {
+      "label" : "registration-ui.jar",
+      "value" : "uygdfajkdjkHHD56TJHASDJKA"
+    } ],
+    "printingName" : null
+  }
+}

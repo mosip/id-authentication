@@ -1,0 +1,10 @@
+{
+  "ref_id": "MULTIPLE_ID",
+  "log_desc": "Retrieve All Pre-Registration id, Full name, Status and Appointment details by user id",
+  "event_id": "PRE_401",
+  "event_type": "BUSINESS",
+  "session_user_id": "9104539010",
+  "event_name": "RETRIEVE",
+  "module_name": "DEMOGRAPHY_SERVICE",
+  "ref_id_type": "PRE_REGISTRATION_ID"
+}

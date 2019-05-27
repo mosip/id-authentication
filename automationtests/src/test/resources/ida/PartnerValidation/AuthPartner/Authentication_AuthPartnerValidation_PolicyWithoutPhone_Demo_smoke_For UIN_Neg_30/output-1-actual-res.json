@@ -1,1 +1,0 @@
-{"transactionID":"1420010723","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-006","errorMessage":"DEMO-authentiation usage not allowed as per policy"}],"responseTime":"2019-05-23T11:53:28.697+05:30","response":{"authStatus":false,"staticToken":null}}

@@ -1,1 +1,0 @@
-{"transactionID":"7277268371","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-007","errorMessage":"License key does not belong to a registered MISP"}],"responseTime":"2019-05-23T11:50:53.464+05:30","response":{"authStatus":false,"staticToken":null}}
