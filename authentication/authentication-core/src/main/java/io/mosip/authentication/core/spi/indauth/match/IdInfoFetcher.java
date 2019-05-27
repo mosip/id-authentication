@@ -9,13 +9,11 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;;
 
 /**
  * The IdInfoFetcher interface that provides the helper methods invoked by the
@@ -60,32 +58,6 @@ public interface IdInfoFetcher {
 	public Map<String, String> getIdentityRequestInfo(MatchType matchType, RequestDTO identity, String language);
 
 	/**
-	 * Gets the iris provider for the DataDTO value.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the iris provider
-	 */
-	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue);
-
-	/**
-	 * Gets the finger print provider for the DataDTO value.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the finger print provider
-	 */
-	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue);
-	
-	
-	
-	/**
-	 * Gets the face provider for the DataDTO value.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the face provider
-	 */
-	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue);
-
-	/**
 	 * Get the Validate Otp function
 	 * 
 	 * @return the ValidateOtpFunction
@@ -119,22 +91,21 @@ public interface IdInfoFetcher {
 	public MasterDataFetcher getTitleFetcher();
 
 	/**
-	 *  Get UIN/VID from the request 
-	 *  
+	 * Get UIN/VID from the request
+	 * 
 	 * @param authRequestDTO
 	 * @return
 	 */
 	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
 
 	/**
-	 * Get ID type from the request 
+	 * Get ID type from the request
 	 * 
 	 * @param authRequestDTO
 	 * @return
 	 */
 	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
-	
-	
+
 	/**
 	 * Gets the matching threshold.
 	 *

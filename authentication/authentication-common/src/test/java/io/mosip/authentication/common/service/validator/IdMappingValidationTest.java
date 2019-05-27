@@ -364,8 +364,6 @@ public class IdMappingValidationTest {
 		identity.setLocation1(addressLine1List);
 		identity.setLocation2(addressLine1List);
 		identity.setLocation3(addressLine1List);
-		/* Age */
-		List<IdentityInfoDTO> age = new ArrayList<>();
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");
