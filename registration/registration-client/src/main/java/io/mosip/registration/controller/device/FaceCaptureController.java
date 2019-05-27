@@ -183,7 +183,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * @param imageType
 	 *            type of image that is to be captured
 	 */
-	private void openWebCamWindow(String imageType) {
+	public void openWebCamWindow(String imageType) {
 		auditFactory.audit(
 				RegistrationConstants.APPLICANT_IMAGE.equals(imageType) ? AuditEvent.REG_BIO_FACE_CAPTURE
 						: AuditEvent.REG_BIO_EXCEP_FACE_CAPTURE,
@@ -745,15 +745,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 			webCameraController.capture.setDisable(false);
 		});
 		timeline.play();
-	}
-
-	/**
-	 * To get the current timestamp
-	 * 
-	 * @return Timestamp returns the current timestamp
-	 */
-	private Timestamp getCurrentTimestamp() {
-		return Timestamp.from(Instant.now());
 	}
 
 	/**

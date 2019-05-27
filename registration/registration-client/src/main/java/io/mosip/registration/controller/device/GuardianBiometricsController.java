@@ -34,7 +34,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -548,7 +548,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
 		if (detailsDTO.getFingerPrint() != null) {
 
