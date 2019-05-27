@@ -1,1 +1,0 @@
-{"transactionID":"5054638743","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-009","errorMessage":"Partner is not registered"}],"responseTime":"2019-05-23T11:51:29.453+05:30","response":{"authStatus":false,"staticToken":null}}

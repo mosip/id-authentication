@@ -1,0 +1,11 @@
+{
+  "id" : "mosip.registration.status",
+  "version" : "1.0",
+  "responsetime": "2019-02-14T12:40:59.768Z",
+  "response" : [
+  {
+    "registrationId": "10006100060000720190518153303",
+    "statusCode": "PROCESSING"
+  }
+]
+}

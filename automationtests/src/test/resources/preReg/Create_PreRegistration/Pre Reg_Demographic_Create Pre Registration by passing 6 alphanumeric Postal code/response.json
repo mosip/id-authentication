@@ -1,0 +1,11 @@
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "errors": [{
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "postalCode failed for the regex ^[(?i)A-Z0-9]{5}$"
+    }
+    ],
+    "responsetime": "2019-04-17T06:21:02.495Z",
+    "response": null
+}
