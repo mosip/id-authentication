@@ -210,6 +210,8 @@ public enum RegistrationExceptionTypeCode {
 
 	SUPERVISOR_BIOMETRIC_NOT_IN_PACKET,
 
-	AUTH_ERROR
+	AUTH_ERROR,
+
+	AUTH_FAILED
 
 }

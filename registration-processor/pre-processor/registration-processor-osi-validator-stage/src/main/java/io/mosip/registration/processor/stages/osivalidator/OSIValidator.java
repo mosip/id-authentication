@@ -717,7 +717,16 @@ public class OSIValidator {
 			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
 					introducerbiometric);
 			if (authResponseDTO.getErrors() == null && authResponseDTO.getErrors().isEmpty()) {
-				return authResponseDTO.getResponse().isAuthStatus();
+				if (authResponseDTO.getResponse().isAuthStatus()) {
+					return true;
+				} else {
+					registrationStatusDto.setLatestTransactionStatusCode(
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_FAILED));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.AUTHENTICATION_FAILED);
+					return false;
+				}
+
 			} else {
 				List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
 				registrationStatusDto.setLatestTransactionStatusCode(
@@ -725,8 +734,7 @@ public class OSIValidator {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				registrationStatusDto.setStatusComment(errors.get(0).getErrorMessage());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, errors.get(0).getErrorMessage());
 				return false;
 			}
 		} else {
