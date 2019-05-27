@@ -252,6 +252,19 @@ public class MosipBioDeviceManager {
 		return capturedByte;
 	}
 	
+	public byte[] extractSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
+		byte[] capturedByte = null;
+		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
+				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
+
+			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
+			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
+				return captureResponseBioDtos.getCaptureResponseData().getBioExtract();
+			}
+		}
+		return capturedByte;
+	}
+	
 	/**
 	 * discovers the device for the given device type
 	 * 

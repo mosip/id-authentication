@@ -40,9 +40,9 @@ public class MosipBioDeviceConstants {
 	public static final String[] RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS = new String[] {
 			"/fingerprints/righthand/rightIndex/", "/fingerprints/righthand/rightLittle/",
 			"/fingerprints/righthand/rightMiddle/", "/fingerprints/righthand/rightRing/" };
-	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/Srighthand/rightIndex/",
-			"/fingerprints/Srighthand/rightLittle/", "/fingerprints/Srighthand/rightMiddle/",
-			"/fingerprints/Srighthand/rightRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/righthand/rightIndex/",
+			"/fingerprints/righthand/rightLittle/", "/fingerprints/righthand/rightMiddle/",
+			"/fingerprints/righthand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
 

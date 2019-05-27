@@ -54,7 +54,7 @@ public class FingerprintFacade {
 
 	@Autowired
 	private MosipFingerprintProvider fingerprintProvider;
-	
+
 	@Autowired
 	private MosipBioDeviceManager mosipBioDeviceManager;
 
@@ -62,7 +62,7 @@ public class FingerprintFacade {
 
 	public boolean setIsoTemplate() throws RegBaseCheckedException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan("FINGERPRINT_SINGLE");
-		isoTemplate = mosipBioDeviceManager.extractSingleBiometric(captureResponseDto);
+		isoTemplate = mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
 		if (isoTemplate != null)
 			return true;
 		return false;
@@ -120,8 +120,8 @@ public class FingerprintFacade {
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
 			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, fingerType);
 		else
 			getFingerPrintImageAsDTONonMdm(fpDetailsDTO, fingerType);
@@ -185,7 +185,18 @@ public class FingerprintFacade {
 	 */
 	private void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
-		String type=fingerType;
+		String type = fingerType;
+		fingerType = findFingerPrintType(fingerType);
+		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
+		if (captureResponseDto != null) {
+			byte[] fingerPrintByte = captureResponseDto.getSlapImage();
+			fpDetailsDTO.setFingerPrint(fingerPrintByte);
+			fpDetailsDTO.setFingerType(type);
+			fpDetailsDTO.setQualityScore(80);
+		}
+	}
+
+	private String findFingerPrintType(String fingerType) {
 		switch (fingerType) {
 		case RegistrationConstants.LEFTPALM:
 			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
@@ -202,12 +213,7 @@ public class FingerprintFacade {
 		default:
 			break;
 		}
-
-		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
-		byte[] fingerPrintByte = mosipBioDeviceManager.extractSingleBiometric(captureResponseDto);
-		fpDetailsDTO.setFingerPrint(fingerPrintByte);
-		fpDetailsDTO.setFingerType(type);
-		fpDetailsDTO.setQualityScore(80);
+		return fingerType;
 	}
 
 	/**
@@ -220,10 +226,10 @@ public class FingerprintFacade {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath,String fingerType)
-			throws RegBaseCheckedException {
+	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath,
+			String fingerType) throws RegBaseCheckedException {
 
-		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath,fingerType);
+		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath, fingerType);
 
 	}
 
@@ -324,8 +330,7 @@ public class FingerprintFacade {
 	 *             the reg base checked exception
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path,
-			String fingerType)
-			throws RegBaseCheckedException {
+			String fingerType) throws RegBaseCheckedException {
 		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has started");
 
 		try {
@@ -346,18 +351,18 @@ public class FingerprintFacade {
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
 								.getBiometricExceptionDTO();
 			}
-			
+
 			if (RegistrationConstants.ENABLE
 					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
 
 				prepareSegmentedBiometricsFromMdm(fingerprintDetailsDTO, fingerType);
 			}
-				
+
 			else {
 
 				prepareSegmentedBiometrics(fingerprintDetailsDTO, path, biometricExceptionDTOs);
 			}
-			
+
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),
@@ -376,8 +381,7 @@ public class FingerprintFacade {
 
 	protected void prepareSegmentedBiometricsFromMdm(FingerprintDetailsDTO fingerprintDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
-		CaptureResponseDto biometricData = mosipBioDeviceManager
-				.scan(RegistrationConstants.FINGER_SLAP + fingerType);
+		CaptureResponseDto biometricData = mosipBioDeviceManager.scan(findFingerPrintType(fingerType));
 
 		if (null != biometricData && null != biometricData.getMosipBioDeviceDataResponses()
 				&& !biometricData.getMosipBioDeviceDataResponses().isEmpty()) {
