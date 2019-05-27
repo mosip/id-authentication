@@ -46,51 +46,45 @@ public class DeviceCaptureController {
 
 		MosipBioCaptureResponseDto mosipBioCaptureResponseDto = new MosipBioCaptureResponseDto();
 		List<MosipBioCaptureResponse> mosipBioCaptureResponses = new ArrayList<MosipBioCaptureResponse>();
-		MosipBioCaptureResponse mosipBioCaptureResponse = new MosipBioCaptureResponse();
-		CaptureResponseData captureResponseData = new CaptureResponseData();
 
-		mosipBioCaptureResponse.setCaptureResponseData(captureResponseData);
-		mosipBioCaptureResponses.add(mosipBioCaptureResponse);
 		mosipBioCaptureResponseDto.setMosipBioDeviceDataResponses(mosipBioCaptureResponses);
 		switch (bioType) {
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SINGLE:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_LEFT:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
 
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.LEFTHAND_SEGMNTD_FILE_PATHS);
 
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_RIGHT:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
-
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.RIGHTHAND_SEGMNTD_FILE_PATHS);
 
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_SLAP_THUMB:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
-
+			mosipBioCaptureResponseDto.setSlapImage(getCapturedByte(bioType));
 			stubSegmentedBiometrics(mosipBioRequest, mosipBioCaptureResponses,
 					MosipBioDeviceConstants.THUMBS_SEGMNTD_FILE_PATHS);
 
 			break;
 		case MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + MosipBioDeviceConstants.VALUE_TOUCHLESS:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		case MosipBioDeviceConstants.VALUE_FACE:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		case MosipBioDeviceConstants.VALUE_IRIS + "_" + MosipBioDeviceConstants.VALUE_SINGLE:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		case MosipBioDeviceConstants.VALUE_IRIS + "_" + MosipBioDeviceConstants.VALUE_DOUBLE:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		case MosipBioDeviceConstants.VALUE_VEIN:
-			stubImage(captureResponseData, mosipBioRequest, bioType);
+			stubImage(mosipBioCaptureResponses, mosipBioRequest, bioType);
 			break;
 		default:
 			break;
@@ -130,7 +124,7 @@ public class DeviceCaptureController {
 			captureResponseSegmentedData.setRequestedScore(mosipBioRequest.getRequestedScore());
 			captureResponseSegmentedData.setTimestamp(new Timestamp(System.currentTimeMillis()) + "");
 			captureResponseSegmentedData.setTransactionID("");
-			captureResponseSegmentedData.setBioSegmentedType(imageFileName[2]);
+			captureResponseSegmentedData.setBioSegmentedType(imageFileName[3]);
 
 			mosipBioCaptureResponseSegmented.setCaptureResponseData(captureResponseSegmentedData);
 			mosipBioCaptureResponses.add(mosipBioCaptureResponseSegmented);
@@ -145,8 +139,12 @@ public class DeviceCaptureController {
 	 * @param MosipBioRequest
 	 * @return
 	 */
-	private void stubImage(CaptureResponseData captureResponseData, MosipBioRequest mosipBioRequest, String bioType) {
+	private void stubImage(List<MosipBioCaptureResponse> mosipBioCaptureResponses, MosipBioRequest mosipBioRequest,
+			String bioType) {
 
+		MosipBioCaptureResponse mosipBioCaptureResponse = new MosipBioCaptureResponse();
+		CaptureResponseData captureResponseData = new CaptureResponseData();
+		mosipBioCaptureResponse.setCaptureResponseData(captureResponseData);
 		captureResponseData.setBioSubType(mosipBioRequest.getDeviceSubId());
 		captureResponseData.setBioType(mosipBioRequest.getDeviceId());
 		captureResponseData.setBioValue(getCapturedByte(bioType));
@@ -157,7 +155,7 @@ public class DeviceCaptureController {
 		captureResponseData.setRequestedScore(mosipBioRequest.getRequestedScore());
 		captureResponseData.setTimestamp(new Timestamp(System.currentTimeMillis()) + "");
 		captureResponseData.setTransactionID("");
-
+		mosipBioCaptureResponses.add(mosipBioCaptureResponse);
 	}
 
 	/**

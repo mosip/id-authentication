@@ -175,7 +175,6 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ObservableList<RegistrationApprovalVO> observableList;
 
 	private Map<String, Integer> packetIds = new HashMap<>();
-	private int rowNum;
 
 	/*
 	 * (non-Javadoc)
@@ -312,10 +311,11 @@ public class RegistrationApprovalController extends BaseController implements In
 				registrationApprovalVO.add(new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
 								approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
 			}
-			rowNum = 0;
-			listData.forEach(approvalDTO -> {
+			int rowNum = 0;
+			for(RegistrationApprovalDTO approvalDTO : listData) {
 				packetIds.put(approvalDTO.getId(), rowNum++);
-			});
+			}
+			
 			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 			observableList = FXCollections.observableArrayList(registrationApprovalVO);
 			wrapListAndAddFiltering(observableList);
@@ -336,9 +336,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		FilteredList<RegistrationApprovalVO> filteredData = new FilteredList<>(oList, p -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes.
-		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filterData(newValue, filteredData);
-		});
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> 	filterData(newValue, filteredData));
 		if (!filterField.getText().isEmpty()) {
 			filterData(filterField.getText(), filteredData);
 		}
