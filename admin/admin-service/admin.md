@@ -8,9 +8,10 @@
 # Login
 
 * [GET /security/authfactors](#get-securityauthfactors)
-* [POST /useridPwd](#post-useridPwd)
+* [POST /login](#post-login)
 * [POST /sendotp](#post-sendotp)
 * [POST /useridOTP](#post-useridOTP)
+* [POST /logout](#post-logout)
 
 
 ### GET /security/authfactors
@@ -73,12 +74,12 @@ timeStamp |Yes|Date-time  in UTC ISO-8601| 2007-12-03T10:15:30Z
 ```
 
 
-### POST /useridPwd
+### POST /login
 
 This service will authenticate the username and password. This service will call the login service in the Auth API and will return the token back to the caller. 
 
 #### Resource URL
-<div>https://mosip.io/v1/admin/useridPwd</div>
+<div>https://mosip.io/v1/admin/login</div>
 
 #### Resource details
 
@@ -97,7 +98,7 @@ appid|Yes|This is the application ID of the caller of this service.| -NA- | ADMI
 #### Example Request
 ```JSON
 {
-	"id": "mosip.admin.authentication.useridPwd",
+	"id": "mosip.admin.authentication.login",
 	"version":"1.0",	
 	"requesttime":"2007-12-03T10:15:30Z",
 	"request": {
@@ -119,7 +120,7 @@ Set-Cookie →Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlk
 
 JSON:
 {
-	"id": "mosip.admin.authentication.useridPwd",
+	"id": "mosip.admin.authentication.login",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"response": {
@@ -137,7 +138,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.authentication.useridPwd",
+	"id": "mosip.admin.authentication.login",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -154,7 +155,7 @@ Error Responses
 ```JSON
 
 {
-	"id": "mosip.admin.authentication.useridPwd",
+	"id": "mosip.admin.authentication.login",
 	"ver": "1.0",
 	"responsetime": "2007-12-03T10:15:30Z",
 	"errors":[
@@ -393,7 +394,61 @@ Error Responses
 		]
 }
 ```
+### POST /logout
 
+This service will logout the user. This service will call the logout service in the Auth API and will remove the token for the user.
+
+#### Resource URL
+<div>https://mosip.io/v1/admin/logout</div>
+
+#### Resource details
+
+Resource Details | Description
+------------ | -------------
+Response format | The response will be sent in the Response Header and also a JSON message will be returned. 
+Requires Authentication | yes
+
+### Request 
+
+Cookie : Authorization=Mosip-TokeneyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbmRpdmlkdWFsIiwibW9iaWxlIjoiOTY2MzE3NTkyOCIsIm1haWwiOiJpbmRpdmlkdWFsQGdtYWlsLmNvbSIsInJvbGUiOiJwZXJzb24iLCJpYXQiOjE1NTEzNDU1NjUsImV4cCI6MTU1MTM1MTU2NX0.pCyibViXo31enOgRD60BnKjEpEA-78yzbWnZGChxCIZ5lTpYnhgm-0dtoT3neFebTJ8eAI7-o8jDWMCMqq6uSw; Max-Age=6000000; Expires=Wed, 08-May-2019 19:59:43 GMT; Path=/; Secure; HttpOnly
+
+#### Example Response
+
+Success Response 
+
+```
+JSON:
+{
+	"id": "mosip.admin.authentication.logout",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"response": {
+                "status": "success",
+				"message":"Username has been logged out successfully"
+	}
+}
+
+```
+
+
+Error Responses
+
+1. Invalid token: If the passed token is not correct. 
+```JSON
+
+{
+	"id": "mosip.admin.authentication.logout",
+	"ver": "1.0",
+	"responsetime": "2007-12-03T10:15:30Z",
+	"errors":[
+			{
+				"errorCode": "ADMN_AUTH_ERR_INVALIDCREDENTIALS",
+				"message": "The passed in token is not correct"
+		  }	
+		]
+}
+
+```
 # Master Data
 
 * [GET /mastercards](#get-mastercards)
@@ -1244,4 +1299,3 @@ Error Responses
 }
 
 ```
-

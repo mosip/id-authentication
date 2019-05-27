@@ -13,9 +13,13 @@ public enum RequestCodes {
 
 	/* request object */
 	request("request"),
-	
+
 	/* preRegistration Id */
-	PRE_REGISTRAION_ID("preRegistrationId");
+	PRE_REGISTRAION_ID("preRegistrationId"),
+
+	REG_DATE("appointment_date"), 
+	
+	FROM_SLOT_TIME("time_slot_from");
 	/**
 	 * @param code
 	 */

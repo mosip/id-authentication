@@ -184,6 +184,10 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 			});
 
+			userDetailRepository.saveAll(userList);
+
+			userPwdRepository.saveAll(userPassword);
+
 			userDetailsResponse.getUserDetails().forEach(role -> {
 
 				UserRole roles = new UserRole();
@@ -204,9 +208,8 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				});
 
 			});
-
-			userDetailRepository.saveAll(userList);
-			userPwdRepository.saveAll(userPassword);
+			
+			
 
 			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving user detail save method...");
 

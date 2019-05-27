@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -43,10 +42,6 @@ public class PacketInfoDao {
 	@Autowired
 	private BasePacketRepository<AbisRequestEntity, String> abisRequestRepository;
 
-	/** The abis response det repository. */
-	@Autowired
-	private BasePacketRepository<AbisResponseDetEntity, String> abisResponseDetRepository;
-
 	/** The abis response repository. */
 	@Autowired
 	private BasePacketRepository<AbisResponseEntity, String> abisResponseRepository;
@@ -56,10 +51,7 @@ public class PacketInfoDao {
 	private BasePacketRepository<RegBioRefEntity, String> regBioRefRepository;
 
 	@Autowired
-	private RegistrationRepositary<BaseRegistrationEntity,String> registrationRepositary;
-
-	/** The mached ref ids. */
-	List<String> machedRefIds = new ArrayList<>();
+	private RegistrationRepositary<BaseRegistrationEntity, String> registrationRepositary;
 
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
@@ -194,8 +186,7 @@ public class PacketInfoDao {
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
 		StringBuilder query = new StringBuilder();
-		query.append(
-				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
+		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE);
 		if (name != null) {
 			query.append(alias + ".name=:name ").append(AND);
 			params.put("name", name);
@@ -213,9 +204,7 @@ public class PacketInfoDao {
 		query.append(alias + ".isActive=:isActive");
 		params.put("isActive", IS_ACTIVE_TRUE);
 		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
-		}
-
-
+	}
 
 	/**
 	 * Gets the all demographic info dtos.
@@ -262,31 +251,40 @@ public class PacketInfoDao {
 		return abisRequestRepository.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 
 	}
-	
-	public List<String> getReferenceIdByBatchId(String batchId){
+
+	/**
+	 * Gets the reference id by batch id.
+	 *
+	 * @param batchId the batch id
+	 * @return the reference id by batch id
+	 */
+	public List<String> getReferenceIdByBatchId(String batchId) {
 		return abisRequestRepository.getReferenceIdByBatchId(batchId);
-		
+
 	}
-	
+
 	/**
 	 * Gets the abis transaction id by request id.
 	 *
-	 * @param requestId the request id
+	 * @param requestId
+	 *            the request id
 	 * @return the abis transaction id by request id
 	 */
-	public List<String> getAbisTransactionIdByRequestId(String requestId){
+	public List<String> getAbisTransactionIdByRequestId(String requestId) {
 		return abisRequestRepository.getAbisTransactionIdByRequestId(requestId);
 	}
-	
+
 	/**
 	 * Gets the identify req list by transaction id.
 	 *
-	 * @param transactionId the transaction id
-	 * @param requestType the request type
+	 * @param transactionId
+	 *            the transaction id
+	 * @param requestType
+	 *            the request type
 	 * @return the identify req list by transaction id
 	 */
-	public List<AbisRequestEntity> getIdentifyReqListByTransactionId(String transactionId,String requestType){
-		return abisRequestRepository.getIdentifyReqListByTransactionId(transactionId,requestType);
+	public List<AbisRequestEntity> getIdentifyReqListByTransactionId(String transactionId, String requestType) {
+		return abisRequestRepository.getIdentifyReqListByTransactionId(transactionId, requestType);
 	}
 
 	/**
@@ -521,14 +519,40 @@ public class PacketInfoDao {
 		return abisRequestRepository.getAbisRequestsByBioRefId(bioRefId, "INSERT");
 	}
 
-	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds,String statusCode) {
+	/**
+	 * Gets the abis processed requests app code by bio ref id.
+	 *
+	 * @param bioRefId the bio ref id
+	 * @param requestType the request type
+	 * @param processed the processed
+	 * @return the abis processed requests app code by bio ref id
+	 */
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
+			String processed) {
+		return abisRequestRepository.getAbisProcessedRequestsAppCodeByBioRefId(bioRefId, requestType, processed);
+
+	}
+
+	/**
+	 * Gets the processed or processing reg ids.
+	 *
+	 * @param matchedRegIds the matched reg ids
+	 * @param statusCode the status code
+	 * @return the processed or processing reg ids
+	 */
+	public List<String> getProcessedOrProcessingRegIds(List<String> matchedRegIds, String statusCode) {
 		return registrationRepositary.getProcessedOrProcessingRegIds(matchedRegIds, statusCode);
 	}
 
+	/**
+	 * Gets the abis response det records list.
+	 *
+	 * @param abisResponseDto the abis response dto
+	 * @return the abis response det records list
+	 */
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
 		List<AbisResponseDetDto> abisResponseDetDtoList = new ArrayList<>();
-		List<AbisResponseDetEntity> abisResEntity = abisRequestRepository
-				.getAbisResponseDetailsList(abisResponseDto);
+		List<AbisResponseDetEntity> abisResEntity = abisRequestRepository.getAbisResponseDetailsList(abisResponseDto);
 		abisResponseDetDtoList.addAll(PacketInfoMapper.convertAbisResponseDetEntityListToDto(abisResEntity));
 		return abisResponseDetDtoList;
 	}

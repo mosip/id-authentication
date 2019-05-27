@@ -1,0 +1,17 @@
+{
+  "status": "N",
+  "err": [
+    {
+      "errorCode": "IDA-SPA-001",
+      "errorMessage": "Pin value did not match"
+    }
+  ],
+  "txnID": "1234567890",
+  "resTime": "2019-02-13T12:52:44.684+05:30",
+  "info": {
+    "idType": "D",
+    "reqTime": "2019-02-13T10:01:57.086+05:30",
+    "usageData": "0x0000080000000000"
+  },
+  "ver": "1.0"
+}

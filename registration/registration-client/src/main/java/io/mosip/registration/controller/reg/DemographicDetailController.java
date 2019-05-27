@@ -730,6 +730,15 @@ public class DemographicDetailController extends BaseController {
 					.getIndividualType(RegistrationConstants.ATTR_NON_FORINGER, ApplicationContext.localLanguage());
 			residenceLocalLanguage.setText(applicantTypeLocal.get(0).getName());
 			genderSettings();
+			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+					.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				national.getStyleClass().addAll("residence", "button");
+				nationalLocalLanguage.getStyleClass().addAll("residence", "button");
+				residence.setText(RegistrationConstants.EMPTY);
+			} else {
+				national.getStyleClass().addAll("selectedResidence", "button");
+				nationalLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -1031,9 +1040,19 @@ public class DemographicDetailController extends BaseController {
 		female.getStyleClass().clear();
 		maleLocalLanguage.getStyleClass().clear();
 		femaleLocalLanguage.getStyleClass().clear();
-		maleLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+				.equals(RegistrationConstants.PACKET_TYPE_LOST) && event == null) {
+			male.getStyleClass().addAll("residence", "button");
+			maleLocalLanguage.getStyleClass().addAll("residence", "button");
+			genderValue.setText(RegistrationConstants.EMPTY);
+			genderValueLocalLanguage.setText(RegistrationConstants.EMPTY);
+		} else {
+			male.getStyleClass().addAll("selectedResidence", "button");
+			maleLocalLanguage.getStyleClass().addAll("selectedResidence", "button");
+			genderValue.setText(textMale);
+			genderValueLocalLanguage.setText(textMaleLocalLanguage);
+		}
 		femaleLocalLanguage.getStyleClass().addAll("residence", "button");
-		male.getStyleClass().addAll("selectedResidence", "button");
 		female.getStyleClass().addAll("residence", "button");
 	}
 
@@ -1471,8 +1490,9 @@ public class DemographicDetailController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(
-								applicationAge.isDisable() ? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity
+								.setDateOfBirth(applicationAge.isDisable() || (dd.getText().isEmpty() && lostUIN) ? null
+										: DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(applicationAge.isDisable() || ageField.getText().isEmpty() ? null
 										: Integer.parseInt(ageField.getText())))
@@ -1739,9 +1759,12 @@ public class DemographicDetailController extends BaseController {
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
-			populateFieldValue(fullName, fullNameLocalLanguage,
-					registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName()
-							: registrationDTO.getRegistrationMetaDataDTO().getFullName());
+			List<ValuesDTO> fullNameValues = moroccoIdentity.getFullName();
+			if (registrationDTO.getSelectionListDTO() != null && !registrationDTO.isNameNotUpdated()) {
+
+				fullNameValues = registrationDTO.getRegistrationMetaDataDTO().getFullName();
+			}
+			populateFieldValue(fullName, fullNameLocalLanguage, fullNameValues);
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
@@ -2095,7 +2118,7 @@ public class DemographicDetailController extends BaseController {
 	public boolean validateThisPane() {
 		boolean isValid = true;
 		isValid = registrationController.validateDemographicPane(parentFlowPane);
-		if (isValid  && !applicationAge.isDisable()) {
+		if (isValid && !applicationAge.isDisable()) {
 			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
@@ -2125,21 +2148,21 @@ public class DemographicDetailController extends BaseController {
 	private boolean validateDateOfBirth(boolean isValid) {
 		int age;
 		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
-				.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty()
-				&& mm.getText().isEmpty() && yyyy.getText().isEmpty()) {
+				.equals(RegistrationConstants.PACKET_TYPE_LOST) && dd.getText().isEmpty() && mm.getText().isEmpty()
+				&& yyyy.getText().isEmpty()) {
 			return true;
 		}
 		LocalDate date = null;
 		try {
-		date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
-				Integer.parseInt(dd.getText()));
-		}catch(NumberFormatException exception) {
-			if(dd.getText().isEmpty()) {
-				dobMessage.setText(dd.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
-			}else if(mm.getText().isEmpty()) {
-				dobMessage.setText(mm.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
-			}else if(yyyy.getText().isEmpty()){
-				dobMessage.setText(yyyy.getPromptText()+" "+RegistrationUIConstants.REG_LGN_001);
+			date = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+					Integer.parseInt(dd.getText()));
+		} catch (NumberFormatException exception) {
+			if (dd.getText().isEmpty()) {
+				dobMessage.setText(dd.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+			} else if (mm.getText().isEmpty()) {
+				dobMessage.setText(mm.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
+			} else if (yyyy.getText().isEmpty()) {
+				dobMessage.setText(yyyy.getPromptText() + " " + RegistrationUIConstants.REG_LGN_001);
 			}
 			dobMessage.setVisible(true);
 			return false;
@@ -2159,15 +2182,15 @@ public class DemographicDetailController extends BaseController {
 					isValid = false;
 				}
 			} catch (DateTimeException exception) {
-					if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
-						dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
-					} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
-						dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
-					} else {
-						dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
-					}
-					dobMessage.setVisible(true);
-					isValid = false;
+				if (exception.getMessage().contains("Invalid value for DayOfMonth")) {
+					dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
+				} else if (exception.getMessage().contains("Invalid value for MonthOfYear")) {
+					dobMessage.setText(RegistrationUIConstants.INVALID_MONTH);
+				} else {
+					dobMessage.setText(RegistrationUIConstants.INVALID_YEAR);
+				}
+				dobMessage.setVisible(true);
+				isValid = false;
 			}
 		} else {
 			ageField.clear();

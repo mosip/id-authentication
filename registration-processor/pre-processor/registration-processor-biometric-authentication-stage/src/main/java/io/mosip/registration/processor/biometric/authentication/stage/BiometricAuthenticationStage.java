@@ -57,7 +57,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 	private static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
 	private static final String VALUE = "VALUE";
-	private static final String INDIVIDUALAUTHENTICATION = "individualAuthentication";
+	private static final String INDIVIDUALAUTHENTICATION = "authenticationBiometricFileName";
 	private static final String REGISTRATIONTYPE = "registrationType";
 	public static final String FILE_SEPERATOR = "\\";
 	private static final String ADULT = "Adult";
