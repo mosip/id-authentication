@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -128,6 +129,7 @@ public class IdObjectValidatorTest {
 	}
 
 	@Test
+	@Ignore
 	public void wTestSchemaNullFieldsError() throws IdObjectValidationFailedException, IdObjectIOException,
 			JsonParseException, JsonMappingException, IOException {
 		try {
