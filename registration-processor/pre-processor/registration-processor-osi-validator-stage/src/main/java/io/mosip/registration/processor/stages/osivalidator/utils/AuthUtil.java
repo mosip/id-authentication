@@ -99,8 +99,6 @@ public class AuthUtil {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		
-		byte[] bFile = readBytesFromFile("C:/Users/M1047487.MINDTREE/Desktop/Multifingerprint.xml");
-
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics = new ArrayList<>();
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -109,7 +107,7 @@ public class AuthUtil {
 		authRequestDTO.setIndividualIdType(individualType);
 		authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
 
-		biometrics = getBioInfoListDto(bFile);
+		biometrics = getBioInfoListDto(biometricFile);
 
 		req.setBiometrics(biometrics);
 		req.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
@@ -189,7 +187,7 @@ public class AuthUtil {
 					String bioSubType = eElement.getElementsByTagName("Subtype").item(0).getTextContent();
 					getBioSubType(dataInfoDTO,bioSubType);
 					NodeList bdb = doc.getElementsByTagName("BDB");
-					String value = bdb.item(0).getTextContent();
+					//String value = bdb.item(0).getTextContent();
 					getBioTye(dataInfoDTO,cbefByteFile);
 					//dataInfoDTO.setBioValue(value);
 					dataInfoDTO.setDeviceProviderID("cogent");
@@ -252,42 +250,8 @@ public class AuthUtil {
 
 		for (BIRType birType : list) {
 			BIRType birApiResponse = bioAPi.extractTemplate(birType, null);
-			System.out.println("From CryptoUtil"+CryptoUtil.encodeBase64(birApiResponse.getBDB()));
 			dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBDB()));
-			// getBioValue(dataInfoDTO, birType);
 		}
 	}
-	
-	private static byte[] readBytesFromFile(String filePath) {
-
-        FileInputStream fileInputStream = null;
-        byte[] bytesArray = null;
-
-        try {
-
-            File file = new File(filePath);
-            bytesArray = new byte[(int) file.length()];
-
-            //read file into bytes[]
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bytesArray);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        return bytesArray;
-
-    }
-
 
 }
