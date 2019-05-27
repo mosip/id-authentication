@@ -23,6 +23,7 @@ import { AttributeModel } from 'src/app/shared/models/demographic-model/attribut
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
+import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 // import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
@@ -178,11 +179,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private matKeyboardService: MatKeyboardService // private loggerService: LogService
+    private matKeyboardService: MatKeyboardService,
+    private routerService: RouterExtService // private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
-    this.initialization();
   }
 
   /**
@@ -193,6 +194,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     // this.loggerService.info('IN DEMOGRAPHIC');
     console.log('IN DEMOGRAPHIC');
+    this.initialization();
     this.config = this.configService.getConfig();
     this.setConfig();
     await this.getPrimaryLabels();
@@ -243,7 +245,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(
         response => {
-          console.log(response);
           if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
           else this.onError();
           resolve(true);
@@ -262,10 +263,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private initialization() {
+    let uri = this.routerService.getPreviousUrl();
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
+    if (
+      this.message['modifyUser'] === 'true' ||
+      this.message['modifyUserFromPreview'] === 'true' ||
+      uri.includes('file-upload')
+    ) {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
       if (this.message['modifyUserFromPreview'] === 'true') this.showPreviewButton = true;
@@ -391,6 +397,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
     this.setLocations();
     this.setGender();
+    this.setResident();
   }
 
   /**
@@ -438,6 +445,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
     await this.getGenderDetails();
     this.filterOnLangCode(this.primaryLang, this.primaryGender, this.genders);
     this.filterOnLangCode(this.secondaryLang, this.secondaryGender, this.genders);
+  }
+
+  /**
+   * @description This is to get the list of gender available in the master data.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
+  private async setResident() {
+    await this.getResidentDetails();
+    this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
+    this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
   }
 
   /**
@@ -540,6 +559,33 @@ export class DemographicComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description This will get the residenceStatus details from the master data.
+   *
+   * @private
+   * @returns
+   * @memberof DemographicComponent
+   */
+  private getResidentDetails() {
+    return new Promise(resolve => {
+      this.dataStorageService.getResidentDetails().subscribe(
+        response => {
+          if (response[appConstants.NESTED_ERROR]) {
+            this.onError();
+          } else {
+            this.residenceStatus =
+              response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
+            resolve(true);
+          }
+        },
+        () => {
+          console.log('Unable to fetch Resident types');
+          this.onError();
+        }
+      );
+    });
+  }
+
+  /**
    * @description This will filter the gender on the basis of langugae code.
    *
    * @private
@@ -556,6 +602,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
       if (this.formControlValues.gender) {
         genderEntity.filter(element => {
           if (element.code === this.formControlValues.gender) {
+            const codeValue: CodeValueModal = {
+              valueCode: element.code,
+              valueName: element.genderName,
+              languageCode: element.langCode
+            };
+            this.addCodeValue(codeValue);
+          }
+          if (element.code === this.formControlValues.residenceStatus) {
             const codeValue: CodeValueModal = {
               valueCode: element.code,
               valueName: element.genderName,
@@ -706,7 +760,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             const codeValue: CodeValueModal = {
               languageCode: element.langCode,
               valueCode: element.code,
-              valueName: element.genderName
+              valueName: element.genderName ? element.genderName : element.name
             };
             this.addCodeValue(codeValue);
           }
