@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -19,6 +20,7 @@ import javax.crypto.SecretKey;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -53,17 +59,25 @@ import io.mosip.registration.processor.core.auth.util.BioTypeMapperUtil;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.BioSubType;
 import io.mosip.registration.processor.core.code.BioType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 
 /**
  * @author Ranjitha Siddegowda
  *
  */
 public class AuthUtil {
-	
-	
+
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(AuthUtil.class);
+
+
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -90,15 +104,15 @@ public class AuthUtil {
 	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 
 	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
-	
+
 	IBioApi bioAPi =  new BioApiImpl ();
-	
+
 	CbeffUtil cbeffUtil = new CbeffImpl();
-	
-	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws Exception {
+
+	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException, BiometricException, BioTypeException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		
+
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics = new ArrayList<>();
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -118,7 +132,7 @@ public class AuthUtil {
 		authRequestDTO.setVersion("1.0");
 
 		String identityBlock = mapper.writeValueAsString(req);
-		
+
 		final SecretKey secretKey = keyGenerator.getSymmetricKey();
 
 		byte[] encryptedIdentityBlock = encryptor.symmetricEncrypt(secretKey, identityBlock.getBytes());
@@ -131,14 +145,14 @@ public class AuthUtil {
 		byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
 		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
-		
+
 		AuthResponseDTO response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH,
 				null, null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
 		System.out.println(response.toString());
 		return response;
-				
+
 	}
-	
+
 	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
 
@@ -161,7 +175,7 @@ public class AuthUtil {
 
 
 
-	public List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws Exception {
+	public List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException, BiometricException, BioTypeException {
 
 		List<BioInfo> biometrics =new  ArrayList<>();
 
@@ -188,7 +202,7 @@ public class AuthUtil {
 					getBioSubType(dataInfoDTO,bioSubType);
 					NodeList bdb = doc.getElementsByTagName("BDB");
 					//String value = bdb.item(0).getTextContent();
-					getBioTye(dataInfoDTO,cbefByteFile);
+					getBioType(dataInfoDTO,cbefByteFile);
 					//dataInfoDTO.setBioValue(value);
 					dataInfoDTO.setDeviceProviderID("cogent");
 					dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
@@ -200,7 +214,7 @@ public class AuthUtil {
 		}
 		return biometrics;
 	}
-	
+
 	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
 		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
@@ -244,13 +258,24 @@ public class AuthUtil {
 		}
 		return dataInfoDTO;
 	}
-	
-	private void getBioTye(DataInfoDTO dataInfoDTO, byte[] cbefByteFile) throws Exception {
-		List<BIRType> list = cbeffUtil.getBIRDataFromXML(cbefByteFile);
 
-		for (BIRType birType : list) {
-			BIRType birApiResponse = bioAPi.extractTemplate(birType, null);
-			dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBDB()));
+	private void getBioType(DataInfoDTO dataInfoDTO, byte[] cbefByteFile) throws BiometricException, BioTypeException {
+		List<BIRType> list;
+		try {
+			list = cbeffUtil.getBIRDataFromXML(cbefByteFile);
+
+			for (BIRType birType : list) {
+				BIRType birApiResponse = bioAPi.extractTemplate(birType, null);
+				dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBDB()));
+			}
+		} catch (Exception e) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(), "", PlatformErrorMessages.OSI_VALIDATION_BIO_TYPE_EXCEPTION.getMessage() + "-"+e.getMessage());
+			throw new BioTypeException(
+					PlatformErrorMessages.OSI_VALIDATION_BIO_TYPE_EXCEPTION.getMessage() + "-"+e.getMessage());
+			
+
+		
 		}
 	}
 
