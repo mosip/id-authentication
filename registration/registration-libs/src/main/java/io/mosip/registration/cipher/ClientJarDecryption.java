@@ -127,7 +127,7 @@ public class ClientJarDecryption extends Application {
 
 		} else if (isToBeDownloaded) {
 			System.out.println("Jars Dowloading Starts");
-			registrationUpdate.getWithLatestJars();
+			registrationUpdate.installJars();
 
 			return checkForJars(false);
 		}
@@ -183,8 +183,8 @@ public class ClientJarDecryption extends Application {
 				protected Boolean call() throws IOException, InterruptedException {
 					try {
 						return checkForJars(true);
-					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-							| SAXException | IOException exception) {
+					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException | SAXException
+							| IOException exception) {
 						return false;
 					}
 
@@ -251,9 +251,17 @@ public class ClientJarDecryption extends Application {
 								FileUtils.deleteDirectory(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException exception) {
+						} catch (IOException | InterruptedException | RuntimeException exception) {
 							// TODO Auto-generated catch block
 							exception.printStackTrace();
+
+							try {
+								FileUtils.forceDelete(new File("MANIFEST.MF"));
+								new SoftwareInstallationHandler();
+							} catch (IOException ioException) {
+								ioException.printStackTrace();
+							}
+
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");

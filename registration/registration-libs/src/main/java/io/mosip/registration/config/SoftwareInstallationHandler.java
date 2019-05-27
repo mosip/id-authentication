@@ -47,18 +47,16 @@ public class SoftwareInstallationHandler {
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.client.url");
 		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
-		
+
 		getLocalManifest();
 
-		if (localManifest != null) {
-			deleteUnNecessaryJars();
-		}
+		deleteUnNecessaryJars();
+
 	}
 
 	private static String SLASH = "/";
 
 	private static String manifestFile = "MANIFEST.MF";
-
 
 	private static String serverRegClientURL;
 	private static String serverMosipXmlFileUrl;
@@ -78,20 +76,18 @@ public class SoftwareInstallationHandler {
 
 	private String versionTag = "version";
 
-	public boolean hasUpdate() throws IOException, ParserConfigurationException, SAXException {
-		return !getCurrentVersion().equals(getLatestVersion());
-	}
-
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 
 		try {
 			// Get latest version using meta-inf.xml
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-			URL url = new URL(serverMosipXmlFileUrl);
-			URLConnection con = url.openConnection();
-			con.setConnectTimeout(10000);
-			org.w3c.dom.Document metaInfXmlDocument = db.parse(con.getInputStream());
+
+			/*
+			 * URL url = new URL(getInputStreamOf(serverMosipXmlFileUrl)); URLConnection con
+			 * = url.openConnection(); con.setConnectTimeout(10000);
+			 */
+			org.w3c.dom.Document metaInfXmlDocument = db.parse(getInputStreamOf(serverMosipXmlFileUrl));
 
 			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
 			if (list != null && list.getLength() > 0) {
@@ -121,7 +117,7 @@ public class SoftwareInstallationHandler {
 		return currentVersion;
 	}
 
-	public void getWithLatestJars()
+	public void installJars()
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
 
 		// Get Latest Version
@@ -188,11 +184,8 @@ public class SoftwareInstallationHandler {
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 		Long t1 = System.currentTimeMillis();
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
-		String errorMsg="";
+		String errorMsg = "";
 		for (String jarFile : checkableJars) {
-			// String folder = jarFile.contains(mosip) ? binFolder : libFolder;
-			//
-			// checkForJarFile(version, folder, jarFile);
 
 			executorService.execute(new Runnable() {
 				public void run() {
@@ -200,9 +193,22 @@ public class SoftwareInstallationHandler {
 					try {
 						System.out.println("Current Thread*****" + Thread.currentThread());
 						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
-						checkForJarFile(version, folder, jarFile);
+
+						File jarInFolder = new File(folder + jarFile);
+						if (!jarInFolder.exists() || (!isCheckSumValid(jarInFolder,
+								(currentVersion.equals(version)) ? localManifest : serverManifest)
+								&& FileUtils.deleteQuietly(jarInFolder))) {
+
+							// Download Jar
+							Files.copy(getInputStreamOfJar(version, jarFile), jarInFolder.toPath());
+
+						}
+
 					} catch (IOException ioException) {
 						ioException.printStackTrace();
+
+						// TODO Need to terminate from here.
+						System.exit(0);
 					}
 				}
 			});
@@ -216,20 +222,6 @@ public class SoftwareInstallationHandler {
 		}
 		Long t2 = System.currentTimeMillis() - t1;
 		System.out.println("Time in Millis-------->>>>" + t2 / (1000));
-	}
-
-	private void checkForJarFile(String version, String folderName, String jarFileName) throws IOException {
-
-		File jarInFolder = new File(folderName + jarFileName);
-		if (!jarInFolder.exists()
-				|| (!isCheckSumValid(jarInFolder, (currentVersion.equals(version)) ? localManifest : serverManifest)
-						&& FileUtils.deleteQuietly(jarInFolder))) {
-
-			// Download Jar
-			Files.copy(getInputStreamOfJar(version, jarFileName), jarInFolder.toPath());
-
-		}
-
 	}
 
 	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
