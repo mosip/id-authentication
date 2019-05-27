@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -199,24 +200,22 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
 		}
 		String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
-		if (Objects.isNull(fields)) {
-			throw new IdObjectIOException(MANDATORY_FIELDS_NOT_FOUND.getErrorCode(),
-					String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(), operation.getOperation()));
-		}
-		Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
-			.forEach(field -> {
-				List<String> fieldNames = Arrays.asList(field.split("\\|"));
-				if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
-						.anyMatch(fieldName -> !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
-					errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
-							String.format(MISSING_INPUT_PARAMETER.getMessage(),
-									fieldNames
-										.parallelStream()
-										.map(fieldName -> ROOT_PATH.getValue()
-												.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
-										.collect(Collectors.joining(" | ")))));
-				}
-			});
+		Optional.ofNullable(fields).ifPresent(fieldList -> 
+			Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
+				.forEach(field -> {
+					List<String> fieldNames = Arrays.asList(field.split("\\|"));
+					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
+							.anyMatch(fieldName -> !jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
+						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
+								String.format(MISSING_INPUT_PARAMETER.getMessage(),
+										fieldNames
+											.parallelStream()
+											.map(fieldName -> ROOT_PATH.getValue()
+													.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+											.collect(Collectors.joining(" | ")))));
+					}
+				})
+		);
 	}
 
 	/**
