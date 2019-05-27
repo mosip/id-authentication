@@ -212,6 +212,9 @@ public enum RegistrationExceptionTypeCode {
 
 	AUTH_ERROR,
 
-	AUTH_FAILED
+	AUTH_FAILED,
 
+	IDA_AUTHENTICATION_FAILURE,
+
+    PASSWORD_OTP_FAILURE
 }
