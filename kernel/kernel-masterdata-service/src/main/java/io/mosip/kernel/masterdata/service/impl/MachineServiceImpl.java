@@ -277,10 +277,12 @@ public class MachineServiceImpl implements MachineService {
 		return idResponseDto;
 
 	}
-	
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.MachineService#getRegistrationCenterMachineMapping1(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#
+	 * getRegistrationCenterMachineMapping1(java.lang.String)
 	 */
 	@Override
 	public List<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId) {

@@ -182,9 +182,7 @@ public class MachineController {
 		responseWrapper.setResponse(machineService.deleteMachine(id));
 		return responseWrapper;
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * Function to fetch machine detail those are mapped with given registration Id
@@ -192,8 +190,8 @@ public class MachineController {
 	 * @param regCenterId
 	 *            pass registration Id as String
 	 * 
-	 * @return @return MachineResponseDto all machines details {@link MachineResponseDto}
-	 *         {@link MachineResponseDto}
+	 * @return MachineResponseDto all machines details those are mapped with given
+	 *         registration Id {@link MachineResponseDto}
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/mappedmachines/{regCenterId}")
