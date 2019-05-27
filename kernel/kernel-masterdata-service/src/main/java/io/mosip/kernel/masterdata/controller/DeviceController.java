@@ -23,7 +23,6 @@ import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
@@ -174,13 +173,13 @@ public class DeviceController {
 
 	/**
 	 * 
-	 * Function to fetch machine detail those are mapped with given registration Id
+	 * Function to fetch Device detail those are mapped with given registration Id
 	 * 
 	 * @param regCenterId
 	 *            pass registration Id as String
 	 * 
-	 * @return @return DeviceRegistrationCenterDto all machines details
-	 *         {@link DeviceRegistrationCenterDto} {@link MachineResponseDto}
+	 * @return @return DeviceRegistrationCenterDto all devices details
+	 *         {@link DeviceRegistrationCenterDto} 
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/mappeddevice/{regCenterId}")
