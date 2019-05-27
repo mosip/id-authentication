@@ -99,8 +99,7 @@ public class ClientJarEncryption {
 	public static void main(String[] args) throws IOException {
 		ClientJarEncryption aes = new ClientJarEncryption();
 		if (args != null && args.length > 2) {
-			File file = args[1] != null && new File(args[1]).exists() ? new File(args[1])
-					: (args[0] != null && new File(args[0]).exists() ? new File(args[0]) : null);
+			File file = (args[0] != null && new File(args[0]).exists() ? new File(args[0]) : null);
 
 			File clientJar = new File(args[0]);
 
@@ -110,7 +109,7 @@ public class ClientJarEncryption {
 				Manifest manifest = new Manifest();
 
 				/* Add Version to Manifest */
-				manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, args[3]);
+				manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, args[2]);
 
 				System.out.println("Zip Creation started");
 
@@ -118,10 +117,10 @@ public class ClientJarEncryption {
 					String propertiesFile = MOSIP_APPLICATION_PROPERTIES_PATH;
 					String libraries = MOSIP_LIB + SLASH;
 
-					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[3] + MOSIP_ZIP;
+					String zipFilename = file.getParent() + SLASH + "mosip-sw-" + args[2] + MOSIP_ZIP;
 
 					byte[] runExecutbale = FileUtils
-							.readFileToByteArray(new File(args[4] + MOSIP_REG_LIBS + args[3] + MOSIP_JAR));
+							.readFileToByteArray(new File(args[3] + MOSIP_REG_LIBS + args[2] + MOSIP_JAR));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
 
 					// Add files to be archived into zip file
@@ -133,10 +132,10 @@ public class ClientJarEncryption {
 
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
 
-					readDirectoryToByteArray(MOSIP_JRE, new File(args[9]), fileNameByBytes);
+					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
 					// Certificate file
-					File mosipCertificateFile = new File(args[5]);
+					File mosipCertificateFile = new File(args[4]);
 
 					if (mosipCertificateFile.exists()) {
 						fileNameByBytes.put(MOSIP_CER + SLASH + mosipCertificateFile.getName(),
@@ -148,17 +147,17 @@ public class ClientJarEncryption {
 							+ "\n" + MOSIP_ROLLBACK_PATH_PARAM + MOSIP_ROLLBACK_PATH + "\n" + MOSIP_XML_FILE_URL
 							+ MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH + "\n"
 							+ MOSIP_CER_PARAM + MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName() + "\n"
-							+ MOSIP_CLIENT_APP_KEY.concat(args[2]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
+							+ MOSIP_CLIENT_APP_KEY.concat(args[1]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
 									.concat(MOSIP_CLIENT_DB_BOOT)
 							+ "\n" + MOSIP_CLIENT_TPM_AVAILABILITY).getBytes();
 
 					fileNameByBytes.put(propertiesFile, propertiesBytes);
 
 					// DB file
-					File regFolder = new File(args[6]);
+					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
-					// TODO temporary zip file
+					/*// TODO temporary zip file
 					System.out.println("Shaded Zip Started");
 					String shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] + MOSIP_ZIP;
 					Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
@@ -168,15 +167,15 @@ public class ClientJarEncryption {
 					shadedZipFileBytes.put(shadedJar.getName(), FileUtils.readFileToByteArray(shadedJar));
 					aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
 
-					System.out.println("Shaded Zip Created");
+					System.out.println("Shaded Zip Created");*/
 
-					String path = new File(args[4]).getPath();
+					String path = new File(args[3]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);
 					regLibFile.mkdir();
 
 					byte[] clientJarEncryptedBytes = aes.getEncryptedBytes(Files.readAllBytes(clientJar.toPath()),
-							Base64.getDecoder().decode(args[2].getBytes()));
+							Base64.getDecoder().decode(args[1].getBytes()));
 
 					String filePath = listOfJars.getAbsolutePath() + SLASH + MOSIP_CLIENT;
 
@@ -190,7 +189,7 @@ public class ClientJarEncryption {
 					// /* Save Client jar to registration-libs */
 					// saveLibJars(clientJarEncryptedBytes, clientJar.getName(), regLibFile);
 
-					File rxtxJarFolder = new File(args[8]);
+					File rxtxJarFolder = new File(args[7]);
 
 					FileUtils.copyDirectory(rxtxJarFolder, listOfJars);
 
@@ -206,7 +205,7 @@ public class ClientJarEncryption {
 								regpath += MOSIP_SERVICES;
 							}
 							byte[] encryptedRegFileBytes = aes.encyrpt(FileUtils.readFileToByteArray(files),
-									Base64.getDecoder().decode(args[2].getBytes()));
+									Base64.getDecoder().decode(args[1].getBytes()));
 							// fileNameByBytes.put(libraries + files.getName(), encryptedRegFileBytes);
 
 							File servicesJar = new File(regpath);
