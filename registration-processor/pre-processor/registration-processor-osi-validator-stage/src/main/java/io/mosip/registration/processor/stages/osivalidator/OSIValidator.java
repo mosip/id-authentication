@@ -716,7 +716,7 @@ public class OSIValidator {
 			byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
 			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
 					introducerbiometric);
-			if (authResponseDTO.getErrors() == null) {
+			if (authResponseDTO.getErrors() == null && authResponseDTO.getErrors().isEmpty()) {
 				return authResponseDTO.getResponse().isAuthStatus();
 			} else {
 				List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
