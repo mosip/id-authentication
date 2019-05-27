@@ -80,20 +80,20 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		return new ResponseEntity<>(
-				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				HttpStatus.OK);
 	}
-	
+
 	@ExceptionHandler(AccessDeniedException.class)
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.AUTHORIZATION_FAILED);
 		return new ResponseEntity<>(
-				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				HttpStatus.OK);
 	}
-	
+
 	@ExceptionHandler(AuthenticationException.class)
 	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
@@ -102,7 +102,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.getErrorTexts().isEmpty() ? "KER-ATH-401" : ex.getErrorCode(),
 				ex.getErrorTexts().isEmpty() ? "Authentication Failed" : ex.getErrorText());
 		return new ResponseEntity<>(
-				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod()),
+				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				ex.getStatusCode() == 0 ? HttpStatus.UNAUTHORIZED : HttpStatus.valueOf(ex.getStatusCode()));
 	}
 
@@ -125,7 +125,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod()),
+			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null),
 					HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
@@ -145,8 +145,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(
-				buildExceptionResponse((Exception) ex, ((ServletWebRequest) request).getHttpMethod()), HttpStatus.OK);
+		return new ResponseEntity<>(buildExceptionResponse((Exception) ex,
+				((ServletWebRequest) request).getHttpMethod(), ex.getOperation()), HttpStatus.OK);
 	}
 
 	/**
@@ -163,7 +163,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				"handleIdAppUncheckedException - \n" + ExceptionUtils.getStackTrace(ex));
 
 		return new ResponseEntity<>(
-				buildExceptionResponse((Exception) ex, ((ServletWebRequest) request).getHttpMethod()), HttpStatus.OK);
+				buildExceptionResponse((Exception) ex, ((ServletWebRequest) request).getHttpMethod(), null),
+				HttpStatus.OK);
 	}
 
 	/**
@@ -173,13 +174,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param httpMethod
 	 * @return Object .
 	 */
-	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod) {
+	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod, String operation) {
 
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = getRootCause(ex);
 
-		if (httpMethod.compareTo(HttpMethod.GET) == 0) {
+		if (Objects.nonNull(operation)) {
+			response.setId(id.get(operation));
+		} else if (httpMethod.compareTo(HttpMethod.GET) == 0) {
 			response.setId(id.get(READ));
 		} else if (httpMethod.compareTo(HttpMethod.POST) == 0) {
 			response.setId(id.get(CREATE));

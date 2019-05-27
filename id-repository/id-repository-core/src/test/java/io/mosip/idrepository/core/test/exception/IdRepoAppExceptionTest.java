@@ -81,4 +81,42 @@ public class IdRepoAppExceptionTest {
 	public void testIdRepoAppExceptionWithConstantAndCauseAndId() throws IdRepoAppException {
 		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoAppException());
 	}
+	
+	/**
+	 * 
+	 * @throws IdRepoAppException
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testIdRepoAppExceptionWithOperationConstantAndCauseAndMessage() throws IdRepoAppException {
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, new IdRepoAppException(),"create");
+	}
+	
+	/**
+	 * 
+	 * @throws IdRepoAppException
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testIdRepoAppExceptionWithOperationAndId() throws IdRepoAppException {
+		throw new IdRepoAppException("err","msg", "create");
+	}
+	
+	/**
+	 * 
+	 * @throws IdRepoAppException
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testIdRepoAppExceptionWithOperationConstant() throws IdRepoAppException {
+		throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, "create");
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @throws IdRepoAppException
+	 */
+	@Test(expected = IdRepoAppException.class)
+	public void testIdRepoAppExceptionWithOperationConstantAndCauseAndId() throws IdRepoAppException {
+		throw new IdRepoAppException("err","msg",new IdRepoAppException(), "create");
+	}
+	
 }
