@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "responsetime": "2019-05-06T12:46:04.354Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_APP_014",
+            "message": "CNIENumber failed for the regex ^([0-9]{10,30})$"
+        }
+    ]
+}
