@@ -1,6 +1,7 @@
 {
 	"response": {
-		"authStatus": false
+		"authStatus": false,
+		"staticToken": "$IGNORE$"
 	},
 	"errors": [
 		{

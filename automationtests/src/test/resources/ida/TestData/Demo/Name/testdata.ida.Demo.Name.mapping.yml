@@ -15,6 +15,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -33,8 +34,8 @@ testdata:
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
-      
-  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For UIN_Pos_02:
+    
+  Authentication_Demographic_Name_mistmatch_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -42,23 +43,26 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: ست +$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      identityReq.valuename: 12+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: BOOLEAN:true
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_NameMismatch_SecLang:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_NameMismatch_SecLang:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
       txnId: $input.demo-auth-request:AuthReq.transactionID$
       authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
       reqTime: $FETCH$
       resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
       idType: $TestData:auth_transaction_UIN_idType$
     audit.audit_log:
       refId:  $input.demo-auth-request:AuthReq.individualId$
@@ -67,9 +71,48 @@ testdata:
       appId: $TestData:audit_log_ida_appId$
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$
+      refIdType: $TestData:audit_log_UIN_refIdType$  
+  
+  Authentication_Demographic_Name_mistmatch_for_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuename: AS+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      identityReq.languagename: $TestData:secondary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_NameMismatch_SecLang:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_NameMismatch_SecLang:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$ 
       
-  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_03:
+  Authentication_Demographic_Name_mismatch_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -77,7 +120,84 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: آنسة +$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      identityReq.valuename: WE+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_NameMismatch_PriLang:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_NameMismatch_PriLang:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$  
+      
+  Authentication_Demographic_Name_mismatch_for_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuename: WE+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_NameMismatch_PriLang:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_NameMismatch_PriLang:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
+  Authentication_Demographic_Name_WithSecLang_Smoke_For UIN_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
@@ -85,6 +205,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -120,6 +241,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -155,6 +277,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -190,6 +313,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -226,6 +350,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -245,77 +370,6 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For VID_Pos_02:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $VID$
-      AuthReq.individualIdType: VID
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_secondary_lang$
-      identityReq.languagename: $TestData:secondary_lang_code$ 
-      identityReq.timestamp: $TIMESTAMP$
-      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: BOOLEAN:true
-      output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$
-      
-  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_03:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $VID$
-      AuthReq.individualIdType: VID
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_secondary_lang$
-      identityReq.languagename: $TestData:secondary_lang_code$ 
-      identityReq.timestamp: $TIMESTAMP$
-      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: BOOLEAN:true
-      output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$
       
   Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For VID_Pos_04:
     endpoint.url:
@@ -334,6 +388,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -370,6 +425,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -406,6 +462,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -442,23 +499,24 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    #audit.auth_transaction:
-      #refId: $input.demo-auth-request:AuthReq.individualId$
-      #txnId: $input.demo-auth-request:AuthReq.transactionID$
-      #reqTime: $FETCH$
-      #resTime: $FETCH$
-      #authTypeCode: DEMO-AUTH
-      #statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
-      #statusComment: $REGEXP:.*Demo.*Authentication.*Success.*$
-      #idType: D
-    #audit.audit_log:
-      #refId: $input.demo-auth-request:AuthReq.individualId$
-      #eventId: $REGEXP:.*IDA-EVT.*$
-      #eventName: AUTH_REQUEST_RESPONSE
-      #appId: IDA
-      #refIdType: UIN
-      #appName: ID-Authentication
-      #moduleName: DEMO_AUTH
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
       
   Authentication_Demographic_Name_Invalid_UIN_Neg_02:
     endpoint.url:
@@ -946,8 +1004,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime:  $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MissingVID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
   Authentication_Demographic_Name_Missing_txnID_For VID_Neg_28:

@@ -234,5 +234,13 @@ errors:
   InvalidUserId:
     errorCode: IDA-BIA-012
     errorMessage: Invalid userid of the individual
+  Demo_NameMismatch_SecLang:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data name in ara did not match
+    actionMessage: Please re-enter your gender in ara
+  Demo_NameMismatch_PriLang:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data name in fra did not match
+    actionMessage: Please re-enter your gender in fra
   
   

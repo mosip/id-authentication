@@ -54,10 +54,9 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
 	public void setTestType(String testType) {
-		this.testType = testType;
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**
@@ -203,4 +202,3 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 	}
 
 }
-

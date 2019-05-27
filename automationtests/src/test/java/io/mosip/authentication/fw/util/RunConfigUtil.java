@@ -181,9 +181,14 @@ public class RunConfigUtil {
 	 */
 	public static String getRandomVidKey() {
 		getVidPropertyValue(getVidPropertyPath());
-		Object[] randomKeys = VidDto.getVid().keySet().toArray();
-		Object key = randomKeys[new Random().nextInt(randomKeys.length)];
-		return key.toString();
+		Object[] randomKeys = VidDto.getVid().values().toArray();
+		for (int i = 0; i < randomKeys.length; i++) {
+			String uin = getRandomUINKey();
+			if (VidDto.getVid().get(uin).contains("ACTIVE") && VidDto.getVid().get(uin).contains("Perpetual")) {
+				return VidDto.getVid().get(uin).toString().split(Pattern.quote("."))[0];
+			}
+		}
+		return "NoVIDLoaded";
 	}
 	/**
 	 * The method get VID for UIN
@@ -192,9 +197,10 @@ public class RunConfigUtil {
 	 * @return VID
 	 */
 	public static String getVidKey(String uin) {
+		getVidPropertyValue(getVidPropertyPath());
 		for (Entry<String, String> entry : VidDto.getVid().entrySet()) {
-			if (entry.getValue().contains(uin))
-				return entry.getKey();
+			if (entry.getKey().contains(uin))
+				return entry.getValue().split(Pattern.quote("."))[0];
 		}
 		return "NoLoadedVIDFound";
 	}
@@ -317,18 +323,20 @@ public class RunConfigUtil {
 		getVidPropertyValue(getVidPropertyPath());
 		int count = 1;
 		while (count > 0) {
-			Object[] randomKeys = VidDto.getVid().keySet().toArray();
+			Object[] randomKeys = VidDto.getVid().values().toArray();
 			Object key = randomKeys[new Random().nextInt(randomKeys.length)];
 			if (testCaseName.contains("Temporary") && key.toString().contains("Temporary")) {
 				count++;
-				return key.toString().split(Pattern.quote("."))[0];
-
+				return key.toString();
 			} else if (testCaseName.contains("Perpetual") && key.toString().contains("Perpetual")) {
 				count++;
-				return key.toString().split(Pattern.quote("."))[0];
+				return key.toString();
+			}else if (testCaseName.contains("Deactivated") && (key.toString().contains("Temporary") || key.toString().contains("Perpetual"))) {
+				count++;
+				return key.toString();
 			}
 		}
-		return "NoUINFound";
+		return "NoVIDFound";
 	}
 	
 	/**

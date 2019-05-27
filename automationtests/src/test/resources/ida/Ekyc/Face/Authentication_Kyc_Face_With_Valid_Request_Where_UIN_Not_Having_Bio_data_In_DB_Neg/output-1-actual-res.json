@@ -1,1 +1,0 @@
-{"transactionID":"1528886606","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-BIA-006","errorMessage":"Biometric data FID not available in database"}],"responseTime":"2019-05-23T12:20:09.878+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

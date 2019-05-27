@@ -834,4 +834,16 @@ public class IdRepoRunConfig extends RunConfig{
 		this.IdRepoUpdateVIDStatusPath = IdRepoUpdateVIDStatusPath;
 		
 	}
+
+	@Override
+	public String getIdRepoVersion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setIdRepoVersion(String idRepoVersion) {
+		// TODO Auto-generated method stub
+		
+	}
 }

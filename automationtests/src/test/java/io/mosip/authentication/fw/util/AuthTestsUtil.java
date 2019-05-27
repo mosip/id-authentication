@@ -934,9 +934,8 @@ public class AuthTestsUtil extends BaseTestCase {
 				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"
 						+ getDemoAppVersion() + "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar")
 								.getAbsolutePath();
-				RunConfigUtil.getRunConfigObject("ida");				 
-
-			RunConfigUtil.objRunConfig.setUserDirectory();
+				RunConfigUtil.getRunConfigObject("ida");
+				RunConfigUtil.objRunConfig.setUserDirectory();
 				demoAppBatchFilePath = new File(RunConfigUtil.objRunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
 				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Djava.net.useSystemProxies=true -jar "
 						+ '"' + demoAppJarPath.toString() + '"' +" &";
@@ -992,7 +991,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
-			Thread.sleep(60000);
+			//Thread.sleep(60000);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Execption in launching demoApp application: " + e.getMessage());
 		}
@@ -1154,6 +1153,16 @@ public class AuthTestsUtil extends BaseTestCase {
 			return e.toString();
 		}
 	}
+	protected String postStrContentRequestWithCookie(String content, String url,String cookieName, String cookieValue) {
+		try {
+			return RestClient
+					.postRequestWithCookie(url, content, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,cookieName,cookieValue)
+					.asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
 	
 	protected static String getCookieRequestFilePath() {
 		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
@@ -1203,9 +1212,29 @@ public class AuthTestsUtil extends BaseTestCase {
 	public static String getVidRequestContent() {
 		try {
 			return getContentFromFile(new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
-					+ RunConfigUtil.objRunConfig.getModuleFolderName() + "/TestData/VIDGeneration/input/vid-request.json"));
+					+ "ida/VIDData/VIDGeneration/VIDGenerate/vid-request.json"));
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception Occured in getting the VID request file" + e.getMessage());
+			return e.getMessage();
+		}
+	}
+	
+	/**
+	 * The method will post request and generate output file for VID generation
+	 * 
+	 * @param listOfFiles
+	 * @param urlPath
+	 * @param keywordToFind
+	 * @param generateOutputFileKeyword
+	 * @param code
+	 * @return true or false
+	 */
+	protected String postRequestAndGetResponseForVIDGeneration(String content, String urlPath, String cookieName,
+			String cookieValue) {
+		try {
+			return postStrContentRequestWithCookie(content, urlPath, cookieName, cookieValue);
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception " + e);
 			return e.getMessage();
 		}
 	}

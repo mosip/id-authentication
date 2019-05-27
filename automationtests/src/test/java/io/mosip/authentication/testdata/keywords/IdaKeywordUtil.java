@@ -91,6 +91,9 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String value = entry.getValue().replace("$", "");
 				String[] key = value.split(":");
 				returnMap.put(entry.getKey(), RunConfigUtil.getPartnerIDMispLKValue(key[1]));
+			} 
+			else if (entry.getValue().contains("$SPACE$") && !entry.getValue().contains("+") && entry.getValue().contains("$")) {
+				returnMap.put(entry.getKey(), " ");
 			} else if (entry.getValue().equals("$TIMESTAMP$")) {
 				if (!entry.getKey().startsWith("output."))
 					returnMap.put(entry.getKey(), generateCurrentTimeStampWithTimeZone());
@@ -129,7 +132,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 				else
 					val=currentTestData.get(fieldName).toString();
 				returnMap.put(entry.getKey(), val);
-			} else if (entry.getValue().contains("$") && entry.getValue().startsWith("$idrepo")
+			} else if (entry.getValue().contains("$") && !entry.getValue().startsWith("$idrepoVersion") && entry.getValue().startsWith("$idrepo")
 					&& !entry.getValue().contains("+")
 					&& !(entry.getValue().contains("DECODE:") || entry.getValue().contains("DECODEFILE:"))) {
 				String[] keys = entry.getValue().split("~");
@@ -229,7 +232,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 			} else if (entry.getValue().contains("$VID") && !entry.getValue().contains("VID-PIN")) {
 				if (entry.getValue().contains("WHERE") && entry.getValue().contains("WITH")
 						&& entry.getValue().contains("UIN")) {
-					String uinKeyword = entry.getValue().replace("VID:WHERE", "");
+					String uinKeyword = entry.getValue().replace("VID:WHERE:", "");
 					Map<String, String> tempIn = new HashMap<String, String>();
 					tempIn.put("uin", uinKeyword);
 					Map<String, String> tempOut = precondtionKeywords(tempIn);

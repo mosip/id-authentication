@@ -1,1 +1,0 @@
-{"transactionID":"1660385475","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MPA-003","errorMessage":"Unable to decrypt Request"}],"responseTime":"2019-05-23T12:03:36.723+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

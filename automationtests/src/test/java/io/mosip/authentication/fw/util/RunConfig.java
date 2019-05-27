@@ -499,4 +499,6 @@ public abstract class RunConfig {
 	public abstract void setIdRepoCreateVIDRecordPath(String idRepoCreateVIDRecordPath);
 	public abstract String getIdRepoUpdateVIDStatusPath();
 	public abstract void setIdRepoUpdateVIDStatusPath(String IdRepoUpdateVIDStatusPath);
+	public abstract String getIdRepoVersion();
+	public abstract void setIdRepoVersion(String idRepoVersion);
 }

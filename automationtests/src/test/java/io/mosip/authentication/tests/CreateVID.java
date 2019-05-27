@@ -24,6 +24,7 @@ import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.testdata.TestDataProcessor;
 
 /**
  * Test to generate VID for UIN
@@ -45,10 +46,9 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
 	public void setTestType(String testType) {
-		this.testType = testType;
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**
@@ -69,6 +69,7 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	public void setConfigurations(String testType) {
 		RunConfigUtil.getRunConfigObject("ida");
 		RunConfigUtil.objRunConfig.setConfig(this.TESTDATA_PATH, this.TESTDATA_FILENAME, testType);
+		TestDataProcessor.initateTestDataProcess(this.TESTDATA_FILENAME, this.TESTDATA_PATH, "ida");
 	}
 
 	/**
@@ -80,6 +81,9 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	 */
 	@Test
 	public void generateVidForUin() {
+		String cookieValue = getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),
+				RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey(),
+				AUTHORIZATHION_COOKIENAME);
 		Properties prop = getPropertyFromFilePath(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
@@ -90,15 +94,35 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 		for (Entry<String, String> entry : uinMap.entrySet()) {
 			if (!(entry.getValue().contains("NoVID") || entry.getValue().contains("Deactivated")
 					|| entry.getValue().contains("novid"))) {
-				String url = RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoCreateVIDRecordPath();
-				String vidJson=getVidRequestContent().replaceAll("$uin$", entry.getKey());
-				
-				String vid = JsonPrecondtion.getValueFromJson(vidJson, "response.vid");
-				vidMap.put(vid, entry.getKey());
+				String url = RunConfigUtil.objRunConfig.getEndPointUrl()
+						+ RunConfigUtil.objRunConfig.getIdRepoCreateVIDRecordPath();
+				String reqVidJson = JsonPrecondtion.parseAndReturnJsonContent(getVidRequestContent().toString(),
+						"LONG:" + entry.getKey(), "request.UIN".toString());
+				if (entry.getValue().contains("Temporary") || entry.getValue().contains("temporary"))
+					reqVidJson = JsonPrecondtion
+							.parseAndReturnJsonContent(
+									reqVidJson, TestDataProcessor.getYamlData("ida", "TestData/RunConfig",
+											"authenitcationTestdata", "valid_VID_T_Type"),
+									"request.vidType".toString());
+				else
+					reqVidJson = JsonPrecondtion
+							.parseAndReturnJsonContent(
+									reqVidJson, TestDataProcessor.getYamlData("ida", "TestData/RunConfig",
+											"authenitcationTestdata", "valid_VID_P_Type"),
+									"request.vidType".toString());
+
+				String resVIDJson = postRequestAndGetResponseForVIDGeneration(reqVidJson, url,
+						AUTHORIZATHION_COOKIENAME, cookieValue);
+				if (resVIDJson.contains("VID")) {
+					String vid = JsonPrecondtion.getValueFromJson(resVIDJson, "response.VID");
+					String vidType = JsonPrecondtion.getValueFromJson(reqVidJson, "request.vidType");
+					vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE");
+				}
 			}
 		}
-		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
-				+ "/RunConfig/vid.properties").getAbsolutePath(), vidMap);
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
+				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
+				vidMap);
 	}
 
 	/**

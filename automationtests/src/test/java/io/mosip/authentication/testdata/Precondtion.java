@@ -51,7 +51,7 @@ public class Precondtion {
 	 * @param inputFilePath
 	 * @param fieldvalue
 	 * @param outputFilePath
-	 * @param propFileName
+	 * @param propFileNameversio
 	 * @return map
 	 */
 	public static Map<String, String> parseAndWriteTestDataJsonFile(String inputFilePath, Map<String, String> fieldvalue,
@@ -88,6 +88,8 @@ public class Precondtion {
 			// Replacing the version in request
 			outputJson = outputJson.replace("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
 			outputJson = outputJson.replaceAll("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
+			outputJson = outputJson.replace("$idrepoVersion$", RunConfigUtil.objRunConfig.getIdRepoVersion());
+			outputJson = outputJson.replaceAll("$idrepoVersion$", RunConfigUtil.objRunConfig.getIdRepoVersion());
 			if (outputJson.contains("$REMOVE$"))
 				outputJson = removeObject(new JSONObject(outputJson));
 			FileUtil.writeFile(outputFilePath, outputJson);

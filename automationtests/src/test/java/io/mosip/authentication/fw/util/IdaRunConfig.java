@@ -68,6 +68,14 @@ public class IdaRunConfig extends RunConfig{
 	private String moduleFolderName;
 	private String idRepoCreateVIDRecordPath;
 	private String idRepoUpdateVIDStatusPath;
+	private String idRepoVersion;
+	
+	public String getIdRepoVersion() {
+		return idRepoVersion;
+	}
+	public void setIdRepoVersion(String idRepoVersion) {
+		this.idRepoVersion = idRepoVersion;
+	}
 	/**
 	 * The method get endpoint url for IDA
 	 * 
@@ -309,6 +317,7 @@ public class IdaRunConfig extends RunConfig{
 	 * @param testType
 	 */
 	public  void setConfig(String testDataPath,String testDataFileName,String testType) {
+		setIdRepoVersion(AuthTestsUtil.getPropertyValue("idrepoVersion"));
 		setAuthVersion(AuthTestsUtil.getPropertyValue("authVersion"));
 		setEndPointUrl(AuthTestsUtil.getPropertyValue("endPointUrl"));
 		setEkycPath(AuthTestsUtil.getPropertyValue("ekycPath"));
@@ -351,7 +360,6 @@ public class IdaRunConfig extends RunConfig{
 		setDbKernelUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbKernelUrl"));
 		setDbIdaUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbIdaUrl"));
 		setDbAuditUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbAuditUrl"));
-		//setVidGenPath(AuthTestsUtil.getPropertyValue("vidGenPath"));
 		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());

@@ -7,6 +7,10 @@ id_otp_invalid:
 id_auth_invalid:
       - mosip.auth.identity
       - auth.mosip.identity
+id_CreateVid_valid:
+      - mosip.vid.create
+id_UpdateVid_valid:
+      - mosip.vid.update
 indvId_Uin_valid:
       - UIN
 indvId_Vid_valid:
@@ -51,7 +55,6 @@ vid_invalid:
       - 9835845389149
       - 983584538Q149251
       - ASUUYUHLIDIYDVUY
-      - _&%$@!()**&&^*^S
 otpChannel_invalid:
       - tree
       - flse
@@ -361,3 +364,11 @@ otpChannel_EMAIL:
       - EMAIL
 otpChannel_MOBILE:
       - PHONE
+#VID
+valid_VID_Type:
+      - Temporary
+      - Perpetual
+valid_VID_T_Type:
+      - Temporary
+valid_VID_P_Type:
+      - Perpetual

@@ -8,12 +8,12 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuedob: $idrepo~$input.demo-auth-request:AuthReq.individualId$~inputdateOfBirth$
-      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -359,6 +359,7 @@ testdata:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -624,8 +625,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MissingVID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
   Authentication_Demographic_DateOfBirth_Missing reqTime_For VID_Neg_35:
