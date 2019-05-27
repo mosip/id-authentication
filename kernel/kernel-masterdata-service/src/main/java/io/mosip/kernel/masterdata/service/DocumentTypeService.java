@@ -33,7 +33,8 @@ public interface DocumentTypeService {
 	/**
 	 * Method to create document type .
 	 * 
-	 * @param documentTypeDto dto with documents type.
+	 * @param documentTypeDto
+	 *            dto with documents type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	public CodeAndLanguageCodeID createDocumentType(DocumentTypeDto documentTypeDto);
@@ -41,7 +42,8 @@ public interface DocumentTypeService {
 	/**
 	 * Method to update document type.
 	 * 
-	 * @param documentTypeDto DTO of document type.
+	 * @param documentTypeDto
+	 *            DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	public CodeAndLanguageCodeID updateDocumentType(DocumentTypeDto documentTypeDto);
@@ -49,8 +51,19 @@ public interface DocumentTypeService {
 	/**
 	 * Method to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return {@link CodeResponseDto}.
 	 */
 	public CodeResponseDto deleteDocumentType(String code);
+
+	/**
+	 * Method to create document type with isActive is false .
+	 * 
+	 * @param documentTypeDto
+	 *            dto with documents type.
+	 * @return {@link CodeAndLanguageCodeID}.
+	 */
+	public CodeAndLanguageCodeID createInActiveDocumentType(DocumentTypeDto documentTypeDto);
+
 }

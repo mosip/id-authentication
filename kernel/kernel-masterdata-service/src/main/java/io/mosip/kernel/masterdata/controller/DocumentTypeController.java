@@ -44,8 +44,10 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode             input from user
-	 * @param documentCategoryCode input from user
+	 * @param langCode
+	 *            input from user
+	 * @param documentCategoryCode
+	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -67,7 +69,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
@@ -85,7 +88,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to update document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	@ResponseFilter
@@ -102,7 +106,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter
@@ -111,6 +116,25 @@ public class DocumentTypeController {
 	public ResponseWrapper<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.deleteDocumentType(code));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to create document type.
+	 * 
+	 * @param types
+	 *            the DTO of document type.
+	 * 
+	 * @return {@link CodeAndLanguageCodeID }
+	 */
+	@ResponseFilter
+	@PostMapping("/admin/documenttypes")
+	@ApiOperation(value = "Service to create document type with isActive status False")
+	public ResponseWrapper<CodeAndLanguageCodeID> createInActiveDocumentType(
+			@Valid @RequestBody RequestWrapper<DocumentTypeDto> types) {
+
+		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.createInActiveDocumentType(types.getRequest()));
 		return responseWrapper;
 	}
 }
