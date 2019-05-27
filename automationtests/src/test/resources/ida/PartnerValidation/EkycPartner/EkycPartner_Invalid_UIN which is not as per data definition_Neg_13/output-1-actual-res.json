@@ -1,0 +1,1 @@
+{"transactionID":"5575675355","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN","actionMessage":"Please retry with the correct UIN"}],"responseTime":"2019-05-23T12:00:24.156+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

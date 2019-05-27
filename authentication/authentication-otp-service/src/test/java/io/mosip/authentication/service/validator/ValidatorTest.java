@@ -81,7 +81,7 @@ public class ValidatorTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "otpRequestDTO");
 		otpRequestValidator.validate(otpRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-OTA-001")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 	}
 	
 	@Test

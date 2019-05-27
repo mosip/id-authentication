@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
@@ -84,9 +85,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
-	/** The Constant TABLE_NOT_ACCESSIBLE. */
-	private static final String TABLE_NOT_ACCESSIBLE = "TABLE IS NOT ACCESSIBLE.";
-
 	/** The Reg abis ref repository. */
 	@Autowired
 	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
@@ -147,23 +145,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
-	/** The meta data. */
-	private List<FieldValue> metaData;
+	@Value("${registration.processor.demodedupe.manualverification.status}")
+	private String manualVerificationStatus;
 
 	/** The reg id. */
 	private String regId;
 
 	/** The pre reg id. */
 	private String preRegId;
-
-	/** The demographic identity. */
-	private JSONObject demographicIdentity = null;
-
-	/** The Constant LANGUAGE. */
-	private static final String LANGUAGE = "language";
-
-	/** The Constant VALUE. */
-	private static final String VALUE = "value";
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "rid";
@@ -252,6 +241,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
+	@Override
 	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -265,7 +255,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					RegistrationProcessorIdentity.class);
 			JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
 					JSONObject.class);
-			demographicIdentity = JsonUtil.getJSONObject(demographicJson,
+			JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
 					utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
@@ -361,6 +351,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * core.packet.dto.demographicinfo.IndividualDemographicDedupe,
 	 * java.lang.String)
 	 */
+	@Override
 	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData,
 			String registrationId) {
 		boolean isTransactionSuccessful = false;
@@ -455,7 +446,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.findDemoById(regId);
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -483,7 +473,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setMatchedScore(null);
 				manualVerificationEntity.setMvUsrId(null);
 				manualVerificationEntity.setReasonCode("Potential Match");
-				manualVerificationEntity.setStatusCode("PENDING");
+				if (sourceName.equals(DedupeSourceName.DEMO)) {
+					manualVerificationEntity.setStatusCode(manualVerificationStatus);
+
+				} else {
+					manualVerificationEntity.setStatusCode("PENDING");
+
+				}
 				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
 				manualVerificationEntity.setIsActive(true);
 				manualVerificationEntity.setIsDeleted(false);
@@ -599,9 +595,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		List<AbisRequestEntity> abisRequestList = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestList);
 	}
-	
+
 	@Override
-	public List<String> getReferenceIdByBatchId(String batchId){
+	public List<String> getReferenceIdByBatchId(String batchId) {
 		return packetInfoDao.getReferenceIdByBatchId(batchId);
 	}
 
@@ -634,7 +630,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public List<String> getBatchStatusbyBatchId(String batchId) {
 		return packetInfoDao.getBatchStatusbyBatchId(batchId);
-		
+
 	}
 
 	/*
@@ -676,6 +672,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * getInsertOrIdentifyRequest(java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public List<AbisRequestDto> getInsertOrIdentifyRequest(String bioRefId, String refRegtrnId, String requestType) {
 		List<AbisRequestEntity> abisRequestEntities = packetInfoDao.getInsertOrIdentifyRequest(bioRefId, refRegtrnId,
 				requestType);
@@ -772,6 +769,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
 	 * getDemoListByTransactionId(java.lang.String)
 	 */
+	@Override
 	public List<RegDemoDedupeListDto> getDemoListByTransactionId(String transactionId) {
 		List<RegDemoDedupeListEntity> regDemoDedupeListEntityList = packetInfoDao
 				.getDemoListByTransactionId(transactionId);
@@ -786,6 +784,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveDemoDedupePotentialData(io.mosip.registration.processor.core.packet.dto.
 	 * abis.RegDemoDedupeListDto)
 	 */
+	@Override
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
 
@@ -900,6 +899,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId) {
 		List<AbisRequestEntity> abisRequestEntityList = packetInfoDao.getAbisRequestsByBioRefId(bioRefId);
 		return PacketInfoMapper.convertAbisRequestEntityListToDto(abisRequestEntityList);
+	}
+
+	@Override
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
+			String processed) {
+		return packetInfoDao.getAbisProcessedRequestsAppCodeByBioRefId(bioRefId, requestType, processed);
 	}
 
 	@Override

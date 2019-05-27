@@ -1,0 +1,11 @@
+{
+     "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "errors": [{
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "email failed for the regex ^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
+    }
+    ],
+    "responsetime": "2019-04-17T06:22:13.145Z",
+    "response": null
+}

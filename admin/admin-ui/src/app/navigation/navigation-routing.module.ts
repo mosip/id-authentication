@@ -5,13 +5,14 @@ import { AuthenticationComponent } from './authentication/authentication.compone
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { OtpAuthenticationComponent } from './otp-authentication/otp-authentication.component';
+import {  AuthGuard } from '../shared/auth-guard.guard';
 
 const routes: Routes = [
   {
     path: 'login', component: LoginComponent
   },
   {
-    path: 'authenticate/:userId', component: AuthenticationComponent
+    path: 'authenticate/:userId', component: AuthenticationComponent , canActivate: [AuthGuard]
   },
   {
     path: 'forgotpassword', component: ForgotPasswordComponent
@@ -26,6 +27,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers:[AuthGuard]
 })
 export class NavigationRoutingModule { }

@@ -1,0 +1,12 @@
+{
+    "id": "mosip.registration.sync",
+    "version": "1.0",
+    "responsetime": "2019-05-21T12:31:55.225Z",
+    "errors": [
+        {
+            "status": "FAILURE",
+            "errorMessage": "Decryption Failed",
+            "errorCode": "RPR-RGS-028"
+        }
+    ]
+}

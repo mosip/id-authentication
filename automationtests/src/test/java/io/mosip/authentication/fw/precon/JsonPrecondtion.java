@@ -182,7 +182,7 @@ public class JsonPrecondtion{
 	private List<String> pathList;
     private String json;
     public JsonPrecondtion() {}
-    public JsonPrecondtion(String json) {
+    public JsonPrecondtion(String json) throws JSONException {
         this.json = json;
         this.pathList = new ArrayList<String>();
         setJsonPaths(this.json);
@@ -202,8 +202,9 @@ public class JsonPrecondtion{
      * Set Json Path from Json Content
      * 
      * @param json
+     * @throws JSONException 
      */
-    private void setJsonPaths(String json) {
+    private void setJsonPaths(String json) throws JSONException {
         this.pathList = new ArrayList<String>();
         JSONObject object = new JSONObject(json);
         String jsonPath = "$";
@@ -217,8 +218,9 @@ public class JsonPrecondtion{
      * 
      * @param Json object
      * @param jsonPath
+     * @throws JSONException 
      */
-	private void readObject(JSONObject object, String jsonPath) {
+	private void readObject(JSONObject object, String jsonPath) throws JSONException {
 		Iterator<String> keysItr = object.keys();
 		String parentPath = jsonPath;
 		while (keysItr.hasNext()) {
@@ -240,8 +242,9 @@ public class JsonPrecondtion{
 	 * 
 	 * @param Json array
 	 * @param jsonPath
+	 * @throws JSONException 
 	 */
-    private void readArray(JSONArray array, String jsonPath) {   
+    private void readArray(JSONArray array, String jsonPath) throws JSONException {   
         String parentPath = jsonPath;
         for(int i = 0; i < array.length(); i++) {
             Object value = array.get(i);    
