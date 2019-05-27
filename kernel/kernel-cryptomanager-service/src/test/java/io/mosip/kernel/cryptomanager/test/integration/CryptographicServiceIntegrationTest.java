@@ -109,7 +109,7 @@ public class CryptographicServiceIntegrationTest {
 		server = MockRestServiceServer.bindTo(restTemplate).build();
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "REGISTRATION");
-		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timestamp", "2018-12-06T12:07:44.403Z")
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403Z")
 				.queryParam("referenceId", "ref123");
 	}
 
