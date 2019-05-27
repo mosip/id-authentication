@@ -453,6 +453,10 @@ public class DocumentService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(docId);
+				if (!documentEntity.getPreregId().equals(preId)) {
+					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
+				}
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				InputStream sourcefile = fs.getFile(documentEntity.getPreregId(), key);
 				if (sourcefile == null) {
@@ -598,8 +602,7 @@ public class DocumentService {
 		return deleteRes;
 	}
 
-	public DocumentDeleteResponseDTO deleteFile(List<DocumentEntity> documentEntityList,
-			String preregId) {
+	public DocumentDeleteResponseDTO deleteFile(List<DocumentEntity> documentEntityList, String preregId) {
 		log.info("sessionId", "idType", "id", "In pre-registration service inside delete File method " + preregId);
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
@@ -649,12 +652,11 @@ public class DocumentService {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID, requestDTO.getId());
 		inputValidation.put(RequestCodes.VER, requestDTO.getVersion());
-		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+		if (!(requestDTO.getRequesttime() == null || requestDTO.getRequesttime().toString().isEmpty())) {
 			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 			inputValidation.put(RequestCodes.REQ_TIME, date.toString());
-		}
-		else {
-			inputValidation.put(RequestCodes.REQ_TIME,null);
+		} else {
+			inputValidation.put(RequestCodes.REQ_TIME, null);
 		}
 		inputValidation.put(RequestCodes.REQUEST, requestDTO.getRequest().toString());
 		return inputValidation;
