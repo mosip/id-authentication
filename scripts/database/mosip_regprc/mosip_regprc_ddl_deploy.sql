@@ -16,4 +16,6 @@
 \ir ddl/regprc-abis_response.sql
 \ir ddl/regprc-abis_response_det.sql
 
+\ir ddl/regprc-reg_lost_uin_det.sql
+
 \ir ddl/AlterFK_regprc_schema.sql
