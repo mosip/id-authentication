@@ -101,7 +101,7 @@ Below are the option system integrator team has to integrate external system wit
 		</choice>
 	</route>
 ```
-1. Send event from external stage to next stage by updating "registration-processor-camel-routes.xml" as shown below:
+7. Send event from external stage to next stage by updating "registration-processor-camel-routes.xml" as shown below:
 ```xml
 	<route id="external-stage-->demo-dedupe route">
 		<from uri="vertx:external-bus-out" />
@@ -122,7 +122,8 @@ Below are the option system integrator team has to integrate external system wit
 		</choice>
 	</route>
 	```
-1. Commit and deploy changes.
+	
+8. Commit and deploy changes.
 
 
 **Logical View of External Inegration using Vert.x Stage**
