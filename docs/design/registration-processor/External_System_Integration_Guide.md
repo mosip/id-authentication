@@ -126,6 +126,7 @@ Below are the option system integrator team has to integrate external system wit
 
 
 **Logical View of External Inegration using Vert.x Stage**
+
 ------------
 
 ![vertx-external-integration-logical-view](_images/vertx-external-integration-logical-view.png)
