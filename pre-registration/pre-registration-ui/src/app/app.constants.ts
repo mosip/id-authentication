@@ -182,24 +182,24 @@ export const notificationDtoKeys = {
   file: 'attachment'
 };
 
-export const residentTypesMapping = {
-  NFR: {
-    fra: 'Nationale',
-    eng: 'National',
-    ara: 'الوطني'
-  },
-  FR: {
-    fra: 'Étranger',
-    eng: 'Foreigner',
-    ara: 'أجنبي'
-  }
-};
+// export const residentTypesMapping = {
+//   NFR: {
+//     fra: 'Nationale',
+//     eng: 'National',
+//     ara: 'الوطني'
+//   },
+//   FR: {
+//     fra: 'Étranger',
+//     eng: 'Foreigner',
+//     ara: 'أجنبي'
+//   }
+// };
 
-export const sameAs = {
-  eng: 'Document Uploaded using Same As',
-  fra: 'Document téléchargé avec Identique à',
-  ara: 'تم تحميل المستند باستخدام نفس باسم'
-};
+// export const sameAs = {
+//   eng: 'Document Uploaded using Same As',
+//   fra: 'Document téléchargé avec Identique à',
+//   ara: 'تم تحميل المستند باستخدام نفس باسم'
+// };
 
 export const previewFields = ['region', 'province', 'city', 'localAdministrativeAuthority', 'gender'];
 
@@ -209,8 +209,8 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
 
 export const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-export const DAYS = {
-  eng: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  ara: ['يَوم الأحَد', 'يَوم الإثنين', 'يَوم الثلاثاء', 'يَوم الأربعاء', 'يَوم الخميس', 'يَوم الجمعة', 'يَوم السبت'],
-  fra: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-};
+// export const DAYS = {
+//   eng: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+//   ara: ['يَوم الأحَد', 'يَوم الإثنين', 'يَوم الثلاثاء', 'يَوم الأربعاء', 'يَوم الخميس', 'يَوم الجمعة', 'يَوم السبت'],
+//   fra: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+// };
