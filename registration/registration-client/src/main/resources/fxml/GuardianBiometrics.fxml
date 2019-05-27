@@ -182,7 +182,7 @@
                                                 <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
-                                          <GridPane GridPane.rowIndex="4">
+                                          <GridPane fx:id="thresholdBox" GridPane.rowIndex="4">
                                              <children>
                                                 <Label styleClass="threshHoldLabel" text="%threshold" GridPane.halignment="LEFT" />
                                                 <Label styleClass="qualityLabel" text="%quality" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
@@ -224,6 +224,7 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
+                                          <Label fx:id="photoAlert" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />

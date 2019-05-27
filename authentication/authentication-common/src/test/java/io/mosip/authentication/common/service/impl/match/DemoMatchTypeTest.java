@@ -12,20 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.impl.match.AgeMatchingStrategy;
-import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.FullAddressMatchingStrategy;
-import io.mosip.authentication.common.service.impl.match.GenderMatchingStrategy;
-import io.mosip.authentication.common.service.impl.match.NameMatchingStrategy;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 
 /**
@@ -87,12 +80,9 @@ public class DemoMatchTypeTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(sdf.parse(dob));
-		int dobYear = calendar.get(Calendar.YEAR);
-		int curYear = Calendar.getInstance().get(Calendar.YEAR);
-		int currentAge = curYear - dobYear;
-
-		Function<Map<String, String>, Map<String, String>> entityInfoMapper = DemoMatchType.AGE.getEntityInfoMapper();
-		Function<Map<String, String>, Map<String, String>> entityInfoFetcher = entityInfoMapper;
+		calendar.get(Calendar.YEAR);
+		Calendar.getInstance().get(Calendar.YEAR);
+		DemoMatchType.AGE.getEntityInfoMapper();
 
 	}
 
@@ -143,8 +133,7 @@ public class DemoMatchTypeTest {
 		location3list.add(identityInfoDTO2);
 		demoEntity.put("location3", location3list);
 
-		Function<LanguageType, String> languageCodeFetcher = obj -> "fre";
-		Function<String, Optional<String>> languageNameFetcher = obj -> Optional.of("french");
+		Optional.of("french");
 
 		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
 		List<String> fullAddress = new ArrayList<>();
