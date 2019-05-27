@@ -1,4 +1,4 @@
-Design - Packet deletion
+**Design - Packet deletion**
 
 
 **Background**

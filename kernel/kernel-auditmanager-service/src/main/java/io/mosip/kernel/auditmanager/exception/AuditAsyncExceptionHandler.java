@@ -7,7 +7,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.auditmanager.logger.AuditManagerLogger;
+import io.mosip.kernel.auditmanager.config.AuditManagerLogger;
 
 /**
  * Custom exception handler for AsyncTask

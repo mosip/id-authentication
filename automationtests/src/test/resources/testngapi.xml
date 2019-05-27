@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
-<suite name="Mosip API Suite" parallel="classes" thread-count="2">
+<suite name="Mosip API Suite" parallel="tests" thread-count="2">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 <listeners>
@@ -18,13 +18,11 @@
   						smokeAndRegression -->
  
 
-
-                       <test name="Kernel Tests">
-                          <parameter name="module" value="Kernel" />
+                      <test name="Kernel Tests">
+                      <parameter name="module" value="Kernel" />
                      <classes>
-
-                            <class name="io.mosip.kernel.tests.AuditLog" />   
-                         <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
+                          
+                          <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                             <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
@@ -69,10 +67,11 @@
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.TokenIdGenerator" />
                            <class name="io.mosip.kernel.tests.UINGeneration" />
-                           <class name="io.mosip.kernel.tests.UINStatusCheck" />  
+                           <class name="io.mosip.kernel.tests.UINStatusCheck" /> 
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" />  
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />                              
+<
                
                  </classes>
               </test>  
@@ -82,8 +81,7 @@
 		<classes>
 		 <class name="io.mosip.preregistration.tests.BatchJob" />
 		<!--  
-		<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
-		
+		<class name="io.mosip.preregistration.tests.CreatePreRegistration" />	
  	<class name="io.mosip.preregistration.tests.Audit" /> 
 			 <class name="io.mosip.preregistration.tests.BatchJob" />
 		  <class name="io.mosip.preregistration.tests.BookingAppointment" />
@@ -122,9 +120,8 @@
               <test name="AuthenticationTest">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
-		
 
-	                     <class name="io.mosip.authentication.tests.CreateUinRecord" />
+		     			  <class name="io.mosip.authentication.tests.CreateUinRecord" />
 	                      <class name="io.mosip.authentication.tests.UpdateUinRecord" />
 	                      <class
 	                             name="io.mosip.authentication.tests.DemographicAuthentication" />

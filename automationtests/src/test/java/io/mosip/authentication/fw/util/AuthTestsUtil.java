@@ -936,7 +936,7 @@ public class AuthTestsUtil extends BaseTestCase {
 								.getAbsolutePath();
 				RunConfigUtil.getRunConfigObject("ida");				 
 
-				RunConfigUtil.objRunConfig.setUserDirectory();
+			RunConfigUtil.objRunConfig.setUserDirectory();
 				demoAppBatchFilePath = new File(RunConfigUtil.objRunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
 				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Djava.net.useSystemProxies=true -jar "
 						+ '"' + demoAppJarPath.toString() + '"' +" &";

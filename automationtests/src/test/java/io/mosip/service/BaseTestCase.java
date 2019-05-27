@@ -64,7 +64,7 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	public String testLevel;
+	
 		
 	/**
 	 * Method that will take care of framework setup
@@ -74,13 +74,11 @@ public class BaseTestCase{
 	public static String ApplnURI;	
 	public static String authToken;
 	public static String regProcAuthToken;
-
-	public static String adminRegProcAuthToken;
-
-	
-
+	public static String getStatusRegProcAuthToken;
 	public static String environment;
-	public static String SEPRATOR="";
+	public static String testLevel;
+	public static String adminRegProcAuthToken;
+		public static String SEPRATOR="";
 	public static String buildNumber="";
 	public  static String getOSType(){
 		String type=System.getProperty("os.name");
@@ -120,13 +118,14 @@ public class BaseTestCase{
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
+			
 			                    
 			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" +environment);
-			ApplnURI=System.getProperty("env.endpoint");
-			logger.info("Application URI ======" +ApplnURI);
+			logger.info("Environemnt is  ==== :" + environment);
+			ApplnURI = System.getProperty("env.endpoint");
+			logger.info("Application URI ======" + ApplnURI);
+			testLevel = System.getProperty("env.testLevel");
+			logger.info("Test Level ======" + testLevel);
 
 			logger.info("Configs from properties file are set.");
 			

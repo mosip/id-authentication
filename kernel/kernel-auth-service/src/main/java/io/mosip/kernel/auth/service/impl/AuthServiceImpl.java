@@ -257,8 +257,8 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
 		if (mosipUser == null) {
-			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(),
-					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 		}
 		if (mosipUser != null) {
 			MosipUserTokenDto mosipToken = null;
@@ -272,7 +272,7 @@ public class AuthServiceImpl implements AuthService {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
 				} else {
-					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage());
+					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {

@@ -189,7 +189,7 @@ public class TokenGenerator {
 
 			return claims;
 		} catch (Exception e) {
-			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(),e);
 		}
 	}
 }
