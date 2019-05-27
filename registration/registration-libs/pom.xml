@@ -139,6 +139,8 @@
 								<argument>${main.basedir}/registration-libs/src/main/resources/db/reg</argument>
 								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
+								<argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
+								
 							</arguments>
 						</configuration>
 					</execution>
