@@ -506,7 +506,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = InvalidRequestParameterException.class)
+	/*@Test(expected = InvalidRequestParameterException.class)
 	public void updateByDateFailureTest() throws Exception {
 		InvalidRequestParameterException exception = new InvalidRequestParameterException(
 				ErrorCodes.PRG_PAM_APP_012.toString(), ErrorMessages.MISSING_REQUEST_PARAMETER.toString(), responseDTO);
@@ -519,7 +519,7 @@ public class DemographicServiceTest {
 		MainResponseDTO<DemographicUpdateResponseDTO> res = preRegistrationService.updatePreRegistration(request, "",
 				userId);
 		assertEquals("1.0", res.getVersion());
-	}
+	}*/
 
 	@Test(expected = PreIdInvalidForUserIdException.class)
 	public void invalidUserTest() throws FileNotFoundException, IOException, org.json.simple.parser.ParseException,
