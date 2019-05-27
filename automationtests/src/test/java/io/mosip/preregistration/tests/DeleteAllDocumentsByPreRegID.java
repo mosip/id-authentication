@@ -142,9 +142,17 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			String preRegURI = preReg_URI + preRegistrationId;
 			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
 			
-			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+Actualresponse.asString());
+			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+"Res:"+Actualresponse.asString());
 			
-			outerKeys.add("responsetime");
+			if((testCaseName.contains("EmptyValue"))||(testCaseName.contains("Spaces")))
+			{
+				outerKeys.add("timestamp");
+			}
+			else 
+			{
+				outerKeys.add("responsetime");
+			}
+			
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
