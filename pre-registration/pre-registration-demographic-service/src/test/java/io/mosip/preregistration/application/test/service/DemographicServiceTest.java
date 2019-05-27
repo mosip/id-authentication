@@ -302,7 +302,7 @@ public class DemographicServiceTest {
 		logger.info("Entity " + preRegistrationEntity);
 
 		preRegistrationViewDTO = new DemographicViewDTO();
-		// preRegistrationViewDTO.setFullname(null);
+		preRegistrationViewDTO.setFullname(null);
 		preRegistrationViewDTO.setStatusCode("Pending_Appointment");
 		preRegistrationViewDTO.setPreRegistrationId("98746563542672");
 		responseViewList.add(preRegistrationViewDTO);
@@ -396,7 +396,7 @@ public class DemographicServiceTest {
 		demographicResponseForCreateDTO.setStatusCode("Pending_Appointment");
 		createPreRegistrationDTO = new DemographicRequestDTO();
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
-		createPreRegistrationDTO.setLangCode("fra");
+        createPreRegistrationDTO.setLangCode("fra");
 		request.setRequest(createPreRegistrationDTO);
 		List<DemographicCreateResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseForCreateDTO);
@@ -562,7 +562,7 @@ public class DemographicServiceTest {
 		viewDto = new DemographicViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
-		viewDto.setBookingMetadata(bookingRegistrationDTO);
+		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 		viewList.add(viewDto);
 		DemographicMetadataDTO demographicMetadataDTO = new DemographicMetadataDTO();
 		demographicMetadataDTO.setBasicDetails(viewList);
@@ -605,7 +605,7 @@ public class DemographicServiceTest {
 		viewDto = new DemographicViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
-		viewDto.setBookingMetadata(bookingRegistrationDTO);
+		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 		viewList.add(viewDto);
 		DemographicMetadataDTO demographicMetadataDTO = new DemographicMetadataDTO();
 		demographicMetadataDTO.setBasicDetails(viewList);
@@ -650,7 +650,7 @@ public class DemographicServiceTest {
 		viewDto = new DemographicViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
-		viewDto.setBookingMetadata(bookingRegistrationDTO);
+		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 
 		viewList.add(viewDto);
 
@@ -695,7 +695,7 @@ public class DemographicServiceTest {
 		viewDto = new DemographicViewDTO();
 		viewDto.setPreRegistrationId("98746563542672");
 		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
-		viewDto.setBookingMetadata(bookingRegistrationDTO);
+		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
 		response.setVersion("1.0");
 		viewList.add(viewDto);
 		DemographicMetadataDTO demographicMetadataDTO = new DemographicMetadataDTO();

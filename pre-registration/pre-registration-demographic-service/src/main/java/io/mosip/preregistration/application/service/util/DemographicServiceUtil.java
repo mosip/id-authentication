@@ -4,12 +4,12 @@
  */
 package io.mosip.preregistration.application.service.util;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,13 +20,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -37,17 +32,18 @@ import io.mosip.preregistration.application.dto.DemographicUpdateResponseDTO;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.identity.DemographicIdentityRequestDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.CryptoUtil;
 import io.mosip.preregistration.core.util.HashUtill;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for DemographicService
@@ -62,6 +58,7 @@ public class DemographicServiceUtil {
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
 
+
 	/**
 	 * Logger instance
 	 */
@@ -69,19 +66,6 @@ public class DemographicServiceUtil {
 
 	@Autowired
 	CryptoUtil cryptoUtil;
-
-	/**
-	 * Environment instance
-	 */
-	@Autowired
-	private Environment env;
-
-	@Autowired
-	@Qualifier("restTemplateConfig")
-	private RestTemplate restTemplate;
-
-	@Value("${preregistartion.config.identityjson}")
-	private String preregistrationIdJson;
 
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
@@ -253,15 +237,17 @@ public class DemographicServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		if (!(requestDto.getRequesttime() == null || requestDto.getRequesttime().toString().isEmpty())) {
+		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
 			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 			requestMap.put("requesttime", date.toString());
-		} else {
-			requestMap.put("requesttime", null);
+		}
+		else {
+		requestMap.put("requesttime",null);
 		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
 	}
+	
 
 	/**
 	 * This method is used to set the JSON values to RequestCodes constants.
@@ -354,6 +340,7 @@ public class DemographicServiceUtil {
 		}
 	}
 
+
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
 	}
@@ -375,6 +362,7 @@ public class DemographicServiceUtil {
 		return date.format(dateTimeFormatter);
 	}
 
+	
 	public boolean isStatusValid(String status) {
 		for (StatusCodes choice : StatusCodes.values())
 			if (choice.getCode().equals(status))
@@ -388,37 +376,13 @@ public class DemographicServiceUtil {
 	 * @param mainRequestDto
 	 * @return MainResponseDTO<?>
 	 */
-	public MainResponseDTO<?> getMainResponseDto(MainRequestDTO<?> mainRequestDto) {
+	public  MainResponseDTO<?> getMainResponseDto(MainRequestDTO<?> mainRequestDto ){
 		log.info("sessionId", "idType", "id", "In getMainResponseDTO method of Login Common Util");
-		MainResponseDTO<?> response = new MainResponseDTO<>();
+		MainResponseDTO<?> response=new MainResponseDTO<>();
 		response.setId(mainRequestDto.getId());
 		response.setVersion(mainRequestDto.getVersion());
-
+		
 		return response;
 	}
-
-	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() throws IOException {
-		String getIdentityJsonString = getJson(preregistrationIdJson);
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);
-	}
-
-	/**
-	 * This method is used for config rest call
-	 * 
-	 * @param filname
-	 * @return
-	 */
-	public String getJson(String filename) {
-		String configServerUri = env.getProperty("spring.cloud.config.uri");
-		String configLabel = env.getProperty("spring.cloud.config.label");
-		String configProfile = env.getProperty("spring.profiles.active");
-		String configAppName = env.getProperty("spring.cloud.config.name");
-		StringBuilder uriBuilder = new StringBuilder();
-		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
-				.append(configLabel + "/").append(filename);
-		log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);
-		return restTemplate.getForObject(uriBuilder.toString(), String.class);
-
-	}
+	
 }
