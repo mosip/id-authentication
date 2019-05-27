@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.filter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -57,9 +54,6 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant REQUEST_HMAC. */
 	private static final String REQUEST_HMAC = "requestHMAC";
 
-	/** The Constant SECRET_KEY. */
-	private static final String SECRET_KEY = "secretKey";
-
 	/** The Constant MISPLICENSE_KEY. */
 	private static final String MISPLICENSE_KEY = "misplicenseKey";
 
@@ -97,11 +91,11 @@ public class IdAuthFilter extends BaseAuthFilter {
 			
 			if (null != requestBody.get(IdAuthCommonConstants.REQUEST)) {
 				requestBody.replace(IdAuthCommonConstants.REQUEST, decode((String) requestBody.get(IdAuthCommonConstants.REQUEST)));
-			Map<String, Object> request = keyManager.requestData(requestBody, mapper);
+			Map<String, Object> request = keyManager.requestData(requestBody, mapper, fetchReferenceId());
 				if (null != requestBody.get(REQUEST_HMAC)) {
 					requestBody.replace(REQUEST_HMAC, decode((String) requestBody.get(REQUEST_HMAC)));
 					Object encryptedSessionkey = decode((String)requestBody.get(SESSION_KEY));
-					String reqHMAC = keyManager.kernelDecrypt((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey);
+					String reqHMAC = keyManager.kernelDecrypt((byte[])requestBody.get(REQUEST_HMAC),(byte[])encryptedSessionkey, fetchReferenceId());
 					validateRequestHMAC(reqHMAC,
 							mapper.writeValueAsString(request));
 
@@ -113,6 +107,15 @@ public class IdAuthFilter extends BaseAuthFilter {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
+	}
+
+	/**
+	 * Method to get the reference id
+	 *
+	 * @return the string
+	 */
+	protected String fetchReferenceId() {
+		return env.getProperty(IdAuthConfigKeyConstants.CRYPTO_PARTNER_ID);
 	}
 
 	/*
@@ -349,27 +352,39 @@ public class IdAuthFilter extends BaseAuthFilter {
 						String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), "bio"));
 			}
 		} else {
-			for (String bioType : bioTypeList) {
-				if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
-						|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
-					bioType = SingleType.FINGER.value();
-				} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
-					bioType = SingleType.FACE.value();
-				} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
-					bioType = SingleType.IRIS.value();
-				}
-				if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
-					if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
-						throw new IdAuthenticationAppException(
-								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-										bioType));
-					}
-					String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
+			checkAllowedAuthTypeForBio(authPolicies, bioTypeList);
+		}
+	}
+
+	/**
+	 * Check allowed auth type for bio.
+	 *
+	 * @param authPolicies the auth policies
+	 * @param bioTypeList the bio type list
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
+			throws IdAuthenticationAppException {
+		for (String bioType : bioTypeList) {
+			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
+					|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
+				bioType = SingleType.FINGER.value();
+			} else if (bioType.equalsIgnoreCase(BioAuthType.FACE_IMG.getType())) {
+				bioType = SingleType.FACE.value();
+			} else if (bioType.equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
+				bioType = SingleType.IRIS.value();
+			}
+			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
+				if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
-									IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
+							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
+									bioType));
 				}
+				String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
+				throw new IdAuthenticationAppException(
+						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
+								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
 			}
 		}
 	}
