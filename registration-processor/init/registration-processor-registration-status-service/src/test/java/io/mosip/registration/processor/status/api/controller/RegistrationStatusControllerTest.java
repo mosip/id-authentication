@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.api.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -157,6 +158,7 @@ public class RegistrationStatusControllerTest {
 		registrationDtoList.add(registrationStatusDto2);
 
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
+		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 
 		/*signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
 		when(signatureUtil.signResponse(Mockito.any(String.class))).thenReturn(signatureResponse);
@@ -170,13 +172,12 @@ public class RegistrationStatusControllerTest {
 	 * @throws Exception the exception
 	 */
 	@Test
-	@Ignore
 	public void searchSuccessTest() throws Exception {
 		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
 				"mosip.registration.status");
 
 		this.mockMvc
-		.perform(MockMvcRequestBuilders.get("/search")
+		.perform(MockMvcRequestBuilders.post("/search")
 				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -190,7 +191,7 @@ public class RegistrationStatusControllerTest {
 	@Ignore
 	public void searchFailureTest() throws Exception {
 		this.mockMvc
-		.perform(MockMvcRequestBuilders.get("/search")
+		.perform(MockMvcRequestBuilders.post("/search")
 				.accept(MediaType.APPLICATION_ATOM_XML).contentType(MediaType.ALL_VALUE))
 		.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
@@ -201,7 +202,7 @@ public class RegistrationStatusControllerTest {
 
 		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
 		.validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-		this.mockMvc.perform(MockMvcRequestBuilders.get("/search")
+		this.mockMvc.perform(MockMvcRequestBuilders.post("/search")
 				.cookie(new Cookie("Authorization", regStatusToJson)).param("request", regStatusToJson).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE));
 	}
 
