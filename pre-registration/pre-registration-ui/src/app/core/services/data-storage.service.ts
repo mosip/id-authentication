@@ -52,17 +52,29 @@ export class DataStorageService {
     return this.httpClient.get(url);
   }
 
+/**
+* @description This methos returns the list of available genders
+*
+*
+* @returns an `Observable` of the body as an `Object`
+* @memberof DataStorageService
+*/
+getGenderDetails() {
+  const url = this.BASE_URL + appConstants.APPEND_URL.gender;
+  return this.httpClient.get(url);
+  }
+
   /**
-   * @description This methos returns the list of available genders
-   *
-   *
-   * @returns an `Observable` of the body as an `Object`
-   * @memberof DataStorageService
-   */
+  * @description This methos returns the list of available genders
+  *
+  *
+  * @returns an `Observable` of the body as an `Object`
+  * @memberof DataStorageService
+  */
   getResidentDetails() {
-    const url = this.BASE_URL + appConstants.APPEND_URL.resident;
-    return this.httpClient.get(url);
-    }
+  const url = this.BASE_URL + appConstants.APPEND_URL.resident;
+  return this.httpClient.get(url);
+  }
 
   /**
    * @description This method is responsible for doing the transliteration for a given word.
