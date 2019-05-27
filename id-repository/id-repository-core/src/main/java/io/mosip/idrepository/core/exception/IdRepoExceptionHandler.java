@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -82,6 +83,20 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(
 				buildExceptionResponse((BaseCheckedException) e, ((ServletWebRequest) request).getHttpMethod(), null),
 				HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(BeanCreationException.class)
+	protected ResponseEntity<Object> handleBeanCreationException(BeanCreationException ex, WebRequest request) {
+		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleBeanCreationException - \n" + ExceptionUtils.getStackTrace(ex));
+		Throwable rootCause = org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex);
+		if (rootCause.getClass().isAssignableFrom(AuthenticationException.class)) {
+			return handleAuthenticationException((AuthenticationException) rootCause, request);
+		} else if (rootCause.getClass().isAssignableFrom(IdRepoAppUncheckedException.class)) {
+			return handleIdAppUncheckedException((IdRepoAppUncheckedException) rootCause, request);
+		} else {
+			return handleAllExceptions((Exception) rootCause, request);
+		}
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
