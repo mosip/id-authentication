@@ -1,6 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -77,4 +80,12 @@ public interface DeviceService {
 	 *                                    Device
 	 */
 	public IdResponseDto deleteDevice(String id);
+	
+	/**
+	 * Fetch all Device which are mapped with the given registration center
+	 * 
+	 * @param regCenterId Registration center id to know the list of 
+	 * @return {@link DeviceRegistrationCenterDto}
+	 */
+	public List<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId);
 }

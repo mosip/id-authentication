@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,10 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
@@ -165,6 +169,31 @@ public class DeviceController {
 
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deleteDevice(id));
+		return responseWrapper;
+	}
+
+	/**
+	 * 
+	 * Function to fetch machine detail those are mapped with given registration Id
+	 * 
+	 * @param regCenterId
+	 *            pass registration Id as String
+	 * 
+	 * @return @return DeviceRegistrationCenterDto all machines details
+	 *         {@link DeviceRegistrationCenterDto} {@link MachineResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/mappeddevice/{regCenterId}")
+	@ApiOperation(value = "Retrieve all Devices which are mapped to given Registration Center Id", notes = "Retrieve all Devices which are mapped to given Registration Center Id")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device Details retrieved from database for the given Registration Center Id"),
+			@ApiResponse(code = 404, message = "When No Device Details not mapped with the Given Registation Center ID"),
+			@ApiResponse(code = 500, message = "While retrieving Device Detail any error occured") })
+	public ResponseWrapper<List<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
+			@PathVariable("regCenterId") String regCenterId) {
+
+		ResponseWrapper<List<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId));
 		return responseWrapper;
 	}
 }

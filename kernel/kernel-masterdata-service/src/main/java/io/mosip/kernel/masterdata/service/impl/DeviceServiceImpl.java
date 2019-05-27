@@ -12,6 +12,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -243,6 +244,38 @@ public class DeviceServiceImpl implements DeviceService {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(id);
 		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#
+	 * getRegistrationCenterMachineMapping1(java.lang.String)
+	 */
+	@Override
+	public List<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId) {
+		List<DeviceRegistrationCenterDto> deviceRegistrationCenterDtoList = null;
+		List<Device> returnEntity = null;
+
+		try {
+			returnEntity = deviceRepository.findDeviceByRegCenterId(regCenterId);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (returnEntity != null && !returnEntity.isEmpty()) {
+			deviceRegistrationCenterDtoList = MapperUtils.mapAll(returnEntity, DeviceRegistrationCenterDto.class);
+			for (DeviceRegistrationCenterDto deviceRegistrationCenterDto : deviceRegistrationCenterDtoList) {
+				deviceRegistrationCenterDto.setRegCentId(regCenterId);
+			}
+		} else {
+			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		return deviceRegistrationCenterDtoList;
+
 	}
 
 }
