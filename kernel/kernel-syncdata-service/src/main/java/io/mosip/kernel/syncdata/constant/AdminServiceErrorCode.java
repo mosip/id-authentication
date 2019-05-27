@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.syncjob.constant;
+package io.mosip.kernel.syncdata.constant;
 
 public enum AdminServiceErrorCode {
 

@@ -2,10 +2,12 @@ package io.mosip.kernel.syncdata.service.impl;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,17 +22,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.exception.AuthNException;
 import io.mosip.kernel.auth.adapter.exception.AuthZException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.syncdata.constant.AdminServiceErrorCode;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.response.SyncJobDefResponseDto;
+import io.mosip.kernel.syncdata.entity.SyncJobDef;
+import io.mosip.kernel.syncdata.exception.AdminServiceException;
 import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.service.SyncJobDefService;
+import io.mosip.kernel.syncdata.syncjob.repository.SyncJobDefRepository;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 
 /**
  * This class contains the business logic for CRUD opertaion.
@@ -53,6 +61,10 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 	@Value("${mosip.kernel.syncdata.syncjob-base-url}")
 	private String baseUri;
 
+	
+	@Autowired
+	SyncJobDefRepository syncJobDefRepository;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -62,7 +74,7 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 	 */
 	@Override
 	public List<SyncJobDefDto> getSyncJobDefDetails(LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
-		ResponseEntity<String> response = null;
+		/*ResponseEntity<String> response = null;
 
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUri)
@@ -91,7 +103,27 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 					MasterDataErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage() + ex.getMessage());
 		}
 		String responseBody = response.getBody();
-		return getSyncJobDefDetail(responseBody);
+		return getSyncJobDefDetail(responseBody);*/
+		
+		List<SyncJobDefDto> syncJobDefDtos = null;
+		List<SyncJobDef> syncJobDefs = null;
+		//SyncJobDefResponseDto syncJobResponseDto = null;
+		if (lastUpdatedTime == null) {
+			lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+		}
+		try {
+			syncJobDefs = syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
+					currentTimeStamp);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
+					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
+			syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
+			/*syncJobResponseDto = new SyncJobDefResponseDto();
+			syncJobResponseDto.setSyncJobDefinitions(syncJobDefDtos);*/
+		}
+		return syncJobDefDtos;
 	}
 
 	/**
@@ -101,7 +133,7 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 	 *            the response body
 	 * @return the sync job def detail
 	 */
-	private List<SyncJobDefDto> getSyncJobDefDetail(String responseBody) {
+	/*private List<SyncJobDefDto> getSyncJobDefDetail(String responseBody) {
 		List<SyncJobDefDto> syncJobDefDtos = null;
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
@@ -126,6 +158,6 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 		}
 
 		return syncJobDefDtos;
-	}
+	}*/
 
 }

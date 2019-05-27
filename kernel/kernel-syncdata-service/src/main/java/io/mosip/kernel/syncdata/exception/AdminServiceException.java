@@ -1,4 +1,4 @@
-package io.mosip.kernel.syncdata.syncjob.exception;
+package io.mosip.kernel.syncdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
