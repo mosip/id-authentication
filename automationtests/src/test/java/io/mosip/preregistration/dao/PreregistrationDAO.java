@@ -114,7 +114,7 @@ public class PreregistrationDAO
 			e.printStackTrace();
 		}
 		String sDate1="2019-06-05";  
-	    Date date3=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);  
+	    Date date3=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);  
 		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 		return date1;

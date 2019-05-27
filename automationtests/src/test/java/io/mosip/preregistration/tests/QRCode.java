@@ -138,7 +138,7 @@ public class QRCode extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
-			System.out.println("iuiuiuiu");
+			
 			Response qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
 			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString()+"preRegURI:::"+preReg_URI);
 			outerKeys.add("responsetime");

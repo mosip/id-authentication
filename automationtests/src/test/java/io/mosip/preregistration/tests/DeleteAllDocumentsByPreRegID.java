@@ -127,12 +127,12 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 			// Delete All Document by Pre-Registration Id
-			Response delAllDocByPreId = preRegLib.deleteAllDocumentByPreId(preId);
+			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
 
-			logger.info("Dele Doc:" + delAllDocByPreId.asString());
+			logger.info("Dele Doccument Response:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
+			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
 			
@@ -142,9 +142,17 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			String preRegURI = preReg_URI + preRegistrationId;
 			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
 			
-			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+Actualresponse.asString());
+			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+"Res:"+Actualresponse.asString());
 			
-			outerKeys.add("responsetime");
+			if((testCaseName.contains("EmptyValue"))||(testCaseName.contains("Spaces")))
+			{
+				outerKeys.add("timestamp");
+			}
+			else 
+			{
+				outerKeys.add("responsetime");
+			}
+			
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 

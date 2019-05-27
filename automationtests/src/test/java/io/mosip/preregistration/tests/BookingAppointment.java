@@ -78,6 +78,12 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 	String testParam = null;
 	boolean status_val = false;
 	JSONParser parser = new JSONParser();
+	String URI;
+	Response fetchCenter;
+	JSONObject actRes;
+	JSONObject dynamicReq;
+	JSONObject dynamicRes;
+	Response response;
 	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
 	
 
@@ -269,9 +275,21 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			actReqInvAppDate.put("requesttime", preRegLib.getCurrentDate());
 			logger.info("BookAnAppointmentByPassingRegCen::"+actReqInvAppDate.toString());
 			Response respAppDate = applicationLibrary.postRequest(actReqInvAppDate, preRegBookAppAppDateURI);
-			logger.info("BookAnAppointmentByPassingInvalidRegistrationCenterId::"+respAppDate.asString());
-			outerKeys.add("responsetime");
-			innerKeys.add("preRegistrationId");
+			logger.info("BookAnAppointmentByPassingInvalidAppointmentDate::"+respAppDate.asString());
+			if(testCaseName.contains("DateLessThanToday"))
+			{
+				outerKeys.add("responsetime");
+				innerKeys.add("message");
+				
+				preRegLib.compareValues(respAppDate.jsonPath().get("errors[0].message"), "Invalid Booking Date Time found for preregistration id - "+preId);
+				
+			}else
+			{
+				outerKeys.add("responsetime");
+				innerKeys.add("preRegistrationId");
+				innerKeys.add("message");
+			}
+			
 			status = AssertResponses.assertResponses(respAppDate, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -320,6 +338,27 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 			break;
 
+       case "BookAnAppointmentByPassingInvalidRequestTime":
+			
+			String reqTime = actualRequest.get("requesttime").toString();
+			logger.info("Invalid requesttime:"+reqTime);
+			
+			//dynamicChangeOfRequest
+			
+			 URI = preReg_URI + preId;
+			 fetchCenter = preRegLib.FetchCentre();
+			JSONObject actRes = preRegLib.BookAppointmentRequest(fetchCenter, preId.toString());
+			JSONObject dynamicReq = preRegUtil.dynamicChangeOfRequest(actRes, "$.requesttime", reqTime);
+			
+			
+			logger.info("BookAnAppointmentByPassingInvalidRequestTime::"+dynamicReq.toString());
+			 response = applicationLibrary.postRequest(dynamicReq, URI);
+			logger.info("BookAnAppointmentByPassingInvalidRequestTime::"+response.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+			break;
 		default:
 
 			break;

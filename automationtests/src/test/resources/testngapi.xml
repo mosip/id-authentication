@@ -96,7 +96,9 @@
 			<class name="io.mosip.preregistration.tests.GetPreRegistartionData" />
 			<class name="io.mosip.preregistration.tests.IntegrationScenarios" />
 			<class name="io.mosip.preregistration.tests.InvalidateToken" />
+			 <class name="io.mosip.preregistration.tests.MultipleBookingAppointment" />
 			<class name="io.mosip.preregistration.tests.QRCode" />
+			
 			<class
 				name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
 			<class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
