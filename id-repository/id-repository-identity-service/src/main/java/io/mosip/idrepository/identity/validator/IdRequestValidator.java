@@ -24,6 +24,7 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
@@ -215,7 +216,13 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 							.filter(key -> !key.contentEquals(IdRepoConstants.ROOT_PATH.getValue()))
 							.forEach(requestMap::remove);
 					if (!errors.hasErrors()) {
-						idObjectValidator.validateIdObject(requestMap, null);
+						if (method.equals(CREATE)) {
+						idObjectValidator.validateIdObject(requestMap,
+								IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+						} else {
+							idObjectValidator.validateIdObject(requestMap,
+									IdObjectValidatorSupportedOperations.UPDATE_UIN);
+						}
 					}
 				}
 			} else if (method.equals(CREATE)) {
