@@ -9,7 +9,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class RegistrationApprovalVO {
 
+	private SimpleStringProperty slno;
 	private SimpleStringProperty id;
+	private SimpleStringProperty date;
 	private SimpleStringProperty acknowledgementFormPath;
 	private SimpleStringProperty statusComment;
 
@@ -20,13 +22,22 @@ public class RegistrationApprovalVO {
 	 * @param acknowledgementFormPath the acknowledgement form path
 	 * @param statusComment           the status comment
 	 */
-	public RegistrationApprovalVO(String id, String acknowledgementFormPath, String statusComment) {
+	public RegistrationApprovalVO(String slno, String id, String date,String acknowledgementFormPath, String statusComment) {
 		super();
+		this.slno = new SimpleStringProperty(slno);
 		this.id = new SimpleStringProperty(id);
+		this.date = new SimpleStringProperty(date);
 		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
 		this.statusComment = new SimpleStringProperty(statusComment);
 	}
 
+	/**
+	 * @return the slno
+	 */
+	public String getSlno() {
+		return slno.get();
+	}
+	
 	/**
 	 * Gets the id.
 	 *
@@ -36,6 +47,13 @@ public class RegistrationApprovalVO {
 		return id.get();
 	}
 
+	/**
+	 * @return the date
+	 */
+	public String getDate() {
+		return date.get();
+	}
+	
 	/**
 	 * Gets the acknowledgement form path.
 	 *

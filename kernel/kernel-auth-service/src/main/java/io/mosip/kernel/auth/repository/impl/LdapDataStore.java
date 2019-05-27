@@ -372,7 +372,7 @@ public class LdapDataStore implements DataStore {
 			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
-					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
+					saltDetails.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 				}
 			}
 			mosipUserDtos.add(saltDetails);

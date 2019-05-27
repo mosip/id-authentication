@@ -28,7 +28,7 @@ public class QRcodeExceptionCatcher {
 					ErrorMessages.QRCODE_FAILED_TO_GENERATE.getCode(),ex.getCause(),mainResponseDto);
 		}
 		else if (ex instanceof IOException || ex instanceof JSONException) {
-			throw new io.mosip.preregistration.generateqrcode.exception.IOException(ErrorCodes.PRG_QRC_001.getCode(),
+			throw new io.mosip.preregistration.generateqrcode.exception.QrCodeIOException(ErrorCodes.PRG_QRC_001.getCode(),
 						ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),ex.getCause(),mainResponseDto);
 }
 		else if (ex instanceof NullPointerException) {

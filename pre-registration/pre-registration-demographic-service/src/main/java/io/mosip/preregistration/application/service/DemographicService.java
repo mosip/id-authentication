@@ -77,6 +77,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
@@ -290,7 +291,6 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -470,7 +470,7 @@ public class DemographicService {
 	}
 
 	private void prepareDemographicResponse(DemographicMetadataDTO demographicMetadataDTO,
-			List<DemographicEntity> demographicEntities) throws ParseException {
+			List<DemographicEntity> demographicEntities) throws ParseException,EncryptionFailedException {
 
 		List<DemographicViewDTO> viewList = new ArrayList<>();
 		for (DemographicEntity demographicEntity : demographicEntities) {

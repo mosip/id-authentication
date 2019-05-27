@@ -2,6 +2,7 @@ package io.mosip.preregistration.core.util;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.CryptoManagerRequestDTO;
 import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
@@ -67,11 +68,14 @@ public class CryptoUtil {
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
 					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
 					});
+			if(!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
+				throw new EncryptionFailedException(response.getBody().getErrors(), null);
+			}
 			encryptedBytes = response.getBody().getResponse().getData().getBytes();
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for Exception- "
 					+ ex.getMessage());
-			throw new EncryptionFailedException(ErrorCodes.PRG_CORE_REQ_011.getCode(),ErrorMessages.FAILED_TO_ENCRYPT.getMessage());
+			throw ex;
 		}
 		return encryptedBytes;
 
@@ -99,12 +103,15 @@ public class CryptoUtil {
 			response = restTemplate.exchange(cryptoResourceUrl + "/decrypt", HttpMethod.POST, request,
 					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
 					});
+			if(!response.getBody().getErrors().isEmpty()) {
+				throw new EncryptionFailedException(response.getBody().getErrors(), null);
+			}
 			decodedBytes = Base64.decodeBase64(response.getBody().getResponse().getData().getBytes());
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for Exception- "
 					+ ex.getMessage());
-			throw new DecryptionFailedException(ErrorCodes.PRG_CORE_REQ_012.getCode(),ErrorMessages.FAILED_TO_DECRYPT.getMessage());
+			throw ex;
 		}
 		return decodedBytes;
 
