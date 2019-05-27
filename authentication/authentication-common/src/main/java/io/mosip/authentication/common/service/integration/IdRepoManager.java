@@ -24,7 +24,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
-import io.mosip.idrepository.core.dto.VidResponseDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -48,9 +47,6 @@ public class IdRepoManager {
 
 	private static final String VID = "vid";
 
-	/** The Constant EXPIRED_VID. */
-	private static final String EXPIRED_VID = "Expired VID";
-
 	/** The Constant ERRORMESSAGE_VID. */
 	private static final String ERRORMESSAGE_VID = "message";
 	
@@ -59,10 +55,6 @@ public class IdRepoManager {
 	private static final String ERRORS = "errors";
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
-
-	private static final String USER_ID_NOTEXIST_ERRORMSG = "User Detail doesn't exist";
-
-	private static final String REG_ID = "rid";
 
 	/**
 	 * The Constant Id Repo Errors

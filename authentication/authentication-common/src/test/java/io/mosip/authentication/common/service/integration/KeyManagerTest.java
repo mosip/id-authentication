@@ -91,7 +91,7 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
-		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper);
+		Map<String, Object> decryptedReqMap = keyManager.requestData(reqMap, mapper, "PARTNER");
 		assertTrue(decryptedReqMap.containsKey("transactionID"));
 	}
 
@@ -115,7 +115,7 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
-		keyManager.requestData(reqMap, mapper);
+		keyManager.requestData(reqMap, mapper, "PARTNER");
 
 	}
 
@@ -131,7 +131,7 @@ public class KeyManagerTest {
 		Map<String, Object> reqMap = createRequest();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(
 				new IDDataValidationException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED, "publickey expired"));
-		keyManager.requestData(reqMap, mapper);
+		keyManager.requestData(reqMap, mapper, "PARTNER");
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class KeyManagerTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.INVALID_REST_SERVICE));
-		keyManager.requestData(reqMap, mapper);
+		keyManager.requestData(reqMap, mapper, "PARTNER");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -166,7 +166,7 @@ public class KeyManagerTest {
 		RestServiceException restException = new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
 				kernelErrorMapStr, new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restException);
-		keyManager.requestData(reqMap, mapper);
+		keyManager.requestData(reqMap, mapper, "PARTNER");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -181,7 +181,7 @@ public class KeyManagerTest {
 		RestServiceException restException = new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
 				kernelErrorMapStr, new ObjectMapper().readValue(kernelErrorMapStr.getBytes("UTF-8"), Map.class));
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restException);
-		keyManager.requestData(reqMap, mapper);
+		keyManager.requestData(reqMap, mapper, "PARTNER");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -195,7 +195,7 @@ public class KeyManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(responseMap);
-		Mockito.when(keyManager.requestData(reqMap, mapper)).thenThrow(IOException.class);
+		Mockito.when(keyManager.requestData(reqMap, mapper, "PARTNER")).thenThrow(IOException.class);
 	}
 
 	/*

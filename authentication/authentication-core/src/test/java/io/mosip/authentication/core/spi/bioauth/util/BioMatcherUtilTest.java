@@ -18,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 
 @RunWith(SpringRunner.class)

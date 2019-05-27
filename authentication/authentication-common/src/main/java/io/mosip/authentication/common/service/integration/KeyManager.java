@@ -86,17 +86,18 @@ public class KeyManager {
 	 *
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
+	 * @param refId 
 	 * @return the map
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
+	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			byte[] encryptedSessionkey = Base64.decodeBase64((String)requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, encryptedRequest, encryptedSessionkey);
+			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
@@ -117,11 +118,9 @@ public class KeyManager {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey)
+	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
 			throws IdAuthenticationAppException, IOException {
-		String decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
-		Map<String, Object> request = mapper.readValue(decodedIdentity,Map.class);
-		return request;
+		return mapper.readValue(kernelDecrypt(encryptedRequest, encryptedSessionKey, refId) ,Map.class);
 	}
 
 	/**
@@ -129,17 +128,19 @@ public class KeyManager {
 	 *
 	 * @param encryptedRequest the encrypted request
 	 * @param encryptedSessionKey the encrypted session key
+	 * @param refId 
+	 * @param string 
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
+	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
 			throws IdAuthenticationAppException {
 		String decryptedRequest=null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
 			cryptoManagerRequestDto.setApplicationId(appId);
-			cryptoManagerRequestDto.setReferenceId(partnerId);
+			cryptoManagerRequestDto.setReferenceId(refId);
 			cryptoManagerRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
 			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
