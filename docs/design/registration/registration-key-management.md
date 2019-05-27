@@ -12,7 +12,7 @@
     
 **Design:**
   **New Registration/ Update UIN/ Lost UIN Packet :**   
-   The packet created as output of this process should be encrypted with the machine specific public key, which is download from the remote server. This key has the expiry policy. Before it expires the next version of key should be downloaded from the server. 
+   The packet created as output of this process should be encrypted with the machine specific public key, which is download from the remote server.  This key has the expiry policy. Before it expires the next version of key should be downloaded from the server. 
      
   It is stored into the database table [key_store] along with the start and expiry date of the key. Based on which the key would be rendered during packet encryption. There is no key maintained for decryption of packet.  
 
