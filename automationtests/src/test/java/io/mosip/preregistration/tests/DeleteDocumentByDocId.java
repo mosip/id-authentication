@@ -155,6 +155,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			String preRegistration_URI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preRegistration_URI, parm);
+			logger.info("Delete Doc By Doc Id::"+"Test Case name::"+testCaseName+Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -165,6 +166,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			preReg_URI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			logger.info("Delete Doc By Doc Id Act Res::"+"Test Case name::"+testCaseName+Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -223,7 +225,9 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, DeleteDocumentByDocId.testCaseName);
+			//f.set(baseTestMethod, DeleteDocumentByDocId.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_DeleteAllDocumentByDocId_"+DeleteDocumentByDocId.testCaseName);
+			
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

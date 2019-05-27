@@ -74,11 +74,17 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 		lib.compareValues(actualResult, expectedResult);
 	}
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Demographic_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
 		lib.logOut();
 	}
-
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName() {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");

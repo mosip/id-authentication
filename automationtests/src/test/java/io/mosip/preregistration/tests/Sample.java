@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 
-import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.dao.PreRegistartionDAOO;
 import io.mosip.preregistration.dao.PreregistrationDAO;
@@ -70,19 +69,34 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
-
-		lib.syncAvailability();
-		
+	public void updatePreRegistrationDataForExpiredApplication()
+			throws FileNotFoundException, IOException, ParseException {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		for(int i=0;i<=20;i++)
+		{	Response createResponse = lib.CreatePreReg(createPregRequest);
+			
+		}
+	
+		/*String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		dao.setDate(preID);
+		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);*/
+		//lib.expiredStatus();
+//lib.pagination("1");
 	}
 
+
+	
 
 	@BeforeMethod(alwaysRun=true)
 	public void run()

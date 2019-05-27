@@ -79,14 +79,14 @@ public class JsonUtil {
 	 *
 	 * method call :- getJSONObject(demographicIdentity,identity)
 	 *
-	 * @param jsonObject
+	 * @param mapperJson
 	 *            the json object
 	 * @param key
 	 *            the key
 	 * @return the JSON object
 	 */
-	public static JSONObject getJSONObject(JSONObject jsonObject, Object key) {
-		LinkedHashMap identity = (LinkedHashMap) jsonObject.get((String) key);
+	public static JSONObject getJSONObject(org.json.simple.JSONObject mapperJson, Object key) {
+		LinkedHashMap identity = (LinkedHashMap) mapperJson.get((String) key);
 		return identity != null ? new JSONObject(identity) : null;
 	}
 
@@ -97,14 +97,14 @@ public class JsonUtil {
 	 * "eng", "value" : "Taleev Aalam" }, { "language" : "ara", "value" : "Taleev
 	 * Aalam" } ] }
 	 *
-	 * @param jsonObject
+	 * @param demographicIdentity
 	 *            the json object
 	 * @param key
 	 *            the key
 	 * @return the JSON array
 	 */
-	public static JSONArray getJSONArray(JSONObject jsonObject, Object key) {
-		ArrayList value = (ArrayList) jsonObject.get((String) key);
+	public static JSONArray getJSONArray(org.json.simple.JSONObject demographicIdentity, Object key) {
+		ArrayList value = (ArrayList) demographicIdentity.get((String) key);
 		JSONArray jsonArray = new JSONArray();
 		jsonArray.addAll(value);
 
@@ -173,7 +173,7 @@ public class JsonUtil {
 	 *            the identity key
 	 * @return the json values
 	 */
-	public static JsonValue[] getJsonValues(JSONObject demographicIdentity, Object identityKey) {
+	public static JsonValue[] getJsonValues(org.json.simple.JSONObject demographicIdentity, Object identityKey) {
 		JSONArray demographicJsonNode = null;
 
 		if (demographicIdentity != null)

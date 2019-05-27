@@ -67,8 +67,9 @@ public class Audit extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		// authToken = lib.getToken();
 	}
+
 	@Test
 	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -80,9 +81,10 @@ public class Audit extends BaseTestCase implements ITest {
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
-@Test
+
+	@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -95,8 +97,9 @@ public class Audit extends BaseTestCase implements ITest {
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForDemographicUpdate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -112,8 +115,9 @@ public class Audit extends BaseTestCase implements ITest {
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForDemographicFetchAllApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -125,10 +129,11 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		System.out.println("============"+auditDatas.toString());
+		System.out.println("============" + auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForDemographicException() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -143,8 +148,9 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		System.out.println(auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForGetAvailbleSlot() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -157,8 +163,9 @@ public class Audit extends BaseTestCase implements ITest {
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result,"object are not equal");
+		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForBooking() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -177,6 +184,7 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForCancelBooking() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -196,6 +204,7 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForReBooking() {
@@ -209,31 +218,38 @@ public class Audit extends BaseTestCase implements ITest {
 		lib.BookAppointment(fetchCenterResponse, preID);
 		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		String userId = lib.userId;
+
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditForReBooking");
 		expectedRequest.put("session_user_id", userId);
 		expectedRequest.put("ref_id", regCenterId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 4);
-		System.out.println("actual result"+auditDatas.toString());
+		System.out.println("actual result" + auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
 
-	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
-	@BeforeMethod(alwaysRun=true)
-	public void run()
-	{
-		authToken=lib.getToken();
-		
+
+	@BeforeMethod(alwaysRun = true)
+	public void run() {
+		authToken = lib.getToken();
+
 	}
 
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "PreReg_Audit_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
 	}
 }

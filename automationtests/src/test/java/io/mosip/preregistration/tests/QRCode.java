@@ -197,7 +197,8 @@ public class QRCode extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, QRCode.testCaseName);
+			//f.set(baseTestMethod, QRCode.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_QRCode_" +QRCode.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

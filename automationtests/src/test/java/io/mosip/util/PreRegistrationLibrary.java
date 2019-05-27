@@ -835,7 +835,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
 		request.put("requesttime", getCurrentDate());
-		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
+		
 		return response;
 	}
 
@@ -1421,7 +1421,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequestWithoutBody(preReg_ExpiredURI);
+			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -1451,7 +1451,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequestWithoutBody(preReg_ConsumedURI);
+			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
 
 		} catch (Exception e) {
 			logger.info(e);

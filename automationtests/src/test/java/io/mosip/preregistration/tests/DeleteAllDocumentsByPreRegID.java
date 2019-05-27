@@ -86,7 +86,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	@DataProvider(name = "DeleteAllDocumentsByPreRegID")
 	public Object[][] readData(ITestContext context) throws Exception {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -136,10 +136,15 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			status = AssertResponses.assertResponses(delAllDocByPreId, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
+			
+			
 			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
 
 			String preRegURI = preReg_URI + preRegistrationId;
 			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
+			
+			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+Actualresponse.asString());
+			
 			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
@@ -199,7 +204,8 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, DeleteAllDocumentsByPreRegID.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_DeleteAllDocumentsByPreRegID_"+DeleteAllDocumentsByPreRegID.testCaseName);
+			//f.set(baseTestMethod, BookingAppointment.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

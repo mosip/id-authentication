@@ -111,7 +111,7 @@ public class Assignment extends BaseTestCase implements ITest{
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		RegProcDataRead readDataFromDb = new RegProcDataRead();
-		description=common.getDescription(testSuite,object);
+		
 		//testCaseName =testCaseName +": "+ description;
 		try{
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);

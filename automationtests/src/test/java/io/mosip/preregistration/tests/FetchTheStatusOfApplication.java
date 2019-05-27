@@ -1,4 +1,3 @@
-
 package io.mosip.preregistration.tests;
 
 import java.io.File;
@@ -180,7 +179,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, FetchTheStatusOfApplication.testCaseName);
+			f.set(baseTestMethod,"Pre Reg_Demographic_"+ FetchTheStatusOfApplication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

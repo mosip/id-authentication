@@ -163,7 +163,7 @@ public class BaseTestCase{
 
 
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
-			pil.PreRegistrationResourceIntialize();
+		//	pil.PreRegistrationResourceIntialize();
 
 			//authToken=pil.getToken();
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");

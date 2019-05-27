@@ -49,9 +49,9 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
+	private final String decrypterURL="https://int.mosip.io/v1/cryptomanager/decrypt\r\n" + 
 			"";
-	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
 	public void generateHash(byte[] fileByte) {

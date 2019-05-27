@@ -79,7 +79,7 @@ public class TemplateGenerator {
 					"", "", TemplateResponseDto.class);*/
 			List<TemplateDto> templateDtoList = new ArrayList<>();
 			String fileTextValue = null;
-			 actualResponse = applicationLibrary.getRequestNoParameter(id_url+templateTypeCode);
+			 actualResponse = applicationLibrary.GetRequestNoParameter(id_url+templateTypeCode);
 			logger.info("actual response : "+actualResponse.asString());
 			Map<String,Map<String,String>>response = actualResponse.jsonPath().get("response");
 			

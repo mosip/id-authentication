@@ -48,8 +48,8 @@ import io.restassured.response.Response;
  *
  */
 
-public class BatchJob extends BaseTestCase implements ITest {
-	public Logger logger = Logger.getLogger(BatchJob.class);
+public class Pagination extends BaseTestCase implements ITest {
+	public Logger logger = Logger.getLogger(Pagination.class);
 	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	public String testSuite;
 	public String preRegID = null;
@@ -70,44 +70,11 @@ public class BatchJob extends BaseTestCase implements ITest {
 	 * Batch job service for expired application
 	 */
 	@Test
-	public void batchJobForExpiredApplication() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		dao.setDate(preID);
-		lib.expiredStatus();
-		lib.FetchAppointmentDetails(preID);
-		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
-		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
-		lib.compareValues(statusCode, "Expired");
-	
+	public void pagination_Smoke()
+	{
+		
 	}
-	/**
-	 * Batch Job service Consumed Application
-	 */
-	@Test
-	public void batchJobForConsumedApplication() {
-		List preRegistrationId = new ArrayList();
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		preRegistrationId.add(preID);
-		lib.reverseDataSync(preRegistrationId);
-		Response consumedResponse = lib.consumedStatus();
-		String message = consumedResponse.jsonPath().get("response").toString();
-		lib.compareValues(message, "Demographic status to consumed updated successfully");
-		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(message, "No data found for the requested pre-registration id");
-	}
+
 	
 	@Override
 	public String getTestName() {
@@ -126,7 +93,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
 			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(bm, "preReg_BatchJob_" + method.getName());
+			f.set(bm, "preReg_Demographic_" + method.getName());
 		} catch (Exception ex) {
 			Reporter.log("ex" + ex.getMessage());
 		}
