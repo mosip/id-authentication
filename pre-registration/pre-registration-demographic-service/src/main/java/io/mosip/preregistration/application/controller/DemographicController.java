@@ -127,8 +127,7 @@ public class DemographicController {
 		log.info("sessionId", "idType", "id",
 				"In pre-registration controller for fetching all demographic data with preregistartionId"
 						+ preRegistraionId);
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.getDemographicData(preRegistraionId));
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegistraionId));
 	}
 
 	/**
@@ -141,7 +140,7 @@ public class DemographicController {
 	 * @return the updation status of application for a pre-id
 	 */
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','PRE_REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@PutMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
@@ -174,7 +173,7 @@ public class DemographicController {
 			@RequestParam(value = "pageIndex", required = false) String pageIdx) {
 		String userId = preRegistrationService.authUserDetails().getUserId();
 		log.info("sessionId", "idType", "id",
-				"In pre-registration controller for fetching all applications with userId " + "test@gmail.com"
+				"In pre-registration controller for fetching all applications with userId " + userId
 						+ " Header " + res.getHeader("Authorization"));
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getAllApplicationDetails(userId, pageIdx));
@@ -188,7 +187,7 @@ public class DemographicController {
 	 * @return status of application
 	 */
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','PRE_REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
 
 	@GetMapping(path = "/applications/status/{preRegistrationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 
