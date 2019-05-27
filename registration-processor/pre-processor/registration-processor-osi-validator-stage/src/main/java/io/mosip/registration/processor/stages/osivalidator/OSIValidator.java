@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -42,6 +43,7 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
+import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
@@ -54,6 +56,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.BioTypeException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
@@ -222,9 +225,13 @@ public class OSIValidator {
 	 * @throws ParserConfigurationException
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NumberFormatException
 	 */
-	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException,
-			InvalidKeySpecException, NoSuchAlgorithmException, ParserConfigurationException, SAXException {
+	public boolean isValidOSI(String registrationId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
@@ -514,9 +521,12 @@ public class OSIValidator {
 	 * @throws ParserConfigurationException
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
+	 * @throws BioTypeException
+	 * @throws BiometricException
 	 */
-	private boolean isValidIntroducer(String registrationId) throws IOException, ApisResourceAccessException,
-			InvalidKeySpecException, NoSuchAlgorithmException, ParserConfigurationException, SAXException {
+	private boolean isValidIntroducer(String registrationId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
@@ -693,18 +703,32 @@ public class OSIValidator {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws BioTypeException
+	 * @throws BiometricException
 	 */
 
 	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile)
 			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
-			ParserConfigurationException, SAXException {
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
 		if (introducerBiometricsFile != null && (!introducerBiometricsFile.trim().isEmpty())) {
 			InputStream packetMetaInfoStream = adapter.getFile(registrationId,
 					PacketStructure.BIOMETRIC + introducerBiometricsFile.toUpperCase());
 			byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
-			// TODO change parameter and fix once finalized
-			return authByIdAuthentication(null, introducerbiometric);
-
+			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
+					introducerbiometric);
+			if (authResponseDTO.getErrors() == null) {
+				return authResponseDTO.getResponse().isAuthStatus();
+			} else {
+				List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
+				registrationStatusDto.setLatestTransactionStatusCode(
+						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_ERROR));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusComment(errors.get(0).getErrorMessage());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
+				return false;
+			}
 		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));

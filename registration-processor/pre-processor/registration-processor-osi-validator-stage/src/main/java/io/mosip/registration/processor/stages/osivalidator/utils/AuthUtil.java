@@ -3,8 +3,6 @@
  */
 package io.mosip.registration.processor.stages.osivalidator.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyFactory;
@@ -90,7 +88,7 @@ public class AuthUtil {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
-	private ObjectMapper mapper=new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
@@ -154,17 +152,19 @@ public class AuthUtil {
 	}
 
 	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
+			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
+			IOException {
 
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(IDA_APP_ID);
 		ResponseWrapper<?> responseWrapper;
-		PublicKeyResponseDto publicKeyResponsedto=null;
+		PublicKeyResponseDto publicKeyResponsedto = null;
 
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
-		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
+		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+				PublicKeyResponseDto.class);
 
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
@@ -177,7 +177,7 @@ public class AuthUtil {
 
 	public List<BioInfo> getBioInfoListDto (byte[] cbefByteFile) throws ParserConfigurationException, SAXException, IOException, BiometricException, BioTypeException {
 
-		List<BioInfo> biometrics =new  ArrayList<>();
+		List<BioInfo> biometrics = new ArrayList<>();
 
 		String byteFileStr = new String(cbefByteFile);
 		InputSource is = new InputSource();
@@ -190,16 +190,16 @@ public class AuthUtil {
 		if (doc != null) {
 			NodeList bdbInfo = doc.getElementsByTagName("BDBInfo");
 			for (int bi = 0; bi < bdbInfo.getLength(); bi++) {
-				BioInfo bioInfo=new BioInfo();
-				DataInfoDTO dataInfoDTO=new DataInfoDTO();
+				BioInfo bioInfo = new BioInfo();
+				DataInfoDTO dataInfoDTO = new DataInfoDTO();
 				Node bdbInfoList = bdbInfo.item(bi);
 				if (bdbInfoList.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) bdbInfoList;
 					String bioType = eElement.getElementsByTagName("Type").item(0).getTextContent();
-					getBioType(dataInfoDTO,bioType);
+					getBioType(dataInfoDTO, bioType);
 
 					String bioSubType = eElement.getElementsByTagName("Subtype").item(0).getTextContent();
-					getBioSubType(dataInfoDTO,bioSubType);
+					getBioSubType(dataInfoDTO, bioSubType);
 					NodeList bdb = doc.getElementsByTagName("BDB");
 					//String value = bdb.item(0).getTextContent();
 					getBioType(dataInfoDTO,cbefByteFile);
@@ -218,42 +218,42 @@ public class AuthUtil {
 	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
 		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
-		}else if(bioType.equalsIgnoreCase(BioType.FACE.toString())){
+		} else if (bioType.equalsIgnoreCase(BioType.FACE.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FACE));
-		}else if(bioType.equalsIgnoreCase(BioType.IRIS.toString())) {
+		} else if (bioType.equalsIgnoreCase(BioType.IRIS.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.IRIS));
 		}
 		return dataInfoDTO;
 	}
 
 	private DataInfoDTO getBioSubType(DataInfoDTO dataInfoDTO, String bioSubType) {
-		if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
+		if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_INDEX_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_LITTLE_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_MIDDLE_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_MIDDLE_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_MIDDLE_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_RING_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_RING_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_RING_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_INDEX_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_INDEX_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_INDEX_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_LITTLE_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_LITTLE_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_LITTLE_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_MIDDLE_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_MIDDLE_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_MIDDLE_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_RING_FINGER.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_RING_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_RING_FINGER));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.LEFT_THUMB.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_THUMB.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_THUMB));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.RIGHT_THUMB.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.RIGHT_THUMB.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.RIGHT_THUMB));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.IRIS_LEFT.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.IRIS_LEFT.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_LEFT));
-		}else if(bioSubType.equalsIgnoreCase(BioSubType.IRIS_RIGHT.getBioType())) {
+		} else if (bioSubType.equalsIgnoreCase(BioSubType.IRIS_RIGHT.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_RIGHT));
-		}else if(bioSubType.equalsIgnoreCase("")) {
+		} else if (bioSubType.equalsIgnoreCase("")) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
-		}else {
+		} else {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
 		}
 		return dataInfoDTO;
@@ -273,9 +273,9 @@ public class AuthUtil {
 					LoggerFileConstant.REGISTRATIONID.toString(), "", PlatformErrorMessages.OSI_VALIDATION_BIO_TYPE_EXCEPTION.getMessage() + "-"+e.getMessage());
 			throw new BioTypeException(
 					PlatformErrorMessages.OSI_VALIDATION_BIO_TYPE_EXCEPTION.getMessage() + "-"+e.getMessage());
-			
 
-		
+
+
 		}
 	}
 
