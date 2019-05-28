@@ -1,22 +1,22 @@
 package io.mosip.registration.processor.core.auth.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.List;
 
-/**
- * {@code AuthResponseDTO} is used for collect response from
- * core-kernel.Core-kernel get request from {@code AuthRequestDTO} and perform
- * operation.In result send
- * {@link AuthResponseDTO#info}
- * 
- * 
- * 
- * @author Rakesh Roshan
- */
+import lombok.Data;
+
 @Data
-@EqualsAndHashCode(callSuper = true)
 public class AuthResponseDTO extends BaseAuthResponseDTO {
 
-	private AuthResponseInfo info;
+	//private AuthResponseInfo info;
+	
+	private String transactionID;
+	
+	private ResponseDTO response; 
+	
+	private String responseTime;
+	
+	private String version;
+	
+	private List<ErrorDTO> errors;
 
 }
