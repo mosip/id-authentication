@@ -117,7 +117,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 		LocalDateTime timeStamp=null;
 		try {
 			timeStamp = encryptData.getTime(regId);
-		} catch (ParseException e) {
+		} catch (ParseException | NullPointerException |IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

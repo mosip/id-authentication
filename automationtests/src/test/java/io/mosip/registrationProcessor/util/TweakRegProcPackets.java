@@ -45,6 +45,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
+	String token="";
 
 	/**
 	 * 
@@ -255,9 +256,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
-					// f.getName());
-					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
+					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
+					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();

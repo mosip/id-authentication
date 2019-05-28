@@ -190,7 +190,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			String preRegId= actualRequest.get("preRegistrationId").toString();
 			String preRegBookingAppointmentURI = preReg_URI + preRegId;
 			Response fetchCentInvPreId = preRegLib.FetchCentre();
-			JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
+			JSONObject actualReqInvPreId = (JSONObject) preRegLib.BookAppointment(fetchCentInvPreId, preId.toString());
 			//JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
 			actualReqInvPreId.put("requesttime", preRegLib.getCurrentDate());
 			logger.info("BookAnAppointmentByPassingRegCen::"+actualReqInvPreId.toString());
@@ -225,7 +225,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		    
 		    String preRegBookAppURIInvId = preReg_URI + preId;
 			Response fetchCenIdInvId = preRegLib.FetchCentre();
-			JSONObject actualReqInvId = preRegLib.BookAppointmentRequest(fetchCenIdInvId, preId.toString());
+			JSONObject actualReqInvId = (JSONObject) preRegLib.BookAppointment(fetchCenIdInvId, preId.toString());
 			actualReqInvId.put("id", id);
 			actualReqInvId.put("requesttime", preRegLib.getCurrentDate());
 			logger.info("BookAnAppointmentByPassingInvalidIdRegCen::"+actualReqInvId.toString());
@@ -245,7 +245,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			
 			String preRegBookAppURI = preReg_URI + preId;
 			Response fetchCent = preRegLib.FetchCentre();
-			JSONObject actualReq = preRegLib.BookAppointmentRequest(fetchCent, preId.toString());
+			JSONObject actualReq = (JSONObject) preRegLib.BookAppointment(fetchCent, preId.toString());
 			JSONObject actReqInvRegCenter = preRegUtil.dynamicChangeOfRequest(actualReq, "$.request.registration_center_id", regCenterId);
 			
 			actReqInvRegCenter.put("requesttime", preRegLib.getCurrentDate());
@@ -266,7 +266,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			
 			String preRegBookAppAppDateURI = preReg_URI + preId;
 			Response fetchCentAppDate = preRegLib.FetchCentre();
-			JSONObject actualAppDateReq = preRegLib.BookAppointmentRequest(fetchCentAppDate, preId.toString());
+			JSONObject actualAppDateReq = (JSONObject) preRegLib.BookAppointment(fetchCentAppDate, preId.toString());
 			JSONObject actReqInvAppDate = preRegUtil.dynamicChangeOfRequest(actualAppDateReq, "$.request.appointment_date", appDate);
 			
 			actReqInvAppDate.put("requesttime", preRegLib.getCurrentDate());
@@ -287,7 +287,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			
 			String preRegBookAppTimeSlotFrmURI = preReg_URI + preId;
 			Response fetchCentTimeSlotFrm = preRegLib.FetchCentre();
-			JSONObject actualTimeSlotFrmReq = preRegLib.BookAppointmentRequest(fetchCentTimeSlotFrm, preId.toString());
+			JSONObject actualTimeSlotFrmReq = (JSONObject) preRegLib.BookAppointment(fetchCentTimeSlotFrm, preId.toString());
 			JSONObject actReqInvTimeSlotFrm = preRegUtil.dynamicChangeOfRequest(actualTimeSlotFrmReq, "$.request.time_slot_from", timeSlotFrom);
 			
 			actReqInvTimeSlotFrm.put("requesttime", preRegLib.getCurrentDate());
@@ -310,7 +310,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			
 			String preRegBookAppTimeSlotToURI = preReg_URI + preId;
 			Response fetchCentTimeSlotTo = preRegLib.FetchCentre();
-			JSONObject actualTimeSlotToReq = preRegLib.BookAppointmentRequest(fetchCentTimeSlotTo, preId.toString());
+			JSONObject actualTimeSlotToReq = (JSONObject) preRegLib.BookAppointment(fetchCentTimeSlotTo, preId.toString());
 			JSONObject actReqInvTimeSlotTo = preRegUtil.dynamicChangeOfRequest(actualTimeSlotToReq, "$.request.time_slot_to", timeSlotTo);
 			
 			actReqInvTimeSlotTo.put("requesttime", preRegLib.getCurrentDate());

@@ -2,9 +2,11 @@ package io.mosip.dbaccess;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -22,7 +24,7 @@ import io.mosip.dbdto.TransactionStatusDTO;
 public class RegProcTransactionDb {
 	
 	private static Logger logger = Logger.getLogger(RegProcTransactionDb.class);
-	TransactionStatusDTO transactionStatus=new TransactionStatusDTO();
+	
 	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 	public Session getCurrentSession() {
@@ -43,13 +45,23 @@ public class RegProcTransactionDb {
 		 query.setParameter("regId", regId); 
 		 Object[] TestData = null;
 		 List<String> statusComment=new ArrayList<String>();
+		 List<TransactionStatusDTO> listOfEntries=new ArrayList<TransactionStatusDTO>();
 		 List<String> list=query.getResultList();
 		 Map<String,String> packetTransactionStatus=new HashMap<String,String>();
 		 for(Object obj: list) {
+			 TransactionStatusDTO transactionStatus=new TransactionStatusDTO();
 			 TestData = (Object[]) obj;
 			 statusComment.add((String) TestData[1]);
+			 transactionStatus.setRegistrationId(TestData[0].toString());
+			 transactionStatus.setStatus_code(TestData[1].toString());
+			 transactionStatus.setTrn_type_code(TestData[2].toString());
+			 transactionStatus.setCr_dtimes(TestData[3].toString());
+			 listOfEntries.add(transactionStatus);
 			 packetTransactionStatus.put(TestData[1].toString(),TestData[2].toString());
 			 }
+		 	System.out.println(listOfEntries);
+		 List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes)).collect(Collectors.toList());
+		 System.out.println("Sorted Order is :: "+sortedregId);
 	        t.commit();
 	        session.close();
 			return statusComment;

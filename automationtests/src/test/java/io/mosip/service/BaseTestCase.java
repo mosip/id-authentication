@@ -63,7 +63,7 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	public String testLevel;
+	public String testLevel="";
 		
 	/**
 	 * Method that will take care of framework setup

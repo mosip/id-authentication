@@ -96,13 +96,14 @@ public class Sync extends BaseTestCase implements ITest {
 	 * @return Object[][]
 	 */
 	@DataProvider(name = "syncPacket")
-	public static Object[][] readData(ITestContext context){ 
+	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			testLevel=System.getProperty("env.testLevel");
+			switch (testLevel) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
@@ -112,7 +113,7 @@ public class Sync extends BaseTestCase implements ITest {
 			default:
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
-		}catch(IOException | ParseException e){
+		}catch(IOException | ParseException |NullPointerException e){
 			logger.error("Exception occurred in Sync class in readData method "+e);
 		}
 		return readFolder;
@@ -266,7 +267,7 @@ public class Sync extends BaseTestCase implements ITest {
 			Verify.verify(setFinalStatus);
 			softAssert.assertAll();
 
-		}catch(IOException | ParseException e){
+		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);
 
 		}

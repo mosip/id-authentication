@@ -75,13 +75,13 @@ public class Decision extends BaseTestCase implements ITest{
 	 * @return Object[][]
 	 */
 	@DataProvider(name = "decision")
-	public static Object[][] readData(ITestContext context){ 
+	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			switch (testLevel) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;

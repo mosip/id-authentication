@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,9 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
-import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.ManualVerificationDTO;
-import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -75,13 +72,13 @@ public class Assignment extends BaseTestCase implements ITest{
 	 * @return Object[][]
 	 */
 	@DataProvider(name = "assignment")
-	public static Object[][] readData(ITestContext context){ 
+	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testParam) {
+			switch (testLevel) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;

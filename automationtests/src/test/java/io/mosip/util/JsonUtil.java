@@ -9,16 +9,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import org.json.JSONObject;
 import org.json.simple.JSONArray;
-
+import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
@@ -61,7 +60,7 @@ public class JsonUtil {
 			throws UnsupportedEncodingException {
 		JsonParser jsonParser = new JsonParser();
 		Gson gson = new Gson();
-		JsonElement jsonObject =  jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
+		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
 		try {
 			return gson.fromJson(jsonObject, clazz);
 		} catch (Exception e) {
@@ -79,14 +78,14 @@ public class JsonUtil {
 	 *
 	 * method call :- getJSONObject(demographicIdentity,identity)
 	 *
-	 * @param mapperJson
+	 * @param jsonObject
 	 *            the json object
 	 * @param key
 	 *            the key
 	 * @return the JSON object
 	 */
-	public static JSONObject getJSONObject(org.json.simple.JSONObject mapperJson, Object key) {
-		LinkedHashMap identity = (LinkedHashMap) mapperJson.get((String) key);
+	public static JSONObject getJSONObject(JSONObject jsonObject, Object key) {
+		LinkedHashMap identity = (LinkedHashMap) jsonObject.get(key);
 		return identity != null ? new JSONObject(identity) : null;
 	}
 
@@ -97,14 +96,14 @@ public class JsonUtil {
 	 * "eng", "value" : "Taleev Aalam" }, { "language" : "ara", "value" : "Taleev
 	 * Aalam" } ] }
 	 *
-	 * @param demographicIdentity
+	 * @param jsonObject
 	 *            the json object
 	 * @param key
 	 *            the key
 	 * @return the JSON array
 	 */
-	public static JSONArray getJSONArray(org.json.simple.JSONObject demographicIdentity, Object key) {
-		ArrayList value = (ArrayList) demographicIdentity.get((String) key);
+	public static JSONArray getJSONArray(JSONObject jsonObject, Object key) {
+		ArrayList value = (ArrayList) jsonObject.get(key);
 		JSONArray jsonArray = new JSONArray();
 		jsonArray.addAll(value);
 
@@ -173,7 +172,7 @@ public class JsonUtil {
 	 *            the identity key
 	 * @return the json values
 	 */
-	public static JsonValue[] getJsonValues(org.json.simple.JSONObject demographicIdentity, Object identityKey) {
+	public static JsonValue[] getJsonValues(JSONObject demographicIdentity, Object identityKey) {
 		JSONArray demographicJsonNode = null;
 
 		if (demographicIdentity != null)
