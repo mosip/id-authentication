@@ -10,5 +10,7 @@ public class UinGenerationStatusDto {
 
 	/** The registration id. */
 	private String registrationId;
+	
+	private String statusCode;
 
 }

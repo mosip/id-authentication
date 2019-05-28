@@ -1,7 +1,7 @@
 package io.mosip.admin.uinmgmt.constant;
 
 public enum UinGenerationStatusErrorCode {
-	UIN_GENERATION_STATUS_EXCEPTION("XX","Error while fetching uin generation status");
+	UIN_GENERATION_STATUS_EXCEPTION("XX","Error while fetching uin generation status"), PARSE_EXCEPTION("XX","error while parsing ");
 
 	
 	
