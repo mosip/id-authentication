@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.crypto.SecretKey;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
@@ -38,11 +35,9 @@ import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
@@ -60,12 +55,8 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.BioTypeException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
-import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -106,10 +97,7 @@ public class OSIValidator {
 
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
-	/** The registration status service. */
-	/** the application Id */
-	private static final String APP_ID = "registrationprocessor";
-	private static final String UIN = "UIN";
+	
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -135,9 +123,6 @@ public class OSIValidator {
 	private JSONObject demographicIdentity;
 
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	/** The message. */
-	private String message = null;
 
 	/** The Constant TRUE. */
 	private static final String TRUE = "true";
@@ -179,19 +164,9 @@ public class OSIValidator {
 	@Autowired
 	private AuthUtil authUtil;
 
-	/** The key generator. */
-	@Autowired
-	private KeyGenerator keyGenerator;
-
-	/** The encryptor. */
-	@Autowired
-	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
-
 	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
-
-	private ObjectMapper mapper = new ObjectMapper();
 
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
@@ -677,7 +652,6 @@ public class OSIValidator {
 		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;
 		} else {
-			message = StatusMessage.VALIDATE_OTP_PASSWORD;
 			return false;
 
 		}
@@ -801,23 +775,6 @@ public class OSIValidator {
 					registrationId, StatusMessage.PACKET_IS_ON_HOLD);
 			return false;
 		}
-
-	}
-
-	/**
-	 * Gets the identity.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the identity
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-				PacketMetaInfo.class);
-		return packetMetaInfo.getIdentity();
 
 	}
 	
