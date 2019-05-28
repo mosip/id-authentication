@@ -91,6 +91,7 @@ public class QualityCheckerStageTest {
 		ReflectionTestUtils.setField(qualityCheckerStage, "rightFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "thumbFingerThreshold", 80);
 		ReflectionTestUtils.setField(qualityCheckerStage, "faceThreshold", 25);
+
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
@@ -205,7 +206,7 @@ public class QualityCheckerStageTest {
 		dto.setRid("1234567890");
 		MessageDTO result = qualityCheckerStage.process(dto);
 
-		assertTrue(result.getInternalError());
+		assertTrue(result.getIsValid());
 	}
 
 	@Test

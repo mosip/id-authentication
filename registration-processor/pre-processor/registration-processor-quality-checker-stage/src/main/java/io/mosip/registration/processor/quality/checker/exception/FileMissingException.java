@@ -2,14 +2,14 @@ package io.mosip.registration.processor.quality.checker.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
-public class FieldNotPresentException extends BaseCheckedException {
+public class FileMissingException extends BaseCheckedException {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    public FieldNotPresentException() {
+    public FileMissingException() {
         super();
     }
 
@@ -19,9 +19,8 @@ public class FieldNotPresentException extends BaseCheckedException {
      * @param errorCode    the error code
      * @param errorMessage the error message
      */
-    public FieldNotPresentException(String errorCode, String errorMessage) {
+    public FileMissingException(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
     }
-
 
 }

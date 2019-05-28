@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -18,6 +16,7 @@ import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
@@ -38,34 +37,44 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
-import io.mosip.registration.processor.quality.checker.exception.FieldNotPresentException;
-import io.mosip.registration.processor.quality.checker.exception.FileNameMissingException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.quality.checker.exception.FileMissingException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+/**
+ * The Class QualityCheckerStage.
+ * 
+ * @author M1048358 Alok Ranjan
+ */
 public class QualityCheckerStage extends MosipVerticleManager {
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
-	//@Value("${mosip.registration.iris_threshold}")
-	private Integer irisThreshold = 70;
+	/** The iris threshold. */
+	@Value("${mosip.registration.iris_threshold}")
+	private Integer irisThreshold;
 
-	//@Value("${mosip.registration.leftslap_fingerprint_threshold}")
-	private Integer leftFingerThreshold = 80;
+	/** The left finger threshold. */
+	@Value("${mosip.registration.leftslap_fingerprint_threshold}")
+	private Integer leftFingerThreshold;
 
-	//@Value("${mosip.registration.rightslap_fingerprint_threshold}")
-	private Integer rightFingerThreshold = 80;
+	/** The right finger threshold. */
+	@Value("${mosip.registration.rightslap_fingerprint_threshold}")
+	private Integer rightFingerThreshold;
 
-	//@Value("${mosip.registration.thumbs_fingerprint_threshold}")
-	private Integer thumbFingerThreshold = 80;
+	/** The thumb finger threshold. */
+	@Value("${mosip.registration.thumbs_fingerprint_threshold}")
+	private Integer thumbFingerThreshold;
 
-	//@Value("${mosip.registration.facequalitythreshold}")
-	private Integer faceThreshold = 25;
+	/** The face threshold. */
+	@Value("${mosip.registration.facequalitythreshold}")
+	private Integer faceThreshold;
 
 	/** The adapter. */
 	@Autowired
@@ -79,13 +88,17 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The utilities. */
 	@Autowired
 	private Utilities utilities;
 
+	/** The bio Api. */
 	private IBioApi bioAPi = new BioApiImpl();
 
+	/** The cbeff util. */
 	private CbeffUtil cbeffUtil = new CbeffImpl();
 
+	/** The registration status mapper util. */
 	private RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/** The reg proc logger. */
@@ -103,6 +116,9 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				MessageBusAddress.QUALITY_CHECKER_BUS_OUT);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.QUALITY_CHECKER_BUS_IN);
@@ -124,44 +140,53 @@ public class QualityCheckerStage extends MosipVerticleManager {
 			JSONObject individualBiometricsObject = JsonUtil.getJSONObject(identity, "individualBiometrics");
 			if (individualBiometricsObject == null) {
 				description = "Individual Biometric parameter is not present in ID Json";
-				throw new FieldNotPresentException(PlatformErrorMessages.RPR_QCR_FIELD_NOT_PRESENT.getCode(),
-						PlatformErrorMessages.RPR_QCR_FIELD_NOT_PRESENT.getMessage());
-			}
-			String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, "value");
-			if (biometricFileName == null || biometricFileName.isEmpty()) {
-				description = "File Name of individual biometric is not present";
-				throw new FileNameMissingException(PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getCode(),
-						PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getMessage());
-			}
-			InputStream cbeffStream = adapter.getFile(regId,
-					PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + biometricFileName);
-			List<BIRType> birTypeList = cbeffUtil.getBIRDataFromXML(IOUtils.toByteArray(cbeffStream));
-			int scoreCounter = 0;
-			for (BIRType birType : birTypeList) {
-				SingleType singleType = birType.getBDBInfo().getType().get(0);
-				List<String> subtype = birType.getBDBInfo().getSubtype();
-				Integer threshold = getThresholdBasedOnType(singleType, subtype);
-				QualityScore qualityScore = bioAPi.checkQuality(birType, null);
-				if (qualityScore.getInternalScore() < threshold) {
-					object.setIsValid(Boolean.FALSE);
-					isTransactionSuccessful = Boolean.FALSE;
-					registrationStatusDto
-							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-					description = "The " + birType.getBDBInfo().getType().get(0)
-							+ " information captured is below the configured threshold";
-					break;
-				} else {
-					scoreCounter++;
-				}
-			}
-			if (scoreCounter == birTypeList.size()) {
 				object.setIsValid(Boolean.TRUE);
-				description = "All Quality Scores are more than threshold";
 				isTransactionSuccessful = Boolean.TRUE;
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			} else {
+				String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, "value");
+				if (biometricFileName == null || biometricFileName.isEmpty()) {
+					description = "File Name of individual biometric is not present";
+					throw new FileMissingException(PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getCode(),
+							PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getMessage());
+				}
+				InputStream cbeffStream = adapter.getFile(regId,
+						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + biometricFileName);
+				if (cbeffStream == null) {
+					description = "Applicant biometric file missing";
+					throw new FileMissingException(PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getCode(),
+							PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getMessage());
+				}
+				List<BIRType> birTypeList = cbeffUtil.getBIRDataFromXML(IOUtils.toByteArray(cbeffStream));
+				int scoreCounter = 0;
+				for (BIRType birType : birTypeList) {
+					SingleType singleType = birType.getBDBInfo().getType().get(0);
+					List<String> subtype = birType.getBDBInfo().getSubtype();
+					Integer threshold = getThresholdBasedOnType(singleType, subtype);
+					QualityScore qualityScore = bioAPi.checkQuality(birType, null);
+					if (qualityScore.getInternalScore() < threshold) {
+						object.setIsValid(Boolean.FALSE);
+						isTransactionSuccessful = Boolean.FALSE;
+						registrationStatusDto
+								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
+						description = "The " + birType.getBDBInfo().getType().get(0)
+								+ " information captured is below the configured threshold";
+						break;
+					} else {
+						scoreCounter++;
+					}
+				}
+				if (scoreCounter == birTypeList.size()) {
+					object.setIsValid(Boolean.TRUE);
+					description = "All Quality Scores are more than threshold";
+					isTransactionSuccessful = Boolean.TRUE;
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+				}
 			}
 
 			registrationStatusDto
@@ -220,18 +245,25 @@ public class QualityCheckerStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Gets the threshold based on type.
+	 *
+	 * @param singleType the single type
+	 * @param subtype the subtype
+	 * @return the threshold based on type
+	 */
 	private Integer getThresholdBasedOnType(SingleType singleType, List<String> subtype) {
-		if(singleType.value().equalsIgnoreCase("FINGER")){
-			if(subtype.contains("Thumb")){
+		if (singleType.value().equalsIgnoreCase("FINGER")) {
+			if (subtype.contains("Thumb")) {
 				return thumbFingerThreshold;
-			} else if(subtype.contains("Right")){
+			} else if (subtype.contains("Right")) {
 				return rightFingerThreshold;
-			} else if(subtype.contains("Left")) {
+			} else if (subtype.contains("Left")) {
 				return leftFingerThreshold;
 			}
-		} else if(singleType.value().equalsIgnoreCase("IRIS")){
+		} else if (singleType.value().equalsIgnoreCase("IRIS")) {
 			return irisThreshold;
-		} else if(singleType.value().equalsIgnoreCase("FACE")){
+		} else if (singleType.value().equalsIgnoreCase("FACE")) {
 			return faceThreshold;
 		}
 		return 0;
