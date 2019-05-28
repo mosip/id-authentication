@@ -277,7 +277,6 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 		.thenReturn(packetMetaInfo);
-		//regOsiDto.setOfficerBiometricFileName("officer_bio_CBEFF");
 		regOsiDto.setSupervisorBiometricFileName("supervisor_bio_CBEFF");
 
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
@@ -356,23 +355,6 @@ public class OSIValidatorTest {
 	}
 
 	/**
-	 * Testis valid OSI failure.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testisValidOSIFailure() throws Exception {
-		io.mosip.registration.processor.core.auth.dto.ResponseDTO responseDTO=new io.mosip.registration.processor.core.auth.dto.ResponseDTO();
-		responseDTO.setAuthStatus(false);
-		authResponseDTO.setResponse(responseDTO);
-		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-		.thenReturn(authResponseDTO);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	/**
 	 * Test invalid iris.
 	 *
 	 * @throws ApisResourceAccessException
@@ -385,25 +367,6 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		registrationStatusDto.setStatusCode("FAILED");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	@Test
-	public void testIntroducerRIDOnHoldProccessing() throws ApisResourceAccessException, IOException, Exception {
-		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
-		registrationStatusDto.setStatusCode("PROCESSING");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	@Test
-	public void testIntroducerUINProcessed() throws ApisResourceAccessException, IOException, Exception {
-		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
-		registrationStatusDto.setStatusCode("PROCESSED");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
 	}
