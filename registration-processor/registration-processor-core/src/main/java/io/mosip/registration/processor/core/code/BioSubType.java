@@ -7,16 +7,16 @@ package io.mosip.registration.processor.core.code;
  */
 public enum BioSubType {
 	
-	LEFT_INDEX_FINGER("Left IndexFinger"),
-	LEFT_LITTLE_FINGER("Left LittleFinger"),
-	LEFT_MIDDLE_FINGER("Left MiddleFinger"),
-	LEFT_RING_FINGER("Left RingFinger"),
-	RIGHT_INDEX_FINGER("Right IndexFinger"),
-	RIGHT_LITTLE_FINGER("Right LittleFinger"),
-	RIGHT_MIDDLE_FINGER("Right MiddleFinger"),
-	RIGHT_RING_FINGER("Right RingFinger"),
-	LEFT_THUMB("Left Thumb"),
-	RIGHT_THUMB("Right Thumb"),
+	LEFT_INDEX_FINGER("LeftIndexFinger"),
+	LEFT_LITTLE_FINGER("LeftLittleFinger"),
+	LEFT_MIDDLE_FINGER("LeftMiddleFinger"),
+	LEFT_RING_FINGER("LeftRingFinger"),
+	RIGHT_INDEX_FINGER("RightIndexFinger"),
+	RIGHT_LITTLE_FINGER("RightLittleFinger"),
+	RIGHT_MIDDLE_FINGER("RightMiddleFinger"),
+	RIGHT_RING_FINGER("RightRingFinger"),
+	LEFT_THUMB("LeftThumb"),
+	RIGHT_THUMB("RightThumb"),
 	IRIS_LEFT("Left"),
 	IRIS_RIGHT("Right"),
 	FACE("Face");

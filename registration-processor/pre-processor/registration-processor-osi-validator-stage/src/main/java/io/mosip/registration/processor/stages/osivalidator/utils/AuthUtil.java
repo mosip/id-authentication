@@ -221,8 +221,18 @@ public class AuthUtil {
 				BIRType birApiResponse = bioAPi.extractTemplate(birType, null);
 				
 				getBioType(dataInfoDTO, birApiResponse.getBDBInfo().getType().get(0).toString());
-				getBioSubType(dataInfoDTO, birApiResponse.getBDBInfo().getSubtype().get(0) + " "
-						+ birApiResponse.getBDBInfo().getSubtype().get(1));
+
+				StringBuilder bioSubTypeValue =new StringBuilder();  
+				
+				List<String> bioSubType = birApiResponse.getBDBInfo().getSubtype();
+				if (!bioSubType.isEmpty()) {
+					for (String value : bioSubType) {
+						bioSubTypeValue.append(value);
+					}
+				}
+				
+				getBioSubType(dataInfoDTO, bioSubTypeValue.toString());
+				
 				dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBDB()));
 				dataInfoDTO.setDeviceProviderID("cogent");
 				dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
