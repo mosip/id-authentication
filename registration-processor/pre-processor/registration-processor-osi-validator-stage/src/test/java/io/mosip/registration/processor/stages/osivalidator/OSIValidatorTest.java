@@ -27,7 +27,10 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
@@ -391,6 +394,44 @@ public class OSIValidatorTest {
 		registrationStatusDto.setRegistrationType("ACTIVATED");
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
+	}
+	@Test(expected=ApisResourceAccessException.class)
+	public void tesApisResourceAccessException() throws Exception {	
+		ApisResourceAccessException apisResourceAccessException=new ApisResourceAccessException("bad request");
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
+		.thenThrow(apisResourceAccessException);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		osiValidator.isValidOSI("reg1234");
+		
+	}
+	@Test(expected=ApisResourceAccessException.class)
+	public void testHttpClientErrorException() throws Exception {	
+		HttpClientErrorException httpClientErrorException=new HttpClientErrorException(HttpStatus.BAD_REQUEST, "error");
+		ApisResourceAccessException apisResourceAccessException=new ApisResourceAccessException("bad request",httpClientErrorException);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
+		.thenThrow(apisResourceAccessException);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		osiValidator.isValidOSI("reg1234");
+		
+	}
+	@Test(expected=ApisResourceAccessException.class)
+	public void testHttpServerErrorException() throws Exception {	
+		HttpServerErrorException httpServerErrorException=new HttpServerErrorException(HttpStatus.BAD_REQUEST, "error");
+		ApisResourceAccessException apisResourceAccessException=new ApisResourceAccessException("bad request",httpServerErrorException);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
+		.thenThrow(apisResourceAccessException);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		osiValidator.isValidOSI("reg1234");
+		
 	}
 	/**
 	 * Test officer details null.
