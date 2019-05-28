@@ -1,0 +1,13 @@
+{
+    "id": "mosip.registration.sync",
+    "version": "1.0",
+    "responsetime": "2019-05-24T11:27:35.025Z",
+    "errors": [
+        {
+            "registrationId": "10011100110001920190325120310",
+            "status": "FAILURE",
+            "errorMessage": "Invalid SupervisorStatus. Available types APPROVED,REJECTED",
+            "errorCode": "RPR-RGS-026"
+        }
+    ]
+}
