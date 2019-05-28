@@ -61,8 +61,8 @@ Below are the option system integrator team has to integrate external system wit
 		</choice>
 	</route>
 ```
-1. Commit changes and deploy project
-
+6. Commit changes and deploy project
+1. Sample code and example can be found from [location](https://github.com/mosip/mosip/tree/0.12.0/registration-processor/proof-of-concepts/external-stage-int/registration-processor-camel-bridge "location"). Please refere to the "registration-processor-camel-bridge" project from example.
 
 **Logical View of External Inegration using Apache Camel HTTP end points**
 
@@ -124,10 +124,14 @@ Below are the option system integrator team has to integrate external system wit
 ```
 
 8. Commit and deploy changes.
-
+1.  Sample code and exmple can be found from [location](https://github.com/mosip/mosip/tree/0.12.0/registration-processor/proof-of-concepts/external-stage-int/stages "location"). Please refere to the "external-system-integration-stage " project.
 
 **Logical View of External Inegration using Vert.x Stage**
 
 ------------
 
 ![vertx-external-integration-logical-view](_images/vertx-external-integration-logical-view.png)
+
+
+
+**Examples**
