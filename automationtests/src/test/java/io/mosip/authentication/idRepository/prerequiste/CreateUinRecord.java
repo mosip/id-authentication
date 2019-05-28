@@ -1,4 +1,4 @@
-package io.mosip.authentication.tests;
+package io.mosip.authentication.idRepository.prerequiste;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -6,12 +6,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -21,28 +19,31 @@ import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.beust.jcommander.Parameter;
-
-import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.dto.UinDto;
-import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.dto.OutputValidationDto;
+import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
-import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
-import io.mosip.authentication.testdata.keywords.IdaKeywordUtil;
-import io.mosip.authentication.testdata.keywords.KeywordUtil;
 
-public class UpdateUinRecord extends AuthTestsUtil implements ITest {
+import org.testng.Reporter;
 
-	private static Logger logger = Logger.getLogger(UpdateUinRecord.class);
+/**
+ * Test to generate uin according to data provided in yml file
+ * 
+ * @author Vignesh
+ *
+ */
+public class CreateUinRecord extends AuthTestsUtil implements ITest {
+
+	private static final Logger logger = Logger.getLogger(CreateUinRecord.class);
 	protected static String testCaseName = "";
 	private Map<String, String> storeUinData = new HashMap<String, String>();
 	private String TESTDATA_PATH;
@@ -57,7 +58,7 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 	 * @param testType
 	 */
 	@BeforeClass
-	public void setTestType(String testType) {
+	public void setTestType() {
 		this.testType = RunConfigUtil.getTestLevel();
 	}
 
@@ -104,23 +105,23 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 				testCase = testParams.getTestCaseName();
 			}
 		}
-		this.testCaseName = String.format("Update UIN");
+		this.testCaseName = String.format("Create UIN");
 		invocationCount++;
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
 	}
 
 	/**
-	 * The test update the generated UIN test data in property file
+	 * The test method perform generation of UIN test data
 	 */
 	@Test
-	public void updateUINTestData() {
+	public void generateUINTestData() {
 		Object[][] object = DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
 		cookieValue=getAuthorizationCookie(getCookieRequestFilePath(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		for (int i = 1; i < object.length; i++) {
-			updateUinRecordTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
+			createUinDataTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
 					object[i][2].toString());
 		}
 	}
@@ -147,7 +148,7 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, UpdateUinRecord.testCaseName);
+			f.set(baseTestMethod, CreateUinRecord.testCaseName);
 			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
@@ -155,13 +156,13 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 	}
 
 	/**
-	 * The method update the UIN record available in property file
+	 * The method perform uin test data
 	 * 
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
 	 */
-	public void updateUinRecordTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void createUinDataTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -169,33 +170,34 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		logger.info("************* IdRepo UIN Update request ******************");
-		Reporter.log("<b><u>UIN Update request</u></b>");
+		Map<String, String> tempMap = new HashMap<String, String>();
+		String uin = IdRepoUtil.generateUinNumberForIda();
+		tempMap.put("UIN", "LONG:" + uin);
+		logger.info("************* IdRepo UIN request ******************");
+		Reporter.log("<b><u>UIN create request</u></b>");
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
-		wait(10000);
-		Assert.assertEquals(postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(),
-				IdRepoUtil.getCreateUinPath(), "update", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue, 0), true);
+		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
+				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		String uin=JsonPrecondtion.getValueFromJson(getContentFromFile(testCaseName.listFiles(),"update"), "request.identity.UIN");
-		if (OutputValidationUtil.publishOutputResult(ouputValid)) {
-			Assert.assertEquals(true, true);
-			storeUinData.put(uin, testcaseName);
-		} else
-			Assert.assertEquals(true, false);
+		OutputValidationUtil.publishOutputResult(ouputValid);
+		storeUinData.put(uin, testcaseName);
 	}
 
 	/**
-	 * The method store or modify updated UIN in property file
-	 * 
+	 * The method store UIN numbers in property file
 	 */
 	@AfterClass
 	public void storeUinData() {
 		UinDto.setUinData(storeUinData);
-		logger.info("Updated UIN: " + UinDto.getUinData());
-		updateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
+		logger.info("Genereated UIN: " + UinDto.getUinData());
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
 				+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "idRepository/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
+		+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
+
 }

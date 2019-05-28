@@ -108,7 +108,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
+      identityReq.bioSubType: LEFT_INDEX
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
       identityReq.data.timestamp: $TIMESTAMP$
@@ -122,29 +122,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:InvalidBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioSubtype:errorMessage$
-      
-  Authentication_Biometric_Face_With_Different_transactionID_In_Request_and_Identity_block_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $RANDOM:N:10$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
       
   Authentication_Biometric_Face_With_future_requestTime_In_Request_Neg:
     endpoint.url:
@@ -653,32 +630,7 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
-      
-  Authentication_Biometric_Face_Without_transactionID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $REMOVE$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
-      
+           
   Authentication_Biometric_Face_Without_bio_requestAuth_In_request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -883,56 +835,6 @@ testdata:
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
       
-  Authentication_Biometric_Face_With_Invalid_deviceCode_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:invalid$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidBioDeviceCode:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidBioDeviceCode:errorMessage$
-      
-  Authentication_Biometric_Face_With_Invalid_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:invalid$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidDeviceProviderId:errorMessage$
-      
   Authentication_Biometric_Face_With_Invalid_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1109,31 +1011,6 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidIdentityTimestamp:errorMessage$
       
-  Authentication_Biometric_Face_With_Invalid_transactionID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $TestData:txnID_Invalid$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidReqtxnID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidReqtxnID:errorMessage$
-      
   Authentication_Biometric_Face_With_Invalid_transactionID_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1141,13 +1018,13 @@ testdata:
       AuthReq.individualId: $UIN:WITH:EVEN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
       AuthReq.transactionID: $TestData:txnID_Invalid$
       AuthReq.bio: $TestData:boolean_true$
     input.identity-encrypt-data:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1436,32 +1313,7 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
-      
-  Authentication_Biometric_Face_Null_transactionID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_face_subType$
-      identityReq.bioType: $TestData:bio_face_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: ''
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
-      
+            
   Authentication_Biometric_Face_Null_bio_requestAuth_In_request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1576,3 +1428,138 @@ testdata:
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_face_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
+      
+  Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_With_VID_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: $VID:WHERE:UIN:WITH:EVEN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    output.output-1-expected-y-res:
+      output.1.response.status: $TestData:auth_Pass_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.bio-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    audit.auth_transaction:
+      refId: $input.bio-auth-request:AuthReq.individualId$
+      txnId: $input.bio-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_FACE_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_FACE_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.bio-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_face_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
+  Authentication_Biometric_Face_With_Expired_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: $VID:WITH:EXPIRED$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
+    output.output-1-expected-n-res:
+      output.1.response.status: $TestData:auth_Fail_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
+      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$ 
+      
+  Authentication_Biometric_Face_With_Revoke_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: $VID:WITH:REVOKE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
+    output.output-1-expected-n-res:
+      output.1.response.status: $TestData:auth_Fail_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
+      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$  
+      
+  Authentication_Biometric_Face_With_Inactive_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: $VID:WITH:INACTIVE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
+    output.output-1-expected-n-res:
+      output.1.response.status: $TestData:auth_Fail_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
+      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$  
+      
+  Authentication_Biometric_Face_With_Deactivated_VID_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: $VID:WITH:DEACTIVATED$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
+    output.output-1-expected-n-res:
+      output.1.response.status: $TestData:auth_Fail_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
+      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$   

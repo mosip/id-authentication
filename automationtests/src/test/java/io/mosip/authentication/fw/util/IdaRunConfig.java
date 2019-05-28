@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.dto.ErrorsDto;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 
 /**
  * The class hold all the run config path available in runconfiguration file

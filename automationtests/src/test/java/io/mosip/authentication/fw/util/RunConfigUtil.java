@@ -12,7 +12,7 @@ import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.dto.UinStaticPinDto;
 import io.mosip.authentication.fw.dto.VidDto;
 import io.mosip.authentication.fw.dto.VidStaticPinDto;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoRunConfig;
+import io.mosip.authentication.idRepository.fw.util.IdRepoRunConfig;
 import io.mosip.authentication.testdata.keywords.KeywordUtil;
 
 /**

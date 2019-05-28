@@ -1,51 +1,56 @@
-package io.mosip.authentication.tests;
+package io.mosip.authentication.idRepository.prerequiste;
 
-import java.io.File;
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import io.mosip.authentication.fw.util.AuditValidation;
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
-import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
-import io.mosip.authentication.fw.dto.UinDto;
+import io.mosip.authentication.fw.dto.VidDto;
+import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 
 import org.testng.Reporter;
 
 /**
- * Test to generate uin according to data provided in yml file
+ * Tests to execute the demographic authentication
  * 
- * @author Vignesh
+ * @author Athila
  *
  */
-public class CreateUinRecord extends AuthTestsUtil implements ITest {
+public class UpdateVID extends AuthTestsUtil implements ITest {
 
-	private static final Logger logger = Logger.getLogger(CreateUinRecord.class);
+	private static final Logger logger = Logger.getLogger(UpdateVID.class);
 	protected static String testCaseName = "";
-	private Map<String, String> storeUinData = new HashMap<String, String>();
 	private String TESTDATA_PATH;
 	private String TESTDATA_FILENAME;
 	private String testType;
@@ -58,7 +63,7 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 	 * @param testType
 	 */
 	@BeforeClass
-	public void setTestType(String testType) {
+	public void setTestType() {
 		this.testType = RunConfigUtil.getTestLevel();
 	}
 
@@ -105,23 +110,24 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 				testCase = testParams.getTestCaseName();
 			}
 		}
-		this.testCaseName = String.format("Create UIN");
-		invocationCount++;
-		setTestDataPathsAndFileNames(invocationCount);
-		setConfigurations(this.testType);
+		this.testCaseName = String.format(testCase);
 	}
 
 	/**
-	 * The test method perform generation of UIN test data
+	 * Data provider class provides test case list
+	 * 
+	 * @return object of data provider
 	 */
 	@Test
-	public void generateUINTestData() {
-		Object[][] object = DataProviderClass.getDataProvider(
+	public void updateVidStatus() {
+		invocationCount++;
+		setTestDataPathsAndFileNames(invocationCount);
+		setConfigurations(this.testType);
+		Object[][] object =DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
-		cookieValue=getAuthorizationCookie(getCookieRequestFilePath(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		for (int i = 1; i < object.length; i++) {
-			createUinDataTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
+			updateVidStatusRecord(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
 					object[i][2].toString());
 		}
 	}
@@ -148,54 +154,65 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, CreateUinRecord.testCaseName);
-			test=extent.createTest(testCaseName);
+			f.set(baseTestMethod, UpdateVID.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
 
 	/**
-	 * The method perform uin test data
+	 * Test method for demographic authentication execution
 	 * 
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
 	 */
-	public void createUinDataTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void updateVidStatusRecord(TestParameters objTestParameters, String testScenario,
+			String testcaseName) {
+		cookieValue=getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
 		setTestFolder(testCaseName);
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
+		String name = getTestCaseName();
 		String mapping = TestDataUtil.getMappingPath();
-		Map<String, String> tempMap = new HashMap<String, String>();
-		String uin = IdRepoUtil.generateUinNumberForIda();
-		tempMap.put("UIN", "LONG:" + uin);
-		logger.info("************* IdRepo UIN request ******************");
-		Reporter.log("<b><u>UIN create request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
-		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
-		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
+		String vid[] = RunConfigUtil.getVidKeyForVIDUpdate(name).split(Pattern.quote(".")); 
+		String vidNumber=vid[0];
+		String vidType=vid[1];
+		
+		//String vid = RunConfigUtil.getRandomVidKey().split(".")[1].toString();
+		//if(getContentFromFile(testCaseName.listFiles(),"create").toString().contains("$generate_UIN$"))
+		//{
+			//Map<String, String> tempMap = new HashMap<String, String>();
+			//tempMap.put("UIN", "LONG:" + uin);
+			logger.info("************* IdRepo VID Update request ******************");
+			Reporter.log("<b><u>VID Update request</u></b>");
+			//Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
+		//}
+		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getUpdateVidStatusPath(vidNumber) + " *******");
+		postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(), IdRepoUtil.getUpdateVidStatusPath(vidNumber),
 				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid), true);
-		storeUinData.put(uin, testcaseName);
-	}
-
-	/**
-	 * The method store UIN numbers in property file
-	 */
-	@AfterClass
-	public void storeUinData() {
-		UinDto.setUinData(storeUinData);
-		logger.info("Genereated UIN: " + UinDto.getUinData());
-		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/" + RunConfigUtil.objRunConfig.getTestDataFolderName()
-				+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
+		if(OutputValidationUtil.publishOutputResult(ouputValid))
+		{
+			Map<String,String> tempMap = new HashMap<String,String>();
+			String responseJson=getContentFromFile(testCaseName.listFiles(), "output-1-actual");
+			String vidStatus=JsonPrecondtion.getValueFromJson(responseJson, "response.vidStatus");
+			String uin="";
+			for(Entry<String, String> entry: VidDto.getVid().entrySet())
+			{
+				if(entry.getValue().contains(vidNumber))
+					uin=entry.getKey();
+			}
+			tempMap.put(uin, vidNumber+"."+vidType+"."+vidStatus);
+			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"ida/TestData/RunConfig/vid.properties", tempMap);
+			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"idRepository/TestData/RunConfig/vid.properties", tempMap);
+		}
 	}
 
 }

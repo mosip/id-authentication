@@ -29,8 +29,8 @@ import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoRunConfig;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepository.fw.util.IdRepoRunConfig;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
 

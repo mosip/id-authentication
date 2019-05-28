@@ -1,4 +1,4 @@
-package io.mosip.authentication.idRepositoty.fw.util;
+package io.mosip.authentication.idRepository.fw.util;
 
 import java.io.File;   
 import java.io.FileInputStream;

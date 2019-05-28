@@ -1,4 +1,4 @@
-package io.mosip.authentication.tests;
+package io.mosip.authentication.idRepository.prerequiste;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -47,7 +47,7 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	 * @param testType
 	 */
 	@BeforeClass
-	public void setTestType(String testType) {
+	public void setTestType() {
 		this.testType = RunConfigUtil.getTestLevel();
 	}
 
@@ -121,6 +121,9 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 			}
 		}
 		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
+				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
+				vidMap);
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "idRepository/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
 	}
