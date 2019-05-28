@@ -4,6 +4,8 @@
  */
 package io.mosip.preregistration.application.exception.util;
 
+import org.springframework.beans.factory.BeanCreationException;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
@@ -31,7 +33,6 @@ import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
-import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -147,6 +148,9 @@ public class DemographicExceptionCatcher {
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);
 		}else if (ex instanceof EncryptionFailedException) {
 			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), mainResponsedto);
+		}else if(ex instanceof BeanCreationException) {
+			throw new SchemaValidationException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_016.getCode(),
+					ex.getLocalizedMessage(), mainResponsedto);
 		}
 	}
 
