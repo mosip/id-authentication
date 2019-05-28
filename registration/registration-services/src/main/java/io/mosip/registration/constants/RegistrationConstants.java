@@ -2,10 +2,8 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -1364,25 +1362,6 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
-
-	private static final long serialVersionUID = 1L;
-
-		{
-			put("leftIndex", "FML");
-			put("leftLittle", "FML");
-			put("leftMiddle", "FML");
-			put("leftRing", "FML");
-			put("leftThumb", "FML");
-			put("rightIndex", "FMR");
-			put("rightLittle", "FMR");
-			put("rightMiddle", "FMR");
-			put("rightRing", "FMR");
-			put("rightThumb", "FMR");
-			put("RightEye", "IIR");
-			put("LeftEye", "IIL");
-		}
-	};
 	
 	public static final String IDA_REFERENCE_ID = "PARTNER";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
@@ -1411,6 +1390,9 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_REQUEST_SESSION_KEY="requestSessionKey";
 	public static final String ON_BOARD_PUBLIC_KEY_ERROR="Public key is either null or invalid public key";
 	public static final String ON_BOARD_AUTH_STATUS="authStatus";
-	
+	public static final String ON_BOARD_FACE_ID="FID";
+	public static final String ON_BOARD_IRIS_ID="IIR";
+	public static final String ON_BOARD_FINGER_ID="FMR";
+	public static final String ON_BOARD_COGENT="cogent";
 	
 }

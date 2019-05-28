@@ -110,8 +110,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 				Map<String, Object> data = new HashMap<>();
 				data.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 				data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-				data.put(RegistrationConstants.DEVICE_PROVIDER_ID, "cogent");
-				data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, "FMR");
+				data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
+				data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FINGER_ID);
 				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, finger.getFingerType());
 				data.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
 						Base64.getEncoder().encodeToString(finger.getFingerPrint()));
@@ -128,8 +128,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			Map<String, Object> data = new HashMap<>();
 			data.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 			data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-			data.put(RegistrationConstants.DEVICE_PROVIDER_ID, "cogent");
-			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, "IIR");
+			data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
+			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_IRIS_ID);
 			data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, iris.getIrisImageName());
 			data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, Base64.getEncoder().encodeToString(iris.getIris()));
 			data1.put(RegistrationConstants.ON_BOARD_BIO_DATA, data);
@@ -143,8 +143,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		Map<String, Object> requestDataMap = new HashMap<>();
 		requestDataMap.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 		requestDataMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
-		requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID, "cogent");
-		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_TYPE, "FID");
+		requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
+		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
 				Base64.getEncoder().encodeToString(biometricDTO.getOperatorBiometricDTO().getFace().getFace()));
