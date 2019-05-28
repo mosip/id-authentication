@@ -26,7 +26,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -278,7 +277,7 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 		.thenReturn(packetMetaInfo);
-		regOsiDto.setOfficerBiometricFileName("officer_bio_CBEFF");
+		//regOsiDto.setOfficerBiometricFileName("officer_bio_CBEFF");
 		regOsiDto.setSupervisorBiometricFileName("supervisor_bio_CBEFF");
 
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
@@ -488,16 +487,18 @@ public class OSIValidatorTest {
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(123456).thenReturn(123456).thenReturn(map).thenReturn(map);
 		demoJson.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-
-		authResponseDTO.setErrors(null);
+	
+		AuthResponseDTO authResponseDTO1 = new AuthResponseDTO();
+		authResponseDTO1 .setErrors(null);
 		io.mosip.registration.processor.core.auth.dto.ResponseDTO responseDTO=new io.mosip.registration.processor.core.auth.dto.ResponseDTO();
-		responseDTO.setAuthStatus(true);
+		responseDTO.setAuthStatus(false);
+		authResponseDTO1.setResponse(responseDTO);
 		Mockito.when(authUtil.authByIdAuthentication
-				(anyString(), any(), any())).thenReturn(authResponseDTO);
+				(anyString(), any(), any())).thenReturn(authResponseDTO).thenReturn(authResponseDTO1);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
-		assertTrue(isValid);
+		assertFalse(isValid);
 	}
 
 }
