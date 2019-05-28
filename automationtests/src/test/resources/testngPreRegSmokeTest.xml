@@ -8,11 +8,11 @@
 	
 	 <test name="SmokeTest">
 
-		<parameter name="testType" value="smokeAndRegression" />
+		<parameter name="testType" value="smoke" />
 
 
 		<classes>
-		  <class name="io.mosip.preregistration.tests.TriggerNotification" />
+		  <class name="io.mosip.preregistration.tests.BookingAppointment" />
 <!--    <class name="io.mosip.preregistration.tests.TriggerNotification" /> -->
 			<!-- <class name="io.mosip.preregistration.tests.DocumentUpload" /> 
              <class name="io.mosip.preregistration.tests.CopyUploadedDocument" />

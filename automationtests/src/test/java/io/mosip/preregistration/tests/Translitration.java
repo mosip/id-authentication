@@ -103,15 +103,25 @@ public class Translitration extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
-	@BeforeMethod(alwaysRun=true)
-	public void run()
+	@BeforeMethod(alwaysRun = true)
+	public void login( Method method)
 	{
+		testCaseName="preReg_Translitration_" + method.getName();
+		authToken=lib.getToken();
 		
-	}
-	
+	}	
 
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Translitration_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
+		lib.logOut();
 	}
+
 }
