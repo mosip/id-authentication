@@ -1,0 +1,10 @@
+{
+  "id": "string",
+  "request": {
+    "appId": "registrationclient",
+    "password": "mosip",
+    "userName": "registration_officer"
+  },
+  "timestamp": "string",
+  "version": "string"
+}

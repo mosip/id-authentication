@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-15T11:04:20.091Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-LKM-006",
+      "message": "License Key entered is null or empty."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "code": "string",
+    "genderName": "string",
+    "isActive": true,
+    "langCode": "string"
+   
+  }

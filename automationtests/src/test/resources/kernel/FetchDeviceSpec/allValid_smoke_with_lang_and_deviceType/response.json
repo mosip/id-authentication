@@ -1,0 +1,15 @@
+{
+    "devicespecifications": [
+        {
+            "id": "801",
+            "name": "imageFORMULA ",
+            "brand": "Canon ",
+            "model": "DR-C130",
+            "deviceTypeCode": "SCN",
+            "minDriverversion": "1.02",
+            "description": "To scan documents",
+            "langCode": "eng",
+            "isActive": true
+        }
+    ]
+}

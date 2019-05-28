@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T10:32:34.162Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-133",
+      "message": " registration center device history not found"
+    }
+  ]
+}

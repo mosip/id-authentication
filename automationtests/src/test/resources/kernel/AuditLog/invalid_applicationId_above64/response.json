@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-16T12:32:02.167Z",
+  "metadata": null,
+  "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-AUD-001",
+            "errorMessage": "Request.applicationId size must be between 1 and 64"
+        }
+    ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T13:37:16.941Z",
+  "metadata": null,
+  "response": {
+    "locations": [
+      {
+        "code": "BNMR",
+        "name": "Ben Mansour",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "MNAS",
+        "name": "Mnasra",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "MOGR",
+        "name": "Mograne",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "ASSM",
+        "name": "Assam",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "MEHD",
+        "name": "Mehdia",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "OLOJ",
+        "name": "Ouled Oujih",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "SDTB",
+        "name": "Sidi Taibi",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      },
+      {
+        "code": "SATZ",
+        "name": "Sidi Allal Tazi",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Local Administrative Authority",
+        "parentLocCode": "KNT",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+}

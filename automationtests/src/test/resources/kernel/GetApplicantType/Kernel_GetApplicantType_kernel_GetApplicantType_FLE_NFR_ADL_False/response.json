@@ -1,0 +1,12 @@
+{
+  "id": "getapplicanttype.code",
+  "version": "V1.0",
+  "responsetime": "2019-04-17T11:49:18.616Z",
+  "metadata": null,
+  "response": {
+    "applicantType": {
+      "applicantTypeCode": "008"
+    }
+  },
+  "errors": null
+}

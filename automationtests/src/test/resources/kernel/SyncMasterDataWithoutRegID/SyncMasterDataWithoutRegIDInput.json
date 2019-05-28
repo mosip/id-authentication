@@ -1,0 +1,10 @@
+{
+	"empty_lastupdated":"string",
+	"macaddress":"string",
+	"serialnumber":"string",
+	"Kernel_SyncMasterDataWithoutRegID_serialNumber_anotherMachine":"string",
+	"Kernel_SyncMasterDataWithoutRegID_anotherMachine_macId":"string",
+	"Kernel_SyncMasterDataWithoutRegID_only_macId":"string",
+	"Kernel_SyncMasterDataWithoutRegID_only_serialNumber":"string",
+	"Kernel_SyncMasterDataWithoutRegID_response_time":"string"
+}
