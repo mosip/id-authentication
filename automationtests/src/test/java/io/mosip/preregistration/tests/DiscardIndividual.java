@@ -1,6 +1,5 @@
 package io.mosip.preregistration.tests;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -54,10 +53,10 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-public class DiscardIndividual extends BaseTestCase implements ITest{
-	
-	static 	String preId="";
-	static SoftAssert softAssert=new SoftAssert();
+public class DiscardIndividual extends BaseTestCase implements ITest {
+
+	static String preId = "";
+	static SoftAssert softAssert = new SoftAssert();
 	protected static String testCaseName = "";
 	private static Logger logger = Logger.getLogger(DiscardIndividual.class);
 	boolean status = false;
@@ -70,17 +69,19 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	private static String preReg_URI;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
-	static String configPaths="";
+	static String configPaths = "";
 	static String folderPath = "preReg/Discard_Individual";
 	static String outputFile = "Discard_IndividualOutput.json";
 	static String requestKeyFile = "Discard_IndividualRequest.json";
 	static PreRegistrationLibrary lib = new PreRegistrationLibrary();
+
 	public DiscardIndividual() {
-		super();	
+		super();
 	}
-	
+
 	/**
 	 * Data Providers to read the input json files from the folders
+	 * 
 	 * @param context
 	 * @return
 	 * @throws JsonParseException
@@ -88,27 +89,28 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	
-	IntegrationScenarios ins=new IntegrationScenarios();
-	static PreRegistrationLibrary prl=new PreRegistrationLibrary();
-	
+
+	IntegrationScenarios ins = new IntegrationScenarios();
+	static PreRegistrationLibrary prl = new PreRegistrationLibrary();
+
 	@DataProvider(name = "Discard_Individual")
-	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+	public Object[][] readData(ITestContext context)
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
+		switch (testLevel) {
 		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smoke");
-			
-		case "regression":	
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"regression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+
+		case "regression":
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
 		default:
-			return ReadFolder.readFolders(folderPath, outputFile,requestKeyFile,"smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-		
+
 	}
-	
+
 	/**
 	 * Script for testing the Retrive_PreRegistration api
+	 * 
 	 * @param testSuite
 	 * @param i
 	 * @param object
@@ -125,74 +127,78 @@ public class DiscardIndividual extends BaseTestCase implements ITest{
 			JSONObject createPregRequest = prl.createRequest(testSuite);
 			Response createPregResponse = prl.CreatePreReg(createPregRequest);
 			String preReg_Id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
-			Actualresponse=prl.discardApplication(preReg_Id);
+			Actualresponse = prl.discardApplication(preReg_Id);
 			preId = Actualresponse.jsonPath().get("response.preRegistrationId").toString();
 			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
 			String message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 			prl.compareValues(message, "No data found for the requested pre-registration id");
 			Assert.assertEquals(preId, preReg_Id);
-			status=true;
-		}
-		else {
+			status = true;
+		} else {
 			outerKeys.add("responsetime");
 			Actualresponse = applicationLibrary.deleteRequestWithParm(preReg_URI, actualRequest);
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
-				if (status) {
-					finalStatus="Pass";		
-				softAssert.assertAll();
-				object.put("status", finalStatus);
-				arr.add(object);
-				}
-				else {
-					finalStatus="Fail";
-				}
-				boolean setFinalStatus=false;
-	            if(finalStatus.equals("Fail"))
-	                  setFinalStatus=false;
-	            else if(finalStatus.equals("Pass"))
-	                  setFinalStatus=true;
-	            Verify.verify(setFinalStatus);
-	            softAssert.assertAll();
+		if (status) {
+			finalStatus = "Pass";
+			softAssert.assertAll();
+			object.put("status", finalStatus);
+			arr.add(object);
+		} else {
+			finalStatus = "Fail";
+		}
+		boolean setFinalStatus = false;
+		if (finalStatus.equals("Fail"))
+			setFinalStatus = false;
+		else if (finalStatus.equals("Pass"))
+			setFinalStatus = true;
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 	}
-/**
- * Writing response to the specified config path
- * @throws IOException
- */
+
+	/**
+	 * Writing response to the specified config path
+	 * 
+	 * @throws IOException
+	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/preReg/Retrive_PreRegistration/Retrive_PreRegistrationOutput.json";
+		String configPath = "src/test/resources/preReg/Retrive_PreRegistration/Retrive_PreRegistrationOutput.json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
-			logger.info("Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
-		
+			logger.info(
+					"Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
+
 		}
-				//preIds.add(preId);
+		// preIds.add(preId);
 	}
+
 	@AfterMethod(alwaysRun = true)
-    public void setResultTestName(ITestResult result) {
-          try {
-                Field method = TestResult.class.getDeclaredField("m_method");
-                method.setAccessible(true);
-                method.set(result, result.getMethod().clone());
-                BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-                Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-                f.setAccessible(true);
-                f.set(baseTestMethod, DiscardIndividual.testCaseName);
-          } catch (Exception e) {
-                Reporter.log("Exception : " + e.getMessage());
-          }
-          lib.logOut();
-    }
-    @BeforeMethod(alwaysRun=true)
-    public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-          JSONObject object = (JSONObject) testdata[2];
-          testCaseName = object.get("testCaseName").toString();
-          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
-          authToken=lib.getToken(); 
-    }
-    @Override
-    public String getTestName() {
-          return this.testCaseName;
-    }	
+	public void setResultTestName(ITestResult result) {
+		try {
+			Field method = TestResult.class.getDeclaredField("m_method");
+			method.setAccessible(true);
+			method.set(result, result.getMethod().clone());
+			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(baseTestMethod, "Pre Reg_Demographic_" + DiscardIndividual.testCaseName);
+		} catch (Exception e) {
+			Reporter.log("Exception : " + e.getMessage());
+		}
+		lib.logOut();
+	}
+
+	@BeforeMethod(alwaysRun = true)
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		JSONObject object = (JSONObject) testdata[2];
+		testCaseName = object.get("testCaseName").toString();
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
+		authToken = lib.getToken();
+	}
+
+	@Override
+	public String getTestName() {
+		return this.testCaseName;
+	}
 }

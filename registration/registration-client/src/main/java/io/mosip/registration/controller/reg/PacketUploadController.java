@@ -83,6 +83,12 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	@FXML
 	private TableColumn<PacketStatusVO, Boolean> checkBoxColumn;
+	
+	@FXML
+	private TableColumn<PacketStatusVO, Boolean> regDate; 
+	
+	@FXML
+	private TableColumn<PacketStatusVO, Boolean> slno;
 
 	@FXML
 	private Button saveToDevice;
@@ -375,7 +381,9 @@ public class PacketUploadController extends BaseController implements Initializa
 		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
 		checkBoxColumn.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
-		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.PACKET_UPLOAD_FILE));
+		regDate.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.PACKET_UPLOAD_DATE));
+		slno.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.PACKET_UPLOAD_SNO));
 
 		this.list = FXCollections.observableArrayList(new Callback<PacketStatusVO, Observable[]>() {
 
@@ -482,7 +490,8 @@ public class PacketUploadController extends BaseController implements Initializa
 
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
-		synchedPackets.forEach(packet -> {
+		int count =1;
+		for(PacketStatusDTO packet : synchedPackets) {
 			PacketStatusVO packetStatusVO = new PacketStatusVO();
 			packetStatusVO.setClientStatusComments(packet.getClientStatusComments());
 			packetStatusVO.setFileName(packet.getFileName());
@@ -494,8 +503,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			packetStatusVO.setUploadStatus(packet.getUploadStatus());
 			packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
 			packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
+			packetStatusVO.setCreatedTime(packet.getCreatedTime());
+			packetStatusVO.setSlno(String.valueOf(count++)); 
 			packetsToBeExport.add(packetStatusVO);
-		});
+		}
 		if (packetsToBeExport.isEmpty()) {
 			selectAllCheckBox.setDisable(true);
 		} else {

@@ -22,6 +22,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 
 public class MatchTest {
 
@@ -74,7 +75,8 @@ public class MatchTest {
 		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
 		assertFalse(authTypeInfoAvailable);
 		IdInfoFetcher languageInfoFetcher = null;
-		authType.getMatchProperties(authRequestDTO, languageInfoFetcher, null);
+		BioMatcherUtil bioMatcherUtil = new BioMatcherUtil();
+		authType.getMatchProperties(authRequestDTO, languageInfoFetcher, bioMatcherUtil, null);
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
