@@ -42,13 +42,11 @@ export class DialougComponent implements OnInit {
     private regService: RegistrationService,
     private config: ConfigService,
     private router: Router,
-    private dialogBox : MatDialog
+    private dialogBox: MatDialog
   ) {}
 
-  // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this.input = this.data;
-    console.log('input', this.input);
   }
 
   onNoClick(): void {
@@ -57,7 +55,6 @@ export class DialougComponent implements OnInit {
 
   onSubmit(): void {
     this.onNoClick();
-    console.log('button clicked', this.selectedOption);
   }
 
   validateMobile() {
@@ -85,7 +82,6 @@ export class DialougComponent implements OnInit {
   }
 
   enableButton(email, mobile) {
-    console.log(email.value, mobile.value);
     if (!email.value && !mobile.value) {
       this.disableSend = true;
       this.invalidApplicantEmail = false;
@@ -99,69 +95,67 @@ export class DialougComponent implements OnInit {
     this.isChecked = !this.isChecked;
   }
 
-   async userRedirection() {
+  async userRedirection() {
     if (localStorage.getItem('newApplicant') === 'true') {
-     await this.firstPopUp();
-      // this if for first time user, if he does not provide consent he will be logged out.
-
-    } else
-    // if (localStorage.getItem('newApplicant') === 'false')
-     {
-      console.log('user redirection else', localStorage.getItem('newApplicant'));
-      this.regService.currentMessage.subscribe(
-        message => (this.message = message)
-        //second case is when an existing applicant enters the application.
-      );
+      await this.firstPopUp();
+    } else {
+      this.regService.currentMessage.subscribe(message => (this.message = message));
       this.checkCondition = this.message['modifyUserFromPreview'];
 
       if (this.checkCondition === 'false') {
-      await this.thirdPopUp();
+        await this.thirdPopUp();
       } else {
-      await  this.secondPopUp();
+        await this.secondPopUp();
       }
     }
   }
 
-  firstPopUp(){
+  firstPopUp() {
     const data = {
       case: 'MESSAGE',
       message: this.input.alertMessageFirst
     };
-    this.dialogBox.open(DialougComponent, {
-      width: '460px',
-      data: data
-    }).afterClosed().subscribe(() => this.loggingUserOut());
+    this.dialogBox
+      .open(DialougComponent, {
+        width: '460px',
+        data: data
+      })
+      .afterClosed()
+      .subscribe(() => this.loggingUserOut());
   }
 
-
-  secondPopUp(){
+  secondPopUp() {
     const data = {
       case: 'MESSAGE',
       message: this.input.alertMessageSecond
     };
-    this.dialogBox.open(DialougComponent, {
-      width: '460px',
-      data: data
-    }).afterClosed().subscribe(() => this.redirectingUser());
+    this.dialogBox
+      .open(DialougComponent, {
+        width: '460px',
+        data: data
+      })
+      .afterClosed()
+      .subscribe(() => this.redirectingUser());
   }
 
-
-  thirdPopUp(){
+  thirdPopUp() {
     const data = {
       case: 'MESSAGE',
       message: this.input.alertMessageThird
     };
-    this.dialogBox.open(DialougComponent, {
-      width: '460px',
-      data: data
-    }).afterClosed().subscribe(() => this.redirectingUser());
+    this.dialogBox
+      .open(DialougComponent, {
+        width: '460px',
+        data: data
+      })
+      .afterClosed()
+      .subscribe(() => this.redirectingUser());
   }
 
-  loggingUserOut(){
+  loggingUserOut() {
     this.authService.onLogout();
-    //this.location.back();
   }
-  redirectingUser(){
+  redirectingUser() {
     this.location.back();
   }
 }

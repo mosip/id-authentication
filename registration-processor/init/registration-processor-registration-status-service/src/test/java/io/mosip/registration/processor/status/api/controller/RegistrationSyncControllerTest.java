@@ -38,6 +38,7 @@ import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.status.api.config.RegistrationStatusConfigTest;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -104,6 +105,9 @@ public class RegistrationSyncControllerTest {
 
 	@Mock
 	RegistrationSyncRequestValidator registrationSyncRequestValidator;
+	
+	@Mock
+	private TokenValidator tokenValidator;
 
 	Gson gson = new GsonBuilder().serializeNulls().create();
 
@@ -153,6 +157,7 @@ public class RegistrationSyncControllerTest {
 		syncResponseDtoList = new ArrayList<>();
 		syncResponseDtoList.add(syncResponseDto);
 		syncResponseDtoList.add(syncResponseFailureDto);
+		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 
 
 	/*	signatureResponse=Mockito.mock(SignatureResponse.class);
@@ -190,7 +195,6 @@ public class RegistrationSyncControllerTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);

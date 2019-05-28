@@ -1,1 +1,1 @@
-{"transactionID":"7086300150","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - requestTime"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - requestTime"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

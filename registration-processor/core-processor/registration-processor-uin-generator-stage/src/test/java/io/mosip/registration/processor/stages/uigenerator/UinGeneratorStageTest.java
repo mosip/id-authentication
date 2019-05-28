@@ -54,6 +54,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -67,8 +68,6 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
-//import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
@@ -154,7 +153,7 @@ public class UinGeneratorStageTest {
 	private static final String CONFIG_SERVER_URL = "url";
 
 	private String identityMappingjsonString;
-	
+
 	@Mock
 	private Environment env;
 
@@ -205,11 +204,11 @@ public class UinGeneratorStageTest {
 		Mockito.when(env.getProperty("registration.processor.id.repo.generate")).thenReturn("mosip.vid.create");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Mockito.when(env.getProperty("registration.processor.id.repo.vidVersion")).thenReturn("v1");
-		
-		
-		
+
+
+
 //		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any())).thenReturn(response);
-		
+
 
 	}
 
@@ -248,7 +247,7 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponse(responseDTO);
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
-		
+
 		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
 		List<ErrorDTO> errors = new ArrayList<>();
 		responseVid.setErrors(errors);
@@ -268,7 +267,7 @@ public class UinGeneratorStageTest {
 		.thenReturn(idResponseDTO).thenReturn(responseVid).thenReturn(response);
 
 //		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any()));
-		
+
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getInternalError());
 
@@ -311,8 +310,8 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
-		
-		
+
+
 		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
 		List<ErrorDTO> errors = new ArrayList<>();
 		responseVid.setErrors(errors);
@@ -333,8 +332,8 @@ public class UinGeneratorStageTest {
 		.thenReturn(idResponseDTO).thenReturn(responseVid);
 
 	//	Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any(Class.class)));
-		
-		
+
+
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getInternalError());
 

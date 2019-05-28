@@ -1,0 +1,1 @@
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MPA-007","errorMessage":"License key does not belong to a registered MISP"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2381861355","id":"mosip.identity.auth"}

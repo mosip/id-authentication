@@ -1,1 +1,0 @@
-{"transactionID":"4121618847","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MPA-006","errorMessage":"Face-authentiation usage not allowed as per policy"}],"responseTime":"2019-05-23T12:18:25.503+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

@@ -1,1 +1,1 @@
-{"transactionID":"3131372105","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-BIA-012","errorMessage":"Invalid userid of the individual"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
+{"transactionID":"5800165004","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-BIA-012","errorMessage":"Invalid userid of the individual"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}

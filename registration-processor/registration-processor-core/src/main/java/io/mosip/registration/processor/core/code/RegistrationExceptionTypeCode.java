@@ -187,6 +187,9 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED,
+	
+	/** The registration processor checked exception. */
+	REGISTRATIONPROCESSORCHECKEDEXCEPTION,
 
 	/** The adult cbeff not present exception. */
 	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
