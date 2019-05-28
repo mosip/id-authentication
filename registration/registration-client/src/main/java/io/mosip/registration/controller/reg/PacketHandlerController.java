@@ -47,7 +47,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -625,7 +625,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
+			IndividualIdentity individualIdentity = (IndividualIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
 			try {
@@ -655,7 +655,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
 				
-				sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
+				sendNotification(individualIdentity.getEmail(), individualIdentity.getPhone(),
 						registrationDTO.getRegistrationId());
 				
 				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
@@ -679,28 +679,28 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (registrationDTO.getSelectionListDTO() == null) {
 
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
-						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1() != null
-								? moroccoIdentity.getAddressLine1().get(0).getValue()
+						.with(address -> address.setAddressLine1(individualIdentity.getAddressLine1() != null
+								? individualIdentity.getAddressLine1().get(0).getValue()
 								: null))
-						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2() != null
-								? moroccoIdentity.getAddressLine2().get(0).getValue()
+						.with(address -> address.setAddressLine2(individualIdentity.getAddressLine2() != null
+								? individualIdentity.getAddressLine2().get(0).getValue()
 								: null))
-						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3() != null
-								? moroccoIdentity.getAddressLine3().get(0).getValue()
+						.with(address -> address.setLine3(individualIdentity.getAddressLine3() != null
+								? individualIdentity.getAddressLine3().get(0).getValue()
 								: null))
 						.with(address -> address
 								.setLocationDTO(Builder.build(LocationDTO.class)
-										.with(location -> location.setCity(moroccoIdentity.getCity() != null
-												? moroccoIdentity.getCity().get(0).getValue()
+										.with(location -> location.setCity(individualIdentity.getCity() != null
+												? individualIdentity.getCity().get(0).getValue()
 												: null))
-										.with(location -> location.setProvince(moroccoIdentity.getProvince() != null
-												? moroccoIdentity.getProvince().get(0).getValue()
+										.with(location -> location.setProvince(individualIdentity.getProvince() != null
+												? individualIdentity.getProvince().get(0).getValue()
 												: null))
-										.with(location -> location.setRegion(moroccoIdentity.getRegion() != null
-												? moroccoIdentity.getRegion().get(0).getValue()
+										.with(location -> location.setRegion(individualIdentity.getRegion() != null
+												? individualIdentity.getRegion().get(0).getValue()
 												: null))
-										.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode() != null
-												? moroccoIdentity.getPostalCode()
+										.with(location -> location.setPostalCode(individualIdentity.getPostalCode() != null
+												? individualIdentity.getPostalCode()
 												: null))
 										.get()))
 						.get();

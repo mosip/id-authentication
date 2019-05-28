@@ -25,22 +25,19 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -51,13 +48,13 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
+import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
  * This class is used to handle the pre-registration packet zip files
@@ -70,8 +67,7 @@ import io.mosip.registration.service.external.PreRegZipHandlingService;
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
-	@Qualifier("schema")
-	private IdObjectValidator idObjectValidator;
+	private RegIdObjectValidator idObjectValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -136,12 +132,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 		
-		MoroccoIdentity moroccoIdentity = (MoroccoIdentity) getRegistrationDtoContent().getDemographicDTO()
+		IndividualIdentity individualIdentity = (IndividualIdentity) getRegistrationDtoContent().getDemographicDTO()
 				.getDemographicInfoDTO().getIdentity();
 
 		String docTypeName = null;
-		if (moroccoIdentity != null) {
-			docTypeName = getDocTypeName(fileName, docCatgory, moroccoIdentity);
+		if (individualIdentity != null) {
+			docTypeName = getDocTypeName(fileName, docCatgory, individualIdentity);
 		}
 
 		/*
@@ -168,24 +164,24 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		return docTypeName;
 	}
 
-	private String getDocTypeName(String fileName, String docCatgory, MoroccoIdentity moroccoIdentity) {
+	private String getDocTypeName(String fileName, String docCatgory, IndividualIdentity individualIdentity) {
 		String docTypeName;
 		if (RegistrationConstants.POA_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != moroccoIdentity.getProofOfAddress()) {
+				&& null != individualIdentity.getProofOfAddress()) {
 
-			docTypeName = moroccoIdentity.getProofOfAddress().getType();
+			docTypeName = individualIdentity.getProofOfAddress().getType();
 
 		} else if (RegistrationConstants.POI_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != moroccoIdentity.getProofOfIdentity()) {
-			docTypeName = moroccoIdentity.getProofOfIdentity().getType();
+				&& null != individualIdentity.getProofOfIdentity()) {
+			docTypeName = individualIdentity.getProofOfIdentity().getType();
 
 		} else if (RegistrationConstants.POR_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != moroccoIdentity.getProofOfRelationship()) {
-			docTypeName = moroccoIdentity.getProofOfRelationship().getType();
+				&& null != individualIdentity.getProofOfRelationship()) {
+			docTypeName = individualIdentity.getProofOfRelationship().getType();
 
 		} else if (RegistrationConstants.DOB_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != moroccoIdentity.getProofOfDateOfBirth()) {
-			docTypeName = moroccoIdentity.getProofOfDateOfBirth().getType();
+				&& null != individualIdentity.getProofOfDateOfBirth()) {
+			docTypeName = individualIdentity.getProofOfDateOfBirth().getType();
 
 		} else {
 			docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
@@ -215,37 +211,27 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
-						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
-				idObjectValidator
-						.validateIdObject(getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO());
+				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
+						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
+				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
+				boolean isIDObjectValid = idObjectValidator.validateIdObject(
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+				if (!isIDObjectValid) {
+					throw new RegBaseCheckedException(
+							RegistrationExceptionConstants.ID_OBJECT_SCHEMA_VALIDATOR.getErrorCode(),
+							RegistrationExceptionConstants.ID_OBJECT_SCHEMA_VALIDATOR.getErrorMessage());
+				}
 			}
 		} catch (IOException exception) {
-			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
-		} catch (JSONException | IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
-				| FileIOException | ClassNotFoundException jsonValidationException) {
-			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()
-							+ jsonValidationException.getMessage() + ExceptionUtils.getStackTrace(jsonValidationException));
+		} catch (JsonParseException | JsonMappingException | JSONException
+				| io.mosip.kernel.core.exception.IOException jsonValidationException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
 					jsonValidationException);
 		}
 
-	}
-
-	@SuppressWarnings("unchecked")
-	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
-			throws IOException, JSONException, ClassNotFoundException {
-		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class.forName(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDENTITY_CLASS_NAME)));
-		
-		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
-				identityClass);
 	}
 
 	/**

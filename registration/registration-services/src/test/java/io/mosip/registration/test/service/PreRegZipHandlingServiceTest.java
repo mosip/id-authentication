@@ -2,6 +2,7 @@ package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,14 +26,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -47,10 +42,11 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
+import io.mosip.registration.validator.RegIdObjectValidator;
 
 public class PreRegZipHandlingServiceTest {
 
@@ -61,7 +57,7 @@ public class PreRegZipHandlingServiceTest {
 	private KeyGenerator keyGenerator;
 
 	@Mock
-	private IdObjectValidator idObjectValidator;
+	private RegIdObjectValidator idObjectValidator;
 	
 	@Mock
 	private DocumentTypeDAO documentTypeDAO;
@@ -91,35 +87,41 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test
-	public void extractPreRegZipFileTest()
-			throws RegBaseCheckedException, IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException,
-			IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any())).thenReturn(true);
-		
-		
+	public void extractPreRegZipFileTest() throws Exception {
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
-		
-		Map<String,Object> appMap = new HashMap<>();
-		appMap.put(RegistrationConstants.IDENTITY_CLASS_NAME, "io.mosip.registration.dto.demographic.MoroccoIdentity");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
-		
+
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 		assertNotNull(registrationDTO);
-
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void extractPreRegZipFileTestNegative()
-			throws RegBaseCheckedException, IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, IdObjectValidationProcessingException, IdObjectIOException,
-			IdObjectSchemaIOException, io.mosip.kernel.core.idobjectvalidator.exception.FileIOException {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any()))
-				.thenThrow(new IdObjectValidationProcessingException("", ""));
+	public void extractPreRegZipFileTestFail() throws Exception {
+		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(false);
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
-		preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
+		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
+
+		assertNotNull(registrationDTO);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void extractPreRegZipFileTestNegative() throws Exception {
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+			ZipEntry zipEntry = new ZipEntry("id.json");
+			zipOutputStream.putNextEntry(zipEntry);
+			zipOutputStream.write(
+					"\"identity\" : {    \"CNIENumber\" : 6789545678909,    \"gender\" : [ {      \"language\" : \"eng\",      \"value\" : \"male\"    }, {      \"language\" : \"ara\",      \"value\" : \"male\"    } ],    \"city\" : [ {      \"language\" : \"eng\",      \"value\" : \"Bangalore\"    }, {      \"language\" : \"ara\",      \"value\" : \"BLR\"    } ],    \"postalCode\" : \"570000\",    \"localAdministrativeAuthority\" : [ {      \"language\" : \"eng\",      \"value\" : \"Bangalore\"    }, {      \"language\" : \"ara\",      \"value\" : \"BLR\"    } ]"
+							.getBytes());
+			zipOutputStream.flush();
+			zipOutputStream.closeEntry();
+
+			Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+			Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
+			preRegZipHandlingServiceImpl.extractPreRegZipFile(byteArrayOutputStream.toByteArray());
+		}
 	}
 
 	@Test
@@ -194,7 +196,7 @@ public class PreRegZipHandlingServiceTest {
 		applicantDocumentDTO.setDocuments(new  HashMap<>());
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
-		MoroccoIdentity identity = new MoroccoIdentity();
+		IndividualIdentity identity = new IndividualIdentity();
 		demographicInfoDTOLocal.setIdentity(identity);
 
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTOLocal);
