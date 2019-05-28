@@ -8,9 +8,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.idrepository.core.spi.MosipFingerprintProvider;
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
@@ -27,6 +30,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BIR> {
 
+	@Autowired
+	private BioApiImpl bioApiImpl;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,7 +48,7 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 						&& Objects.nonNull(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()))
 						&& DateUtils.isSameInstant(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()),
 								bir.getBDBInfo().getCreationDate()))
-				.map(bir -> new BIR.BIRBuilder().withBdb(convertToFMR(bir.getBDB()))
+				.map(bir -> new BIR.BIRBuilder().withBdb(convertToFMR(bir))
 						.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 						.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())
 								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withFormatOwner(257l).withFormatType(2l)
@@ -86,8 +91,10 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	 * @param bdb the bdb
 	 * @return the byte[]
 	 */
-	private byte[] convertToFMR(byte[] bdb) {
-		return bdb;
+	private byte[] convertToFMR(BIRType bir) {
+		KeyValuePair[] flags=null;
+		BIRType birType = bioApiImpl.extractTemplate(bir, flags);
+		return birType.getBDB();
 	}
 
 }
