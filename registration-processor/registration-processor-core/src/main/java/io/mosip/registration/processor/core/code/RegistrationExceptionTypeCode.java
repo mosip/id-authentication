@@ -190,4 +190,6 @@ public enum RegistrationExceptionTypeCode {
 	
 	DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 
+	BIOMETRIC_EXCEPTION
+
 }

@@ -116,6 +116,7 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 				RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS );
 		
 		return unmodifiableMap;
 

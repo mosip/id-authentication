@@ -20,5 +20,6 @@
 		<module>registration-processor-packet-uploader-stage</module>
 		<module>registration-processor-external-stage</module>
 		<module>registration-processor-external-integration-service</module>
+		<module>registration-processor-quality-checker-stage</module>
 	</modules>
 </project>

@@ -149,6 +149,12 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant ABIS_HANDLER_BUS_OUT. */
 	public static final MessageBusAddress ABIS_HANDLER_BUS_OUT = new MessageBusAddress("abis-handler-bus-out");
 
+	/** The Constant QUALITY_CHECKER_BUS_IN. */
+	public static final MessageBusAddress QUALITY_CHECKER_BUS_IN = new MessageBusAddress("quality-checker-bus-in");
+
+	/** The Constant QUALITY_CHECKER_BUS_OUT. */
+	public static final MessageBusAddress QUALITY_CHECKER_BUS_OUT = new MessageBusAddress("quality-checker-bus-out");
+
 	/*
 	 * (non-Javadoc)
 	 *
