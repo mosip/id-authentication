@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -40,6 +42,7 @@ import io.mosip.kernel.masterdata.constant.RequestErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
 	@Autowired

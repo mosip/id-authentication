@@ -1,9 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -125,6 +125,6 @@ public interface MachineService {
 	 *         of machins those are mapped with the given registration center
 	 *         {@link RegistrationCenterMachineID}
 	 */
-	public List<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId);
+	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size, String orderBy, String direction);
 
 }

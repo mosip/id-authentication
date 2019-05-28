@@ -1,11 +1,8 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -20,6 +18,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -200,11 +199,12 @@ public class MachineController {
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Registration Center Id"),
 			@ApiResponse(code = 404, message = "When No Machine Details not mapped with the Given Registation Center ID"),
 			@ApiResponse(code = 500, message = "While retrieving Machine Detail any error occured") })
-	public ResponseWrapper<List<MachineRegistrationCenterDto>> getMachinesByRegistrationCenter(
-			@PathVariable("regCenterId") String regCenterId) {
+	public ResponseWrapper<PageDto<MachineRegistrationCenterDto>> getMachinesByRegistrationCenter(
+			@PathVariable("regCenterId") String regCenterId, @RequestParam("page") int page, @RequestParam("size") int size,
+			@RequestParam("orderBy") String orderBy, @RequestParam("direction") String direction) {
 
-		ResponseWrapper<List<MachineRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(machineService.getMachinesByRegistrationCenter(regCenterId));
+		ResponseWrapper<PageDto<MachineRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.getMachinesByRegistrationCenter(regCenterId, page, size, orderBy,direction));
 		return responseWrapper;
 	}
 
