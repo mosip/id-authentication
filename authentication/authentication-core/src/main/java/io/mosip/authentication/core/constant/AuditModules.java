@@ -8,40 +8,43 @@ package io.mosip.authentication.core.constant;
 public enum AuditModules {
 	
 	/** The otp auth. */
-	OTP_AUTH("IDA-MOD-101","OTP Authentication requested"),
+	OTP_AUTH("IDA-OTA","Request/Response, UIN/VID to be masked", "OTP Authenticator"),
 	
 	/** The demo auth. */
-	DEMO_AUTH("IDA-MOD-102","Demo Authentication requested"),
+	DEMO_AUTH("IDA-DEA", "Request/Response, UIN/VID to be masked", "Demographic Authenticator"),
 	
 	/** The FINGERPRINT_AUTH. */
-	FINGERPRINT_AUTH("IDA-MOD-103","Fingerprint Authentication requested"),
+	FINGERPRINT_AUTH("IDA-FPA", "Request/Response, UIN/VID to be masked", "Fingerprint Authenticator"),
 	
 	/** The IRIS_AUTH. */
-	IRIS_AUTH("IDA-MOD-104","Iris Authentication requested"),
+	IRIS_AUTH("IDA-ISA", "Request/Response, UIN/VID to be masked", "Iris Authenticator"),
 	
 	/** The FACE_AUTH. */
-	FACE_AUTH("IDA-MOD-105","Face Authentication requested"),
-	
-	/** The pin auth. */
-	PIN_AUTH("IDA-MOD-106","Pin Authentication requested"),
+	FACE_AUTH("IDA-FAA", "Request/Response, UIN/VID to be masked", "Face Authenticator"),
 	
 	/** The e KY C AUTH. */
-	EKYC_AUTH("IDA-MOD-107","eKYC Authentication requested"),
-	
-	/** The Static Pin Storage */
-	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested"),
-	
-	/** The vid generation request. */
-	VID_GENERATION_REQUEST("IDA-MOD-109","VID Generation requested"),
+	EKYC_AUTH("IDA-EKA", "Request/Response, UIN/VID to be masked", "eKYC Authenticator"),
 	
 	/** The otp request. */
-	OTP_REQUEST("IDA-MOD-110","OTP requested");
+	OTP_REQUEST("IDA-OTR","Request/Response, UIN/VID to be masked", "Otp Requestor"),
+	
+	/** The pin auth. */
+	PIN_AUTH("IDA-MOD-106","Pin Authentication requested", ""), //not applicable for release v1
+	
+	/** The Static Pin Storage */
+	STATIC_PIN_STORAGE("IDA-MOD-108","Static Pin Storage requested", ""),//not applicable for release v1
+	
+	/** The vid generation request. */
+	VID_GENERATION_REQUEST("IDA-MOD-109","VID Generation requested", "");//not applicable for release v1
 
 	/** The module id. */
 	private final String moduleId;
 	
 	/** The Description*/
 	private  String desc;
+	
+	/** The module name. */
+	private String moduleName;
 
 	
 	
@@ -51,12 +54,18 @@ public enum AuditModules {
 	 * @param moduleId
 	 * @param desc
 	 */
-	private AuditModules(String moduleId,String desc) {
+	private AuditModules(String moduleId, String desc, String moduleName) {
 		this.moduleId=moduleId;
 		this.desc=desc;
+		this.moduleName=moduleName;
 	}
 
 	
+	/**
+	 * Gets the desc.
+	 *
+	 * @return the desc
+	 */
 	public String getDesc() {
 		return desc;
 	}
@@ -70,8 +79,13 @@ public enum AuditModules {
 		return moduleId;
 	}
 	
+	/**
+	 * Gets the module name.
+	 *
+	 * @return the module name
+	 */
 	public String getModuleName() {
-		return this.name();
+		return this.moduleName;
 	}
 
 	
