@@ -1,1 +1,1 @@
-{"identityRequest":{"timestamp":"2019-05-28T09:10:24.024+05:30","biometrics":[{"data":{"bioType":"FMR","deviceProviderID":"mantra","bioSubType":"LEFT_INDEX","bioValue":"Content is not allowed in prolog.","timestamp":"2019-05-28T09:10:24.024+05:30","transactionID":"1234567890"}}]}}
+{"identityRequest":{"timestamp":"2019-05-28T12:18:00.000+05:30","biometrics":[{"data":{"bioType":"FMR","deviceProviderID":"mantra","bioSubType":"LEFT_INDEX","bioValue":"Content is not allowed in prolog.","timestamp":"2019-05-28T12:18:00.000+05:30","transactionID":"1234567890"}}]}}
