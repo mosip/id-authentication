@@ -69,7 +69,8 @@ export const PARAMS_KEYS = {
 
 export const ERROR_CODES = {
   noApplicantEnrolled: 'PRG_PAM_APP_005',
-  userBlocked: 'PRG_PAM_LGN_013'
+  userBlocked: 'PRG_PAM_LGN_013',
+  invalidPin: 'KER-IOV-004'
 };
 
 export const CONFIG_KEYS = {

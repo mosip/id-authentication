@@ -149,20 +149,16 @@ export class DataStorageService {
   addUser(identity: any) {
     const obj = new RequestModel(appConstants.IDS.newUser, identity);
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
-    console.log('data being sent', JSON.stringify(obj));
     return this.httpClient.post(url, obj);
   }
 
   updateUser(identity: any, preRegId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants + appConstants.APPENDER + preRegId;
     const obj = new RequestModel(appConstants.IDS.updateUser, identity);
-    console.log('data being update', JSON.stringify(obj));
     return this.httpClient.put(url, obj);
   }
 
   sendFile(formdata: FormData, preRegId) {
-    console.log('formData', formdata);
-
     return this.httpClient.post(
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.post_document + preRegId,
       formdata
@@ -176,7 +172,6 @@ export class DataStorageService {
   }
 
   cancelAppointment(data: RequestModel, preRegId: string) {
-    console.log('cancel appointment data', data);
     return this.httpClient.put(
       this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.cancelAppointment + preRegId,
       data
@@ -237,8 +232,6 @@ export class DataStorageService {
    * @memberof DataStorageService
    */
   getLocationMetadataHirearchy() {
-    // const url = this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value;
-    // return this.httpClient.get(url);
     return this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_country_code);
   }
 

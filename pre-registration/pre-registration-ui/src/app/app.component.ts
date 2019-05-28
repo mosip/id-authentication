@@ -14,9 +14,7 @@ export class AppComponent implements OnInit {
   constructor(private autoLogout: AutoLogoutService) {}
 
   ngOnInit() {
-    this.autoLogout.currentMessageAutoLogout.subscribe(res => {
-      console.log(res);
-    });
+    this.autoLogout.currentMessageAutoLogout.subscribe(res => {});
     this.autoLogout.changeMessage({ timerFired: false });
   }
 

@@ -100,8 +100,6 @@ export class RegistrationService {
    * @memberof RegistrationService
    */
   addUser(user: UserModel) {
-    console.log('user getting added', user);
-
     this.users.push(user);
     this.usersChanged.next(this.users.slice());
   }

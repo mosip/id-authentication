@@ -59,7 +59,6 @@ export class AcknowledgementComponent implements OnInit {
 
   async ngOnInit() {
     this.usersInfo = this.bookingService.getNameList();
-    console.log('usersInfo', this.usersInfo);
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
@@ -107,7 +106,6 @@ export class AcknowledgementComponent implements OnInit {
   async qrCodeForUser() {
     return new Promise((resolve, reject) => {
       this.usersInfo.forEach(async user => {
-        console.log(user);
         await this.generateQRCode(user);
         if (this.usersInfo.indexOf(user) === this.usersInfo.length - 1) {
           resolve(true);
@@ -150,17 +148,15 @@ export class AcknowledgementComponent implements OnInit {
   }
 
   automaticNotification() {
-      setTimeout(() => {
-    console.log('Auto notificatiopn hit');
-    this.sendNotification([], false);
-      }, 500);
+    setTimeout(() => {
+      this.sendNotification([], false);
+    }, 500);
   }
 
   async getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
         this.secondaryLanguageRegistrationCenter = response['response']['registrationCenters'][0];
-        console.log(this.secondaryLanguageRegistrationCenter);
         resolve(true);
       });
     });
@@ -170,7 +166,6 @@ export class AcknowledgementComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getRegistrationCenterByIdAndLangCode(centerId, langCode).subscribe(response => {
         this.usersInfo[0].registrationCenter = response['response']['registrationCenters'][0];
-        console.log(this.usersInfo);
         resolve(true);
       });
     });
@@ -179,7 +174,6 @@ export class AcknowledgementComponent implements OnInit {
   getTemplate() {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGuidelineTemplate('Onscreen-Acknowledgement').subscribe(response => {
-        console.log(response);
         this.guidelines = response['response']['templates'][0].fileText.split('\n');
         resolve(true);
       });
@@ -233,7 +227,6 @@ export class AcknowledgementComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(applicantNumber => {
-        console.log(applicantNumber);
         if (applicantNumber !== undefined) {
           this.sendNotification(applicantNumber, true);
         }
@@ -243,7 +236,6 @@ export class AcknowledgementComponent implements OnInit {
   async generateQRCode(name) {
     return new Promise((resolve, reject) => {
       this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
-        console.log(response);
         const index = this.usersInfo.indexOf(name);
         this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
         resolve(true);
@@ -252,10 +244,8 @@ export class AcknowledgementComponent implements OnInit {
   }
 
   async sendNotification(applicantNumber, additionalRecipient: boolean) {
-    console.log(this.usersInfo);
     this.fileBlob = await this.createBlob();
     this.usersInfo.forEach(user => {
-      console.log(user);
       const notificationDto = new NotificationDtoModel(
         user.fullName,
         user.preRegId,
@@ -266,16 +256,11 @@ export class AcknowledgementComponent implements OnInit {
         additionalRecipient,
         false
       );
-      console.log('notificationDto', notificationDto);
       const model = new RequestModel(appConstants.IDS.notification, notificationDto);
-      console.log('notification request', model);
-      console.log('stringified model', JSON.stringify(model).trim());
       this.notificationRequest.append(appConstants.notificationDtoKeys.notificationDto, JSON.stringify(model).trim());
       this.notificationRequest.append(appConstants.notificationDtoKeys.langCode, localStorage.getItem('langCode'));
       this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
-      this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {
-        console.log(response);
-      });
+      this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {});
       this.notificationRequest = new FormData();
     });
   }
