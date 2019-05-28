@@ -7,6 +7,9 @@ import java.util.Map;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 
+/**
+ * The Class RegistrationExceptionMapperUtil.
+ */
 public class RegistrationExceptionMapperUtil {
 	/** The status map. */
 	private static EnumMap<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> statusMap = new EnumMap<>(
@@ -16,6 +19,9 @@ public class RegistrationExceptionMapperUtil {
 	private static Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> unmodifiableMap = Collections
 			.unmodifiableMap(statusMap);
 
+	/**
+	 * Instantiates a new registration exception mapper util.
+	 */
 	public RegistrationExceptionMapperUtil() {
 		super();
 	}
@@ -144,6 +150,12 @@ public class RegistrationExceptionMapperUtil {
 
 	}
 
+	/**
+	 * Gets the status code.
+	 *
+	 * @param exceptionCode the exception code
+	 * @return the status code
+	 */
 	public String getStatusCode(RegistrationExceptionTypeCode exceptionCode) {
 		Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> mapStatus = RegistrationExceptionMapperUtil
 				.statusMapper();

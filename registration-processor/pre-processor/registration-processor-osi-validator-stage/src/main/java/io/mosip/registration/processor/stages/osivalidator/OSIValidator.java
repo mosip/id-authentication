@@ -416,7 +416,7 @@ public class OSIValidator {
 		InputStream biometricStream = adapter.getFile(registrationId, fileName.toUpperCase());
 		byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
 		AuthResponseDTO response = authUtil.authByIdAuthentication(userId, INDIVIDUAL_TYPE_USERID, officerbiometric);
-		return (response.getErrors().isEmpty());
+		return (response.getErrors() == null || response.getErrors().isEmpty());
 
 	}
 
@@ -706,7 +706,7 @@ public class OSIValidator {
 			byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
 			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
 					introducerbiometric);
-			if (authResponseDTO.getErrors() == null && authResponseDTO.getErrors().isEmpty()) {
+			if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
 				if (authResponseDTO.getResponse().isAuthStatus()) {
 					return true;
 				} else {
