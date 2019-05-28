@@ -142,6 +142,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		// Document Upload for created application
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
+		logger.info("Doc Upload response:"+docUploadResponse.asString());
 		// PreId of Uploaded document
 		String srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 		String docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
