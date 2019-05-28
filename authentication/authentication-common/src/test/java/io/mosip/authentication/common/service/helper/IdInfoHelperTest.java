@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -247,7 +246,6 @@ public class IdInfoHelperTest {
 		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
 				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, null);
 		EntityValueFetcher entityValueFetcher = null;
-		MatchingStrategy matchingStrategy;
 		MatchType matchType = DemoMatchType.PHONE;
 		MatchingStrategy strategy = null;
 		Map<String, String> reqInfo = new HashMap<>();
@@ -274,7 +272,6 @@ public class IdInfoHelperTest {
 		MatchInput matchInput = new MatchInput(demoAuthType, BioMatchType.FACE, MatchingStrategyType.PARTIAL.getType(),
 				60, matchProperties, null);
 		EntityValueFetcher entityValueFetcher = null;
-		MatchingStrategy matchingStrategy;
 		MatchType matchType = BioMatchType.FACE;
 		MatchingStrategy strategy = null;
 		Map<String, String> reqInfo = new HashMap<>();
@@ -301,7 +298,6 @@ public class IdInfoHelperTest {
 		MatchInput matchInput = new MatchInput(demoAuthType, DemoMatchType.PHONE,
 				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties, "fra");
 		EntityValueFetcher entityValueFetcher = null;
-		MatchingStrategy matchingStrategy;
 		MatchType matchType = DemoMatchType.PHONE;
 		MatchingStrategy strategy = null;
 		Map<String, String> reqInfo = new HashMap<>();

@@ -3,7 +3,6 @@ import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { FaqComponent } from './core/faq/faq.component';
 import { AboutUsComponent } from './core/about-us/about-us.component';
 import { ContactComponent } from './core/contact/contact.component';
-// import { ErrorComponent } from './shared/error/error.component';
 import { ParentComponent } from './shared/parent/parent.component';
 import { AuthGuardService } from './auth/auth-guard.service';
 
@@ -15,7 +14,6 @@ const appRoutes: Routes = [
   { path: 'about-us', component: AboutUsComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'contact', component: ContactComponent },
-  // { path: 'error', component: ErrorComponent },
 
   {
     path: 'pre-registration',
@@ -29,7 +27,6 @@ const appRoutes: Routes = [
       { path: 'booking', loadChildren: './feature/booking/booking.module#BookingModule' }
     ]
   }
-  // { path: '**', redirectTo: '/' }
 ];
 
 /**

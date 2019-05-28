@@ -150,10 +150,10 @@ export class AcknowledgementComponent implements OnInit {
   }
 
   automaticNotification() {
-    //  setTimeout(() => {
+      setTimeout(() => {
     console.log('Auto notificatiopn hit');
     this.sendNotification([], false);
-    //  }, 500);
+      }, 500);
   }
 
   async getRegistrationCenterInSecondaryLanguage(centerId: string, langCode: string) {
