@@ -764,6 +764,7 @@ export class FileUploadComponent implements OnInit {
           } else {
             // alert(this.secondaryLanguagelabels.uploadDocuments.msg8);
             this.sameAs = this.registration.getSameAs();
+            this.sameAsselected = false;
             // alert(response['errors'].message);
             this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg9);
           }
