@@ -1,14 +1,12 @@
 package io.mosip.registration.processor.biometric.authentication.stage;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.validation.constraints.AssertTrue;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;

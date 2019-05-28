@@ -20,6 +20,5 @@
 		<module>registration-processor-packet-uploader-stage</module>
 		<module>registration-processor-external-stage</module>
 		<module>registration-processor-external-integration-service</module>
-		<module>registration-processor-biometric-authentication-stage</module>
 	</modules>
 </project>
