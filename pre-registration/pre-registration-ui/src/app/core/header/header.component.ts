@@ -26,7 +26,6 @@ export class HeaderComponent implements OnInit {
 
   onLogoClick() {
     if (this.authService.isAuthenticated()) {
-      console.log('IF LOGO');
       this.router.navigate(['dashboard']);
     } else {
       this.router.navigate(['/']);

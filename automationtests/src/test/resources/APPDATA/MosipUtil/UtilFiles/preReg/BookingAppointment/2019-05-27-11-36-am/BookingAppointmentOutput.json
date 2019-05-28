@@ -1,0 +1,1 @@
+[{"BookAnAppointmentByPassingInvalidAppointmentDate_DateLessThanToday":"invalid","jiraId":"MOS-1001","testType":"regression","testCaseName":"BookAnAppointmentByPassingInvalidAppointmentDate_DateLessThanToday","status":"Pass"}]

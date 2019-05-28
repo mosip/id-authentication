@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -26,7 +25,6 @@ import io.mosip.kernel.core.util.DateUtils;
  *
  */
 @Component
-@ConfigurationProperties("mosip.idrepo.id")
 public abstract class BaseIdRepoValidator {
 	
 	private static final String BASE_ID_REPO_VALIDATOR = "BaseIdRepoValidator";
