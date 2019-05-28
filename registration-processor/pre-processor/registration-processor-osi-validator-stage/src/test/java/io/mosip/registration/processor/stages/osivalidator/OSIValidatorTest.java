@@ -44,6 +44,7 @@ import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RIDResponseDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RidDto;
+import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsDto;
@@ -324,7 +325,73 @@ public class OSIValidatorTest {
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertTrue(isValid);
 	}
-
+	@Test
+	public void testoperatorPasswordNull() throws Exception {	
+		regOsiDto.setOfficerBiometricFileName(null);
+		regOsiDto.setSupervisorBiometricFileName(null);
+		regOsiDto.setSupervisorHashedPwd(null);
+		regOsiDto.setOfficerHashedPwd(null);
+		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(anyString(), any())).thenReturn(regOsiDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+		assertFalse(isValid);
+	}
+	
+	@Test
+	public void testusernotActive() throws Exception {	
+		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
+		UserDetailsDto userDetailsDto = new UserDetailsDto();
+		userDetailsDto.setActive(false);
+		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
+		userResponseDto.setResponse(userDetailsResponseDto);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
+		.thenReturn(userResponseDto);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+		assertFalse(isValid);
+	}
+	
+	@Test
+	public void testinvalidUserInput() throws Exception {	
+		ServerError error=new ServerError();
+		error.setMessage("Invalid Date format");
+		List<ServerError> errors=new ArrayList<>();
+		errors.add(error);
+		userResponseDto.setErrors(errors);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(userResponseDto)
+		.thenReturn(userResponseDto);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+		assertFalse(isValid);
+	}
+	@Test
+	public void testoperatorBiometricaAuthenticationFailure() throws Exception {	
+		io.mosip.registration.processor.core.auth.dto.ResponseDTO responseDTO=new io.mosip.registration.processor.core.auth.dto.ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		ErrorDTO errorDTO=new ErrorDTO();
+		errorDTO.setErrorMessage("authentication failed");
+		List<ErrorDTO> errors=new ArrayList<>();
+		errors.add(errorDTO);
+		authResponseDTO.setErrors(errors);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+		.thenReturn(authResponseDTO);
+		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))
+		.thenReturn(identity.getMetaData().get(0).getValue());
+		Mockito.when(registrationStatusService.checkUinAvailabilityForRid(any())).thenReturn(true);
+		registrationStatusDto.setRegistrationType("ACTIVATED");
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+		assertFalse(isValid);
+	}
 	/**
 	 * Test officer details null.
 	 *
