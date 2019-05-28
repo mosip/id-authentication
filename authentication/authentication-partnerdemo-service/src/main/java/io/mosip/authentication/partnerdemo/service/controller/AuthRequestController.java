@@ -134,13 +134,16 @@ public class AuthRequestController {
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
 			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
+			@RequestParam(name="isInternal",required=false) @Nullable Boolean isInternal,
 			@RequestParam(name="Authtype",required=false) @Nullable String reqAuth,
 			@RequestParam(name="transactionId",required=false) @Nullable String transactionId,
 			  @RequestBody Map<String,Object> request) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
 		String authRequestTemplate=environment.getProperty(IDA_AUTH_REQUEST_TEMPLATE);
 		Map<String,Object> reqValues=new HashMap<>();
-		idValuesMap(id, idType, isKyc, reqValues, transactionId);
-		encryptValuesMap(request, reqValues);
+		String utcCurrentDateTimeString = DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern"));
+
+		idValuesMap(id, idType, isKyc, isInternal, reqValues, transactionId, utcCurrentDateTimeString);
+		encryptValuesMap(request, reqValues, utcCurrentDateTimeString, isInternal);
 		reqValues.put(OTP,false);
 		 reqValues.put(DEMO,false);
 		 reqValues.put(BIO,false);
@@ -224,21 +227,36 @@ public class AuthRequestController {
 
 
 
-	private void encryptValuesMap(Map<String, Object> identity, Map<String, Object> reqValues)
+	private void encryptValuesMap(Map<String, Object> identity, Map<String, Object> reqValues, String utcCurrentDateTimeString, Boolean isInternal)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException {
 		EncryptionRequestDto encryptionRequestDto=new EncryptionRequestDto();
+		applyTimeStamp(identity, utcCurrentDateTimeString);
 		encryptionRequestDto.setIdentityRequest(identity);
-		EncryptionResponseDto encryptionResponse=encrypt.encrypt(encryptionRequestDto);
+		EncryptionResponseDto encryptionResponse=encrypt.encrypt(encryptionRequestDto, isInternal);
 		reqValues.put("encHmac", encryptionResponse.getRequestHMAC());
 		reqValues.put("encSessionKey", encryptionResponse.getEncryptedSessionKey());
 		reqValues.put("encRequest", encryptionResponse.getEncryptedIdentity());
 	}
 
 
-	private void idValuesMap(String id, String idType, Boolean isKyc, Map<String, Object> reqValues,
-			String transactionId) {
+	private void applyTimeStamp(Map<String, Object> map, String utcCurrentDateTimeString) {
+		if(map.containsKey("timestamp")) {
+			map.put("timestamp", utcCurrentDateTimeString);
+		}
+		
+		for(Object val : map.values()) {
+			if(val instanceof Map) {
+				Map<String, Object> valMap = (Map<String, Object>) val;
+				applyTimeStamp(valMap, utcCurrentDateTimeString);
+			}
+		}
+		
+	}
+
+	private void idValuesMap(String id, String idType, Boolean isKyc, Boolean isInternal, Map<String, Object> reqValues,
+			String transactionId, String utcCurrentDateTimeString) {
 		reqValues.put(ID, id);
 		if (null != idType) {
 			reqValues.put(ID_TYPE, idType);
@@ -250,9 +268,13 @@ public class AuthRequestController {
 			reqValues.put(SECONDARY_LANG_CODE, environment.getProperty("mosip.secondary-language"));
 			
 		} else {
-			reqValues.put(AUTH_TYPE, "auth");
+			if(isInternal) {
+				reqValues.put(AUTH_TYPE, "auth.internal");
+			} else {
+				reqValues.put(AUTH_TYPE, "auth");
+			}
 		}
-		reqValues.put(TIMESTAMP, DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern")));
+		reqValues.put(TIMESTAMP, utcCurrentDateTimeString);
 		reqValues.put(TXN, transactionId == null ? "1234567890" : transactionId);
 		reqValues.put(VER, environment.getProperty(IDA_API_VERSION));
 	}
