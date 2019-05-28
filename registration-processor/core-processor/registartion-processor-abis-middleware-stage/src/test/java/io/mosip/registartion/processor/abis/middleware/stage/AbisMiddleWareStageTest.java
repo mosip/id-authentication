@@ -1,4 +1,4 @@
-/*package io.mosip.registartion.processor.abis.middleware.stage;
+package io.mosip.registartion.processor.abis.middleware.stage;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -25,6 +26,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
@@ -69,6 +71,9 @@ public class AbisMiddleWareStageTest {
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	@Mock
+	private PacketInfoDao packetInfoDao;
 
 	private RegistrationStatusEntity regStatusEntity;
 	private List<String> abisRefList;
@@ -116,29 +121,64 @@ public class AbisMiddleWareStageTest {
 
 		abisInsertIdentifyList = new ArrayList<>();
 		AbisRequestDto insertAbisReq = new AbisRequestDto();
-		insertAbisReq.setRefRegtrnId("1234");
-		insertAbisReq.setAbisAppCode("code1");
-		insertAbisReq.setBioRefId("bio ref id");
+		insertAbisReq.setRefRegtrnId("10001100010027120190430071052");
+		insertAbisReq.setAbisAppCode("Abis1");
+		insertAbisReq.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
 		insertAbisReq.setRequestType("INSERT");
-		insertAbisReq.setId("12345");
+		insertAbisReq.setId("f4b1f6fd-466c-462f-aa8b-c218596542ec");
+		insertAbisReq.setStatusCode("IN_PROGRESS");
 		insertAbisReq.setReqText("mosip".getBytes());
 
+		AbisRequestDto insertAlreadyProcessed = new AbisRequestDto();
+		insertAlreadyProcessed.setRefRegtrnId("de7c4893-bf6f-46b4-a4d5-5cd458d5c7e2");
+		insertAlreadyProcessed.setAbisAppCode("Abis2");
+		insertAlreadyProcessed.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
+		insertAlreadyProcessed.setRequestType("INSERT");
+		insertAlreadyProcessed.setId("f4b1f6fd-466c-462f-aa8b-c218596542ed");
+		insertAlreadyProcessed.setStatusCode("ALREADY_PROCESSED");
+		insertAlreadyProcessed.setReqText("mosip".getBytes());
+
 		AbisRequestDto identifyAbisReq = new AbisRequestDto();
-		identifyAbisReq.setRefRegtrnId("1234");
-		identifyAbisReq.setAbisAppCode("code1");
-		identifyAbisReq.setBioRefId("bio ref id");
+		identifyAbisReq.setRefRegtrnId("de7c4893-bf6f-46b4-a4d5-5cd458d5c7e2");
+		identifyAbisReq.setAbisAppCode("Abis1");
+		identifyAbisReq.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
 		identifyAbisReq.setRequestType("IDENTIFY");
-		insertAbisReq.setId("123456");
+		insertAbisReq.setId("f4b1f6fd-466c-462f-aa8b-c218596542ee");
 		insertAbisReq.setReqText("mosip".getBytes());
+
+		AbisRequestDto identifyAbisReq1 = new AbisRequestDto();
+		identifyAbisReq1.setRefRegtrnId("de7c4893-bf6f-46b4-a4d5-5cd458d5c7e2");
+		identifyAbisReq1.setAbisAppCode("Abis2");
+		identifyAbisReq1.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
+		identifyAbisReq1.setRequestType("IDENTIFY");
+		identifyAbisReq1.setId("f4b1f6fd-466c-462f-aa8b-c218596542ef");
+		identifyAbisReq1.setReqText("mosip".getBytes());
+
 		abisInsertIdentifyList.add(insertAbisReq);
 		abisInsertIdentifyList.add(identifyAbisReq);
+		abisInsertIdentifyList.add(identifyAbisReq1);
+		abisInsertIdentifyList.add(insertAlreadyProcessed);
 
 		mosipQueueList = new ArrayList<>();
 		MosipQueue queue1 = new MosipQueue() {
 			@Override
 			public String getQueueName() {
 				// TODO Auto-generated method stub
-				return "code1";
+				return "Abis1";
+			}
+
+			@Override
+			public void createConnection(String username, String password, String brokerUrl) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+
+		MosipQueue queue2 = new MosipQueue() {
+			@Override
+			public String getQueueName() {
+				// TODO Auto-generated method stub
+				return "Abis2";
 			}
 
 			@Override
@@ -148,6 +188,7 @@ public class AbisMiddleWareStageTest {
 			}
 		};
 		mosipQueueList.add(queue1);
+		mosipQueueList.add(queue2);
 
 		List<String> abisInboundAddresses = new ArrayList<>();
 		abisInboundAddresses.add("abis1-inbound-address");
@@ -158,14 +199,54 @@ public class AbisMiddleWareStageTest {
 		abisInboundOutBounAddressList.add(abisInboundAddresses);
 		abisInboundOutBounAddressList.add(abisOutboundAddresses);
 
-		Mockito.when(utility.getInboundOutBoundAddressList()).thenReturn(abisInboundOutBounAddressList);
+		AbisQueueDetails abisQueue = new AbisQueueDetails();
+		abisQueue.setMosipQueue(queue1);
+		abisQueue.setInboundQueueName("abis1-inbound-Queue");
+		abisQueue.setOutboundQueueName("abis1-outbound-Queue");
+		abisQueue.setName("Abis1");
+
+		AbisQueueDetails abisQueue1 = new AbisQueueDetails();
+		abisQueue1.setMosipQueue(queue2);
+		abisQueue1.setInboundQueueName("abis2-inbound-Queue");
+		abisQueue1.setOutboundQueueName("abis2-outbound-Queue");
+		abisQueue1.setName("Abis2");
+		List<AbisQueueDetails> abisQueueList = new ArrayList<>();
+		abisQueueList.add(abisQueue);
+		abisQueueList.add(abisQueue1);
+
+		Mockito.when(utility.getAbisQueueDetails()).thenReturn(abisQueueList);
+		Mockito.when(packetInfoManager.getBatchIdByRequestId(Mockito.anyString()))
+				.thenReturn("69098823-eba8-4aa9-bb64-9e0d36bd64a9");
+		List<String> bioRefId = new ArrayList<>();
+		bioRefId.add("d1070375-0960-4e90-b12c-72ab6186444d");
+		Mockito.when(packetInfoManager.getReferenceIdByBatchId(Mockito.anyString())).thenReturn(bioRefId);
+		List<String> abisMatchedRefIds = new ArrayList<>();
+		abisMatchedRefIds.add("d1070375-0960-4e90-b12c-72ab6186444d");
+		Mockito.when(packetInfoDao.getAbisRefRegIdsByMatchedRefIds(Mockito.any())).thenReturn(abisMatchedRefIds);
+		List<String> transIdList = new ArrayList<>();
+		transIdList.add("1234");
+		Mockito.when(packetInfoManager.getAbisTransactionIdByRequestId(Mockito.anyString())).thenReturn(transIdList);
+		//
+		// packetInfoManager.getIdentifyReqListByTransactionId(
+		// transactionIdList.get(0), AbisStatusCode.IDENTIFY.toString())
+		List<AbisRequestDto> abisIdentifyRequestDtoList = new ArrayList<>();
+		AbisRequestDto abisIdentifyRequestDto = new AbisRequestDto();
+		abisIdentifyRequestDto.setAbisAppCode("Abis1");
+		abisIdentifyRequestDto.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
+		abisIdentifyRequestDto.setId("98509c18-ff22-46b7-a8c7-b4dec1d00c85");
+		abisIdentifyRequestDto.setReqText("mosip".getBytes());
+		abisIdentifyRequestDto.setReqBatchId("d87e6e28-4234-4433-b45d-0313c2aeca01");
+		abisIdentifyRequestDtoList.add(abisIdentifyRequestDto);
+		Mockito.when(packetInfoManager.getIdentifyReqListByTransactionId(Mockito.any(), Mockito.any()))
+				.thenReturn(abisIdentifyRequestDtoList);
+
+		// Mockito.when(utility.getInboundOutBoundAddressList()).thenReturn(abisInboundOutBounAddressList);
 
 	}
 
 	@Test
 	public void processTest() throws RegistrationProcessorCheckedException {
 
-		Mockito.when(utility.getMosipQueuesForAbis()).thenReturn(mosipQueueList);
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(abisInsertIdentifyList);
 
@@ -177,39 +258,50 @@ public class AbisMiddleWareStageTest {
 		stage.process(dto);
 		assertTrue(dto.getIsValid());
 
+		// test for insert request list is empty
+		List<AbisRequestDto> abisInsertIdentifyList = new ArrayList<>();
+		AbisRequestDto identifyAbisReq = new AbisRequestDto();
+		identifyAbisReq.setRefRegtrnId("d87e6e28-4234-4433-b45d-0313c2aeca01");
+		identifyAbisReq.setAbisAppCode("Abis1");
+		identifyAbisReq.setBioRefId("d1070375-0960-4e90-b12c-72ab6186444d");
+		identifyAbisReq.setRequestType("IDENTIFY");
+		identifyAbisReq.setReqText("mosip".getBytes());
+		abisInsertIdentifyList.add(identifyAbisReq);
+		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(abisInsertIdentifyList);
+		stage.process(dto);
+		assertTrue(dto.getIsValid());
+
 	}
 
 	@Test
-	public void testemptyAbisRefListAndTransId() throws RegistrationProcessorCheckedException {
-		Mockito.when(utility.getMosipQueuesForAbis()).thenReturn(mosipQueueList);
+	public void testVariousScenarious() throws RegistrationProcessorCheckedException {
+		// Mockito.when(utility.getMosipQueuesForAbis()).thenReturn(mosipQueueList);
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(abisInsertIdentifyList);
-
 		Mockito.when(mosipQueueManager.send(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("10003100030001520190422074511");
 		Mockito.when(packetInfoManager.getReferenceIdByRid(Mockito.anyString())).thenReturn(null);
-
 		stage.deployVerticle();
 		stage.process(dto);
 		assertFalse(dto.getIsValid());
 
-		stage.process(dto);
-		assertFalse(dto.getIsValid());
-
+		// test for null transactionId
 		Mockito.when(registrationStatusDao.findById(Mockito.anyString())).thenReturn(null);
 		Mockito.when(packetInfoManager.getReferenceIdByRid(Mockito.anyString())).thenReturn(abisRefList);
 		stage.process(dto);
 		assertFalse(dto.getIsValid());
 
+		// test for empty insertidentify request List
 		Mockito.when(registrationStatusDao.findById(Mockito.anyString())).thenReturn(regStatusEntity);
-
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ArrayList<AbisRequestDto>());
 		Mockito.when(packetInfoManager.getReferenceIdByRid(Mockito.anyString())).thenReturn(abisRefList);
 		stage.process(dto);
 		assertFalse(dto.getIsValid());
 
+		// test for send to queue failed
 		Mockito.when(registrationStatusDao.findById(Mockito.anyString())).thenReturn(regStatusEntity);
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(abisInsertIdentifyList);
@@ -217,6 +309,7 @@ public class AbisMiddleWareStageTest {
 		Mockito.when(mosipQueueManager.send(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(false);
 		stage.process(dto);
 
+		// test for exception while sending to queue
 		Mockito.when(registrationStatusDao.findById(Mockito.anyString())).thenReturn(regStatusEntity);
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(abisInsertIdentifyList);
@@ -228,6 +321,7 @@ public class AbisMiddleWareStageTest {
 
 	}
 
+	// test for unknown exception occured
 	@Test
 	public void testException() {
 		Mockito.when(packetInfoManager.getInsertOrIdentifyRequest(Mockito.anyString(), Mockito.anyString()))
@@ -243,11 +337,11 @@ public class AbisMiddleWareStageTest {
 
 	@Test
 	public void testConsumerListener() throws RegistrationProcessorCheckedException {
-		String response = "{\"id\":\"mosip.abis.insert\",\"requestId\":\"5b64e806-8d5f-4ba1-b641-0b55cf40c0e1\",\"timestamp\":\"1558001992\",\"returnValue\":2,\"failureReason\":7}\r\n"
+		String failedInsertResponse = "{\"id\":\"mosip.abis.insert\",\"requestId\":\"5b64e806-8d5f-4ba1-b641-0b55cf40c0e1\",\"timestamp\":\"1558001992\",\"returnValue\":2,\"failureReason\":7}\r\n"
 				+ "";
 		ActiveMQBytesMessage amq = new ActiveMQBytesMessage();
 		ByteSequence byteSeq = new ByteSequence();
-		byteSeq.setData(response.getBytes());
+		byteSeq.setData(failedInsertResponse.getBytes());
 		amq.setContent(byteSeq);
 		Vertx vertx = Mockito.mock(Vertx.class);
 		MosipEventBus evenBus = new MosipEventBus(vertx);
@@ -257,17 +351,49 @@ public class AbisMiddleWareStageTest {
 		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto);
 		stage.consumerListener(amq, "abis1_inboundAddress", queue, evenBus);
 
+		String sucessfulResponse = "{\"id\":\"mosip.abis.insert\",\"requestId\":\"5b64e806-8d5f-4ba1-b641-0b55cf40c0e1\",\"timestamp\":\"1558001992\",\"returnValue\":1,\"failureReason\":null}\r\n"
+				+ "";
+		byteSeq.setData(sucessfulResponse.getBytes());
+		amq.setContent(byteSeq);
+		AbisRequestDto abisCommonRequestDto1 = new AbisRequestDto();
+		abisCommonRequestDto1.setRequestType("INSERT");
+		abisCommonRequestDto1.setAbisAppCode("Abis1");
+		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto1);
+		stage.consumerListener(amq, "abis1_inboundAddress", queue, evenBus);
+
 	}
 
+	@Test
+	public void batchIdNull() throws RegistrationProcessorCheckedException {
+		String sucessfulResponse = "{\"id\":\"mosip.abis.insert\",\"requestId\":\"5b64e806-8d5f-4ba1-b641-0b55cf40c0e1\",\"timestamp\":\"1558001992\",\"returnValue\":1,\"failureReason\":null}\r\n"
+				+ "";
+		ActiveMQBytesMessage amq1 = new ActiveMQBytesMessage();
+		ByteSequence byteSeq1 = new ByteSequence();
+		byteSeq1.setData(sucessfulResponse.getBytes());
+		amq1.setContent(byteSeq1);
+		Vertx vertx1 = Mockito.mock(Vertx.class);
+		MosipEventBus eventBus1 = new MosipEventBus(vertx1);
+		MosipQueue queue1 = Mockito.mock(MosipQueue.class);
+		AbisRequestDto abisCommonRequestDto1 = new AbisRequestDto();
+		abisCommonRequestDto1.setRequestType("INSERT");
+		abisCommonRequestDto1.setAbisAppCode("Abis1");
+		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto1);
+		Mockito.when(packetInfoManager.getBatchIdByRequestId(Mockito.anyString())).thenReturn(null);
+		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, eventBus1);
+
+	}
+
+	//
 	@Test
 	public void testIdentifyConsumerListener() throws RegistrationProcessorCheckedException, NoSuchFieldException,
 			SecurityException, IllegalArgumentException, IllegalAccessException {
 		Mockito.when(packetInfoManager.getBatchStatusbyBatchId(Mockito.anyString())).thenReturn(null);
 
-		String identifyResponse = "{\"id\":\"mosip.abis.identify\",\"requestId\":\"8a3effd4-5fba-44e0-8cbb-3083ba098209\",\"timestamp\":\"1558001992\",\"returnValue\":1,\"failureReason\":null,\"candidateList\":null}";
+		// test for identify succes response - no duplicates
+		String identifySucessfulResponse = "{\"id\":\"mosip.abis.identify\",\"requestId\":\"8a3effd4-5fba-44e0-8cbb-3083ba098209\",\"timestamp\":\"1558001992\",\"returnValue\":1,\"failureReason\":null,\"candidateList\":null}";
 		ActiveMQBytesMessage amq1 = new ActiveMQBytesMessage();
 		ByteSequence byteSeq1 = new ByteSequence();
-		byteSeq1.setData(identifyResponse.getBytes());
+		byteSeq1.setData(identifySucessfulResponse.getBytes());
 		amq1.setContent(byteSeq1);
 		Vertx vertx1 = Mockito.mock(Vertx.class);
 		MosipEventBus evenBus1 = new MosipEventBus(vertx1);
@@ -276,5 +402,16 @@ public class AbisMiddleWareStageTest {
 		abisCommonRequestDto1.setRequestType("IDENTIFY");
 		Mockito.when(packetInfoManager.getAbisRequestByRequestId(Mockito.any())).thenReturn(abisCommonRequestDto1);
 		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, evenBus1);
+		// test for identify failed response
+		String identifyFailedResponse = "{\"id\":\"mosip.abis.identify\",\"requestId\":\"8a3effd4-5fba-44e0-8cbb-3083ba098209\",\"timestamp\":\"1558001992\",\"returnValue\":2,\"failureReason\":3,\"candidateList\":null}";
+		byteSeq1.setData(identifyFailedResponse.getBytes());
+		amq1.setContent(byteSeq1);
+		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, evenBus1);
+		// test for identify response - with duplicates
+		String duplicateIdentifySuccessResponse = "{\"id\":\"mosip.abis.identify\",\"requestId\":\"f4b1f6fd-466c-462f-aa8b-c218596542ec\",\"timestamp\":\"1558413054\",\"returnValue\":1,\"failureReason\":null,\"candidateList\":{\"count\":\"1\",\"candidates\":[{\"referenceId\":\"d1070375-0960-4e90-b12c-72ab6186444d\",\"scaledScore\":\"100\",\"internalScore\":null,\"analytics\":null,\"scores\":null}]}}";
+		byteSeq1.setData(duplicateIdentifySuccessResponse.getBytes());
+		amq1.setContent(byteSeq1);
+		stage.consumerListener(amq1, "abis1_inboundAddress", queue1, evenBus1);
+
 	}
-}*/
+}

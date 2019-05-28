@@ -76,6 +76,7 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
+import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -348,6 +349,15 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
+		JSONObject jsonObject = Mockito.mock(JSONObject.class);
+		Mockito.when(utility.getUIn(any())).thenReturn(12345678l);
+		Mockito.when(utility.retrieveIdrepoJson(any())).thenReturn(jsonObject);
+
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jsonObject);
+		// PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.getJSONObject(jsonObject, "individualBiometrics")).thenReturn(jsonObject);
+		Mockito.when(jsonObject.get("value")).thenReturn("applicantCBEF");
+
 		List<SyncRegistrationEntity> synchRecordList = new ArrayList<>();
 		synchRecordList.add(new SyncRegistrationEntity());
 
@@ -405,7 +415,7 @@ public class PacketValidateProcessorTest {
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("resupdate");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -463,7 +473,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-		dto.setReg_type("ABC");
+		dto.setReg_type("ACTIVATED");
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 
@@ -483,7 +493,7 @@ public class PacketValidateProcessorTest {
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("resupdate");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -816,5 +826,6 @@ public class PacketValidateProcessorTest {
 		assertEquals(true, messageDto.getInternalError());
 
 	}
+
 
 }
