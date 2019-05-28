@@ -118,9 +118,18 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 			if (null != publicKeyResponse.getResponse() && !publicKeyResponse.getResponse().isEmpty()
 					&& publicKeyResponse.getResponse().size() > 0) {
-  
+				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC Response Public Key --> ", APPLICATION_NAME, APPLICATION_ID,
+						publicKeyResponse.getResponse().get("publicKey").toString());
+				
+				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC Response issuedAt --> ", APPLICATION_NAME, APPLICATION_ID,
+						publicKeyResponse.getResponse().get("issuedAt").toString());
+				
+				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC Response expiryAt --> ", APPLICATION_NAME, APPLICATION_ID,
+						publicKeyResponse.getResponse().get("expiryAt").toString());
+				
 				keyStore.setId(UUID.randomUUID().toString());
 				keyStore.setPublicKey(publicKeyResponse.getResponse().get("publicKey").toString().getBytes());
+						
 				LocalDateTime issuedAt = DateUtils
 						.parseToLocalDateTime(publicKeyResponse.getResponse().get("issuedAt").toString());
 				LocalDateTime expiryAt = DateUtils
