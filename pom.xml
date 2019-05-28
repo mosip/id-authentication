@@ -18,6 +18,6 @@
 		<module>id-repository</module>
 		<module>admin</module>
 		<module>automationtests</module>
-
-  </modules>
+		<module>e2etestrig</module>
+	</modules>
 </project>
