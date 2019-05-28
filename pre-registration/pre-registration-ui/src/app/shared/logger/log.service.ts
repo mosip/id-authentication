@@ -7,7 +7,7 @@ import { LogPublishersService } from './log.publishers.service';
   providedIn: 'root'
 })
 export class LogService {
-  level: LogLevel = LogLevel.All;
+  level: LogLevel = LogLevel.Error;
   logWithDate: boolean = true;
   publishers: LogPublisher[];
   constructor(private publishersService: LogPublishersService) {

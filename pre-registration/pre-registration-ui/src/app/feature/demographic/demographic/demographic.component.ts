@@ -194,8 +194,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   async ngOnInit() {
-    this.loggerService.info('IN DEMOGRAPHIC');
-    this.loggerService.info('IN DEMOGRAPHIC');
     this.initialization();
     this.config = this.configService.getConfig();
     this.setConfig();
@@ -551,7 +549,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          this.loggerService.info('Unable to fetch gender');
+          this.loggerService.error('Unable to fetch gender');
           this.onError(this.errorlabels.error);
         }
       );
@@ -578,7 +576,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          this.loggerService.info('Unable to fetch Resident types');
+          this.loggerService.error('Unable to fetch Resident types');
           this.onError(this.errorlabels.error);
         }
       );
@@ -727,7 +725,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         },
         () => {
           this.onError(this.errorlabels.error);
-          this.loggerService.info('Unable to fetch Below Hierearchy');
+          this.loggerService.error('Unable to fetch Below Hierearchy');
         }
       );
     });
@@ -875,14 +873,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
-            // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
             this.onError(this.errorlabels.error);
           }
         },
         error => {
-          // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
           this.onError(this.errorlabels.error);
-          this.loggerService.info(error);
+          this.loggerService.error(error);
         }
       );
     } else {
@@ -912,8 +908,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    this.loggerService.info('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
-
     if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
       const request = this.createRequestJSON(identity);
@@ -944,7 +938,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            this.loggerService.info(error);
+            this.loggerService.error(error);
             this.onError(this.errorlabels.error);
           }
         );
@@ -972,7 +966,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            this.loggerService.info(error);
+            this.loggerService.error(error);
             // this.router.navigate(['error']);
             this.onError(this.errorlabels.error);
           }
@@ -1036,7 +1030,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       url = Utils.getURL(this.router.url, 'file-upload');
     }
-    this.loggerService.info('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
     this.router.navigate([url]);
   }
 
