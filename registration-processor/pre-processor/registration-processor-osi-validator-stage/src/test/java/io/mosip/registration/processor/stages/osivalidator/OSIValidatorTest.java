@@ -26,7 +26,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -278,7 +277,6 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 		.thenReturn(packetMetaInfo);
-		regOsiDto.setOfficerBiometricFileName("officer_bio_CBEFF");
 		regOsiDto.setSupervisorBiometricFileName("supervisor_bio_CBEFF");
 
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
@@ -357,23 +355,6 @@ public class OSIValidatorTest {
 	}
 
 	/**
-	 * Testis valid OSI failure.
-	 *
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Test
-	public void testisValidOSIFailure() throws Exception {
-		io.mosip.registration.processor.core.auth.dto.ResponseDTO responseDTO=new io.mosip.registration.processor.core.auth.dto.ResponseDTO();
-		responseDTO.setAuthStatus(false);
-		authResponseDTO.setResponse(responseDTO);
-		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-		.thenReturn(authResponseDTO);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	/**
 	 * Test invalid iris.
 	 *
 	 * @throws ApisResourceAccessException
@@ -386,25 +367,6 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		registrationStatusDto.setStatusCode("FAILED");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	@Test
-	public void testIntroducerRIDOnHoldProccessing() throws ApisResourceAccessException, IOException, Exception {
-		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
-		registrationStatusDto.setStatusCode("PROCESSING");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
-
-	@Test
-	public void testIntroducerUINProcessed() throws ApisResourceAccessException, IOException, Exception {
-		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
-		registrationStatusDto.setStatusCode("PROCESSED");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
 	}
@@ -488,16 +450,18 @@ public class OSIValidatorTest {
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(123456).thenReturn(123456).thenReturn(map).thenReturn(map);
 		demoJson.put("value", "biometreics");
 		PowerMockito.when(JsonUtil.class, "getJSONObject", anyObject(), anyString()).thenReturn(demoJson);
-
-		authResponseDTO.setErrors(null);
+	
+		AuthResponseDTO authResponseDTO1 = new AuthResponseDTO();
+		authResponseDTO1 .setErrors(null);
 		io.mosip.registration.processor.core.auth.dto.ResponseDTO responseDTO=new io.mosip.registration.processor.core.auth.dto.ResponseDTO();
-		responseDTO.setAuthStatus(true);
+		responseDTO.setAuthStatus(false);
+		authResponseDTO1.setResponse(responseDTO);
 		Mockito.when(authUtil.authByIdAuthentication
-				(anyString(), any(), any())).thenReturn(authResponseDTO);
+				(anyString(), any(), any())).thenReturn(authResponseDTO).thenReturn(authResponseDTO1);
 
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 
-		assertTrue(isValid);
+		assertFalse(isValid);
 	}
 
 }
