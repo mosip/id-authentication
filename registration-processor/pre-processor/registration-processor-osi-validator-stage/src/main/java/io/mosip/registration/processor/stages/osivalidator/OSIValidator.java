@@ -67,8 +67,6 @@ import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
@@ -97,7 +95,7 @@ public class OSIValidator {
 
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
-	
+
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -123,6 +121,9 @@ public class OSIValidator {
 	private JSONObject demographicIdentity;
 
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
+
+	/** The message. */
+	private String message = null;
 
 	/** The Constant TRUE. */
 	private static final String TRUE = "true";
@@ -178,7 +179,7 @@ public class OSIValidator {
 	public static final String PARTNER_ID = "PARTNER";
 
 	public static final String INDIVIDUAL_TYPE_UIN = "UIN";
-	
+
 	private static final String INDIVIDUAL_TYPE_USERID = "USERID";
 
 	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
@@ -188,7 +189,7 @@ public class OSIValidator {
 	IBioApi bioAPi = new BioApiImpl();
 
 	CbeffUtil cbeffUtil = new CbeffImpl();
-	
+
 	/**
 	 * Checks if is valid OSI.
 	 *
@@ -213,8 +214,8 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		demographicIdentity = getDemoIdentity(registrationId);
-		regProcessorIdentityJson = getIdentity();
+		demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
+		regProcessorIdentityJson = utility.getRegistrationProcessorIdentityJson();
 		Identity identity = osiUtils.getIdentity(registrationId);
 		/** Getting data from packet MetadataInfo */
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
@@ -335,15 +336,15 @@ public class OSIValidator {
 	 * @param registrationId
 	 *            the registration id
 	 * @return true, if is valid operator
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws BioTypeException 
-	 * @throws BiometricException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidKeySpecException 
-	 * @throws ApisResourceAccessException 
-	 * @throws Exception 
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws ApisResourceAccessException
+	 * @throws Exception
 	 * @throws NumberFormatException
 	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
@@ -384,7 +385,7 @@ public class OSIValidator {
 
 		return isValid;
 	}
-	
+
 	private boolean validateUserBiometric(String registrationId, String fileName, String userId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
@@ -425,15 +426,15 @@ public class OSIValidator {
 	 * @param registrationId
 	 *            the registration id
 	 * @return true, if is valid supervisor
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws BioTypeException 
-	 * @throws BiometricException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidKeySpecException 
-	 * @throws ApisResourceAccessException 
-	 * @throws Exception 
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws ApisResourceAccessException
+	 * @throws Exception
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
@@ -777,7 +778,7 @@ public class OSIValidator {
 		}
 
 	}
-	
+
 	private boolean isActiveUserId(String registrationId, RegOsiDto regOsi, Identity identity)
 			throws UnsupportedEncodingException, ApisResourceAccessException {
 		boolean isValid = false;

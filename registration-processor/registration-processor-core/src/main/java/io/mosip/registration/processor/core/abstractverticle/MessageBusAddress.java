@@ -149,6 +149,12 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant ABIS_HANDLER_BUS_OUT. */
 	public static final MessageBusAddress ABIS_HANDLER_BUS_OUT = new MessageBusAddress("abis-handler-bus-out");
 
+	/** The Constant BIOMETRIC_AUTHENTICATION_BUS_IN. */
+	public static final MessageBusAddress BIOMETRIC_AUTHENTICATION_BUS_IN = new MessageBusAddress("biometric-authentication-bus-in");
+
+	/** The Constant BIOMETRIC_AUTHENTICATION_BUS_OUT. */
+	public static final MessageBusAddress BIOMETRIC_AUTHENTICATION_BUS_OUT = new MessageBusAddress("biometric-authentication-bus-out");
+	
 	/*
 	 * (non-Javadoc)
 	 *

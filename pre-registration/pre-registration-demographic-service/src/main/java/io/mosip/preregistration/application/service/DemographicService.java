@@ -16,7 +16,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +40,6 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupporte
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -124,8 +122,7 @@ public class DemographicService {
 	 * Autowired reference for {@link #JsonValidatorImpl}
 	 */
 	@Autowired
-	@Lazy
-	private IdObjectSchemaValidator jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}

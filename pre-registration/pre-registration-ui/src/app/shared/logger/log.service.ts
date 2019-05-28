@@ -3,16 +3,6 @@ import { LogEntry, LogLevel } from './log.entry';
 import { LogPublisher } from './log.publisher';
 import { LogPublishersService } from './log.publishers.service';
 
-// export enum LogLevel {
-//   All = 0,
-//   Debug = 1,
-//   Info = 2,
-//   Warn = 3,
-//   Error = 4,
-//   Fatal = 5,
-//   Off = 6
-// }
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,8 +11,6 @@ export class LogService {
   logWithDate: boolean = true;
   publishers: LogPublisher[];
   constructor(private publishersService: LogPublishersService) {
-    console.log('logger construcutor');
-
     this.publishers = this.publishersService.publishers;
   }
 
@@ -57,7 +45,6 @@ export class LogService {
       entry.level = level;
       entry.extraInfo = params;
       entry.logWithDate = this.logWithDate;
-      // console.log(entry.buildLogString());
       for (let logger of this.publishers) {
         logger.log(entry).subscribe(response => console.log(response));
       }

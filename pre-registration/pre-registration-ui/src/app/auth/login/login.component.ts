@@ -208,8 +208,8 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     this.loginIdValidator();
-    this.inputOTP = '';
     if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
+      this.inputOTP = '';
       this.showResend = true;
       this.showOTP = true;
       this.showSendOTP = false;
@@ -266,7 +266,6 @@ export class LoginComponent implements OnInit {
             clearInterval(this.timer);
             localStorage.setItem('loggedIn', 'true');
             this.authService.setToken();
-
             this.regService.setLoginId(this.inputContactDetails);
             this.router.navigate(['dashboard']);
           } else {

@@ -46,7 +46,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER','ID_AUTHENTICATION','REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {

@@ -1,0 +1,9 @@
+{"id":"mosip.pre-registration.booking.book",
+"version":"1.0",
+"responsetime":"2019-05-16T06:13:29.544Z",
+"response":
+{
+"bookingMessage":"Appointment booked successfully"
+},
+"errors":null
+}

@@ -94,7 +94,7 @@ public class VidController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PostMapping(path = "/vid", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/vid", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> createVid(
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
 			throws IdRepoAppException {
