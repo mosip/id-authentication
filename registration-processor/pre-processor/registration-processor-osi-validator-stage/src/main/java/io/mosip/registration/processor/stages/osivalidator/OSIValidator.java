@@ -257,12 +257,12 @@ public class OSIValidator {
 			boolean isActive = isActiveUserId(registrationId, regOsi, identity);
 			if (!isActive) {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET));
+						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET);
+				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"Both Officer and Supervisor ID are not present in Packet");
+						StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
 				return false;
 			}
 			if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
@@ -280,7 +280,7 @@ public class OSIValidator {
 		boolean wasSupervisorActiveDuringPCT = false;
 		String statusMessage = "";
 		if (officerId != null && !officerId.isEmpty()) {
-			UserResponseDto officerResponse = wasOperatorActiveDuringPCT(officerId, creationDate);
+			UserResponseDto officerResponse = isUserActive(officerId, creationDate);
 			if (officerResponse.getErrors() == null) {
 				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).isActive();
 				if (!wasOfficerActiveDuringPCT) {
@@ -298,7 +298,7 @@ public class OSIValidator {
 		}
 
 		if (supervisorId != null && !supervisorId.isEmpty()) {
-			UserResponseDto supervisorResponse = wasOperatorActiveDuringPCT(supervisorId, creationDate);
+			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate);
 			if (supervisorResponse.getErrors() == null) {
 				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).isActive();
 				if (!wasSupervisorActiveDuringPCT) {
@@ -317,7 +317,7 @@ public class OSIValidator {
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private UserResponseDto wasOperatorActiveDuringPCT(String operatorId, String creationDate)
+	private UserResponseDto isUserActive(String operatorId, String creationDate)
 			throws ApisResourceAccessException {
 		UserResponseDto userResponse;
 		List<String> pathSegments = new ArrayList<String>();
@@ -416,7 +416,12 @@ public class OSIValidator {
 		InputStream biometricStream = adapter.getFile(registrationId, fileName.toUpperCase());
 		byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
 		AuthResponseDTO response = authUtil.authByIdAuthentication(userId, INDIVIDUAL_TYPE_USERID, officerbiometric);
-		return (response.getErrors() == null || response.getErrors().isEmpty());
+		if(!response.getResponse().isAuthStatus()) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.IDA_AUTHENTICATION_FAILURE + " " + response.getErrors().get(0));
+		}
+
+		return response.getResponse().isAuthStatus();
 
 	}
 
@@ -458,6 +463,8 @@ public class OSIValidator {
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidSupervisor()::entry");
 		String supervisorId = regOsi.getSupervisorId();
 		boolean isValid = false;
 		if (supervisorId != null) {
@@ -492,6 +499,8 @@ public class OSIValidator {
 
 		} else
 			isValid = true; // either officer or supervisor information is mandatory. Supervisor id can be null
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidSupervisor()::exit");
 		return isValid;
 	}
 
