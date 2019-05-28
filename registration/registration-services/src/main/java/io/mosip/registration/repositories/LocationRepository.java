@@ -30,5 +30,8 @@ public interface LocationRepository extends BaseRepository<Location, String> {
 	 * @return the list
 	 */
 	List<Location> findByIsActiveTrueAndParentLocCodeAndLangCode(String parentLocCode, String langCode);
+	
+	
+	List<Location> findAllByIsActiveTrue();
 
 }

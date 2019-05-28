@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
@@ -20,8 +21,8 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 
 /**
  * The class to validate the Schema of Identity Object. This class internally
- * invokes the {@link IdObjectValidator} class provided by the kernel
- * module to validate the schema.
+ * invokes the {@link IdObjectValidator} class provided by the kernel module to
+ * validate the schema.
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -34,10 +35,15 @@ public class RegIdObjectValidator {
 	@Qualifier("schema")
 	private IdObjectValidator idObjectValidator;
 
+	@Autowired
 	@Qualifier("pattern")
 	private IdObjectValidator idOjectPatternvalidator;
 
-	public Boolean validateIdObject(Object idObject, IdObjectValidatorSupportedOperations registrationCategory) throws RegBaseCheckedException {
+	@Autowired
+	private RegIdObjectMasterDataValidator regIdObjectMasterDataValidator;
+
+	public void validateIdObject(Object idObject, IdObjectValidatorSupportedOperations registrationCategory)
+			throws BaseCheckedException {
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Validating schema of Identity Object");
 
@@ -48,6 +54,14 @@ public class RegIdObjectValidator {
 				if (idOjectPatternvalidator.validateIdObject(idObject, registrationCategory)) {
 					LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 							"ID object pattern validation is successful");
+					if (regIdObjectMasterDataValidator.validateIdObject(idObject, registrationCategory)) {
+						LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+								"ID object master data validation is successful");
+					} else {
+						throw new RegBaseCheckedException(
+								RegistrationExceptionConstants.ID_OBJECT_MASTER_DATA_VALIDATOR.getErrorCode(),
+								RegistrationExceptionConstants.ID_OBJECT_MASTER_DATA_VALIDATOR.getErrorMessage());
+					}
 				} else {
 					throw new RegBaseCheckedException(
 							RegistrationExceptionConstants.ID_OBJECT_PATTERN_VALIDATOR.getErrorCode(),
@@ -61,13 +75,14 @@ public class RegIdObjectValidator {
 		} catch (IdObjectValidationFailedException | IdObjectIOException idObjectValidatorException) {
 			LOGGER.error(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(idObjectValidatorException));
+			throw idObjectValidatorException;
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(runtimeException));
-		} 
+			throw runtimeException;
+		}
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Completed validating schema of Identity Object");
-		return true;
 
 	}
 

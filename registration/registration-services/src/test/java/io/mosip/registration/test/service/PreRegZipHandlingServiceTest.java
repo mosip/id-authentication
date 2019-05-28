@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doThrow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,7 +59,7 @@ public class PreRegZipHandlingServiceTest {
 
 	@Mock
 	private RegIdObjectValidator idObjectValidator;
-	
+
 	@Mock
 	private DocumentTypeDAO documentTypeDAO;
 
@@ -79,16 +80,18 @@ public class PreRegZipHandlingServiceTest {
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
 
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
-		
+
 		Map<String, Object> applicationMap = new HashMap<>();
-		applicationMap.put("mosip.registration.registration_pre_reg_packet_location","..//PreRegPacketStore");
+		applicationMap.put("mosip.registration.registration_pre_reg_packet_location", "..//PreRegPacketStore");
 		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 
 	}
 
 	@Test
 	public void extractPreRegZipFileTest() throws Exception {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+		Mockito.doAnswer((idObject) -> {
+			return "Success";
+		}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
@@ -98,7 +101,8 @@ public class PreRegZipHandlingServiceTest {
 
 	@Test(expected = RegBaseCheckedException.class)
 	public void extractPreRegZipFileTestFail() throws Exception {
-		Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(false);
+		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator)
+				.validateIdObject(Mockito.any(), Mockito.any());
 		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
@@ -118,7 +122,9 @@ public class PreRegZipHandlingServiceTest {
 			zipOutputStream.flush();
 			zipOutputStream.closeEntry();
 
-			Mockito.when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+			Mockito.doAnswer((idObject) -> {
+				return "Success";
+			}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
 			Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
 			preRegZipHandlingServiceImpl.extractPreRegZipFile(byteArrayOutputStream.toByteArray());
 		}
@@ -156,7 +162,7 @@ public class PreRegZipHandlingServiceTest {
 	//
 	// }
 
-	//@Test(expected = RegBaseUncheckedException.class)
+	// @Test(expected = RegBaseUncheckedException.class)
 	public void encryptAndSavePreRegPacketTestNegative() throws RegBaseCheckedException {
 		mockSecretKey();
 		preRegZipHandlingServiceImpl.encryptAndSavePreRegPacket("89149679063970", preRegPacket);
@@ -192,8 +198,8 @@ public class PreRegZipHandlingServiceTest {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
-		
-		applicantDocumentDTO.setDocuments(new  HashMap<>());
+
+		applicantDocumentDTO.setDocuments(new HashMap<>());
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
 		IndividualIdentity identity = new IndividualIdentity();

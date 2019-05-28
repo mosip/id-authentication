@@ -22,4 +22,6 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 */
 	List<ValidDocument> findByIsActiveTrueAndDocCategoryCode(String docCategoryCode);
 	
+	List<ValidDocument> findAllByIsActiveTrue();
+	
 }
