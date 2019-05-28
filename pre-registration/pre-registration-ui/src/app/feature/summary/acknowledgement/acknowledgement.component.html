@@ -1,4 +1,10 @@
-<div id="print-section">
+<div class="spinner-wrapper" *ngIf= "showSpinner">
+</div>
+<div class="spinner-loading-data" *ngIf= "showSpinner">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div id="print-section" *ngIf="!showSpinner" >
 <div *ngFor="let user of usersInfo">
   <mat-card [ngClass]="usersInfo.length === 1 ? 'ack-container' : 'ack-container bottom-margin'">
       <mat-card-header class="ack__header-container">
