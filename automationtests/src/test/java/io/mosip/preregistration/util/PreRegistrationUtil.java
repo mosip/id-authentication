@@ -57,10 +57,11 @@ public class PreRegistrationUtil
 	 File resourcesDirectory = new File("src/test/resources");
 	public Map<String, String> fetchPreregProp() {
 		try {
-			propConfig.load(new FileInputStream(configPath+"/preReg/config/preRegistrationResourceURL.properties"));
+			propConfig.load(new FileInputStream(configPath+"preReg/config/preRegistrationResourceURL.properties"));
 			//propConfig.load(new FileInputStream(f));
-			propresorceURL.load(new FileInputStream(configPath+"/preReg/config/preregistrationConfig.properties"));
-			propConfig.putAll(propresorceURL);
+			propresorceURL.load(new FileInputStream(configPath+"preReg/config/preregistrationConfig.properties"));
+			 propConfig.putAll(propresorceURL);
+			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -69,7 +70,7 @@ public class PreRegistrationUtil
 		Map<String, String> mapProp = propConfig.entrySet().stream()
 				.collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
 
-		//logger.info("Map :"+mapProp);
+		logger.info("Map :"+mapProp);
 		return mapProp;
 
 	}
