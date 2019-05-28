@@ -6,7 +6,6 @@ import { FilesModel } from './files.model';
 export class UserModel {
   constructor(
     public preRegId?: string,
-    // public request?: RequestModel,
     public request?: ResponseModel,
     public files?: FilesModel,
     public location?: CodeValueModal[]
