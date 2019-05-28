@@ -685,7 +685,7 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @param otpMappingFieldName
 	 * @return String , OTP Value
 	 */
-	public String getOtpValue(String inputFilePath, String mappingFileName, String otpMappingFieldName) {
+		public String getOtpValue(String inputFilePath, String mappingFileName, String otpMappingFieldName) {
 		String value = JsonPrecondtion.getValueFromJson(inputFilePath, mappingFileName, otpMappingFieldName);
 		if (value.contains(":")) {
 			String[] otpKeyword = value.split(":");

@@ -200,7 +200,13 @@ public class IdaKeywordUtil extends KeywordUtil{
 				//tempMap.put("tspId", getValue[1]);
 				Map<String, String> tempOut = precondtionKeywords(tempMap);
 				String baseQuery = "select otp from kernel.otp_transaction where id like ";
-				String otpId = "%" + tempOut.get("uin")+ "%";
+				String otpId="";
+				if (tempOut.get("uin").length() != 16) {
+					otpId = "%" + tempOut.get("uin") + "%";
+				}
+				else if (tempOut.get("uin").length() == 16) {
+					otpId="%"+ RunConfigUtil.getUinForVid(tempOut.get("uin"))+"%";
+				}
 				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[1];
 				returnMap.put(entry.getKey(), OtpFindQuery);
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
@@ -230,13 +236,16 @@ public class IdaKeywordUtil extends KeywordUtil{
 			else if (entry.getValue().contains("$UIN") && !entry.getValue().contains("UIN-PIN")) {
 				returnMap.put(entry.getKey(), RunConfigUtil.getUinNumber(entry.getValue()));
 			} else if (entry.getValue().contains("$VID") && !entry.getValue().contains("VID-PIN")) {
-				if (entry.getValue().contains("WHERE") && entry.getValue().contains("WITH")
-						&& entry.getValue().contains("UIN")) {
+				if (entry.getValue().contains("VID:WHERE:") && entry.getValue().contains("WHERE")
+						&& entry.getValue().contains("WITH") && entry.getValue().contains("UIN")) {
 					String uinKeyword = entry.getValue().replace("VID:WHERE:", "");
 					Map<String, String> tempIn = new HashMap<String, String>();
 					tempIn.put("uin", uinKeyword);
 					Map<String, String> tempOut = precondtionKeywords(tempIn);
 					returnMap.put(entry.getKey(), RunConfigUtil.getVidKey(tempOut.get("uin").toString()));
+				} else if (entry.getValue().contains("VID:WITH")) {
+					String vidKeyword = entry.getValue().replace("VID:WITH:", "").replace("$", "");
+					returnMap.put(entry.getKey(), RunConfigUtil.getVidForvidkey(vidKeyword));
 				} else
 					returnMap.put(entry.getKey(), getVidNumber());
 			} else if (entry.getValue().contains("UIN-PIN")) {

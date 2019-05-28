@@ -347,4 +347,34 @@ public class RunConfigUtil {
 	public static String getTestLevel() {
 		return System.getProperty("env.testLevel");
 	}
+	
+	/**
+	 * The method get VID for vidKey
+	 * 
+	 * @param uin
+	 * @return VID
+	 */
+	public static String getVidForvidkey(String vidKeyword) {
+		getVidPropertyValue(getVidPropertyPath());
+		for (Entry<String, String> entry : VidDto.getVid().entrySet()) {
+			if (entry.getValue().contains(vidKeyword))
+				return entry.getValue().split(Pattern.quote("."))[0];
+		}
+		return "NoLoadedVIDFound";
+	}
+	
+	/**
+	 * The method get VID for vidKey
+	 * 
+	 * @param uin
+	 * @return VID
+	 */
+	public static String getUinForVid(String vid) {
+		getVidPropertyValue(getVidPropertyPath());
+		for (Entry<String, String> entry : VidDto.getVid().entrySet()) {
+			if (entry.getValue().contains(vid))
+				return entry.getKey();
+		}
+		return "NoLoadedVIDFound";
+	}
 }

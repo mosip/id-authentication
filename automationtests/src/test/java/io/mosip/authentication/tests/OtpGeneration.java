@@ -55,7 +55,7 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 	 * @param testType
 	 */
 	@BeforeClass
-	public void setTestType(String testType) {
+	public void setTestType() {
 		this.testType = RunConfigUtil.getTestLevel();
 	}
 
