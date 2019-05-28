@@ -191,6 +191,7 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/admin/machines")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ApiOperation(value = "Service to save Machine wiht is active false", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),

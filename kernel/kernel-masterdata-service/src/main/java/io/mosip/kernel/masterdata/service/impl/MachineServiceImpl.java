@@ -278,6 +278,7 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	@Override
+	@Transactional
 	public IdAndLanguageCodeID createInActiveMachine(MachineDto machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine, Machine.class);
