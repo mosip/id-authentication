@@ -148,33 +148,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				}
 			}
 
-			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
-				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
-
-				if (cbeffInBytes != null) {
-
-					filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
-							RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
-					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
-							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
-				}
-
-				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-						.getFace();
-				if (cbeffInBytes != null) {
-					if (registrationDTO.isUpdateUINChild()
-							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-									.equals(RegistrationConstants.ENABLE)) {
-						filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
-								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-					} else {
-						filesGeneratedForPacket.put(RegistrationConstants.PARENT
-								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-					}
-				}
-			}
+			introducerCbeff(registrationDTO, rid, loggerMessageForCBEFF, birUUIDs, filesGeneratedForPacket);
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.OFFICER, birUUIDs);
@@ -308,6 +282,38 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		} finally {
 			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
+		}
+	}
+
+	private void introducerCbeff(final RegistrationDTO registrationDTO, String rid, String loggerMessageForCBEFF,
+			Map<String, String> birUUIDs, Map<String, byte[]> filesGeneratedForPacket) throws RegBaseCheckedException {
+		byte[] cbeffInBytes;
+		if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
+			cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
+
+			if (cbeffInBytes != null) {
+
+				filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
+				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
+						RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
+				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+			}
+
+			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+					.getFace();
+			if (cbeffInBytes != null) {
+				if (registrationDTO.isUpdateUINChild()
+						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+								.equals(RegistrationConstants.ENABLE)) {
+					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				} else {
+					filesGeneratedForPacket.put(RegistrationConstants.PARENT
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				}
+			}
 		}
 	}
 
