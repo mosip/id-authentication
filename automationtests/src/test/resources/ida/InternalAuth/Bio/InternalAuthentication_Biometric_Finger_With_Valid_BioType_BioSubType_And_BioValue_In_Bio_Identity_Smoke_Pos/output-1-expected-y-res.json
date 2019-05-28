@@ -1,1 +1,1 @@
-{"transactionID":"1010461112","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","response":{"authStatus":true,"staticToken":"$IGNORE$"}}
+{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","response":{"authStatus":true,"staticToken":"$IGNORE$"}}

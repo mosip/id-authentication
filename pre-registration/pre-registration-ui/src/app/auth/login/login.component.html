@@ -26,8 +26,8 @@
       </div>
 
       <div *ngIf="showContactDetails">
-        <mat-form-field appearance="outline">
-          <div [dir]="textDir">
+        <div [dir]="textDir">
+          <mat-form-field appearance="outline">
             <input
               autofocus="autofocus"
               matInput
@@ -36,8 +36,8 @@
               id="inputFieldContact"
               required
             />
-          </div>
-        </mat-form-field>
+          </mat-form-field>
+        </div>
         <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
       </div>
 

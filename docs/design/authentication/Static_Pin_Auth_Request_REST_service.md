@@ -1,5 +1,6 @@
 # Static Pin Auth REST Service
 
+*Note: This service is NOT part of V1, and hence not updated. Static pin DB related tables are removed for V1.*
 
 **1. Background**
 

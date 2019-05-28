@@ -103,9 +103,7 @@ public class QRCode extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "QRCode")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -140,7 +138,7 @@ public class QRCode extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
-			System.out.println("iuiuiuiu");
+			
 			Response qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
 			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString()+"preRegURI:::"+preReg_URI);
 			outerKeys.add("responsetime");

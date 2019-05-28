@@ -1,4 +1,4 @@
-package io.mosip.preregistration.tests;
+	package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -94,8 +94,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 	@DataProvider(name = "CancelAnBookedAppointment")
 	public Object[][] readData(ITestContext context) throws Exception {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

@@ -41,7 +41,7 @@ import io.restassured.response.Response;
  *
  */
 
-public class IntegrationScenarios extends BaseTestCase {
+public class IntegrationScenarios extends BaseTestCase implements ITest {
 	Logger logger = Logger.getLogger(IntegrationScenarios.class);
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	public String testSuite;
@@ -65,6 +65,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	public String createdBy = null;
 	public Response response = null;
 	String preID = null;
+	protected static String testCaseName = "";
 	public static String folder = "preReg";
 	public PreregistrationDAO dao = new PreregistrationDAO();
 
@@ -74,8 +75,11 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	public void getAuthToken() {
-		authToken = lib.getToken();
+	public void login( Method method)
+	{
+		testCaseName="preReg_IntTst_" + method.getName();
+		authToken=lib.getToken();
+		
 	}
 
 	@AfterMethod
@@ -92,7 +96,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUpdateDemoGetData() {
+	public void createAppUpdateDemoGetData() {
 
 		// Create PreReg
 		try {
@@ -149,7 +153,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
+	public void createAppUploadDocDeleteDocByPreRegId() {
 
 		// Create PreReg
 
@@ -180,7 +184,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppDiscardUploadDoc() {
+	public void createAppDiscardUploadDoc() {
 
 		// Create PreReg
 
@@ -203,7 +207,7 @@ public class IntegrationScenarios extends BaseTestCase {
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUpdateDiscard() {
+	public void createAppUpdateDiscard() {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
@@ -474,7 +478,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		lib.expiredStatus();
 		lib.getPreRegistrationStatus(preID);
-		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(FetchAppointmentDetailsResponse,
+		Response CancelBookingAppointmentResponse = lib.CancelBookingAppointment(
 				preID);
 		String msg = CancelBookingAppointmentResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(msg, "Appointment cannot be canceled");
@@ -504,7 +508,7 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response updateResponse = lib.updatePreReg(preID);
 		String updatePreId = updateResponse.jsonPath().get("response.preRegistrationId").toString();
 		lib.compareValues(updatePreId, preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetailsResponse, preID);
+		lib.CancelBookingAppointment( preID);
 	}
 
 	/**
@@ -821,13 +825,14 @@ public class IntegrationScenarios extends BaseTestCase {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response FetchAppointmentDetails = lib.FetchAppointmentDetails(preID);
-		lib.CancelBookingAppointment(FetchAppointmentDetails, preID);
+		lib.CancelBookingAppointment (preID);
 		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(preID);
 		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].message"),
 				"Booking data not found");
 		lib.compareValues(retrivePreRegistrationDataResponse.jsonPath().get("errors[0].errorCode"), "PRG_BOOK_RCI_013");
 
 	}
+
 
 	/**
 	 * @author Ashish Retrive Pre Registration After uploading demographic details
@@ -1516,5 +1521,11 @@ public class IntegrationScenarios extends BaseTestCase {
 			logger.error(e.getMessage());
 		}
 
+	}
+
+	@Override
+	public String getTestName() {
+		
+		return testCaseName;
 	}
 }

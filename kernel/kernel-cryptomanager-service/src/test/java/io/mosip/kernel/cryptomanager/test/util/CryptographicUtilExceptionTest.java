@@ -7,7 +7,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -33,11 +35,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
-import io.mosip.kernel.cryptomanager.utils.CryptomanagerUtil;
+import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 
 @SpringBootTest(classes = CryptoManagerTestBootApplication.class)
 @RunWith(SpringRunner.class)
@@ -49,7 +53,7 @@ public class CryptographicUtilExceptionTest {
 	private String publicKeyUrl;
 
 	@Autowired
-	CryptomanagerUtil cryptomanagerUtil;
+	CryptomanagerUtils cryptomanagerUtil;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -78,11 +82,15 @@ public class CryptographicUtilExceptionTest {
 
 	@Test(expected = NoSuchAlgorithmException.class)
 	public void testNoSuchAlgorithmEncrypt() throws Exception {
+		ResponseWrapper<KeymanagerPublicKeyResponseDto> responseWrapper= new ResponseWrapper<>();
+		List<ServiceError> errors = new ArrayList<>();
+		responseWrapper.setErrors(errors);
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64("badprivatekey".getBytes()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
+		responseWrapper.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
-				objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
+				objectMapper.writeValueAsString(responseWrapper), MediaType.APPLICATION_JSON));
 		CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto("REGISTRATION", "ref123",
 				LocalDateTime.parse("2018-12-06T12:07:44.403Z", DateTimeFormatter.ISO_DATE_TIME), "test", "ykrkpgjjtChlVdvDNJJEnQ");
 		cryptomanagerUtil.getPublicKey(cryptomanagerRequestDto);

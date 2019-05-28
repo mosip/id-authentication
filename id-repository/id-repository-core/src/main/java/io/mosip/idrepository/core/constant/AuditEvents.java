@@ -17,7 +17,9 @@ public enum AuditEvents {
 	
 	UPDATE_VID_REQUEST_RESPONSE("IDR-EVT-005", "System Event"),
 	
-	RETRIEVE_UIN_BY_VID_REQUEST_RESPONSE("IDR-EVT-006", "System Event");
+	RETRIEVE_UIN_BY_VID_REQUEST_RESPONSE("IDR-EVT-006", "System Event"),
+	
+	REGENERATE_VID_REQUEST_RESPONSE("IDR-EVT-007", "System Event");
 
 	/** The event id. */
 	private final String eventId;

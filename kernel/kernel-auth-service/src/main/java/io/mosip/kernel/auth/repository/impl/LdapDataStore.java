@@ -72,6 +72,7 @@ import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * @author Ramadurai Pandian
@@ -192,7 +193,7 @@ public class LdapDataStore implements DataStore {
 			connection.bind(userdn, clientSecret.getSecretKey());
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),ex);
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -216,7 +217,7 @@ public class LdapDataStore implements DataStore {
 			connection.bind(userdn, loginUser.getPassword());
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),ex);
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -260,9 +261,9 @@ public class LdapDataStore implements DataStore {
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage(),ex);
 		}
 	}
 
@@ -280,9 +281,9 @@ public class LdapDataStore implements DataStore {
 
 			rolesData.close();
 			return roles;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),ex);
 		}
 	}
 
@@ -330,7 +331,7 @@ public class LdapDataStore implements DataStore {
 			return rolesListDto;
 		} catch (Exception e) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),e);
 		}
 	}
 
@@ -352,9 +353,9 @@ public class LdapDataStore implements DataStore {
 			connection.close();
 			userResponseDto.setMosipUserDtoList(mosipUserDtos);
 			return userResponseDto;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),ex);
 		}
 	}
 
@@ -372,7 +373,7 @@ public class LdapDataStore implements DataStore {
 			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
-					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
+					saltDetails.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 				}
 			}
 			mosipUserDtos.add(saltDetails);
@@ -420,7 +421,7 @@ public class LdapDataStore implements DataStore {
 
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
-					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getExplanation());
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage(),e);
 		} finally {
 			if (context != null) {
 				context.close();

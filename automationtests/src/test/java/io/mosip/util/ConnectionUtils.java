@@ -28,10 +28,6 @@ import org.apache.hadoop.security.SaslRpcServer.AuthMethod;
 import org.apache.hadoop.security.UserGroupInformation;
 
 
-
-
-
-
 /**
  * This class gets connection to DFS.
  *

@@ -21,6 +21,6 @@ public class VidRequestDTO {
 
 	/** The Value to hold uin */
 	@JsonProperty("UIN")
-	private String uin;
+	private Long uin;
 
 }

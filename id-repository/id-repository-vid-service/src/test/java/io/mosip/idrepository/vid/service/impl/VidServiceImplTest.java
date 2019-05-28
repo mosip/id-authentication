@@ -79,7 +79,7 @@ public class VidServiceImplTest {
 
 	@Mock
 	private RestRequestBuilder restBuilder;
-	
+
 	@Mock
 	private AuditHelper auditHelper;
 
@@ -136,9 +136,9 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		ResponseWrapper<VidResponseDTO> vidResponse = service.createVid(request);
-		assertEquals(vidResponse.getResponse().getVid(), vid.getVid());
+		assertEquals(vidResponse.getResponse().getVid().toString(), vid.getVid());
 		assertEquals(vidResponse.getResponse().getVidStatus(), vid.getStatusCode());
 	}
 
@@ -162,7 +162,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		try {
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
@@ -191,7 +191,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
 		try {
 			service.createVid(request);
@@ -221,7 +221,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		try {
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
@@ -256,7 +256,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO vidRequest = new VidRequestDTO();
-		vidRequest.setUin("123");
+		vidRequest.setUin(2953190571L);
 		try {
 			service.createVid(vidRequest);
 		} catch (IdRepoAppException e) {
@@ -289,7 +289,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO vidRequest = new VidRequestDTO();
-		vidRequest.setUin("123");
+		vidRequest.setUin(2953190571L);
 		try {
 			service.createVid(vidRequest);
 		} catch (IdRepoAppException e) {
@@ -297,7 +297,7 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.UIN_RETRIEVAL_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testCreateVidGenerationFailed() throws RestServiceException, IdRepoDataValidationException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
@@ -318,7 +318,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		when(vidGenerator.generateId()).thenThrow(new VidException("", "", null));
 		try {
 			service.createVid(request);
@@ -327,65 +327,66 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testCreateVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
 		when(securityManager.hash(Mockito.any()))
 				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
 		try {
 			VidRequestDTO request = new VidRequestDTO();
-			request.setUin("123");
+			request.setUin(2953190571L);
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	@Test
 	public void testCreateVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
-		when(securityManager.hash(Mockito.any()))
-				.thenThrow(new TransactionException("") {});
+		when(securityManager.hash(Mockito.any())).thenThrow(new TransactionException("") {
+		});
 		try {
 			VidRequestDTO request = new VidRequestDTO();
-			request.setUin("123");
+			request.setUin(2953190571L);
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
-	public void testRetrieveVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
+	public void testRetrieveVidIdRepoAppUncheckedException()
+			throws RestServiceException, IdRepoDataValidationException {
 		when(vidRepo.findByVid(Mockito.any()))
 				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
 		try {
 			VidRequestDTO request = new VidRequestDTO();
-			request.setUin("123");
+			request.setUin(2953190571L);
 			service.updateVid("123", request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	@Test
 	public void testUpdateVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
-		when(vidRepo.findByVid(Mockito.any()))
-				.thenThrow(new TransactionException("") {});
+		when(vidRepo.findByVid(Mockito.any())).thenThrow(new TransactionException("") {
+		});
 		try {
 			VidRequestDTO request = new VidRequestDTO();
-			request.setUin("123");
+			request.setUin(2953190571L);
 			service.updateVid("123", request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@Test
 	public void testUpdateVidIdRepoAppUncheckedException() throws RestServiceException, IdRepoDataValidationException {
 		when(vidRepo.findByVid(Mockito.any()))
@@ -397,12 +398,12 @@ public class VidServiceImplTest {
 			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	@Test
 	public void testRetrieveVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
-		when(vidRepo.findByVid(Mockito.any()))
-				.thenThrow(new TransactionException("") {});
+		when(vidRepo.findByVid(Mockito.any())).thenThrow(new TransactionException("") {
+		});
 		try {
 			service.retrieveUinByVid("123");
 		} catch (IdRepoAppException e) {
@@ -435,7 +436,7 @@ public class VidServiceImplTest {
 				.thenReturn(Collections.singletonList(vid));
 		when(vidRepo.save(Mockito.any())).thenReturn(vid);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setUin("123");
+		request.setUin(2953190571L);
 		try {
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
@@ -452,13 +453,21 @@ public class VidServiceImplTest {
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
 				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
 				currentTime);
+		when(securityManager.hash(Mockito.any())).thenReturn("123");
+		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
+				.thenReturn(new RestRequestDTO());
+		IdResponseDTO identityResponse = new IdResponseDTO();
+		ResponseDTO response = new ResponseDTO();
+		response.setStatus("ACTIVATED");
+		identityResponse.setResponse(response);
+		when(restHelper.requestSync(Mockito.any())).thenReturn(identityResponse);
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		service.retrieveUinByVid("12345678");
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Expired() {
+	public void testRetrieveUinByVidExpired() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime();
@@ -470,12 +479,14 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-002 --> Expired VID", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_VID.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "EXPIRED"),
+					e.getErrorText());
 		}
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Blocked() {
+	public void testRetrieveUinByVidBlocked() {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -487,12 +498,14 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-002 --> Blocked VID", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_VID.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "Blocked"),
+					e.getErrorText());
 		}
 	}
 
 	@Test
-	public void testRetrieveUinByVid_Invalid_NoRecordsFound() {
+	public void testRetrieveUinByVidInvalidNoRecordsFound() {
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		try {
@@ -503,7 +516,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_valid() throws IdRepoAppException {
+	public void testUpdateVidvalid() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -525,7 +538,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_valid_REVOKE() throws IdRepoAppException {
+	public void testUpdateVidvalidREVOKE() throws IdRepoAppException {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
@@ -558,7 +571,7 @@ public class VidServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateVid_Invalid() {
+	public void testUpdateVidInvalid() {
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		VidRequestDTO request = new VidRequestDTO();
@@ -567,6 +580,120 @@ public class VidServiceImplTest {
 			service.updateVid("12345678", request);
 		} catch (IdRepoAppException e) {
 			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testRegenerate_Valid() throws IdRepoAppException {
+		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.toLocalDateTime().plusDays(1);
+		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
+				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
+				currentTime);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
+		VidPolicy policy = new VidPolicy();
+		policy.setAllowedInstances(1);
+		policy.setAllowedTransactions(null);
+		policy.setAutoRestoreAllowed(true);
+		policy.setRestoreOnAction("REVOKE");
+		policy.setValidForInMinutes(null);
+		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		IdResponseDTO idResponse = new IdResponseDTO();
+		ResponseDTO resDTO = new ResponseDTO();
+		resDTO.setStatus("ACTIVATED");
+		idResponse.setResponse(resDTO);
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null, IdResponseDTO.class))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(restRequestDTO)).thenReturn(idResponse);
+		Mockito.when(vidRepo.save(Mockito.any())).thenReturn(vid);
+		Mockito.when(securityManager.hash(Mockito.any()))
+				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
+		service.regenerateVid("12345678");
+	}
+
+	@Test
+	public void testRegenerateVid_EmptyRecordsInDb() {
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(null);
+		try {
+			service.regenerateVid("12345678");
+		} catch (IdRepoAppException e) {
+			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testRegenerateVid_InValidStatus() throws IdRepoAppException {
+		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.toLocalDateTime().plusDays(1);
+		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
+				"perpetual", currentTime, currentTime, "INACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
+				currentTime);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
+		VidPolicy policy = new VidPolicy();
+		policy.setAllowedInstances(1);
+		policy.setAllowedTransactions(null);
+		policy.setAutoRestoreAllowed(true);
+		policy.setRestoreOnAction("REVOKE");
+		policy.setValidForInMinutes(null);
+		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
+		try {
+			service.regenerateVid("12345678");
+		} catch (IdRepoAppException e) {
+			assertEquals("IDR-VID-001 --> VID is INACTIVE", e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("serial")
+	@Test
+	public void testRegenerateVidTransactionFailed() throws RestServiceException, IdRepoDataValidationException {
+		when(vidRepo.findByVid(Mockito.any())).thenThrow(new TransactionException("") {
+		});
+		try {
+			service.regenerateVid("123");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
+		}
+	}
+
+	@Test
+	public void testRegenerate_IdRepoAppUncheckedException() throws Throwable {
+		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
+				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+				.toLocalDateTime().plusDays(1);
+		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691", "3920450236", "3920450236",
+				"perpetual", currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false,
+				currentTime);
+		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
+		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
+		VidPolicy policy = new VidPolicy();
+		policy.setAllowedInstances(1);
+		policy.setAllowedTransactions(null);
+		policy.setAutoRestoreAllowed(true);
+		policy.setRestoreOnAction("REVOKE");
+		policy.setValidForInMinutes(null);
+		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
+		RestRequestDTO restRequestDTO = new RestRequestDTO();
+		IdResponseDTO idResponse = new IdResponseDTO();
+		ResponseDTO resDTO = new ResponseDTO();
+		resDTO.setStatus("ACTIVATED");
+		idResponse.setResponse(resDTO);
+		Mockito.when(restBuilder.buildRequest(RestServicesConstants.IDREPO_IDENTITY_SERVICE, null, IdResponseDTO.class))
+				.thenReturn(restRequestDTO);
+		Mockito.when(restHelper.requestSync(restRequestDTO)).thenReturn(idResponse);
+		Mockito.when(vidRepo.save(Mockito.any())).thenReturn(vid);
+		when(securityManager.hash(Mockito.any()))
+				.thenThrow(new IdRepoAppUncheckedException(IdRepoErrorConstants.VID_GENERATION_FAILED));
+		try {
+			service.regenerateVid("123");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), e.getErrorText());
 		}
 	}
 }

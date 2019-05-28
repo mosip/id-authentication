@@ -1,1 +1,1 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"7056221006","responseTime":"2019-05-22T19:34:05.609+05:30","errors":null,"response":{"maskedMobile":"XXXXXX6547","maskedEmail":"XXoXXmXXyXXuXXiXXjX@mindtree.com"}}
+{"id":"mosip.identity.otp","version":"1.0","transactionID":"3626343556","responseTime":"2019-05-28T12:28:10.806+05:30","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN","actionMessage":"Please retry with the correct UIN"}],"response":null}

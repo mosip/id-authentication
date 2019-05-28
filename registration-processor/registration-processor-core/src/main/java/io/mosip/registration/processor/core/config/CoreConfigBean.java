@@ -1,27 +1,32 @@
 package io.mosip.registration.processor.core.config;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
 import io.mosip.registration.processor.core.queue.impl.MosipActiveMqImpl;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.vertx.config.ConfigRetriever;
+import io.vertx.config.ConfigRetrieverOptions;
+import io.vertx.config.ConfigStoreOptions;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 
 import org.springframework.context.annotation.Primary;
@@ -30,30 +35,74 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class CoreConfigBean {
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(CoreConfigBean.class);
+
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
-			throws IOException {
-
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
-		List<String> applicationNames = getAppNames(env);
-		Resource[] appResources = new Resource[applicationNames.size()];
-
-		for (int i = 0; i < applicationNames.size(); i++) {
-			String loc = env.getProperty("spring.cloud.config.uri") + "/registration-processor/"
-					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
-					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
-			appResources[i] = resolver.getResources(loc)[0];
-			((AbstractEnvironment) env).getPropertySources()
-					.addLast(new ResourcePropertySource(applicationNames.get(i), loc));
+	public PropertySourcesPlaceholderConfigurer getPropertiesFromConfigServer(Environment environment) {
+		try {
+			Vertx vertx = Vertx.vertx();
+			List<ConfigStoreOptions> configStores = new ArrayList<>();
+			List<String> configUrls = CoreConfigBean.getUrls(environment);
+			configUrls.forEach(url -> {
+				configStores.add(new ConfigStoreOptions().setType(ConfigurationUtil.CONFIG_SERVER_TYPE)
+						.setConfig(new JsonObject().put("url", url).put("timeout",
+								Long.parseLong(ConfigurationUtil.CONFIG_SERVER_TIME_OUT))));
+			});
+			ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
+			configStores.forEach(configRetrieverOptions::addStore);
+			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
+			regProcLogger.info(this.getClass().getName(), "","","Getting values from config Server");
+			CompletableFuture<JsonObject> configLoader = new CompletableFuture<JsonObject>();
+			retriever.getConfig(json -> {
+				if (json.succeeded()) {
+					JsonObject jsonObject = json.result();
+					if (jsonObject != null) {
+						jsonObject.iterator().forEachRemaining(sourceValue -> System.setProperty(sourceValue.getKey(),
+								sourceValue.getValue().toString()));
+					}
+					configLoader.complete(json.result());
+					json.mapEmpty();
+					retriever.close();
+					vertx.close();
+				} else {
+					regProcLogger.info(this.getClass().getName(), "", json.cause().getLocalizedMessage(), json.cause().getMessage());
+					json.otherwiseEmpty();
+					retriever.close();
+					vertx.close();
+				}
+			});
+			configLoader.get();
+		} catch (Exception exception) {
+			regProcLogger.error(this.getClass().getName(), "", "", exception.getMessage());
 		}
-		pspc.setLocations(appResources);
-		return pspc;
+		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	public List<String> getAppNames(Environment env) {
-		String names = env.getProperty("spring.application.name");
+	private static List<String> getAppNames(Environment env) {
+		String names = env.getProperty(ConfigurationUtil.APPLICATION_NAMES);
 		return Stream.of(names.split(",")).collect(Collectors.toList());
+	}
+
+	private static List<String> getProfiles(Environment env) {
+		String names = env.getProperty(ConfigurationUtil.ACTIVE_PROFILES);
+		return Stream.of(names.split(",")).collect(Collectors.toList());
+	}
+
+	private static List<String> getUrls(Environment environment) {
+		List<String> configUrls = new ArrayList<>();
+		List<String> appNames = getAppNames(environment);
+		String uri = environment.getProperty(ConfigurationUtil.CLOUD_CONFIG_URI);
+		String label = environment.getProperty(ConfigurationUtil.CLOUD_CONFIG_LABEL);
+		List<String> profiles = getProfiles(environment);
+		profiles.forEach(profile -> {
+			appNames.forEach(app -> {
+				String url = uri + "/" + app + "/" + profile + "/" + label;
+				configUrls.add(url);
+			});
+		});
+		appNames.forEach(appName -> {
+		});
+		return configUrls;
 	}
 
 	@Bean

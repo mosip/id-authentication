@@ -4,20 +4,17 @@
  */
 package io.mosip.preregistration.application.exception.util;
 
+import org.springframework.beans.factory.BeanCreationException;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.idobjectvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -36,7 +33,6 @@ import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
-import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -78,9 +74,6 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof JsonSchemaIOException) {
 			throw new JsonValidationException(((JsonSchemaIOException) ex).getErrorCode(),
 					((JsonSchemaIOException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof FileIOException) {
-			throw new SystemFileIOException(((FileIOException) ex).getErrorCode(),
-					((FileIOException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof ParseException) {
 			throw new JsonParseException(((ParseException) ex).getErrorCode(), ((ParseException) ex).getErrorText(),
 					mainResponsedto);
@@ -111,10 +104,7 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DateParseException) {
 			throw new DateParseException(((DateParseException) ex).getErrorCode(),
 					((DateParseException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof UnidentifiedJsonException) {
-			throw new JsonValidationException(((UnidentifiedJsonException) ex).getErrorCode(),
-					((UnidentifiedJsonException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof RecordFailedToUpdateException) {
+		}  else if (ex instanceof RecordFailedToUpdateException) {
 			throw new RecordFailedToUpdateException(((RecordFailedToUpdateException) ex).getErrorCode(),
 					((RecordFailedToUpdateException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof RecordFailedToDeleteException) {
@@ -132,9 +122,6 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof OperationNotAllowedException) {
 			throw new OperationNotAllowedException(((OperationNotAllowedException) ex).getErrorCode(),
 					((OperationNotAllowedException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof EncryptionFailedException) {
-			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),
-					((EncryptionFailedException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof DecryptionFailedException) {
 			throw new DecryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),
 					((DecryptionFailedException) ex).getErrorText(), mainResponsedto);
@@ -150,27 +137,20 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof SchemaValidationException) {
 			throw new SchemaValidationException(((SchemaValidationException) ex).getErrorCode(),
 					((SchemaValidationException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof IdObjectValidationProcessingException) {
-			throw new SchemaValidationException(((IdObjectValidationProcessingException) ex).getErrorCode(),
-					((IdObjectValidationProcessingException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof IdObjectIOException) {
 			throw new SchemaValidationException(((IdObjectIOException) ex).getErrorCode(),
 					((IdObjectIOException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof IdObjectSchemaIOException) {
-			throw new SchemaValidationException(((IdObjectSchemaIOException) ex).getErrorCode(),
-					((IdObjectSchemaIOException) ex).getErrorText(), mainResponsedto);
+		} else if (ex instanceof IdObjectValidationFailedException) {
+			throw new SchemaValidationException(((IdObjectValidationFailedException) ex).getErrorCode(),
+					((IdObjectValidationFailedException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof PreIdInvalidForUserIdException) {
 			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);
-		}else if (ex instanceof UnidentifiedJsonException) {
-			throw new SchemaValidationException(((UnidentifiedJsonException) ex).getErrorCode(),
-					((UnidentifiedJsonException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof NullJsonNodeException) {
-			throw new SchemaValidationException(((NullJsonNodeException) ex).getErrorCode(),
-					((NullJsonNodeException) ex).getErrorText(), mainResponsedto);
-		}else if (ex instanceof ConfigServerConnectionException) {
-			throw new SchemaValidationException(((ConfigServerConnectionException) ex).getErrorCode(),
-					((ConfigServerConnectionException) ex).getErrorText(), mainResponsedto);
+		}else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), mainResponsedto);
+		}else if(ex instanceof BeanCreationException) {
+			throw new SchemaValidationException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_016.getCode(),
+					ex.getLocalizedMessage(), mainResponsedto);
 		}
 	}
 

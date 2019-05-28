@@ -3,6 +3,7 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -109,6 +111,16 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Button operatorAuthContinue;
 	@FXML
 	private Label registrationNavlabel;
+	@FXML
+	private Label otpLabel;
+	@FXML
+	private Label fpLabel;
+	@FXML
+	private Label irisLabel;
+	@FXML
+	private Label photoLabel;
+	@FXML
+	private Label pwdLabel;
 
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
@@ -588,11 +600,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
+		otpLabel.setText(ApplicationContext.applicationLanguageBundle().getString("otpAuthentication"));
 		otpBasedLogin.setVisible(true);
 		otp.clear();
 		otpUserId.clear();
 		otpUserId.setEditable(false);
 		if (isSupervisor) {
+			otpLabel.setText(ApplicationContext.applicationLanguageBundle().getString("supervisorOtpAuth"));
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				otpUserId.setText(userNameField);
 			} else {
@@ -610,11 +624,13 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
+		pwdLabel.setText(ApplicationContext.applicationLanguageBundle().getString("pwdAuthentication"));
 		pwdBasedLogin.setVisible(true);
 		username.clear();
 		password.clear();
 		username.setEditable(false);
 		if (isSupervisor) {
+			pwdLabel.setText(ApplicationContext.applicationLanguageBundle().getString("supervisorPwdAuth"));
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				username.setText(userNameField);
 			} else {
@@ -632,10 +648,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
+		fpLabel.setText(ApplicationContext.applicationLanguageBundle().getString("fpAuthentication"));
 		fingerprintBasedLogin.setVisible(true);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
+			fpLabel.setText(ApplicationContext.applicationLanguageBundle().getString("supervisorFpAuth"));
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -653,10 +671,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
+		irisLabel.setText(ApplicationContext.applicationLanguageBundle().getString("irisAuthentication"));
 		irisBasedLogin.setVisible(true);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
+			irisLabel.setText(ApplicationContext.applicationLanguageBundle().getString("supervisorIrisAuth"));
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -674,10 +694,12 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
+		photoLabel.setText(ApplicationContext.applicationLanguageBundle().getString("photoAuthentication"));
 		faceBasedLogin.setVisible(true);
 		fpUserId.clear();
 		fpUserId.setEditable(false);
 		if (isSupervisor) {
+			photoLabel.setText(ApplicationContext.applicationLanguageBundle().getString("supervisorPhotoAuth"));
 			if (authCount > 1 && !userNameField.isEmpty()) {
 				fpUserId.setText(userNameField);
 			} else {
@@ -720,61 +742,67 @@ public class AuthenticationController extends BaseController implements Initiali
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
-				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
-		int statusCode = fingerPrintConnector.captureFingerprint(
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
-				RegistrationConstants.EMPTY);
-		if (statusCode != 0) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-		} else {
-			// Thread to wait until capture the bio image/ minutia from FP. based on the
-			// error code or success code the respective action will be taken care.
-			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-			LOGGER.info("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
-					"Fingerprint scan done");
-
-			fingerPrintConnector.uninitFingerPrintDevice();
-			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+//		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
+//				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
+//		int statusCode = fingerPrintConnector.captureFingerprint(
+//				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
+//				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
+//				RegistrationConstants.EMPTY);
+//		if (statusCode != 0) {
+//			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
+//		} else {
+//			// Thread to wait until capture the bio image/ minutia from FP. based on the
+//			// error code or success code the respective action will be taken care.
+//			waitToCaptureBioImage(5, 2000, fingerprintFacade);
+//			LOGGER.info("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
+//					"Fingerprint scan done");
+//
+//			fingerPrintConnector.uninitFingerPrintDevice();
+//			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
 				// if FP data fetched then retrieve the user specific detail from db.
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
-				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-				if (!isEODAuthentication) {
-					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-								.get(RegistrationConstants.REGISTRATION_DATA);
-						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
-								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
-								.get(RegistrationConstants.REGISTRATION_DATA);
-						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
-								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-					}
-				}
-				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-				authenticationValidatorDTO.setUserId(userId);
-				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fpMatchStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
-						authenticationValidatorDTO);
-
-				if (fpMatchStatus) {
-					if (isSupervisor) {
-						fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
-								.concat(fingerprintDetailsDTO.getFingerType())
-								.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
-					} else {
-						fingerprintDetailsDTO.setFingerprintImageName(
-								RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
-										RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
-					}
+		try {
+			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
+			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
+			fingerprintDetailsDTO.setFingerPrint(IOUtils
+					.resourceToByteArray("/UserOnboard/leftHand/leftIndex/".concat(RegistrationConstants.ISO_FILE)));
+			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
+			if (!isEODAuthentication) {
+				if (isSupervisor) {
+					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+							.get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
+							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
+				} else {
+					RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.map()
+							.get(RegistrationConstants.REGISTRATION_DATA);
+					registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 				}
 			}
+			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+			authenticationValidatorDTO.setUserId(userId);
+			authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
+			fpMatchStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
+					authenticationValidatorDTO);
+
+			if (fpMatchStatus) {
+				if (isSupervisor) {
+					fingerprintDetailsDTO.setFingerprintImageName(RegistrationConstants.SUPERVISOR_AUTH
+							.concat(fingerprintDetailsDTO.getFingerType())
+							.concat(RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+				} else {
+					fingerprintDetailsDTO.setFingerprintImageName(
+							RegistrationConstants.OFFICER_AUTH.concat(fingerprintDetailsDTO.getFingerType()).concat(
+									RegistrationConstants.DOT.concat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE)));
+				}
+			}
+		} catch(IOException ioException) {
+			
 		}
+				
+//			}
+//		}
 		return fpMatchStatus;
 	}
 

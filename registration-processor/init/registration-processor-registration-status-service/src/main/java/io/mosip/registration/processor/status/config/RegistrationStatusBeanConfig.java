@@ -1,5 +1,11 @@
 package io.mosip.registration.processor.status.config;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -11,20 +17,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.sql.DataSource;
-
-import org.springframework.boot.web.client.RestTemplateBuilder;
-
-import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -43,45 +37,17 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
 import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
-
+import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
 @Import({ HibernateDaoConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration.processor", repositoryBaseClass = HibernateRepositoryImpl.class)
 public class RegistrationStatusBeanConfig {
 
-	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
-
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
-		List<String> applicationNames = getAppNames(env);
-		Resource[] appResources = new Resource[applicationNames.size()];
-
-		for (int i = 0; i < applicationNames.size(); i++) {
-			String loc = env.getProperty("spring.cloud.config.uri") + "/registration-processor/"
-					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
-					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
-			appResources[i] = resolver.getResources(loc)[0];
-			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
-		}
-		pspc.setLocations(appResources);
-		return pspc;
-
-	}	
-	
-
-	public List<String> getAppNames(Environment env) {
-		String names = env.getProperty("spring.application.name");
-		return Stream.of(names.split(",")).collect(Collectors.toList());
-	}
-
-	
 	@Bean
 	public RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> getRegistrationStatusService() {
 		return new RegistrationStatusServiceImpl();
@@ -148,9 +114,11 @@ public class RegistrationStatusBeanConfig {
 	}
 	
 	@Bean
-	public RegistrationStatusMapUtil getRegistrationStatusMapUtil() {
-		return new RegistrationStatusMapUtil();
+	public RegistrationExternalStatusUtility getRegistrationExternalStatusUtility()
+	{
+		return new RegistrationExternalStatusUtility();
 	}
+
 	@Bean
 	public Decryptor decryptor() {
 		return new Decryptor();

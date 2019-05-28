@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"2235771504","responseTime":"2019-05-22T19:34:28.642+05:30","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - otpChannel - tr^e"}],"response":null}

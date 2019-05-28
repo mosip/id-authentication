@@ -86,7 +86,8 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 		lib.logOut();
 	}
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName() {
+	public static void getTestCaseName(Method method) {
+		testCaseName="preReg_BatchJob_" + method.getName();
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
 		authToken = lib.getToken();
 	}

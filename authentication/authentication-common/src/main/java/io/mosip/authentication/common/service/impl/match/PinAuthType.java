@@ -9,16 +9,16 @@ import java.util.function.Predicate;
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 
 /**
- * The Enum PinAuthType - used to construct the Auth type
- * for pin based authentication to determine whether particular
- * Auth information is available and to get respective
- * match properties
+ * The Enum PinAuthType - used to construct the Auth type for pin based
+ * authentication to determine whether particular Auth information is available
+ * and to get respective match properties
  * 
  * @author Sanjay Murali
  */
@@ -39,17 +39,16 @@ public enum PinAuthType implements AuthType {
 	},
 	OTP("otp", AuthType.setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
+				BioMatcherUtil bioMatcherUtil, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
-			if(authRequestDTO.getRequestedAuth().isOtp()) {
-				ValidateOtpFunction func = idInfoFetcher
-						.getValidateOTPFunction();
+			if (authRequestDTO.getRequestedAuth().isOtp()) {
+				ValidateOtpFunction func = idInfoFetcher.getValidateOTPFunction();
 				valueMap.put(ValidateOtpFunction.class.getSimpleName(), func);
 			}
 			return valueMap;
 		}
-		
-		
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -82,6 +81,6 @@ public enum PinAuthType implements AuthType {
 	@Override
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;
- 	}
+	}
 
 }

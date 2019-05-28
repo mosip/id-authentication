@@ -79,10 +79,6 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	boolean status_val = false;
 	JSONParser parser = new JSONParser();
 	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
-	Response fetchCenterResForUsr1;
-	Response fetchCenterResForUsr2;
-	JSONObject dynamicRequest;
-	Response Actualres = null;
 
 	/* implement,IInvokedMethodListener */
 	public MultipleBookingAppointment() {
@@ -101,10 +97,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "multipleBookAppointment")
 	public  Object[][] readData(ITestContext context) throws Exception {
-		
-		
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("regression") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -207,19 +200,18 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 			
            case "MultipleBookAnAppointmentByPassingInvalidRequestTime":
 			
-        	String requestTime=actualRequest.get("requesttime").toString();
         	Response FetchCentResInvReqTime = preRegLib.FetchCentre();
    			Response  FetchCentResInvReqTimeVal= preRegLib.FetchCentre();
    			JSONObject mulBookWithInvReqTime= preRegLib.multipleBookAppRequest(FetchCentResInvReqTime, FetchCentResInvReqTimeVal, preIDFirstUsr, preIDSecondUsr);
    			mulBookWithInvReqTime.put("requesttime", preRegLib.getCurrentDate());
    			logger.info("Res::"+mulBookWithInvReqTime.toString());
-   			JSONObject actReqInvReqTime = preRegUtil.dynamicChangeOfRequest(mulBookWithInvReqTime, "$.requesttime",requestTime);
+   			JSONObject actReqInvReqTime = preRegUtil.dynamicChangeOfRequest(mulBookWithInvReqTime, "$.request.bookingRequest[0].preRegistrationId", "ABCD");
    			//(JSONObject) parser.parse(actReqInvRegCenter);
    			Response resInvReqTime = applicationLibrary.postRequest(actReqInvReqTime, preReg_URI);
-   			logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidRequest Time::"+actReqInvReqTime+"Res:"+resInvReqTime.asString());
+   			//logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
    			outerKeys.add("responsetime");
    			
-   			status = AssertResponses.assertResponses(resInvReqTime, Expectedresponse, outerKeys, innerKeys);
+   			//status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 			

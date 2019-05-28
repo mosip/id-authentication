@@ -1,4 +1,4 @@
-**Design -- EOD Process**
+**Design - EOD Process**
 
 **Packet approval / action/ Re-Register**
 
