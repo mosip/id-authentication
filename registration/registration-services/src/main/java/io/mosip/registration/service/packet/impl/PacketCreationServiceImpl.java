@@ -36,6 +36,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -300,6 +301,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
+		} catch (BaseCheckedException baseCheckedException) {
+			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		} finally {
 			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
 		}
