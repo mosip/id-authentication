@@ -5,12 +5,11 @@
 	<groupId>io.mosip</groupId>
 	<artifactId>automationtests</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-<!-- 
+ 
 	<packaging>jar</packaging>
 
 	<name>automationtests</name>
-	<url>http://maven.apache.org</url>
- -->
+	<url>http://maven.apache.org</url> 
 
 	<parent>
 		<groupId>io.mosip</groupId>
@@ -392,24 +391,18 @@
 				
 
 
-	<!-- 			<plugin>
+			<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.19.1</version>
 					<inherited>true</inherited>
 					<configuration>
 						<argLine>-Dfile.encoding=UTF-8</argLine>
-<<<<<<< HEAD
-						<suiteXmlFiles>
-							<suiteXmlFile>src/test/testngapi.xml</suiteXmlFile>
-						</suiteXmlFiles>
-=======
 						 <suiteXmlFiles>
-							<suiteXmlFile>src/test/res/testngapi.xml</suiteXmlFile>
+							<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
 						</suiteXmlFiles> 
->>>>>>> 62501eaa7d951220bcb29df674eb40cc95504eac
 					</configuration>
-				</plugin> -->
+				</plugin>
 
 			</plugins>
 		</pluginManagement>
