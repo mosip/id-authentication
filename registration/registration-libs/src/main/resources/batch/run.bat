@@ -5,6 +5,6 @@ set t=%time::=.%
 set t=%t: =%
 set logfile="%d%_%t%.log"
 
-cd ./jre/bin
-java -jar run.jar >> logs/registration-%logfile%
+
+jre\jre\bin\java.exe -jar run.jar
 pause
