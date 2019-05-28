@@ -162,7 +162,6 @@ export class RegistrationService {
 
   setDocumentCategories(documentCategories) {
     this.documentCategories = documentCategories;
-    // console.log('document categories', this.documentCategories);
   }
 
   getDocumentCategories() {
