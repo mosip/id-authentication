@@ -2,8 +2,10 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -1361,6 +1363,54 @@ public class RegistrationConstants {
 	public static final String ISSUED_AT="issuedAt";
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
+	
+	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
+
+	private static final long serialVersionUID = 1L;
+
+		{
+			put("leftIndex", "FML");
+			put("leftLittle", "FML");
+			put("leftMiddle", "FML");
+			put("leftRing", "FML");
+			put("leftThumb", "FML");
+			put("rightIndex", "FMR");
+			put("rightLittle", "FMR");
+			put("rightMiddle", "FMR");
+			put("rightRing", "FMR");
+			put("rightThumb", "FMR");
+			put("RightEye", "IIR");
+			put("LeftEye", "IIL");
+		}
+	};
+	
+	public static final String IDA_REFERENCE_ID = "PARTNER";
+	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
+	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
+	public static final String ID = "id";
+	public static final String IDENTITY  = "mosip.identity.auth";
+	public static final String VERSION  = "version";
+	public static final String REQUEST_TIME = "requestTime";
+	public static final String TRANSACTION_ID = "transactionID";
+	public static final String TRANSACTION_ID_VALUE = "1234567890";
+	public static final String BIO = "bio";
+	public static final String REQUEST_AUTH = "requestedAuth";
+	public static final String CONSENT_OBTAINED = "consentObtained";
+	public static final String INDIVIDUAL_ID = "individualId";
+	public static final String INDIVIDUAL_ID_TYPE = "individualIdType";
+	public static final String KEY_INDEX = "keyIndex";
+	public static final String ON_BOARD_TIME_STAMP = "timestamp";
+	public static final String DEVICE_PROVIDER_ID="deviceProviderID";
+	public static final String ON_BOARD_BIO_TYPE="bioType";
+	public static final String ON_BOARD_BIO_SUB_TYPE="bioSubType";
+	public static final String ON_BOARD_BIO_VALUE="bioValue";
+	public static final String ON_BOARD_BIO_DATA="data";
+	public static final String ON_BOARD_BIOMETRICS="biometrics";
+	public static final String ON_BOARD_REQUEST="request";
+	public static final String ON_BOARD_REQUEST_HMAC="requestHMAC";
+	public static final String ON_BOARD_REQUEST_SESSION_KEY="requestSessionKey";
+	public static final String ON_BOARD_PUBLIC_KEY_ERROR="Public key is either null or invalid public key";
+	public static final String ON_BOARD_AUTH_STATUS="authStatus";
 	
 	
 }
