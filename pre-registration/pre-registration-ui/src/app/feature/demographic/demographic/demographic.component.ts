@@ -25,7 +25,6 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 import { LogService } from 'src/app/shared/logger/log.service';
-// import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This component takes care of the demographic page.
@@ -41,9 +40,7 @@ import { LogService } from 'src/app/shared/logger/log.service';
   templateUrl: './demographic.component.html',
   styleUrls: ['./demographic.component.css']
 })
-export class DemographicComponent implements OnInit, OnDestroy {
-  message$ = new Observable();
-  // messageSubscription: Subscription;
+export class DemographicComponent implements OnInit {
   textDir = localStorage.getItem('dir');
   secTextDir = localStorage.getItem('secondaryDir');
   primaryLang = localStorage.getItem('langCode');
@@ -74,7 +71,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
   checked = true;
   dataUploadComplete = true;
   hasError = false;
-  // isReadOnly = false;
   dataModification: boolean;
   showPreviewButton = false;
   dataIncomingSuccessful = false;
@@ -366,7 +362,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ),
       [this.formControlNames.email]: new FormControl(this.formControlValues.email, [
         Validators.pattern(this.EMAIL_PATTERN)
-        // Validators.maxLength(Number(this.EMAIL_LENGTH))
       ]),
       [this.formControlNames.postalCode]: new FormControl(this.formControlValues.postalCode, [
         Validators.required,
@@ -377,7 +372,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       ]),
       [this.formControlNames.CNIENumber]: new FormControl(this.formControlValues.CNIENumber, [
         Validators.required,
-        // Validators.maxLength(Number(this.CNIE_LENGTH)),
         Validators.pattern(this.CNIE_PATTERN)
       ])
     });
@@ -408,8 +402,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private async setLocations() {
-    await this.getLocationMetadataHirearchy(); //MOR
-
+    await this.getLocationMetadataHirearchy(); 
     this.selectedLocationCode = [
       this.uppermostLocationHierarchy,
       this.formControlValues.region,
@@ -866,8 +859,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
         to_field_value: ''
       };
 
-      // this.transUserForm.controls[toControl].patchValue('dummyValue');
-
       this.dataStorageService.getTransliteration(request).subscribe(
         response => {
           if (!response[appConstants.NESTED_ERROR])
@@ -967,7 +958,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
           },
           error => {
             this.loggerService.error(error);
-            // this.router.navigate(['error']);
             this.onError(this.errorlabels.error);
           }
         );
@@ -994,7 +984,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       postalCode: this.userForm.controls[this.formControlNames.postalCode].value,
       regDto: this.bookingService.getNameList()[0].regDto
     });
-    // }
   }
 
   /**
@@ -1150,10 +1139,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
       demographicDetails: new DemoIdentityModel(identity)
     };
     return req;
-  }
-
-  ngOnDestroy() {
-    // this.message$
   }
 
   /**
