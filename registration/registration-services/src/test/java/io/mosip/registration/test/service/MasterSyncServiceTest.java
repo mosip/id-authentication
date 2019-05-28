@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -40,6 +42,7 @@ import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.UserOnboardDAO;
@@ -49,6 +52,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.entity.BiometricAttribute;
 import io.mosip.registration.entity.BlacklistedWords;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.Gender;
@@ -76,7 +80,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class, ApplicationContext.class })
 public class MasterSyncServiceTest {
 //java test
 	@Rule
@@ -115,6 +119,9 @@ public class MasterSyncServiceTest {
 	
 	@Mock
 	SyncTransaction syncTransaction;
+	
+	@Mock
+	private ApplicationContext context;
 
 	@Before
 	public void beforeClass() throws URISyntaxException {
@@ -124,6 +131,8 @@ public class MasterSyncServiceTest {
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
 	}
 
 	@Test
@@ -1016,6 +1025,92 @@ public class MasterSyncServiceTest {
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
 		.thenReturn(mainMap);
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
+	}
+	
+	@Test
+	public void getBiometricTypeWithFingerprintEnable() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
+		when(context.map()).thenReturn(appMap);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);	
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+	
+	@Test
+	public void getBiometricTypeWithIrisEnable() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
+		when(context.map()).thenReturn(appMap);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);		
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+
+	@Test
+	public void getBiometricTypeWithFingerprintDisble() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "N");
+		when(context.map()).thenReturn(appMap);
+		biometricType.remove(RegistrationConstants.FNR);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);	
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+	
+	@Test
+	public void getBiometricTypeWithIrisDisble() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "N");
+		when(context.map()).thenReturn(appMap);
+		biometricType.remove(RegistrationConstants.IRS);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);		
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
 	}
 
 }
