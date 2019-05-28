@@ -399,9 +399,9 @@
 					<inherited>true</inherited>
 					<configuration>
 						<argLine>-Dfile.encoding=UTF-8</argLine>
-						<!-- <suiteXmlFiles>
-							<suiteXmlFile>src/test/resources/testngapi.xml</suiteXmlFile>
-						</suiteXmlFiles> -->
+						<suiteXmlFiles>
+							<suiteXmlFile>src/test/testngapi.xml</suiteXmlFile>
+						</suiteXmlFiles>
 					</configuration>
 				</plugin>
 
