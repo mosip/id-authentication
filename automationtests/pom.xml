@@ -81,13 +81,6 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
-
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -339,25 +332,22 @@
 			<artifactId>itextpdf</artifactId>
 			<version>5.5.13</version>
 		</dependency>
-		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.relevantcodes</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>2.41.2</version>
-		</dependency>
-
+	
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.6.2</version>
 		</dependency>
 
-	
+	<!-- Encryption Decryption Util Jar -->
+	<!-- 	<dependency>
+			<groupId>io.mosip.authentication</groupId>
+			<artifactId>authentication-partnerdemo-service</artifactId>
+			<version>0.12.2</version>
+		</dependency> -->
+		
+		
+		
 
 	</dependencies>
 
@@ -373,7 +363,32 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
+				
+				<plugin>
+                           <artifactId>maven-assembly-plugin</artifactId>
+                           <executions>
+                                  <execution>
+                                         <phase>package</phase>
+                                         <goals>
+                                                <goal>single</goal>
+                                         </goals>
+                                  </execution>
+                           </executions>
+                           <configuration>
+                                  <archive>
+                                         <manifest>
+                                                <addClasspath>true</addClasspath>
+                                                <classpathPrefix>lib/</classpathPrefix>
+                                                <mainClass>io.mosip.testcontroller.TestNgApplication</mainClass>
+                                         </manifest>
+                                  </archive>
+                                  <descriptorRefs>
+                                         <descriptorRef>jar-with-dependencies</descriptorRef>
+                                  </descriptorRefs>
+                           </configuration>
+                     </plugin>
 
+				
 
 
 				<plugin>
