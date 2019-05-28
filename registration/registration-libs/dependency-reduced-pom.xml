@@ -51,6 +51,7 @@
                 <argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/batch</argument>
               </arguments>
             </configuration>
           </execution>

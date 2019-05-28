@@ -73,6 +73,8 @@ public class ClientJarEncryption {
 
 	private static final String MOSIP_JRE = "jre";
 
+	private static final String MOSIP_RUN_BAT = "run.bat";
+
 	/**
 	 * Encrypt the bytes
 	 * 
@@ -130,7 +132,11 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
 
+					//Executable jar run.jar
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
+
+					//Bat file run.bat
+					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9]).listFiles()[0]));
 
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
@@ -157,17 +163,18 @@ public class ClientJarEncryption {
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
-					/*// TODO temporary zip file
-					System.out.println("Shaded Zip Started");
-					String shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] + MOSIP_ZIP;
-					Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
-					readDirectoryToByteArray(null, regFolder, shadedZipFileBytes);
-					File shadedJar = args[1] != null && new File(args[1]).exists() ? new File(args[1])
-							: new File(args[7]);
-					shadedZipFileBytes.put(shadedJar.getName(), FileUtils.readFileToByteArray(shadedJar));
-					aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
-
-					System.out.println("Shaded Zip Created");*/
+					/*
+					 * // TODO temporary zip file System.out.println("Shaded Zip Started"); String
+					 * shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] +
+					 * MOSIP_ZIP; Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
+					 * readDirectoryToByteArray(null, regFolder, shadedZipFileBytes); File shadedJar
+					 * = args[1] != null && new File(args[1]).exists() ? new File(args[1]) : new
+					 * File(args[7]); shadedZipFileBytes.put(shadedJar.getName(),
+					 * FileUtils.readFileToByteArray(shadedJar));
+					 * aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
+					 * 
+					 * System.out.println("Shaded Zip Created");
+					 */
 
 					String path = new File(args[3]).getPath();
 
