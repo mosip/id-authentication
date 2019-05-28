@@ -33,9 +33,3 @@ COMMENT ON COLUMN regprc.reg_lost_uin_det.del_dtimes IS 'Deleted DateTimestamp :
 -- ddl-end --
 ALTER TABLE regprc.reg_lost_uin_det OWNER TO sysadmin;
 -- ddl-end --
-
--- object: fk_rlostd_reg | type: CONSTRAINT --
--- ALTER TABLE regprc.reg_lost_uin_det DROP CONSTRAINT IF EXISTS fk_rlostd_reg CASCADE;
-ALTER TABLE regprc.reg_lost_uin_det ADD CONSTRAINT fk_rlostd_reg FOREIGN KEY (reg_id)
-REFERENCES regprc.registration (id) MATCH SIMPLE
-ON DELETE NO ACTION ON UPDATE NO ACTION;
