@@ -61,10 +61,10 @@ export class AcknowledgementComponent implements OnInit {
 
   async ngOnInit() {
     this.usersInfo = this.bookingService.getNameList();
-    console.log('usersInfo', this.usersInfo);
     setTimeout(() => {
     this.showSpinner = false;
         }, 1250);
+
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
