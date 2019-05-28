@@ -399,9 +399,15 @@
 					<inherited>true</inherited>
 					<configuration>
 						<argLine>-Dfile.encoding=UTF-8</argLine>
+<<<<<<< HEAD
 						<suiteXmlFiles>
 							<suiteXmlFile>src/test/testngapi.xml</suiteXmlFile>
 						</suiteXmlFiles>
+=======
+						 <suiteXmlFiles>
+							<suiteXmlFile>src/test/res/testngapi.xml</suiteXmlFile>
+						</suiteXmlFiles> 
+>>>>>>> 62501eaa7d951220bcb29df674eb40cc95504eac
 					</configuration>
 				</plugin> -->
 
