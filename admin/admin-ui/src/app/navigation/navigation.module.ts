@@ -20,6 +20,6 @@ import { OtpAuthenticationComponent } from './otp-authentication/otp-authenticat
     ReactiveFormsModule,
     FormsModule
   ],
-  declarations: [LoginComponent, AuthenticationComponent, ForgotPasswordComponent, ResetPasswordComponent, OtpAuthenticationComponent]
+  declarations: [LoginComponent, AuthenticationComponent, ForgotPasswordComponent, ResetPasswordComponent, OtpAuthenticationComponent],
 })
 export class NavigationModule { }

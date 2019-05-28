@@ -1,9 +1,0 @@
-{
-  "regcenterid":"string",
-  "deviceid":"string",
-  "effdatetimes":"string",
-  "Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_2":"string",
-  "Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_3":"string",
-  "Kernel_GetRegistrationCenterDeviceHistory_updatedDate":"sring",
-  "Kernel_GetRegistrationCenterDeviceHistory_response_time":"string"
-}

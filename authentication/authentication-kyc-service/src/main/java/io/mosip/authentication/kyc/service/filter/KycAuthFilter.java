@@ -46,7 +46,7 @@ public class KycAuthFilter extends IdAuthFilter {
 			throws IdAuthenticationAppException {
 		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(IdAuthCommonConstants.RESPONSE);
-			response.put(IDENTITY, keyManager.encryptData(response));
+			response.put(IDENTITY, keyManager.encryptData(response, mapper));
 			responseBody.put(IdAuthCommonConstants.RESPONSE, response);
 			return responseBody;
 		} catch (ClassCastException e) {
@@ -105,16 +105,20 @@ public class KycAuthFilter extends IdAuthFilter {
 	private Map<String, Object> constructKycInfo(Map<String, Object> identity) {
 		Map<String, Object> responseMap = new HashMap<>();
 		identity.entrySet().stream().forEach(entry -> {
-			List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
-			Object value = Objects.isNull(listOfMap) ? listOfMap
-					: listOfMap.stream()
-							.map((Map<String, Object> map) -> map.entrySet().stream()
-									.filter(innerEntry -> innerEntry.getValue() != null
-											|| !innerEntry.getKey().equals("language"))
-									.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1,
-											LinkedHashMap::new)))
-							.collect(Collectors.toList());
-			responseMap.put(entry.getKey(), value);
+			if(entry.getValue() instanceof List) {
+				List<Map<String, Object>> listOfMap = (List<Map<String, Object>>) entry.getValue();
+				Object value = Objects.isNull(listOfMap) ? listOfMap
+						: listOfMap.stream()
+						.map((Map<String, Object> map) -> map.entrySet().stream()
+								.filter(innerEntry -> innerEntry.getValue() != null
+								|| !innerEntry.getKey().equals("language"))
+								.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (map1, map2) -> map1,
+										LinkedHashMap::new)))
+						.collect(Collectors.toList());
+				responseMap.put(entry.getKey(), value);
+			} else {
+				responseMap.put(entry.getKey(), entry.getValue());
+			}
 		});
 		return responseMap;
 

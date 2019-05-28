@@ -1,61 +1,34 @@
-/*
 package io.mosip.registration.processor.manual.verification.stage;
 
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+
+import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.manual.verification.ManualVerificationApplication;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
-import io.mosip.registration.processor.manual.verification.exception.ManualVerificationAppException;
-import io.mosip.registration.processor.manual.verification.response.builder.ManualVerificationResponseBuilder;
-import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationAssignResponseDTO;
-import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationBioDemoResponseDTO;
-import io.mosip.registration.processor.manual.verification.response.dto.ManualVerificationPacketResponseDTO;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.util.ManualVerificationRequestValidator;
 import io.vertx.core.Handler;
@@ -73,65 +46,37 @@ import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Locale;
 import io.vertx.ext.web.ParsedHeaderValues;
 import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 
 @RunWith(SpringRunner.class)
+
 public class ManualVerificationStageTest{
 
-	private RoutingContext ctx;
-
+	@Mock
+	private MosipRouter router;
+	public RoutingContext ctx;
+	@Mock
+	SignatureUtil signatureUtil;
+	@Mock
+	SignatureResponse signatureResponse;
+	@Mock
+	private ManualVerificationRequestValidator manualVerificationRequestValidator;
 	@Mock
 	private ManualVerificationService manualAdjudicationService;
 	@Mock
-	ManualVerificationResponseBuilder manualVerificationResponseBuilder;
-
-	private String jsonData;
-	
-	@Mock
-	SignatureUtil signatureUtil;
-
-	@Mock
 	private Environment env;
-	@Mock
-	ManualVerificationRequestValidator manualVerificationRequestValidator;
-	Gson gson = new GsonBuilder().create();
-	String serviceID="";
-	private List<ErrorDTO> errors=new ArrayList<>();
-	ErrorDTO errorCode=new ErrorDTO("","");
+	private File file;
+	private String id = "2018782130000113112018183001.zip";
+	private String newId = "2018782130000113112018183000.zip";
+	public FileUpload fileUpload;
+	private String serviceID="";
+	private byte[] packetInfo;
 
-	@Mock
-	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
 	@InjectMocks
-	ManualVerificationStage manualVerificationStage = new ManualVerificationStage() {
-
-		@Override
-		public void setResponse(RoutingContext ctx, Object object,String jsonType,String digitalSignature) {
-			jsonData = object.toString();
-
-
-			if(serviceID=="bio") {
-				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-				errors=manualVerificationBioDemoResponseDTO.getErrors();
-			}else if(serviceID=="demo") {
-				ManualVerificationBioDemoResponseDTO manualVerificationBioDemoResponseDTO =gson.fromJson(jsonData, ManualVerificationBioDemoResponseDTO.class);
-				errors=manualVerificationBioDemoResponseDTO.getErrors();
-			}else if(serviceID=="assign") {
-				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errors=manualVerificationAssignResponseDTO.getErrors();
-
-			}else if(serviceID=="decision") {
-				ManualVerificationAssignResponseDTO manualVerificationAssignResponseDTO =gson.fromJson(jsonData, ManualVerificationAssignResponseDTO.class);
-				errors=manualVerificationAssignResponseDTO.getErrors();
-
-			}else if(serviceID=="packetinfo") {
-				ManualVerificationPacketResponseDTO manualVerificationPacketResponseDTO =gson.fromJson(jsonData, 		ManualVerificationPacketResponseDTO.class);
-				errors=manualVerificationPacketResponseDTO.getErrors();
-
-			}
-
-		}
-
+	private ManualVerificationStage manualverificationstage=new ManualVerificationStage()
+	{
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
@@ -140,167 +85,150 @@ public class ManualVerificationStageTest{
 		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
 			return null;
 		}
+		@Override
+		public void createServer(Router router, int port) {
+
+		}
+		@Override
+		public Router postUrl(Vertx vertx, MessageBusAddress consumeAddress, MessageBusAddress sendAddress) {
+			return null;
+		}
+
+		@Override
+		public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
+
+		}
 	};
 	@Before
-	public void setup() throws Exception {
-		
-		ctx = setContext();
-		ManualVerificationApplication.main(null);
-		when(env.getProperty(anyString())).thenReturn("mosip.manual.verification.biometric");
-		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		
-		signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
-		when(signatureUtil.signResponse(anyString())).thenReturn(signatureResponse);
-		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
-		
-	
+	public void setUp() throws IOException
+	{
+		ReflectionTestUtils.setField(manualverificationstage, "port", "8080");
+		ReflectionTestUtils.setField(manualverificationstage, "contextPath", "/registrationprocessor/v1/manualverification");
+		//Mockito.when(env.getProperty(SwaggerConstant.SERVER_SERVLET_PATH)).thenReturn("/registrationprocessor/v1/manualverification");
+		Mockito.doNothing().when(router).setRoute(any());
+		Mockito.when(router.post(any())).thenReturn(null);
+		Mockito.when(router.get(any())).thenReturn(null);
+		Mockito.doNothing().when(manualVerificationRequestValidator).validate(any(),any());
+		Mockito.when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
+		packetInfo="packetInfo".getBytes();
+		Mockito.when(manualAdjudicationService.getApplicantFile(any(),any())).thenReturn(packetInfo);
+		//ClassLoader classLoader = getClass().getClassLoader();
+		file = new File("/src/test/resources/0000.zip");
+		//FileUtils.copyFile(file, new File(file.getParentFile().getPath() + "/" + id));
+		//file = new File(classLoader.getResource(id).getFile());
+		fileUpload = setFileUpload();
+		ctx=setContext();
 	}
-
-
-
-	public String getDataAsJson(String dataNumber) {
-		JsonObject obj= new JsonObject();
-		obj.put("id", "mosip.manual.verification.biometric");
-		obj.put("version", "1.0");
-		obj.put("responsetime", "2019-02-04T13:46:39.919+0000");
-		JsonObject obj1= new JsonObject();
-		obj1.put("regId", "27847657360002520181208123456");
-		  
-		if(dataNumber=="1") {
-			obj.put("file", "MOSIPE@34whfh34");
-		}else {
-			obj.put("response",obj1);
-		}
-		errorCode=null;
-		obj.put("errors",errorCode);
-		
-
-
-		return obj.toString();
-	}
-
-
-
-
-
 	@Test
-	public void testAllProcesses() throws ClientProtocolException, IOException, ManualVerificationAppException {
-		doNothing().when(manualVerificationRequestValidator).validate(any(JsonObject.class),any(String.class));
-
-		processBiometricTest();
-		processDemographicTest();
-		processAssignmentTest();
-		processDecisionTest();
-		processPacketInfoTest();
-		testSendMessage();
-		testProcess();
-		packetUploaderTest();
+	public void testDeployeVerticle()
+	{
+		manualverificationstage.deployStage();
 	}
-
-
-	public void processBiometricTest(){
+	@Test
+	public void testStart()
+	{
+		MessageDTO dto=new MessageDTO();
+		manualverificationstage.process(dto);
+		manualverificationstage.sendMessage(dto);
+		manualverificationstage.start();
+	}
+	@Test
+	public void testAllProcess()
+	{
+		testBiometric();
+		testDemographic();
+		testProcessAssignment();
+		testProcessDecision();
+		testProcessPacketInfo();
+	}
+	private void testBiometric()
+	{
 		serviceID="bio";
-		byte[] packetInfo = "packetInfo".getBytes();
-		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
-		manualVerificationStage.processBiometric(ctx);
-		assertEquals(errors, null);
-
-
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.biometric");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		manualverificationstage.processBiometric(ctx);
 	}
-
-
-	public void processDemographicTest() throws ManualVerificationAppException{
+	private void testDemographic()
+	{
 		serviceID="demo";
-		byte[] packetInfo = "packetInfo".getBytes();
-		when(manualAdjudicationService.getApplicantFile(any(String.class),any(String.class))).thenReturn(packetInfo);
-		manualVerificationStage.processDemographic(ctx);
-		assertEquals(errors, null);
-
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.demographic");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		manualverificationstage.processDemographic(ctx);
 	}
-
-
-	public void processAssignmentTest(){
+	private void testProcessAssignment()
+	{
 		serviceID="assign";
-
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.assignment");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		ManualVerificationDTO manualVerificationDTO= new ManualVerificationDTO();
-		when(manualAdjudicationService.assignApplicant(any(UserDto.class),any(String.class))).thenReturn(manualVerificationDTO);
-		manualVerificationStage.processAssignment(ctx);
-		assertEquals(errors, null);
-
+		Mockito.when(manualAdjudicationService.assignApplicant(any(UserDto.class))).thenReturn(manualVerificationDTO);
+		manualverificationstage.processAssignment(ctx);
 	}
-
-
-	public void processDecisionTest(){
+	private void testProcessDecision()
+	{
 		serviceID="decision";
-		manualVerificationStage.processDecision(ctx);
-		assertEquals(errors, null);
-
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.decision");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		ManualVerificationDTO updatedManualVerificationDTO=new ManualVerificationDTO();
+		Mockito.when(manualAdjudicationService.updatePacketStatus(any(),any())).thenReturn(updatedManualVerificationDTO);
+		manualverificationstage.processDecision(ctx);
 	}
-
-
-	public void processPacketInfoTest(){
+	private void testProcessPacketInfo()
+	{
 		serviceID="packetinfo";
-		PacketMetaInfo packetInfo = new PacketMetaInfo();
-		when(manualAdjudicationService.getApplicantPacketInfo(any(String.class))).thenReturn(packetInfo);
-		manualVerificationStage.processPacketInfo(ctx);
-		assertEquals(errors, null);
-
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.packetinfo");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		PacketMetaInfo info=new PacketMetaInfo();
+		Mockito.when(manualAdjudicationService.getApplicantPacketInfo(any())).thenReturn(info);
+		manualverificationstage.processPacketInfo(ctx);
 	}
+	private FileUpload setFileUpload() {
+		return new FileUpload() {
 
+			@Override
+			public String uploadedFileName() {
+				return file.getPath();
+			}
 
-	public void testSendMessage() {
-		manualVerificationStage.sendMessage(null);
+			@Override
+			public long size() {
+				return file.length();
+			}
+
+			@Override
+			public String name() {
+				return file.getName();
+			}
+
+			@Override
+			public String fileName() {
+				return newId;
+			}
+
+			@Override
+			public String contentType() {
+				return null;
+			}
+
+			@Override
+			public String contentTransferEncoding() {
+				return null;
+			}
+
+			@Override
+			public String charSet() {
+				return null;
+			}
+		};
 	}
-
-	public void testProcess() {
-		manualVerificationStage.process(null);
-	}
-
-	public void packetUploaderTest() throws ClientProtocolException, IOException {
-
-		HttpGet httpGet = new HttpGet("http://localhost:8084/manual-verification/health");
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpResponse getResponse = client.execute(httpGet);
-		assertEquals(200, getResponse.getStatusLine().getStatusCode());
-
-		HttpPost applicantBiometric = getHttpPost("http://localhost:8084/manual-verification/applicantBiometric/v1.0");
-		CloseableHttpResponse response = HttpClients.createDefault().execute(applicantBiometric);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
-		HttpPost applicantDemographic = getHttpPost("http://localhost:8084/manual-verification/applicantDemographic/v1.0");
-		response = HttpClients.createDefault().execute(applicantDemographic);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
-		HttpPost assignment = getHttpPost("http://localhost:8084/manual-verification/assignment/v1.0");
-		response = HttpClients.createDefault().execute(assignment);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
-		HttpPost decision = getHttpPost("http://localhost:8084/manual-verification/decision/v1.0");
-		response = HttpClients.createDefault().execute(decision);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
-		HttpPost packetInfo = getHttpPost("http://localhost:8084/manual-verification/packetInfo/v1.0");
-		response = HttpClients.createDefault().execute(packetInfo);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
-	}
-
-	private HttpPost getHttpPost(String url) throws UnsupportedEncodingException {
-		HttpPost httpPost = new HttpPost(url);
-
-		String json = "{'regId':'27847657360002520181208183004','fileName':'APPLICANTPHOTO'}";
-		StringEntity entity = new StringEntity(json);
-		httpPost.setEntity(entity);
-		httpPost.setHeader("Content-type", "application/json");
-		return httpPost;
-	}
-
 	private RoutingContext setContext() {
 		return new RoutingContext() {
 
 			@Override
 			public Set<FileUpload> fileUploads() {
-				return null;
+				Set<FileUpload> fileUploads = new HashSet<FileUpload>();
+				fileUploads.add(fileUpload);
+				return fileUploads;
 			}
 
 			@Override
@@ -552,6 +480,6 @@ public class ManualVerificationStageTest{
 			}
 		};
 	}
+
 }
 
-*/

@@ -17,12 +17,15 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -41,6 +44,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
+import io.mosip.preregistration.login.dto.ClientSecretDTO;
 import io.mosip.preregistration.login.dto.OtpRequestDTO;
 import io.mosip.preregistration.login.dto.OtpUser;
 import io.mosip.preregistration.login.dto.User;
@@ -112,6 +116,12 @@ public class LoginService {
 	AuditLogUtil auditLogUtil;
 	
 	Map<String, String> requiredRequestMap = new HashMap<>();
+
+	@Value("${clientId}")
+	private String clientId;
+
+	@Value("${secretKey}")
+	private String secretKey;
 	
 	@PostConstruct
 	public void setupLoginService() {
@@ -149,8 +159,9 @@ public class LoginService {
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
 				String url=sendOtpResourceUrl+"/authenticate/sendotp";
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString());
 				ResponseEntity<String> responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON,requestSendOtpKernel,null,String.class);
-				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
+				log.info("sessionId", "idType","id"," Kernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
 					throw new LoginServiceException(validationErrorList,response);
@@ -162,7 +173,12 @@ public class LoginService {
 				}
 			
 		}
-		catch(Exception ex) {
+		catch(HttpServerErrorException | HttpClientErrorException ex){
+			log.info("sessionId", "idType", "id",
+					"In callsendOtp method of login service- " + ex.getResponseBodyAsString());
+			new LoginExceptionCatcher().handle(ex,"sendOtp",response);
+		}
+		catch(Exception ex){
 			log.error("sessionId", "idType", "id",
 					"In callsendOtp method of login service- " + ex.getMessage());
 			new LoginExceptionCatcher().handle(ex,"sendOtp",response);	
@@ -200,8 +216,9 @@ public class LoginService {
 				
 				ResponseEntity<String> responseEntity = null;
 				String url=sendOtpResourceUrl+"/authenticate/useridOTP";
+				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString());
 				responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON_UTF8,requestSendOtpKernel,null,String.class);
-				log.info("sessionId", "idType","id","Kernel request body:\n " +requestSendOtpKernel.getRequest().toString()+"\n Kernel response: \n"+responseEntity.getBody());
+				log.info("sessionId", "idType","id","\nKernel response: \n"+responseEntity.getBody());
 				List<ServiceError> validationErrorList=null;
 				validationErrorList=ExceptionUtils.getServiceErrorList(responseEntity.getBody());
 				if(!validationErrorList.isEmpty()) {
@@ -229,13 +246,13 @@ public class LoginService {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		
 				if (isSuccess) {
-					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
-							" User sucessfully logedin    ",
+					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
+							" User sucessfully logged-in    ",
 							AuditLogVariables.NO_ID.toString(), userid,
 							userid);
 				} else {
 					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							" User failed to logedin ", AuditLogVariables.NO_ID.toString(),
+							" User failed to logged-in ", AuditLogVariables.NO_ID.toString(),
 							userid, userid);
 		}
 			
@@ -286,13 +303,13 @@ public class LoginService {
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
-				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.SYSTEM.toString(),
-						"User sucessfully logedin ",
+				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
+						"User sucessfully logged-out ",
 						AuditLogVariables.NO_ID.toString(),userId,
 						userId);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"User failed to logedin", AuditLogVariables.NO_ID.toString(),
+						"User failed to logged-out", AuditLogVariables.NO_ID.toString(),
 						userId, userId);
 	}
 		
@@ -310,6 +327,17 @@ public class LoginService {
 	 * @param idType
 	 */
 	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,String userId,String userName) {
+		try {
+		String tokenUrl=sendOtpResourceUrl+"/authenticate/clientidsecretkey";
+		ClientSecretDTO clientSecretDto=new ClientSecretDTO(clientId, secretKey, appId);
+		RequestWrapper<ClientSecretDTO> requestKernel=new RequestWrapper<>();
+		requestKernel.setRequest(clientSecretDto);
+		requestKernel.setRequesttime(LocalDateTime.now());
+		ResponseEntity<ResponseWrapper<AuthNResponse>> response=(ResponseEntity<ResponseWrapper<AuthNResponse>>) loginCommonUtil.callAuthService(tokenUrl, HttpMethod.POST, MediaType.APPLICATION_JSON, requestKernel,null,ResponseWrapper.class);
+		if(!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
+			throw new LoginServiceException(response.getBody().getErrors(),null);
+		}
+		String token=response.getHeaders().get("Set-Cookie").get(0);
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setEventId(eventId);
 		auditRequestDto.setEventName(eventName);
@@ -320,7 +348,14 @@ public class LoginService {
 		auditRequestDto.setSessionUserName(userName);
 		auditRequestDto.setModuleId(AuditLogVariables.AUTHENTICATION.toString());
 		auditRequestDto.setModuleName(AuditLogVariables.AUTHENTICATION_SERVICE.toString());
-		auditLogUtil.saveAuditDetails(auditRequestDto);
+		auditLogUtil.saveAuditDetails(auditRequestDto,token);
+		}
+		catch(LoginServiceException ex) {
+			log.error("sessionId", "idType", "id","In setAuditvalue of login service:"+StringUtils.join(ex.getValidationErrorList(),",") );
+		}
+		catch(Exception ex) {
+			log.error("sessionId", "idType", "id","In setAuditvalue of login service:"+ ex.getMessage());
+		}
 	}
 	
 	/**

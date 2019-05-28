@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit {
   seconds: string;
   showSpinner = true;
   validationMessages = {};
+  textDir = localStorage.getItem('dir');
 
   constructor(
     private authService: AuthService,
@@ -110,9 +111,6 @@ export class LoginComponent implements OnInit {
   loadLanguagesWithConfig() {
     this.primaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
     this.secondaryLangFromConfig = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
-
-    // this.primaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_primary_language);
-    // this.secondaryLang = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_secondary_language);
     this.primaryLang = this.primaryLangFromConfig;
     this.secondaryLang = this.secondaryLangFromConfig;
 
@@ -149,6 +147,7 @@ export class LoginComponent implements OnInit {
     }
     localStorage.setItem('dir', this.dir);
     localStorage.setItem('secondaryDir', this.secondaryDir);
+    this.textDir = localStorage.getItem('dir');
   }
 
   setTimer() {
@@ -209,6 +208,7 @@ export class LoginComponent implements OnInit {
 
   submit(): void {
     this.loginIdValidator();
+    this.inputOTP = '';
     if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
       this.showResend = true;
       this.showOTP = true;
@@ -255,14 +255,6 @@ export class LoginComponent implements OnInit {
 
       this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
         console.log(response);
-        // if (response['errors']) {
-        // this.showError();
-        // }
-        //////user blocked case///////////
-        // if (response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.userBlocked) {
-        //   this.showUserBlocked();
-        //   return;
-        // }
       });
 
       // dynamic update of button text for Resend and Verify
@@ -283,28 +275,10 @@ export class LoginComponent implements OnInit {
           }
         },
         error => {
-          this.showOtpMessage();
-          // clearInterval(this.timer);
-          // localStorage.setItem('loggedIn', 'true');
-          // this.authService.setToken();
-
-          // this.regService.setLoginId(this.inputContactDetails);
-          // this.router.navigate(['dashboard']);
+          this.showErrorMessage();
         }
       );
     }
-  }
-
-  showUserBlocked() {
-    console.log('user blocked', this.validationMessages['userBlocked']);
-    // const message = {
-    //   case: 'MESSAGE',
-    //   message: this.validationMessages['userBlocked']
-    // };
-    // const dialogRef = this.dialog.open(DialougComponent, {
-    //   width: '350px',
-    //   data: message
-    // });
   }
 
   showOtpMessage() {

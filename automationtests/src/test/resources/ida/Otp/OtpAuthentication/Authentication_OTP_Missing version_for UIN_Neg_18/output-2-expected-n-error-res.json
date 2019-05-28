@@ -1,0 +1,1 @@
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - version"}],"responseTime":"$IGNORE$","version":"1.0","transactionID":"$RANDOM:N:10$","id":"mosip.identity.auth"}

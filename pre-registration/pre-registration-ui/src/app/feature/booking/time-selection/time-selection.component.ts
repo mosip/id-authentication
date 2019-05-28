@@ -44,6 +44,7 @@ export class TimeSelectionComponent implements OnInit {
   showMorning: boolean;
   showAfternoon: boolean;
   disableContinueButton = false;
+  DAYS: any;
 
   constructor(
     private bookingService: BookingService,
@@ -75,6 +76,7 @@ export class TimeSelectionComponent implements OnInit {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.secondaryLanguagelabels = response['timeSelection'].booking;
       this.errorlabels = response['error'];
+      this.DAYS = response['DAYS'];
     });
   }
 
@@ -144,7 +146,7 @@ export class TimeSelectionComponent implements OnInit {
       // ', ' +
       // element.date.split('-')[0];
       element.displayDay =
-        appConstants.DAYS[localStorage.getItem('langCode')][new Date(Date.parse(element.date)).getDay()];
+        this.DAYS[new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }

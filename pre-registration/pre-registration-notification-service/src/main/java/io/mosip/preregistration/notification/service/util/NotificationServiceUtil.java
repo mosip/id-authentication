@@ -58,6 +58,7 @@ public class NotificationServiceUtil {
 	
 	public MainRequestDTO<NotificationDTO> createNotificationDetails(String jsonString) throws JsonParseException,
 			JsonMappingException, io.mosip.kernel.core.exception.IOException, JSONException, ParseException {
+		
 		log.info("sessionId", "idType", "id", "In createUploadDto method of notification service util");
 		MainRequestDTO<NotificationDTO> notificationReqDto = new MainRequestDTO<>();
 		JSONObject notificationData = new JSONObject(jsonString);
@@ -66,7 +67,14 @@ public class NotificationServiceUtil {
 				notificationDtoData.toString());
 		notificationReqDto.setId(notificationData.get("id").toString());
 		notificationReqDto.setVersion(notificationData.get("version").toString());
-		notificationReqDto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(notificationData.get("requesttime").toString()) );
+		if(!(notificationData.get("requesttime")==null ||notificationData.get("requesttime").toString().isEmpty())) {
+			notificationReqDto.setRequesttime(
+					new SimpleDateFormat(utcDateTimePattern).parse(notificationData.get("requesttime").toString()));
+		}
+		else
+		{
+			notificationReqDto.setRequesttime(null);
+		}
 		notificationReqDto.setRequest(notififcationDTO);
 		return notificationReqDto;
 

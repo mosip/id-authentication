@@ -1,10 +1,12 @@
 package io.mosip.idrepository.identity.config;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hibernate.Interceptor;
@@ -14,15 +16,26 @@ import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.exception.AuthenticationException;
+import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -31,7 +44,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Configuration
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
 
@@ -40,7 +53,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	private RestTemplate restTemplate;
 
 	/** The interceptor. */
 	@Autowired
@@ -62,6 +75,52 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The id. */
 	private Map<String, String> id;
 
+	@PostConstruct
+	public void init() {
+		restTemplate.getInterceptors().add(new ClientHttpRequestInterceptor() {
+
+			@Override
+			public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
+					throws IOException {
+				mosipLogger.debug(IdRepoLogger.getUin(), "Rest Template logs", "Request URL: ",
+						request.getURI().toString());
+				ClientHttpResponse response = execution.execute(request, body);
+				BufferingClientHttpResponseWrapper responseWrapper = new BufferingClientHttpResponseWrapper(response);
+				mosipLogger.debug(IdRepoLogger.getUin(), "Rest Template logs", "Resposne: ",
+						responseWrapper.getResponseBody());
+				return responseWrapper;
+			}
+		});
+
+		restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+
+			@Override
+			protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
+				mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
+						"Status error : " + response.getRawStatusCode() + " " + response.getStatusCode() + "  "
+								+ response.getStatusText());
+				if (response.getStatusCode().is4xxClientError()) {
+					if (response.getRawStatusCode() == 401 || response.getRawStatusCode() == 403) {
+						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError",
+								"request failed with status code :" + response.getRawStatusCode(),
+								"\n\n" + new String(super.getResponseBody(response)));
+						List<ServiceError> errorList = ExceptionUtils
+								.getServiceErrorList(new String(super.getResponseBody(response)));
+						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError",
+								"Throwing AuthenticationException", errorList.toString());
+						throw new AuthenticationException(errorList.get(0).getErrorCode(),
+								errorList.get(0).getMessage(), response.getRawStatusCode());
+					} else {
+						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
+								"Status error - returning RestServiceException - CLIENT_ERROR -- "
+										+ new String(super.getResponseBody(response)));
+						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.CLIENT_ERROR);
+					}
+				}
+			}
+		});
+	}
+
 	/**
 	 * Gets the db.
 	 *
@@ -74,7 +133,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the db.
 	 *
-	 * @param db the db
+	 * @param db
+	 *            the db
 	 */
 	public void setDb(Map<String, Map<String, String>> db) {
 		this.db = db;
@@ -83,7 +143,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the status.
 	 *
-	 * @param status the status
+	 * @param status
+	 *            the status
 	 */
 	public void setUinStatus(List<String> uinStatus) {
 		this.uinStatus = uinStatus;
@@ -92,7 +153,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the id.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 */
 	public void setId(Map<String, String> id) {
 		this.id = id;
@@ -101,7 +163,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the allowed bio types.
 	 *
-	 * @param allowedBioAttributes the new allowed bio types
+	 * @param allowedBioAttributes
+	 *            the new allowed bio types
 	 */
 	public void setAllowedBioAttributes(List<String> allowedBioAttributes) {
 		this.allowedBioAttributes = allowedBioAttributes;
@@ -115,20 +178,21 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		this.allowedTypes = allowedTypes;
 	}
 
-	//FIXME Need to check for UIN-Reg ID scenario
-//	/**
-//	 * Gets the shard data source resolver.
-//	 *
-//	 * @return the shard data source resolver
-//	 */
-//	@Bean
-//	public ShardDataSourceResolver getShardDataSourceResolver() {
-//		ShardDataSourceResolver resolver = new ShardDataSourceResolver();
-//		resolver.setLenientFallback(false);
-//		resolver.setTargetDataSources(db.entrySet().parallelStream()
-//				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
-//		return resolver;
-//	}
+	// FIXME Need to check for UIN-Reg ID scenario
+	// /**
+	// * Gets the shard data source resolver.
+	// *
+	// * @return the shard data source resolver
+	// */
+	// @Bean
+	// public ShardDataSourceResolver getShardDataSourceResolver() {
+	// ShardDataSourceResolver resolver = new ShardDataSourceResolver();
+	// resolver.setLenientFallback(false);
+	// resolver.setTargetDataSources(db.entrySet().parallelStream()
+	// .collect(Collectors.toMap(Map.Entry::getKey, value ->
+	// buildDataSource(value.getValue()))));
+	// return resolver;
+	// }
 
 	/**
 	 * Id.
@@ -173,7 +237,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Entity manager factory.
 	 *
-	 * @param dataSource the data source
+	 * @param dataSource
+	 *            the data source
 	 * @return the local container entity manager factory bean
 	 */
 	@Bean
@@ -188,20 +253,22 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 		return em;
 	}
-//
-//	/**
-//	 * Transaction manager.
-//	 *
-//	 * @param emf the emf
-//	 * @return the platform transaction manager
-//	 */
-//	@Bean
-//	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-//		JpaTransactionManager transactionManager = new JpaTransactionManager();
-//		transactionManager.setEntityManagerFactory(emf);
-//		return transactionManager;
-//	}
-//
+
+	//
+	// /**
+	// * Transaction manager.
+	// *
+	// * @param emf the emf
+	// * @return the platform transaction manager
+	// */
+	// @Bean
+	// public PlatformTransactionManager transactionManager(EntityManagerFactory
+	// emf) {
+	// JpaTransactionManager transactionManager = new JpaTransactionManager();
+	// transactionManager.setEntityManagerFactory(emf);
+	// return transactionManager;
+	// }
+	//
 	/**
 	 * Additional properties.
 	 *
@@ -210,7 +277,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	private Map<String, Object> additionalProperties() {
 		Map<String, Object> jpaProperties = new HashMap<>();
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
-		jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults",Boolean.FALSE);
+		jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults", Boolean.FALSE);
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
 		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
@@ -221,7 +288,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Builds the data source.
 	 *
-	 * @param dataSourceValues the data source values
+	 * @param dataSourceValues
+	 *            the data source values
 	 * @return the data source
 	 */
 	private DataSource buildDataSource(Map<String, String> dataSourceValues) {
@@ -231,7 +299,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		dataSource.setDriverClassName(dataSourceValues.get("driverClassName"));
 		return dataSource;
 	}
-	
+
 	@Bean
 	public DataSource dataSource() {
 		return buildDataSource(db.get("shard"));

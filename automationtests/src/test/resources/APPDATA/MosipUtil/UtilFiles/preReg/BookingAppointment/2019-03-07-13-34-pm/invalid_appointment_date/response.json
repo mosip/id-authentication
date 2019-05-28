@@ -1,9 +1,0 @@
-{
-  "err": {
-    "errorCode": "PRG_BOOK_RCI_008",
-    "message": "INVALID_APPOINTMENT_DATE"
-  },
-  "status": false,
-  "resTime": "2019-02-03T04:33:30.286Z",
-  "response": null
-}

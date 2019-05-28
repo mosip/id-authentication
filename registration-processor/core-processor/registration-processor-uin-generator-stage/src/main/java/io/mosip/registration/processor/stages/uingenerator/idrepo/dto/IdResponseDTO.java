@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 /**
  * The Class IdResponseDTO.
  *

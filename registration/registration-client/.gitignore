@@ -30,3 +30,5 @@ reg/README_DO_NOT_TOUCH_FILES.txt
 /PreRegPacketStore/*
 /reg_new/
 /reg_new_updated/
+/db/
+/props/

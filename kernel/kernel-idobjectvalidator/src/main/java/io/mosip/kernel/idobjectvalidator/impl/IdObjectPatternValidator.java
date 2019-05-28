@@ -1,5 +1,11 @@
 package io.mosip.kernel.idobjectvalidator.impl;
 
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.CNIE_NUMBER_REGEX;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_CNIE_NUMBER_PATH;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +24,9 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorConstant;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import net.minidev.json.JSONArray;
 
@@ -54,7 +59,8 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 	 * @see io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator#validateIdObject(java.lang.Object)
 	 */
 	@Override
-	public boolean validateIdObject(Object identityObject) throws IdObjectIOException, IdObjectValidationProcessingException {
+	public boolean validateIdObject(Object identityObject, IdObjectValidatorSupportedOperations operation)
+			throws IdObjectIOException, IdObjectValidationFailedException {
 		try {
 			String identityString = mapper.writeValueAsString(identityObject);
 			List<ServiceError> errorList = new ArrayList<>();
@@ -63,11 +69,11 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 			if (errorList.isEmpty()) {
 				return true;
 			} else {
-				throw new IdObjectValidationProcessingException(
-						IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED, errorList);
+				throw new IdObjectValidationFailedException(
+						ID_OBJECT_VALIDATION_FAILED, errorList);
 			}
 		} catch (JsonProcessingException e) {
-			throw new IdObjectIOException(IdObjectValidatorErrorConstant.ID_OBJECT_IO_EXCEPTION, e);
+			throw new IdObjectIOException(ID_OBJECT_PARSING_FAILED, e);
 		}
 	}
 
@@ -95,8 +101,8 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 										Option.ALWAYS_RETURN_LIST, 
 										Option.AS_PATH_LIST));
 						errorList.add(new ServiceError(
-								IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
-								String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
+								INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(INVALID_INPUT_PARAMETER.getMessage(),
 										convertToPath(String.valueOf(pathList.get(index))))));
 						});
 			}
@@ -110,8 +116,8 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 	 * @param errorList the error list
 	 */
 	private void validateCNIENumber(String identity, List<ServiceError> errorList) {
-		Pattern pattern = Pattern.compile(IdObjectValidatorConstant.CNIE_NUMBER_REGEX.getValue());
-		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CNIE_NUMBER_PATH.getValue());
+		Pattern pattern = Pattern.compile(CNIE_NUMBER_REGEX.getValue());
+		JsonPath jsonPath = JsonPath.compile(IDENTITY_CNIE_NUMBER_PATH.getValue());
 		JSONArray pathList = jsonPath.read(identity, 
 				Configuration.defaultConfiguration()
 				.addOptions(
@@ -120,8 +126,8 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 		CharSequence data = jsonPath.read(identity,
 				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 		if (Objects.nonNull(data) && !pattern.matcher(data).matches()) {
-			errorList.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
+			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(INVALID_INPUT_PARAMETER.getMessage(),
 							convertToPath(String.valueOf(pathList.get(0))))));
 		}
 	}

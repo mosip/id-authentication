@@ -33,6 +33,7 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
+import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.idrepository.vid.provider.VidPolicyProvider;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -57,19 +58,22 @@ public class VidRequestValidatorTest {
 
 	@Mock
 	private VidValidator<String> vidValidator;
+	
+	@Mock
+	private BaseIdRepoValidator  baseValidator;
 
 	@Mock
 	private UinValidator<String> uinValidator;
 
 	@Autowired
-	private Environment env;
+	protected Environment env;
 
 	@Mock
 	private VidPolicyProvider policyProvider;
 
 	List<String> allowedStatus;
-
-	private Map<String, String> id;
+	
+	Map<String, String> id;
 
 	public Map<String, String> getId() {
 		return id;
@@ -94,6 +98,7 @@ public class VidRequestValidatorTest {
 		errors = new BeanPropertyBindingResult(new RequestWrapper<VidRequestDTO>(), "vidRequestDto");
 		ReflectionTestUtils.setField(requestValidator, "allowedStatus", allowedStatus);
 		ReflectionTestUtils.setField(requestValidator, "id", id);
+		ReflectionTestUtils.setField(baseValidator, "id", id);
 		ReflectionTestUtils.setField(requestValidator, "env", env);
 		ReflectionTestUtils.setField(requestValidator, "vidValidator", vidValidator);
 		ReflectionTestUtils.setField(requestValidator, "policyProvider", policyProvider);
@@ -227,6 +232,7 @@ public class VidRequestValidatorTest {
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		request.setVidType("Perpetual");
+		request.setUin(2953190571L);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
@@ -245,6 +251,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
+		request.setUin(2953190571L);
 		request.setVidType("Temp");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -270,6 +277,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
+		request.setUin(2953190571L);
 		request.setVidType(null);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -288,6 +296,8 @@ public class VidRequestValidatorTest {
 			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
+	
+	
 	
 	@Test
 	public void testUinValid() {

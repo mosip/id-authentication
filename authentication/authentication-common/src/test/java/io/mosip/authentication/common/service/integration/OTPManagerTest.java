@@ -47,7 +47,6 @@ import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.vertx.core.net.impl.ServerID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)

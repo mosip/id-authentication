@@ -1,8 +1,0 @@
-{
-	"Kernel_UINStatusUpdate_UIN_Status_empty_uin":"string",
-	"Kernel_UINStatusUpdate_UIN_Status_empty_status":"UNASSIGNED",
-	"Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned":"string",
-	"Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued":"string",
-	"Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":"string",
-	"Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned":"string"	
-}

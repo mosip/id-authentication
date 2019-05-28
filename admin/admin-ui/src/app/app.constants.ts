@@ -6,11 +6,11 @@ export const menuItems = [
   'Configuration'
 ];
 
-export const appId = 'admin';
-export const applicationVersion = 'v1';
-export const userIdType = 'USERID';
-export const loginOtpContext = 'auth-otp';
-
+export const APPLICATION_ID = 'admin';
+export const OTP_CONTEXT = 'auth-otp';
+export const USER_ID_TYPE = 'USERID';
+export const APP_VERSION = 'v1';
+export const OTP_CHANNEL = ['email', 'mobile'];
 
 
 
@@ -91,8 +91,9 @@ export const admin_base_url = `https://${base_url}/v1/admin/`;
 
 export const loginURL = {
   userRole: `${admin_base_url}security/authfactors/`,
-  userIdpasswd: `${admin_base_url}useridPwd`,
+  userIdpasswd: `${admin_base_url}login`,
   sendOtp: `https://${base_url}/v1/authmanager/authenticate/sendotp`,
-  verifyOtp: `https://${base_url}/v1/authmanager/authenticate/useridOTP`
+  verifyOtp: `https://${base_url}/v1/authmanager/authenticate/useridOTP`,
 };
 
+export const logoutUrl = `${admin_base_url}logout`;

@@ -182,12 +182,15 @@ public enum ApiName {
     /** The retrieveidentity using rid. */
 	RETRIEVEIDENTITYFROMRID,
     /** The digitalsignature */
-	DIGITALSIGNATURE, 
-	/** The user details */
-	USERDETAILS, 
-	/** get operator rid from id */
-	GETRIDFROMUSERID,
-	
-	INTERNALAUTH;
+	DIGITALSIGNATURE,
+	/**The Vid creation  */
+	CREATEVID,
+
+    /** The user details */
+    USERDETAILS,
+    /** get operator rid from id */
+    GETRIDFROMUSERID,
+
+    INTERNALAUTH;
 
 }

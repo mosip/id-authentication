@@ -1,0 +1,1 @@
+{"responseTime":"$TIMESTAMP$","transactionID":"$RANDOM:N:10$","version":"1.0","response":{"authStatus":true,"staticToken":"$IGNORE$"}}

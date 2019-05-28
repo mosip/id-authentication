@@ -1,6 +1,0 @@
-{
-    "preReg_TriggerNotification_id_withInvalidValueAsEmpty":"",
-    "preReg_TriggerNotification_id_withInvalidOtherThanStandardValue":"",
-    "preReg_TriggerNotification_requesttime_withInvalidValueAsAlphabets":"",
-    "preReg_TriggerNotification_requesttime_withInvalidValueAsDateGreaterThanCurrentDate":""
-}

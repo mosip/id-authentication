@@ -17,7 +17,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
-import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
@@ -25,13 +24,11 @@ import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
-import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
@@ -49,10 +46,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 
 	/** The Constant INDIVIDUAL BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
-
-	/** The BiometricProviderFactory value */
-	@Autowired
-	private BiometricProviderFactory biometricProviderFactory;
 
 	/** The OTPManager */
 	@Autowired
@@ -158,38 +151,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		} else {
 			return languageForMatchType.equalsIgnoreCase(languageFromReq);
 		}
-	}
-
-	/*
-	 * Get Iris Provider
-	 * 
-	 */
-	@Override
-	public MosipBiometricProvider getIrisProvider(DataDTO bioinfovalue) {
-		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
-	}
-
-	/**
-	 * Gets the finger print provider.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the finger print provider
-	 */
-	@Override
-	public MosipBiometricProvider getFingerPrintProvider(DataDTO bioinfovalue) {
-		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
-	}
-
-	/*
-	 * Get the Face provider
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getFaceProvider(
-	 * io.mosip.authentication.core.dto.indauth.DataDTO)
-	 */
-	@Override
-	public MosipBiometricProvider getFaceProvider(DataDTO bioinfovalue) {
-		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
 	/*
@@ -324,15 +285,17 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			return IdType.UIN;
 		} else if (individualIdType.equals(IdType.VID.getType())) {
 			return IdType.VID;
-		}
-		else if (individualIdType.equals(IdType.USER_ID.getType())) {
+		} else if (individualIdType.equals(IdType.USER_ID.getType())) {
 			return IdType.USER_ID;
 		}
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getMatchingThreshold(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#
+	 * getMatchingThreshold(java.lang.String)
 	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(String key) {
@@ -341,12 +304,9 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				threshold = Integer.parseInt(property);
-			} 
+			}
 		}
 		return Optional.ofNullable(threshold);
 	}
-
-
-
 
 }

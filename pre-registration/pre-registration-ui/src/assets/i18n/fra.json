@@ -355,7 +355,7 @@
     "label_sameas": "Pareil que",
     "text_or": "OU",
     "action_view": "VUE",
-    "OR":"GOLD"
+    "OR": "ou"
   },
   "acknowledgement": {
     "title": "Rendez-vous confirmé",
@@ -414,7 +414,8 @@
       "msg5": "Le nom du fichier ne doit pas dépasser 50 caractères",
       "msg6": "Mauvais type de fichier, veuillez télécharger à nouveau",
       "msg7": "Le fichier n'a pas pu être téléchargé. Veuillez réessayer.",
-      "msg8": "Impossible de copier le document"
+      "msg8": "Impossible de copier le document",
+      "msg9": "Les documents sont manquants"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",
@@ -563,5 +564,11 @@
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
     "button_ok": "OK"
-  }
+  },
+  "residentTypesMapping": {
+    "NFR": "Nationale",
+    "FR": "Étranger"
+  },
+  "sameAs": "Document téléchargé avec Identique à",
+  "DAYS": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 }

@@ -3,8 +3,10 @@ package io.mosip.authentication.common.service.integration;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
@@ -74,6 +77,8 @@ public class KeyManager {
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
+	
+	
 
 	/**
 	 * requestData method used to decipher the request block {@link RequestDTO}
@@ -81,21 +86,22 @@ public class KeyManager {
 	 *
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
+	 * @param refId 
 	 * @return the map
 	 * @throws IdAuthenticationAppException      the id authentication app exception
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper)
+	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId)
 			throws IdAuthenticationAppException {
 		Map<String, Object> request = null;
 		try {
 			byte[] encryptedRequest = (byte[]) requestBody.get(IdAuthCommonConstants.REQUEST);
 			byte[] encryptedSessionkey = Base64.decodeBase64((String)requestBody.get(SESSION_KEY));
-			request = decipherData(mapper, encryptedRequest, encryptedSessionkey);
+			request = decipherData(mapper, encryptedRequest, encryptedSessionkey, refId);
 		} catch (IOException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "requestData", e.getMessage());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
-					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), e);
 		}
 		return request;
 	}
@@ -112,11 +118,9 @@ public class KeyManager {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey)
+	private Map<String, Object> decipherData(ObjectMapper mapper, byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
 			throws IdAuthenticationAppException, IOException {
-		String decodedIdentity = kernelDecrypt(encryptedRequest, encryptedSessionKey);
-		Map<String, Object> request = mapper.readValue(decodedIdentity,Map.class);
-		return request;
+		return mapper.readValue(kernelDecrypt(encryptedRequest, encryptedSessionKey, refId) ,Map.class);
 	}
 
 	/**
@@ -124,17 +128,19 @@ public class KeyManager {
 	 *
 	 * @param encryptedRequest the encrypted request
 	 * @param encryptedSessionKey the encrypted session key
+	 * @param refId 
+	 * @param string 
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey)
+	public String kernelDecrypt(byte[] encryptedRequest, byte[] encryptedSessionKey, String refId)
 			throws IdAuthenticationAppException {
 		String decryptedRequest=null;
 		CryptomanagerRequestDto cryptoManagerRequestDto = new CryptomanagerRequestDto();
 		try {
 			cryptoManagerRequestDto.setApplicationId(appId);
-			cryptoManagerRequestDto.setReferenceId(partnerId);
+			cryptoManagerRequestDto.setReferenceId(refId);
 			cryptoManagerRequestDto.setTimeStamp(
 					DateUtils.getUTCCurrentDateTime());
 			cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
@@ -196,21 +202,21 @@ public class KeyManager {
 	 * This method is used to encrypt the KYC identity response
 	 *
 	 * @param responseBody the response body
+	 * @param mapper 
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	public String encryptData(Map<String, Object> responseBody) throws IdAuthenticationAppException {
-		Optional<String> identity = Optional.ofNullable(responseBody.get("identity"))
-				.map(String::valueOf);
+	public String encryptData(Map<String, Object> responseBody, ObjectMapper mapper) throws IdAuthenticationAppException {
+		Map<String, Object> identity = responseBody.get("identity") instanceof Map ? (Map<String, Object>) responseBody.get("identity") : null;
 		Map<String, Object> response;
 		RestRequestDTO restRequestDTO = null;
-		if (identity.isPresent()) {
+		if (Objects.nonNull(identity)) {
 			EncryptDataRequestDto encryptDataRequestDto = new EncryptDataRequestDto();
 			encryptDataRequestDto.setApplicationId(appId);
 			encryptDataRequestDto.setReferenceId(partnerId);
 			encryptDataRequestDto.setTimeStamp(DateUtils.getUTCCurrentDateTime());
-			encryptDataRequestDto.setData(CryptoUtil.encodeBase64(identity.get().getBytes()));
+			encryptDataRequestDto.setData(CryptoUtil.encodeBase64(toJsonString(identity, mapper).getBytes()));
 			try {
 				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.ENCRYPTION_SERVICE,
 						RestRequestFactory.createRequest(encryptDataRequestDto), Map.class);
@@ -222,6 +228,51 @@ public class KeyManager {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * This method is used to convert the map to JSON format
+	 *
+	 * @param map the map
+	 * @param mapper the mapper
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	private String toJsonString(Object map, ObjectMapper mapper) throws IdAuthenticationAppException {
+		try {
+			return mapper.writerFor(Map.class).writeValueAsString(map);
+		} catch (JsonProcessingException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+		}
+	}
+	
+	/**
+	 * Sign response.
+	 *
+	 * @param responseAsString the response as string
+	 * @return the string
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@SuppressWarnings("unchecked")
+	public String signResponse(String responseAsString) throws IdAuthenticationAppException {
+		Map<String, Object> signResponse = new HashMap<>();
+		signResponse.put("data", responseAsString);
+		Map<String, Object> response;
+		RestRequestDTO restRequestDTO = null;
+		try {
+			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DIGITAL_SIGNATURE_SIGN_SERVICE,
+					RestRequestFactory.createRequest(signResponse), Map.class);
+			response = restHelper.requestSync(restRequestDTO);
+			if(response.containsKey(IdAuthCommonConstants.RESPONSE) && Objects.nonNull(response.get(IdAuthCommonConstants.RESPONSE))) {
+				return (String)((Map<String,Object>) response.get(IdAuthCommonConstants.RESPONSE)).get("signature");
+			} else {
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+			}
+		} catch (IDDataValidationException | RestServiceException e) {
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,e);
+		
+		}
 	}
 
 }

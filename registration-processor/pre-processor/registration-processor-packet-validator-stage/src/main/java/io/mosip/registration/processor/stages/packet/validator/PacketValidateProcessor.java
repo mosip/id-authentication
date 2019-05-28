@@ -50,7 +50,6 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.idjson.Document;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
@@ -74,7 +73,9 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Service
@@ -93,7 +94,9 @@ public class PacketValidateProcessor {
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter adapter;
-	/** Validator stage */
+
+	@Autowired
+	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -169,6 +172,8 @@ public class PacketValidateProcessor {
 	boolean isApplicantDocumentValidation = false;
 	boolean isFilesValidated = false;
 	boolean isMasterDataValidation = false;
+	boolean isMandatoryValidation = false;
+	boolean isRIdAndTypeSynched = false;
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	public MessageDTO process(MessageDTO object, String stageName) {
@@ -221,10 +226,13 @@ public class PacketValidateProcessor {
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
 						: 1;
-				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated
-						+ ")/Applicant Document Validation(" + isApplicantDocumentValidation
-						+ ")/Master Data Validation(" + isMasterDataValidation + ") failed for registrationId "
-						+ registrationId;
+				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated+ ")"
+						+ "/Applicant Document Validation(" + isApplicantDocumentValidation+ ")"
+						+ "/Schema Validation(" + isSchemaValidated+ ")"
+						+ "/Master Data Validation(" + isMasterDataValidation + ")"
+						+ "/MandatoryField Validation(" + isMandatoryValidation +")"
+						+ "/isRidAndType Sync Validation(" + isRIdAndTypeSynched +")"
+						+ " failed for registrationId "+ registrationId;
 				isTransactionSuccessful = false;
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -427,8 +435,30 @@ public class PacketValidateProcessor {
 			return false;
 		}
 
+		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
+		// Sync list table
+		if (!validateRegIdAndTypeFromSyncTable(metadataList)) {
+			return false;
+		}
+
 		return true;
 
+	}
+
+	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
+		String regId = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONID);
+		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
+		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId,
+				regType.toUpperCase());
+
+		if (syncRecordList != null && !syncRecordList.isEmpty()) {
+			isRIdAndTypeSynched=true;
+			return isRIdAndTypeSynched;
+		}
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
+				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getCode(),
+				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getMessage());
+		return isRIdAndTypeSynched;
 	}
 
 	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
@@ -436,15 +466,17 @@ public class PacketValidateProcessor {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
-		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+		 isMandatoryValidation = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+		return isMandatoryValidation;
 	}
 
 	private boolean schemaValidation(String jsonString)
 			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 
-		if (env.getProperty(VALIDATESCHEMA).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
-
+		if (env.getProperty(VALIDATESCHEMA).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
+			isSchemaValidated = true;
+			return isSchemaValidated;
+		}
 		ValidationReport validationReport = jsonValidator.validateJson(jsonString);
 
 		if (validationReport.isValid())
@@ -455,8 +487,10 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
-		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
+		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
+			isFilesValidated = true;
+			return isFilesValidated;
+		}
 		FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 		isFilesValidated = filesValidation.filesValidation(registrationId, identity);
 
@@ -466,8 +500,10 @@ public class PacketValidateProcessor {
 
 	private boolean checkSumValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException {
-		if (env.getProperty(VALIDATECHECKSUM).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
+		if (env.getProperty(VALIDATECHECKSUM).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
+			isCheckSumValidated = true;
+			return isCheckSumValidated;
+		}
 		CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 		isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, identity);
 
@@ -477,9 +513,10 @@ public class PacketValidateProcessor {
 
 	private boolean applicantDocumentValidation(String jsonString)
 			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException {
-		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
-
+		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
+			isApplicantDocumentValidation = true;
+			return isApplicantDocumentValidation;
+		}
 		ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(utility, env,
 				applicantTypeDocument);
 		isApplicantDocumentValidation = applicantDocumentValidation.validateDocument(registrationId, jsonString);
@@ -490,9 +527,10 @@ public class PacketValidateProcessor {
 
 	private boolean masterDataValidation(String jsonString, InternalRegistrationStatusDto registrationStatusDto)
 			throws ApisResourceAccessException, IOException {
-		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE))
-			return true;
-
+		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
+			isMasterDataValidation = true;
+			return isMasterDataValidation;
+		}
 		MasterDataValidation masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService,
 				utility);
 		isMasterDataValidation = masterDataValidation.validateMasterData(jsonString);

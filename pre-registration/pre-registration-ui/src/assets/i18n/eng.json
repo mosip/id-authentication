@@ -411,7 +411,8 @@
       "msg5": "File name should not be more than 50 characters",
       "msg6": "Wrong file type, please upload again",
       "msg7": "The file could not be uploaded, please try again.",
-      "msg8": "Could not copy document"
+      "msg8": "Could not copy document",
+      "msg9": "Documents are missing"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",
@@ -560,5 +561,13 @@
   "error": {
     "error": "A technical error occurred and the operation cannot be completed. Any data provided may not be saved",
     "button_ok": "OK"
-  }
+  },
+  "residentTypesMapping": {
+    "NFR": "National",
+    "FR": "Foreigner"
+  },
+  "sameAs": "Document Uploaded using Same As",
+  "DAYS": [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  ]
 }
