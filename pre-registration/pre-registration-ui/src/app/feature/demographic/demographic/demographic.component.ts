@@ -24,6 +24,7 @@ import { ResponseModel } from 'src/app/shared/models/demographic-model/response.
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
+import { LogService } from 'src/app/shared/logger/log.service';
 // import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
@@ -180,7 +181,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private dialog: MatDialog,
     private matKeyboardService: MatKeyboardService,
-    private routerService: RouterExtService // private loggerService: LogService
+    private routerService: RouterExtService,
+    private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
@@ -192,8 +194,8 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   async ngOnInit() {
-    // this.loggerService.info('IN DEMOGRAPHIC');
-    console.log('IN DEMOGRAPHIC');
+    this.loggerService.info('IN DEMOGRAPHIC');
+    this.loggerService.info('IN DEMOGRAPHIC');
     this.initialization();
     this.config = this.configService.getConfig();
     this.setConfig();
@@ -551,7 +553,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          console.log('Unable to fetch gender');
+          this.loggerService.info('Unable to fetch gender');
           this.onError();
         }
       );
@@ -578,7 +580,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          console.log('Unable to fetch Resident types');
+          this.loggerService.info('Unable to fetch Resident types');
           this.onError();
         }
       );
@@ -728,7 +730,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         },
         () => {
           this.onError();
-          console.log('Unable to fetch Below Hierearchy');
+          this.loggerService.info('Unable to fetch Below Hierearchy');
         }
       );
     });
@@ -883,7 +885,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         error => {
           // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
           this.onError();
-          console.log(error);
+          this.loggerService.info(error);
         }
       );
     } else {
@@ -913,7 +915,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    console.log('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
+    this.loggerService.info('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
 
     if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
@@ -924,7 +926,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
         let preRegistrationId = this.user.preRegId;
         this.dataStorageService.updateUser(request, preRegistrationId).subscribe(
           response => {
+            // this.loggerService.info(response.toString());
             console.log(response);
+            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
@@ -937,14 +941,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            console.log(error);
+            this.loggerService.info(error);
             this.onError();
           }
         );
       } else {
         this.dataStorageService.addUser(request).subscribe(
           response => {
-            console.log(response);
+            // this.loggerService.info(response.toString());
+            console.log(response);            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
@@ -957,7 +962,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            console.log(error);
+            this.loggerService.info(error);
             // this.router.navigate(['error']);
             this.onError();
           }
@@ -1021,7 +1026,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       url = Utils.getURL(this.router.url, 'file-upload');
     }
-    console.log('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
+    this.loggerService.info('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
     this.router.navigate([url]);
   }
 
