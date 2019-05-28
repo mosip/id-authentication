@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -71,18 +72,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				"Validating credentials using database");
 
 		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		// TO DO-- Yet to implement SSHA512
-		/*HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
-				userDetail.getSalt().getBytes()).equals(userDetail)*/
-		String hashPassword = null;
 
-		// password hashing
-		if (!(authenticationValidatorDTO.getPassword().isEmpty())) {
-			byte[] bytePassword = authenticationValidatorDTO.getPassword().getBytes();
-			hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-		}
-		if ("E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262"
-				.equals(hashPassword)) {
+		if (HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
+				CryptoUtil.decodeBase64(userDetail.getSalt())).equals(userDetail.getUserPassword().getPwd())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
 			return RegistrationConstants.PWD_MISMATCH;

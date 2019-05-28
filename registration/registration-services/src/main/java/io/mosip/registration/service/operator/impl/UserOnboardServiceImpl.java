@@ -31,6 +31,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -96,7 +98,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		tempMap.put(RegistrationConstants.BIO, true);
 		idaRequestMap.put(RegistrationConstants.REQUEST_AUTH, tempMap);
 		idaRequestMap.put(RegistrationConstants.CONSENT_OBTAINED, true);
-		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID, "9267187962");
+		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID, "2951307152");
 		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID_TYPE, "UIN");
 		idaRequestMap.put(RegistrationConstants.KEY_INDEX, "");
 
@@ -154,6 +156,13 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		requestMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 		requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
 		requestMap.put(RegistrationConstants.ON_BOARD_TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
+		
+		try {
+			System.out.println(JsonUtils.javaObjectToJsonString(requestMap));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		PublicKeyResponse<String> publicKeyResponse = null;
 		Map<String, String> requestParamMap = new LinkedHashMap<>();

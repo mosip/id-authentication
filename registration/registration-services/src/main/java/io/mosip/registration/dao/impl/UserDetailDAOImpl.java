@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_DETAI
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -154,7 +154,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				UserPassword usrPwd = new UserPassword();
 				// password details
 				usrPwd.setUsrId(userDtals.getUserName());
-				usrPwd.setPwd(new String(userDtals.getUserPassword(), StandardCharsets.UTF_8));
+				usrPwd.setPwd(CryptoUtil.encodeBase64(userDtals.getUserPassword()));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
 				usrPwd.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
