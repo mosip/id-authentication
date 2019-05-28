@@ -50,7 +50,6 @@ export class PreviewComponent implements OnInit {
     this.previewData.secondaryAddress = this.combineAddress(1);
     this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
-    console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files.documentsMetaData;
     this.documentsMapping();

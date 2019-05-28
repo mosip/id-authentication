@@ -248,11 +248,11 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(
         response => {
           if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
-          else this.onError();
+          else this.onError(this.errorlabels.error);
           resolve(true);
         },
         error => {
-          this.onError();
+          this.onError(this.errorlabels.error);
         }
       );
     });
@@ -494,7 +494,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: '',
         addressLine3Secondary: ''
       };
-      // this.dataIncomingSuccessful = true;
     } else {
       let index = 0;
       let secondaryIndex = 1;
@@ -530,7 +529,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
         addressLine2Secondary: this.user.request.demographicDetails.identity.addressLine2[secondaryIndex].value,
         addressLine3Secondary: this.user.request.demographicDetails.identity.addressLine3[secondaryIndex].value
       };
-      // this.dataIncomingSuccessful = true;
     }
   }
 
@@ -546,7 +544,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataStorageService.getGenderDetails().subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError();
+            this.onError(this.errorlabels.error);
           } else {
             this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
             resolve(true);
@@ -554,7 +552,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         },
         () => {
           this.loggerService.info('Unable to fetch gender');
-          this.onError();
+          this.onError(this.errorlabels.error);
         }
       );
     });
@@ -572,7 +570,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataStorageService.getResidentDetails().subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError();
+            this.onError(this.errorlabels.error);
           } else {
             this.residenceStatus =
               response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
@@ -581,7 +579,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         },
         () => {
           this.loggerService.info('Unable to fetch Resident types');
-          this.onError();
+          this.onError(this.errorlabels.error);
         }
       );
     });
@@ -711,7 +709,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError();
+            this.onError(this.errorlabels.error);
           } else {
             response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
               let codeValueModal: CodeValueModal = {
@@ -721,7 +719,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
               };
               childLocations.push(codeValueModal);
               if (currentLocationCode && codeValueModal.valueCode === currentLocationCode) {
-                // this.codeValue.push(codeValueModal);
                 this.addCodeValue(codeValueModal);
               }
             });
@@ -729,7 +726,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          this.onError();
+          this.onError(this.errorlabels.error);
           this.loggerService.info('Unable to fetch Below Hierearchy');
         }
       );
@@ -879,12 +876,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
             // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
-            this.onError();
+            this.onError(this.errorlabels.error);
           }
         },
         error => {
           // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
-          this.onError();
+          this.onError(this.errorlabels.error);
           this.loggerService.info(error);
         }
       );
@@ -926,14 +923,20 @@ export class DemographicComponent implements OnInit, OnDestroy {
         let preRegistrationId = this.user.preRegId;
         this.dataStorageService.updateUser(request, preRegistrationId).subscribe(
           response => {
-            // this.loggerService.info(response.toString());
-            console.log(response);
-            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
             ) {
-              this.onError();
+              let message = '';
+              if (
+                response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
+              ) {
+                message = this.errorlabels.invalidPin;
+                this.userForm.controls[this.formControlNames.postalCode].setErrors({
+                  incorrect: true
+                });
+              } else message = this.errorlabels.error;
+              this.onError(message);
               return;
             } else {
               this.onModification(responseJSON);
@@ -942,19 +945,26 @@ export class DemographicComponent implements OnInit, OnDestroy {
           },
           error => {
             this.loggerService.info(error);
-            this.onError();
+            this.onError(this.errorlabels.error);
           }
         );
       } else {
         this.dataStorageService.addUser(request).subscribe(
           response => {
-            // this.loggerService.info(response.toString());
-            console.log(response);            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
             ) {
-              this.onError();
+              let message = '';
+              if (
+                response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
+              ) {
+                message = this.errorlabels.invalidPin;
+                this.userForm.controls[this.formControlNames.postalCode].setErrors({
+                  incorrect: true
+                });
+              } else message = this.errorlabels.error;
+              this.onError(message);
               return;
             } else {
               this.onAddition(response, responseJSON);
@@ -964,7 +974,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
           error => {
             this.loggerService.info(error);
             // this.router.navigate(['error']);
-            this.onError();
+            this.onError(this.errorlabels.error);
           }
         );
       }
@@ -1159,13 +1169,13 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @private
    * @memberof DemographicComponent
    */
-  private onError() {
+  private onError(message: string) {
     this.dataUploadComplete = true;
     this.hasError = true;
     const body = {
       case: 'ERROR',
       title: 'ERROR',
-      message: this.errorlabels.error,
+      message: message,
       yesButtonText: this.errorlabels.button_ok
     };
     this.dialog.open(DialougComponent, {
