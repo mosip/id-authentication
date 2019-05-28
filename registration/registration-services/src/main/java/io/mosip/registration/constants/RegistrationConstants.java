@@ -591,6 +591,15 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_CONSENT_SELECTED_YES = "SelectedYes";
 	public static final String TEMPLATE_CONSENT_SELECTED_NO = "SelectedNo";
 	public static final String TEMPLATE_CONSENT_CHECKED = "checked='checked'";
+	public static final String PARENT_PHOTO_CAPTURED = "parentPhotoCaptured";
+	public static final String PARENT_PHOTO_NOT_CAPTURED = "parentPhotoNotCaptured";
+	public static final String PARENT_PHOTO_PRIMARY_LANG = "ParentPhotoPrim";
+	public static final String PARENT_PHOTO_LOCAL_LANG = "ParentPhotoSec";
+	public static final String PARENT_IMAGE_SOURCE = "ParentImageSource";
+	public static final String LIST_ITEM_OPENING_TAG = "<li><span>";
+	public static final String LIST_ITEM_CLOSING_TAG = "</span></li><br/>";
+	public static final String SPLIT_DELIMITOR = "\\.";
+	public static final String TEMPLATE_GUIDELINES = "Guidelines";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
