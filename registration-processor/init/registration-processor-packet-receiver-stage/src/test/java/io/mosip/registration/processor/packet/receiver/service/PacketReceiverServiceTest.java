@@ -69,7 +69,6 @@ import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequ
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
-import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -77,7 +76,6 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @RefreshScope
 @RunWith(PowerMockRunner.class)
@@ -110,8 +108,6 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private Decryptor decryptor;
 
-	@Mock
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	@Mock
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
@@ -152,8 +148,6 @@ public class PacketReceiverServiceTest {
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
-				.thenReturn(RegistrationExternalStatusCode.REREGISTER);
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.when(HMACUtils.digestAsPlainText(any())).thenReturn("abcd1234");
 		try {
@@ -213,9 +207,6 @@ public class PacketReceiverServiceTest {
 		Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
 		File file = new File(classLoader.getResource("0000.zip").getFile());
 		mockMultipartFile = file;
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
-				.thenReturn(RegistrationExternalStatusCode.RESEND);
-
 		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertEquals(true, successResult.getIsValid());
@@ -235,8 +226,6 @@ public class PacketReceiverServiceTest {
 
 		File file = new File(classLoader.getResource("0000.zip").getFile());
 		mockMultipartFile = file;
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
-				.thenReturn(RegistrationExternalStatusCode.RESEND);
 		Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
 		MessageDTO successResult = packetReceiverService.validatePacket(mockMultipartFile, stageName);

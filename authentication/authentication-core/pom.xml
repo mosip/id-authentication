@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.2</version>
 	</parent>
 
 	<artifactId>authentication-core</artifactId>
@@ -20,6 +20,11 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>

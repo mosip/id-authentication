@@ -48,7 +48,7 @@ public class SignatureController {
 	@ResponseFilter
 	@PostMapping(value = "/sign")
 	public ResponseWrapper<SignResponseDto> sign(@RequestBody @Valid RequestWrapper<SignRequestDto> requestDto) {
-		SignatureResponse signatureResponse = service.signResponse(requestDto.getRequest());
+		SignatureResponse signatureResponse = service.sign(requestDto.getRequest());
 		SignResponseDto signResponse = new SignResponseDto();
 		signResponse.setTimestamp(signatureResponse.getTimestamp());
 		signResponse.setSignature(signatureResponse.getData());
@@ -82,10 +82,10 @@ public class SignatureController {
 	@ResponseFilter
 	@PostMapping(value = "/validate")
 	public ResponseWrapper<ValidatorResponseDto> validate(
-			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException {
+			@RequestBody @Valid RequestWrapper<TimestampRequestDto> timestampRequestDto) {
 		ResponseWrapper<ValidatorResponseDto> response = new ResponseWrapper<>();
 		response.setResponse(service.validate(timestampRequestDto.getRequest()));
 		return response;
 	}
+
 }

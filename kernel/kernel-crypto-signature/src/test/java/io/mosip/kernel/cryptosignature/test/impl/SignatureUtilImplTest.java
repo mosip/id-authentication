@@ -47,8 +47,8 @@ import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.cryptosignature.dto.CryptoManagerRequestDto;
-import io.mosip.kernel.cryptosignature.dto.KeymanagerPublicKeyResponseDto;
+import io.mosip.kernel.cryptosignature.dto.PublicKeyResponse;
+import io.mosip.kernel.cryptosignature.dto.SignatureRequestDto;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 @SpringBootTest
@@ -65,19 +65,16 @@ public class SignatureUtilImplTest {
 	@Value("${mosip.kernel.signature.signature-version-id}")
 	private String syncDataVersionId;
 
-	@Value("${mosip.kernel.signature.cryptomanager-encrypt-url}")
+	@Value("${mosip.kernel.keymanager-service-sign-url}")
 	private String encryptUrl;
 
 	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 
-	@Value("${mosip.sign.header:response-signature}")
-	private String signedHeader;
-
 	@Value("${mosip.sign.applicationid:KERNEL}")
 	private String signApplicationid;
 
-	@Value("${mosip.sign.refid:KER}")
+	@Value("${mosip.sign.refid:SIGN}")
 	private String signRefid;
 
 	@Autowired
@@ -99,9 +96,9 @@ public class SignatureUtilImplTest {
 
 	private KeyPair keyPair;
 
-	private CryptoManagerRequestDto cryptoManagerRequestDto;
+	private SignatureRequestDto cryptoManagerRequestDto;
 
-	private RequestWrapper<CryptoManagerRequestDto> requestWrapper;
+	private RequestWrapper<SignatureRequestDto> requestWrapper;
 
 	private UriComponentsBuilder builder;
 
@@ -110,7 +107,7 @@ public class SignatureUtilImplTest {
 	@Before
 	public void setUp() {
 		server = MockRestServiceServer.bindTo(restTemplate).build();
-		cryptoManagerRequestDto = new CryptoManagerRequestDto();
+		cryptoManagerRequestDto = new SignatureRequestDto();
 		cryptoManagerRequestDto.setApplicationId("KERNEL");
 		cryptoManagerRequestDto.setReferenceId("KER");
 		cryptoManagerRequestDto.setData("MOSIP");
@@ -122,7 +119,7 @@ public class SignatureUtilImplTest {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "KERNEL");
 		builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timeStamp", "2019-09-09T09:09:09.000Z").queryParam("referenceId", "KER");
+				.queryParam("timeStamp", "2019-09-09T09:09:09.000Z").queryParam("referenceId", "SIGN");
 
 	}
 
@@ -206,8 +203,7 @@ public class SignatureUtilImplTest {
 
 		PrivateKey privateKey = keyPair.getPrivate();
 		byte[] hashedData = HMACUtils.generateHash("admin".getBytes());
-		String hashedString = CryptoUtil.encodeBase64(hashedData);
-		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedString.getBytes());
+		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedData);
 		boolean isVerfied = signingUtil.validateWithPublicKey(CryptoUtil.encodeBase64(encryptedData), "admin",
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()));
 		assertTrue(isVerfied);
@@ -215,17 +211,16 @@ public class SignatureUtilImplTest {
 
 	@Test
 	public void validateMethodTest() throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
-		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
-				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now().toString(),
-				LocalDateTime.now().plusDays(100).toString());
-		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
+		PublicKeyResponse keymanagerPublicKeyResponseDto = new PublicKeyResponse("alias",
+				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
+				LocalDateTime.now().plusDays(100));
+		ResponseWrapper<PublicKeyResponse> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 		PrivateKey privateKey = keyPair.getPrivate();
 		byte[] hashedData = HMACUtils.generateHash("signedData".getBytes());
-		String hashedString = CryptoUtil.encodeBase64(hashedData);
-		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedString.getBytes());
+		byte[] encryptedData = encryptor.asymmetricPrivateEncrypt(privateKey, hashedData);
 		boolean isVerfied = signingUtil.validate(CryptoUtil.encodeBase64(encryptedData), "signedData",
 				"2019-09-09T09:09:09.000Z");
 		assertTrue(isVerfied);
@@ -234,21 +229,21 @@ public class SignatureUtilImplTest {
 	@Test(expected = SignatureUtilException.class)
 	public void validateMethodExceptionTest()
 			throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
-		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
-				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now().toString(),
-				LocalDateTime.now().plusDays(100).toString());
-		ResponseWrapper<KeymanagerPublicKeyResponseDto> response = new ResponseWrapper<>();
+		PublicKeyResponse keymanagerPublicKeyResponseDto = new PublicKeyResponse("alias",
+				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
+				LocalDateTime.now().plusDays(100));
+		ResponseWrapper<PublicKeyResponse> response = new ResponseWrapper<>();
 		response.setResponse(keymanagerPublicKeyResponseDto);
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withServerError());
 		signingUtil.validate("dfdsfdsfdsfds", "signedData", "2019-09-09T09:09:09.000Z");
 	}
 
-	@Test(expected = SignatureUtilException.class)
+	@Test(expected = ParseResponseException.class)
 	public void validateIOExceptionTest()
 			throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
 
 		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess().body(
-				"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-25T16:58:11.344Z\", \"metadata\": null, \"response\": { \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB\", \"issuedAt\": \"2019-04-09T05:51:17.334\", \"expiryAt\": \"2020-04-09T05:51:17.334\" , \"errors\": null }"));
+				"{ \"id\": null, \"version\": null, \"responsetime\": \"2019-04-25T16:58:11.344Z\", \"metadata\": null, \"response\": {\"alias\":\"alias\", \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtCR2L_MwUv4ctfGulWf4ZoWkSyBHbfkVtE_xAmzzIDWHP1V5hGxg8jt8hLtYYFwBNj4l_PTZGkblcVg-IePHilmQiVDptTVVA2PGtwRdud7QL4xox8RXmIf-xa-JmP2E804iVM-Ki8aPf1yuxXNUwLxZsflFww73lc-SGVUHupD8Os0qNZbbJl0BYioNG4WmPMHy3WJ-7jGN0HEV-9E18yf_enR0YewUmUI6Rxxb606-w8iQyWfSJq6UOfFmH5WAn-oTOoTIwg_fBxXuG_FlDoNWs6N5JtI18BMsUQA_GQZJct6TyXcBNUrcBYhZERvPlRGqIOoTl-T2sPJ5ST9eswIDAQAB\", \"issuedAt\": \"2019-04-09T05:51:17.334\", \"expiryAt\": \"2020-04-09T05:51:17.334\" , \"errors\": null }"));
 		signingUtil.validate("dfdsfdsfdsfds", "signedData", "2019-09-09T09:09:09.000Z");
 	}
 }

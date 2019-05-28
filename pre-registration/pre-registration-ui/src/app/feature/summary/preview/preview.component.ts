@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,10 +23,14 @@ export class PreviewComponent implements OnInit {
   files = [];
   documentTypes = [];
   documentMapObject = [];
+  sameAs = '';
+  residentTypeMapping = {
+    primary: {},
+    secondary: {}
+  };
 
   constructor(
     private dataStorageService: DataStorageService,
-    private route: ActivatedRoute,
     private router: Router,
     private registrationService: RegistrationService,
     private translate: TranslateService
@@ -41,15 +45,13 @@ export class PreviewComponent implements OnInit {
     this.secondaryLanguage = localStorage.getItem('secondaryLangCode');
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
     this.documentTypes = this.registrationService.getDocumentCategories();
-    console.log('document types', this.documentTypes);
-    console.log(this.user);
     this.previewData = this.user.request.demographicDetails.identity;
     this.calculateAge();
     this.previewData.primaryAddress = this.combineAddress(0);
     this.previewData.secondaryAddress = this.combineAddress(1);
     this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
-    this.setResidentStatus();
+    // this.setResidentStatus();
     console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files.documentsMetaData;
@@ -60,7 +62,6 @@ export class PreviewComponent implements OnInit {
     dob = dob.replace(/\//g, '-');
     this.dateOfBirthPrimary = Utils.getBookingDateTime(dob, '', localStorage.getItem('langCode'));
     this.dateOfBirthSecondary = Utils.getBookingDateTime(dob, '', localStorage.getItem('secondaryLangCode'));
-    console.log(this.dateOfBirthPrimary, this.dateOfBirthSecondary);
   }
 
   setFieldValues() {
@@ -72,11 +73,16 @@ export class PreviewComponent implements OnInit {
     });
   }
 
-  setResidentStatus() {
-    this.previewData['residenceStatus'].forEach(element => {
-      element.name = appConstants.residentTypesMapping[element.value][element.language];
-    });
-  }
+  // setResidentStatus() {
+  //   this.previewData['residenceStatus'].forEach(element => {
+  //     if (element.language === localStorage.getItem('langCode')) {
+  //       element.name = this.residentTypeMapping.primary[element.value];
+  //     } else {
+  //       element.name = this.residentTypeMapping.secondary[element.value];
+  //     }
+  //     //   element.name = appConstants.residentTypesMapping[element.value][element.language];
+  //   });
+  // }
 
   documentsMapping() {
     this.documentMapObject = [];
@@ -85,7 +91,7 @@ export class PreviewComponent implements OnInit {
         const file = this.files.filter(file => file.docCatCode === type.code);
         if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {
           const obj = {
-            docName: appConstants.sameAs[localStorage.getItem('langCode')]
+            docName: this.sameAs
           };
           file.push(obj);
         }
@@ -113,8 +119,15 @@ export class PreviewComponent implements OnInit {
       .getSecondaryLanguageLabels(localStorage.getItem('secondaryLangCode'))
       .subscribe(response => {
         this.secondaryLanguagelabels = response['preview'];
-        console.log(this.secondaryLanguagelabels);
+        this.residentTypeMapping.secondary = response['residentTypesMapping'];
       });
+  }
+
+  getPrimaryLanguageData() {
+    this.dataStorageService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+      this.sameAs = response['sameAs'];
+      this.residentTypeMapping.primary = response['residentTypesMapping'];
+    });
   }
 
   calculateAge() {

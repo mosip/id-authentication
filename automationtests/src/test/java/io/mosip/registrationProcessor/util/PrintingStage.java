@@ -304,13 +304,13 @@ public class PrintingStage extends BaseTestCase{
 		String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
 		JSONObject mapperJson = JsonUtil.objectMapperReadValue(mapperJsonString, JSONObject.class);
-		org.json.JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson,
+		JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson,
 				utility.getGetRegProcessorDemographicIdentity());
 
 		List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
 		for (String key : mapperJsonKeys) {
-			org.json.JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
-			Object object = JsonUtil.getJsonValues(demographicIdentity, (String) jsonValue.get("value"));
+			JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
+			Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get("value"));
 			if (object instanceof ArrayList) {
 				JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get("value"));
 				JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
@@ -319,7 +319,7 @@ public class PrintingStage extends BaseTestCase{
 					attributes.put(key + "_" + lang, jsonValues[count].getValue());
 				}
 			} else if (object instanceof LinkedHashMap) {
-				org.json.JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get("value"));
+				JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get("value"));
 				attributes.put(key, json.get("value"));
 			} else {
 				attributes.put(key, object);

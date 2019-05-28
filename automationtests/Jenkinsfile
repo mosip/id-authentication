@@ -27,7 +27,7 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=qa -Denv.endpoint=https://qa.mosip.io'
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=qa -Denv.endpoint=https://qa.mosip.io -Denv.testLevel=smoke'
 			  
   }
   
@@ -35,8 +35,8 @@ stage ('---------- mvn-clean-test ---------------') {
       allowMissing: false,
       alwaysLinkToLastBuild: false,
       keepAll: true,
-      reportDir: branch+"/"+projectToBuild+"/src/test/resources",
-      reportFiles: 'customize-emailable-report.html',
+      reportDir: branch+"/"+projectToBuild+"/automationtests/target/surefire-reports",
+      reportFiles: 'custom-emailable-report.html',
       reportName: "Tests Report"
   ])
 }

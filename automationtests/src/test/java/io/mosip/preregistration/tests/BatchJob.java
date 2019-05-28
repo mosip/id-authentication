@@ -61,11 +61,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
 	public PreregistrationDAO dao=new PreregistrationDAO();
 
-	@BeforeClass
-	public void readPropertiesFile() {
-		initialize();
-		authToken = lib.getToken();
-	}
+	
 	/**
 	 * Batch job service for expired application
 	 */
@@ -108,17 +104,18 @@ public class BatchJob extends BaseTestCase implements ITest {
 		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
 	@BeforeMethod(alwaysRun=true)
-	public void run()
+	public void login( Method method)
 	{
-		
+		authToken=lib.getToken();
+		testCaseName="preReg_BatchJob_" + method.getName();
 	}
+
 
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {

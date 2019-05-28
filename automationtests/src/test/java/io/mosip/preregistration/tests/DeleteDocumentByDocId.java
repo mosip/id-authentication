@@ -90,8 +90,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "DeleteDocumentByDocId")
 	public Object[][] readData(ITestContext context) throws Exception {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -155,8 +154,10 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			String preRegistration_URI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preRegistration_URI, parm);
-			logger.info("Delete Doc By Doc Id::"+"Test Case name::"+testCaseName+Actualresponse.asString());
-			outerKeys.add("responsetime");
+			logger.info("Delete Doc By Doc Id::"+"Test Case name::"+testCaseName+"Res::"+Actualresponse.asString());
+			
+			boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
+			
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId")) {

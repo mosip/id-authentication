@@ -1,3 +1,1 @@
-
-[{"testType":"regression","Discard individual without giving Pre Registration Id":"invalid","testCaseName":"Discard individual without giving Pre Registration Id","jiraId":"MOS-1001","Discard individual with invalid Pre Registration Id":"valid","status":""}, {"testType":"regression","Discard individual without giving Pre Registration Id":"valid","Discard individual with invalid Pre Registration Id":"invalid","testCaseName":"Discard individual with invalid Pre Registration Id","jiraId":"MOS-1000","status":""}]
-
+[{"testType":"smoke","testCaseName":"Discard Individual Applicant By using Pre Registration ID_smoke","jiraId":"MOS-1001","Discard individual with invalid Pre Registration Id":"valid","status":""}]

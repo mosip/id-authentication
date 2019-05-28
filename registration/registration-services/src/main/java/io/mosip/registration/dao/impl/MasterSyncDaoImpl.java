@@ -890,4 +890,16 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<SyncJobDef> getSyncJobs(){
 		return syncJobDefRepository.findAllByIsActiveTrue();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getBiometricType(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public List<BiometricAttribute> getBiometricType(String langCode, List<String> biometricType) {
+		return biometricAttributeRepository.findByLangCodeAndBiometricTypeCodeIn(langCode, biometricType);
+	}
 }

@@ -35,7 +35,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane>
+                  <GridPane fx:id="tableContainer">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="30.0" />
                     </columnConstraints>
@@ -53,15 +53,15 @@
                      <children>
                         <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                            <columns>
-                              <TableColumn fx:id="checkBoxColumn" prefWidth="50.0">
+                              <TableColumn fx:id="checkBoxColumn" prefWidth="${tableContainer.width*2/100}">
                                  <graphic>
-                                    <CheckBox fx:id="selectAllCheckBox" alignment="CENTER" mnemonicParsing="false" onAction="#selectAllCheckBox">
-                                       <padding>
-                                          <Insets bottom="2.0" />
-                                       </padding></CheckBox>
+                                    <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox">
+                                       </CheckBox>
                                  </graphic>
                               </TableColumn>
-                              <TableColumn fx:id="fileNameColumn" prefWidth="2500.0" text="%files" styleClass="tableId"/>
+                               <TableColumn fx:id="slno" editable="false" prefWidth="${tableContainer.width*5/100}" resizable="false" sortable="false" styleClass="tableId" text="%slno" />
+                              <TableColumn fx:id="fileNameColumn" editable="false" prefWidth="${tableContainer.width*20/100}" sortable="false" styleClass="tableId" text="%files" />
+                              <TableColumn fx:id="regDate" editable="false" prefWidth="${tableContainer.width*65/100}" sortable="false" styleClass="tableId" text="%registrationDate" />
                            </columns>
                         </TableView>
                         <GridPane GridPane.rowIndex="1">
@@ -79,7 +79,7 @@
                         </GridPane>
                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="filterField" prefHeight="30.0" prefWidth="354.0" styleClass="searchBoxTextStyle" promptText="%searchPacketID" />
+                              <TextField fx:id="filterField" prefHeight="30.0" prefWidth="354.0" promptText="%searchPacketID" styleClass="searchBoxTextStyle" />
                            </children>
                         </HBox>
                      </children>

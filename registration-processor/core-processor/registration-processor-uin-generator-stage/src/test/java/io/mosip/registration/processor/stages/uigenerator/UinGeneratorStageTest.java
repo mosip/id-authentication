@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -37,6 +41,7 @@ import com.google.gson.Gson;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -49,6 +54,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -61,8 +67,7 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
+import io.mosip.registration.processor.stages.uingenerator.dto.VidResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.stage.UinGeneratorStage;
@@ -70,6 +75,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ IOUtils.class, HMACUtils.class, Utilities.class,Gson.class })
@@ -148,6 +154,9 @@ public class UinGeneratorStageTest {
 
 	private String identityMappingjsonString;
 
+	@Mock
+	private Environment env;
+
 	@Before
 	public void setup() throws Exception {
 
@@ -192,7 +201,14 @@ public class UinGeneratorStageTest {
 		appDocument.setDocName("POA");
 		appDocument.setDocStore("ProofOfAddress".getBytes());
 		applicantDocument.add(appDocument);
-		
+		Mockito.when(env.getProperty("registration.processor.id.repo.generate")).thenReturn("mosip.vid.create");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		Mockito.when(env.getProperty("registration.processor.id.repo.vidVersion")).thenReturn("v1");
+
+
+
+//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any())).thenReturn(response);
+
 
 	}
 
@@ -232,9 +248,25 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
+		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
+		List<ErrorDTO> errors = new ArrayList<>();
+		responseVid.setErrors(errors);
+		responseVid.setVersion("v1");
+		responseVid.setMetadata(null);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime localdatetime = LocalDateTime
+				.parse(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format);
+		responseVid.setResponsetime(localdatetime);
+		VidResponseDto vidResponseDto= new VidResponseDto();
+		vidResponseDto.setVID("123456");
+		vidResponseDto.setVidStatus("ACTIVE");
+		responseVid.setResponse(vidResponseDto);
+
 
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
-		.thenReturn(idResponseDTO);
+		.thenReturn(idResponseDTO).thenReturn(responseVid).thenReturn(response);
+
+//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any()));
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getInternalError());
@@ -278,8 +310,29 @@ public class UinGeneratorStageTest {
 		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
 		idResponseDTO.setVersion("1.0");
 
+
+
+		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
+		List<ErrorDTO> errors = new ArrayList<>();
+		responseVid.setErrors(errors);
+		responseVid.setVersion("v1");
+		responseVid.setMetadata(null);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime localdatetime = LocalDateTime
+				.parse(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format);
+		responseVid.setResponsetime(localdatetime);
+		VidResponseDto vidResponseDto= new VidResponseDto();
+		vidResponseDto.setVID("123456");
+		vidResponseDto.setVidStatus("ACTIVE");
+		vidResponseDto.setUpdatedVid(null);
+		vidResponseDto.setUpdatedVidStatus(null);
+		vidResponseDto.setUIN(null);
+		responseVid.setResponse(vidResponseDto);
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
-		.thenReturn(idResponseDTO);
+		.thenReturn(idResponseDTO).thenReturn(responseVid);
+
+	//	Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any(Class.class)));
+
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getInternalError());

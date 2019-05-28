@@ -116,8 +116,7 @@ export class AutoLogoutService {
           console.log(res);
         } else {
           if (this.isActive) {
-            if (this.dialogref)
-            this.dialogref.close();
+            if (this.dialogref) this.dialogref.close();
           }
         }
       },
@@ -159,7 +158,6 @@ export class AutoLogoutService {
    */
 
   openPopUp() {
-    // console.log("keepspoping up");
     const data = {
       case: 'POPUP',
       content: this.secondaryLanguagelabels.preview

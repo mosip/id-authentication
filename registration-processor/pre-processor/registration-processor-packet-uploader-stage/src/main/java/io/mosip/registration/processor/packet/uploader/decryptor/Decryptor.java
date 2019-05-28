@@ -51,15 +51,14 @@ public class Decryptor {
 	@Value("${registration.processor.application.id}")
 	private String applicationId;
 
-	@Value("${mosip.kernel.rid.machineid-length}")
+	@Value("${mosip.kernel.machineid.length}")
 	private int machineIdLength;
 
-	@Value("${mosip.kernel.rid.centerid-length}")
+	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
-	
+
 	@Value("${registration.processor.rid.machineidsubstring}")
 	private int machineIdSubStringLength;
-
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 

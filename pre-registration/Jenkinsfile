@@ -15,12 +15,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
-<<<<<<< HEAD
  k8DevContext = 'mosip-dev-cluster'
-=======
- def k8DevContext = 'mosip-dev-cluster'
->>>>>>> 2d11c00340185c0aed302dfa329d4fe66bd389df
-
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
   dir(branch) {

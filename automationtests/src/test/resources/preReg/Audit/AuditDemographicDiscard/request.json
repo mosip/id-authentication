@@ -1,0 +1,10 @@
+{
+  "ref_id": "NO_ID",
+  "log_desc": "Pre-Registration data is successfully deleted from demographic table",
+  "event_id": "PRE_403",
+  "event_type": "BUSINESS",
+  "session_user_id": "9908794767",
+  "event_name": "DELETE",
+  "module_name": "DEMOGRAPHY_SERVICE",
+  "ref_id_type": "PRE_REGISTRATION_ID"
+}

@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"2064415375","responseTime":"2019-05-22T19:34:22.577+05:30","errors":[{"errorCode":"IDA-OTA-003","errorMessage":"Could not generate/send OTP"}],"response":null}

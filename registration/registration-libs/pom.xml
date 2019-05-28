@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.2</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -131,7 +131,7 @@
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
-								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}-shaded.jar</argument>
+								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
 								<argument>bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4=</argument>
 								<argument>${project.version}</argument>
 								<argument>${main.basedir}/registration-libs/target/</argument>

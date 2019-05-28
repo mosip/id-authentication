@@ -321,4 +321,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis requests by bio ref id
 	 */
 	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId);
+	
+	/**
+	 * Gets the abis processed requests app code by bio ref id.
+	 *
+	 * @param bioRefId the bio ref id
+	 * @param requestType the request type
+	 * @param processed the processed
+	 * @return the abis processed requests app code by bio ref id
+	 */
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId,String requestType,String processed);
 }

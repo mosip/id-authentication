@@ -44,6 +44,10 @@ public class PreRegistartionDataBaseAccess {
 		int res = query.executeUpdate();
 		session.getTransaction().commit();	
 	}
+	@SuppressWarnings("unchecked")
+	public List<String> getConsumedStatus(String queryString, String dbName) {
+		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+	}
 	
 	@AfterClass(alwaysRun = true)
 	public void closingSession() {
@@ -53,5 +57,6 @@ public class PreRegistartionDataBaseAccess {
 		factory.close();
 	}
 
-
+	
+	
 }

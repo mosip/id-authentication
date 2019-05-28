@@ -16,7 +16,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,10 +36,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -77,6 +76,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.CryptoUtil;
@@ -122,8 +122,7 @@ public class DemographicService {
 	 * Autowired reference for {@link #JsonValidatorImpl}
 	 */
 	@Autowired
-	@Lazy
-	private IdObjectSchemaValidator jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
@@ -270,7 +269,7 @@ public class DemographicService {
 				ValidationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(), IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
@@ -290,7 +289,6 @@ public class DemographicService {
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -341,7 +339,7 @@ public class DemographicService {
 					DemographicRequestDTO demographicRequest = request.getRequest();
 					log.info("sessionId", "idType", "id",
 							"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails());
+					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(), IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 					log.info("sessionId", "idType", "id",
 							"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 					DemographicEntity demographicEntity = demographicRepository
@@ -470,7 +468,7 @@ public class DemographicService {
 	}
 
 	private void prepareDemographicResponse(DemographicMetadataDTO demographicMetadataDTO,
-			List<DemographicEntity> demographicEntities) throws ParseException {
+			List<DemographicEntity> demographicEntities) throws ParseException,EncryptionFailedException {
 
 		List<DemographicViewDTO> viewList = new ArrayList<>();
 		for (DemographicEntity demographicEntity : demographicEntities) {
@@ -704,7 +702,7 @@ public class DemographicService {
 	 */
 	public void statusCheck(DemographicEntity demographicEntity, String status, String userId) {
 		if (demographicEntity != null) {
-			userValidation(userId, demographicEntity.getCreatedBy());
+			//userValidation(userId, demographicEntity.getCreatedBy());
 			if (serviceUtil.isStatusValid(status)) {
 				demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
 				demographicRepository.update(demographicEntity);

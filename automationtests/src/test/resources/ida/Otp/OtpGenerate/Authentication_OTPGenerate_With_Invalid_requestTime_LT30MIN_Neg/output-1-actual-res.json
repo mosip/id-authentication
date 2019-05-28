@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"4046407715","responseTime":"2019-05-22T19:34:33.941+05:30","errors":[{"errorCode":"IDA-OTA-001","errorMessage":"Request to be received at MOSIP within 20 minutes","actionMessage":"Please resend the request within 20 min"}],"response":null}

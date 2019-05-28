@@ -1,0 +1,1 @@
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-DEA-003","errorMessage":"Demographic data gender in ara not available in database"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"5102534885","id":"mosip.identity.auth"}

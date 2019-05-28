@@ -1,2 +1,1 @@
-
-[{"testType":"smoke","testCaseName":"Get_PreRegistration_data_by_date_and_time_smoke","jiraId":"MOS-1009","Get Pre registration data By date and time without from date in request":"valid","Get Pre registration data By date and time with invalid to date":"valid","Get Pre Registration data by date and time without to date parameter in request":"valid","Get Pre Registration data by date and timeb without passing date's in request":"valid","Get Pre registration data By date and time with other date and time format":"valid","Get Pre Registration data by date and time in which no record available between date range":"valid","Get Pre registration data By date and time with invalid from date":"valid","status":""}]
+[]

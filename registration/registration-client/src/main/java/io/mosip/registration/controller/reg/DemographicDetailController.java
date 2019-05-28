@@ -1759,9 +1759,12 @@ public class DemographicDetailController extends BaseController {
 			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
-			populateFieldValue(fullName, fullNameLocalLanguage,
-					registrationDTO.isNameNotUpdated() ? moroccoIdentity.getFullName()
-							: registrationDTO.getRegistrationMetaDataDTO().getFullName());
+			List<ValuesDTO> fullNameValues = moroccoIdentity.getFullName();
+			if (registrationDTO.getSelectionListDTO() != null && !registrationDTO.isNameNotUpdated()) {
+
+				fullNameValues = registrationDTO.getRegistrationMetaDataDTO().getFullName();
+			}
+			populateFieldValue(fullName, fullNameLocalLanguage, fullNameValues);
 			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
 			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
 			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
@@ -2041,7 +2044,6 @@ public class DemographicDetailController extends BaseController {
 	private void back() {
 		try {
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				clearRegistrationData();
 				Parent uinUpdate = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 				getScene(uinUpdate);
 			} else {
@@ -2166,7 +2168,7 @@ public class DemographicDetailController extends BaseController {
 		}
 		LocalDate localDate = LocalDate.now();
 
-		if (localDate.compareTo(date) != -1) {
+		if (localDate.compareTo(date) >= 0) {
 
 			try {
 				age = Period.between(date, localDate).getYears();

@@ -1,0 +1,123 @@
+
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "responsetime": "2019-05-21T12:55:01.739Z",
+    "response": {
+        "preRegistrationId": "75821504984239",
+        "createdDateTime": "2019-05-21T12:55:01.581Z",
+        "statusCode": "Pending_Appointment",
+        "langCode": "fra",
+        "demographicDetails": {
+            "identity": {
+                "CNIENumber": "123456789",
+                "gender": [
+                    {
+                        "language": "fra",
+                        "value": "MLE"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "MLE"
+                    }
+                ],
+                "city": [
+                    {
+                        "language": "fra",
+                        "value": "KNT"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "KNT"
+                    }
+                ],
+                "postalCode": "767882",
+                "fullName": [
+                    {
+                        "language": "fra",
+                        "value": "ashish"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "َسهِسه"
+                    }
+                ],
+                "localAdministrativeAuthority": [
+                    {
+                        "language": "fra",
+                        "value": "MNAS"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "MNAS"
+                    }
+                ],
+                "dateOfBirth": "1989/04/12",
+                "IDSchemaVersion": 1,
+                "province": [
+                    {
+                        "language": "fra",
+                        "value": "KTA"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "KTA"
+                    }
+                ],
+                "phone": "9900806086",
+                "addressLine1": [
+                    {
+                        "language": "fra",
+                        "value": "dresse est "
+                    },
+                    {
+                        "language": "ara",
+                        "value": "درِسسِ ِست "
+                    }
+                ],
+                "residenceStatus": [
+                    {
+                        "language": "fra",
+                        "value": "national"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "national"
+                    }
+                ],
+                "addressLine2": [
+                    {
+                        "language": "fra",
+                        "value": "yuwue utter"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "يُوُِ ُتتِر"
+                    }
+                ],
+                "addressLine3": [
+                    {
+                        "language": "fra",
+                        "value": "afterfh jdhdy"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "َفتِرفه جدهدي"
+                    }
+                ],
+                "region": [
+                    {
+                        "language": "fra",
+                        "value": "RSK"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "RSK"
+                    }
+                ],
+                "email": "ashish.rastogi@mindtree.com"
+            }
+        }
+    },
+    "errors": null
+}

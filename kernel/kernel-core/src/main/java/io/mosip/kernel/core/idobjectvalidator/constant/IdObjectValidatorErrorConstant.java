@@ -3,35 +3,30 @@ package io.mosip.kernel.core.idobjectvalidator.constant;
 /**
  * Enum containing custom error codes and the respective messages.
  * 
+ * @author Manoj SP
  * @author Swati Raj
  * @since 1.0.0
  *
  */
 public enum IdObjectValidatorErrorConstant {
 
-	FILE_IO_EXCEPTION("KER-IOV-001", "IO interruption while reading the schema file with the name provided."),
+	SCHEMA_IO_EXCEPTION("KER-IOV-001", "Failed to read schema"),
 	
 	ID_OBJECT_VALIDATION_FAILED("KER-IOV-002", "Id Object validation failed"),
 	
-	UNIDENTIFIED_JSON_EXCEPTION("KER-IOV-003", "JSON object does not match with the Schema Definition"),
+	ID_OBJECT_PARSING_FAILED("KER-IOV-003", "Failed to parse/convert Id Object"),
 	
-	NULL_JSON_NODE_EXCEPTION("KER-IOV-004", "Null input json String"),
+	INVALID_INPUT_PARAMETER("KER-IOV-004", "Invalid input parameter - %s"),
 	
-	ID_OBJECT_IO_EXCEPTION("KER-IOV-005", "Invalid input Identity object"),
+	MISSING_INPUT_PARAMETER("KER-IOV-005", "Missing input parameter - %s"),
 	
-	HTTP_REQUEST_EXCEPTION("KER-IOV-006", "Unable get to JSON schema with given name from config server"),
+	MASTERDATA_LOAD_FAILED("KER-IOV-006", "Failed to load data from kernel masterdata"),
 	
-	CONFIG_SERVER_CONNECTION_EXCEPTION("KER-IOV-007", "Unable to connect to Configuration Server"),
-	
-	JSON_SCHEMA_IO_EXCEPTION("KER-IOV-008", "Invalid JSON Schema"),
-	
-	NULL_JSON_SCHEMA_EXCEPTION("KER-IOV-009", "Null input json Schema"),
-	
-	INVALID_INPUT_PARAMETER("KER-JVL-010", "Invalid input parameter - %s");
+	MANDATORY_FIELDS_NOT_FOUND("KER-IOV-007", "Mandatory fields are not found for %s operation");
 
-	public final String errorCode;
+	private final String errorCode;
 
-	public final String message;
+	private final String message;
 
 	/**
 	 * Instantiates a new json validator error constant.

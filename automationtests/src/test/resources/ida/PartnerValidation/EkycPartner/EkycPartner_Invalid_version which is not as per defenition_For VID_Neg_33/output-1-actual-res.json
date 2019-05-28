@@ -1,0 +1,1 @@
+{"transactionID":"8486421516","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - version"}],"responseTime":"2019-05-28T12:22:57.431+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

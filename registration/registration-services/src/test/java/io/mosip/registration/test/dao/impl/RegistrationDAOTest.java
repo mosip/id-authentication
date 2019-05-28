@@ -206,7 +206,7 @@ public class RegistrationDAOTest {
 		regobject.setUserdetail(regUserDetail);
 		details.add(regobject);
 
-		Mockito.when(registrationRepository.findByclientStatusCode("R")).thenReturn(details);
+		Mockito.when(registrationRepository.findByclientStatusCodeOrderByCrDtime("R")).thenReturn(details);
 
 		List<Registration> enrollmentsByStatus = registrationDAOImpl.getEnrollmentByStatus("R");
 		assertTrue(enrollmentsByStatus.size() > 0);

@@ -3,6 +3,7 @@ package io.mosip.registration.service.login.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,8 +23,15 @@ import io.mosip.registration.dao.ScreenAuthorizationDAO;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.login.LoginService;
+import io.mosip.registration.service.operator.UserDetailService;
+import io.mosip.registration.service.operator.UserSaltDetailsService;
+import io.mosip.registration.service.sync.MasterSyncService;
+import io.mosip.registration.service.sync.PublicKeySync;
 
 /**
  * Class for implementing login service
@@ -70,6 +78,22 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private ScreenAuthorizationDAO screenAuthorizationDAO;
 
+	@Autowired
+	private PublicKeySync publicKeySyncImpl;
+
+	@Autowired
+	private GlobalParamService globalParamService;
+
+	@Autowired
+	private MasterSyncService masterSyncService;
+
+	@Autowired
+	private UserDetailService userDetailService;
+
+	@Autowired
+	private UserSaltDetailsService userSaltDetailsService;
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -160,6 +184,45 @@ public class LoginServiceImpl implements LoginService {
 		
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updated Login Params");
+
+	}
+
+	@Override
+	public List<String> initialSync() {
+		LOGGER.info("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching list of login modes");
+		List<String> val = new LinkedList<>();
+		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
+				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
+		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
+			val.add(RegistrationConstants.RESTART);
+		}
+		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
+				RegistrationConstants.OPT_TO_REG_MDS_J00001,
+				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		
+		if (RegistrationConstants.ENABLE
+				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {
+		}
+
+		ResponseDTO userResponseDTO = userDetailService
+				.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		ResponseDTO userSaltResponse = userSaltDetailsService
+				.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		if (((masterResponseDTO.getErrorResponseDTOs() != null
+				|| userResponseDTO.getErrorResponseDTOs() != null
+				|| userSaltResponse.getErrorResponseDTOs() != null)
+				|| responseDTO.getErrorResponseDTOs() != null
+				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
+			val.add(RegistrationConstants.FAILURE);
+		} else {
+			val.add(RegistrationConstants.SUCCESS);
+		}
+		return val;
 
 	}
 }

@@ -561,5 +561,13 @@
   "error": {
     "error": "A technical error occurred and the operation cannot be completed. Any data provided may not be saved",
     "button_ok": "OK"
-  }
+  },
+  "residentTypesMapping": {
+    "NFR": "National",
+    "FR": "Foreigner"
+  },
+  "sameAs": "Document Uploaded using Same As",
+  "DAYS": [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  ]
 }

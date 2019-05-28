@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.xml.sax.SAXException;
@@ -44,7 +45,6 @@ import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -788,7 +788,7 @@ public class LoginController extends BaseController implements Initializable {
 		case RegistrationConstants.PWORD:
 			credentialsPane.setVisible(true);
 			break;
-		case RegistrationConstants.FINGERPRINT:
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			fingerprintPane.setVisible(true);
 			break;
 		case RegistrationConstants.IRIS:
@@ -976,37 +976,40 @@ public class LoginController extends BaseController implements Initializable {
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
 
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
-				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
-
-		if (fingerPrintConnector.captureFingerprint(
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
-				"") != RegistrationConstants.PARAM_ZERO) {
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-
-			return false;
-		} else {
-			// Thread to wait until capture the bio image/ minutia from FP. based on the
-			// error code or success code the respective action will be taken care.
-			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
-
-			fingerPrintConnector.uninitFingerPrintDevice();
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"Validation of fingerprint through Minutia");
-
-			boolean fingerPrintStatus = false;
-
-			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
-
+//		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
+//				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
+//
+//		if (fingerPrintConnector.captureFingerprint(
+//				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
+//				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
+//				"") != RegistrationConstants.PARAM_ZERO) {
+//
+//			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
+//
+//			return false;
+//		} else {
+//			// Thread to wait until capture the bio image/ minutia from FP. based on the
+//			// error code or success code the respective action will be taken care.
+//			waitToCaptureBioImage(5, 2000, fingerprintFacade);
+//
+//			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
+//
+//			fingerPrintConnector.uninitFingerPrintDevice();
+//
+//			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+//					"Validation of fingerprint through Minutia");
+//
+//			boolean fingerPrintStatus = false;
+//
+//			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
+		boolean fingerPrintStatus = false;
+		try {
+				
 				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
+				fingerprintDetailsDTO.setFingerPrint(IOUtils
+						.resourceToByteArray("/UserOnboard/leftHand/leftIndex/".concat(RegistrationConstants.ISO_FILE)));
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
@@ -1015,15 +1018,19 @@ public class LoginController extends BaseController implements Initializable {
 				fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
 						authenticationValidatorDTO);
 
-			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
-				}
-			}
-			return fingerPrintStatus;
+//			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
+//				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
+//					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
+//				} else {
+//					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
+//				}
+//			}
+			
+		} catch(IOException ioException) {
+			
 		}
+		return fingerPrintStatus;
+		//}
 
 	}
 

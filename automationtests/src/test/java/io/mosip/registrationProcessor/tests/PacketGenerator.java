@@ -76,7 +76,7 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 	 Object[][] readFolder = null;
 	 	 try {
 	 	 	 prop.load(new FileReader(new File(propertyFilePath)));
-	 	 	 switch (testParam) {
+	 	 	 switch (testLevel) {
 	 	 	 case "smoke":
 	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 	 	 	 	 break;

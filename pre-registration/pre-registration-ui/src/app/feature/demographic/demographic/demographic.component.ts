@@ -23,6 +23,8 @@ import { AttributeModel } from 'src/app/shared/models/demographic-model/attribut
 import { ResponseModel } from 'src/app/shared/models/demographic-model/response.model';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
+import { RouterExtService } from 'src/app/shared/router/router-ext.service';
+import { LogService } from 'src/app/shared/logger/log.service';
 // import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
@@ -178,11 +180,12 @@ export class DemographicComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private translate: TranslateService,
     private dialog: MatDialog,
-    private matKeyboardService: MatKeyboardService // private loggerService: LogService
+    private matKeyboardService: MatKeyboardService,
+    private routerService: RouterExtService,
+    private loggerService: LogService
   ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
-    this.initialization();
   }
 
   /**
@@ -191,8 +194,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   async ngOnInit() {
-    // this.loggerService.info('IN DEMOGRAPHIC');
-    console.log('IN DEMOGRAPHIC');
+    this.loggerService.info('IN DEMOGRAPHIC');
+    this.loggerService.info('IN DEMOGRAPHIC');
+    this.initialization();
     this.config = this.configService.getConfig();
     this.setConfig();
     await this.getPrimaryLabels();
@@ -243,7 +247,6 @@ export class DemographicComponent implements OnInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(
         response => {
-          console.log(response);
           if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
           else this.onError();
           resolve(true);
@@ -262,10 +265,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
    * @memberof DemographicComponent
    */
   private initialization() {
+    let uri = this.routerService.getPreviousUrl();
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
+    if (
+      this.message['modifyUser'] === 'true' ||
+      this.message['modifyUserFromPreview'] === 'true' ||
+      uri.includes('file-upload')
+    ) {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
       if (this.message['modifyUserFromPreview'] === 'true') this.showPreviewButton = true;
@@ -391,6 +399,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
 
     this.setLocations();
     this.setGender();
+    this.setResident();
   }
 
   /**
@@ -438,6 +447,18 @@ export class DemographicComponent implements OnInit, OnDestroy {
     await this.getGenderDetails();
     this.filterOnLangCode(this.primaryLang, this.primaryGender, this.genders);
     this.filterOnLangCode(this.secondaryLang, this.secondaryGender, this.genders);
+  }
+
+  /**
+   * @description This is to get the list of gender available in the master data.
+   *
+   * @private
+   * @memberof DemographicComponent
+   */
+  private async setResident() {
+    await this.getResidentDetails();
+    this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
+    this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
   }
 
   /**
@@ -532,7 +553,34 @@ export class DemographicComponent implements OnInit, OnDestroy {
           }
         },
         () => {
-          console.log('Unable to fetch gender');
+          this.loggerService.info('Unable to fetch gender');
+          this.onError();
+        }
+      );
+    });
+  }
+
+  /**
+   * @description This will get the residenceStatus details from the master data.
+   *
+   * @private
+   * @returns
+   * @memberof DemographicComponent
+   */
+  private getResidentDetails() {
+    return new Promise(resolve => {
+      this.dataStorageService.getResidentDetails().subscribe(
+        response => {
+          if (response[appConstants.NESTED_ERROR]) {
+            this.onError();
+          } else {
+            this.residenceStatus =
+              response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
+            resolve(true);
+          }
+        },
+        () => {
+          this.loggerService.info('Unable to fetch Resident types');
           this.onError();
         }
       );
@@ -556,6 +604,14 @@ export class DemographicComponent implements OnInit, OnDestroy {
       if (this.formControlValues.gender) {
         genderEntity.filter(element => {
           if (element.code === this.formControlValues.gender) {
+            const codeValue: CodeValueModal = {
+              valueCode: element.code,
+              valueName: element.genderName,
+              languageCode: element.langCode
+            };
+            this.addCodeValue(codeValue);
+          }
+          if (element.code === this.formControlValues.residenceStatus) {
             const codeValue: CodeValueModal = {
               valueCode: element.code,
               valueName: element.genderName,
@@ -674,7 +730,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         },
         () => {
           this.onError();
-          console.log('Unable to fetch Below Hierearchy');
+          this.loggerService.info('Unable to fetch Below Hierearchy');
         }
       );
     });
@@ -706,7 +762,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             const codeValue: CodeValueModal = {
               languageCode: element.langCode,
               valueCode: element.code,
-              valueName: element.genderName
+              valueName: element.genderName ? element.genderName : element.name
             };
             this.addCodeValue(codeValue);
           }
@@ -829,7 +885,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
         error => {
           // this.transUserForm.controls[toControl].patchValue('can not be transliterated');
           this.onError();
-          console.log(error);
+          this.loggerService.info(error);
         }
       );
     } else {
@@ -859,7 +915,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.markFormGroupTouched(this.userForm);
     this.markFormGroupTouched(this.transUserForm);
-    console.log('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
+    this.loggerService.info('this.dataIncomingSuccessful [On submit]', this.dataIncomingSuccessful);
 
     if (this.userForm.valid && this.transUserForm.valid && this.dataIncomingSuccessful) {
       const identity = this.createIdentityJSONDynamic();
@@ -870,7 +926,9 @@ export class DemographicComponent implements OnInit, OnDestroy {
         let preRegistrationId = this.user.preRegId;
         this.dataStorageService.updateUser(request, preRegistrationId).subscribe(
           response => {
+            // this.loggerService.info(response.toString());
             console.log(response);
+            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
@@ -883,14 +941,15 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            console.log(error);
+            this.loggerService.info(error);
             this.onError();
           }
         );
       } else {
         this.dataStorageService.addUser(request).subscribe(
           response => {
-            console.log(response);
+            // this.loggerService.info(response.toString());
+            console.log(response);            
             if (
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
@@ -903,7 +962,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
             this.onSubmission();
           },
           error => {
-            console.log(error);
+            this.loggerService.info(error);
             // this.router.navigate(['error']);
             this.onError();
           }
@@ -967,7 +1026,7 @@ export class DemographicComponent implements OnInit, OnDestroy {
     } else {
       url = Utils.getURL(this.router.url, 'file-upload');
     }
-    console.log('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
+    this.loggerService.info('OUT DEMOGRAPHIC IN FILE-UPLOAD OR PREVIEW');
     this.router.navigate([url]);
   }
 

@@ -41,7 +41,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
-import io.mosip.regProc.tests.IntegrationScenarios;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
@@ -96,8 +96,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 	@DataProvider(name = "Discard_Individual")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch ("smokeAndRegression") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 

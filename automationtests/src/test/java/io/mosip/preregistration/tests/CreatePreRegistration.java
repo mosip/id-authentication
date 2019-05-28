@@ -90,10 +90,9 @@ public SoftAssert softAssert = new SoftAssert();
 	@DataProvider(name = "createPreReg")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-
 		
-		switch ("smokeAndRegression") {
+		
+		switch (testLevel) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");

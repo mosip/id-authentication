@@ -1,0 +1,11 @@
+{
+	       "status" : false,
+	       "err": 
+                   {
+		      			"errorCode":"PRG_CORE_REQ_002",
+		      			"message": "PRG_CORE_REQ_002 --> INVALID_REQUEST_VERSION"
+                   }
+                ,
+	        "resTime": "2018-10-17T13:40:19.590+0000",
+			"response":null 	        
+}

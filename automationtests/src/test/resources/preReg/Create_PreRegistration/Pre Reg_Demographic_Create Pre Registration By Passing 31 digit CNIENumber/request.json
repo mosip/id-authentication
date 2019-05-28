@@ -1,0 +1,118 @@
+{  
+   "id": "mosip.pre-registration.demographic.create",
+  "version": "1.0",
+  "requesttime": "2019-01-22T07:22:57.086Z",
+   "request":{  
+      "langCode":"fra",
+      "demographicDetails":{  
+         "identity":{  
+            "IDSchemaVersion":1,
+            "fullName":[  
+               {  
+                  "language":"fra",
+                  "value":"ashish"
+               },
+               {  
+                  "language":"ara",
+                  "value":"َسهِسه"
+               }
+            ],
+            "dateOfBirth":"1989/04/12",
+            "gender":[  
+               {  
+                  "language":"fra",
+                  "value":"MLE"
+               },
+               {  
+                  "language":"ara",
+                  "value":"MLE"
+               }
+            ],
+            "addressLine1":[  
+               {  
+                  "language":"fra",
+                  "value":"dresse est "
+               },
+               {  
+                  "language":"ara",
+                  "value":"درِسسِ ِست "
+               }
+            ],
+            "residenceStatus":[  
+               {  
+                  "language":"fra",
+                  "value":"national"
+               },
+               {  
+                  "language":"ara",
+                  "value":"national"
+               }
+            ],
+            "addressLine2":[  
+               {  
+                  "language":"fra",
+                  "value":"yuwue utter"
+               },
+               {  
+                  "language":"ara",
+                  "value":"يُوُِ ُتتِر"
+               }
+            ],
+            "addressLine3":[  
+               {  
+                  "language":"fra",
+                  "value":"afterfh jdhdy"
+               },
+               {  
+                  "language":"ara",
+                  "value":"َفتِرفه جدهدي"
+               }
+            ],
+            "region":[  
+               {  
+                  "language":"fra",
+                  "value":"RSK"
+               },
+               {  
+                  "language":"ara",
+                  "value":"RSK"
+               }
+            ],
+            "province":[  
+               {  
+                  "language":"fra",
+                  "value":"KTA"
+               },
+               {  
+                  "language":"ara",
+                  "value":"KTA"
+               }
+            ],
+            "city":[  
+               {  
+                  "language":"fra",
+                  "value":"KNT"
+               },
+               {  
+                  "language":"ara",
+                  "value":"KNT"
+               }
+            ],
+            "localAdministrativeAuthority":[  
+               {  
+                  "language":"fra",
+                  "value":"MNAS"
+               },
+               {  
+                  "language":"ara",
+                  "value":"MNAS"
+               }
+            ],
+            "postalCode":"767882",
+            "phone":"9900806086",
+            "email":"ashis@gmail.com",
+            "CNIENumber":"1234567890098765432112345678901"
+         }
+      }
+   }
+}

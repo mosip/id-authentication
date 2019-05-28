@@ -13,7 +13,6 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;

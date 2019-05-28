@@ -1,0 +1,1 @@
+{"transactionID":"6627666610","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-OTA-005","errorMessage":"OTP is invalid","actionMessage":"Please provide correct OTP value"}],"responseTime":"2019-05-23T12:27:52.902+05:30","response":{"authStatus":false,"staticToken":"367730129440673928003271684364668516"}}

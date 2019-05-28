@@ -160,14 +160,10 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         } else {
-          // localStorage.setItem('newApplicant', 'true');
-          // this.onNewApplication();
           this.onError();
         }
       },
       error => {
-        console.log(error);
-        // this.router.navigate(['error']);
         this.onError();
         this.isFetched = true;
       },
@@ -430,26 +426,14 @@ export class DashBoardComponent implements OnInit {
           if (confirm) {
             this.deletePreregistration(element);
           }
-          // else {
-          //   this.displayMessage(
-          //     this.secondaryLanguagelabels.title_error,
-          //     this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
-          //   );
-          // }
-        });
+         });
       } else if (selectedOption && Number(selectedOption) === 2) {
         dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
           }
-          // else {
-          //   this.displayMessage(
-          //     this.secondaryLanguagelabels.title_error,
-          //     this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
-          //   );
-          // }
-        });
+         });
       }
     });
   }

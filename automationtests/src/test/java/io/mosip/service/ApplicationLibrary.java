@@ -19,8 +19,6 @@ public class ApplicationLibrary extends BaseTestCase {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	public Response postRequest(Object body, String Resource_URI) {
-
-		System.out.println("ApplnURI:"+Resource_URI);
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
@@ -55,7 +53,7 @@ public class ApplicationLibrary extends BaseTestCase {
 
 
 	public Response postRequestToDecrypt(Object body, String Resource_URI) {
-		return commonLibrary.postRequestToDecrypt(Resource_URI, body,
+		return commonLibrary.postRequestToDecrypt(ApplnURI+Resource_URI, body,
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 	}
 
@@ -232,29 +230,30 @@ public class ApplicationLibrary extends BaseTestCase {
 
 		} 
 		
-		
+			public Response putFileAndJsonWithParm(String Resource_Uri, Object body, File file,HashMap<String, String> parm) {
+				return commonLibrary.Post_JSONwithFileWithParm(body, file, ApplnURI + Resource_Uri, MediaType.MULTIPART_FORM_DATA,parm);
+			} 
 			public Response getRequestPathAndQueryParam(String Resource_URI, HashMap<String, String> temp) {
 				return commonLibrary.get_Request_pathAndQueryParam(ApplnURI + Resource_URI, temp);
 			}
 
-			public Response postRequestWithoutBody(String Resource_URI) {
-				return commonLibrary.post_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
-						MediaType.APPLICATION_JSON);
-			} 
-			public Response get_Request_multiplePathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
-				return commonLibrary.get_Request_multiplePathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
+            public Response postRequestWithoutBody(String Resource_URI) {
+                  return commonLibrary.post_RequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+                                MediaType.APPLICATION_JSON);
+            } 
+            public Response get_Request_multiplePathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
+                  return commonLibrary.get_Request_multiplePathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
 
-			}
-			public Response putRequestWithParameter( String Resource_URI,HashMap<String, String> path_value,JSONObject body) {
-				return commonLibrary.putRequestWithPathParameter(ApplnURI + Resource_URI, path_value,body, MediaType.APPLICATION_JSON,
-						MediaType.APPLICATION_JSON);
-			}
-		public Response get_RequestSync(String Resource_URI) {
-				return commonLibrary.get_RequestSync(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
-						MediaType.APPLICATION_JSON);
-			} 
-		public Response putFileAndJsonWithParm(String Resource_Uri, Object body, File file,HashMap<String, String> parm) {
-			return commonLibrary.Post_JSONwithFileWithParm(body, file, ApplnURI + Resource_Uri, MediaType.MULTIPART_FORM_DATA,parm);
-		} 
+            }
+            public Response putRequestWithParameter( String Resource_URI,HashMap<String, String> path_value,JSONObject body) {
+                  return commonLibrary.putRequestWithPathParameter(ApplnURI + Resource_URI, path_value,body, MediaType.APPLICATION_JSON,
+                                MediaType.APPLICATION_JSON);
+            }
+     public Response get_RequestSync(String Resource_URI) {
+                  return commonLibrary.get_RequestSync(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
+                                MediaType.APPLICATION_JSON);
+            } 
+    
+
 
 }

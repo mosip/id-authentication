@@ -89,7 +89,7 @@ public class UinServiceImpl implements UinService {
 		try {
 			token = tokenService.getUINBasedToken();
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage(),e);
 		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
@@ -114,7 +114,7 @@ public class UinServiceImpl implements UinService {
 						ResponseDTO.class);
 				
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
 			}
 		}
 			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
@@ -153,7 +153,7 @@ public class UinServiceImpl implements UinService {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
 			}
 		}
 		
@@ -201,7 +201,7 @@ public class UinServiceImpl implements UinService {
 						ResponseDTO.class);
 				
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
 			}
 		}
 			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();

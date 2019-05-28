@@ -35,6 +35,7 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 
@@ -55,6 +56,7 @@ import io.restassured.RestAssured;
  */
 
 
+
 public class BaseTestCase{
 
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
@@ -63,28 +65,27 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	public String testLevel;
+	
 		
 	/**
 	 * Method that will take care of framework setup
 	 */
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
-	public static String ApplnURI;	
-	public static String authToken;
+	public static String ApplnURI;
+	protected static String authToken;
 	public static String regProcAuthToken;
-
-	public static String adminRegProcAuthToken;
-
-	
-
+	public static String getStatusRegProcAuthToken;
 	public static String environment;
-	public static String SEPRATOR="";
+	public static String testLevel;
+	public static String adminRegProcAuthToken;
+		public static String SEPRATOR="";
 	public static String buildNumber="";
 	public  static String getOSType(){
 		String type=System.getProperty("os.name");
 		if(type.toLowerCase().contains("windows")){
 			SEPRATOR="\\\\";
+
 			return "WINDOWS";
 		}else if(type.toLowerCase().contains("linux")||type.toLowerCase().contains("unix"))
 		{
@@ -119,13 +120,12 @@ public class BaseTestCase{
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 
+			environment = System.getProperty("env.user");
+			logger.info("Environemnt is  ==== :" + environment);
+			ApplnURI = System.getProperty("env.endpoint");
+			logger.info("Application URI ======" + ApplnURI);
 			testLevel = System.getProperty("env.testLevel");
 			logger.info("Test Level ======" + testLevel);
-			                    
-			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" +environment);
-			ApplnURI=System.getProperty("env.endpoint");
-			logger.info("Application URI ======" +ApplnURI);
 
 			logger.info("Configs from properties file are set.");
 			
@@ -136,19 +136,11 @@ public class BaseTestCase{
 		
 	
 	}
-	
+
 	// ================================================================================================================
 		// TESTNG BEFORE AND AFTER SUITE ANNOTATIONS
 		// ================================================================================================================
 
-	/**
-	 * Before entire test suite we need to setup everything we will need.
-	 */
- // End suiteSetup
-
-	/**
-	 * After the entire test suite clean up rest assured
-	 */
 
 		/*
 		 * Saving TestNG reports to be published
@@ -163,9 +155,9 @@ public class BaseTestCase{
 
 
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
-		//	pil.PreRegistrationResourceIntialize();
-
-			//authToken=pil.getToken();
+			pil.PreRegistrationResourceIntialize();
+			AuthTestsUtil.wakeDemoApp();
+		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
@@ -185,10 +177,7 @@ public class BaseTestCase{
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
 			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
-			//authToken=pil.getToken();
-			
-
-
+		
 		} // End suiteSetup
 
 		/**

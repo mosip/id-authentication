@@ -1,0 +1,14 @@
+{
+  "id": "mosip.pre-registration.datasync.fetch.ids",
+    "version": "1.0",
+    "responsetime": "2019-03-29T09:35:40.219Z",
+    "response": {
+        "transactionId": "04046917-5206-11e9-b760-af8dac7057aa",
+        "countOfPreRegIds": "2",
+        "preRegistrationIds": {
+            "48371490265865": "2019-03-29T06:31:14.708",
+            "58195246703206": "2019-03-29T06:18:54.489"
+        }
+    },
+    "errors": null
+}
