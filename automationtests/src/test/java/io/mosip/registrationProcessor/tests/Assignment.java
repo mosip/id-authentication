@@ -74,11 +74,9 @@ public class Assignment extends BaseTestCase implements ITest {
 	 * @return Object[][]
 	 */
 	@DataProvider(name = "assignment")
-<<<<<<< Updated upstream
-	public static Object[][] readData(ITestContext context){ 
-=======
+
 	public Object[][] readData(ITestContext context) {
->>>>>>> Stashed changes
+
 		Object[][] readFolder = null;
 		String propertyFilePath = System.getProperty("user.dir") + "\\"
 				+ "src\\config\\RegistrationProcessorApi.properties";

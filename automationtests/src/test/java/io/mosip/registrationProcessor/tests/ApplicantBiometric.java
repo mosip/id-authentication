@@ -40,9 +40,9 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-public class ApplicantDemographic extends BaseTestCase implements ITest {
+public class ApplicantBiometric extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
-	private static Logger logger = Logger.getLogger(ApplicantDemographic.class);
+	private static Logger logger = Logger.getLogger(ApplicantBiometric.class);
 	boolean status = false;
 	String finalStatus = "Fail";
 	static Properties prop = new Properties();
@@ -57,11 +57,11 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 	String statusCodeRes = "";
 	SoftAssert softAssert = new SoftAssert();
 	static String dest = "";
-	static String folderPath = "regProc/ApplicantDemographic";
-	static String outputFile = "ApplicantDemographicOutput.json";
-	static String requestKeyFile = "ApplicantDemographicRequest.json";
+	static String folderPath = "regProc/ApplicantBiometric";
+	static String outputFile = "ApplicantBiometricOutput.json";
+	static String requestKeyFile = "ApplicantBiometricRequest.json";
 	static String description = "";
-	static String apiName = "ApplicantDemographicApi";
+	static String apiName = "ApplicantBiometricApi";
 	static String moduleName = "RegProc";
 	CommonLibrary common = new CommonLibrary();
 
@@ -72,7 +72,7 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 	 * @param context
 	 * @return Object[][]
 	 */
-	@DataProvider(name = "applicantDemographic")
+	@DataProvider(name = "applicantBiometric")
 	public Object[][] readData(ITestContext context) {
 		Object[][] readFolder = null;
 		String propertyFilePath = System.getProperty("user.dir") + "\\"
@@ -104,8 +104,8 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 	 * @param i
 	 * @param object
 	 */
-	@Test(dataProvider = "applicantDemographic")
-	public void applicantDemographic(String testSuite, Integer i, JSONObject object) {
+	@Test(dataProvider = "applicantBiometric")
+	public void applicantBiometric(String testSuite, Integer i, JSONObject object) {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -118,7 +118,7 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("applicantDemograhicApi"),
+			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("applicantBiometricApi"),
 					actualRequest);
 
 			// outer and inner keys which are dynamic in the actual response
@@ -183,7 +183,7 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 				softAssert.assertAll();
 
 			} catch (IOException | ParseException e) {
-				logger.error("Exception occurred in ApplicantDemographic class in ApplicantDemographic method " + e);
+				logger.error("Exception occurred in ApplicantBiometric class in ApplicantBiometric method " + e);
 				// Verify.verify(false);
 			}
 		}
@@ -218,9 +218,9 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-				f.set(baseTestMethod, ApplicantDemographic.testCaseName);
+				f.set(baseTestMethod, ApplicantBiometric.testCaseName);
 			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-				logger.error("Exception occurred in ApplicantDemographic class in setResultTestName method " + e);
+				logger.error("Exception occurred in ApplicantBiometric class in setResultTestName method " + e);
 			}
 
 			/*
@@ -257,7 +257,7 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 				file.close();
 				logger.info("Successfully updated Results to " + outputFile);
 			} catch (IOException e) {
-				logger.error("Exception occurred in ApplicantDemographic method in statusUpdate method " + e);
+				logger.error("Exception occurred in ApplicantBiometric method in statusUpdate method " + e);
 			}
 			String source = "src/test/resources/" + folderPath + "/";
 		}
