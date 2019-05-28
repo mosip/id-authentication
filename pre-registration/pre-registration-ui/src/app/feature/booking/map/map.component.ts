@@ -61,11 +61,7 @@ export class MapComponent implements OnInit {
   }
 
   createMap() {
-    console.log(this.lonLat);
-    console.log(this.centers);
-
     addCommonProjections();
-
     for (let i in this.centers) {
       this.marker = new OlFeature({
         geometry: new OlPoint(fromLonLat([this.centers[i]['longitude'], this.centers[i]['latitude']]))
@@ -118,7 +114,6 @@ export class MapComponent implements OnInit {
   }
 
   changeCenter() {
-    console.log(this.lonLat);
     const view = this.map.getView();
     view.setCenter(fromLonLat([this.lonLat[0], this.lonLat[1]]));
     view.setZoom(14);

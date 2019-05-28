@@ -315,6 +315,10 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"),
 
+	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007",
+			"BioType exception while fetcing data from cbeff file from kernel"),
+
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
