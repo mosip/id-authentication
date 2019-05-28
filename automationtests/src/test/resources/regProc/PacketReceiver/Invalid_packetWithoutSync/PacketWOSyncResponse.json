@@ -1,7 +1,11 @@
 {
-  "timestamp": "2019-01-18T07:28:57.347+0000",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "RPR-PKR-001 --> Registration packet is not in Sync with Sync table",
-  "path": "/packetreceiver/v0.1/registration-processor/packet-receiver/registrationpackets"
+    "errors": [
+        {
+            "errorCode": "RPR-PKR-001",
+            "message": "Registration packet is not in Sync with Sync table"
+        }
+    ],
+    "id": "mosip.registration.packet",
+    "version": "1.0",
+    "responsetime": "2019-04-11T05:46:16.435Z"
 }

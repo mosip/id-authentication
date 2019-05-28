@@ -1,1 +1,1 @@
-{"transactionID":"5263087721","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID","actionMessage":"Please retry with correct VID"}],"responseTime":"2019-05-23T11:32:56.756+05:30","response":{"authStatus":false,"staticToken":null}}
+{"transactionID":"2658754450","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-003","errorMessage":"Unable to decrypt Request"}],"responseTime":"2019-05-28T12:11:41.887+05:30","response":{"authStatus":false,"staticToken":null}}

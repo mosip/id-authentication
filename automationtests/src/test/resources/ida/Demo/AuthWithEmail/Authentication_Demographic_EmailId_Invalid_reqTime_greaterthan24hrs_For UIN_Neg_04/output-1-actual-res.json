@@ -1,1 +1,0 @@
-{"transactionID":"4785781855","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-001","errorMessage":"Request to be received at MOSIP within 30 minutes","actionMessage":"Please send the request within %s minutes"}],"responseTime":"2019-05-23T11:33:10.481+05:30","response":{"authStatus":false,"staticToken":null}}

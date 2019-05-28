@@ -1,1 +1,1 @@
-{"transactionID":"7632071661","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - version"}],"responseTime":"2019-05-23T11:16:39.697+05:30","response":{"authStatus":false,"staticToken":null}}
+{"transactionID":"1322801248","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - version"}],"responseTime":"2019-05-28T11:24:57.714+05:30","response":{"authStatus":false,"staticToken":null}}

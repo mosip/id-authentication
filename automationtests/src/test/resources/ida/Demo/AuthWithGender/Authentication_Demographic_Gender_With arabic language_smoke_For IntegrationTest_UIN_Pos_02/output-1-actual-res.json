@@ -1,1 +1,0 @@
-{"transactionID":"6016404440","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - gender"}],"responseTime":"2019-05-23T11:23:37.008+05:30","response":{"authStatus":false,"staticToken":null}}

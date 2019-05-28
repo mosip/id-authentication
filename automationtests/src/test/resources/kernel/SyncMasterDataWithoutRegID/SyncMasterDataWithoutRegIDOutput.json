@@ -1,1 +1,1 @@
-[]
+[{"serialnumber":"valid","Kernel_SyncMasterDataWithoutRegID_serialNumber_anotherMachine":"valid","Kernel_SyncMasterDataWithoutRegID_only_macId":"valid","Kernel_SyncMasterDataWithoutRegID_response_time":"valid","jiraId":"MOS-1008","empty_lastupdated":"valid","testType":"smoke","macaddress":"valid","testCaseName":"Kernel_SyncMasterDataWithoutRegID_smoke","Kernel_SyncMasterDataWithoutRegID_anotherMachine_macId":"valid","Kernel_SyncMasterDataWithoutRegID_only_serialNumber":"valid","status":"Fail"}]

@@ -1,1 +1,1 @@
-{"timestamp":"2019-05-23T06:31:52.917+0000","status":404,"error":"Not Found","message":"No message available","path":"/idauthentication/v1/kyc/735899345"}
+{"transactionID":"2572745043","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MPA-003","errorMessage":"Unable to decrypt Request"}],"responseTime":"2019-05-28T12:23:16.439+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

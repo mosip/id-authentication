@@ -119,11 +119,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
     		  String langCode=actualRequest.get("langcode").toString();
 	        
 	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
-<<<<<<< HEAD
-					boolean valid = kernelDB.validateDataInDb(queryStr);
-=======
 					boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");
->>>>>>> origin/0.11.0_automationtests_kernel
 	            
 			
 

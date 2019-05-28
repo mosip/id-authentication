@@ -1,0 +1,101 @@
+package io.mosip.preregistration.tests;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import org.apache.log4j.Logger;
+//import org.apache.maven.plugins.assembly.io.AssemblyReadException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.testng.Assert;
+import org.testng.ITest;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.Reporter;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
+import org.testng.internal.TestResult;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+
+import io.mosip.preregistration.dao.PreregistrationDAO;
+import io.mosip.service.ApplicationLibrary;
+import io.mosip.service.BaseTestCase;
+import io.mosip.util.CommonLibrary;
+import io.mosip.util.PreRegistrationLibrary;
+import io.restassured.response.Response;
+
+/**
+ * @author Ashish Rastogi
+ *
+ */
+
+public class Pagination extends BaseTestCase implements ITest {
+	public Logger logger = Logger.getLogger(Pagination.class);
+	public PreRegistrationLibrary lib = new PreRegistrationLibrary();
+	public String testSuite;
+	public String preRegID = null;
+	public String createdBy = null;
+	public Response response = null;
+	public String preID = null;
+	protected static String testCaseName = "";
+	public String folder = "preReg";
+	public ApplicationLibrary applnLib = new ApplicationLibrary();
+	public PreregistrationDAO dao=new PreregistrationDAO();
+
+	@BeforeClass
+	public void readPropertiesFile() {
+		initialize();
+		authToken = lib.getToken();
+	}
+	/**
+	 * Batch job service for expired application
+	 */
+	@Test
+	public void pagination_Smoke()
+	{
+		
+	}
+
+	
+	@Override
+	public String getTestName() {
+		return this.testCaseName;
+
+	}
+	@BeforeMethod(alwaysRun=true)
+	public void run()
+	{
+		
+	}
+
+	@AfterMethod
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Demographic_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
+	}
+}

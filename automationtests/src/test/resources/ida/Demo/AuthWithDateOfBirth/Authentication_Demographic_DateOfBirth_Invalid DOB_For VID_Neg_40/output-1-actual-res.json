@@ -1,1 +1,1 @@
-{"transactionID":"1810223427","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - dob"}],"responseTime":"2019-05-23T11:24:37.236+05:30","response":{"authStatus":false,"staticToken":null}}
+{"timestamp":"2019-05-28T06:39:25.389+0000","status":500,"error":"Internal Server Error","message":"Content type 'text/html' not supported","path":"/idauthentication/v1/auth/1873299273/735899345"}

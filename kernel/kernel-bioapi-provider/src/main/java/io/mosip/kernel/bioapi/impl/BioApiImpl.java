@@ -2,6 +2,7 @@ package io.mosip.kernel.bioapi.impl;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -43,7 +44,7 @@ public class BioApiImpl implements IBioApi{
 		int count =0;
 		for (BIRType recordedValue : gallery) {
 			matchingScore[count] = new Score();
-			if(recordedValue != null && recordedValue.getBDB().length != 0 &&
+			if(Objects.nonNull(recordedValue) && Objects.nonNull(recordedValue.getBDB()) && recordedValue.getBDB().length != 0 &&
 					Arrays.equals(recordedValue.getBDB(), sample.getBDB())) {
 				matchingScore[count].setInternalScore(90);
 			}else {

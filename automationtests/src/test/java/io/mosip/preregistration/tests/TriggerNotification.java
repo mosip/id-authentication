@@ -93,8 +93,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -163,38 +162,13 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
 					value);
 
-			innerKeys.add("responsetime");
-			logger.info("Response::" + response.asString());
+			outerKeys.add("responsetime");
+			logger.info("Response TriggerNotification_id::" + response.asString()+"Test case name:"+testCaseName);
 			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
 		}
 		
 		else if(testCaseName.contains("preReg_TriggerNotification_requesttime"))
-		{
-			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/"+testCase;
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			File file = new File(configPath + "/AadhaarCard_POA.pdf");
-			String value = null;
-			JSONObject object1 = null;
-			for (Object key : actualRequest.keySet()) {
-				if (key.equals("request")) {
-					object1 = (JSONObject) actualRequest.get(key);
-					value = (String) object1.get(langCodeKey);
-					actualRequest.put("requesttime", preRegLib.getCurrentDate());
-					object1.remove(langCodeKey);
-				}
-			}
-
-			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
-					value);
-
-			innerKeys.add("responsetime");
-			logger.info("Response::" + response.asString());
-			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-
-		}
-		else if(testCaseName.contains("preReg_TriggerNotification_version"))
 		{
 			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
 			testSuite = "TriggerNotification/"+testCase;
@@ -214,8 +188,33 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
 					value);
 
-			innerKeys.add("responsetime");
-			logger.info("Response::" + response.asString());
+			outerKeys.add("responsetime");
+			logger.info("Response requesttime::" + response.asString()+"Test case name:"+testCaseName);
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+
+		}
+		else if(testCaseName.contains("preReg_TriggerNotification_version"))
+		{
+			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
+			testSuite = "TriggerNotification/"+testCase;
+			String configPath = "src/test/resources/" + folder + "/" + testSuite;
+			File file = new File(configPath + "/AadhaarCard_POA.pdf");
+			String value = null;
+			JSONObject object1 = null;
+			for (Object key : actualRequest.keySet()) {
+				if (key.equals("request")) {
+					object1 = (JSONObject) actualRequest.get(key);
+					value = (String) object1.get(langCodeKey);
+					actualRequest.put("requesttime", preRegLib.getCurrentDate());
+					object1.remove(langCodeKey);
+				}
+			}
+
+			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
+					value);
+
+			outerKeys.add("responsetime");
+			logger.info("Response TriggerNotification_version::" + response.asString()+"Test case name:"+testCaseName);
 			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
 		}
@@ -280,7 +279,8 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, TriggerNotification.testCaseName);
+			//f.set(baseTestMethod, TriggerNotification.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_TriggerNotification_" +TriggerNotification.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

@@ -1,6 +1,6 @@
 {
-	"macaddress": "string",
-	"serialnumber": "string",
-	"lastupdated": "string",
-	"keyIndex": "string"
+	"macaddress": "",
+	"serialnumber": "",
+	"lastupdated": "",
+	"keyindex": ""
 }

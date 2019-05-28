@@ -1,0 +1,13 @@
+
+{
+    "id": "mosip.pre-registration.document.fetch.content",
+    "version": "1.0",
+    "responsetime": "2019-05-26T13:11:51.115Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_CORE_001",
+            "message": "request parameter is missing"
+        }
+    ]
+} 

@@ -1,1 +1,1 @@
-{"transactionID":"8158265305","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated","actionMessage":"Your UIN status is not active"}],"responseTime":"2019-05-23T11:24:25.610+05:30","response":{"authStatus":false,"staticToken":null}}
+{"transactionID":"0823677557","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occurred"}],"responseTime":"2019-05-28T12:09:18.133+05:30","response":{"authStatus":false,"staticToken":null}}

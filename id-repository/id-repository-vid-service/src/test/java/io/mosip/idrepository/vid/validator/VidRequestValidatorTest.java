@@ -232,6 +232,7 @@ public class VidRequestValidatorTest {
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
 		request.setVidType("Perpetual");
+		request.setUin(2953190571L);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
@@ -250,7 +251,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
-		request.setUin("123456");
+		request.setUin(2953190571L);
 		request.setVidType("Temp");
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()
@@ -276,7 +277,7 @@ public class VidRequestValidatorTest {
 		req.setId("mosip.vid.create");
 		VidRequestDTO request = new VidRequestDTO();
 		request.setVidStatus("ACTIVE");
-		request.setUin("123456");
+		request.setUin(2953190571L);
 		request.setVidType(null);
 		req.setVersion("v1");
 		req.setRequesttime(DateUtils.getUTCCurrentDateTime()

@@ -1,7 +1,3 @@
-// export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-// export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-// export const COUNTRY_NAME = 'Morocco';
-// export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const METADATA = 'documentsMetaData';
@@ -10,10 +6,6 @@ export const NESTED_ERROR = 'errors';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
 export const APPENDER = '/';
-
-// export const YEAR_PATTERN = '(\\d{4})';
-// export const MONTH_PATTERN = '([0]\\d|1[0-2])';
-// export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
@@ -34,14 +26,12 @@ export const APPEND_URL = {
   send_otp: 'sendOtp',
   login: 'validateOtp',
   logout: 'invalidateToken',
-  // login: 'login',
-  // logout: 'logout',
   location_metadata: 'locations/locationhierarchy/',
   location_immediate_children: 'locations/immediatechildren/',
   applicants: 'applications',
-  // get_applicant: 'applications',
   location: 'v1/masterdata/',
   gender: 'v1/masterdata/gendertypes',
+  resident: 'v1/masterdata/individualtypes',
   transliteration: 'transliteration/transliterate',
   applicantType: 'v1/applicanttype/',
   validDocument: 'applicanttype/',
@@ -101,10 +91,6 @@ export const CONFIG_KEYS = {
   mosip_regex_DOB: 'mosip.id.validation.identity.dateOfBirth',
   mosip_default_dob_day: 'mosip.default.dob.day',
   mosip_default_dob_month: 'mosip.default.dob.month',
-  // mosip_postal_code_length: 'mosip.id.validation.identity.postalCode.length',
-  // mosip_CINE_length: 'mosip.id.validation.identity.CNIENumber.length',
-  // mosip_email_length: 'mosip.id.validation.identity.email.length',
-  // mosip_mobile_length: 'mosip.id.validation.identity.phone.length',
   preregistration_address_length: 'mosip.id.validation.identity.addressLine1.[*].value',
   preregistration_fullname_length: 'mosip.id.validation.identity.fullName.[*].value',
   mosip_id_validation_identity_age: 'mosip.id.validation.identity.age',
@@ -114,18 +100,13 @@ export const CONFIG_KEYS = {
   preregistration_document_alllowe_files: 'preregistration.documentupload.allowed.file.type',
   preregistration_document_alllowe_file_size: 'preregistration.documentupload.allowed.file.size',
   preregistration_document_alllowe_file_name_lenght: 'preregistration.documentupload.allowed.file.nameLength'
-
-  // mosip.kernel.sms.number.length
-  // preregistration.max.file.size
-  // preregistration.workflow.demographic,
-  // preregistration.workflow.documentupload,
-  // preregistration.workflow.booking
-  // preregistration.auto.logout
 };
 
 export const DASHBOARD_RESPONSE_KEYS = {
   bookingRegistrationDTO: {
     dto: 'bookingRegistrationDTO',
+    // new dashboard api
+    // dto: 'bookingMetadata',
     regDate: 'appointment_date',
     time_slot_from: 'time_slot_from',
     time_slot_to: 'time_slot_to'
@@ -142,7 +123,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
 export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
   preRegistrationId: 'preRegistrationId',
-  genderTypes: 'genderType'
+  genderTypes: 'genderType',
+  residentTypes: 'individualTypes'
 };
 
 export const APPLICATION_STATUS_CODES = {
@@ -182,26 +164,14 @@ export const notificationDtoKeys = {
   file: 'attachment'
 };
 
-export const residentTypesMapping = {
-  NFR: {
-    fra: 'Nationale',
-    eng: 'National',
-    ara: 'الوطني'
-  },
-  FR: {
-    fra: 'Étranger',
-    eng: 'Foreigner',
-    ara: 'أجنبي'
-  }
-};
-
-export const sameAs = {
-  eng: 'Document Uploaded using Same As',
-  fra: 'Document téléchargé avec Identique à',
-  ara: 'تم تحميل المستند باستخدام نفس باسم'
-};
-
-export const previewFields = ['region', 'province', 'city', 'localAdministrativeAuthority', 'gender'];
+export const previewFields = [
+  'region',
+  'province',
+  'city',
+  'localAdministrativeAuthority',
+  'gender',
+  'residenceStatus'
+];
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
@@ -209,8 +179,3 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request';
 export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/applicationData';
 
 export const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-export const DAYS = {
-  eng: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  ara: ['يَوم الأحَد', 'يَوم الإثنين', 'يَوم الثلاثاء', 'يَوم الأربعاء', 'يَوم الخميس', 'يَوم الجمعة', 'يَوم السبت'],
-  fra: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-};

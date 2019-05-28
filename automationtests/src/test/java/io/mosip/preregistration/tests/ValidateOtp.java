@@ -1,5 +1,7 @@
 package io.mosip.preregistration.tests;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +10,13 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITest;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
 
-import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.BaseTestCase;
@@ -146,14 +149,25 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		return this.testCaseName;
 
 	}
-@BeforeMethod(alwaysRun=true)
-public void run()
-{
-	
-}
-	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		System.out.println("method name:" + result.getMethod().getMethodName());
+	@BeforeMethod(alwaysRun = true)
+	public void login( Method method)
+	{
+		testCaseName="preReg_Demogarphic_" + method.getName();
+		authToken=lib.getToken();
+		
 	}
+@AfterMethod
+public void setResultTestName(ITestResult result, Method method) {
+	try {
+		BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+		Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+		f.setAccessible(true);
+		f.set(bm, "preReg_Demogarphic_" + method.getName());
+	} catch (Exception ex) {
+		Reporter.log("ex" + ex.getMessage());
+	}
+	lib.logOut();
+}
+
 
 }

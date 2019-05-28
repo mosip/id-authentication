@@ -10,7 +10,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.core.spi.provider.bio.FingerprintProvider;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -24,7 +23,7 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			String reqInfoValue = ((Map<String, String>) reqInfo).values().stream().findFirst().orElse("");
 			String entityInfoValue = ((Map<String, String>) entityInfo).values().stream().findFirst().orElse("");
-			Object object = props.get(FingerprintProvider.class.getSimpleName());
+			Object object = props.get(IdaIdMapping.FINGERPRINT.getIdname());
 			if (object instanceof BiFunction) {
 				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
 				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();

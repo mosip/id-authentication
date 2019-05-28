@@ -8,13 +8,15 @@ import org.springframework.context.annotation.FilterType;
 
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
+import io.mosip.registration.processor.core.config.CoreConfigBean;
+import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
 @Configuration
 @ComponentScan(basePackages = { "io.mosip.registration.processor.status.*",
 		"io.mosip.registration.processor.rest.client.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				RegistrationStatusBeanConfig.class, RestConfigBean.class }))
+				RegistrationStatusBeanConfig.class, RestConfigBean.class, CoreConfigBean.class, KernelConfig.class}))
 public class RegistrationStatusConfigTest {
 
 	@MockBean

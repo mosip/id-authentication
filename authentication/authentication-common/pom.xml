@@ -133,10 +133,5 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.pdfgenerate.version}</version>
-		</dependency>
 	</dependencies>
 </project>

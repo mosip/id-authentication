@@ -304,7 +304,7 @@ public class BioDedupeProcessor {
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
 		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUAL_BIOMETRICS);
-		if (!json.isEmpty()) {
+		if (json!=null && !json.isEmpty()) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment("Bio dedupe Inprogress");
 			registrationStatusDto
