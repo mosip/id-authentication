@@ -132,6 +132,3 @@ Below are the option system integrator team has to integrate external system wit
 
 ![vertx-external-integration-logical-view](_images/vertx-external-integration-logical-view.png)
 
-
-
-**Examples**
