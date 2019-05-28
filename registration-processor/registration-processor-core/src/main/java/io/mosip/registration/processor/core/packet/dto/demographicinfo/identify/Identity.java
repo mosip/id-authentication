@@ -76,11 +76,13 @@ public class Identity {
 
 	/** The cnie number. */
 	private IdentityJsonValues cnienumber;
-	
+
 	private IdentityJsonValues parentOrGuardianRID;
-	
+
 	private IdentityJsonValues parentOrGuardianUIN;
-	
+
 	private IdentityJsonValues parentOrGuardianName;
+
+	private IdentityJsonValues parentOrGuardianBiometrics;
 
 }

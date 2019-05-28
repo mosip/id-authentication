@@ -1,25 +1,17 @@
 package io.mosip.registration.processor.core.auth.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-/**
- * BioInfo class gives biometric information as finger,face or iris.
- *
- * @author Rakesh Roshan
- */
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class BioInfo {
+	
 
-	/** Obtain biometric information like face,iris or finger*/
-	private String bioType;
+	private DataInfoDTO data;
 	
-	/** Obtain device information like  device-id, manufacturer, model of device*/
-	private DeviceInfo deviceInfo;
+	private String hash;
 	
+	private String sessionKey;
+	
+	private String signature;
 	
 }

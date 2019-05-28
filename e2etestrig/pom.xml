@@ -10,5 +10,10 @@
   <packaging>pom</packaging>
   <modules>
   	<module>e2etests</module>
+
+  	<module>pre-reg-automation</module>
+  	<module>reg-client-automation</module>
+  	<module>reg-proc-automation</module>
+  	<module>ida-automation</module>
   </modules>
 </project>

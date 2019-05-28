@@ -1,20 +1,12 @@
 package io.mosip.registrationprocessor.stages.demodedupe;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-import java.beans.IntrospectionException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -32,7 +24,6 @@ import org.springframework.core.env.Environment;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
-import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -68,11 +59,11 @@ public class DemoDedupeTest {
 	/** The filesystem adapter impl. */
 	@Mock
 	FileSystemAdapter filesystemAdapterImpl;
-	
+
 	/** The registration status service. */
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
-	
+
 	/** The auth response DTO. */
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -129,9 +120,9 @@ public class DemoDedupeTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
-		authResponseDTO.setStatus("y");
+		//authResponseDTO.setStatus("y");
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-				.thenReturn(authResponseDTO);
+		.thenReturn(authResponseDTO);
 	}
 
 	/**
@@ -148,7 +139,7 @@ public class DemoDedupeTest {
 		Dtos.add(dto2);
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
-		
+
 		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(any(),any(),any(),any())).thenReturn(Dtos);
 
 
@@ -171,92 +162,5 @@ public class DemoDedupeTest {
 		assertEquals("Test for Demo Dedupe Empty", true, duplicates.isEmpty());
 	}
 
-	/**
-	 * Test demo dedupe authetication sucess.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParseException 
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 */
-	@Test
-	public void testDemoDedupeAutheticationSucess() throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 
-		String regId = "1234567890";
-
-		Set<String> duplicateIds = new HashSet<String>();
-		duplicateIds.add("123456789");
-		duplicateIds.add("987654321");
-		
-		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(true);
-		
-		
-		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
-
-//		assertTrue("Test for Demo Dedupe Authetication Success", result);
-	}
-
-	/**
-	 * Test demo dedupe authetication failure.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IntrospectionException 
-	 * @throws ParseException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 */
-	@Test
-	public void testDemoDedupeAutheticationFailure() throws ApisResourceAccessException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IntrospectionException {
-
-		String regId = "1234567890";
-
-		Set<String> duplicateIds = new HashSet<String>();
-		duplicateIds.add("123456789");
-		duplicateIds.add("987654321");
-
-		authResponseDTO.setStatus("n");
-
-		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
-		// This should change after uncommenting auth
-
-	//	assertTrue("Test for Demo Dedupe Authetication Failure", result);
-		assertFalse("Test for Demo Dedupe Authetication Failure", result);
-		
-	}
-
-	/**
-	 * Test demo dedupe authetication iris sucess.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ParseException 
-	 * @throws IntrospectionException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 */
-	@Test
-	public void testDemoDedupeAutheticationIrisSucess() throws ApisResourceAccessException, IOException, ParseException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
-
-		String regId = "1234567890";
-
-		Set<String> duplicateIds = new HashSet<String>();
-		duplicateIds.add("123456789");
-		duplicateIds.add("987654321");
-		Mockito.when(biometricValidation.validateBiometric(anyString(),anyString())).thenReturn(true);
-		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
-
-//		assertTrue("Test for Demo Dedupe Authetication Success for Iris biometric", result);
-	}
 }

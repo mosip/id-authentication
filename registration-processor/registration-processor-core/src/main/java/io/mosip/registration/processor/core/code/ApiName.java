@@ -184,6 +184,13 @@ public enum ApiName {
     /** The digitalsignature */
 	DIGITALSIGNATURE,
 	/**The Vid creation  */
-	CREATEVID;
+	CREATEVID,
+
+    /** The user details */
+    USERDETAILS,
+    /** get operator rid from id */
+    GETRIDFROMUSERID,
+
+    INTERNALAUTH;
 
 }
