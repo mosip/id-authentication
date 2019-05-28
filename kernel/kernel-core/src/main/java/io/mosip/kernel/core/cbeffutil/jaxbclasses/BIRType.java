@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import io.mosip.kernel.core.cbeffutil.common.Base64Adapter;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 
 /**
  * <p>

@@ -24,6 +24,7 @@ public class BIR {
 	private byte[] sb;
 	private SBInfo sbInfo;
 	private List<Object> element;
+	private List<BIR> birList;
 
 	public BIR(BIRBuilder birBuilder) {
 		this.version = birBuilder.version;
@@ -90,6 +91,13 @@ public class BIR {
 	 */
 	public SBInfo getSbInfo() {
 		return sbInfo;
+	}
+
+	/**
+	 * @param birList the birList to set
+	 */
+	public void setBirList(List<BIR> birList) {
+		this.birList = birList;
 	}
 
 	public static class BIRBuilder {
