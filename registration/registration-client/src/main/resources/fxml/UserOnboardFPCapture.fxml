@@ -170,7 +170,7 @@
                                                             <Label fx:id="rightSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label fx:id="rightSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />
@@ -224,7 +224,7 @@
                                                                   <Label fx:id="thumbSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                                </children>
                                                             </VBox>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
                                                                   <Label fx:id="thumbSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />
@@ -372,7 +372,7 @@
                                                       <Label fx:id="leftSlapAttempt" styleClass="attemptsLabel" text="-" />
                                                    </children>
                                                 </VBox>
-                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                    <children>
                                                       <Label styleClass="exceptionLabel" text="%exceptions" />
                                                       <Label fx:id="leftSlapException" styleClass="exceptionLabel" text="-" wrapText="true" />

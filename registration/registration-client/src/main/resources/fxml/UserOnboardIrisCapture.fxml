@@ -170,7 +170,7 @@
                                                             <Label fx:id="leftIrisAttempts" styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label fx:id="leftIrisException" styleClass="exceptionLabel" text="-" />
@@ -224,7 +224,7 @@
                                                                   <Label fx:id="rightIrisAttempts" styleClass="attemptsLabel" text="-" />
                                                                </children>
                                                             </VBox>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                                <children>
                                                                   <Label styleClass="exceptionLabel" text="%exceptions" />
                                                                   <Label fx:id="rightIrisException" styleClass="exceptionLabel" text="-" />
