@@ -35,6 +35,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
@@ -203,6 +205,11 @@ public class OSIValidatorTest {
 		PowerMockito.mockStatic(Utilities.class);
 		PowerMockito.when(Utilities.class, "getJson", anyString(), anyString()).thenReturn(value);
 
+		ObjectMapper mapIdentityJsonStringToObject= new ObjectMapper();
+		RegistrationProcessorIdentity val=mapIdentityJsonStringToObject.readValue(value, RegistrationProcessorIdentity.class);
+		
+		Mockito.when(utility.getRegistrationProcessorIdentityJson()).thenReturn(val);
+		
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		regOsiDto.setOfficerId("O1234");
 		regOsiDto.setOfficerHashedPin("officerHashedPin");
@@ -437,20 +444,20 @@ public class OSIValidatorTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	@Test
-	public void testIntroducerRIDFailedOnHold() throws ApisResourceAccessException, IOException, Exception {
-		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
-		registrationStatusDto.setStatusCode("FAILED");
-		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
-		boolean isValid = osiValidator.isValidOSI("reg1234");
-		assertFalse(isValid);
-	}
+		@Test
+		public void testIntroducerRIDFailedOnHold() throws ApisResourceAccessException, IOException, Exception {
+			Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
+			registrationStatusDto.setStatusCode("FAILED");
+			Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+			boolean isValid = osiValidator.isValidOSI("reg1234");
+			assertFalse(isValid);
+		}
 
 	@Test
 	public void testIntroducerRIDProcessingOnHold() throws NumberFormatException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, IOException, ParserConfigurationException, SAXException{
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		InternalRegistrationStatusDto introducerRegistrationStatusDto=new InternalRegistrationStatusDto();
-
+		
 		introducerRegistrationStatusDto.setStatusCode((RegistrationStatusCode.PROCESSING.toString()));
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(introducerRegistrationStatusDto);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
@@ -554,16 +561,18 @@ public class OSIValidatorTest {
 	public void testIntroducerUINNull() throws ApisResourceAccessException, IOException, Exception {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 
-		InternalRegistrationStatusDto introducerRegistrationStatusDto=new InternalRegistrationStatusDto();
-
+InternalRegistrationStatusDto introducerRegistrationStatusDto=new InternalRegistrationStatusDto();
+		
 		introducerRegistrationStatusDto.setStatusCode((RegistrationStatusCode.PROCESSED.toString()));
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(introducerRegistrationStatusDto);
+	
 
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null)
-		.thenReturn(12345);
+		.thenReturn(12345);//.thenReturn(map);
+		
 		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
 	}
-
+	
 }

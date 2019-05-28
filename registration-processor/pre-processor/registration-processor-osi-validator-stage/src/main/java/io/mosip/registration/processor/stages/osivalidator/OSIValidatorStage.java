@@ -79,8 +79,6 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 
 	private MosipEventBus mosipEventBus = null;
 
-	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
-
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/**
