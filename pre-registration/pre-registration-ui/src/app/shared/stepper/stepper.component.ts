@@ -6,7 +6,6 @@ import { Component, OnInit, OnChanges, Input } from '@angular/core';
   styleUrls: ['./stepper.component.css']
 })
 export class StepperComponent implements OnInit, OnChanges {
-
   @Input() componentName: string;
 
   classes = {
@@ -31,13 +30,11 @@ export class StepperComponent implements OnInit, OnChanges {
     }
   };
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
-    console.log(this.componentName);
     if (this.componentName === 'DemographicComponent') {
       this.classes.step1.p = ['active'];
       this.classes.step1.icon = ['inline-icon', 'inline-icon-background-active'];
@@ -88,5 +85,4 @@ export class StepperComponent implements OnInit, OnChanges {
       this.classes.step4.icon = ['inline-icon', 'inline-icon-background-complete'];
     }
   }
-
 }

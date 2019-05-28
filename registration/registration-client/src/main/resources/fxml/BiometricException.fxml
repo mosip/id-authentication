@@ -252,16 +252,16 @@
                                                 <GridPane GridPane.columnIndex="1">
                                                   <columnConstraints>
                                                     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="52.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="38.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="70.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
-                                                    <RowConstraints percentHeight="28.0" vgrow="ALWAYS" />
-                                                    <RowConstraints percentHeight="47.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="50.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <GridPane fx:id="leftEyePaneHolder" alignment="CENTER"  GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                                         </columnConstraints>
@@ -271,7 +271,7 @@
                                                          <children>
                                                             <Pane fx:id="leftEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="leftEye" fitHeight="${leftEyePane.height+20}" fitWidth="${leftEyePane.width+20}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
+                                                                  <ImageView fx:id="leftEye" fitHeight="${leftEyePane.height}" fitWidth="${leftEyePane.width}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>
@@ -286,17 +286,17 @@
                                                 <Label styleClass="onboardBioDetailsHeader" text="%leftIris" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <GridPane>
                                                   <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="52.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="70.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
-                                                    <RowConstraints percentHeight="28.0" valignment="CENTER" vgrow="ALWAYS" />
-                                                    <RowConstraints percentHeight="47.0" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="ALWAYS" />
+                                                    <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <GridPane fx:id="rightEyePaneHolder" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" >
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                                         </columnConstraints>
@@ -306,7 +306,7 @@
                                                          <children>
                                                             <Pane fx:id="rightEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="rightEye" fitHeight="${rightEyePane.height+20}" fitWidth="${rightEyePane.width+20}" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="rightEye" fitHeight="${rightEyePane.height}" fitWidth="${rightEyePane.width}" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>

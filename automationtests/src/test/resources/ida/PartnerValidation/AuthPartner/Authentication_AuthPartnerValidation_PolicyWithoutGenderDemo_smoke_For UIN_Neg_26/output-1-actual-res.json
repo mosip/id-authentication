@@ -1,1 +1,0 @@
-{"transactionID":"6816147226","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-016","errorMessage":"HMAC Validation failed"}],"responseTime":"2019-05-23T11:52:53.282+05:30","response":{"authStatus":false,"staticToken":null}}

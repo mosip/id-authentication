@@ -1,0 +1,165 @@
+{
+		"id": "mosip.pre-registration.123demographic.create",
+		"ver" :"1.0",
+		"reqTime" : "2019-01-22T09:35:42.704Z",
+		"request" :
+	     {
+			"preRegistrationId": "",
+			"createdBy": "9900806086",
+			"createdDateTime": "2019-01-22T09:35:42.635Z",
+			"updatedBy": "",
+			"updatedDatetime": "",
+			"statusCode": "Pending_Appointment",
+			"langCode": "fr",
+			"demographicDetails":
+			{
+				"identity":
+				{
+					"fullName": [
+					{
+						"language": "fr",
+						"value": "athila"
+					},
+					{
+						"language": "ar",
+						"value": "َتهِلَ"
+					}
+				],
+				"dateOfBirth": [
+					{
+						"language": "ar",
+						"value": "18/12/1961"
+					},
+					{
+						"language": "fr",
+						"value": "18/12/1961"
+					}
+					
+				],
+				"gender":[
+					{
+						"language": "ar",
+						"value": "م"
+					},
+					{
+						"language": "fr",
+						"value": "M"
+					}
+					
+				],
+				"addressLine1": [
+					{
+						"language": "ar",
+						"value": "٢٨٣"
+					},
+					{
+						"language": "fr",
+						"value": "283"
+					}
+					
+				],
+				"addressLine2": [
+					{
+						"language": "ar",
+						"value": "بد مُهَمِد زِركتُُنِ"
+					},
+					{
+						"language": "fr",
+						"value": "bd Mohamed Zerktouni"
+					}
+				],
+				"addressLine3": [
+					{
+						"language": "fr",
+						"value": "Sud-Ouest"
+					},
+					{
+						"language": "ar",
+						"value": "سُد-ُُِست"
+					}
+					
+				],
+				"region": [
+					{
+						"language": "ar",
+						"value": "گُِرسِف"
+					},
+					{
+						"language": "fr",
+						"value": "Guercif"
+					}
+				],
+				"province": [
+					{
+						"language": "ar",
+						"value": "سِدِ بِننُُر پرُڤِنسِ"
+					},
+					{
+						"language": "fr",
+						"value": "Sidi Bennour Province"
+					}
+				],
+				"city": [
+					{
+						"language": "ar",
+						"value": "گُِلمِم-ُُِد نُُن"
+					},
+					{
+						"language": "fr",
+						"value": "Guelmim-Oued Noun"
+					}
+				],
+				"postalcode": [
+					{
+						"language": "ar",
+						"value": "٦٧٥١٨"
+					},
+					{
+						"language": "fr",
+						"value": "67518"
+					}
+				],
+				"localAdministrativeAuthority": [
+					{
+						"language": "ar",
+						"value": "(سِركلِ)بِنمَنسُُر/(كَِدَت)بِنمَنسُُر"
+					},
+					{
+						"language": "fr",
+						"value": "(Cercle)BENMANSOUR/(Caidat)BENMANSOUR"
+					}
+				],
+				"emailId": [
+					{
+						"language": "fr",
+						"value": "jyoti.kori@mindtree.com"
+					},
+					{
+						"language": "ar",
+						"value": "jyoti.kori@mindtree.com"
+					}
+				],
+				"mobileNumber":[
+					{
+						"language": "ar",
+						"value": "7777777777"
+					},
+					{
+						"language": "fr",
+						"value": "7777777777"
+					}
+				],
+				"CNEOrPINNumber": [
+					{
+						"language": "fr",
+						"value": "20300"
+					},
+					{
+						"language": "ar",
+						"value": "٢٠٣٠٠"
+					}
+				]
+			}
+		}
+	}
+}

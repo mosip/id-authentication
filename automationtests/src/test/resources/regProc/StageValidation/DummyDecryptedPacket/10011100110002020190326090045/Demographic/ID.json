@@ -1,0 +1,106 @@
+{
+  "identity" : {
+    "fullName" : [ {
+      "language" : "eng",
+      "value" : "Lingam26"
+    }, {
+      "language" : "ara",
+      "value" : "مهىلشة٢٦"
+    } ],
+    "dateOfBirth" : "1993/01/01",
+    "age" : 26,
+    "gender" : [ {
+      "language" : "eng",
+      "value" : "Female"
+    }, {
+      "language" : "ara",
+      "value" : "أنثى"
+    } ],
+    "residenceStatus" : [ {
+      "language" : "eng",
+      "value" : "National"
+    }, {
+      "language" : "ara",
+      "value" : "الوطني"
+    } ],
+    "addressLine1" : [ {
+      "language" : "eng",
+      "value" : "Testing"
+    }, {
+      "language" : "ara",
+      "value" : "فثسفهىل"
+    } ],
+    "addressLine2" : [ {
+      "language" : "eng",
+      "value" : "Errabia"
+    }, {
+      "language" : "ara",
+      "value" : ""
+    } ],
+    "addressLine3" : [ {
+      "language" : "eng",
+      "value" : ""
+    }, {
+      "language" : "ara",
+      "value" : ""
+    } ],
+    "region" : [ {
+      "language" : "eng",
+      "value" : "Rabat Sale Kenitra"
+    }, {
+      "language" : "ara",
+      "value" : "جهة الرباط سلا القنيطرة"
+    } ],
+    "province" : [ {
+      "language" : "eng",
+      "value" : "Kenitra"
+    }, {
+      "language" : "ara",
+      "value" : "القنيطرة"
+    } ],
+    "city" : [ {
+      "language" : "eng",
+      "value" : "Ben Mansour"
+    }, {
+      "language" : "ara",
+      "value" : "بن منصور"
+    } ],
+    "postalCode" : "600111",
+    "phone" : "6360409192",
+    "email" : "lingam.nidadavolu@mindtree.com",
+    "localAdministrativeAuthority" : [ {
+      "language" : "eng",
+      "value" : "14022"
+    }, {
+      "language" : "ara",
+      "value" : "14022"
+    } ],
+    "proofOfAddress" : {
+      "value" : "POA_Certificate of residence",
+      "type" : "Certificate of residence",
+      "format" : "jpg"
+    },
+    "proofOfIdentity" : {
+      "value" : "POI_CNIE card",
+      "type" : "CNIE card",
+      "format" : "jpg"
+    },
+    "proofOfRelationship" : {
+      "value" : "POR_Certificate of Relationship",
+      "type" : "Certificate of Relationship",
+      "format" : "jpg"
+    },
+    "proofOfDateOfBirth" : {
+      "value" : "POB_Certificate of Birth",
+      "type" : "Certificate of Birth",
+      "format" : "jpg"
+    },
+    "individualBiometrics" : {
+      "format" : "cbeff",
+      "version" : 1.0,
+      "value" : "applicant_bio_CBEFF"
+    },
+    "IDSchemaVersion" : 1.0,
+    "CNIENumber" : "4545343123"
+  }
+}

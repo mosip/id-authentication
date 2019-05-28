@@ -38,7 +38,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 public class BaseIdRepoValidatorTest {
 
 	BaseIdRepoValidator requestValidator=new BaseIdRepoValidator() {

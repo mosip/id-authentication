@@ -17,6 +17,7 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -37,6 +38,9 @@ public class MatchInputBuilder {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
+
+	@Autowired
+	private BioMatcherUtil bioMatcherUtil;
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
@@ -149,11 +153,12 @@ public class MatchInputBuilder {
 						|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 					Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, language,
 							environment, idInfoFetcher);
-					matchValue = matchThresholdOpt
-							.orElseGet(() -> Integer.parseInt(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE)));
+					matchValue = matchThresholdOpt.orElseGet(() -> Integer
+							.parseInt(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE)));
 				}
 			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);
+			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher,
+					bioMatcherUtil, language);
 
 			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
