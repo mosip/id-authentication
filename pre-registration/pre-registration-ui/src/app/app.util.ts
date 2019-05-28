@@ -40,13 +40,12 @@ export default class Utils {
     } else {
       appointmentDateTime = date.reverse().join(' ');
     }
-    console.log(appointment_date, appointmentDateTime);
     return appointmentDateTime;
   }
 
   static formatTime(time_slot_from: string) {
-      const time = time_slot_from.split(':');
-      const appointmentDateTime =
+    const time = time_slot_from.split(':');
+    const appointmentDateTime =
       (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) +
       ':' +
       time[1] +

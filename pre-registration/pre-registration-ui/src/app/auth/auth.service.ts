@@ -25,15 +25,13 @@ export class AuthService {
 
   isAuthenticated() {
     return this.token != null;
-    // if (localStorage.getItem('loggedIn') && localStorage.getItem('loggedIn') === 'true') return true;
-    // else return false;
   }
 
   onLogout() {
     localStorage.setItem('loggedIn', 'false');
     localStorage.setItem('loggedOut', 'true');
     this.removeToken();
-    this.dataStorageService.onLogout().subscribe(res => console.log(res));
+    this.dataStorageService.onLogout().subscribe();
     this.router.navigate(['/']);
     this.userIdle.stopWatching();
   }

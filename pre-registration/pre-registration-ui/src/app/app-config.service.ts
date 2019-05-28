@@ -11,7 +11,6 @@ export class AppConfigService {
 
   async loadAppConfig() {
     const data = await this.http.get('./assets/config.json').toPromise();
-    console.log(data);
     this.appConfig = data;
   }
 

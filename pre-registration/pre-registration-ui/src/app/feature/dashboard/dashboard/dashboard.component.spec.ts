@@ -198,7 +198,6 @@ describe('Dashboard Component', () => {
     event.checked = true;
     component.onSelectUser(applicant, event);
     fixture.detectChanges();
-    console.log('selectedUsers' + component);
     expect(component.disableModifyAppointmentButton).toBeFalsy();
   });
 
@@ -270,8 +269,6 @@ describe('Dashboard Component', () => {
       status: 'true'
     };
     component.addtoNameList(applicant);
-    console.log('component.selectedUsers.length', component.selectedUsers.length);
-
     expect(component.selectedUsers.length).toBe(0);
   });
 
@@ -441,8 +438,7 @@ describe('Dashboard Component', () => {
   //   let service = new BookingService();
   //   // let name = service.addNameList(applicant);
   //   // BookingService.
-  //   // console.log('asdf', component.selectedUsers);
-
+  //
   //   expect(service.addNameList(applicant)).toBeUndefined();
   //   // expect(component.selectedUsers.length).toBe(2);
   // });
@@ -465,7 +461,7 @@ describe('Dashboard Component', () => {
   //     fixture.whenStable().then(() => {
   //       // expect(location.pathname()).toEqual('/settings/testing/edit/1');
   //       expect(location.path()).toBe('/pre-registration/summary/acknowledgement');
-  //       console.log('after expect');
+  //
   //     });
   //   })
   // ));

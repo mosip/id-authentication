@@ -40,7 +40,6 @@ export class PreviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('IN PREVIEW');
     this.primaryLanguage = localStorage.getItem('langCode');
     this.secondaryLanguage = localStorage.getItem('secondaryLangCode');
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
@@ -51,8 +50,6 @@ export class PreviewComponent implements OnInit {
     this.previewData.secondaryAddress = this.combineAddress(1);
     this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
-    // this.setResidentStatus();
-    console.log(this.previewData);
     this.getSecondaryLanguageLabels();
     this.files = this.user.files.documentsMetaData;
     this.documentsMapping();
@@ -73,17 +70,6 @@ export class PreviewComponent implements OnInit {
     });
   }
 
-  // setResidentStatus() {
-  //   this.previewData['residenceStatus'].forEach(element => {
-  //     if (element.language === localStorage.getItem('langCode')) {
-  //       element.name = this.residentTypeMapping.primary[element.value];
-  //     } else {
-  //       element.name = this.residentTypeMapping.secondary[element.value];
-  //     }
-  //     //   element.name = appConstants.residentTypesMapping[element.value][element.language];
-  //   });
-  // }
-
   documentsMapping() {
     this.documentMapObject = [];
     if (this.documentTypes.length !== 0) {
@@ -103,7 +89,6 @@ export class PreviewComponent implements OnInit {
         this.documentMapObject.push(obj);
       });
     }
-    console.log(this.documentMapObject);
   }
 
   combineAddress(index: number) {
