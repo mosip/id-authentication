@@ -158,7 +158,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 				 try {
 					 String regId = idRepoManager.getRIDByUID(idvId);
 					 if(null!=regId) {
-							idResDTO=idRepoManager.getUINByRID(regId);
+							idResDTO=idRepoManager.getIdByRID(regId, isBio);
 						}
 					} catch (IdAuthenticationBusinessException e) {
 						logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());

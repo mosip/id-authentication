@@ -43,6 +43,8 @@ public enum RestServicesConstants {
 	
 	RID_UIN("rid-uin"),
 	
+	RID_UIN_WITHOUT_TYPE("rid-uin-auth"),
+	
 	VID_SERVICE("vid-service.vid-uin"),
 	
 	VID_UPDATE_STATUS_SERVICE("id-repo-service-vidupdate-status"),

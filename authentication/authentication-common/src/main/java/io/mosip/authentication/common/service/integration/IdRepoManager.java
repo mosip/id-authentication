@@ -187,13 +187,19 @@ public class IdRepoManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getUINByRID(String regID) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdByRID(String regID, boolean isBio) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
 		Map<String, Object> uinMap = null;
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put("rid", regID);
-			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN, null, Map.class);
+			if (isBio) {
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN, null, Map.class);
+				params.put("type", "bio");
+			} else {
+				buildRequest = restRequestFactory.buildRequest(RestServicesConstants.RID_UIN_WITHOUT_TYPE, null,
+						Map.class);
+			}
 			buildRequest.setPathVariables(params);
 			uinMap = restHelper.requestSync(buildRequest);
 		} catch (RestServiceException e) {
