@@ -22,6 +22,9 @@ public enum ModuleName {
 
 	/** The re processor. */
 	RE_PROCESSOR,
+	
+	/** The biometric authentication. */
+	BIOMETRIC_AUTHENTICATION,
 
 	EXTERNAL;
 }

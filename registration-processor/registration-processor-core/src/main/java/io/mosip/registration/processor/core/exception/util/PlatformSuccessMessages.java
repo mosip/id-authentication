@@ -26,6 +26,10 @@ public enum PlatformSuccessMessages {
 
 	RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "000",
 			"Potential duplicate packet found for registration id : "),
+	
+	// Biometric Authentication Success Messages
+	RPR_PKR_BIOMETRIC_AUTHENTICATION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "000",
+			"Biometric Authentication Success"),
 
 	// Bio-De-dupe Success messages
 	/** The Constant PACKET_BIODEDUPE_SUCCESS. */
