@@ -52,6 +52,33 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 public class QualityCheckerStage extends MosipVerticleManager {
 
+	/** The Constant FINGER. */
+	private static final String FINGER = "FINGER";
+
+	/** The Constant THUMB. */
+	private static final String THUMB = "Thumb";
+
+	/** The Constant RIGHT. */
+	private static final String RIGHT = "Right";
+
+	/** The Constant LEFT. */
+	private static final String LEFT = "Left";
+
+	/** The Constant IRIS. */
+	private static final String IRIS = "IRIS";
+
+	/** The Constant FACE. */
+	private static final String FACE = "FACE";
+
+	/** The Constant INDIVIDUAL_BIOMETRICS. */
+	public static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
+
+	/** The Constant UTF_8. */
+	public static final String UTF_8 = "UTF-8";
+
+	/** The Constant VALUE. */
+	public static final String VALUE = "value";
+
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
@@ -133,11 +160,11 @@ public class QualityCheckerStage extends MosipVerticleManager {
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 			InputStream idJsonStream = adapter.getFile(regId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-			String idJsonString = IOUtils.toString(idJsonStream, "UTF-8");
+			String idJsonString = IOUtils.toString(idJsonStream, UTF_8);
 			JSONObject idJsonObject = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
 			JSONObject identity = JsonUtil.getJSONObject(idJsonObject,
 					utilities.getGetRegProcessorDemographicIdentity());
-			JSONObject individualBiometricsObject = JsonUtil.getJSONObject(identity, "individualBiometrics");
+			JSONObject individualBiometricsObject = JsonUtil.getJSONObject(identity, INDIVIDUAL_BIOMETRICS);
 			if (individualBiometricsObject == null) {
 				description = "Individual Biometric parameter is not present in ID Json";
 				object.setIsValid(Boolean.TRUE);
@@ -145,10 +172,15 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+						"Individual Biometric parameter is not present in ID Json");
 			} else {
-				String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, "value");
+				String biometricFileName = JsonUtil.getJSONValue(individualBiometricsObject, VALUE);
 				if (biometricFileName == null || biometricFileName.isEmpty()) {
 					description = "File Name of individual biometric is not present";
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId,
+							PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getMessage());
 					throw new FileMissingException(PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getCode(),
 							PlatformErrorMessages.RPR_QCR_FILENAME_MISSING.getMessage());
 				}
@@ -156,6 +188,9 @@ public class QualityCheckerStage extends MosipVerticleManager {
 						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + biometricFileName);
 				if (cbeffStream == null) {
 					description = "Applicant biometric file missing";
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId,
+							PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getMessage());
 					throw new FileMissingException(PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getCode(),
 							PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getMessage());
 				}
@@ -191,6 +226,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.QUALITY_CHECK.toString());
+
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto
@@ -253,17 +289,17 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	 * @return the threshold based on type
 	 */
 	private Integer getThresholdBasedOnType(SingleType singleType, List<String> subtype) {
-		if (singleType.value().equalsIgnoreCase("FINGER")) {
-			if (subtype.contains("Thumb")) {
+		if (singleType.value().equalsIgnoreCase(FINGER)) {
+			if (subtype.contains(THUMB)) {
 				return thumbFingerThreshold;
-			} else if (subtype.contains("Right")) {
+			} else if (subtype.contains(RIGHT)) {
 				return rightFingerThreshold;
-			} else if (subtype.contains("Left")) {
+			} else if (subtype.contains(LEFT)) {
 				return leftFingerThreshold;
 			}
-		} else if (singleType.value().equalsIgnoreCase("IRIS")) {
+		} else if (singleType.value().equalsIgnoreCase(IRIS)) {
 			return irisThreshold;
-		} else if (singleType.value().equalsIgnoreCase("FACE")) {
+		} else if (singleType.value().equalsIgnoreCase(FACE)) {
 			return faceThreshold;
 		}
 		return 0;
