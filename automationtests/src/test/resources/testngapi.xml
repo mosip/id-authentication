@@ -17,7 +17,7 @@
                                                  
 
 
-				<test name="Kernel Tests">
+			<test name="Kernel Tests">
 						 <classes>
                           
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -112,13 +112,13 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />   
 		</classes>
-	</test>
+	</test> 
 
-	  <test name="AuthenticationTest">
+	   <test name="AuthenticationTest">
 		<parameter name="testType" value="smoke" />
 		<classes>
-		
-		<class name="io.mosip.authentication.tests.CreateUinRecord" />
+		<class name="io.mosip.authentication.tests.OtpGeneration" />
+	<!--	<class name="io.mosip.authentication.tests.CreateUinRecord" />
 			<class name="io.mosip.authentication.tests.UpdateUinRecord" />
 			<class name="io.mosip.authentication.tests.OtpGeneration" />
 			 <class name="io.mosip.authentication.tests.CreateUinRecord" />
@@ -137,10 +137,10 @@
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
 		</classes>
 
-	</test>
+	</test> -->
 
 
-	<test name="RegistrationProcessor Tests">
+	 <test name="RegistrationProcessor Tests">
 		<classes>
 
 			<class name="io.mosip.registrationProcessor.tests.Assignment" />
@@ -155,6 +155,6 @@
 			<class name="io.mosip.registrationProcessor.tests.Assignment" />
 			<class name="io.mosip.registrationProcessor.tests.Decision" /> 
 		</classes>
-	</test>  
+	</test>   
   
 </suite>
