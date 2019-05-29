@@ -614,7 +614,7 @@
          <children>
             <HBox spacing="5.0" styleClass="homeBox" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Button mnemonicParsing="false" onAction="#goToHomePageFromOnboard" styleClass="homeButton" text="%home" />
                   <Label styleClass="headerLabel" text="%onboardOperator" />
                </children>
             </HBox>
