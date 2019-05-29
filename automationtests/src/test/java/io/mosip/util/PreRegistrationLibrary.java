@@ -779,8 +779,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
-		request.put("requesttime", getCurrentDate());
-		
+		request.put("requesttime", getCurrentDate());	
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 		return response;
 	}

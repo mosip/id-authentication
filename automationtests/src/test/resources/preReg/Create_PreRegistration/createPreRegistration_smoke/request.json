@@ -11,6 +11,7 @@
                     {
                         "language": "ara",
                         "value": "FLE"
+
                     }
                 ],
                 "city": [
@@ -107,6 +108,7 @@
                     }
                 ],
                 "email": "ashish.rastogi@mindtree.com"
+
             }
         },
         "langCode": "fra"
@@ -115,3 +117,4 @@
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0"
 }
+

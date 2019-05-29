@@ -240,6 +240,25 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		    
 			
 			break;
+		case "BookAnAppointmentByPassingInvalidVer":
+
+		    String version= actualRequest.get("version").toString();
+		    
+		    
+		    URI = preReg_URI + preId;
+		    fetchCenter = preRegLib.FetchCentre();
+		    actRes = preRegLib.BookAppointmentRequest(fetchCenter, preId.toString());
+		    actRes.put("version", version);
+		    actRes.put("requesttime", preRegLib.getCurrentDate());
+			logger.info("BookAnAppointmentByPassingInvalidVersion::"+actRes.toString());
+			response = applicationLibrary.postRequest(actRes, URI);
+			logger.info("BookAnAppointmentByPassingInvalidVersion::"+response.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+		    
+			
+			break;
 		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
 			String regCenterId = actualRequest.get("registration_center_id").toString();
 			logger.info("Invalid reg centterererer:"+regCenterId);
