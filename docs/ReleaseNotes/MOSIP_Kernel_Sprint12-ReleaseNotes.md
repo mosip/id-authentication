@@ -69,6 +69,8 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 |---------------|-------------|
 | mosip_master/template|Template data to be updated for latest sendOtp changes|
 | mosip_master/template_type|Template type data to be updated for latest sendOtp changes|
+| mosip_master/machine|TPM publick key and index column added|
+
 
 
 
