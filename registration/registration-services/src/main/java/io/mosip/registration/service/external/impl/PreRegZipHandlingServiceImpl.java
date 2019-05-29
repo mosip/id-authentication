@@ -216,7 +216,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
 				idObjectValidator.validateIdObject(
 						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),
-						IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+						RegistrationConstants.PACKET_TYPE_NEW);
 
 			}
 		} catch (IOException exception) {
