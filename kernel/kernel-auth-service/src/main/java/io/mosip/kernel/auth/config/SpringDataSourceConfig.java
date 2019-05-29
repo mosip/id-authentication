@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -33,8 +32,9 @@ public class SpringDataSourceConfig {
 	    hikariConfig.setPassword(env.getProperty("iam.datasource.password"));
 	    hikariConfig.setMaximumPoolSize(20);
 	    hikariConfig.setConnectionTimeout(60000);
-	    hikariConfig.setIdleTimeout(150000);
-	    hikariConfig.setMinimumIdle(0);
+	    hikariConfig.setIdleTimeout(180000);
+	    hikariConfig.setMinimumIdle(10);
+	    hikariConfig.setValidationTimeout(2000);
 	    HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 		return dataSource;
 
