@@ -41,15 +41,9 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						if (!bioinfovalue.getBioSubType().equalsIgnoreCase("UNKNOWN")) {
-							BiFunction<String, String, Double> func = bioMatcherUtil::matchValue;
-							valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-							valueMap.put(BioAuthType.class.getSimpleName(), this);
-						} else {
-							BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
-							valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
-						}
-
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
+						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
+						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
 		}
@@ -72,10 +66,9 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunction<String, String, Double> func = bioMatcherUtil::matchValue;
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
 						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 						valueMap.put(BioAuthType.class.getSimpleName(), this);
-
 					});
 			return valueMap;
 		}
@@ -170,7 +163,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
 						valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
 
 					});
@@ -196,7 +189,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
+						BiFunction<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
 						valueMap.put(IdaIdMapping.FACE.getIdname(), func);
 					});
 			return valueMap;
