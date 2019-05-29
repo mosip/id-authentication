@@ -7,6 +7,9 @@ import java.util.Map;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 
+/**
+ * The Class RegistrationExceptionMapperUtil.
+ */
 public class RegistrationExceptionMapperUtil {
 	/** The status map. */
 	private static EnumMap<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> statusMap = new EnumMap<>(
@@ -16,6 +19,9 @@ public class RegistrationExceptionMapperUtil {
 	private static Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> unmodifiableMap = Collections
 			.unmodifiableMap(statusMap);
 
+	/**
+	 * Instantiates a new registration exception mapper util.
+	 */
 	public RegistrationExceptionMapperUtil() {
 		super();
 	}
@@ -99,7 +105,8 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.UNEXCEPTED_ERROR, RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.JSCH_CONNECTION, RegistrationTransactionStatusCode.REPROCESS);
-		statusMap.put(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION,
+				RegistrationTransactionStatusCode.REPROCESS);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.PACKET_STRUCTURAL_VALIDATION_FAILED,
@@ -116,12 +123,41 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 				RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET,
+				RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.OFFICER_BIOMETRIC_NOT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.SUPERVISOR_BIOMETRIC_NOT_IN_PACKET,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.AUTH_ERROR, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.AUTH_FAILED, RegistrationTransactionStatusCode.FAILED);
+        statusMap.put(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE, RegistrationTransactionStatusCode.FAILED);
+        statusMap.put(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE, RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS );
-		
+
 		return unmodifiableMap;
 
 	}
 
+	/**
+	 * Gets the status code.
+	 *
+	 * @param exceptionCode the exception code
+	 * @return the status code
+	 */
 	public String getStatusCode(RegistrationExceptionTypeCode exceptionCode) {
 		Map<RegistrationExceptionTypeCode, RegistrationTransactionStatusCode> mapStatus = RegistrationExceptionMapperUtil
 				.statusMapper();

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import smoothscroll from 'smoothscroll-polyfill';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
@@ -31,7 +32,6 @@ export class TimeSelectionComponent implements OnInit {
   names: NameList[];
   deletedNames = [];
   availabilityData = [];
-  // cutoff = 1;
   days: number;
   enableBookButton = false;
   activeTab = 'morning';
@@ -51,26 +51,23 @@ export class TimeSelectionComponent implements OnInit {
     private dialog: MatDialog,
     private dataService: DataStorageService,
     private router: Router,
-    private route: ActivatedRoute,
     private registrationService: RegistrationService,
     private translate: TranslateService,
     private configService: ConfigService
   ) {
+    smoothscroll.polyfill();
     this.translate.use(localStorage.getItem('langCode'));
   }
 
   ngOnInit() {
     this.names = this.bookingService.getNameList();
     this.temp = this.bookingService.getNameList();
-    console.log('ngOninit temp', this.temp);
     this.days = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_availability_noOfDays);
     if (this.temp[0]) {
       this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
     }
     this.bookingService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
-    console.log(this.registrationCenter);
-    console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter);
 
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
@@ -81,14 +78,14 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   public scrollRight(): void {
-    this.widgetsContent.nativeElement.scrollTo({
+    this.widgetsContent.nativeElement.scrollBy({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
       behavior: 'smooth'
     });
   }
 
   public scrollLeft(): void {
-    this.widgetsContent.nativeElement.scrollTo({
+    this.widgetsContent.nativeElement.scrollBy({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
       behavior: 'smooth'
     });
@@ -96,7 +93,6 @@ export class TimeSelectionComponent implements OnInit {
 
   dateSelected(index: number) {
     this.selectedTile = index;
-    console.log('selected tile index', this.selectedTile);
     this.placeNamesInSlots();
     this.enableBookButton = true;
   }
@@ -108,7 +104,6 @@ export class TimeSelectionComponent implements OnInit {
   itemDelete(index: number): void {
     this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
     this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
-    console.log(index, 'item to be deleted from card', this.deletedNames);
     this.enableBookButton = false;
   }
 
@@ -140,23 +135,15 @@ export class TimeSelectionComponent implements OnInit {
       element.TotalAvailable = sumAvailability;
       element.inActive = false;
       element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
-      // element.date.split('-')[2] +
-      // ' ' +
-      // appConstants.MONTHS[Number(element.date.split('-')[1])] +
-      // ', ' +
-      // element.date.split('-')[0];
-      element.displayDay =
-        this.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDay = this.DAYS[new Date(Date.parse(element.date)).getDay()];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
-      console.log(this.availabilityData);
     });
     this.placeNamesInSlots();
   }
 
   placeNamesInSlots() {
-    console.log('in plot function', this.names);
     this.availabilityData[this.selectedTile].timeSlots.forEach(slot => {
       if (this.names.length !== 0) {
         while (slot.names.length < slot.availability && this.names.length !== 0) {
@@ -166,7 +153,6 @@ export class TimeSelectionComponent implements OnInit {
       }
     });
     this.enableBucketTabs();
-    console.log(this.availabilityData[this.selectedTile]);
   }
 
   enableBucketTabs() {
@@ -183,7 +169,6 @@ export class TimeSelectionComponent implements OnInit {
   getSlotsforCenter(id) {
     this.dataService.getAvailabilityData(id).subscribe(
       response => {
-        console.log(response);
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
         } else if (response[appConstants.NESTED_ERROR]) {
@@ -191,7 +176,6 @@ export class TimeSelectionComponent implements OnInit {
         }
       },
       error => {
-        //console.log(error);
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -204,7 +188,6 @@ export class TimeSelectionComponent implements OnInit {
     ) {
       this.activeTab = selection;
     }
-    console.log(this.activeTab);
   }
 
   makeBooking(): void {
@@ -234,11 +217,8 @@ export class TimeSelectionComponent implements OnInit {
       bookingRequest: this.bookingDataList
     };
     const request = new RequestModel(appConstants.IDS.booking, obj);
-    console.log('request being sent from time selection', request);
-
     this.dataService.makeBooking(request).subscribe(
       response => {
-        console.log(response);
         if (!response['errors']) {
           const data = {
             case: 'MESSAGE',
@@ -269,7 +249,6 @@ export class TimeSelectionComponent implements OnInit {
         }
       },
       error => {
-        //console.log(error);
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -315,8 +294,6 @@ export class TimeSelectionComponent implements OnInit {
       this.bookingService.addNameList(name);
     });
     const url = Utils.getURL(this.router.url, 'pick-center');
-    // const routeParams = this.router.url.split('/');
-    // this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
     this.router.navigateByUrl(url);
   }
 }

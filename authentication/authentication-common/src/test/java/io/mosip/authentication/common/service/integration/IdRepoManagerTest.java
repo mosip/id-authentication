@@ -373,7 +373,7 @@ public class IdRepoManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(finalMap);
-		Map<String,Object> uinMap=idReposerviceImpl.getUINByRID("76746685REGID");
+		Map<String,Object> uinMap=idReposerviceImpl.getIdByRID("76746685REGID", false);
 		assertEquals("1112324546567879923", ((Map<String,Object>)uinMap.get("response")).get("UIN"));
 	}
 	
@@ -397,7 +397,7 @@ public class IdRepoManagerTest {
 				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, responseBody.toString(), (Object) responseBody));
 		try
 		{
-		 idReposerviceImpl.getUINByRID("234433356");
+		 idReposerviceImpl.getIdByRID("234433356", false);
 		}
 		catch(IdAuthenticationBusinessException ex) {
 			  assertEquals(IdAuthenticationErrorConstants.INVALID_USERID.getErrorCode(), ex.getErrorCode());
@@ -423,7 +423,7 @@ public class IdRepoManagerTest {
 		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, responseBody.toString(), (Object) responseBody));
-		idReposerviceImpl.getUINByRID("76746685");
+		idReposerviceImpl.getIdByRID("76746685", false);
 	}
 	
 	/* this test method tests the negative scenario
@@ -434,7 +434,7 @@ public class IdRepoManagerTest {
 	public void testGetUINBYRIDINVALID() throws IdAuthenticationBusinessException, RestServiceException {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER));
-		idReposerviceImpl.getUINByRID("76746685");
+		idReposerviceImpl.getIdByRID("76746685", false);
 	}
 	
 	

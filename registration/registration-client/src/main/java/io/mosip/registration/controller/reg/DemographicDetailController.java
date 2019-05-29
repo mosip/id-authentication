@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
@@ -56,7 +57,7 @@ import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -1434,7 +1435,23 @@ public class DemographicDetailController extends BaseController {
 			demographicInfoDTO = buildDemographicInfo();
 
 			try {
-				idObjectValidator.validateIdObject(demographicInfoDTO);
+				// Generating Demographic JSON as byte array
+				String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
+				if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
+					if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_NEW)) {
+						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
+								IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+					} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
+								IdObjectValidatorSupportedOperations.UPDATE_UIN);
+					} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
+								IdObjectValidatorSupportedOperations.LOST_UIN);
+					} else if ((Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
+								IdObjectValidatorSupportedOperations.CHILD_REGISTRATION);
+					}
+				}
 			} catch (RuntimeException runtimeException) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
 				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -1479,7 +1496,7 @@ public class DemographicDetailController extends BaseController {
 		BiometricInfoDTO introducerBiometric = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO();
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicInfo -> demographicInfo.setIdentity(
-				(MoroccoIdentity) Builder.build(MoroccoIdentity.class).with(identity -> identity.setFullName(
+				(IndividualIdentity) Builder.build(IndividualIdentity.class).with(identity -> identity.setFullName(
 						((fullName.isDisabled() || fullName.getText().isEmpty()) || registrationDTO.isNameNotUpdated())
 								? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
@@ -1756,63 +1773,63 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
 			RegistrationDTO registrationDTO = getRegistrationDTOFromSession();
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
+			IndividualIdentity individualIdentity = (IndividualIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
-			List<ValuesDTO> fullNameValues = moroccoIdentity.getFullName();
+			List<ValuesDTO> fullNameValues = individualIdentity.getFullName();
 			if (registrationDTO.getSelectionListDTO() != null && !registrationDTO.isNameNotUpdated()) {
 
 				fullNameValues = registrationDTO.getRegistrationMetaDataDTO().getFullName();
 			}
 			populateFieldValue(fullName, fullNameLocalLanguage, fullNameValues);
-			populateFieldValue(addressLine1, addressLine1LocalLanguage, moroccoIdentity.getAddressLine1());
-			populateFieldValue(addressLine2, addressLine2LocalLanguage, moroccoIdentity.getAddressLine2());
-			populateFieldValue(addressLine3, addressLine3LocalLanguage, moroccoIdentity.getAddressLine3());
-			populateFieldValue(region, regionLocalLanguage, moroccoIdentity.getRegion());
-			populateFieldValue(province, provinceLocalLanguage, moroccoIdentity.getProvince());
-			populateFieldValue(city, cityLocalLanguage, moroccoIdentity.getCity());
+			populateFieldValue(addressLine1, addressLine1LocalLanguage, individualIdentity.getAddressLine1());
+			populateFieldValue(addressLine2, addressLine2LocalLanguage, individualIdentity.getAddressLine2());
+			populateFieldValue(addressLine3, addressLine3LocalLanguage, individualIdentity.getAddressLine3());
+			populateFieldValue(region, regionLocalLanguage, individualIdentity.getRegion());
+			populateFieldValue(province, provinceLocalLanguage, individualIdentity.getProvince());
+			populateFieldValue(city, cityLocalLanguage, individualIdentity.getCity());
 
-			if (moroccoIdentity.getResidenceStatus() != null && !moroccoIdentity.getResidenceStatus().isEmpty()) {
+			if (individualIdentity.getResidenceStatus() != null && !individualIdentity.getResidenceStatus().isEmpty()) {
 				if (RegistrationConstants.ATTR_FORINGER
-						.equalsIgnoreCase(moroccoIdentity.getResidenceStatus().get(0).getValue())) {
+						.equalsIgnoreCase(individualIdentity.getResidenceStatus().get(0).getValue())) {
 					foreigner(null);
 				} else {
 					national(null);
 				}
 			}
-			postalCode.setText(moroccoIdentity.getPostalCode());
-			mobileNo.setText(moroccoIdentity.getPhone());
-			emailId.setText(moroccoIdentity.getEmail());
-			if (moroccoIdentity.getAge() != null) {
+			postalCode.setText(individualIdentity.getPostalCode());
+			mobileNo.setText(individualIdentity.getPhone());
+			emailId.setText(individualIdentity.getEmail());
+			if (individualIdentity.getAge() != null) {
 				switchedOn.set(true);
-				ageField.setText(moroccoIdentity.getAge() == null ? "" : String.valueOf(moroccoIdentity.getAge()));
+				ageField.setText(individualIdentity.getAge() == null ? "" : String.valueOf(individualIdentity.getAge()));
 			} else {
 				switchedOn.set(false);
 			}
-			cniOrPinNumber.setText(moroccoIdentity.getCnieNumber());
-			postalCodeLocalLanguage.setText(moroccoIdentity.getPostalCode());
-			postalCodeLocalLanguage.setAccessibleHelp(moroccoIdentity.getPostalCode());
-			mobileNoLocalLanguage.setText(moroccoIdentity.getPhone());
-			emailIdLocalLanguage.setText(moroccoIdentity.getEmail());
-			cniOrPinNumberLocalLanguage.setText(moroccoIdentity.getCnieNumber());
-			parentRegId.setText(moroccoIdentity.getParentOrGuardianRID() == null ? ""
-					: String.valueOf(moroccoIdentity.getParentOrGuardianRID()));
-			parentUinId.setText(moroccoIdentity.getParentOrGuardianUIN() == null ? ""
-					: String.valueOf(moroccoIdentity.getParentOrGuardianUIN()));
+			cniOrPinNumber.setText(individualIdentity.getCnieNumber());
+			postalCodeLocalLanguage.setText(individualIdentity.getPostalCode());
+			postalCodeLocalLanguage.setAccessibleHelp(individualIdentity.getPostalCode());
+			mobileNoLocalLanguage.setText(individualIdentity.getPhone());
+			emailIdLocalLanguage.setText(individualIdentity.getEmail());
+			cniOrPinNumberLocalLanguage.setText(individualIdentity.getCnieNumber());
+			parentRegId.setText(individualIdentity.getParentOrGuardianRID() == null ? ""
+					: String.valueOf(individualIdentity.getParentOrGuardianRID()));
+			parentUinId.setText(individualIdentity.getParentOrGuardianUIN() == null ? ""
+					: String.valueOf(individualIdentity.getParentOrGuardianUIN()));
 
-			populateFieldValue(genderValue, genderValueLocalLanguage, moroccoIdentity.getGender());
+			populateFieldValue(genderValue, genderValueLocalLanguage, individualIdentity.getGender());
 
-			if (moroccoIdentity.getGender() != null && moroccoIdentity.getGender().size() > 0) {
-				if (moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMale)
-						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleLocalLanguage)
-						|| moroccoIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleCode)) {
+			if (individualIdentity.getGender() != null && individualIdentity.getGender().size() > 0) {
+				if (individualIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMale)
+						|| individualIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleLocalLanguage)
+						|| individualIdentity.getGender().get(0).getValue().equalsIgnoreCase(textMaleCode)) {
 					male(null);
 				} else {
 					female(null);
 				}
 			}
-			if (moroccoIdentity.getDateOfBirth() != null) {
-				String[] date = moroccoIdentity.getDateOfBirth().split("/");
+			if (individualIdentity.getDateOfBirth() != null) {
+				String[] date = individualIdentity.getDateOfBirth().split("/");
 				if (date.length == 3) {
 					yyyy.setText(date[0]);
 					mm.setText(date[1]);
@@ -1821,7 +1838,7 @@ public class DemographicDetailController extends BaseController {
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
-					moroccoIdentity.getLocalAdministrativeAuthority());
+					individualIdentity.getLocalAdministrativeAuthority());
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 
