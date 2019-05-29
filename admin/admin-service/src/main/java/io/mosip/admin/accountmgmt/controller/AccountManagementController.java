@@ -118,6 +118,14 @@ public class AccountManagementController {
 		responseWrapper.setResponse(accountManagementService.getUserDetailBasedOnMobileNumber(mobile));
 		return responseWrapper ;
 	}
+	
+	@ResponseFilter
+	@GetMapping("/userdetail/userid/{userid}")
+	public ResponseWrapper<UserDetailDto> getUserDetailBasedOnUid(@PathVariable("userid") String userId)  {
+		ResponseWrapper<UserDetailDto> responseWrapper= new ResponseWrapper<>();
+		responseWrapper.setResponse(accountManagementService.getUserDetailBasedOnUserId(userId));
+		return responseWrapper ;
+	}
 
 
 }

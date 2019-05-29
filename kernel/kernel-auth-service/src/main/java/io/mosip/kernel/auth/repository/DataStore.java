@@ -14,7 +14,7 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
-import io.mosip.kernel.auth.dto.UserDetailsDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -61,7 +61,7 @@ public interface DataStore  {
 	
 	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception;
 	
-	public UserDetailsDto getUserDetailBasedOnUid(String userId);
+	public UserDetailsResponseDto getUserDetailBasedOnUid(List<String> userIds);
 	
 
 }

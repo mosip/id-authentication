@@ -11,8 +11,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.naming.Context;
 import javax.naming.NameAlreadyBoundException;
@@ -31,6 +34,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
+import org.apache.commons.lang3.CharSequenceUtils;
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -42,7 +46,6 @@ import org.apache.directory.api.ldap.model.password.PasswordUtil;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.JodaTimeConverters.LocalDateTimeToDateConverter;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
@@ -64,6 +67,7 @@ import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.Role;
 import io.mosip.kernel.auth.dto.RolesListDto;
 import io.mosip.kernel.auth.dto.UserDetailsDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -75,9 +79,9 @@ import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * @author Ramadurai Pandian
@@ -198,7 +202,7 @@ public class LdapDataStore implements DataStore {
 			connection.bind(userdn, clientSecret.getSecretKey());
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),ex);
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(), ex);
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -222,7 +226,7 @@ public class LdapDataStore implements DataStore {
 			connection.bind(userdn, loginUser.getPassword());
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),ex);
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(), ex);
 		}
 		if (connection.isAuthenticated()) {
 			return lookupUserDetails(userdn, connection);
@@ -268,7 +272,7 @@ public class LdapDataStore implements DataStore {
 			return mosipUserDto;
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage(),ex);
+					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage(), ex);
 		}
 	}
 
@@ -288,7 +292,7 @@ public class LdapDataStore implements DataStore {
 			return roles;
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),ex);
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), ex);
 		}
 	}
 
@@ -336,7 +340,7 @@ public class LdapDataStore implements DataStore {
 			return rolesListDto;
 		} catch (Exception e) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),e);
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), e);
 		}
 	}
 
@@ -360,7 +364,7 @@ public class LdapDataStore implements DataStore {
 			return userResponseDto;
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),ex);
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), ex);
 		}
 	}
 
@@ -425,7 +429,7 @@ public class LdapDataStore implements DataStore {
 
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
-					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage(),e);
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage(), e);
 		} finally {
 			if (context != null) {
 				context.close();
@@ -798,17 +802,31 @@ public class LdapDataStore implements DataStore {
 		return searchResult;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.repository.DataStore#getUserDetailBasedOnUid(java.util.
+	 * List)
+	 */
 	@Override
-	public UserDetailsDto getUserDetailBasedOnUid(String userId) {
+	public UserDetailsResponseDto getUserDetailBasedOnUid(List<String> userIds) {
 		UserDetailsDto userDetailsDto = null;
+		List<UserDetailsDto> userDetails = new ArrayList<>();
+		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
+		// Map<Object,Object> userPagenatedMap=null;
 		try {
-			userDetailsDto = new UserDetailsDto();
-			NamingEnumeration<SearchResult> searchResult = getSearchResultBasedOnId(userId);
-			while (searchResult.hasMore()) {
-				SearchResult result = searchResult.next();
-				userDetailsDto.setUserName(userId);
-				userDetailsDto = setUserDetail(result);
+			for (String userId : userIds) {
+				NamingEnumeration<SearchResult> searchResult = getSearchResultBasedOnId(userId);
+				while (searchResult.hasMore()) {
+					SearchResult result = searchResult.next();
+					userDetailsDto = setUserDetail(result);
+					userDetailsDto.setUserId(userId);
+					userDetails.add(userDetailsDto);
+					break;
+				}
 			}
+			// userPagenatedMap=getPagenatedMap(userDetails, 2);
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getCause());
@@ -816,12 +834,14 @@ public class LdapDataStore implements DataStore {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + " " + e.getCause());
 		}
-		return userDetailsDto;
+		userDetailsResponseDto.setUserDetails(userDetails);
+		return userDetailsResponseDto;
 	}
-    
+
 	/**
 	 * 
-	 * @param userId - userId
+	 * @param userId
+	 *            - userId
 	 * @return {@link NamingEnumeration}
 	 * @throws NamingException
 	 * @throws LdapInvalidDnException
@@ -832,19 +852,37 @@ public class LdapDataStore implements DataStore {
 		LdapContext context = getContext();
 		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
 		SearchControls searchControls = new SearchControls();
+		NamingEnumeration<SearchResult> searchResult = null;
+		Attributes attributes = context.getAttributes(searchBase.getName(), new String[] {"*", "+"});
+		String createdTimeStamp=(String) attributes.get("createTimestamp").get();
+		System.out.println(LocalDateTime.parse(createdTimeStamp));
+		String modifyTimeStamp=(String) attributes.get("modifyTimeStamp").get();
+		System.out.println(LocalDateTime.parse(modifyTimeStamp));
+		System.out.println(createdTimeStamp+" modTime:"+modifyTimeStamp);
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		return context.search(searchBase.getName(),
+		searchResult = context.search(searchBase.getName(),
 				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+		context.close();
+		return searchResult;
 	}
 
+	/**
+	 * Sets the user detail.
+	 *
+	 * @param result
+	 *            the result
+	 * @return the user details dto
+	 * @throws NamingException
+	 *             the naming exception
+	 */
 	private UserDetailsDto setUserDetail(SearchResult result) throws NamingException {
 		UserDetailsDto userDetailsDto = new UserDetailsDto();
 
 		if (result.getAttributes().get(LdapConstants.USER_PASSWORD) != null) {
 			userDetailsDto.setUserPassword((byte[]) result.getAttributes().get(LdapConstants.USER_PASSWORD).get());
 		}
-		userDetailsDto.setContactNo((String) result.getAttributes().get(LdapConstants.MOBILE).get());
-		userDetailsDto.setEmailID((String) result.getAttributes().get(LdapConstants.MAIL).get());
+		userDetailsDto.setMobile((String) result.getAttributes().get(LdapConstants.MOBILE).get());
+		userDetailsDto.setMail((String) result.getAttributes().get(LdapConstants.MAIL).get());
 		userDetailsDto.setName((String) result.getAttributes().get(LdapConstants.CN).get());
 		if (result.getAttributes().get(LdapConstants.FIRST_NAME) != null) {
 			userDetailsDto.setFirstName((String) result.getAttributes().get(LdapConstants.FIRST_NAME).get());
@@ -856,7 +894,8 @@ public class LdapDataStore implements DataStore {
 			userDetailsDto.setGender((String) result.getAttributes().get(LdapConstants.GENDER_CODE).get());
 		}
 		if (result.getAttributes().get(LdapConstants.IS_ACTIVE) != null) {
-			userDetailsDto.setIsActive((String) result.getAttributes().get(LdapConstants.IS_ACTIVE).get());
+			userDetailsDto
+					.setActive(Boolean.valueOf((String) result.getAttributes().get(LdapConstants.IS_ACTIVE).get()));
 		}
 		if (result.getAttributes().get(LdapConstants.DOB) != null) {
 			String dob = (String) result.getAttributes().get(LdapConstants.DOB).get();
@@ -868,6 +907,18 @@ public class LdapDataStore implements DataStore {
 		}
 
 		return userDetailsDto;
+	}
+
+	/**
+	 * TBD pagenation
+	 * 
+	 * @param list
+	 * @param pageSize
+	 * @return
+	 */
+	public Map<Object, Object> getPagenatedMap(List<UserDetailsDto> list, int pageSize) {
+		return IntStream.iterate(0, i -> i + pageSize).limit((list.size() + pageSize - 1) / pageSize).boxed().collect(
+				Collectors.toMap(i -> i / pageSize, i -> list.subList(i, Math.min(i + pageSize, list.size()))));
 	}
 
 }

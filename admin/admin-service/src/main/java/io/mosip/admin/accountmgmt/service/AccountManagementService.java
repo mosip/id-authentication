@@ -66,4 +66,13 @@ public interface AccountManagementService {
 	 * @return the user detail based on mobile number
 	 */
 	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile);
+	
+	
+	/**
+	 * Gets the user detail based on user id.
+	 *
+	 * @param userId the user id
+	 * @return the user detail based on user id
+	 */
+	public UserDetailDto getUserDetailBasedOnUserId(String userId);
 }

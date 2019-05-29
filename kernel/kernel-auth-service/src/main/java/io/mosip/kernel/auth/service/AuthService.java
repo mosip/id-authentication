@@ -14,7 +14,7 @@ import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
-import io.mosip.kernel.auth.dto.UserDetailsDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
@@ -56,6 +56,6 @@ public interface AuthService extends AuthZService, AuthNService {
 
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
 	
-	public UserDetailsDto getUserDetailBasedOnUserId(String appId,String userId);
+	public UserDetailsResponseDto getUserDetailBasedOnUserId(String appId,List<String> userIds);
 
 }

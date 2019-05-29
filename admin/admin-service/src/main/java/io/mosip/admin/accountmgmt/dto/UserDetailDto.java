@@ -1,12 +1,16 @@
 package io.mosip.admin.accountmgmt.dto;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class UserDetailDto.
  *
@@ -22,7 +26,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDetailDto {
 
-	
 	private String userId;
 	private String mobile;
 	private String mail;
@@ -34,5 +37,12 @@ public class UserDetailDto {
 	private String role;
 	@JsonIgnore
 	private String rId;
-	
+	private String firstName;
+	private String lastName;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dateOfBirth;
+	private String gender;
+	private List<String> roles;
+	private boolean isActive;
+
 }

@@ -35,6 +35,7 @@ import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
 import io.mosip.kernel.auth.dto.UserDetailsDto;
 import io.mosip.kernel.auth.dto.UserDetailsRequestDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -504,11 +505,11 @@ public class AuthController {
 	 * @return {@link UserDetailsDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/userdetail/userid/{appid}/{userid}")
-	public ResponseWrapper<UserDetailsDto> getUserDetailBasedOnUserId(@PathVariable("appid") String appId,
-			@PathVariable("userid") String userId) {
-		UserDetailsDto userDetailsDto = authService.getUserDetailBasedOnUserId(appId, userId);
-		ResponseWrapper<UserDetailsDto> responseWrapper = new ResponseWrapper<>();
+	@PostMapping(value = "/userdetail/regid/{appid}")
+	public ResponseWrapper<UserDetailsResponseDto> getUserDetailBasedOnUserId(@PathVariable("appid") String appId,
+			@RequestBody RequestWrapper<UserDetailsRequestDto> userDetails) {
+		UserDetailsResponseDto userDetailsDto = authService.getUserDetailBasedOnUserId(appId, userDetails.getRequest().getUserDetails());
+		ResponseWrapper<UserDetailsResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsDto);
 		return responseWrapper;
 	}

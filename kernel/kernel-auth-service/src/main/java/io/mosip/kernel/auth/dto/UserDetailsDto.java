@@ -1,6 +1,7 @@
 package io.mosip.kernel.auth.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -10,22 +11,20 @@ import lombok.Data;
 public class UserDetailsDto {
 
 	
-	private String userName;
+	private String userId;
 	
 	private String firstName;
 	
 	private String lastName;
 	
-	private String contactNo;
+	private String mobile;
 	
-	private String emailID;
+	private String mail;
 	
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate dateOfBirth;
 	
 	private String gender;
-	
-	private String appId;
 	
 	private String langCode;
 	
@@ -37,5 +36,23 @@ public class UserDetailsDto {
 	
 	private String rId;
 	
-	private String isActive;
+	private boolean activationStatus;
+	
+	private boolean blackListedStatus;
+	
+	private boolean isDeleted;
+	
+	private LocalDateTime createdTimeStamp;
+	
+	private LocalDateTime updatedTimeStamp;
+	
+	private LocalDateTime deletedTimeStamp;
+	
+	private String zone;
+	
+	private String registrationId;
+	
+	private String address;
+	
+	private boolean isActive;
 }
