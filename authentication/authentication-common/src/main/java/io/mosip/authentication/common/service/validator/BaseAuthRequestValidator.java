@@ -64,9 +64,7 @@ import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
  */
 @Component
 public abstract class BaseAuthRequestValidator extends IdAuthValidator {
-	
-	private static final String BIOMETRICS_TIMESTAMP = "biometrics/timestamp";
-	
+
 	private static final String BIO_SUB_TYPE = "bioSubType";
 
 	/** The Constant OTP2. */
@@ -74,8 +72,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant PIN. */
 	private static final String PIN = "PIN";
-
-//	private static final String REQUEST_ADDITIONAL_FACTORS_STATIC_PIN = "request/additionalFactors/staticPin";
 
 	/** The Constant REQUEST_ADDITIONAL_FACTORS_TOTP. */
 	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
@@ -85,9 +81,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Final Constant For PIN_VALUE */
 	private static final String PIN_VALUE = "pinValue";
-
-	/** The Final Constant For MODEL */
-	private static final String DEVICE_PROVIDER_ID = "deviceProviderID";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
@@ -241,8 +234,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
 
-				validateDeviceInfo(bioData, errors);
-
 				validateBioType(bioData, errors, allowedAuthType);
 
 				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
@@ -254,7 +245,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				if (isMatchtypeEnabled(BioMatchType.FACE)) {
 					validateFace(authRequestDTO, bioData, errors);
 				}
-				bioData.parallelStream().forEach(bio -> validateReqTime(bio.getTimestamp(), errors, BIOMETRICS_TIMESTAMP));
 			}
 		}
 
@@ -274,9 +264,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
 			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
-			if(!contains) {
+			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "Invalid bio type config");
+						IdAuthCommonConstants.VALIDATE, "Invalid bio type config");
 			}
 			return contains;
 		}).collect(Collectors.toSet());
@@ -301,9 +291,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Validate bio type.
 	 *
-	 * @param errors the errors
+	 * @param errors                 the errors
 	 * @param availableAuthTypeInfos the available auth type infos
-	 * @param bioInfo the bio info
+	 * @param bioInfo                the bio info
 	 */
 	private void validateBioType(Errors errors, Set<String> availableAuthTypeInfos, DataDTO bioInfo) {
 		String bioType = bioInfo.getBioType();
@@ -339,23 +329,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { BIO_SUB_TYPE },
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			}
-		}
-	}
-
-	/**
-	 * validates the DeviceInfo
-	 * 
-	 * @param bioInfos
-	 * @param errors
-	 */
-	private void validateDeviceInfo(List<DataDTO> bioInfos, Errors errors) {
-		if (!isContaindeviceProviderID(bioInfos)) {
-			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-					IdAuthCommonConstants.VALIDATE, "missing biometric deviceProviderID Info request");
-			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { DEVICE_PROVIDER_ID },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -501,7 +474,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				&& bio.getBioType().equals(bioType.getType()));
 	}
 
-	
 	/**
 	 * If DemoAuthType is Bio, Then check duplicate request of finger and number
 	 * finger of request should not exceed to 10.
@@ -836,7 +808,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}).collect(Collectors.groupingBy(Entry::getKey, Collectors.counting()));
 
 		langCount.keySet().forEach(langCode -> validateLangCode(langCode, errors, REQUEST));
-		
+
 		for (long value : langCount.values()) {
 			if (value > 1) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -1007,17 +979,17 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		String intAllowedAuthType = env.getProperty(configKey);
 		return Stream.of(intAllowedAuthType.split(",")).filter(str -> !str.isEmpty()).collect(Collectors.toSet());
 	}
-	
+
 	/**
-	 * validateSecondayLangCode method used to validate secondaryLangCode 
-	 * for KYC request
+	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC
+	 * request
 	 *
 	 * @param string the {@link KycAuthRequestDTO}
 	 * @param errors the errors
-	 * @param field the field
+	 * @param field  the field
 	 */
 	protected void validateLangCode(String langCode, Errors errors, String field) {
-		if(Objects.nonNull(langCode)) {
+		if (Objects.nonNull(langCode)) {
 			Set<String> allowedLang;
 			String languages = env.getProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES);
 			if (null != languages && languages.contains(",")) {
@@ -1026,8 +998,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				allowedLang = new HashSet<>();
 				allowedLang.add(languages);
 			}
-			
-			if(!allowedLang.contains(langCode)) {
+
+			if (!allowedLang.contains(langCode)) {
 				mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 						IdAuthCommonConstants.INVALID_INPUT_PARAMETER + field + " : " + langCode);
 				errors.rejectValue(field, IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(),
@@ -1035,7 +1007,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorMessage());
 			}
 		}
-		
+
 	}
 
 }
