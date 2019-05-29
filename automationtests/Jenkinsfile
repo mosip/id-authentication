@@ -31,14 +31,15 @@ stage ('---------- mvn-clean-test ---------------') {
 			  
   }
   
-  publishHTML (target: [
-      allowMissing: false,
-      alwaysLinkToLastBuild: false,
-      keepAll: true,
-      reportDir: branch+"/"+projectToBuild+"/target/surefire-reports",
-      reportFiles: 'custom-emailable-report.html',
-      reportName: "Tests Report"
-  ])
+  publishHTML(
+   target:[
+   allowMissing: false, 
+   alwaysLinkToLastBuild: false, 
+   keepAll: true, 
+   reportDir: branch+"/"+projectToBuild+"/target/surefire-reports", 
+   reportFiles: 'custom-emailable-report.html', 
+   reportName: 'HTML Report'
+])
 }
           recipients = "$env.AUTOMATION_TEST_RECIPIENT_LIST"
 emailext ( 
