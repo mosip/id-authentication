@@ -25,16 +25,16 @@ Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Descript
 MOS-23936|New|Use mosip.io cert for digital signature and store in SoftHSM
 MOS-23713|New|As the MOSIP system, I should be able to store a public key against a Machine in Masterdata
 MOS-23722|New|Update Masterdata Sync Service - Add input parameter for Key Index
---|New|kernel-bioapi-provider - 
---|New|kernel-idobjectvalidator - 
-
-
+MOS-24007|New|Internal Biometric Authentication api changes
+MOS-23506|New|As the MOSIP system, I should be able to support validations on Id object
 
 
 ### 1.5 Prerequisites : <br><sub>Dependent module/component with their respective versions</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
 ID Repository|ID Repository Identity Service|0.12.3|Required for UIN based login to sendOtp
+Kernel|Cbeff Utilily|0.12.3|Required for BioAPI-provider
+Kernel|Master-Data Service|0.12.3|Required for Master-Data Validation in IdObjectValidator
 
 
 ### 1.6 Prerequisites : <br><sub>Dependent DB/External applications and services</sub></br>
@@ -69,6 +69,8 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 |---------------|-------------|
 | mosip_master/template|Template data to be updated for latest sendOtp changes|
 | mosip_master/template_type|Template type data to be updated for latest sendOtp changes|
+| mosip_master/machine|TPM publick key and index column added|
+
 
 
 
