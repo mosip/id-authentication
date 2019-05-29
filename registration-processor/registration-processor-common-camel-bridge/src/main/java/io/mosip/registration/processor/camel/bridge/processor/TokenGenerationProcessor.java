@@ -13,7 +13,6 @@ public class TokenGenerationProcessor implements Processor {
 	
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		System.out.println("+++++++++++++Inside processor+++++++++++++");
 		String token = restApiClient.getToken();
 		exchange.getIn().setHeader("Cookie", token);
 	}
