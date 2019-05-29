@@ -59,7 +59,7 @@ public class IdRepoManager {
 	/**
 	 * The Constant Id Repo Errors
 	 */
-	private static final List<String> ID_REPO_ERRORS_INVALID_UIN = Arrays.asList(
+	private static final List<String> ID_REPO_ERRORS_INVALID_ID = Arrays.asList(
 			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
 			IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 	
@@ -130,7 +130,7 @@ public class IdRepoManager {
 					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
 					if (!idRepoerrorList.isEmpty()
 							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
-									&& ID_REPO_ERRORS_INVALID_UIN.contains(map.get("errCode")))) {
+									&& ID_REPO_ERRORS_INVALID_ID.contains(map.get("errCode")))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
@@ -211,8 +211,11 @@ public class IdRepoManager {
 					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
 
 					if (!idRepoerrorList.isEmpty() && idRepoerrorList.stream()
-							.anyMatch(map -> map.containsKey(ERROR_CODE) && IdRepoErrorConstants.INVALID_INPUT_PARAMETER
-									.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
+							.anyMatch(map -> map.containsKey(ERROR_CODE) 
+									&& 
+									(IdRepoErrorConstants.INVALID_INPUT_PARAMETER
+									.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))
+									|| ID_REPO_ERRORS_INVALID_ID.contains(map.get(ERROR_CODE)))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_USERID);
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
