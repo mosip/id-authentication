@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +17,7 @@ import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -253,20 +258,22 @@ public class DeviceServiceImpl implements DeviceService {
 	 * getRegistrationCenterMachineMapping1(java.lang.String)
 	 */
 	@Override
-	public List<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId) {
+	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page,int size,String orderBy,String direction) {
+		PageDto<DeviceRegistrationCenterDto> pageDto = new PageDto<>();
 		List<DeviceRegistrationCenterDto> deviceRegistrationCenterDtoList = null;
-		List<Device> returnEntity = null;
+		Page<Device> pageEntity = null;
 
 		try {
-			returnEntity = deviceRepository.findDeviceByRegCenterId(regCenterId);
+			pageEntity = deviceRepository.findDeviceByRegCenterId(regCenterId, 
+			PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		if (returnEntity != null && !returnEntity.isEmpty()) {
-			deviceRegistrationCenterDtoList = MapperUtils.mapAll(returnEntity, DeviceRegistrationCenterDto.class);
+		if (pageEntity != null && !pageEntity.getContent().isEmpty()) {
+			deviceRegistrationCenterDtoList = MapperUtils.mapAll(pageEntity.getContent(), DeviceRegistrationCenterDto.class);
 			for (DeviceRegistrationCenterDto deviceRegistrationCenterDto : deviceRegistrationCenterDtoList) {
 				deviceRegistrationCenterDto.setRegCentId(regCenterId);
 			}
@@ -274,7 +281,15 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return deviceRegistrationCenterDtoList;
+		//pageDto = MapperUtils.map(pageEntity, PageDto.class);
+		pageDto.setPageNo(pageEntity.getNumber());
+		pageDto.setPageSize(pageEntity.getSize());
+		pageDto.setSort(pageEntity.getSort());
+		pageDto.setTotalItems(pageEntity.getTotalElements());
+		pageDto.setTotalPages(pageEntity.getTotalPages());
+		pageDto.setData(deviceRegistrationCenterDtoList);
+		
+		return pageDto;
 
 	}
 

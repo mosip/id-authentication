@@ -1,9 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
-
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -99,5 +98,6 @@ public interface DeviceService {
 	 *         has the list of Device maaped with given Registration Center id
 	 *         {@link DeviceRegistrationCenterDto}
 	 */
-	public List<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId);
+	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction);
 }

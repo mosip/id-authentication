@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -21,6 +20,7 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -179,7 +179,7 @@ public class DeviceController {
 	 *            pass registration Id as String
 	 * 
 	 * @return @return DeviceRegistrationCenterDto all devices details
-	 *         {@link DeviceRegistrationCenterDto} 
+	 *         {@link DeviceRegistrationCenterDto}
 	 */
 	@ResponseFilter
 	@GetMapping(value = "/mappeddevice/{regCenterId}")
@@ -188,11 +188,14 @@ public class DeviceController {
 			@ApiResponse(code = 200, message = "When Device Details retrieved from database for the given Registration Center Id"),
 			@ApiResponse(code = 404, message = "When No Device Details not mapped with the Given Registation Center ID"),
 			@ApiResponse(code = 500, message = "While retrieving Device Detail any error occured") })
-	public ResponseWrapper<List<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
-			@PathVariable("regCenterId") String regCenterId) {
+	public ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
+			@PathVariable("regCenterId") String regCenterId, @RequestParam("page") int page,
+			@RequestParam("size") int size, @RequestParam("orderBy") String orderBy,
+			@RequestParam("direction") String direction) {
 
-		ResponseWrapper<List<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId));
+		ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId, page, size, orderBy, direction));
 		return responseWrapper;
 	}
 }
