@@ -639,10 +639,16 @@ public class SoftwareUpdateHandler extends BaseService {
 		// Get Local manifest
 		manifest = manifest != null ? manifest : localManifest;
 
+		String checksum = null;
+
 		if (manifest == null) {
 
 			try {
 				manifest = getLocalManifest();
+
+				if (manifest != null) {
+					checksum = (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
+				}
 			} catch (IOException exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
@@ -651,6 +657,6 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 
 		// checksum (content-type)
-		return (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
+		return checksum;
 	}
 }
