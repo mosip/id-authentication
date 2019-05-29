@@ -1,12 +1,7 @@
 {
-   "id": "mosip.pre-registration.document.delete.specific",
-   "version" : "1.0",
-   "responsetime": "2019-01-16T17:31:04.021Z",
-   "response": null,
-   "errors":[ 
-         {
-            "errorCode": "PRG_PAM_DOC_005",
-            "message": "Document is not found for the pre-registration id and document id"
-         }
-    ]
+    "timestamp": "2019-05-26T06:55:03.208+0000",
+    "status": 404,
+    "error": "Not Found",
+    "message": "No message available",
+    "path": "/preregistration/v1/documents/"
 }

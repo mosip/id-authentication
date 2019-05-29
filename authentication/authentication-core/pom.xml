@@ -23,6 +23,11 @@
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>Mantra</groupId>
 			<artifactId>MFS100</artifactId>
 			<version>1.0</version>

@@ -19,8 +19,6 @@ public class ApplicationLibrary extends BaseTestCase {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	public Response postRequest(Object body, String Resource_URI) {
-
-		System.out.println("ApplnURI:"+Resource_URI);
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}

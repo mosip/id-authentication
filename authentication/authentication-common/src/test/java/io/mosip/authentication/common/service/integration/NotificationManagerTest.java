@@ -1,9 +1,7 @@
 package io.mosip.authentication.common.service.integration;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -69,7 +67,6 @@ public class NotificationManagerTest {
 	public void testInValidSendNotificationSMS() throws IdAuthenticationBusinessException, RestServiceException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.SMS);
-		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 
 		IDDataValidationException idDataValidationException = new IDDataValidationException(
@@ -85,7 +82,6 @@ public class NotificationManagerTest {
 	public void testInValidSendNotificationEmail() throws IdAuthenticationBusinessException, RestServiceException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
-		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IDDataValidationException idDataValidationException = new IDDataValidationException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -98,7 +94,6 @@ public class NotificationManagerTest {
 	public void TestInvalidTemplate() throws IdAuthenticationBusinessException, IOException {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
-		Map<String, Object> values = new HashMap<>();
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		IDDataValidationException idDataValidationException = new IDDataValidationException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
@@ -116,7 +111,6 @@ public class NotificationManagerTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.notification.type", "");
-		Map<String, Object> values = new HashMap<>();
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		notificationManager.sendEmailNotification("abc@test.com", "test", "test");

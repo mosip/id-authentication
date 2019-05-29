@@ -8,11 +8,8 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import io.mosip.authentication.common.service.impl.match.AddressMatchingStrategy;
-import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;

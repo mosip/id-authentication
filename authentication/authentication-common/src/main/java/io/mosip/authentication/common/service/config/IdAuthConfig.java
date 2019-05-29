@@ -66,7 +66,7 @@ public class IdAuthConfig {
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.addBasenames("errormessages", "eKycPDFTemplate", "actionmessages");
+		source.addBasenames("errormessages", "actionmessages");
 		return source;
 	}
 

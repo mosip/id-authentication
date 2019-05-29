@@ -56,6 +56,7 @@ import io.restassured.RestAssured;
  */
 
 
+
 public class BaseTestCase{
 
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
@@ -71,8 +72,8 @@ public class BaseTestCase{
 	 */
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
-	public static String ApplnURI;	
-	public static String authToken;
+	public static String ApplnURI;
+	protected static String authToken;
 	public static String regProcAuthToken;
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
@@ -84,6 +85,7 @@ public class BaseTestCase{
 		String type=System.getProperty("os.name");
 		if(type.toLowerCase().contains("windows")){
 			SEPRATOR="\\\\";
+
 			return "WINDOWS";
 		}else if(type.toLowerCase().contains("linux")||type.toLowerCase().contains("unix"))
 		{
@@ -118,8 +120,6 @@ public class BaseTestCase{
 			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
 			// ApplnURI = prop.getProperty("testEnvironment");
 
-			
-			                    
 			environment = System.getProperty("env.user");
 			logger.info("Environemnt is  ==== :" + environment);
 			ApplnURI = System.getProperty("env.endpoint");
@@ -136,7 +136,7 @@ public class BaseTestCase{
 		
 	
 	}
-	
+
 	// ================================================================================================================
 		// TESTNG BEFORE AND AFTER SUITE ANNOTATIONS
 		// ================================================================================================================
@@ -157,7 +157,7 @@ public class BaseTestCase{
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.wakeDemoApp();
-			//authToken=pil.getToken();
+		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
@@ -177,10 +177,7 @@ public class BaseTestCase{
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
 			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
-			//authToken=pil.getToken();
-			
-
-
+		
 		} // End suiteSetup
 
 		/**

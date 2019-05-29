@@ -49,34 +49,6 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
 public class RegistrationStatusBeanConfig {
 
 	@Bean
-	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
-
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
-		List<String> applicationNames = getAppNames(env);
-		Resource[] appResources = new Resource[applicationNames.size()];
-
-		for (int i = 0; i < applicationNames.size(); i++) {
-			String loc = env.getProperty("spring.cloud.config.uri") + "/registration-processor/"
-					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
-					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
-			appResources[i] = resolver.getResources(loc)[0];
-			((AbstractEnvironment) env).getPropertySources()
-            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
-		}
-		pspc.setLocations(appResources);
-		return pspc;
-
-	}	
-	
-
-	public List<String> getAppNames(Environment env) {
-		String names = env.getProperty("spring.application.name");
-		return Stream.of(names.split(",")).collect(Collectors.toList());
-	}
-
-	
-	@Bean
 	public RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> getRegistrationStatusService() {
 		return new RegistrationStatusServiceImpl();
 	}
