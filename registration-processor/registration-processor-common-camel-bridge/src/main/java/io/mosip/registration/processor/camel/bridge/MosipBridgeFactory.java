@@ -18,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
 import io.vertx.camel.CamelBridgeOptions;
 
@@ -41,9 +39,6 @@ public class MosipBridgeFactory extends MosipVerticleManager {
 	Environment environment;
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
-	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipBridgeFactory.class);
-
 	/**
 	 * Gets the event bus.
 	 *

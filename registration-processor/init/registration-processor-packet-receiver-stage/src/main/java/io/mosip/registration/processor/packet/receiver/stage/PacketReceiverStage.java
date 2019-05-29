@@ -85,10 +85,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		MessageDTO messageDTO = new MessageDTO();
-		messageDTO.setRid("10011100120048520190515115131");
-		messageDTO.setIsValid(true);
-		this.send(mosipEventBus, MessageBusAddress.PACKET_RECEIVER_OUT, messageDTO);
 	}
 
 	/** The Constant APPLICATION_JSON. */
