@@ -1,5 +1,7 @@
 package io.mosip.preregistration.batchjobservices.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -17,6 +19,6 @@ public interface DocumentRespository extends BaseRepository<DocumentEntity, Stri
 	 * @param preregId
 	 * @return document entity based on given preId
 	 */
-	public DocumentEntity findBypreregId(String preregId);
+	public List<DocumentEntity> findBypreregId(String preregId);
 
 }
