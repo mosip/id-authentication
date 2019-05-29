@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.xml.sax.SAXException;
 
@@ -86,7 +87,7 @@ public class AuthUtil {
 	public static final String RSA = "RSA";
 
 	/** The Constant RSA. */
-	public static final String PARTNER_ID = "PARTNER";
+	public static final String PARTNER_ID = "INTERNAL";
 
 	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 
@@ -95,6 +96,9 @@ public class AuthUtil {
 	IBioApi bioAPi =  new BioApiImpl ();
 
 	CbeffUtil cbeffUtil = new CbeffImpl();
+	
+	@Value("${mosip.identity.auth.internal.requestid}")
+	private String authRequestId;
 
 	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException, BiometricException, BioTypeException {
 		
@@ -103,7 +107,7 @@ public class AuthUtil {
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics = new ArrayList<>();
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setId(authRequestId);
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(individualType);
 		authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());

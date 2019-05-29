@@ -251,15 +251,17 @@ public class OSIValidator {
 		if (officerId != null && !officerId.isEmpty()) {
 			UserResponseDto officerResponse = isUserActive(officerId, creationDate);
 			if (officerResponse.getErrors() == null) {
-				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).isActive();
+				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).getIsActive();
 				if (!wasOfficerActiveDuringPCT) {
 					statusMessage = statusMessage + " " + StatusMessage.OFFICER_NOT_ACTIVE;
+					this.registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
 				}
 			} else {
 				List<ServerError> errors = officerResponse.getErrors();
 				statusMessage = statusMessage + " " + "Officer : " + errors.get(0).getMessage();
+				this.registrationStatusDto.setStatusComment(statusMessage);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
@@ -269,20 +271,21 @@ public class OSIValidator {
 		if (supervisorId != null && !supervisorId.isEmpty()) {
 			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate);
 			if (supervisorResponse.getErrors() == null) {
-				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).isActive();
+				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).getIsActive();
 				if (!wasSupervisorActiveDuringPCT) {
 					statusMessage = statusMessage + " " + StatusMessage.SUPERVISOR_NOT_ACTIVE;
+					this.registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
 				}
 			} else {
 				List<ServerError> errors = supervisorResponse.getErrors();
 				statusMessage = statusMessage + " " + "Supervisor : " + errors.get(0).getMessage();
+				this.registrationStatusDto.setStatusComment(statusMessage);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
 		}
-		this.registrationStatusDto.setStatusComment(statusMessage);
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
@@ -762,10 +765,11 @@ public class OSIValidator {
 
 		} else {
 			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId());
-			if (!isValid)
+			if (!isValid) {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			}
 		}
 		return isValid;
 	}
