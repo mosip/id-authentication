@@ -1,6 +1,9 @@
 package io.mosip.preregistration.core.exception;
 
+import java.util.List;
+
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import lombok.Getter;
 
@@ -16,8 +19,9 @@ public class EncryptionFailedException extends BaseUncheckedException {
 	 * 
 	 */
 	private static final long serialVersionUID = 5135952690225019228L;
-	 private MainResponseDTO<?> mainresponseDTO;
-
+	private MainResponseDTO<?> mainresponseDTO;
+	private List<ServiceError> validationErrorList; 
+	
 	public EncryptionFailedException(String msg) {
 		super("", msg);
 	}
@@ -41,4 +45,11 @@ public class EncryptionFailedException extends BaseUncheckedException {
 	public EncryptionFailedException() {
 		super();
 	}
+	
+	public EncryptionFailedException(List<ServiceError> list,MainResponseDTO<?> response) {
+		super();
+		this.validationErrorList=list;
+		this.mainresponseDTO=response;
+	}
+
 }

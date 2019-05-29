@@ -126,12 +126,12 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 *
 	 * @param routingContext
 	 */
-	private void failure(RoutingContext routingContext) {
+	public void failure(RoutingContext routingContext) {
 		this.setResponseWithDigitalSignature(routingContext, globalExceptionHandler.handler(routingContext.failure()), APPLICATION_JSON);
 	}
 
 
-	private void processPacket(RoutingContext ctx) {
+	public void processPacket(RoutingContext ctx) {
 
 		try {
 

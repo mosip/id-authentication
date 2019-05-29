@@ -159,7 +159,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		LOGGER.info("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving packets based on status");
 
-		return registrationRepository.findByclientStatusCode(status);
+		return registrationRepository.findByclientStatusCodeOrderByCrDtime(status);
 	}
 
 	/*

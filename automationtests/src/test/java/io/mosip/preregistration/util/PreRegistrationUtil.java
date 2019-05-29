@@ -45,7 +45,7 @@ public class PreRegistrationUtil
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	Properties propConfig = new Properties();
 	Properties propresorceURL = new Properties();
-	String configPath="src/test/resources/";
+	String configPath="src/test/resources";
 	
 	String yourActualJSONString = null;
 	ObjectNode newJson = null;
@@ -57,9 +57,9 @@ public class PreRegistrationUtil
 	 File resourcesDirectory = new File("src/test/resources");
 	public Map<String, String> fetchPreregProp() {
 		try {
-			propConfig.load(new FileInputStream(configPath+"preReg/config/preRegistrationResourceURL.properties"));
+			propConfig.load(new FileInputStream(configPath+"/preReg/config/preRegistrationResourceURL.properties"));
 			//propConfig.load(new FileInputStream(f));
-			propresorceURL.load(new FileInputStream(configPath+"preReg/config/preregistrationConfig.properties"));
+			propresorceURL.load(new FileInputStream(configPath+"/preReg/config/preregistrationConfig.properties"));
 			 propConfig.putAll(propresorceURL);
 			
 		} catch (IOException e1) {

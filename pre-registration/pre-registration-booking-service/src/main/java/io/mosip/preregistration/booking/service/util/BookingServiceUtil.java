@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
@@ -77,6 +78,7 @@ import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 
 /**
@@ -123,7 +125,7 @@ public class BookingServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-	
+
 	@Value("${notification.url}")
 	private String notificationResourseurl;
 
@@ -697,20 +699,19 @@ public class BookingServiceUtil {
 		entity.setSlotToTime(LocalTime.parse(bookingRequestDTO.getSlotToTime()));
 		return entity;
 	}
-	
+
 	/**
 	 * 
 	 * @param notificationDTO
 	 * @param langCode
 	 * @return NotificationResponseDTO
 	 */
-	public void emailNotification(NotificationDTO notificationDTO,
-			String langCode) {
-		String emailResourseUrl = notificationResourseurl+"/notify";
+	public void emailNotification(NotificationDTO notificationDTO, String langCode) {
+		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
-		MainRequestDTO<NotificationDTO> request= new MainRequestDTO<>();
+		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
 		request.setRequest(notificationDTO);
 		request.setId("mosip.pre-registration.notification.notify");
 		request.setVersion("1.0");
@@ -723,8 +724,41 @@ public class BookingServiceUtil {
 		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 		log.info("sessionId", "idType", "id",
 				"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
-		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity,String.class);
+		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
 
+	}
+
+	/**
+	 * This static method is used to check whether the appointment date is valid or
+	 * not
+	 * 
+	 * @param regDate
+	 * @return true if the appointment date time is not older date or false if the
+	 *         appointment date is older date
+	 */
+	public boolean validateAppointmentDate(Map<String, String> requestMap) {
+		try {
+			if (requestMap.get(RequestCodes.REG_DATE.getCode()) != null
+					&& !requestMap.get(RequestCodes.REG_DATE.getCode()).isEmpty()) {
+				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
+				if (localDate.isBefore(LocalDate.now())) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+							ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+				} else if (localDate.isEqual(LocalDate.now())
+						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
+								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
+					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
+					if (localTime.isBefore(LocalTime.now())) {
+						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+					}
+				}
+			}
+		} catch (Exception ex) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
+					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for preregistration id - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+		}
+		return true;
 	}
 
 }

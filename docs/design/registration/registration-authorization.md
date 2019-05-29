@@ -1,4 +1,4 @@
-Design for the Registration -- Authorization Module
+**Design for the Registration -- Authorization Module**
 
 **Background**
 

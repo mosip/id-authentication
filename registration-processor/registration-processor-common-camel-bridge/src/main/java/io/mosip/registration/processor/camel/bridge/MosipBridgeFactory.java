@@ -57,7 +57,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
             camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.dmz.file.name");
         }
         else {
-        	clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
+        	clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
             camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.secure.file.name");
         }
         String clusterUrl = BridgeUtil.getCloudConfigUri();

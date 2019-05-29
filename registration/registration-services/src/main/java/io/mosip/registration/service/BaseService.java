@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -328,6 +332,19 @@ public class BaseService {
 
 	public static Map<String, Object> getBaseGlobalMap() {
 		return applicationMap;
+	}
+	
+	/**
+	 * Registration date conversion.
+	 *
+	 * @param timestamp the timestamp
+	 * @return the string
+	 */
+	protected String regDateConversion(Timestamp timestamp) {
+
+		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
+		Date date = new Date(timestamp.getTime());
+		return dateFormat.format(date);
 	}
 
 }

@@ -2,7 +2,7 @@ package io.mosip.registration.processor.stages.uingenerator.dto;
 
 import java.util.List;
 
-import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.ErrorDTO;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

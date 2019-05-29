@@ -1,4 +1,4 @@
-Design -- Acknowledgement Notification
+**Design - Acknowledgement Notification**
 
 **Background**
 

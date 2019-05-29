@@ -100,8 +100,6 @@ export class RegistrationService {
    * @memberof RegistrationService
    */
   addUser(user: UserModel) {
-    console.log('user getting added', user);
-
     this.users.push(user);
     this.usersChanged.next(this.users.slice());
   }
@@ -162,7 +160,6 @@ export class RegistrationService {
 
   setDocumentCategories(documentCategories) {
     this.documentCategories = documentCategories;
-    // console.log('document categories', this.documentCategories);
   }
 
   getDocumentCategories() {

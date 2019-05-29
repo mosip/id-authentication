@@ -61,6 +61,5 @@ public class CustomTestNgReporterDto {
 	public void setDeltaMillis(long deltaMillis) {
 		this.deltaMillis = deltaMillis;
 	}
-
 }
 

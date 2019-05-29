@@ -96,7 +96,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.nonNull(requestId)) {
 			if (!errors.hasErrors() && requestId.equals(id.get(CREATE))) {
 				validateVidType(request.getRequest().getVidType(), errors);
-				validateUin(request.getRequest().getUin(), errors);
+				validateUin(request.getRequest().getUin().toString(), errors);
 			}
 
 			if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {

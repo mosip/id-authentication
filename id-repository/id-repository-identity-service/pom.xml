@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.idrepository</groupId>
 		<artifactId>id-repository-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.2</version>
 	</parent>
 
 	<artifactId>id-repository-identity-service</artifactId>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>0.11.5</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idobjectvalidator</artifactId>
-			<version>0.11.5</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

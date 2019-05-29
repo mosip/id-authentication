@@ -101,7 +101,6 @@ public class IdObjectValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testSchemaNullOperationError() throws IdObjectValidationFailedException, IdObjectIOException,
 			JsonParseException, JsonMappingException, IOException {
 		try {
@@ -130,6 +129,7 @@ public class IdObjectValidatorTest {
 	}
 
 	@Test
+	@Ignore
 	public void wTestSchemaNullFieldsError() throws IdObjectValidationFailedException, IdObjectIOException,
 			JsonParseException, JsonMappingException, IOException {
 		try {

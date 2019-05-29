@@ -101,8 +101,11 @@ public class Sample extends BaseTestCase implements ITest {
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
 				"MASTER_DATA_SYNCED_SUCCESSFULLY");*/
-		dao.MakeDayAsHoliday();
+		
 		//Response syncAvailabilityResponse = lib.syncAvailability();
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
 	}
 
 	@BeforeMethod(alwaysRun = true)
@@ -118,6 +121,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		lib.logOut();
+		//lib.logOut();
 	}
 }

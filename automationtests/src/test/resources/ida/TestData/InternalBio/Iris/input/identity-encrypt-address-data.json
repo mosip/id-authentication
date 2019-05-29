@@ -1,0 +1,25 @@
+{
+	"identityRequest": {
+		"identity": {
+			"addressLine1": [
+				{
+					"language": "fre",
+					"value": "27 RUE PASTEUR"
+				}
+			],
+			"addressLine2": [
+				{
+					"language": "fre",
+					"value": "14390 CABOURG Street"
+				}
+			],
+			"addressLine3": [
+				{
+					"language": "fre",
+					"value": "MOROCCO"
+				}
+			]
+		}
+	},
+	"tspID": "REF01"
+}

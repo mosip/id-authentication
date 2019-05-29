@@ -519,8 +519,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 						.ifPresent(locationDetail -> postalCodeMap.putAll(locationDetail)));
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_POSTAL_CODE_PATH.getValue());
 		String value = jsonPath.read(identityString, READ_OPTIONS);
-		if (Objects.nonNull(value) && !postalCodeMap.values().parallelStream()
-				.allMatch(postalCodeList -> postalCodeList.contains(value))) {
+		if (Objects.nonNull(value) && !postalCodeMap.values().contains(value)) {
 			errorList.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 							convertToPath(jsonPath.getPath()))));

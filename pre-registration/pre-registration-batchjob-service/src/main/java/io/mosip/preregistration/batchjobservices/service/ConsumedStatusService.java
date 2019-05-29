@@ -87,7 +87,7 @@ public class ConsumedStatusService {
 				String preRegId = iterate.getPreRegistrationId();
 
 				DemographicEntityConsumed demographicEntityConsumed = new DemographicEntityConsumed();
-				DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
+				
 				RegistrationBookingEntityConsumed bookingEntityConsumed = new RegistrationBookingEntityConsumed();
 				
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
@@ -97,11 +97,15 @@ public class ConsumedStatusService {
 					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
 
-					DocumentEntity documentEntity = batchServiceDAO.getDocumentDetails(preRegId);
-					if(documentEntity!=null) {
-						BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
-						batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
-					}
+					List<DocumentEntity> documentEntityList = batchServiceDAO.getDocumentDetails(preRegId);
+					documentEntityList.forEach(documentEntity->{
+						if(documentEntity!=null) {
+							DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
+							BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+							batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
+						}
+					});
+					
 					
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
 					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
@@ -111,8 +115,8 @@ public class ConsumedStatusService {
 					bookingEntityConsumed.setBookingPK(consumedPk);
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
-					if(documentEntity!=null) {
-						batchServiceDAO.deleteDocument(documentEntity);
+					if(documentEntityList!=null) {
+						batchServiceDAO.deleteDocument(documentEntityList);
 					}
 					batchServiceDAO.deleteBooking(bookingEntity);
 					batchServiceDAO.deleteDemographic(demographicEntity);

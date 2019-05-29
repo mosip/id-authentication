@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
+import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -72,14 +73,14 @@ public class AuthResponseBuilderTest {
 	@Test
 	public void testAuthResponseInfoBuilder() {
 		assertTrue(AuthResponseBuilder.newInstance(dateTimePattern)
-				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789").getResponse()
-				.isAuthStatus());
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(true).build()).build("123456789")
+				.getResponse().isAuthStatus());
 		assertFalse(AuthResponseBuilder.newInstance(dateTimePattern)
-				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789").getResponse()
-				.isAuthStatus());
+				.addAuthStatusInfo(AuthStatusInfoBuilder.newInstance().setStatus(false).build()).build("123456789")
+				.getResponse().isAuthStatus());
 
-		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789").getTransactionID(),
-				"1234567890");
+		assertEquals(AuthResponseBuilder.newInstance(dateTimePattern).setTxnID("1234567890").build("123456789")
+				.getTransactionID(), "1234567890");
 
 		AuthResponseDTO authResponseDTO = AuthResponseBuilder.newInstance(dateTimePattern)
 				.addErrors(new AuthError("101", "Error1"))
@@ -130,6 +131,24 @@ public class AuthResponseBuilderTest {
 		statusInfoBuilder.build("123456789");
 
 		statusInfoBuilder.build("123456789");
+	}
+
+	@Test
+	public void TestSetId() {
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		authResponseBuilder.setId(PinAuthType.OTP.getDisplayName());
+	}
+
+	@Test
+	public void TestSetStaticToken() {
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		authResponseBuilder.setStaticTokenId("TEST123");
+	}
+
+	@Test
+	public void TestSetVersion() {
+		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(dateTimePattern);
+		authResponseBuilder.setVersion("1.0");
 	}
 
 }

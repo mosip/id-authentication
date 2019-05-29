@@ -1,1 +1,0 @@
-{"transactionID":"0527661048","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-DEA-001","errorMessage":"Demographic data phoneNumber did not match","actionMessage":"Please re-enter your phoneNumber"}],"responseTime":"2019-05-23T11:39:08.492+05:30","response":{"authStatus":false,"staticToken":"357519487438920849050253927891745948"}}

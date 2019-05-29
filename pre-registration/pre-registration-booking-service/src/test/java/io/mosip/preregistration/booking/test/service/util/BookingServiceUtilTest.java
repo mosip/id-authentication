@@ -2,10 +2,13 @@ package io.mosip.preregistration.booking.test.service.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.booking.codes.RequestCodes;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
@@ -55,6 +59,7 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { BookingApplicationTest.class })
@@ -71,7 +76,7 @@ public class BookingServiceUtilTest {
 
 	@MockBean
 	ObjectMapper mapper;
-	
+
 	@Autowired
 	private BookingServiceUtil serviceUtil;
 
@@ -81,7 +86,7 @@ public class BookingServiceUtilTest {
 	@Test
 	public void mandatoryParameterCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
@@ -94,20 +99,20 @@ public class BookingServiceUtilTest {
 	@Test(expected = BookingPreIdNotFoundException.class)
 	public void regIdNullCheckTest() {
 		String preRegistrationId = null;
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
 		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
 
 	@Test(expected = BookingRegistrationCenterIdNotFoundException.class)
 	public void regCenterNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId(null);
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
@@ -120,20 +125,20 @@ public class BookingServiceUtilTest {
 	@Test(expected = BookingTimeSlotNotSeletectedException.class)
 	public void slotNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
 		bookingRequestDTO.setSlotFromTime(null);
 		bookingRequestDTO.setSlotToTime(null);
 		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
-	
+
 	@Test(expected = BookingDateNotSeletectedException.class)
 	public void regDateNullinOldBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("1");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
@@ -147,39 +152,39 @@ public class BookingServiceUtilTest {
 	public void regCenterNullinNewBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
 
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId(null);
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
 		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
 
 	@Test(expected = BookingTimeSlotNotSeletectedException.class)
 	public void slotNullinNewBookingCheckTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("10");
 		bookingRequestDTO.setSlotFromTime(null);
 		bookingRequestDTO.setSlotToTime(null);
 		bookingRequestDTO.setRegDate("2018-12-06");
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
-	
+
 	@Test(expected = BookingDateNotSeletectedException.class)
 	public void bookingDateNotSeletectedExceptionTest() {
 		String preRegistrationId = "23587986034785";
-		BookingRequestDTO bookingRequestDTO=new BookingRequestDTO();
+		BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 		bookingRequestDTO.setRegistrationCenterId("10");
 		bookingRequestDTO.setSlotFromTime("09:00");
 		bookingRequestDTO.setSlotToTime("09:13");
 		bookingRequestDTO.setRegDate(null);
 
-		serviceUtil.mandatoryParameterCheck(preRegistrationId,bookingRequestDTO);
+		serviceUtil.mandatoryParameterCheck(preRegistrationId, bookingRequestDTO);
 
 	}
 
@@ -214,7 +219,42 @@ public class BookingServiceUtilTest {
 		assertEquals("1", bookingRegistrationDTO.getRegistrationCenterId());
 	}
 
-	@Test(expected=AvailablityNotFoundException.class)
+	@Test
+	public void validateAppointmentDateTest() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<String, String> dateMap = new HashMap<>();
+		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
+		assertEquals(Boolean.TRUE, isValid);
+	}
+
+	@Test(expected = InvalidRequestParameterException.class)
+	public void validateAppointmentDateExceptionTest() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<String, String> dateMap = new HashMap<>();
+		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
+		assertEquals(Boolean.FALSE, isValid);
+	}
+
+	@Test(expected = InvalidRequestParameterException.class)
+	public void validateAppointmentTimeExceptionTest() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Map<String, String> dateMap = new HashMap<>();
+		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
+		assertEquals(Boolean.FALSE, isValid);
+	}
+
+	@Test(expected = AvailablityNotFoundException.class)
 	public void AvailablityNotFoundException() {
 		AvailibityEntity availableEntity = new AvailibityEntity();
 		availableEntity.setAvailableKiosks(0);
@@ -225,104 +265,105 @@ public class BookingServiceUtilTest {
 		availableEntity.setDeleted(false);
 		serviceUtil.isKiosksAvailable(availableEntity);
 	}
-	
-	@Test(expected=BookingPreIdNotFoundException.class)
+
+	@Test(expected = BookingPreIdNotFoundException.class)
 	public void bookingPreIdNotFoundExceptionforCancelTest() {
-		
+
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
 		serviceUtil.mandatoryParameterCheckforCancel(null);
-		
+
 	}
-	
-	//@Test(expected=BookingRegistrationCenterIdNotFoundException.class)
+
+	// @Test(expected=BookingRegistrationCenterIdNotFoundException.class)
 	public void bookingRegistrationCenterIdNotFoundExceptionforCancelTest() {
-		
+
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
 		cancelBookingDTO.setRegistrationCenterId(null);
 		serviceUtil.mandatoryParameterCheckforCancel("23587986034785");
-		
+
 	}
-	
-	//@Test(expected=BookingDateNotSeletectedException.class)
+
+	// @Test(expected=BookingDateNotSeletectedException.class)
 	public void bookingDateNotSeletectedExceptionforCancelTest() {
-		
+
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
 		cancelBookingDTO.setRegistrationCenterId("1");
 		cancelBookingDTO.setSlotFromTime("09:00");
 		cancelBookingDTO.setSlotToTime("09:13");
 		cancelBookingDTO.setRegDate(null);
 		serviceUtil.mandatoryParameterCheckforCancel("23587986034785");
-		
+
 	}
-	
-	//@Test(expected=BookingTimeSlotNotSeletectedException.class)
+
+	// @Test(expected=BookingTimeSlotNotSeletectedException.class)
 	public void bookingTimeSlotNotSeletectedExceptionforCancelTest() {
-		
+
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
 		cancelBookingDTO.setRegistrationCenterId("1");
 		cancelBookingDTO.setRegDate("2018-12-06");
 		cancelBookingDTO.setSlotFromTime(null);
 		cancelBookingDTO.setSlotToTime(null);
 		serviceUtil.mandatoryParameterCheckforCancel("23587986034785");
-		
+
 	}
-	
-	@Test(expected=MasterDataNotAvailableException.class)
+
+	@Test(expected = MasterDataNotAvailableException.class)
 	public void callRegCenterDateRestServiceTest() {
-		
-		RegistrationCenterResponseDto preRegResponse= new RegistrationCenterResponseDto();
+
+		RegistrationCenterResponseDto preRegResponse = new RegistrationCenterResponseDto();
 		preRegResponse.setRegistrationCenters(null);
-		ResponseWrapper<RegistrationCenterResponseDto> resp=new ResponseWrapper<>();
+		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
 		resp.setResponse(preRegResponse);
 		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenReturn(res);
-		
+
 		serviceUtil.getRegCenterMasterData();
-		
+
 	}
-	
-	@Test(expected=RestCallException.class)
+
+	@Test(expected = RestCallException.class)
 	public void HttpClientErrorExceptionTest() {
 		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
 				}))).thenThrow(ex);
-		
+
 		serviceUtil.getRegCenterMasterData();
-		
+
 	}
-	
-	@Test(expected=DemographicStatusUpdationException.class)
+
+	@Test(expected = DemographicStatusUpdationException.class)
 	public void callUpdateStatusRestServiceTest() {
 
-		Map<String,Object> map=new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("pre_rgistration_id", "23587986034785");
 
 		RestClientException ex = new RestClientException(null);
-		MainResponseDTO<String> preRegResponse= new MainResponseDTO<>();
+		MainResponseDTO<String> preRegResponse = new MainResponseDTO<>();
 		preRegResponse.setResponse(null);
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
-		List<ExceptionJSONInfoDTO> errList=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> errList = new ArrayList<>();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		errList.add(err);
 		preRegResponse.setErrors(errList);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {}),Mockito.anyMap())).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenThrow(ex);
 		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
-		
+
 	}
-	
-	@Test(expected=DemographicStatusUpdationException.class)
+
+	@Test(expected = DemographicStatusUpdationException.class)
 	public void callUpdateStatusRestService1Test() {
-		
-		MainResponseDTO<String> preRegResponse= new MainResponseDTO<>();
+
+		MainResponseDTO<String> preRegResponse = new MainResponseDTO<>();
 		preRegResponse.setResponse(null);
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
-		List<ExceptionJSONInfoDTO> errList=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> errList = new ArrayList<>();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
 		errList.add(err);
@@ -330,16 +371,16 @@ public class BookingServiceUtilTest {
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		ResponseEntity<MainResponseDTO<String>> resp2 = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {}),Mockito.anyMap())).thenReturn(resp2);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<String>>() {
+				}), Mockito.anyMap())).thenReturn(resp2);
 		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
-		
+
 	}
 
-	
 	@SuppressWarnings("unchecked")
-	@Test(expected=BookingDataNotFoundException.class)
+	@Test(expected = BookingDataNotFoundException.class)
 	public void callGetStatusRestServiceforCancelTest() {
-		
+
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 		PreRegistartionStatusDTO preRegistartionStatusDTO = new PreRegistartionStatusDTO();
 		@SuppressWarnings("rawtypes")
@@ -350,75 +391,78 @@ public class BookingServiceUtilTest {
 
 		preRegResponse.setResponse(preRegistartionStatusDTO);
 		preRegResponse.setErrors(null);
-		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());		
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
-		
+
 	}
-	
-	@Test(expected=DemographicGetStatusException.class)
+
+	@Test(expected = DemographicGetStatusException.class)
 	public void demographicGetStatusExceptionTest() {
-		RestClientException ex =new RestClientException(null);
+		RestClientException ex = new RestClientException(null);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenThrow(ex);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
-		
+
 	}
-	
-	@Test(expected=DemographicGetStatusException.class)
+
+	@Test(expected = DemographicGetStatusException.class)
 	public void callGetStatusRestServiceforCancel1Test() {
-		
+
 		@SuppressWarnings("rawtypes")
 		MainResponseDTO preRegResponse = new MainResponseDTO();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		List<ExceptionJSONInfoDTO> list=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> list = new ArrayList<>();
 		list.add(err);
 		preRegResponse.setErrors(list);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusForCancelRestService("23587986034785");
-		
+
 	}
-	
-	@Test(expected=DemographicGetStatusException.class)
+
+	@Test(expected = DemographicGetStatusException.class)
 	public void callGetStatusRestServiceTest() {
-		
+
 		@SuppressWarnings("rawtypes")
 		MainResponseDTO preRegResponse = new MainResponseDTO();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		List<ExceptionJSONInfoDTO> list=new ArrayList<>();
+		List<ExceptionJSONInfoDTO> list = new ArrayList<>();
 		list.add(err);
 		preRegResponse.setErrors(list);
 		preRegResponse.setResponsetime(serviceUtil.getCurrentResponseTime());
 		@SuppressWarnings("unchecked")
-		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<PreRegistartionStatusDTO>> res = new ResponseEntity<>(preRegResponse,
+				HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenReturn(res);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenReturn(res);
 		serviceUtil.callGetStatusRestService("23587986034785");
-		
+
 	}
-	
-	@Test(expected=DemographicGetStatusException.class)
+
+	@Test(expected = DemographicGetStatusException.class)
 	public void callGetStatusRestService1Test() {
-		RestClientException ex =new RestClientException(null);
+		RestClientException ex = new RestClientException(null);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {}),Mockito.anyMap())).thenThrow(ex);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<PreRegistartionStatusDTO>>() {
+				}), Mockito.anyMap())).thenThrow(ex);
 		serviceUtil.callGetStatusRestService("23587986034785");
-		
+
 	}
-	
-	
 
 }
-
-
-

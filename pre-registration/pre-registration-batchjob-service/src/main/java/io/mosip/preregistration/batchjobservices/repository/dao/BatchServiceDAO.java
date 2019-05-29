@@ -210,10 +210,13 @@ public class BatchServiceDAO {
 		} 
 	}
 	/** Deleting document details the consumed demographic data. */
-	public void deleteDocument(DocumentEntity documentEntity) {
+	public void deleteDocument(List<DocumentEntity> documentEntity) {
 		try {
-			documentRespository.delete(documentEntity);
-			log.info("sessionId", "idType", "id", "In deleteDocument to delete consumed demographic details");
+			documentEntity.forEach(iterate ->{
+				documentRespository.delete(iterate);
+				log.info("sessionId", "idType", "id", "In deleteDocument to delete consumed demographic details");
+			});
+			
 		} catch (Exception e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
 					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());
@@ -235,11 +238,12 @@ public class BatchServiceDAO {
 	 * @param preregId
 	 * @return DocumentEntity for given prereId
 	 */
-	public DocumentEntity getDocumentDetails(String preregId) {
+	public List<DocumentEntity> getDocumentDetails(String preregId) {
+		List<DocumentEntity> documentList=null;
 		try {
-			DocumentEntity documentEntity=documentRespository.findBypreregId(preregId);
+			documentList=documentRespository.findBypreregId(preregId);
 			log.info("sessionId", "idType", "id", "In getDocumentDetails to get document details");
-			return documentEntity;
+			return documentList;
 		} catch (Exception e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_007.getCode(),
 					ErrorMessages.DOCUMENT_TABLE_NOT_ACCESSIBLE.getMessage());

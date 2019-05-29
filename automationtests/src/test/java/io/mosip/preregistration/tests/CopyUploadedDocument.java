@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
@@ -363,3 +364,4 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	}
 
 }
+

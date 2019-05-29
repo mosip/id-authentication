@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -55,14 +53,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
-
-	/** The env. */
-	@Autowired
-	private Environment env;
-	
-	/** The MatchInputBuilder. */
-	@Autowired
-	private IdRepoManager idRepo;
 
 	/** The IdInfoHelper. */
 	@Autowired

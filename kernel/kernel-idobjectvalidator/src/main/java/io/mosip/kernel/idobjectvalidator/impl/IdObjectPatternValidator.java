@@ -123,9 +123,9 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 				.addOptions(
 						Option.SUPPRESS_EXCEPTIONS, 
 						Option.AS_PATH_LIST));
-		if (!pattern.matcher(
-				jsonPath.read(identity, Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS)))
-				.matches()) {
+		CharSequence data = jsonPath.read(identity,
+				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
+		if (Objects.nonNull(data) && !pattern.matcher(data).matches()) {
 			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getMessage(),
 							convertToPath(String.valueOf(pathList.get(0))))));
