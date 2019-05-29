@@ -5,12 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -25,6 +28,9 @@ import com.google.gson.GsonBuilder;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -33,17 +39,17 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
-import io.mosip.registration.processor.packet.service.dto.RegSyncResponseDTO;
-import io.mosip.registration.processor.packet.service.dto.RegistrationSyncRequestDTO;
-import io.mosip.registration.processor.packet.service.dto.SyncRegistrationDTO;
-import io.mosip.registration.processor.packet.service.dto.SyncResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.util.encryptor.EncryptorUtil;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.code.SupervisorStatus;
+import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
+import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseDTO;
 
 /**
  * The Class SyncUploadEncryptionServiceImpl.
@@ -64,6 +70,13 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	@Autowired
 	EncryptorUtil encryptorUtil;
 
+	/** The center id length. */
+	@Value("${mosip.kernel.registrationcenterid.length}")
+	private int centerIdLength;
+
+	/** The center id length. */
+	@Value("${registration.processor.rid.machineidsubstring}")
+	private int machineIdLength;
 	/** The gson. */
 	Gson gson = new GsonBuilder().create();
 
@@ -102,7 +115,8 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 			encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
 
-			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType);
+			enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_ENCRYPTED, registartionId);
+		RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType, enryptedUinZipFile,creationTime);
 			if (regSyncResponseDTO != null) {
 
 				List<SyncResponseDto> synList = regSyncResponseDTO.getResponse();
@@ -115,7 +129,6 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			if ("success".equalsIgnoreCase(syncStatus)) {
 
 				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
-				enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_ENCRYPTED, registartionId);
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", new FileSystemResource(enryptedUinZipFile));
 				HttpHeaders headers = new HttpHeaders();
@@ -184,27 +197,56 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * @return the reg sync response DTO
 	 * @throws ApisResourceAccessException
 	 */
-	private RegSyncResponseDTO packetSync(String regId, String regType) throws ApisResourceAccessException {
+	private RegSyncResponseDTO packetSync(String regId, String regType, File enryptedUinZipFile, String creationTime)
+			throws ApisResourceAccessException, RegBaseCheckedException {
 		RegSyncResponseDTO regSyncResponseDTO = null;
+		InputStream inputStream;
+		try {
+			inputStream = new FileInputStream(enryptedUinZipFile);
+			byte[] isbytearray = IOUtils.toByteArray(inputStream);
+			 HMACUtils.update(isbytearray);
+			 String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
+			 List<SyncRegistrationDto> syncDtoList = new ArrayList<>();
+			 String response = null;
+			 RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
+			 registrationSyncRequestDTO.setId(env.getProperty(REG_SYNC_SERVICE_ID));
+			 registrationSyncRequestDTO.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
+			 registrationSyncRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+			 SyncRegistrationDto syncDto = new SyncRegistrationDto();
+			 syncDto.setLangCode("ENG");
+			 syncDto.setRegistrationId(regId);
+			 syncDto.setSyncType(regType);
+			 syncDto.setPacketHashValue(hashSequence);
+			 syncDto.setPacketSize(BigInteger.valueOf(enryptedUinZipFile.length()));
+			 syncDto.setSupervisorStatus(SupervisorStatus.APPROVED.toString());
+			 syncDto.setSupervisorComment(SYNCSTATUSCOMMENT);
+			 syncDtoList.add(syncDto);
+			 registrationSyncRequestDTO.setRequest(syncDtoList);
+			 String requestObject = encryptorUtil.encrypt(
+			 		JsonUtils.javaObjectToJsonString(registrationSyncRequestDTO).getBytes(), regId, creationTime);
+			 String centerId = regId.substring(0, centerIdLength);
+			 String machineId = regId.substring(centerIdLength, centerIdLength + machineIdLength);
+			 String refId = centerId + "_" + machineId;
+			 LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+			 headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+			 headers.add("Center-Machine-RefId", refId);
+			 headers.add("timestamp", creationTime);
+			 HttpEntity<Object> requestEntity = new HttpEntity<Object>(requestObject, headers);
+			 response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", requestEntity, String.class);
+			 regSyncResponseDTO = gson.fromJson(response, RegSyncResponseDTO.class);
+			 } catch (FileNotFoundException e) {
+			 regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			 		regId,
+			 		PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT.getMessage() + ExceptionUtils.getStackTrace(e));
+			 throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_FILE_NOT_PRESENT, e);
 
-		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
-		String response = null;
-		RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
-		registrationSyncRequestDTO.setId(env.getProperty(REG_SYNC_SERVICE_ID));
-		registrationSyncRequestDTO.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
-		registrationSyncRequestDTO
-				.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-		SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-		syncDto.setLangCode("ENG");
-		syncDto.setStatusComment(SYNCSTATUSCOMMENT);
-		syncDto.setRegistrationId(regId);
-		syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
-		syncDto.setSyncType(regType);
-		syncDtoList.add(syncDto);
-		registrationSyncRequestDTO.setRequest(syncDtoList);
-		response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", registrationSyncRequestDTO,
-				String.class);
-		regSyncResponseDTO = gson.fromJson(response, RegSyncResponseDTO.class);
+			 } catch (IOException e) {
+			 regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			 		regId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+			 throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE, e);
+			 } catch (InvalidKeySpecException e) { e.printStackTrace(); } 
+			   catch (NoSuchAlgorithmException e) {e.printStackTrace(); } 
+			   catch (JsonProcessingException e) { e.printStackTrace(); }
 
 		return regSyncResponseDTO;
 	}

@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +118,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
 						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
 				packetZipBytes = packetCreationService.create(registrationDTO);
-				String creationTime = packetCreationService.getCreationTime();
+				String rid = registrationDTO.getRegistrationId();
+				String packetCreatedDateTime = rid.substring(rid.length() - 14);
+				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+				LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")); 
+				//String creationTime = packetCreationService.getCreationTime();
+				String creationTime = ldt.toString()+".000Z";
 
 				filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
 						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);
@@ -140,7 +147,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if ((registrationType!=null && registrationType.isEmpty()) && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+		if ((registrationType!=null || registrationType.isEmpty()) && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
 				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {

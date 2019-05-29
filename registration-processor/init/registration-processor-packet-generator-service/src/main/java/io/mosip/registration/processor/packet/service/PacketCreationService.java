@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.packet.service;
 
+import java.text.ParseException;
+
 import io.mosip.registration.processor.packet.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 
@@ -18,8 +20,9 @@ public interface PacketCreationService {
 	 * @param registrationDTO
 	 *            the enrollment data for which packet has to be created
 	 * @throws RegBaseCheckedException
+	 * @throws ParseException 
 	 */
-	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
+	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException, ParseException;
 
 	String getCreationTime();
 }

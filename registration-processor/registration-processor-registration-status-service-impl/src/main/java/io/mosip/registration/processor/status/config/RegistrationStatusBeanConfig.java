@@ -50,7 +50,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
 public class RegistrationStatusBeanConfig {
 
 
-	@Bean
+	/*@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env)
 			throws IOException, java.io.IOException {
 
@@ -75,7 +75,7 @@ public class RegistrationStatusBeanConfig {
 	public List<String> getAppNames(Environment env) {
 		String names = env.getProperty("spring.application.name");
 		return Stream.of(names.split(",")).collect(Collectors.toList());
-	}
+	}*/
 
 	@Bean
 	public RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> getRegistrationStatusService() {

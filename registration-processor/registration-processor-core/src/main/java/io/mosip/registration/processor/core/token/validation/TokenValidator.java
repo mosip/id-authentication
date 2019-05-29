@@ -129,6 +129,11 @@ public class TokenValidator {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
+		}else if (url.contains("packetgenerator")) {
+			for (String assignedRole : APIAuthorityList.PACKETGENERATOR.getList()) {
+				if (role.contains(assignedRole))
+					return true;
+			}
 		}
 		return false;
 	}
