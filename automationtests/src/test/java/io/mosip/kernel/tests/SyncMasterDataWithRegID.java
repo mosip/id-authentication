@@ -60,7 +60,6 @@ public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 	private String requestKeyFile = "SyncMasterDataWithRegIDInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
 
@@ -76,17 +75,9 @@ public class SyncMasterDataWithRegID extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncMasterDataWithRegID")
 	public Object[][] readData1(ITestContext context) throws Exception { 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+	
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException

@@ -60,7 +60,6 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	private final String FetchLocationHierarchy_URI_withlangCode = props.get("FetchLocationHierarchy_URI_withlangCode").toString();
 	private final String FetchLocationHierarchy_URI_locationcode = props.get("FetchLocationHierarchy_URI_locationcode").toString();
 	private final String FetchLocationHierarchy_URI_hierarchyname = props.get("FetchLocationHierarchy_URI_hierarchyname").toString();
-
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
@@ -96,17 +95,8 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case

@@ -27,11 +27,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -65,7 +64,6 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
-	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -78,17 +76,8 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetRegCenterByIDTimestamp")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -115,27 +104,8 @@ public class GetRegCenterByIDTimestamp extends BaseTestCase implements ITest{
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-    	  
-    	  if(testCaseName.contains("Kernel_GetRegCenterByID_timestamp_smoke"))
-    	  {
-
-    		    /*String id= (actualRequest.get("id").toString());
-
-	            String queryStr = "SELECT master.registration_center.* FROM master.registration_center WHERE id='"+id+"'";
-				boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");*/
-
-			if(status)
-					{
-						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-					}
-    	  }else	            
-				finalStatus = "Pass";
-			}	
-		
+					finalStatus ="Pass";
+				}
 		else {
 			finalStatus="Fail";
 			logger.error(res);

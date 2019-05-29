@@ -88,7 +88,6 @@ public class FetchApplication extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIndividual();
-
 	}
 
 	/**
@@ -100,18 +99,8 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+				return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
-
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 

@@ -17,7 +17,7 @@
 
 				<test name="Kernel Tests">
 						 <classes>
-                          
+                          <class name="io.mosip.kernel.tests.AuditLog" />
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                             <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -61,21 +61,19 @@
                            <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />    
                            <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />                                                                                                                                                                                                                                                                                                                                      
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
-                           <class name="io.mosip.kernel.tests.TokenIdGenerator" />
+                           <!-- <class name="io.mosip.kernel.tests.TokenIdGenerator" /> -->
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" /> 
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" />  
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />                       
-
-               
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" /> 
                  </classes>
 				</test>  
 
  
 
 
-		<test name="PreReg Tests">
+		<!-- <test name="PreReg Tests">
 		<classes>
 		<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			 <class name="io.mosip.preregistration.tests.Audit" />
@@ -142,14 +140,14 @@
 			<class name="io.mosip.registrationProcessor.tests.PacketStatus" />
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
-	<!-- 		<class name="io.mosip.registrationProcessor.tests.StageValidationTests" 
+			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" 
 				/> <class name="io.mosip.registrationProcessor.tests.PacketGenerator" /> 
-				<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" /> -->
+				<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
 			<class name="io.mosip.registrationProcessor.tests.Assignment" />
 			<class name="io.mosip.registrationProcessor.tests.Decision" />
 
 		</classes>
-	</test> 
+	</test>  -->
  
 </suite>
 	

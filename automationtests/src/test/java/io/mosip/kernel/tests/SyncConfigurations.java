@@ -75,22 +75,14 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncConfigurations")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+				return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * syncConfigurations
 	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin send
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -136,9 +128,8 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/	
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

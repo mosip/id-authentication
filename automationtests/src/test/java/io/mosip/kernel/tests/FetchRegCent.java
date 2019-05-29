@@ -63,7 +63,6 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	private final String FetchRegCent_loc_lang_URI = props.get("FetchRegCent_loc_lang_URI").toString();
 	private final String FetchRegCent_hir_name_lang_URI = props.get("FetchRegCent_hir_name_lang_URI").toString();
 	private final String FetchRegCent_prox_lang_URI = props.get("FetchRegCent_prox_lang_URI").toString();
-	
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
@@ -99,17 +98,8 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+				return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case

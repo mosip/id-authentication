@@ -60,7 +60,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	private String requestKeyFile = "otpGenerateInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String OTPGeneration = props.get("OTPGeneration");
 	private final String OTPValidation = props.get("OTPValidation");
@@ -79,16 +78,8 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "otpGenerate")
 	public Object[][] readData1(ITestContext context) throws Exception { 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException

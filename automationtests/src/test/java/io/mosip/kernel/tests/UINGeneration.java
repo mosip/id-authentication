@@ -70,14 +70,8 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINValidator")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+		
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 	}
 	
 	

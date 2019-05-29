@@ -60,7 +60,6 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	private String requestKeyFile = "GetRegistrationCenterDeviceHistoryInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 
@@ -76,17 +75,8 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetRegistrationCenterDeviceHistory")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
-	}
-	
-	
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
+		}	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -101,7 +91,6 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
     {				
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestPathPara(fetchRegistrationCenterDeviceHistory, actualRequest,cookie);
@@ -120,8 +109,6 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -129,8 +116,8 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 }
 		@SuppressWarnings("static-access")
 		@Override

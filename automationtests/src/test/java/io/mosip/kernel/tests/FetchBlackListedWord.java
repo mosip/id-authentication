@@ -58,7 +58,6 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	private final String outputJsonName = "fetchBlackListedWordOutput";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String FetchBlackListedWord_URI = props.get("FetchBlackListedWord_URI").toString();
-
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
@@ -95,18 +94,8 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
-
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 

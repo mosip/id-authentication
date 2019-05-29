@@ -77,17 +77,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetListOfRoles")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -118,7 +109,6 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
 		
@@ -134,8 +124,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

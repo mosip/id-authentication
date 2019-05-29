@@ -55,11 +55,10 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String fetchIncrementalData =props.get("fetchIncrementalData");
 	private String folderPath = "kernel/AdminSyncIncrementalData";
-	private String outputFile = "SNCMasterdataControllerOutput.json";
+	private String outputFile = "AdminSyncIncrementalDataOutput.json";
 	private String requestKeyFile = "AdminSyncIncrementalDataInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
 
@@ -74,16 +73,9 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncIncrementalData")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException
@@ -153,7 +145,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDatarOutput.json.json";
+			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDatarOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
 				logger.info("Successfully updated Results to AdminSyncIncrementalDataOutput.json file.......................!!");

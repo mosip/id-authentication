@@ -61,7 +61,6 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	private AssertKernel assertKernel = new AssertKernel();
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	public KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
@@ -77,17 +76,8 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	//Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDeviceHistory")
 	public Object[][] readData1(ITestContext context) throws Exception {	 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
-	}
-	
-	
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
+		}	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -100,43 +90,34 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	@Test(dataProvider="GetDeviceHistory")
 	public void getDeviceHistory(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		/*
-		 * Calling GET method with path parameters
-		 */
+		// Calling GET method with path parameters
 		Response res=applicationLibrary.getRequestPathPara(fetchDeviceHistory, actualRequest,cookie);
 		
-		/*
-		 *  Removing of unstable attributes from response
-		 */
-		
+		//  Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		listOfElementToRemove.add("timestamp");
 		String effectDateTime = res.jsonPath().get("response.deviceHistoryDetails[0].effectDateTime");
-		listOfElementToRemove.add(effectDateTime);
-		/*
-		 * Comparing expected and actual response
-		 */
+		((JSONObject)((JSONArray)((JSONObject)Expectedresponse.get("response")).get("deviceHistoryDetails")).get(0)).put("effectDateTime", effectDateTime).toString();
+		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-    	  if(testCaseName.equals("smoke_1"))
+    	  if(testCaseName.equals("Kernel_GetDeviceHistory_smoke_1"))
     	  {
-
-    		/*String id = actualRequest.get("id").toString();
-	        String queryStr = "SELECT h.* FROM master.device_master_h h WHERE h.id='"+id+"'";
-	        boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");   */
-	        if(status) {
+    		String id = actualRequest.get("id").toString();
+	        String queryStr = "SELECT count(*) FROM master.device_master_h h WHERE h.id='"+id+"'";
+	        long count = kernelDB.validateDBCount(queryStr,"masterdata");   
+	        if(count==1) {
 	        	finalStatus = "Pass";
-	        }else
+	        }else {
 	        	finalStatus="Fail";
-	              
+	        	logger.info("Device History is not equal to 1");
+	        }
     	  }else
 				finalStatus = "Pass";
-				
       }
 		else {
 			finalStatus="Fail";
@@ -149,8 +130,8 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 }
 		@SuppressWarnings("static-access")
 		@Override

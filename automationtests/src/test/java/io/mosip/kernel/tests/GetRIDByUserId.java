@@ -31,7 +31,6 @@ import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -59,7 +58,6 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
-	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -72,16 +70,8 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetRIDByUserId")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+					return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -107,28 +97,8 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-    	  
-    	  if(testCaseName.contains("smoke"))
-    	  {
-    		 /* String locationcode= (actualRequest.get("locationcode").toString());
-    		  String langCode=actualRequest.get("langcode").toString();
-	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
-					boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");
-	            */
-			if(status)
-
-					{
 						finalStatus ="Pass";
-					}
-					else
-					{
-		 				finalStatus ="Fail";
-						
-					}
-    	  }else
-				finalStatus = "Pass";
-			}	
-		
+      }
 		else {
 			finalStatus="Fail";
 			logger.error(res);

@@ -44,7 +44,7 @@ public class KernelDataBaseAccess {
 	@SuppressWarnings("unchecked")
 	public List<String> getDbData(String queryString, String dbName) {
 
-		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+		return  getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 
 	}
 	@SuppressWarnings("unchecked")

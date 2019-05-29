@@ -61,7 +61,6 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	private String requestKeyFile = "GetusersBasedOnRegCenterInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 
@@ -69,7 +68,6 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
 		 cookie=auth.getAuthForRegistrationOfficer();
 	} 
@@ -77,14 +75,7 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetusersBasedOnRegCenter")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 	}
 	
 	
@@ -140,8 +131,8 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

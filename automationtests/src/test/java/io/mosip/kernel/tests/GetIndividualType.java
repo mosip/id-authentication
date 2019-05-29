@@ -74,16 +74,8 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetIndividualType")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -116,8 +108,6 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
