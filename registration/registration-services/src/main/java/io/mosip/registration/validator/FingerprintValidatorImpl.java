@@ -22,7 +22,6 @@ import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 
 /**
@@ -39,10 +38,6 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 
 	@Autowired
 	private BioApiImpl bioApiImpl;
-	
-	@Autowired
-	private BioService bioService;
-	
 
 	/**
 	 * Instance of LOGGER
@@ -84,13 +79,13 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	private boolean validateFpWithBioApi(FingerprintDetailsDTO capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
 		boolean flag = false;
-		BIRType[] registeredBir = null;
+		BIRType[] registeredBir = new BIRType[userFingerprintDetails.size()];
 		BIRType capturedBir = new BIRType();
 		capturedBir.setBDB(capturedFingerPrintDto.getFingerPrintISOImage());
+		int i = 0;
 		for (UserBiometric userBiometric : userFingerprintDetails) {
-			int i = 0;
-			registeredBir = new BIRType[userFingerprintDetails.size()];
-			registeredBir[i].setBDB(userBiometric.getBioIsoImage());
+			registeredBir[i]=new BIRType();
+			registeredBir[i].setBDB(userBiometric.getBioMinutia().getBytes());
 			i++;
 		}
 
@@ -98,7 +93,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		int fingerPrintScore = Integer
 				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGER_PRINT_SCORE)));
 		for (Score score : scores) {
-			if (score.getScaleScore() > fingerPrintScore) {
+			if (score.getInternalScore() > fingerPrintScore) {
 				flag = true;
 			}
 		}
@@ -110,13 +105,13 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 * Validate all the user input finger details with all the finger details
 	 * form the DB.
 	 * 
-	 * @param fingerprintDetailsDTOs
+	 * @param capturedFingerPrintDetails
 	 * @return
 	 */
-	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+	private boolean validateManyToManyFP(List<FingerprintDetailsDTO> capturedFingerPrintDetails) {
 		Boolean isMatchFound = false;
-		for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-			isMatchFound = bioService.validateFP(fingerprintDetailsDTO,
+		for (FingerprintDetailsDTO fingerprintDetailsDTO : capturedFingerPrintDetails) {
+			isMatchFound = validateFpWithBioApi(fingerprintDetailsDTO,
 					userDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
 			if (isMatchFound) {
 				SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);

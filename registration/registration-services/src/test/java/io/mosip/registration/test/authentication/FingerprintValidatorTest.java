@@ -32,6 +32,7 @@ public class FingerprintValidatorTest {
 	@InjectMocks
 	FingerprintValidatorImpl fingerprintValidator;
 
+	@Mock
 	private UserDetailDAO userDetailDAO;
 	
 	@Mock

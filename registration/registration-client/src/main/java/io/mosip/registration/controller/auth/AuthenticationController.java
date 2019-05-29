@@ -28,9 +28,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
-import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -144,12 +142,6 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private BaseController baseController;
-
-	@Autowired
-	private IrisFacade irisFacade;
-
-	@Autowired
-	private FaceFacade faceFacade;
 
 	@Autowired
 	private BioService bioService;
