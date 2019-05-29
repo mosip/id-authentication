@@ -1,1 +1,1 @@
-{"transactionID":"3484420323","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - individualIdType","actionMessage":"$IGNORE$"}],"responseTime":"$IGNORE$","response":{"kycStatus":false}}
+{"transactionID":"8166428617","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - individualIdType","actionMessage":"$IGNORE$"}],"responseTime":"$IGNORE$","response":{"kycStatus":false}}

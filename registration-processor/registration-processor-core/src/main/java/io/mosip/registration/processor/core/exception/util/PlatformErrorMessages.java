@@ -315,6 +315,10 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"),
 
+	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007",
+			"BioType exception while fetcing data from cbeff file from kernel"),
+
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
@@ -367,8 +371,21 @@ public enum PlatformErrorMessages {
 
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
-	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"), REVERSE_DATA_SYNC_SUCCESS("",
+	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"), 
+	
+	REVERSE_DATA_SYNC_SUCCESS("",
 			"Reverse data sync success"),
+
+	/** The Biometric-Authentication stage failed. */
+	//stages - Biometric-Authentication stage error code and message
+	BIOMETRIC_AUTHENTICATION_FAILED(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE,"Biometric authentication failed"),
+
+	/** The Biometric-Authentication io exception. */
+	BIOMETRIC_AUTHENTICATION_IOEXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "001","IO Exception in Biometric Authentication stage"),
+
+	/** The Biometric-Authentication api resource exception. */
+	BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "002","API resource exception in Biometric Authentication stage"),
+
 
 	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message

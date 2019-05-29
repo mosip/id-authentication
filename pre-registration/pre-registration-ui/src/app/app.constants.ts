@@ -1,7 +1,3 @@
-// export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
-// export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-// export const COUNTRY_NAME = 'Morocco';
-// export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const METADATA = 'documentsMetaData';
@@ -10,10 +6,6 @@ export const NESTED_ERROR = 'errors';
 export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
 export const APPENDER = '/';
-
-// export const YEAR_PATTERN = '(\\d{4})';
-// export const MONTH_PATTERN = '([0]\\d|1[0-2])';
-// export const DATE_PATTERN = '([0-2]\\d|3[01])';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
@@ -77,7 +69,8 @@ export const PARAMS_KEYS = {
 
 export const ERROR_CODES = {
   noApplicantEnrolled: 'PRG_PAM_APP_005',
-  userBlocked: 'PRG_PAM_LGN_013'
+  userBlocked: 'PRG_PAM_LGN_013',
+  invalidPin: 'KER-IOV-004'
 };
 
 export const CONFIG_KEYS = {

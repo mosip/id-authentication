@@ -58,7 +58,6 @@ export class CenterSelectionComponent implements OnInit {
     this.selectedCentre = null;
     this.dataService.getLocationTypeData().subscribe(response => {
       this.locationTypes = response['response']['locations'];
-      console.log(this.locationTypes);
     });
     this.users = this.service.getNameList();
     this.getRecommendedCenters();
@@ -84,7 +83,6 @@ export class CenterSelectionComponent implements OnInit {
         pincodes
       )
       .subscribe(response => {
-        console.log(response);
         if (!response['errors']) this.displayResults(response['response']);
       });
   }
@@ -99,9 +97,6 @@ export class CenterSelectionComponent implements OnInit {
     } else {
       this.displayMessage = '';
     }
-    // if(REGISTRATION_CENTRES.length === 0){
-    //   this.displayMessage = `No results found`;
-    // }
   }
   setStep(index: number) {
     this.step = index;
@@ -117,7 +112,6 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   showResults() {
-    console.log(this.locationType, this.searchText);
     this.REGISTRATION_CENTRES = [];
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
@@ -125,7 +119,6 @@ export class CenterSelectionComponent implements OnInit {
         .getRegistrationCentersByName(this.locationType.locationHierarchylevel, this.searchText)
         .subscribe(
           response => {
-            console.log(response);
             if (!response['errors']) {
               this.displayResults(response['response']);
             } else {
@@ -149,22 +142,19 @@ export class CenterSelectionComponent implements OnInit {
   selectedRow(row) {
     this.selectedCentre = row;
     this.enableNextButton = true;
-    console.log('row', row);
+
     if (Object.keys(this.selectedCentre).length !== 0) {
       this.plotOnMap();
     }
   }
 
   getLocation() {
-    //  this.dataSource.data = [];
     this.REGISTRATION_CENTRES = [];
     if (navigator.geolocation) {
       this.showMap = false;
       navigator.geolocation.getCurrentPosition(position => {
-        console.log(position);
         this.dataService.getNearbyRegistrationCenters(position.coords).subscribe(
           response => {
-            console.log(response);
             if (response['errors'].length === 0 && response['response']['registrationCenters'].length !== 0) {
               this.displayResults(response['response']);
             } else {
@@ -178,7 +168,6 @@ export class CenterSelectionComponent implements OnInit {
         );
       });
     } else {
-      // alert('Location not suppored in this browser');
     }
   }
 
@@ -214,7 +203,6 @@ export class CenterSelectionComponent implements OnInit {
     this.users.forEach(user => {
       this.service.updateRegistrationCenterData(user.preRegId, this.selectedCentre);
     });
-    console.log(this.users);
     this.router.navigate(['../pick-time'], { relativeTo: this.route });
   }
 

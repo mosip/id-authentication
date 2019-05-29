@@ -1,1 +1,1 @@
-{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2381861355","id":"mosip.identity.auth"}
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-001","errorMessage":"Request to be received at MOSIP within 30 minutes"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"5518823817","id":"mosip.identity.auth"}

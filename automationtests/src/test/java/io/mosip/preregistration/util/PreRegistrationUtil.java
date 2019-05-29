@@ -45,7 +45,7 @@ public class PreRegistrationUtil
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	Properties propConfig = new Properties();
 	Properties propresorceURL = new Properties();
-	String configPath="src/test/resources/";
+	String configPath="src/test/resources";
 	
 	String yourActualJSONString = null;
 	ObjectNode newJson = null;
