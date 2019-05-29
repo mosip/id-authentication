@@ -11,6 +11,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -133,8 +134,8 @@ public class AuthRequestController {
 	@PostMapping(path = "/createAuthRequest",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	public String createAuthRequest(@RequestParam(name=ID,required=true) @Nullable String id, 
 			@RequestParam(name=ID_TYPE,required=false) @Nullable String idType,
-			@RequestParam(name="isKyc",required=false) @Nullable Boolean isKyc,
-			@RequestParam(name="isInternal",required=false) @Nullable Boolean isInternal,
+			@RequestParam(name="isKyc",required=false) @Nullable boolean isKyc,
+			@RequestParam(name="isInternal",required=false) @Nullable boolean isInternal,
 			@RequestParam(name="Authtype",required=false) @Nullable String reqAuth,
 			@RequestParam(name="transactionId",required=false) @Nullable String transactionId,
 			  @RequestBody Map<String,Object> request) throws KeyManagementException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException, IdAuthenticationAppException, IdAuthenticationBusinessException {
@@ -143,7 +144,8 @@ public class AuthRequestController {
 		String utcCurrentDateTimeString = DateUtils.getUTCCurrentDateTimeString(environment.getProperty("datetime.pattern"));
 
 		idValuesMap(id, idType, isKyc, isInternal, reqValues, transactionId, utcCurrentDateTimeString);
-		encryptValuesMap(request, reqValues, utcCurrentDateTimeString, isInternal);
+		applyRecursively(request, TIMESTAMP,utcCurrentDateTimeString);
+		encryptValuesMap(request, reqValues, isInternal);
 		reqValues.put(OTP,false);
 		 reqValues.put(DEMO,false);
 		 reqValues.put(BIO,false);
@@ -227,12 +229,11 @@ public class AuthRequestController {
 
 
 
-	private void encryptValuesMap(Map<String, Object> identity, Map<String, Object> reqValues, String utcCurrentDateTimeString, Boolean isInternal)
+	private void encryptValuesMap(Map<String, Object> identity, Map<String, Object> reqValues, Boolean isInternal)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException {
 		EncryptionRequestDto encryptionRequestDto=new EncryptionRequestDto();
-		applyTimeStamp(identity, utcCurrentDateTimeString);
 		encryptionRequestDto.setIdentityRequest(identity);
 		EncryptionResponseDto encryptionResponse=encrypt.encrypt(encryptionRequestDto, isInternal);
 		reqValues.put("encHmac", encryptionResponse.getRequestHMAC());
@@ -241,21 +242,26 @@ public class AuthRequestController {
 	}
 
 
-	private void applyTimeStamp(Map<String, Object> map, String utcCurrentDateTimeString) {
-		if(map.containsKey("timestamp")) {
-			map.put("timestamp", utcCurrentDateTimeString);
-		}
-		
-		for(Object val : map.values()) {
-			if(val instanceof Map) {
-				Map<String, Object> valMap = (Map<String, Object>) val;
-				applyTimeStamp(valMap, utcCurrentDateTimeString);
+	@SuppressWarnings("unchecked")
+	private void applyRecursively(Object obj, String key, String value) {
+		if (obj instanceof Map) {
+			Map<String, Object> map = (Map<String, Object>) obj;
+			if (map.containsKey(key)) {
+				map.put(key, value);
+			}
+
+			for (Object val : map.values()) {
+				applyRecursively(val, key, value);
+			}
+		} else if (obj instanceof List) {
+			List<?> list = (List<?>) obj;
+			for (Object object : list) {
+				applyRecursively(object,key, value);
 			}
 		}
-		
 	}
 
-	private void idValuesMap(String id, String idType, Boolean isKyc, Boolean isInternal, Map<String, Object> reqValues,
+	private void idValuesMap(String id, String idType, boolean isKyc, boolean isInternal, Map<String, Object> reqValues,
 			String transactionId, String utcCurrentDateTimeString) {
 		reqValues.put(ID, id);
 		if (null != idType) {
@@ -263,7 +269,7 @@ public class AuthRequestController {
 		} else {
 			reqValues.put(ID_TYPE, UIN);
 		}
-		if (isKyc != null && isKyc) {
+		if (isKyc) {
 			reqValues.put(AUTH_TYPE, "kyc");
 			reqValues.put(SECONDARY_LANG_CODE, environment.getProperty("mosip.secondary-language"));
 			
