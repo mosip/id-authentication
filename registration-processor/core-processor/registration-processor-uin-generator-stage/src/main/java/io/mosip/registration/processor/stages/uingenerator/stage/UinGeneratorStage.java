@@ -311,12 +311,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",
 						"is :" + idResponseDTO.toString());
 			} else {
-				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
+				if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type().toString())) {
 					idResponseDTO = reActivateUin(registrationId, uinFieldCheck, object);
-				} else if ((RegistrationType.DEACTIVATED.toString()).equalsIgnoreCase(object.getReg_type())) {
+				} else if ((RegistrationType.DEACTIVATED.toString()).equalsIgnoreCase(object.getReg_type().toString())) {
 					idResponseDTO = deactivateUin(registrationId, uinFieldCheck, object);
-				}else if(RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type())
-						|| (RegistrationType.RESUPDATE.toString().equalsIgnoreCase(object.getReg_type()))) {
+				}else if(RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type().toString())
+						|| (RegistrationType.RES_UPDATE.toString().equalsIgnoreCase(object.getReg_type().toString()))) {
 					idResponseDTO = uinUpdate(registrationId, uinFieldCheck, object);
 				}
 			}

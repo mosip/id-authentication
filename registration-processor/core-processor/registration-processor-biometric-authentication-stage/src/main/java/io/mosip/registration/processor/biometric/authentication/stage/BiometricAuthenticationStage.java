@@ -100,7 +100,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 					 applicantType = "CHILD";
 			}
 			if ((registartionType.equalsIgnoreCase(RegistrationType.UPDATE.name())
-					|| registartionType.equalsIgnoreCase(RegistrationType.RESUPDATE.name()))
+					|| registartionType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name()))
 					&& applicantType.equalsIgnoreCase(ADULT)) {
 				
 				JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
@@ -150,17 +150,6 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 			description = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
-		} catch (RegistrationProcessorCheckedException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getMessage());
-			object.setIsValid(false);
-			object.setInternalError(true);
-			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.REGISTRATIONPROCESSORCHECKEDEXCEPTION));
-			code = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getCode();
-			description = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getMessage();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code, registrationId,
-					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION.getMessage());
@@ -204,7 +193,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 	}
 
 	private boolean checkIndividualAuthentication(String registrationId, List<FieldValue> metadata)
-			throws IOException, RegistrationProcessorCheckedException {
+			throws IOException {
 		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
 		String individualAuthentication = identityIterator.getFieldValue(metadata, INDIVIDUALAUTHENTICATION);
 		if (individualAuthentication == null || individualAuthentication.isEmpty())

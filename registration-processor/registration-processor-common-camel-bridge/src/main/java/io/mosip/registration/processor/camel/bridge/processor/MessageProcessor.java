@@ -7,6 +7,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.core.json.JsonObject;
 /**
@@ -35,7 +36,7 @@ public class MessageProcessor implements Processor {
 		messageDto.setIsValid(object.getBoolean("isValid"));
 		}
 		if(object.containsKey("reg_type")) {
-		messageDto.setReg_type(object.getString("reg_type"));
+		messageDto.setReg_type(RegistrationType.valueOf(object.getString("reg_type")));
 		}
 		if(object.containsKey("retryCount")) {
 		messageDto.setRetryCount(object.getInteger("retryCount"));
