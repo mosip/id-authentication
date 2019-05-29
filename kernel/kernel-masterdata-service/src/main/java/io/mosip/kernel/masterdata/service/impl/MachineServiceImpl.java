@@ -292,7 +292,7 @@ public class MachineServiceImpl implements MachineService {
 	@Override
 	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size,
 			String orderBy, String direction) {
-
+		PageDto<MachineRegistrationCenterDto> pageDto = new PageDto<>();
 		List<MachineRegistrationCenterDto> machineRegistrationCenterDtoList = null;
 		Page<Machine> pageEntity = null;
 
@@ -315,7 +315,8 @@ public class MachineServiceImpl implements MachineService {
 			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		PageDto<MachineRegistrationCenterDto> pageDto = new PageDto<>();
+		
+		//pageDto=MapperUtils.map(pageEntity,pageDto);
 		pageDto.setPageNo(pageEntity.getNumber());
 		pageDto.setPageSize(pageEntity.getSize());
 		pageDto.setSort(pageEntity.getSort());
