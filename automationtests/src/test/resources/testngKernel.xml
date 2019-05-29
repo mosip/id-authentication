@@ -58,8 +58,8 @@
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
                            <class name="io.mosip.kernel.tests.SyncIncrementalData" />
-                           <!-- <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />    
-                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" /> -->                                                                                                                                                                                                                                                                                                                                      
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />    
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />                                                                                                                                                                                                                                                                                                                                     
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.TokenIdGenerator" />
                            <class name="io.mosip.kernel.tests.UINGeneration" />

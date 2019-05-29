@@ -53,7 +53,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	private final String requestJsonName = "SyncMDataWithKeyIndexRequest";
 	private final String outputJsonName = "SyncMDataWithKeyIndexOutput";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String syncMdatawithKeyIndex = props.get("syncMdatawithRegCentIdKeyIndex").toString();
+	private final String syncMdatawithKeyIndex = props.get("syncMdatawithKeyIndex").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
