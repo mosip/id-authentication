@@ -275,6 +275,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				demographicIdentity.put("UIN", uinInLong);
 				idResponseDTO = sendIdRepoWithUin(registrationId, uinResponseDto.getResponse().getUin());
 				if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
+					generateVid(uinResponseDto.getResponse().getUin());
 					registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 
 					sendResponseToUinGenerator(uinResponseDto.getResponse().getUin(), UIN_ASSIGNED);
@@ -425,7 +426,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		try {
 			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
 					"", "", idRequestDTO, IdResponseDTO.class);
-			generateVid(uin);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API",
