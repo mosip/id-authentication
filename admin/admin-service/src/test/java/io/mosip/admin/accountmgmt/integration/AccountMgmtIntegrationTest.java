@@ -53,6 +53,8 @@ public class AccountMgmtIntegrationTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
+	
+	
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
 
@@ -75,7 +77,7 @@ public class AccountMgmtIntegrationTest {
 	
 	
 	@Test
-	pulic void getRegistrationCentrerUser() {
+	public void getRegistrationCentrerUser() {
 		
 	}
 	
