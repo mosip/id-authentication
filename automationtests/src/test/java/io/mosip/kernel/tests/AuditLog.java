@@ -31,10 +31,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
@@ -142,33 +140,17 @@ public class AuditLog extends BaseTestCase implements ITest {
 		}
 
 		logger.info("Expected Response:" + responseObject.toJSONString());
-
+		int statusCode = response.statusCode();
+		logger.info("Status Code is : " + statusCode);
+		
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
-
-			if (statusCode == 201) {
-				String id = (response.jsonPath().get("id")).toString();
-				logger.info("id is : " + id);
-				String queryStr = "SELECT count(*) FROM master.machine_spec WHERE id='" + id + "'";
-				long count = new KernelDataBaseAccess().validateDBCount(queryStr,"masterdata");
-				if (count==1) {
-					finalStatus = "Pass";
-				} else {
-					finalStatus = "Fail";
-				}
-
-			}
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
+		
+	
+			finalStatus = (status)? "Pass":"Fail";
 
 		object.put("status", finalStatus);
 
@@ -183,7 +165,6 @@ public class AuditLog extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

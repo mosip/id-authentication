@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -30,30 +32,31 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
+import com.google.common.io.BaseEncoding;
 
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
-public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
+public class UploadPublickey extends BaseTestCase implements ITest {
 
-	public SyncMDataWithKeyIndex() {
+	UploadPublickey() {
 		super();
 	}
 
-	// Declaration of all variables
-	private static Logger logger = Logger.getLogger(SyncMDataWithKeyIndex.class);
-	private final String jiraID = "MOS-8888";
+	private static Logger logger = Logger.getLogger(UploadPublickey.class);
+	private final String jiraID = "MOS-23713";
 	private final String moduleName = "kernel";
-	private final String apiName = "SyncMDataWithKeyIndex";
-	private final String requestJsonName = "SyncMDataWithKeyIndexRequest";
-	private final String outputJsonName = "SyncMDataWithKeyIndexOutput";
+	private final String apiName = "UploadPublickey";
+	private final String requestJsonName = "UploadPublickeyRequest";
+	private final String outputJsonName = "UploadPublickeyOutput";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String syncMdatawithKeyIndex = props.get("syncMdatawithKeyIndex").toString();
+	private final String uploadpublickey = props.get("uploadpublickey").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -75,11 +78,10 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
-		cookie=auth.getAuthForIndividual();
-
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
 	/**
@@ -91,9 +93,18 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		switch (testParam) {
+		case "smoke":
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
+
+		case "regression":
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
+		default:
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
 		}
+
+	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case
@@ -102,12 +113,12 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchApplication(String testcaseName, JSONObject object)
+	public void storePublicKeyInMachine(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
 		logger.info("Test Case Name:" + testcaseName);
+
 		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -123,8 +134,8 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 				object.put(key.toString(), "valid");
 		}
 
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-
+		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
+				+ "/" + testcaseName;
 		File folder = new File(configPath);
 		File[] listofFiles = folder.listFiles();
 		JSONObject objectData = null;
@@ -133,30 +144,38 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-
-					response = applicationLibrary.getRequestPathPara(syncMdatawithKeyIndex, objectData,cookie);
+				response = applicationLibrary.postRequest(objectData.toJSONString(), uploadpublickey,cookie);
 				
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
+			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
 		}
 
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
+		logger.info("Expected Response:" + responseObject.toJSONString());
 
-			// add parameters to remove in response before comparison like time stamp
-			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
-			listOfElementToRemove.add("responsetime");
-			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		
+		// add parameters to remove in response before comparison like time stamp
+		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
+		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
+		if (status && testcaseName.contains("smoke")) {
+			int statusCode = response.statusCode();
+			logger.info("Status Code is : " + statusCode);
+				String name = ((JSONObject)objectData.get("request")).get("machineName").toString();
+				String queryStr = "SELECT public_key, key_index FROM master.machine_master WHERE name ='" + name + "'";
+				List<Object[]> keys = new KernelDataBaseAccess().getArrayData(queryStr, "masterdata");
+				
+				String publicKeyFromRequest =((JSONObject)objectData.get("request")).get("publicKey").toString(); 
+				String publicKeyFromDB = BaseEncoding.base64().encode((byte[]) keys.get(0)[0]).replace('/', '_').replace('+', '-');
+				String keyIndexFromResponse = ((HashMap)response.jsonPath().get("response")).get("keyIndex").toString();
+				String keyIndexFromDB = keys.get(0)[1].toString();
+				
+				boolean validPubKey = publicKeyFromRequest.equals(publicKeyFromDB);
+				boolean validKeyIndex = keyIndexFromResponse.equals(keyIndexFromDB);
+				softAssert.assertTrue(validPubKey, "publlic Key is not same in DB and response");
+				softAssert.assertTrue(validKeyIndex, "keyIndex is not same in DB and response");
+				status = validPubKey && validKeyIndex;
+		} 
+		finalStatus = (status) ? "Pass":"Fail";
 		object.put("status", finalStatus);
 
 		arr.add(object);
@@ -196,7 +215,8 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
+		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
+				+ "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
