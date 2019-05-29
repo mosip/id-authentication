@@ -43,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -85,13 +86,15 @@ public class ValidatorTest {
 
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
+	
+	@Mock
+	private IdObjectValidator IdObjectValidator;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "uinValidator", uinValidator);
 		ReflectionTestUtils.setField(authRequestValidator, "vidValidator", vidValidator);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 
 	@Test
