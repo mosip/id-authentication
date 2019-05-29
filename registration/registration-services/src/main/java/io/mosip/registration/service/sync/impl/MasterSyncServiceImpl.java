@@ -26,11 +26,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.constants.AuditReferenceIdTypes;
-import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -57,8 +53,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.BaseService;
-import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.remap.CenterMachineReMapService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
@@ -84,17 +78,6 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	@Autowired
 	private MasterSyncDao masterSyncDao;
 
-	/** The global param service. */
-	@Autowired
-	private GlobalParamService globalParamService;
-
-	/** The audit factory. */
-	@Autowired
-	private AuditManagerService auditFactory;
-
-	/** The center machine re map service. */
-	@Autowired
-	private CenterMachineReMapService centerMachineReMapService;
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
@@ -104,6 +87,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.
 	 * String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
 
@@ -139,8 +123,9 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			LinkedHashMap<String, Object> masterSyncResponse = getMasterSyncJson(machineId, masterLastSyncTime,
 					triggerPoint);
 
-			if (null != masterSyncResponse
-					&& null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+			if (null != masterSyncResponse && !masterSyncResponse.isEmpty()
+					&& null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)
+					&& null == masterSyncResponse.get(RegistrationConstants.ERRORS)) {
 
 				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"master sync json ======>" + masterSyncResponse.toString());
@@ -168,36 +153,18 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 					setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
 				}
+
 			} else {
 
-				if (centerReMapFlag(masterSyncResponse)) {
-
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Auditing center remapping");
-
-					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CENTER_MACHINE_REMAP,
-							RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							"updating center remapping flag in global param");
-
-					globalParamService.update(RegistrationConstants.MACHINE_CENTER_REMAP_FLAG,
-							RegistrationConstants.TRUE);
-
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							"updating center remapping process");
-
-					centerMachineReMapService.startRemapProcess();
-
-					
-					setSuccessResponse(responseDTO, (String)globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP), masterSyncResponse);
-
-				} else {
-
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-
-					setErrorResponse(responseDTO, errorMsg(masterSyncResponse), null);
-				}
+				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						(null != masterSyncResponse && masterSyncResponse.size() > 0)
+								? ((List<LinkedHashMap<String, String>>) masterSyncResponse
+										.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+								: RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+				setErrorResponse(responseDTO, (null != masterSyncResponse && masterSyncResponse.size() > 0)
+						? ((List<LinkedHashMap<String, String>>) masterSyncResponse.get(RegistrationConstants.ERRORS))
+								.get(0).get(RegistrationConstants.ERROR_MSG)
+						: RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO, null);
 			}
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
@@ -229,42 +196,39 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		LinkedHashMap<String, Object> masterSyncResponse = null;
-		String serviceName;
 		String time = RegistrationConstants.EMPTY;
+
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Master Sync Restful service starts.....");
+
+		// Setting uri Variables
+
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
 		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
-
 		if (null != lastSyncTime) {
 			time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
-		}
-
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
-
-			serviceName = RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME;
-
-		} else {
-			requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
-			serviceName = RegistrationConstants.MASTER_CENTER_REMAP_SERVICE_NAME;
 		}
 
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MAC_ADDRESS + "===> "
 				+ machineId + " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> " + time);
 
 		try {
-
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-
-				masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil.get(serviceName,
-						requestParamMap, true, triggerPoint);
+				masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+						.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap, false, triggerPoint);
 
 				if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.SUCCESS);
 					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 				} else {
-					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, errorMsg(masterSyncResponse));
-					setErrorResponse(responseDTO, errorMsg(masterSyncResponse), null);
+					LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, masterSyncResponse.size() > 0
+							? ((List<LinkedHashMap<String, String>>) masterSyncResponse
+									.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+							: "Master Sync Restful service error");
+					setErrorResponse(responseDTO, masterSyncResponse.size() > 0
+							? ((List<LinkedHashMap<String, String>>) masterSyncResponse
+									.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+							: "Master Sync Restful service error", null);
 				}
 			} else {
 				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.NO_INTERNET);
@@ -480,7 +444,6 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		});
 		return listOfIndividualDTO;
 	}
-
 	
 	/*
 	 * (non-Javadoc)
@@ -512,52 +475,6 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			listOfbiometricAttributeDTO.add(biometricsDto);
 		});
 		return listOfbiometricAttributeDTO;
-	}
 		
-
-
-	/**
-	 * Center re map flag.
-	 *
-	 * @param centerReMap the center re map
-	 * @return the boolean
-	 */
-	@SuppressWarnings("unchecked")
-	private Boolean centerReMapFlag(LinkedHashMap<String, Object> centerReMap) {
-
-		Boolean reMapFlag = false;
-
-		if (null != centerReMap && null != centerReMap.get(RegistrationConstants.ERRORS)) {
-			List<LinkedHashMap<String, Object>> errorMap = (List<LinkedHashMap<String, Object>>) centerReMap
-					.get(RegistrationConstants.ERRORS);
-			String errorMsg = (String) errorMap.get(0).get(RegistrationConstants.ERROR_MSG);
-			if ("Registration Center has been updated for the received Machine ID".equalsIgnoreCase(errorMsg)) {
-				reMapFlag = true;
-			}
-		}
-
-		return reMapFlag;
-
-	}
-
-	/**
-	 * Error msg.
-	 *
-	 * @param centerReMap the center re map
-	 * @return the string
-	 */
-	@SuppressWarnings("unchecked")
-	private String errorMsg(LinkedHashMap<String, Object> centerReMap) {
-		String errorMsg = RegistrationConstants.MASTER_SYNC +"-"+ RegistrationConstants.MASTER_SYNC_FAILURE_MSG;
-		if (null != centerReMap && centerReMap.size() > 0) {
-			List<LinkedHashMap<String, Object>> errorMap = (List<LinkedHashMap<String, Object>>) centerReMap
-					.get(RegistrationConstants.ERRORS);
-			if (null != errorMap.get(0).get(RegistrationConstants.ERROR_MSG)) {
-				errorMsg = (String) errorMap.get(0).get(RegistrationConstants.ERROR_MSG);
-			}
-		}
-		return errorMsg;
-
-
 	}
 }

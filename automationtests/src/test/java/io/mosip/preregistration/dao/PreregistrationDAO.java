@@ -1,13 +1,17 @@
 package io.mosip.preregistration.dao;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import io.mosip.dbaccess.prereg_dbread;
+import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
+
+import io.mosip.dbaccess.PreregDB;
 import io.mosip.dbdto.Audit;
+import io.mosip.dbentity.PreRegEntity;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
 
@@ -19,7 +23,7 @@ public class PreregistrationDAO
 	{
 		String hql = "SELECT preRegistrationId,statusCode FROM DemographicEntity E WHERE E.preRegistrationId = '"+preRegId+"'";
 		
-		List<? extends Object> result = prereg_dbread.validateDB(hql);
+		List<? extends Object> result = PreregDB.validateDB(hql);
 		//List<? extends Object> result = dbAccess.updateDbData(hql, "prereg");
 		return result;
 		
@@ -29,19 +33,22 @@ public class PreregistrationDAO
 	{
 		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
 		
-		int result = prereg_dbread.validateDBUpdate(hql);
+		//int result = prereg_dbread.validateDBUpdate(hql);
+		int result = PreregDB.validateDBdata(hql, "prereg");
+		//int result = prereg_dbread.validateDBUpdate(hql);
 		return result;
 	}
-	/*public void setDate(String preRegId)
+	
+	public int updateStatusCode1(String statusCode,String preRegId)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Calendar c = Calendar.getInstance();
-		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, -1); 
-		String date = sdf.format(c.getTime());
-		String hql="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
-		prereg_dbread.dbConnectionUpdate(hql, RegistrationBookingEntity.class, "preregdev.cfg.xml", "preregqa.cfg.xml");
-	}*/
+		String hql="UPDATE DemographicEntity SET statusCode ='"+statusCode+"' WHERE preRegistrationId = '"+preRegId+"'";
+		
+		
+		//dbAccess.getConsumedStatus(hql, "prereg");
+		int result = PreregDB.validateDBdata(hql, "prereg");
+		//int result = prereg_dbread.validateDBUpdate(hql);
+		return result;
+	}
 	public void setDate(String preRegId)
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -52,12 +59,6 @@ public class PreregistrationDAO
 		String queryString="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
 		dbAccess.updateDbData(queryString, "prereg");
 	}
-	/*public List<Object> getAuditData(String userId)
-	{
-		String query = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
-		List<Object> auditData = prereg_dbread.dbConnection(query, Audit.class, "auditdev.cfg.xml", "auditqa.cfg.xml");
-		return auditData;
-	}*/
 	public List<String> getAuditData(String userId)
 	{
 		String queryString = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
@@ -70,6 +71,64 @@ public class PreregistrationDAO
 		List<String> otp = dbAccess.getDbData(queryString, "kernel");
 		return otp;
 	}
+	public String getConsumedStatus(String PreID)
+	{
+		String queryString = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID+ "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String status = preId_status.get(0).toString();
+		return status;
+	}
+	public String getRegCenterIdOfConsumedApplication(String PreID) {
+		String queryString = "SELECT c.regcntr_id FROM prereg.reg_appointment_consumed c where c.prereg_id='" + PreID + "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String regCenterId = preId_status.get(0).toString();
+		return regCenterId;
+	}
+	public String getDocumentIdOfConsumedApplication(String PreID) {
+		String queryString = "SELECT c.id FROM prereg.applicant_document_consumed c where c.prereg_id='" + PreID + "'";
+		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
+		String documentId = preId_status.get(0).toString();
+		return documentId;
+	}
+	public void makeregistartionCenterActive(String registartionCenter)
+	{
+		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
+	public void makeregistartionCenterDeActive(String registartionCenter)
+	{
+		String queryString="update master.registration_center set is_active= "+Boolean.FALSE+ " where id='"+registartionCenter+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
+	public Date MakeDayAsHoliday() throws ParseException
+	{
+		Date date1 = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date()); // Now use today date.
+		c.add(Calendar.DATE, 4); 
+		String date = sdf.format(c.getTime());
+		try {
+			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		String sDate1="2019-06-05";  
+	    Date date3=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);  
+		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+		return date1;
+	}
+	public void updateHoliday(Date date) throws ParseException
+	{
+		String sDate1="2019-06-05";  
+	    Date date3=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);  
+		String queryString="update master.loc_holiday set is_active= '"+date3+"' where id='"+date+"'";
+		dbAccess.updateDbData(queryString, "masterdata");
+	}
+
+
+
 	
 	
 

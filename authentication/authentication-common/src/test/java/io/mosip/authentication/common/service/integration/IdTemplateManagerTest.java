@@ -3,13 +3,11 @@ package io.mosip.authentication.common.service.integration;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,8 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
-import io.mosip.authentication.common.service.integration.IdTemplateManager;
-import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -52,11 +48,10 @@ import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PDFGeneratorImpl.class)
+@SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class IdTemplateManagerTest {
 
@@ -75,9 +70,6 @@ public class IdTemplateManagerTest {
 
 	@Mock
 	private PDFGenerator pdfGenerator;
-
-	@Autowired
-	private PDFGenerator actpdfGenerator;
 
 	@Autowired
 	private Environment environment;
@@ -187,53 +179,6 @@ public class IdTemplateManagerTest {
 		assertNotNull(idTemplateManager.applyTemplate(OTP_SMS_TEMPLATE_TXT, valueMap));
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestInvalidgeneratePDF() throws IdAuthenticationBusinessException, RestServiceException {
-		mockRestCalls();
-		Map<String, Object> valueMap = new HashMap<>();
-		valueMap.put("uin", "1234567890");
-		valueMap.put("otp", "123456");
-		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
-		valueMap.put("validTime", "3");
-		idTemplateManager.generatePDF(OTP_SMS_TEMPLATE_TXT, valueMap);
-	}
-
-	@Test
-	public void testPdfGenerationWithInputStream()
-			throws IOException, IdAuthenticationBusinessException, RestServiceException {
-		ClassLoader classLoader = getClass().getClassLoader();
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream("templates/otp-sms-template.txt");
-		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(is);
-		mockRestCalls();
-		String inputFileName = classLoader.getResource("templates/otp-sms-template.txt").getFile();
-		BufferedReader br = new BufferedReader(new FileReader(inputFileName));
-		String line;
-		StringBuilder sb = new StringBuilder();
-		while ((line = br.readLine()) != null) {
-			sb.append(line.trim());
-		}
-		br.close();
-		ByteArrayOutputStream bos = (ByteArrayOutputStream) actpdfGenerator.generate(sb.toString());
-		Mockito.when(pdfGenerator.generate(Mockito.any(InputStream.class))).thenReturn(bos);
-		String outputPath = System.getProperty("user.dir");
-		String fileSepetator = System.getProperty("file.separator");
-		File OutPutPdfFile = new File(outputPath + fileSepetator + "testekyclimited.pdf");
-		FileOutputStream op = new FileOutputStream(OutPutPdfFile);
-		op.write(bos.toByteArray());
-		op.flush();
-		assertTrue(OutPutPdfFile.exists());
-		if (op != null) {
-			op.close();
-
-		}
-		Map<String, Object> valueMap = new HashMap<>();
-		valueMap.put("uin", "1234567890");
-		valueMap.put("otp", "123456");
-		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
-		valueMap.put("validTime", "3");
-		idTemplateManager.generatePDF(OTP_SMS_TEMPLATE_TXT, valueMap);
-	}
-
 	@Test(expected = FileNotFoundException.class)
 	public void testInvalidPdfGeneration() throws IOException {
 		InputStream is = new FileInputStream("dummy1.html");
@@ -248,21 +193,6 @@ public class IdTemplateManagerTest {
 		if (op != null) {
 			op.close();
 		}
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestInvalidgeneratePdf() throws IOException, IdAuthenticationBusinessException, RestServiceException {
-		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
-		mockRestCalls();
-		Mockito.when(pdfGenerator.generate(Mockito.any(InputStream.class))).thenThrow(new IOException());
-		Map<String, Object> valueMap = new HashMap<String, Object>();
-		valueMap.put("uin", "1234567890");
-		valueMap.put("otp", "123456");
-		valueMap.put("datetimestamp", "2018-11-20T12:02:57.086+0000");
-		valueMap.put("validTime", "3");
-		valueMap.put("langCode", "eng");
-		//Mockito.when(idTemplateManager.applyTemplate(OTP_SMS_TEMPLATE_TXT, valueMap)).thenReturn("Test");
-		idTemplateManager.generatePDF(OTP_SMS_TEMPLATE_TXT, valueMap);
 	}
 
 	@AfterClass

@@ -1,1 +1,1 @@
-{"transactionID":"0025614400","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-003","errorMessage":"Unable to decrypt Request"}],"responseTime":"2019-05-24T19:01:39.289+05:30","response":{"authStatus":false,"staticToken":null}}
+{"transactionID":"3064510340","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occurred"}],"responseTime":"2019-05-28T12:05:33.514+05:30","response":{"authStatus":false,"staticToken":null}}

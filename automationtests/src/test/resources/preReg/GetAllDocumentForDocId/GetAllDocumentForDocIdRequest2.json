@@ -1,0 +1,16 @@
+{
+      "GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"",
+      "GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric": " ",
+      "GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"",
+      "GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"",
+      "GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"",
+      "GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"",
+      
+      "GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"",
+      "GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric": " ",
+      "GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"",
+      "GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"",
+      "GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"",
+      "GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":""
+      
+}

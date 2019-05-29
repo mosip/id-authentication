@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 
 /**
  * 
@@ -24,7 +25,6 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 public interface AuthType {
 
 	public static final int DEFAULT_MATCHING_THRESHOLD = 100;
-
 
 	/**
 	 * Checks if is associated match type.
@@ -43,7 +43,7 @@ public interface AuthType {
 	 * @param languageInfoFetcher the language info fetcher
 	 * @return the matching strategy
 	 */
-	default Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language){
+	default Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
 		return Optional.of(MatchingStrategyType.EXACT.getType());
 	}
 
@@ -59,7 +59,7 @@ public interface AuthType {
 			Environment environment, IdInfoFetcher idInfoFetcher) {
 		return Optional.of(DEFAULT_MATCHING_THRESHOLD);
 	}
-	
+
 	public default boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
 		return false;
 	}
@@ -72,7 +72,7 @@ public interface AuthType {
 	 * @return the match properties
 	 */
 	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			IdInfoFetcher languageInfoFetcher, String language) {
+			IdInfoFetcher languageInfoFetcher, BioMatcherUtil bioMatcherUtil, String language) {
 		return Collections.emptyMap();
 	}
 
@@ -86,7 +86,7 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-	
+
 	/**
 	 * Returns the set of given match types
 	 *
@@ -96,14 +96,13 @@ public interface AuthType {
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
-	
+
 	/**
 	 * Gets the auth type impl.
 	 *
 	 * @return the auth type impl
 	 */
 	public AuthType getAuthTypeImpl();
-	
 
 	/**
 	 * Gets the display name.
@@ -130,7 +129,8 @@ public interface AuthType {
 	 * @return true, if is auth type info available
 	 */
 	public default boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
-		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth).filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
+		return Optional.of(authReq).map(AuthRequestDTO::getRequestedAuth)
+				.filter(getAuthTypeImpl().getAuthTypePredicate()).isPresent();
 	}
 
 	/**
@@ -141,7 +141,7 @@ public interface AuthType {
 	public default Set<MatchType> getAssociatedMatchTypes() {
 		return Collections.unmodifiableSet(getAuthTypeImpl().getAssociatedMatchTypes());
 	}
-	
+
 	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
 		return getAuthTypeImpl().getAuthTypePredicate();
 	}

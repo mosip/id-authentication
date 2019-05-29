@@ -46,6 +46,7 @@ import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
@@ -247,7 +248,7 @@ public class DocumentService {
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
 	public DocumentResponseDTO createDoc(DocumentRequestDTO document, MultipartFile file, String preRegistrationId)
-			throws IOException {
+			throws IOException,EncryptionFailedException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
@@ -452,6 +453,10 @@ public class DocumentService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(docId);
+				if (!documentEntity.getPreregId().equals(preId)) {
+					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
+				}
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				InputStream sourcefile = fs.getFile(documentEntity.getPreregId(), key);
 				if (sourcefile == null) {
@@ -597,8 +602,7 @@ public class DocumentService {
 		return deleteRes;
 	}
 
-	public DocumentDeleteResponseDTO deleteFile(List<DocumentEntity> documentEntityList,
-			String preregId) {
+	public DocumentDeleteResponseDTO deleteFile(List<DocumentEntity> documentEntityList, String preregId) {
 		log.info("sessionId", "idType", "id", "In pre-registration service inside delete File method " + preregId);
 		DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
@@ -648,12 +652,11 @@ public class DocumentService {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID, requestDTO.getId());
 		inputValidation.put(RequestCodes.VER, requestDTO.getVersion());
-		if(!(requestDTO.getRequesttime()==null || requestDTO.getRequesttime().toString().isEmpty())) {
+		if (!(requestDTO.getRequesttime() == null || requestDTO.getRequesttime().toString().isEmpty())) {
 			LocalDate date = requestDTO.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 			inputValidation.put(RequestCodes.REQ_TIME, date.toString());
-		}
-		else {
-			inputValidation.put(RequestCodes.REQ_TIME,null);
+		} else {
+			inputValidation.put(RequestCodes.REQ_TIME, null);
 		}
 		inputValidation.put(RequestCodes.REQUEST, requestDTO.getRequest().toString());
 		return inputValidation;

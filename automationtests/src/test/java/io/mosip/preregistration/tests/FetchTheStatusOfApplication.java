@@ -1,4 +1,3 @@
-
 package io.mosip.preregistration.tests;
 
 import java.io.File;
@@ -94,8 +93,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	@DataProvider(name = "Fetch_the_status_of_a_application")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -180,7 +178,7 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, FetchTheStatusOfApplication.testCaseName);
+			f.set(baseTestMethod,"Pre Reg_Demographic_"+ FetchTheStatusOfApplication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

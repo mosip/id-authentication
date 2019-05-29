@@ -1,1 +1,1 @@
-{"transactionID":"5415508220","version":"1.0","id":"mosip.identity.kyc","responseTime":"$TIMESTAMP$","response":{"kycStatus":true,"staticToken":"$IGNORE$","identity":"$IGNORE$"}}
+{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.kyc","responseTime":"$TIMESTAMP$","response":{"kycStatus":true,"staticToken":"$IGNORE$","identity":"$IGNORE$"}}

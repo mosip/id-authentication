@@ -45,7 +45,13 @@ public class PreRegistrationUtil
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	Properties propConfig = new Properties();
 	Properties propresorceURL = new Properties();
-	String configPath="src/test/resources/";
+	String configPath="src/test/resources";
+	
+	String yourActualJSONString = null;
+	ObjectNode newJson = null;
+	Configuration config = setConfigIntialize();
+	JSONParser parser = new JSONParser();
+	
 	
 	File f = new File(configPath);
 	 File resourcesDirectory = new File("src/test/resources");
@@ -103,9 +109,6 @@ public class PreRegistrationUtil
 	
 	public ObjectNode dynamicJsonRequestFile(String jsonPathTraverse,String jsonSetVal,String readFilePath,String writeFilePath) {
 		
-		String yourActualJSONString = null;
-		ObjectNode newJson = null;
-		Configuration config = setConfigIntialize();
 		
 		
 		
@@ -128,6 +131,26 @@ public class PreRegistrationUtil
 		
 	}
 	
+	/*
+	 * Generic method for dynamically change the request values in json file and write in file
+	 * 
+	 */
+	
+	public JSONObject dynamicChangeOfRequest(JSONObject req,String pathVal,String actualVal)
+	{
+		ObjectNode request = JsonPath.using(config).parse(req.toJSONString())
+				.set(pathVal, actualVal).json();
+		String resVal = request.toString();
+		JSONObject resJson = null;
+		try {
+			resJson = (JSONObject) parser.parse(resVal);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return resJson;
+		
+	}
 	
 	
 	/*

@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -63,9 +62,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 	/** The encryptor. */
 	protected EncryptorImpl encryptor;
 
-	/** The key manager. */
-	protected KeyManager keyManager;
-
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.service.filter.BaseIDAFilter#init(javax.servlet.FilterConfig)
 	 */
@@ -75,7 +71,6 @@ public abstract class BaseAuthFilter extends BaseIDAFilter {
 		WebApplicationContext context = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		encryptor = context.getBean(EncryptorImpl.class);
-		keyManager = context.getBean(KeyManager.class);
 	}
 
 	/*

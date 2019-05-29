@@ -148,14 +148,12 @@ describe('CenterSelectionComponent', () => {
 
   it('should change time format', () => {
     let x = component.changeTimeFormat('09:00');
-    console.log(x);
     fixture.detectChanges();
     expect(x).toBe('09:00 am');
   });
 
   it('should change time format for afternoon', () => {
     let x = component.changeTimeFormat('17:00');
-    console.log(x);
     fixture.detectChanges();
     expect(x).toBe('5:00 pm');
   });

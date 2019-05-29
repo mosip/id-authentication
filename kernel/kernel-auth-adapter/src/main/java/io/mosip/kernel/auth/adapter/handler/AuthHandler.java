@@ -209,9 +209,12 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			JsonParseException, JsonMappingException, JsonProcessingException, IOException {
 		boolean isAuthorized = false;
 		HttpServerRequest httpRequest = routingContext.request();
-		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
-		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
-				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
+		String token = null;
+		String cookies = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+		if (cookies != null && !cookies.isEmpty() && cookies.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)) {
+			token = cookies.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim();
+		}
+		if (token == null || token.isEmpty()) {
 			List<ServiceError> errors = new ArrayList<>();
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
 					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());

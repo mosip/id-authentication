@@ -1,1 +1,0 @@
-{"transactionID":"7268750714","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"responseTime":"2019-05-23T12:06:38.994+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

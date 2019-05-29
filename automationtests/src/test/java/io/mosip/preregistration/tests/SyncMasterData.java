@@ -98,9 +98,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "SyncMasterData")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -190,7 +188,8 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, SyncMasterData.testCaseName);
+			//f.set(baseTestMethod, SyncMasterData.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_SyncMasterData_" +SyncMasterData.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

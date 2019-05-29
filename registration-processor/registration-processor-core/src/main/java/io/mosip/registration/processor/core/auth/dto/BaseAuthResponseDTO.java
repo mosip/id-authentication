@@ -12,8 +12,6 @@ import lombok.Data;
 
 @Data
 public class BaseAuthResponseDTO {
-	private String status;
-	private List<AuthError> err;
-	private String txnID;
-	private String resTime;
+
+	private String id;
 }

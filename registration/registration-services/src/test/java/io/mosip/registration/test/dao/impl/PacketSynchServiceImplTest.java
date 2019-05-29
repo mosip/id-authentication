@@ -92,6 +92,7 @@ public class PacketSynchServiceImplTest {
 	public void testFetchPacketsToBeSynched() {
 		List<Registration> syncList = new ArrayList<>();
 		Registration reg = new Registration();
+		reg.setCrDtime(Timestamp.from(Instant.now()));
 		reg.setId("12345");
 		reg.setCrDtime(Timestamp.from(Instant.now()));
 		syncList.add(reg);
