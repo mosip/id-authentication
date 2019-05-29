@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	 */
 	@Override
 	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
-
+	
 		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
 			if (validator.getClass().getName().toLowerCase().contains(validatorType.toLowerCase())) {
 				return validator.validate(authenticationValidatorDTO);

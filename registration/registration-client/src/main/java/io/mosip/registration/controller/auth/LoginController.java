@@ -628,7 +628,7 @@ public class LoginController extends BaseController implements Initializable {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Credentials for Biometric login");
+				"Capturing finger print for validation");
 
 		UserDetail detail = loginService.getUserDetail(userId.getText());
 
@@ -640,17 +640,21 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 				bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
 			}
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			bioLoginStatus = false;
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Fingerprint with minutia");
-
 		if (bioLoginStatus) {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"FingerPrint validation succeded");
 			fingerprintPane.setVisible(false);
 			loadNextScreen(detail, RegistrationConstants.FINGERPRINT);
+		} else {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"Finger print validation failed");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint validation done");
@@ -668,7 +672,7 @@ public class LoginController extends BaseController implements Initializable {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Biometric login with Iris");
+				"Capturing the iris for validation");
 
 		UserDetail detail = loginService.getUserDetail(userId.getText());
 
@@ -680,20 +684,20 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 				irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
 			}
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			irisLoginStatus = false;
 		}
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Iris with stored data");
-
 		if (irisLoginStatus) {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation succeded");
 			irisPane.setVisible(false);
 			loadNextScreen(detail, RegistrationConstants.IRIS);
+		} else {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation failed");
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation done");
 	}
 
 	/**
@@ -708,7 +712,7 @@ public class LoginController extends BaseController implements Initializable {
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Biometric login with Iris");
+				"Capturing face for validation");
 
 		UserDetail detail = loginService.getUserDetail(userId.getText());
 
@@ -720,17 +724,21 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 				faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
 			}
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			faceLoginStatus = false;
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating Face with stored data");
-
 		if (faceLoginStatus) {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"Face validation succeeded");
 			facePane.setVisible(false);
 			loadNextScreen(detail, RegistrationConstants.FACE);
+		}else {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					"Face validation failed");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face validation done");

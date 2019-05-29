@@ -737,11 +737,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean captureAndValidateFP(String userId) {
 		try {
 			return bioService.validateFingerPrint(userId);
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -754,11 +755,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean captureAndValidateIris(String userId) {
 		try {
 			return bioService.validateIris(userId);
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -771,11 +773,12 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean captureAndValidateFace(String userId) {
 		try {
 			return bioService.validateFace(userId);
-		} catch (RegBaseCheckedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (RegBaseCheckedException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_SCANNING_ERROR);
+			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+			return false;
 		}
-		return false;
 	}
 
 	/**

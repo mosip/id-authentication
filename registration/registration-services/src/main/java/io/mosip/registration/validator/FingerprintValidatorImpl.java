@@ -1,5 +1,8 @@
 package io.mosip.registration.validator;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,6 +12,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
@@ -17,6 +23,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.security.AuthenticationServiceImpl;
 
 /**
  * This class is for validating Fingerprint Authentication
@@ -36,11 +43,20 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	@Autowired
 	private BioService bioService;
 	
+
+	/**
+	 * Instance of LOGGER
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(AuthenticationServiceImpl.class);
+	
+	
 	/**
 	 * Validate the Fingerprint with the AuthenticationValidatorDTO as input
 	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
+		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID, "Validating Scanned Finger");
+
 		if (RegistrationConstants.FINGER_PRINT_SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
 			return validateOneToOneFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));

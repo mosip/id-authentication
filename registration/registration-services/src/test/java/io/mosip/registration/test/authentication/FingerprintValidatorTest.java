@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -25,18 +26,19 @@ import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 public class FingerprintValidatorTest {
 
-	@InjectMocks
-	FingerprintValidatorImpl fingerprintValidator;
-	
-
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-	@Mock
+	@InjectMocks
+	FingerprintValidatorImpl fingerprintValidator;
+
 	private UserDetailDAO userDetailDAO;
 	
 	@Mock
 	private BioService bioService;
+	
+	@Mock
+	private BioApiImpl bioApiImpl;
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 

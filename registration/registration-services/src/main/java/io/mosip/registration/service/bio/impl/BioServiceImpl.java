@@ -78,7 +78,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	@Override
 	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
 
 		boolean fingerPrintStatus = false;
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
@@ -88,7 +88,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		if (isoTemplate == null) {
 			return false;
 		} else {
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Calling for finger print validation through authService");
 
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -103,7 +103,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
 					authenticationValidatorDTO);
 		}
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "End FingerPrint validator");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "End FingerPrint validator");
 
 		return fingerPrintStatus;
 	}
@@ -111,7 +111,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	@Override
 	public boolean validateIris(String userId) {
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
@@ -121,7 +121,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
 
 		return authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 	}
@@ -490,14 +490,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 	@Override
 	public boolean validateFace(String userId) {
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
 		faceDetailsDTO.setFace(captureFace());
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face scan done");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Face scan done");
 
 		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
 	}
