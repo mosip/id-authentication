@@ -232,9 +232,9 @@ public class IdRepoManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String getUINByVID(String vid) throws IdAuthenticationBusinessException {
+	public long getUINByVID(String vid) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest;
-		String uin = null;
+		long uin = 0;
 		try {
 			Map<String, String> params = new HashMap<>();
 			params.put(VID, vid);
@@ -243,8 +243,7 @@ public class IdRepoManager {
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
 			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get("errors");
 			if ((null == vidErrorList || vidErrorList.isEmpty()) && vidMap.get("response") instanceof Map) {
-				uin = (String) ((Map<String, Object>) vidMap.get("response")).get("UIN");
-				updateVIDstatus(vid);
+				uin = (Long) ((Map<String, Object>) vidMap.get("response")).get("UIN");
 			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(), e.getErrorText());
@@ -277,7 +276,7 @@ public class IdRepoManager {
 		return uin;
 	}
 
-	private void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
+	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
 		RestRequestDTO restRequest;
 		RequestWrapper<VidRequestDTO> request=new RequestWrapper<>();
 		VidRequestDTO vidRequest = new VidRequestDTO();
