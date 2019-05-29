@@ -16,6 +16,8 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 
@@ -42,19 +44,41 @@ public class RegIdObjectValidator {
 	@Autowired
 	private RegIdObjectMasterDataValidator regIdObjectMasterDataValidator;
 
-	public void validateIdObject(Object idObject, IdObjectValidatorSupportedOperations registrationCategory)
+	/**
+	 * This method validates the input object against the schema, mandatory, pattern and Master data using differnt validator.
+	 * If any validation failure, the packet won't get created and user will be notified with the issue. 
+	 * The mandatory validation varies based on the user action [New/ Update UIN/ Lost UIN]. 
+	 *
+	 * @param idObject the id object
+	 * @param registrationCategory the registration category
+	 * @throws BaseCheckedException the base checked exception
+	 */
+	public void validateIdObject(Object idObject, String registrationCategory)
 			throws BaseCheckedException {
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Validating schema of Identity Object");
-
+		IdObjectValidatorSupportedOperations operationType = null;
+		
 		try {
-			if (idObjectValidator.validateIdObject(idObject, registrationCategory)) {
+			if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_NEW)) {
+				operationType = IdObjectValidatorSupportedOperations.NEW_REGISTRATION;
+			} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+				operationType = IdObjectValidatorSupportedOperations.UPDATE_UIN;
+			} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+				operationType = IdObjectValidatorSupportedOperations.LOST_UIN;
+			} else if ((Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+				operationType = IdObjectValidatorSupportedOperations.CHILD_REGISTRATION;
+			}
+			
+			
+			
+			if (idObjectValidator.validateIdObject(idObject, operationType)) {
 				LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 						"ID object shema validation is successful");
-				if (idOjectPatternvalidator.validateIdObject(idObject, registrationCategory)) {
+				if (idOjectPatternvalidator.validateIdObject(idObject, operationType)) {
 					LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 							"ID object pattern validation is successful");
-					if (regIdObjectMasterDataValidator.validateIdObject(idObject, registrationCategory)) {
+					if (regIdObjectMasterDataValidator.validateIdObject(idObject, operationType)) {
 						LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 								"ID object master data validation is successful");
 					} else {
