@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -468,7 +469,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 				irisDetailsDTOs.add(detailsDTO);
 			}
 		}
-		bioService.getIrisImageAsDTO(detailsDTO, irisType);
+		try {
+			bioService.getIrisImageAsDTO(detailsDTO, irisType.concat(RegistrationConstants.EYE));
+		} catch (RegBaseCheckedException runtimeException) {
+			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
+					ExceptionUtils.getStackTrace(runtimeException)));
+		}
 
 		if (detailsDTO.getIris() != null) {
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
@@ -546,9 +554,16 @@ public class GuardianBiometricsController extends BaseController implements Init
 				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
-		bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+		
+		try {
 
-		bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+		} catch (Exception exception) {
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
+							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+		}
 
 		if (detailsDTO.getFingerPrint() != null) {
 
