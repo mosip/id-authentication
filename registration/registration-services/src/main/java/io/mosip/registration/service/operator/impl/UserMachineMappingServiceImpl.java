@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -75,16 +76,17 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 				userMachineMappingList = machineMappingDAO.getUserMappingDetails(machineId);
 				RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto = new RegCenterMachineUserReqDto<>();
 				regCenterMachineUserReqDto.setId("REGISTRATION");
-				regCenterMachineUserReqDto.setTimestamp(LocalDateTime.now());
+				regCenterMachineUserReqDto.setRequesttime(DateUtils.getUTCCurrentDateTime());
 				for (UserMachineMapping userMachineMapping : userMachineMappingList) {
 					RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto = new RegistrationCenterUserMachineMappingDto();
 					registrationCenterUserMachineMappingDto.setCntrId(centerId);
 					registrationCenterUserMachineMappingDto.setMachineId(machineId);
 					registrationCenterUserMachineMappingDto.setActive(true);
+					registrationCenterUserMachineMappingDto.setLangCode("eng");
 					registrationCenterUserMachineMappingDto.setUsrId(userMachineMapping.getUserDetail().getId());
 					list.add(registrationCenterUserMachineMappingDto);
 				}
-				regCenterMachineUserReqDto.setVer("0.08");
+				//regCenterMachineUserReqDto.setVersion("v1");
 				regCenterMachineUserReqDto.setRequest(list);
 
 				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto,
