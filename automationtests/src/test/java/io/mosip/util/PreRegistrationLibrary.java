@@ -1399,7 +1399,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -1429,7 +1429,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
 
 		} catch (Exception e) {
 			logger.info(e);
