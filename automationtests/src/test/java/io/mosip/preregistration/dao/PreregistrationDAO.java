@@ -14,6 +14,7 @@ import io.mosip.dbdto.Audit;
 import io.mosip.dbentity.PreRegEntity;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
+import io.mosip.util.PreRegistrationLibrary;
 
 
 public class PreregistrationDAO 
@@ -100,37 +101,40 @@ public class PreregistrationDAO
 		String queryString="update master.registration_center set is_active= "+Boolean.FALSE+ " where id='"+registartionCenter+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 	}
-	public Date MakeDayAsHoliday() throws ParseException
+	public Date MakeDayAsHoliday()
 	{
 		Date date1 = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, 4); 
+		c.add(Calendar.DATE, 1); 
 		String date = sdf.format(c.getTime());
 		try {
 			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String sDate1="2019-06-05";  
-	    Date date3=new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);  
+		String sDate1="2019-05-30";  
+	    Date date3 = null;
+		try {
+			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}  
 		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 		return date1;
 	}
-	public void updateHoliday(Date date) throws ParseException
+	public void updateHoliday(Date date)
 	{
-		String sDate1="2019-06-05";  
-	    Date date3=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);  
-		String queryString="update master.loc_holiday set is_active= '"+date3+"' where id='"+date+"'";
+		String sDate1="2019-05-30";  
+	    Date date3 = null;
+		try {
+			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}  
+		String queryString="update master.loc_holiday set holiday_date= '"+date3+"' where holiday_date='"+date+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
-	}
-
-
-
-	
-	
-
-	
+	}	
 }

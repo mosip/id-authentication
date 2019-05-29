@@ -24,12 +24,10 @@ public class PreRegistartionDataBaseAccess {
 		try {
 		factory = new Configuration().configure(dbConfigXml).buildSessionFactory();
 		} catch (HibernateException e) {
-			logger.info("Exception in Database Connection with following message: ");
 			logger.info(e.getMessage());
 		}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
-		logger.info("==========session  begins=============");
 		return session;
 	}
 
