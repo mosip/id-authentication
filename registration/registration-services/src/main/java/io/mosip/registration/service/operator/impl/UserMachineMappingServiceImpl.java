@@ -54,7 +54,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 	 * 
 	 */
 	public ResponseDTO syncUserDetails() {
-		LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync user details is started");
 		String systemMacId = null;
 		String machineId = null;
@@ -94,7 +94,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 				successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 
-				LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"sync user details is ended");
 			} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
 					| RegBaseCheckedException | RegBaseUncheckedException exception) {
