@@ -241,7 +241,7 @@ public class MosipBioDeviceManager {
 
 	}
 
-	public byte[] extractSingleBiometric(CaptureResponseDto captureResponseDto) {
+	public byte[] getSingleBioExtract(CaptureResponseDto captureResponseDto) {
 		byte[] capturedByte = null;
 		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
 				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {

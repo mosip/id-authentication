@@ -191,6 +191,7 @@ public class DeviceCaptureController {
 		String imgFormat = ".png";
 		if (imageType.equals("FINGERPRINT_SINGLE")) {
 			imgFormat = ".iso";
+			imageType="ISOTemplate";
 		}
 		byte[] scannedBytes = null;
 		try {

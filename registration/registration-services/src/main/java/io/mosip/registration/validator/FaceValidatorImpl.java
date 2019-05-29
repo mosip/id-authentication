@@ -1,9 +1,11 @@
 package io.mosip.registration.validator;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FACE_FACADE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FACE_VALIDATOR;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
-import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
+import io.mosip.registration.service.bio.BioService;
 
 /**
  * This class is for validating Face Authentication
@@ -30,9 +33,9 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 
 	@Autowired
 	private UserDetailDAO userDetailDAO;
-
+	
 	@Autowired
-	private FaceFacade faceFacade;
+	private BioService bioService;
 
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -46,7 +49,7 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 		LOGGER.info(LOG_REG_FACE_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating face details for user registration");
 		
-		return faceFacade.validateFace(authenticationValidatorDTO.getFaceDetail(), userFaceDetails);
+		return bioService.validateFaceAgainstDb(authenticationValidatorDTO.getFaceDetail(), userFaceDetails);
 	}
-
+	
 }

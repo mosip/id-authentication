@@ -31,13 +31,13 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.security.impl.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -191,7 +191,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print facade. */
 	@Autowired
-	private FingerprintFacade fingerPrintFacade = null;
+	private BioService bioService;
 
 	/** The iris capture controller. */
 	@Autowired
@@ -861,7 +861,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	protected String getOnboardFingertype(String fingerType) {
-		if (fingerPrintFacade.isMdmEnabled()) {
+		if (bioService.isMdmEnabled()) {
 			fingerType = fingerType + "_onboard";
 		}
 		return fingerType;
@@ -1021,8 +1021,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		try {
 
-			fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
-			fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
 		} catch (Exception exception) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",

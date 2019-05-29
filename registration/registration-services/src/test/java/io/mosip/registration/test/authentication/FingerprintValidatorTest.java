@@ -17,16 +17,17 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.UserDetailDAO;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 public class FingerprintValidatorTest {
 
 	@InjectMocks
 	FingerprintValidatorImpl fingerprintValidator;
+	
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -35,7 +36,7 @@ public class FingerprintValidatorTest {
 	private UserDetailDAO userDetailDAO;
 	
 	@Mock
-	private FingerprintFacade fingerprintFacade;
+	private BioService bioService;
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 
@@ -70,7 +71,7 @@ public class FingerprintValidatorTest {
 		userBiometrics.add(userBiometric);
 
 		when(userDetailDAO.getUserSpecificBioDetails("mosip","Fingerprint")).thenReturn(userBiometrics);
-		when(fingerprintFacade.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics)).thenReturn(true);
+		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics)).thenReturn(true);
 		authenticationValidatorDTO.setAuthValidationType("single");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
 	}

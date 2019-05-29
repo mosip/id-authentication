@@ -26,12 +26,13 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -102,7 +103,7 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
-	private IrisFacade irisFacade;
+	private BioService bioservice;
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
@@ -434,7 +435,7 @@ public class IrisCaptureController extends BaseController {
 					: RegistrationConstants.RIGHT;
 
 			try {
-				irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+				bioservice.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 			} catch (RegBaseCheckedException runtimeException) {
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",

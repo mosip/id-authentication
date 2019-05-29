@@ -220,4 +220,13 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 		}
 	}
 
+	@Override
+	public UserBiometric getUserSpecificBioDetail(String userId, String bioType, String subType) {
+		LOGGER.info("REGISTRATION - USER_SPECIFIC_BIO - REGISTRATION_USER_DETAIL_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching user specific subtype level biometric detail");
+
+		return userBiometricRepository
+				.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeAndUserBiometricIdBioAttributeCodeIgnoreCase(userId, bioType, subType);
+	}
+
 }

@@ -1,9 +1,11 @@
 package io.mosip.registration.validator;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_VALIDATOR;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
+import io.mosip.registration.service.bio.BioService;
 
 /**
  * This class is for validating Iris Authentication
@@ -30,9 +33,9 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 	
 	@Autowired
 	private UserDetailDAO userDetailDAO;
-
+	
 	@Autowired
-	private IrisFacade irisFacade;
+	private BioService BioService;
 
 	/**
 	 * Validate the Iris with the AuthenticationValidatorDTO as input
@@ -49,7 +52,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 		LOGGER.info(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating iris details for user registration");
 		
-		return irisFacade.validateIris(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
+		return BioService.validateIrisAgainstDb(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
 	}
 
 }

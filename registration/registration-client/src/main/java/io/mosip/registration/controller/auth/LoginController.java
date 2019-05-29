@@ -1,7 +1,6 @@
 
 package io.mosip.registration.controller.auth;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -40,20 +39,16 @@ import io.mosip.registration.controller.reg.HeaderController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.biometric.FaceDetailsDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserMachineMappingService;
@@ -143,6 +138,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private LoginService loginService;
+
+	@Autowired
+	private BioService bioService;
 
 	@Autowired
 	private AuthenticationService authService;
@@ -275,7 +273,7 @@ public class LoginController extends BaseController implements Initializable {
 						isInitialSetUp);
 
 			} else if (!isInitialSetUp) {
-				executePreLaunchTask(loginRoot, progressIndicator);
+				// executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
 
@@ -636,10 +634,15 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean bioLoginStatus = false;
 
-		if (validateFingerPrint()) {
-			bioLoginStatus = validateInvalidLogin(detail, "");
-		} else {
-			bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
+		try {
+			if (bioService.validateFingerPrint(userId.getText())) {
+				bioLoginStatus = validateInvalidLogin(detail, "");
+			} else {
+				bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
+			}
+		} catch (RegBaseCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -671,10 +674,15 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean irisLoginStatus = false;
 
-		if (validateIris()) {
-			irisLoginStatus = validateInvalidLogin(detail, "");
-		} else {
-			irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
+		try {
+			if (bioService.validateIris(userId.getText())) {
+				irisLoginStatus = validateInvalidLogin(detail, "");
+			} else {
+				irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
+			}
+		} catch (RegBaseCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -706,10 +714,15 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean faceLoginStatus = false;
 
-		if (validateFace()) {
-			faceLoginStatus = validateInvalidLogin(detail, "");
-		} else {
-			faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
+		try {
+			if (bioService.validateFace(userId.getText())) {
+				faceLoginStatus = validateInvalidLogin(detail, "");
+			} else {
+				faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
+			}
+		} catch (RegBaseCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -928,179 +941,6 @@ public class LoginController extends BaseController implements Initializable {
 		}
 	}
 
-	/**
-	 * Validating User Biometrics using Minutia
-	 * 
-	 * @return boolean
-	 */
-	private boolean validateFingerPrint() {
-
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-			try {
-				return validateFingerPrintWithMdm();
-			} catch (RegBaseCheckedException exception) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-				LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-						String.format("%s Exception while getting the scanned finger details for login %s",
-								exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
-				return false;
-			}
-
-		return validateFingerPrintNonMdm();
-
-	}
-
-	/**
-	 * Validating User Biometrics using Minutia with MDM
-	 * 
-	 * @return boolean
-	 */
-	private boolean validateFingerPrintWithMdm() throws RegBaseCheckedException {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
-
-		if (!fingerprintFacade.setIsoTemplate()) {
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-
-			return false;
-		} else {
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"Validation of fingerprint through Minutia");
-
-			boolean fingerPrintStatus = false;
-
-			if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinitiaThroughMdm())) {
-
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplateFromMdm());
-				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-
-				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-				authenticationValidatorDTO.setUserId(userId.getText());
-				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
-						authenticationValidatorDTO);
-
-			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
-				}
-			}
-			return fingerPrintStatus;
-		}
-
-	}
-
-	/**
-	 * Validating User Biometrics using Minutia without MDM
-	 * 
-	 * @return boolean
-	 */
-	private boolean validateFingerPrintNonMdm() {
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Initializing FingerPrint device");
-
-		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade
-				.getFingerprintProviderFactory(getValueFromApplicationContext(RegistrationConstants.PROVIDER_NAME));
-
-		if (fingerPrintConnector.captureFingerprint(
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.QUALITY_SCORE)),
-				Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.CAPTURE_TIME_OUT)),
-				"") != RegistrationConstants.PARAM_ZERO) {
-
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
-
-			return false;
-		} else {
-			// Thread to wait until capture the bio image/ minutia from FP.
-			// based on the
-			// error code or success code the respective action will be taken
-			// care.
-			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fingerprint scan done");
-
-			fingerPrintConnector.uninitFingerPrintDevice();
-
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"Validation of fingerprint through Minutia");
-
-			boolean fingerPrintStatus = false;
-
-			if (RegistrationConstants.EMPTY.equals(fingerprintFacade.getMinutia())) {
-
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
-				FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-				fingerprintDetailsDTO.setFingerPrint(fingerprintFacade.getIsoTemplate());
-				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
-
-				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-				authenticationValidatorDTO.setUserId(userId.getText());
-				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
-						authenticationValidatorDTO);
-
-			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
-				if (fingerprintFacade.getErrorMessage().equalsIgnoreCase(RegistrationConstants.FP_TIMEOUT)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_TIMEOUT);
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FP_DEVICE_ERROR);
-				}
-			}
-			return fingerPrintStatus;
-		}
-	}
-
-	/**
-	 * Validating User Biometrics using Iris
-	 * 
-	 * @return boolean
-	 */
-	private boolean validateIris() {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
-
-		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
-		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIris(irisFacade.captureIris());
-		irisDetailsDTOs.add(irisDetailsDTO);
-		authenticationValidatorDTO.setUserId(userId.getText());
-		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
-
-		return authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
-	}
-
-	/**
-	 * Validating User Biometrics using Face
-	 * 
-	 * @return boolean
-	 */
-	private boolean validateFace() {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
-		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace(faceFacade.captureFace());
-		authenticationValidatorDTO.setUserId(userId.getText());
-		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face scan done");
-
-		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
-	}
-
 	public void executePreLaunchTask(Pane pane, ProgressIndicator progressIndicator) {
 
 		progressIndicator.setVisible(true);
@@ -1167,7 +1007,7 @@ public class LoginController extends BaseController implements Initializable {
 		});
 
 	}
-	
+
 	/**
 	 * Validating invalid number of login attempts
 	 * 
@@ -1180,7 +1020,7 @@ public class LoginController extends BaseController implements Initializable {
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
 
 		boolean validate = false;
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Fetching invalid login params");
 
 		int invalidLoginCount = Integer
@@ -1192,11 +1032,12 @@ public class LoginController extends BaseController implements Initializable {
 		String unlockMessage = String.format("%s %s %s %s %s", RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER,
 				String.valueOf(invalidLoginCount), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE,
 				String.valueOf(invalidLoginTime), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES);
-		
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Invoking validation of login attempts");
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Invoking validation of login attempts");
 
 		String val = loginService.validateInvalidLogin(userDetail, errorMessage, invalidLoginCount, invalidLoginTime);
-		
+
 		if (val.equalsIgnoreCase(RegistrationConstants.ERROR)) {
 			generateAlert(RegistrationConstants.ERROR, unlockMessage);
 			loadLoginScreen();
@@ -1205,8 +1046,9 @@ public class LoginController extends BaseController implements Initializable {
 		} else {
 			validate = Boolean.valueOf(val);
 		}
-		
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Validated number of login attempts");
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Validated number of login attempts");
 
 		return validate;
 
