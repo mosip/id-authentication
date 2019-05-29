@@ -81,7 +81,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
 
 		boolean fingerPrintStatus = false;
-		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGERPRINT_SINGLE);
+		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
 		isoTemplate = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
 		// TODo isoTemplate value to be decoded
 
