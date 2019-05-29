@@ -152,18 +152,6 @@ public class ClientJarEncryption {
 					File regFolder = new File(args[6]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
-					// TODO temporary zip file
-					System.out.println("Shaded Zip Started");
-					String shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] + MOSIP_ZIP;
-					Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
-					readDirectoryToByteArray(null, regFolder, shadedZipFileBytes);
-					File shadedJar = args[1] != null && new File(args[1]).exists() ? new File(args[1])
-							: new File(args[7]);
-					shadedZipFileBytes.put(shadedJar.getName(), FileUtils.readFileToByteArray(shadedJar));
-					aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
-
-					System.out.println("Shaded Zip Created");
-
 					String path = new File(args[4]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);

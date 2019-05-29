@@ -107,6 +107,7 @@
 		<filesystem.adapter.ceph.version>${version}</filesystem.adapter.ceph.version>
 		<packet.manager.version>${version}</packet.manager.version>
 		<registration.processor.rest.client.version>${version}</registration.processor.rest.client.version>
+		<registration.processor.abis.handler.stage.version>${version}</registration.processor.abis.handler.stage.version>
 		<packet.info.storage.service.version>${version}</packet.info.storage.service.version>
 		<packet.bio.dedupe.service.impl.version>${version}</packet.bio.dedupe.service.impl.version>
 		<registration.processor.message.sender.version>${version}</registration.processor.message.sender.version>

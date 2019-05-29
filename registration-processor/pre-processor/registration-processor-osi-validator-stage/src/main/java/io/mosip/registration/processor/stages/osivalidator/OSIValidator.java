@@ -6,13 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
@@ -20,39 +22,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.xml.sax.SAXException;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
+import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
-import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.auth.util.BioSubTypeMapperUtil;
+import io.mosip.registration.processor.core.auth.util.BioTypeMapperUtil;
+import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -71,7 +91,7 @@ public class OSIValidator {
 
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
-	/** The registration status service. */
+
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -91,12 +111,12 @@ public class OSIValidator {
 	@Autowired
 	private OSIUtils osiUtils;
 
+	@Autowired
+	ABISHandlerUtil abisHandlerUtil;
+
 	private JSONObject demographicIdentity;
 
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	/** The message. */
-	private String message = null;
 
 	/** The Constant TRUE. */
 	private static final String TRUE = "true";
@@ -116,9 +136,6 @@ public class OSIValidator {
 	/** The identity info DTO. */
 	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 
-	/** The request. */
-	RequestDTO request = new RequestDTO();
-
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
 
@@ -131,8 +148,40 @@ public class OSIValidator {
 	@Value("${registration.processor.applicant.dob.format}")
 	private String dobFormat;
 
+	private static final String VALUE = "value";
+
 	@Autowired
 	private Utilities utility;
+
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+
+	@Autowired
+	private AuthUtil authUtil;
+
+	/** The registration processor rest client service. */
+	@Autowired
+	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
+
+	/** The Constant APPLICATION_ID. */
+	public static final String IDA_APP_ID = "IDA";
+
+	/** The Constant RSA. */
+	public static final String RSA = "RSA";
+
+	/** The Constant RSA. */
+	public static final String PARTNER_ID = "PARTNER";
+
+	public static final String INDIVIDUAL_TYPE_UIN = "UIN";
+
+	private static final String INDIVIDUAL_TYPE_USERID = "USERID";
+
+	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
+
+	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
+
+	IBioApi bioAPi = new BioApiImpl();
+
+	CbeffUtil cbeffUtil = new CbeffImpl();
 
 	/**
 	 * Checks if is valid OSI.
@@ -144,8 +193,17 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NumberFormatException
 	 */
-	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
+	public boolean isValidOSI(String registrationId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
@@ -156,17 +214,114 @@ public class OSIValidator {
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
 		String officerId = regOsi.getOfficerId();
 		String supervisorId = regOsi.getSupervisorId();
-		if (officerId == null && supervisorId == null) {
-			registrationStatusDto
-					.setStatusComment(StatusMessage.OSI_VALIDATION_FAILURE + " Officer and Supervisor are null");
+		if ((officerId == null || officerId.isEmpty()) && (supervisorId == null || supervisorId.isEmpty())) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
+		} else {
+			boolean isActive = isActiveUserId(registrationId, regOsi, identity);
+			if (!isActive) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
+				return false;
+			}
+			if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
+					&& (isValidIntroducer(registrationId)))
+				isValidOsi = true;
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "OSIValidator::isValidOSI()::exit");
 		}
-		if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
-				&& (isValidIntroducer(registrationId)))
-			isValidOsi = true;
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "OSIValidator::isValidOSI()::exit");
 		return isValidOsi;
+	}
+
+	private boolean isActiveUser(String officerId, String creationDate, String supervisorId)
+			throws ApisResourceAccessException {
+		boolean wasOfficerActiveDuringPCT = false;
+		boolean wasSupervisorActiveDuringPCT = false;
+		String statusMessage = "";
+		if (officerId != null && !officerId.isEmpty()) {
+			UserResponseDto officerResponse = isUserActive(officerId, creationDate);
+			if (officerResponse.getErrors() == null) {
+				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).getIsActive();
+				if (!wasOfficerActiveDuringPCT) {
+					statusMessage = statusMessage + " " + StatusMessage.OFFICER_NOT_ACTIVE;
+					this.registrationStatusDto.setStatusComment(statusMessage);
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
+				}
+			} else {
+				List<ServerError> errors = officerResponse.getErrors();
+				statusMessage = statusMessage + " " + "Officer : " + errors.get(0).getMessage();
+				this.registrationStatusDto.setStatusComment(statusMessage);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
+			}
+
+		}
+
+		if (supervisorId != null && !supervisorId.isEmpty()) {
+			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate);
+			if (supervisorResponse.getErrors() == null) {
+				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).getIsActive();
+				if (!wasSupervisorActiveDuringPCT) {
+					statusMessage = statusMessage + " " + StatusMessage.SUPERVISOR_NOT_ACTIVE;
+					this.registrationStatusDto.setStatusComment(statusMessage);
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
+				}
+			} else {
+				List<ServerError> errors = supervisorResponse.getErrors();
+				statusMessage = statusMessage + " " + "Supervisor : " + errors.get(0).getMessage();
+				this.registrationStatusDto.setStatusComment(statusMessage);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
+			}
+		}
+		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
+	}
+
+	private UserResponseDto isUserActive(String operatorId, String creationDate)
+			throws ApisResourceAccessException {
+		UserResponseDto userResponse;
+		List<String> pathSegments = new ArrayList<String>();
+		pathSegments.add(operatorId);
+		pathSegments.add(creationDate);
+		try {
+			userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
+					UserResponseDto.class);
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				String result = httpServerException.getResponseBodyAsString();
+				this.registrationStatusDto.setStatusComment(result);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
+			} else {
+				throw e;
+			}
+
+		}
+		return userResponse;
 	}
 
 	/**
@@ -178,49 +333,68 @@ public class OSIValidator {
 	 *            the registration id
 	 * @return true, if is valid operator
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws Exception
+	 * @throws NumberFormatException
 	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
-			throws IOException, ApisResourceAccessException {
-
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		boolean isValid = false;
 		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
 			// officer password and otp check
 			String officerPassword = regOsi.getOfficerHashedPwd();
 			String officerOTPAuthentication = regOsi.getOfficerOTPAuthentication();
 
-			String fingerPrint = null;// regOsi.getOfficerFingerpImageName();
-			String fingerPrintType = null;// regOsi.getOfficerfingerType();
-			String iris = null;// regOsi.getOfficerIrisImageName();
-			String irisType = null;// regOsi.getOfficerIrisType();
-			String face = null;// regOsi.getOfficerPhotoName();
-			String pin = null;// regOsi.getOfficerHashedPin();
+			String officerBiometricFileName = regOsi.getOfficerBiometricFileName();
 
-			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				boolean flag = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
-				if (flag) {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.OPERATOR);
-				} else {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.OPERATOR);
-
+			if (StringUtils.isEmpty(officerBiometricFileName) || officerBiometricFileName == null) {
+				isValid = validateOtpAndPwd(officerPassword, officerOTPAuthentication);
+				if (!isValid) {
+					registrationStatusDto.setStatusComment(StatusMessage.PASSWORD_OTP_FAILURE + StatusMessage.OPERATOR);
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							StatusMessage.PASSWORD_OTP_FAILURE);
 				}
-				return flag;
-			} else if ((validateUIN(officerId))
-					&& (validateFingerprint(officerId, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(officerId, iris, irisType, registrationId))
-					&& (validateFace(officerId, face, registrationId)) && (validatePin(officerId, pin))
-					&& validateOtpAndPwd(officerPassword, officerOTPAuthentication)) {
-				return true;
 			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
-				return false;
+				isValid = validateUserBiometric(registrationId, officerBiometricFileName, regOsi.getOfficerId());
+				if (!isValid) {
+					registrationStatusDto.setStatusComment(StatusMessage.IDA_AUTHENTICATION_FAILURE);
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				}
 			}
+
+		} else
+			isValid = true; // either officer or supervisor information is mandatory. Officer id can be null
+
+		return isValid;
+	}
+
+	private boolean validateUserBiometric(String registrationId, String fileName, String userId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		InputStream biometricStream = adapter.getFile(registrationId, fileName.toUpperCase());
+		byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
+		AuthResponseDTO response = authUtil.authByIdAuthentication(userId, INDIVIDUAL_TYPE_USERID, officerbiometric);
+		if(!response.getResponse().isAuthStatus()) {
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.IDA_AUTHENTICATION_FAILURE + " " + response.getErrors().get(0));
 		}
-		return true;
+
+		return response.getResponse().isAuthStatus();
+
 	}
 
 	/**
@@ -249,47 +423,57 @@ public class OSIValidator {
 	 *            the registration id
 	 * @return true, if is valid supervisor
 	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws Exception
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
-			throws IOException, ApisResourceAccessException {
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidSupervisor()::entry");
 		String supervisorId = regOsi.getSupervisorId();
+		boolean isValid = false;
 		if (supervisorId != null) {
-			// superVisior otp and password
+
+			// officer password and otp check
 			String supervisiorPassword = regOsi.getSupervisorHashedPwd();
-			String supervisorOTPAuthentication = regOsi.getSupervisorOTPAuthentication();
+			String supervisorOTP = regOsi.getSupervisorOTPAuthentication();
 
-			String fingerPrint = null;// regOsi.getSupervisorBiometricFileName();
-			String fingerPrintType = null;// regOsi.getSupervisorFingerType();
-			String iris = null;// regOsi.getSupervisorIrisImageName();
-			String irisType = null;// regOsi.getSupervisorIrisType();
-			String face = null;// regOsi.getSupervisorPhotoName();
-			String pin = null;// regOsi.getSupervisorHashedPin();
+			String supervisorBiometricFileName = regOsi.getSupervisorBiometricFileName();
 
-			if (checkBiometricNull(fingerPrint, iris, face, pin)) {
-				boolean flag = validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication);
-				if (flag) {
+			if (StringUtils.isEmpty(supervisorBiometricFileName) || supervisorBiometricFileName == null) {
+				isValid = validateOtpAndPwd(supervisiorPassword, supervisorOTP);
+				if (!isValid) {
 					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_SUCCESS + StatusMessage.SUPERVISOR);
-				} else {
-					registrationStatusDto
-							.setStatusComment(StatusMessage.VALIDATION_DETAILS_FAILURE + StatusMessage.SUPERVISOR);
+							.setStatusComment(StatusMessage.PASSWORD_OTP_FAILURE + StatusMessage.SUPERVISOR);
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							StatusMessage.PASSWORD_OTP_FAILURE);
 				}
-				return flag;
-			} else if ((validateUIN(supervisorId))
-					&& (validateFingerprint(supervisorId, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(supervisorId, iris, irisType, registrationId))
-					&& (validateFace(supervisorId, face, registrationId)) && (validatePin(supervisorId, pin))
-					&& validateOtpAndPwd(supervisiorPassword, supervisorOTPAuthentication)) {
-				return true;
 			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
-				return false;
+				isValid = validateUserBiometric(registrationId, supervisorBiometricFileName, regOsi.getSupervisorId());
+				if (!isValid) {
+					registrationStatusDto.setStatusComment(StatusMessage.IDA_AUTHENTICATION_FAILURE);
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				}
 			}
-		}
-		return true;
+
+		} else
+			isValid = true; // either officer or supervisor information is mandatory. Supervisor id can be null
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidSupervisor()::exit");
+		return isValid;
 	}
 
 	/**
@@ -304,92 +488,84 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws BioTypeException
+	 * @throws BiometricException
 	 */
-	private boolean isValidIntroducer(String registrationId) throws IOException, ApisResourceAccessException {
+	private boolean isValidIntroducer(String registrationId)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
-		int childAgeLimit = Integer.parseInt(ageLimit);
-		int applicantAge = utility.getApplicantAge(registrationId);
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
-				&& applicantAge <= childAgeLimit && applicantAge > 0) {
-			String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
-			String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
-			Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
-			Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
-			BigInteger introducerUIN = numberToBigInteger(introducerUinNumber);
-			BigInteger introducerRID = numberToBigInteger(introducerRidNumber);
-			if (introducerUIN == null && introducerRID == null) {
-				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
-				return false;
-			}
-			String introducerRidString = bigIntegerToString(introducerRID);
-			String introducerUinString = bigIntegerToString(introducerUIN);
-			Boolean isIntroducerUinPresent = introducerUinString != null ? true : false;
-			if (introducerUinString == null && validateIntroducerRid(introducerRidString, registrationId)) {
-
-				isIntroducerUinPresent = getIntroducerUIN(introducerRidString);
-				if (!isIntroducerUinPresent) {
+				|| (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.name()))) {
+			int age = utility.getApplicantAge(registrationId);
+			int ageThreshold = Integer.parseInt(ageLimit);
+			if (age < ageThreshold) {
+				String introducerUinLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianUIN().getValue();
+				String introducerRidLabel = regProcessorIdentityJson.getIdentity().getParentOrGuardianRID().getValue();
+				Number introducerUinNumber = JsonUtil.getJSONValue(demographicIdentity, introducerUinLabel);
+				Number introducerRidNumber = JsonUtil.getJSONValue(demographicIdentity, introducerRidLabel);
+				String introducerBiometricsLabel = regProcessorIdentityJson.getIdentity()
+						.getParentOrGuardianBiometrics().getValue();
+				String introducerBiometricsFileName = null;
+				Object object = JsonUtil.getJSONValue(demographicIdentity, introducerBiometricsLabel);
+				if (object instanceof LinkedHashMap) {
+					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, introducerBiometricsLabel);
+					introducerBiometricsFileName = (String) json.get(VALUE);
+				}
+				String introducerUIN = numberToString(introducerUinNumber);
+				String introducerRID = numberToString(introducerRidNumber);
+				if (introducerUIN == null && introducerRID == null) {
+					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_AND_RID_NOT_IN_PACKET));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 					registrationStatusDto
-							.setStatusComment(StatusMessage.PARENT_UIN_NOT_FOUND_IN_TABLE + registrationId);
+							.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET);
+					return false;
+				}
+
+				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
+
+					introducerUinNumber = abisHandlerUtil.getUinFromIDRepo(introducerRID);
+					introducerUIN = numberToString(introducerUinNumber);
+					if (introducerUIN == null) {
+						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+								.getStatusCode(RegistrationExceptionTypeCode.PARENT_UIN_NOT_AVAIALBLE));
+						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+						registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_NOT_AVAIALBLE + registrationId);
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								StatusMessage.PARENT_UIN_NOT_AVAIALBLE);
+						return false;
+					}
+
+				}
+				if (introducerUIN != null) {
+					return validateIntroducer(registrationId, introducerUIN, introducerBiometricsFileName);
+				} else {
 					return false;
 				}
 			}
-			if (introducerUinString != null) {
-				return validateIntroducer(registrationId, introducerUinString);
-			} else {
-				return false;
-			}
+
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "OSIValidator::isValidIntroducer()::exit");
+
 		return true;
 	}
 
-	private BigInteger numberToBigInteger(Number number) {
-		return number != null ? new BigInteger(String.valueOf(number)) : null;
+	private String numberToString(Number number) {
+		return number != null ? number.toString() : null;
 	}
-
-	private String bigIntegerToString(BigInteger number) {
-
-		return number != null ? String.valueOf(number) : null;
-	}
-
-	/**
-	 * Validate fingerprint.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param fingerprint
-	 *            the fingerprint
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateFingerprint(String uin, String fingerprint, String type, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (fingerprint == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
-				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
-				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-				setAuthDto();
-				identityInfoDTO.setValue(new String(fingerPrintByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setFingerPrint(true);
-				setFingerBiometric(biometricData, type.toUpperCase());
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.FINGER_PRINT;
-		return false;
-	}
-
+	
 	/**
 	 * Sets the finger biometric dto.
 	 *
@@ -437,130 +613,6 @@ public class OSIValidator {
 	}
 
 	/**
-	 * Validate iris.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param iris
-	 *            the iris
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateIris(String uin, String iris, String type, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (iris == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, iris.toUpperCase())) {
-				InputStream irisFileName = adapter.getFile(registrationId, iris.toUpperCase());
-				byte[] irisByte = IOUtils.toByteArray(irisFileName);
-				setAuthDto();
-				identityInfoDTO.setValue(new String(irisByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setIris(true);
-				if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
-					identityDTO.setLeftEye(biometricData);
-				} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
-					identityDTO.setRightEye(biometricData);
-				}
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.IRIS;
-		return false;
-	}
-
-	/**
-	 * Validate face.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param face
-	 *            the face
-	 * @param registrationId
-	 *            the registration id
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private boolean validateFace(String uin, String face, String registrationId)
-			throws IOException, ApisResourceAccessException {
-		if (face == null)
-			return true;
-		else {
-			if (adapter.checkFileExistence(registrationId, face.toUpperCase())) {
-				setAuthDto();
-				InputStream faceFile = adapter.getFile(registrationId, face.toUpperCase());
-				byte[] faceByte = IOUtils.toByteArray(faceFile);
-				identityInfoDTO.setValue(new String(faceByte));
-				List<IdentityInfoDTO> biometricData = new ArrayList<>();
-				biometricData.add(identityInfoDTO);
-				// authTypeDTO.setFace(true);
-				identityDTO.setFace(biometricData);
-				if (validateBiometric(uin))
-					return true;
-			}
-		}
-		message = StatusMessage.FACE;
-		return false;
-	}
-
-	/**
-	 * Validate UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return true, if successful
-	 */
-	private boolean validateUIN(String uin) {
-		// todo To call IAM rest API for UNI validation
-		return true;
-	}
-
-	/**
-	 * Validate pin.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param pin
-	 *            the pin
-	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
-		if (pin == null)
-			return true;
-		Boolean isValidPin = false;
-		authTypeDTO.setPin(true);
-		authRequestDTO.setIdvId(uin);
-		pinInfo.setValue(pin);
-		pinInfo.setType("SPIN");
-		List<PinInfo> pinList = new ArrayList<>();
-		pinList.add(pinInfo);
-		authRequestDTO.setPinInfo(pinList);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); if
-		 * (authResponseDTO.getStatus().equalsIgnoreCase("y"))
-		 */
-		isValidPin = true;
-		return isValidPin;
-	}
-
-	/**
 	 * Validate otp and pwd.
 	 *
 	 * @param password
@@ -573,58 +625,10 @@ public class OSIValidator {
 		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
 			return true;
 		} else {
-			message = StatusMessage.VALIDATE_OTP_PASSWORD;
 			return false;
 
 		}
 
-	}
-
-	/**
-	 * Validate biometric.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	boolean validateBiometric(String uin) throws ApisResourceAccessException {
-
-		authRequestDTO.setIdvId(uin);
-		authRequestDTO.setAuthType(authTypeDTO);
-		request.setIdentity(identityDTO);
-		authRequestDTO.setRequest(request);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); return authResponseDTO != null &&
-		 * authResponseDTO.getStatus() != null &&
-		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
-		 */
-		return true;
-	}
-
-	/**
-	 * Sets the auth dto.
-	 */
-	public void setAuthDto() {
-		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String date = simpleDateFormat.format(new Date());
-		authRequestDTO.setReqTime(date);
-		authRequestDTO.setId("mosip.internal.auth");
-		authRequestDTO.setIdvIdType("D");
-		// authRequestDTO.setVer("1.0");
-		authTypeDTO.setAddress(false);
-		authTypeDTO.setBio(false);
-		authTypeDTO.setFullAddress(false);
-		authTypeDTO.setOtp(false);
-		authTypeDTO.setPersonalIdentity(false);
-		authTypeDTO.setPin(false);
-		// authTypeDTO.setFace(false);
-		// authTypeDTO.setFingerPrint(false);
-		// authTypeDTO.setIris(false);
 	}
 
 	/**
@@ -637,17 +641,57 @@ public class OSIValidator {
 	 * @param introducerUin
 	 *            the introducer uin
 	 * @return true, if successful
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws BioTypeException
+	 * @throws BiometricException
 	 */
 
-	// TODO Now Introducer data will come in ID JSON Logic is going to change
-	private boolean validateIntroducer(String registrationId, String introducerUin)
-			throws ApisResourceAccessException, IOException {
+	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile)
+			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+		if (introducerBiometricsFile != null && (!introducerBiometricsFile.trim().isEmpty())) {
+			InputStream packetMetaInfoStream = adapter.getFile(registrationId,
+					PacketStructure.BIOMETRIC + introducerBiometricsFile.toUpperCase());
+			byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
+			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
+					introducerbiometric);
+			if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
+				if (authResponseDTO.getResponse().isAuthStatus()) {
+					return true;
+				} else {
+					registrationStatusDto.setLatestTransactionStatusCode(
+							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_FAILED));
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+					registrationStatusDto.setStatusComment(StatusMessage.AUTHENTICATION_FAILED);
+					return false;
+				}
 
-		return true;
+			} else {
+				List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
+				registrationStatusDto.setLatestTransactionStatusCode(
+						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_ERROR));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				registrationStatusDto.setStatusComment(errors.get(0).getErrorMessage());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, errors.get(0).getErrorMessage());
+				return false;
+			}
+		} else {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
+			return false;
+		}
 
 	}
 
@@ -664,70 +708,70 @@ public class OSIValidator {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
-			if (registrationStatusService.checkUinAvailabilityForRid(introducerRid))
+			if (introducerRegistrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSING.toString())) {
+
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
+
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, StatusMessage.PACKET_IS_ON_HOLD);
+				return false;
+
+			} else if (introducerRegistrationStatusDto.getStatusCode()
+					.equals(RegistrationStatusCode.REJECTED.toString())
+					|| introducerRegistrationStatusDto.getStatusCode()
+							.equals(RegistrationStatusCode.FAILED.toString())) {
+
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_REJECTED_PARENT));
+
+				registrationStatusDto.setStatusComment(StatusMessage.OSI_FAILED_REJECTED_PARENT);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						StatusMessage.OSI_FAILED_REJECTED_PARENT);
+
+				return false;
+			} else {
 				return true;
-			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
-			return false;
+			}
+
 		} else {
-			registrationStatusDto.setStatusComment(StatusMessage.PARENT_RID_NOT_IN_REGISTRATION_TABLE + registrationId);
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.OSI_FAILED_ON_HOLD_PARENT_PACKET));
+
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_IS_ON_HOLD);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, StatusMessage.PACKET_IS_ON_HOLD);
 			return false;
 		}
+
 	}
 
-	/**
-	 * Gets the introducer UIN.
-	 *
-	 * @param intoducerRid
-	 *            the intoducer rid
-	 * @return the introducer UIN
-	 */
-	private Boolean getIntroducerUIN(String intoducerRid) {
-		List<DemographicInfoDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);
-		if (registrationStatusService.checkUinAvailabilityForRid(demographicDedupeDtoList.get(0).getRegId())) {
-			return true;
+	private boolean isActiveUserId(String registrationId, RegOsiDto regOsi, Identity identity)
+			throws UnsupportedEncodingException, ApisResourceAccessException {
+		boolean isValid = false;
+		String creationDate = osiUtils.getMetaDataValue(JsonConstant.CREATIONDATE, identity);
+		if (creationDate == null && StringUtils.isEmpty(creationDate)) {
+			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+					.getStatusCode(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "packet creationDate is null");
+
+		} else {
+			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId());
+			if (!isValid) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			}
 		}
-		return false;
-
-	}
-
-	/**
-	 * Gets the hash sequence value.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param field
-	 *            the field
-	 * @return the hash sequence value
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private String getHashSequenceValue(String registrationId, String field) throws UnsupportedEncodingException {
-
-		Identity identity = getIdentity(registrationId);
-		List<FieldValueArray> hashSequence = identity.getHashSequence1();
-		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
-		if (hashList != null)
-			return hashList.get(0).toUpperCase();
-
-		return null;
-
-	}
-
-	/**
-	 * Gets the identity.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @return the identity
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-				PacketMetaInfo.class);
-		return packetMetaInfo.getIdentity();
-
+		return isValid;
 	}
 
 }
