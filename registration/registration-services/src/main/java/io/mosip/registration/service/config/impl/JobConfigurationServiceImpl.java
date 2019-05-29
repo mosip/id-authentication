@@ -275,18 +275,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
 
 				}
-			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
+			} catch (SchedulerException | RuntimeException exception) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				/* Stop, Clear Scheduler and set Error response */
-				setStartExceptionError(responseDTO);
-
-			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID,
-						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 				setStartExceptionError(responseDTO);
 
 			}
@@ -454,13 +448,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 			}
 
-		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-			responseDTO = new ResponseDTO();
-			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -690,7 +677,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		});
 
 	}
-	
+
 	@Autowired
 	ResponseDTOForSync responseDTOForSync;
 
@@ -717,7 +704,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				if (jobResponse.getErrorResponseDTOs() != null) {
 					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
 					responseDTOForSync.getErrorJobs().add(syncJob.getKey());
-				}else {
+				} else {
 					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
 				}
 			}
@@ -728,7 +715,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		}
 
 		return responseDTO;
-		
+
 	}
 
 	/*
