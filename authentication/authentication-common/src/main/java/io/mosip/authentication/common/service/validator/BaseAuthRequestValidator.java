@@ -257,8 +257,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		filterdBioData.forEach(bioInfo -> {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] {
-							"for Bio Type:" + bioInfo.getBioType() + "and Bio SubType" + bioInfo.getBioSubType() },
+					new Object[] { "for bioType - " + bioInfo.getBioType() + " " + "& bioSubType - "
+							+ bioInfo.getBioSubType() },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		});
 
@@ -669,7 +669,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		} catch (IdObjectValidationFailedException | IdObjectIOException | IdAuthenticationBusinessException e) {
 			if (e instanceof IdObjectValidationFailedException) {
 				for (String error : e.getErrorTexts()) {
-					String[] split = error.split("-");
+					String[] split = error.split("identity/");
 					errors.rejectValue(IdAuthCommonConstants.REQUEST,
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							new Object[] { split[1] },
