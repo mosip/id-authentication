@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.admin.accountmgmt.constant.AccountManagementErrorCode;
 import io.mosip.admin.uinmgmt.constant.UinGenerationStatusErrorCode;
 import io.mosip.admin.uinmgmt.dto.UinGenerationStatusDto;
 import io.mosip.admin.uinmgmt.exception.UinGenerationStatusException;
@@ -27,6 +26,11 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 
+/**
+ * @author Sidhant Agarwal
+ * @snce 1.0.0
+ *
+ */
 @Service
 public class UinGenerationStatusServiceImpl implements UinGenerationStatusService {
 
@@ -39,32 +43,39 @@ public class UinGenerationStatusServiceImpl implements UinGenerationStatusServic
 	@Autowired
 	ObjectMapper mapper;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.admin.uinmgmt.service.UinGenerationStatusService#getPacketStatus(
+	 * java.lang.String)
+	 */
 	@Override
 	public ResponseWrapper<List<UinGenerationStatusDto>> getPacketStatus(String rid) {
-		String answer ;
+		String answer;
 		RequestWrapper<List<UinGenerationStatusDto>> request = new RequestWrapper<>();
 		request.setId("mosip.registration.status");
 		request.setVersion("1.0");
 		request.setRequesttime(LocalDateTime.now(ZoneId.of("UTC")));
-		
+
 		List<UinGenerationStatusDto> uingen = new ArrayList<>();
 		UinGenerationStatusDto uin = new UinGenerationStatusDto();
 		uin.setRegistrationId(rid);
 		uingen.add(uin);
 		request.setRequest(uingen);
-		
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
-		HttpEntity<RequestWrapper<List<UinGenerationStatusDto>>> entity = new HttpEntity<>(request,headers);
+		HttpEntity<RequestWrapper<List<UinGenerationStatusDto>>> entity = new HttpEntity<>(request, headers);
 		try {
-		answer = restTemplate.postForObject(getPacketStatusApi, entity, String.class);
+			answer = restTemplate.postForObject(getPacketStatusApi, entity, String.class);
 		} catch (RestClientException e) {
-			throw new UinGenerationStatusException(UinGenerationStatusErrorCode.UIN_GENERATION_STATUS_EXCEPTION.getErrorCode(),
+			throw new UinGenerationStatusException(
+					UinGenerationStatusErrorCode.UIN_GENERATION_STATUS_EXCEPTION.getErrorCode(),
 					UinGenerationStatusErrorCode.UIN_GENERATION_STATUS_EXCEPTION.getErrorMessage(), e);
 		}
-		
+
 		ResponseWrapper<List<UinGenerationStatusDto>> responseObject = null;
 		try {
 
@@ -75,11 +86,7 @@ public class UinGenerationStatusServiceImpl implements UinGenerationStatusServic
 			throw new ParseResponseException(UinGenerationStatusErrorCode.PARSE_EXCEPTION.getErrorCode(),
 					UinGenerationStatusErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
 		}
-		//System.out.println(answer);
-		//String answer = restTemplate.getForObject(getPacketStatusApi, String.class, entity);
+
 		return responseObject;
-		}
 	}
-
-
-
+}
