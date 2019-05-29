@@ -42,6 +42,7 @@ public class OSIUtils {
 		regOsi.setSupervisorHashedPwd(getOsiDataValue(JsonConstant.SUPERVISORPWR,identity));
 		regOsi.setSupervisorId(getOsiDataValue(JsonConstant.SUPERVISORID,identity));
 		regOsi.setSupervisorOTPAuthentication(getOsiDataValue(JsonConstant.SUPERVISOROTPAUTHENTICATION,identity));
+		regOsi.setOfficerBiometricFileName(getOsiDataValue(JsonConstant.OFFICERBIOMETRICFILENAME,identity));
 		
 		return regOsi;
 	}
