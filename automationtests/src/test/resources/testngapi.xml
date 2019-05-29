@@ -134,10 +134,10 @@
 			<class name="io.mosip.authentication.tests.InternalBiometricAuthentication" />
 			<class name="io.mosip.authentication.idRepository.tests.AddIdentity" />
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
-			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
+			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> -->
 		</classes>
 
-	</test> -->
+	</test> 
 
 
 	 <test name="RegistrationProcessor Tests">
