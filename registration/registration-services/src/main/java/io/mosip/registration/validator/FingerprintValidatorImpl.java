@@ -23,7 +23,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.bio.BioService;
-import io.mosip.registration.service.security.AuthenticationServiceImpl;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 
 /**
  * This class is for validating Fingerprint Authentication

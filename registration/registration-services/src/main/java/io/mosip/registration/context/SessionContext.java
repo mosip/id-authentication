@@ -11,7 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.UserDTO;
 
 /**
  * Class for SessionContext details
@@ -65,22 +65,22 @@ public class SessionContext {
 	/**
 	 * making sessionContext as singleton
 	 * 
-	 * @param : user ID
+	 * @param : userDTO
 	 * 
 	 * @return sessionContext
 	 */
-	public static SessionContext create(UserDetail  userDetail){
-		if (userDetail != null) {
+	public static SessionContext create(UserDTO  userDTO){
+		if (userDTO != null) {
 			List<String> roleList = new ArrayList<>();
 
-			userDetail.getUserRole().forEach(roleCode -> {
-				if (roleCode.getIsActive()) {
-					roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
+			userDTO.getUserRole().forEach(roleCode -> {
+				if (roleCode.isActive()) {
+					roleList.add(String.valueOf(roleCode.getRoleCode()));
 				}
 			});
 			
 			securityContext = sessionContext.new SecurityContext();
-			securityContext.setUserId(userDetail.getId());
+			securityContext.setUserId(userDTO.getId());
 			securityContext.setRoles(roleList);
 			securityContext.setSecurityAuthenticationMap(new HashMap<>());
 			

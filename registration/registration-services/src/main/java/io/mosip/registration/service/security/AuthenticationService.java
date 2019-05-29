@@ -1,4 +1,4 @@
-package io.mosip.registration.service.security.impl;
+package io.mosip.registration.service.security;
 
 import java.util.List;
 

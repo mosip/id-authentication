@@ -38,7 +38,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

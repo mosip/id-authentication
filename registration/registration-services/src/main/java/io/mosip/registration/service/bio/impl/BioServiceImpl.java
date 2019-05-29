@@ -47,7 +47,7 @@ import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.bio.BioService;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 
 @Service
 public class BioServiceImpl extends BaseService implements BioService {

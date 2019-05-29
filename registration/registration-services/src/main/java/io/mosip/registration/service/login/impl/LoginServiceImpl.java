@@ -2,6 +2,7 @@ package io.mosip.registration.service.login.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.login.LoginService;
@@ -124,15 +126,17 @@ public class LoginServiceImpl implements LoginService {
 	 * String)
 	 */
 	@Override
-	public UserDetail getUserDetail(String userId) {
+	public UserDTO getUserDetail(String userId) {
 		// Retrieving Officer details
 		LOGGER.info("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
 		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, RegistrationConstants.APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+		
+		UserDetail userDetail = userDetailDAO.getUserDetail(userId);
 
-		return userDetailDAO.getUserDetail(userId);
+		return MAPPER_FACADE.map(userDetail, UserDTO.class);
 	}
 
 	/*
@@ -177,13 +181,20 @@ public class LoginServiceImpl implements LoginService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
-	 * registration.entity.UserDetail)
+	 * registration.dto.UserDTO)
 	 */
-	public void updateLoginParams(UserDetail userDetail) {
+	public void updateLoginParams(UserDTO userDTO) {
 
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating Login Params");
 
+		UserDetail userDetail = userDetailDAO.getUserDetail(userDTO.getId());
+		
+		userDetail.setLastLoginDtimes(userDTO.getLastLoginDtimes());
+		userDetail.setLastLoginMethod(userDTO.getLastLoginMethod());
+		userDetail.setUnsuccessfulLoginCount(userDTO.getUnsuccessfulLoginCount());
+		userDetail.setUserlockTillDtimes(userDTO.getUserlockTillDtimes());
+		
 		userDetailDAO.updateLoginParams(userDetail);
 		
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -238,24 +249,24 @@ public class LoginServiceImpl implements LoginService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
-	 * registration.entity.UserDetail,java.lang.String,integer,integer)
+	 * registration.dto.UserDTO,java.lang.String,integer,integer)
 	 */
-	public String validateInvalidLogin(UserDetail userDetail, String errorMessage, int invalidLoginCount, int invalidLoginTime) {
+	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime) {
 		
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "validating invalid login params");
 
-		int loginCount = userDetail.getUnsuccessfulLoginCount() != null
-				? userDetail.getUnsuccessfulLoginCount().intValue()
+		int loginCount = userDTO.getUnsuccessfulLoginCount() != null
+				? userDTO.getUnsuccessfulLoginCount().intValue()
 				: RegistrationConstants.PARAM_ZERO;
 
-		Timestamp loginTime = userDetail.getUserlockTillDtimes();
+		Timestamp loginTime = userDTO.getUserlockTillDtimes();
 
 		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
 
 			loginCount = RegistrationConstants.PARAM_ZERO;
-			userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
+			userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
-			updateLoginParams(userDetail);
+			updateLoginParams(userDTO);
 
 		}
 
@@ -266,9 +277,9 @@ public class LoginServiceImpl implements LoginService {
 
 			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
 
-				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
+				userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
 
-				updateLoginParams(userDetail);
+				updateLoginParams(userDTO);
 
 			} else {
 				return RegistrationConstants.ERROR;
@@ -281,10 +292,10 @@ public class LoginServiceImpl implements LoginService {
 				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 						"updating login count and time for invalid login attempts");
 				loginCount = loginCount + RegistrationConstants.PARAM_ONE;
-				userDetail.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userDetail.setUnsuccessfulLoginCount(loginCount);
+				userDTO.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				userDTO.setUnsuccessfulLoginCount(loginCount);
 
-				updateLoginParams(userDetail);
+				updateLoginParams(userDTO);
 
 				if (loginCount >= invalidLoginCount) {					
 					return RegistrationConstants.ERROR;

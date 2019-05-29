@@ -3,13 +3,9 @@ package io.mosip.registration.util.advice;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.aopalliance.intercept.Joinpoint;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +16,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.SecurityContext;
-import io.mosip.registration.entity.UserDetail;
-import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.id.UserRoleID;
+import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.dto.UserRoleDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
 
@@ -66,10 +61,9 @@ public class AuthenticationAdvice {
 		if (SessionContext.isSessionContextAvailable()) {
 			SecurityContext securityContext = SessionContext.securityContext();
 
-			UserDetail userDetail = loginService.getUserDetail(securityContext.getUserId());
+			UserDTO userDTO = loginService.getUserDetail(securityContext.getUserId());
 
-			List<String> roleList = userDetail.getUserRole().stream().map(UserRole::getUserRoleID)
-					.collect(Collectors.toList()).stream().map(UserRoleID::getRoleCode).collect(Collectors.toList());
+			List<String> roleList = userDTO.getUserRole().stream().map(UserRoleDTO::getRoleCode).collect(Collectors.toList());
 
 			for (String role : preAuthorizeUserId.roles()) {
 				roleFound = roleList.stream().anyMatch(dbrole -> dbrole.equalsIgnoreCase(role));
@@ -77,7 +71,7 @@ public class AuthenticationAdvice {
 					break;
 			}
 
-			if (!(userDetail.getIsActive() && roleFound)) {
+			if (!(userDTO.getIsActive() && roleFound)) {
 				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 						"Pre-Authorize the user id got failed");
 

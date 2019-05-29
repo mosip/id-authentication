@@ -1,11 +1,9 @@
 package io.mosip.registration.controller.auth;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_LOGIN;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,22 +30,17 @@ import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.device.iris.IrisFacade;
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.dto.biometric.FaceDetailsDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.login.LoginService;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -718,11 +711,11 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the user role in case of Supervisor Authentication");
 
-		UserDetail userDetail = loginService.getUserDetail(userId);
-		if (userDetail != null) {
-			return userDetail.getUserRole().stream().anyMatch(userRole -> userRole.getUserRoleID().getRoleCode()
+		UserDTO userDTO = loginService.getUserDetail(userId);
+		if (userDTO != null) {
+			return userDTO.getUserRole().stream().anyMatch(userRole -> userRole.getRoleCode()
 					.equalsIgnoreCase(RegistrationConstants.SUPERVISOR)
-					|| userRole.getUserRoleID().getRoleCode().equalsIgnoreCase(RegistrationConstants.ADMIN_ROLE));
+					|| userRole.getRoleCode().equalsIgnoreCase(RegistrationConstants.ADMIN_ROLE));
 		}
 		return false;
 	}

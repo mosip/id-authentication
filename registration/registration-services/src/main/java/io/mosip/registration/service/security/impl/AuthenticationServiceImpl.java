@@ -1,4 +1,4 @@
-package io.mosip.registration.service.security;
+package io.mosip.registration.service.security.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -14,9 +14,9 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.service.login.LoginService;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
 /**
@@ -71,10 +71,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating credentials using database");
 
-		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+		UserDTO userDTO = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
 
 		if (HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
-				CryptoUtil.decodeBase64(userDetail.getSalt())).equals(userDetail.getUserPassword().getPwd())) {
+				CryptoUtil.decodeBase64(userDTO.getSalt())).equals(userDTO.getUserPassword().getPwd())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
 			return RegistrationConstants.PWD_MISMATCH;
