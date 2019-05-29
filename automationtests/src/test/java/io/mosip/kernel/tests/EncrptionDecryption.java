@@ -183,36 +183,25 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			request = ((JSONObject)objectData.get("request"));
 			request.put("data", ((HashMap<String, String>)response.jsonPath().get("response")).get("data"));
 			objectData.put("request", request);
-
 			switch(encDecCase) {
 			case "diffRefToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("referenceId", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffAppIdToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("applicationId", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffDataToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("data", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffTimeStampBefToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("timeStamp", "2018-12-09T06:12:52.994Z");
-				objectData.put("request", request);
 				break;
 			case "diffTimeStampAfToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("timeStamp", "2018-12-11T06:12:52.994Z");
-				objectData.put("request", request);
 				break;
 				
 			}
-			
+			objectData.put("request", request);
 			
 			
 			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI, cookie);

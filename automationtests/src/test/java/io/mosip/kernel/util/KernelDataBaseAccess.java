@@ -67,8 +67,8 @@ public class KernelDataBaseAccess {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String[]> getArrayData(String queryString, String dbName) {
-		return (List<String[]>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+	public List<Object[]> getArrayData(String queryString, String dbName) {
+		return (List<Object[]>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 	}
 
 	@AfterClass(alwaysRun = true)
