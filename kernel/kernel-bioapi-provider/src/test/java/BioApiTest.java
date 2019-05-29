@@ -1,4 +1,4 @@
-/*import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -17,13 +17,12 @@ import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
-*//**
+/**
  * The Class BioApiTest.
  * 
  * @author Sanjay Murali
- *//*
+ */
 public class BioApiTest {
 	
 	CbeffImpl cbeffUtil = new CbeffImpl();
@@ -41,13 +40,8 @@ public class BioApiTest {
 		File fXmlFile2 = new File(classLoader.getResource("applicant_bio_CBEFF2.xml").getFile());
 		byte[] byteArray = IOUtils.toByteArray(new FileInputStream(fXmlFile.getAbsolutePath()));
 		byte[] byteArray2 = IOUtils.toByteArray(new FileInputStream(fXmlFile2.getAbsolutePath()));
-		List<BIRType> birDataFromXML3 = cbeffUtil.getBIRDataFromXML(byteArray);
-		for(BIRType birType : birDataFromXML3) {
-			BIR bir = new BIR(birBuilder)
-			
-		}
-		birDataFromXML = cbeffUtil.getBIRDataFromXML(byteArray);
-		birDataFromXML2 = cbeffUtil.getBIRDataFromXML(byteArray2);
+		birDataFromXML = cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(byteArray));
+		birDataFromXML2 = cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(byteArray2));
 	}
 	
 	@Test
@@ -55,7 +49,7 @@ public class BioApiTest {
 		int count = 0;
 		for (BIR BIR : birDataFromXML) {
 			for (BIR BIR2 : birDataFromXML2) {
-				if (Arrays.equals(BIR.getBDB(), BIR2.getBDB())) {
+				if (Arrays.equals(BIR.getBdb(), BIR2.getBdb())) {
 					count++;
 				}
 			}
@@ -103,4 +97,3 @@ public class BioApiTest {
 		assertEquals(segment[0], bir[0]);
 	}
 }
-*/
