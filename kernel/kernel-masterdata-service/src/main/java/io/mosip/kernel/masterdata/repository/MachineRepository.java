@@ -32,8 +32,10 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * id and language code.
 	 * 
 	 * 
-	 * @param id       Machine Id provided by user
-	 * @param langCode language code provided by user
+	 * @param id
+	 *            Machine Id provided by user
+	 * @param langCode
+	 *            language code provided by user
 	 * @return List MachineDetail fetched from database
 	 */
 
@@ -44,7 +46,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * This method trigger query to fetch the Machine detail for the given language
 	 * code.
 	 * 
-	 * @param langCode langCode provided by user
+	 * @param langCode
+	 *            langCode provided by user
 	 * 
 	 * @return List MachineDetail fetched from database
 	 */
@@ -54,7 +57,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
 	 * 
-	 * @param id machine Id provided by user
+	 * @param id
+	 *            machine Id provided by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
@@ -65,7 +69,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
 	 * 
-	 * @param machineSpecId machineSpecId provided by user
+	 * @param machineSpecId
+	 *            machineSpecId provided by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
@@ -77,13 +82,18 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * This method trigger query to fetch the Machine detail for the given id and
 	 * language code.
 	 * 
-	 * @param id       machine Id provided by user
-	 * @param langCode machine language code by user
+	 * @param id
+	 *            machine Id provided by user
+	 * @param langCode
+	 *            machine language code by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
 
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
+	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(String id, String langCode);
 
 }

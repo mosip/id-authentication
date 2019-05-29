@@ -194,7 +194,7 @@ public class MachineServiceImpl implements MachineService {
 	public IdAndLanguageCodeID updateMachine(MachineDto machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
+			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
 					machine.getId(), machine.getLangCode());
 
 			if (renmachine != null) {
