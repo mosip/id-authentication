@@ -193,7 +193,7 @@ public class MachineController {
 	 *         registration Id {@link MachineResponseDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/mappedmachines/{regCenterId}")
+	@GetMapping(value = "machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Registration Center Id"),
