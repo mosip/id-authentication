@@ -100,6 +100,7 @@ public class MosipRouter {
 	 */
 	private void validateToken(RoutingContext routingContext) {
 		String token = routingContext.request().getHeader("Cookie");
+		System.out.println("++++++++++++++Cookie++++++++ "+token);
 		tokenValidator.validate(token, routingContext.normalisedPath());
 		routingContext.next();
 	}
