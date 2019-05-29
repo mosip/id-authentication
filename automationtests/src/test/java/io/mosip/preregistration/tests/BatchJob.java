@@ -65,7 +65,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
-	@Test
+	/*@Test
 	public void batchJobForExpiredApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -80,8 +80,10 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
+
 	
-	}
+	}*/
+
 	/**
 	 * Batch Job service Consumed Application
 	 */

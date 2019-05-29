@@ -110,6 +110,7 @@
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
 		</classes>
 	</test>
+</suite>
 
 	  <test name="AuthenticationTest">
 		<parameter name="testType" value="smokeandregression" />
@@ -157,4 +158,3 @@
 	</test> 
  
 </suite>
-	
