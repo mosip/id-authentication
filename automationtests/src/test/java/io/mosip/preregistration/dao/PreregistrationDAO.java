@@ -14,6 +14,7 @@ import io.mosip.dbdto.Audit;
 import io.mosip.dbentity.PreRegEntity;
 import io.mosip.preregistration.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.util.PreRegistartionDataBaseAccess;
+import io.mosip.util.PreRegistrationLibrary;
 
 
 public class PreregistrationDAO 
@@ -106,14 +107,14 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, 2); 
+		c.add(Calendar.DATE, 1); 
 		String date = sdf.format(c.getTime());
 		try {
 			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String sDate1="2019-01-11";  
+		String sDate1="2019-05-30";  
 	    Date date3 = null;
 		try {
 			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
@@ -126,7 +127,7 @@ public class PreregistrationDAO
 	}
 	public void updateHoliday(Date date)
 	{
-		String sDate1="2019-01-11";  
+		String sDate1="2019-05-30";  
 	    Date date3 = null;
 		try {
 			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);

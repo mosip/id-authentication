@@ -780,8 +780,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
 		request.put("requesttime", getCurrentDate());
-		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, "", file, parm);
-		//response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
+		
+		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 		return response;
 	}
 

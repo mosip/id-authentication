@@ -48,10 +48,16 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		dao.makeregistartionCenterDeActive("10009");
 		Response syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		lib.FetchCentre("10009");
+		Response fetchCenterResponse = lib.FetchCentre("10009");
+		lib.compareValues(fetchCenterResponse.jsonPath().get("errors[0].message").toString(), "No available slots found for specified registration center");
+		Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(), "Booking data not found");
+		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+		lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(), "Pending_Appointment");
 		dao.makeregistartionCenterActive("10009");
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		lib.FetchCentre("10009");
 	}
 	@Test
 	public void makeRegCntrInactiveAndCheckAppointmentGettingCanceled() {
@@ -66,23 +72,15 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		dao.makeregistartionCenterDeActive("10009");
 		Response syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
+		Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(), "Booking data not found");
+		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+		lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(), "Pending_Appointment");
 		dao.makeregistartionCenterActive("10009");
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 	}
 	@Test
-	public void makeRegCntrInactiveAndCheckNotificationSendToEmail() {
-		dao.makeregistartionCenterDeActive("10009");
-		Response syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		dao.makeregistartionCenterActive("10009");
-		syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response avilibityResponse = lib.FetchCentre("10009");
-		syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-	}
 	public void makeAdayAsHoliday() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);

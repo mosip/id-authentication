@@ -75,19 +75,34 @@ public class Sample extends BaseTestCase implements ITest {
 
 	/**
 	 * Batch job service for expired application
-	 * @throws java.text.ParseException 
+	 * 
+	 * @throws java.text.ParseException
 	 * 
 	 * 
 	 */
+
 	@Test
-	public void makeHolidayAndCheckNotificationSendToEmail() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+	public void makeAdayAsHoliday() {
+		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre("10009");
 		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
+				"Appointment booked successfully");
+		Date date = dao.MakeDayAsHoliday();
+		Response syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
+				"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
+		dao.updateHoliday(date);
+		syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
+				"MASTER_DATA_SYNCED_SUCCESSFULLY");*/
+		dao.MakeDayAsHoliday();
+		//Response syncAvailabilityResponse = lib.syncAvailability();
 	}
 
 	@BeforeMethod(alwaysRun = true)
@@ -103,5 +118,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
+		lib.logOut();
 	}
 }

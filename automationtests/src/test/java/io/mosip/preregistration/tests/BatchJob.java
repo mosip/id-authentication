@@ -80,7 +80,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
-	
 	}
 	/**
 	 * Batch Job service Consumed Application

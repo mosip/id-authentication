@@ -1,118 +1,117 @@
-{  
-   "id": "mosip.pre-registration.demographic.create",
-  "version": "1.0",
-  "requesttime": "2019-01-22T07:22:57.086Z",
-   "request":{  
-      "langCode":"fra",
-      "demographicDetails":{  
-         "identity":{  
-            "IDSchemaVersion":1,
-            "fullName":[  
-               {  
-                  "language":"fra",
-                  "value":"ashish"
-               },
-               {  
-                  "language":"ara",
-                  "value":"َسهِسه"
-               }
-            ],
-            "dateOfBirth":"1989/04/12",
-            "gender":[  
-               {  
-                  "language":"fra",
-                  "value":"MLE"
-               },
-               {  
-                  "language":"ara",
-                  "value":"MLE"
-               }
-            ],
-            "addressLine1":[  
-               {  
-                  "language":"fra",
-                  "value":"dresse est "
-               },
-               {  
-                  "language":"ara",
-                  "value":"درِسسِ ِست "
-               }
-            ],
-            "residenceStatus":[  
-               {  
-                  "language":"fra",
-                  "value":"national"
-               },
-               {  
-                  "language":"ara",
-                  "value":"national"
-               }
-            ],
-            "addressLine2":[  
-               {  
-                  "language":"fra",
-                  "value":"yuwue utter"
-               },
-               {  
-                  "language":"ara",
-                  "value":"يُوُِ ُتتِر"
-               }
-            ],
-            "addressLine3":[  
-               {  
-                  "language":"fra",
-                  "value":"afterfh jdhdy"
-               },
-               {  
-                  "language":"ara",
-                  "value":"َفتِرفه جدهدي"
-               }
-            ],
-            "region":[  
-               {  
-                  "language":"fra",
-                  "value":"RSK"
-               },
-               {  
-                  "language":"ara",
-                  "value":"RSK"
-               }
-            ],
-            "province":[  
-               {  
-                  "language":"fra",
-                  "value":"KTA"
-               },
-               {  
-                  "language":"ara",
-                  "value":"KTA"
-               }
-            ],
-            "city":[  
-               {  
-                  "language":"fra",
-                  "value":"KNT"
-               },
-               {  
-                  "language":"ara",
-                  "value":"KNT"
-               }
-            ],
-            "localAdministrativeAuthority":[  
-               {  
-                  "language":"fra",
-                  "value":"MNAS"
-               },
-               {  
-                  "language":"ara",
-                  "value":"MNAS"
-               }
-            ],
-            "postalCode":"767882",
-            "phone":"9900806086",
-            "email":"ashish.rastogi@mindtree.com",
-            "CNIENumber":"123456789"
-         }
-      }
-   }
+{
+    "request": {
+        "demographicDetails": {
+            "identity": {
+                "CNIENumber": "2864123456765432",
+                "gender": [
+                    {
+                        "language": "fra",
+                        "value": "FLE"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "FLE"
+                    }
+                ],
+                "city": [
+                    {
+                        "language": "fra",
+                        "value": "KNT"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "KNT"
+                    }
+                ],
+                "postalCode": "14022",
+                "fullName": [
+                    {
+                        "language": "fra",
+                        "value": "jagadishwari s"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "جَگَدِسهوَرِ سِلڤَرَج"
+                    }
+                ],
+                "localAdministrativeAuthority": [
+                    {
+                        "language": "fra",
+                        "value": "SATZ"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "SATZ"
+                    }
+                ],
+                "dateOfBirth": "1996/01/01",
+                "IDSchemaVersion": 1,
+                "province": [
+                    {
+                        "language": "fra",
+                        "value": "KTA"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "KTA"
+                    }
+                ],
+                "addressLine1": [
+                    {
+                        "language": "fra",
+                        "value": "mindtree phase 2, global village"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "مِندترِِ پهَسِ ٢، گلُبَل ڤِللَگِ"
+                    }
+                ],
+                "residenceStatus": [
+                    {
+                        "language": "fra",
+                        "value": "FR"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "FR"
+                    }
+                ],
+                "addressLine2": [
+                    {
+                        "language": "fra",
+                        "value": "Karnataka"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "كَرنَتَكَ"
+                    }
+                ],
+                "addressLine3": [
+                    {
+                        "language": "fra",
+                        "value": ""
+                    },
+                    {
+                        "language": "ara",
+                        "value": ""
+                    }
+                ],
+                "region": [
+                    {
+                        "language": "fra",
+                        "value": "RSK"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "RSK"
+                    }
+                ],
+                "email": "ashish.rastogi@mindtree.com"
+            }
+        },
+        "langCode": "fra"
+    },
+    "requesttime": "2019-05-28T16:20:05.383Z",
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0"
 }
