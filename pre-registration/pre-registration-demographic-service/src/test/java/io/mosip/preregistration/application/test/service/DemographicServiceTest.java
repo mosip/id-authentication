@@ -59,6 +59,7 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
@@ -144,7 +145,7 @@ public class DemographicServiceTest {
 	 * Mocking the JsonValidatorImpl bean
 	 */
 	@MockBean
-	private IdObjectSchemaValidator jsonValidator;
+	private IdObjectValidator jsonValidator;
 
 	/**
 	 * Autowired reference for $link{DemographicServiceUtil}

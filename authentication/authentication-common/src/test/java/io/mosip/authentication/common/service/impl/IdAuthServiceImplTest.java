@@ -128,13 +128,8 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-         
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenThrow(idBusinessException);
-		
 		Mockito.when(idRepoManager.getUINByVID(idvId))
-		.thenReturn(Mockito.anyString());
-
+		.thenThrow(idBusinessException);;
 		idAuthServiceImpl.processIdType(idvIdType, idvId, false);
 
 	}
@@ -273,7 +268,7 @@ public class IdAuthServiceImplTest {
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
@@ -296,7 +291,7 @@ public class IdAuthServiceImplTest {
 
 			
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
@@ -319,7 +314,7 @@ public class IdAuthServiceImplTest {
 
 			
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);

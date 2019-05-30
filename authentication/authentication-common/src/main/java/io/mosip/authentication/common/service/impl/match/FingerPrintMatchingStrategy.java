@@ -7,6 +7,7 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -22,8 +23,8 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Object object = props.get(IdaIdMapping.FINGERPRINT.getIdname());
-			if (object instanceof BiFunction) {
-				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
+			if (object instanceof BiFunctionWithBusinessException) {
+				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = (BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) object;
 				return (int) func.apply((Map<String, String>) entityInfo, (Map<String, String>) entityInfo)
 						.doubleValue();
 			} else {

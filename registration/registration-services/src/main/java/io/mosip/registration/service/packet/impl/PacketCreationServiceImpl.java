@@ -115,6 +115,15 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
 
+			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
+			//validate the input against the schema, mandatory, pattern and master data. if any error then stop the rest of the process
+			//and display error message to the user.
+			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
+
+				idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
+						registrationCategory);
+			}
+			
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
 			SessionContext.map().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
@@ -200,22 +209,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			// Generating Demographic JSON as byte array
-			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
-			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
-				if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_NEW)) {
-					idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-							IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
-				} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
-					idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-							IdObjectValidatorSupportedOperations.UPDATE_UIN);
-				} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
-					idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-							IdObjectValidatorSupportedOperations.LOST_UIN);
-				} else if ((Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-					idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-							IdObjectValidatorSupportedOperations.CHILD_REGISTRATION);
-				}
-			}
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
