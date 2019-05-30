@@ -95,7 +95,7 @@ public interface DeviceService {
 	 * @param regCenterId
 	 *            pass Registration center id as String
 	 * @return DeviceRegistrationCenterDto List of DeviceRegistrationCenterDto which
-	 *         has the list of Device maaped with given Registration Center id
+	 *         has the list of Device mapped with given Registration Center id
 	 *         {@link DeviceRegistrationCenterDto}
 	 */
 	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,

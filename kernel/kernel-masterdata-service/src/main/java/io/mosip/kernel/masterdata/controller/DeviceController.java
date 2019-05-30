@@ -182,6 +182,7 @@ public class DeviceController {
 	 *         {@link DeviceRegistrationCenterDto}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@GetMapping(value = "/mappeddevices/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Devices which are mapped to given Registration Center Id", notes = "Retrieve all Devices which are mapped to given Registration Center Id")
 	@ApiResponses({

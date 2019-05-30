@@ -258,14 +258,15 @@ public class DeviceServiceImpl implements DeviceService {
 	 * getRegistrationCenterMachineMapping1(java.lang.String)
 	 */
 	@Override
-	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page,int size,String orderBy,String direction) {
+	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction) {
 		PageDto<DeviceRegistrationCenterDto> pageDto = new PageDto<>();
 		List<DeviceRegistrationCenterDto> deviceRegistrationCenterDtoList = null;
 		Page<Device> pageEntity = null;
 
 		try {
-			pageEntity = deviceRepository.findDeviceByRegCenterId(regCenterId, 
-			PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
+			pageEntity = deviceRepository.findDeviceByRegCenterId(regCenterId,
+					PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
@@ -273,7 +274,8 @@ public class DeviceServiceImpl implements DeviceService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (pageEntity != null && !pageEntity.getContent().isEmpty()) {
-			deviceRegistrationCenterDtoList = MapperUtils.mapAll(pageEntity.getContent(), DeviceRegistrationCenterDto.class);
+			deviceRegistrationCenterDtoList = MapperUtils.mapAll(pageEntity.getContent(),
+					DeviceRegistrationCenterDto.class);
 			for (DeviceRegistrationCenterDto deviceRegistrationCenterDto : deviceRegistrationCenterDtoList) {
 				deviceRegistrationCenterDto.setRegCentId(regCenterId);
 			}
@@ -281,14 +283,13 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		//pageDto = MapperUtils.map(pageEntity, PageDto.class);
 		pageDto.setPageNo(pageEntity.getNumber());
 		pageDto.setPageSize(pageEntity.getSize());
 		pageDto.setSort(pageEntity.getSort());
 		pageDto.setTotalItems(pageEntity.getTotalElements());
 		pageDto.setTotalPages(pageEntity.getTotalPages());
 		pageDto.setData(deviceRegistrationCenterDtoList);
-		
+
 		return pageDto;
 
 	}
