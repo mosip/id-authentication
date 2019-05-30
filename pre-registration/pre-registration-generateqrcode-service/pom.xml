@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.12.2</version>
+		<version>0.12.3</version>
 	</parent>
 	
 	<artifactId>pre-registration-generateqrcode-service</artifactId>

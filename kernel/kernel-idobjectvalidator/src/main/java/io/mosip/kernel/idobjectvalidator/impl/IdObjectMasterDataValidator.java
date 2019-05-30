@@ -183,7 +183,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 				.ofNullable(response)
 				.filter(data -> !data.isEmpty())
 				.orElse(new JSONArray())
-				.parallelStream()
+				.stream()
 				.map(obj -> ((LinkedHashMap<String, Object>) obj))
 				.filter(obj -> (Boolean) obj.get(IS_ACTIVE))
 				.map(obj -> String.valueOf(obj.get(CODE)))
@@ -201,7 +201,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(GENDER_TYPE);
 			genderMap = new HashSetValuedHashMap<>(response.size());
-			IntStream.range(0, response.size()).parallel()
+			IntStream.range(0, response.size())
 					.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
 					.forEach(index -> 
 					{
@@ -224,7 +224,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTCATEGORIES);
 			docCatMap = new HashSetValuedHashMap<>(response.size());
-			IntStream.range(0, response.size()).parallel()
+			IntStream.range(0, response.size())
 					.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
 					.forEach(index -> 
 						docCatMap.put(String.valueOf(response.get(index).get(LANG_CODE)),
@@ -248,7 +248,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 							.getForObject(uri, ResponseWrapper.class);
 					if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 						ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-						IntStream.range(0, response.size()).parallel()
+						IntStream.range(0, response.size())
 							.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
 							.forEach(index -> {
 								docTypeMap.put(docCat, String.valueOf(response.get(index).get(NAME)));
@@ -277,7 +277,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 			if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 				JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.MASTERDATA_LOCATIONS_PATH.getValue());
 				JSONArray response = jsonPath.read(responseBody.getResponse().toString(), READ_LIST_OPTIONS);
-				response.parallelStream()
+				response.stream()
 					.map(obj -> ((LinkedHashMap<String, Object>) obj))
 					.filter(obj -> (Boolean) obj.get(IS_ACTIVE))
 					.forEach(obj -> {
@@ -288,7 +288,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 			}
 		});
 		
-		Set<String> locationHierarchyNames = locationDetails.keySet().parallelStream().collect(Collectors.toSet());
+		Set<String> locationHierarchyNames = locationDetails.keySet().stream().collect(Collectors.toSet());
 		locationHierarchyNames.stream().forEach(hierarchyName -> {
 			String uri = UriComponentsBuilder
 					.fromUriString(
@@ -299,7 +299,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 			if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
 				ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(LOCATIONS);
 				SetValuedMap<String, String> locations = new HashSetValuedHashMap<>(response.size());
-				IntStream.range(0, response.size()).parallel()
+				IntStream.range(0, response.size())
 				.filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
 				.forEach(index -> {
 					locations.put(String.valueOf(response.get(index).get(LANG_CODE)),
@@ -323,11 +323,11 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		JSONArray pathList = jsonPath.read(identityString, PATH_LIST_OPTIONS);
 		Map<String, String> dataMap = IntStream.range(0, pathList.size())
 				.boxed()
-				.parallel()
+				
 				.collect(
 						Collectors.toMap(i -> String.valueOf(pathList.get(i)), i -> JsonPath
 								.compile(String.valueOf(pathList.get(i))).read(identityString, READ_OPTIONS)));
-		dataMap.entrySet().parallelStream().filter(entry -> !languageList.contains(entry.getValue()))
+		dataMap.entrySet().stream().filter(entry -> !languageList.contains(entry.getValue()))
 				.forEach(entry -> errorList
 						.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
@@ -345,14 +345,14 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		List<String> genderLangPathList = genderLangPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath genderValuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_GENDER_VALUE_PATH.getValue());
 		List<String> genderValuePathList = genderValuePath.read(identityString, PATH_LIST_OPTIONS);
-		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, genderLangPathList.size()).parallel()
+		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, genderLangPathList.size())
 			.filter(index -> languageList
 					.contains(JsonPath.compile(genderLangPathList.get(index)).read(identityString, READ_OPTIONS)))
 			.boxed()
 			.collect(Collectors.toMap(genderLangPathList::get,
 					i -> new AbstractMap.SimpleImmutableEntry<String, String>(genderValuePathList.get(i),
 							JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream()
+		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 				return genderMap.containsKey(lang) && !genderMap.get(lang).contains(entry.getValue().getValue());
@@ -372,21 +372,21 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void validateRegion(String identityString, List<ServiceError> errorList) {
 		SetValuedMap<String, String> regionMap = new HashSetValuedHashMap<>();
 		Set<String> regionNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.REGION.getLevel());
-		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> regionMap.putAll(locationDetail)));
+						.ifPresent(regionMap::putAll));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
-		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size()).parallel()
+		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size())
 			.filter(index -> languageList
 					.contains(JsonPath.compile(langPathList.get(index)).read(identityString, READ_OPTIONS)))
 			.boxed()
 			.collect(Collectors.toMap(langPathList::get,
 					i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 							JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream()
+		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 				return regionMap.containsKey(lang) && !regionMap.get(lang).contains(entry.getValue().getValue());
@@ -407,21 +407,21 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		SetValuedMap<String, String> provinceMap = new HashSetValuedHashMap<>();
 		Set<String> provinceNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
-		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> provinceMap.putAll(locationDetail)));
+						.ifPresent(provinceMap::putAll));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
-		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size()).parallel()
+		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size())
 			.filter(index -> languageList
 					.contains(JsonPath.compile(langPathList.get(index)).read(identityString, READ_OPTIONS)))
 			.boxed()
 			.collect(Collectors.toMap(langPathList::get,
 					i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 							JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream()
+		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 				return provinceMap.containsKey(lang) && !provinceMap.get(lang).contains(entry.getValue().getValue());
@@ -441,21 +441,21 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	private void validateCity(String identityString, List<ServiceError> errorList) {
 		SetValuedMap<String, String> cityMap = new HashSetValuedHashMap<>();
 		Set<String> cityNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.CITY.getLevel());
-		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> cityMap.putAll(locationDetail)));
+						.ifPresent(cityMap::putAll));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
-		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size()).parallel()
+		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size())
 			.filter(index -> languageList
 					.contains(JsonPath.compile(langPathList.get(index)).read(identityString, READ_OPTIONS)))
 			.boxed()
 			.collect(Collectors.toMap(langPathList::get,
 					i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 							JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream()
+		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 				return cityMap.containsKey(lang) && !cityMap.get(lang).contains(entry.getValue().getValue());
@@ -476,23 +476,23 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
 		Set<String> localAdminAuthNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
-		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.putAll(locationDetail)));
+						.ifPresent(localAdministrativeAuthorityMap::putAll));
 		JsonPath langPath = JsonPath
 				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_LANGUAGE_PATH.getValue());
 		List<String> langPathList = langPath.read(identityString, PATH_LIST_OPTIONS);
 		JsonPath valuePath = JsonPath
 				.compile(IdObjectValidatorConstant.IDENTITY_LOCALADMINISTRATIVEAUTHORITY_VALUE_PATH.getValue());
 		List<String> valuePathList = valuePath.read(identityString, PATH_LIST_OPTIONS);
-		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size()).parallel()
+		Map<String, Map.Entry<String, String>> dataMap = IntStream.range(0, langPathList.size())
 			.filter(index -> languageList
 					.contains(JsonPath.compile(langPathList.get(index)).read(identityString, READ_OPTIONS)))
 			.boxed()
 			.collect(Collectors.toMap(langPathList::get,
 					i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 							JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream()
+		dataMap.entrySet().stream()
 			.filter(entry -> {
 				String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 					return localAdministrativeAuthorityMap.containsKey(lang)
@@ -514,9 +514,9 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		SetValuedMap<String, String> postalCodeMap = new HashSetValuedHashMap<>();
 		Set<String> postalCodeNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.POSTAL_CODE.getLevel());
-		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> postalCodeMap.putAll(locationDetail)));
+						.ifPresent(postalCodeMap::putAll));
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_POSTAL_CODE_PATH.getValue());
 		String value = jsonPath.read(identityString, READ_OPTIONS);
 		if (Objects.nonNull(value) && !postalCodeMap.values().contains(value)) {
@@ -533,7 +533,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 	 * @param errorList the error list
 	 */
 	private void validateDocuments(String identityString, List<ServiceError> errorList) {
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().parallelStream()
+		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
 					Object value = jsonPath.read(identityString, READ_OPTIONS);
