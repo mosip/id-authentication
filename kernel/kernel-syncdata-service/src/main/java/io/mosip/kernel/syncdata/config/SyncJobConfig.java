@@ -43,9 +43,9 @@ public class SyncJobConfig {
 
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("javax.persistence.jdbc.driver"));
-		dataSource.setUrl(env.getProperty("spring.master-datasource.jdbcUrl"));
-		dataSource.setUsername(env.getProperty("spring.master-datasource.username"));
-		dataSource.setPassword(env.getProperty("spring.master-datasource.password"));
+		dataSource.setUrl(env.getProperty("spring.kernel-datasource.jdbcUrl"));
+		dataSource.setUsername(env.getProperty("spring.kernel-datasource.username"));
+		dataSource.setPassword(env.getProperty("spring.kernel-datasource.password"));
 
 		return dataSource;
 	}

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.IndividualType;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 
@@ -18,7 +18,7 @@ import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
  *
  */
 @Repository
-public interface IndividualTypeRepository extends BaseRepository<IndividualType, CodeAndLanguageCodeID> {
+public interface IndividualTypeRepository extends JpaRepository<IndividualType, CodeAndLanguageCodeID> {
 
 	/**
 	 * 

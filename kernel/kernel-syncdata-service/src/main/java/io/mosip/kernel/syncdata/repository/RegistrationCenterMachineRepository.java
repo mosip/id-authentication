@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 
@@ -16,12 +16,12 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
  * @author Neha
  * @since 1.0.0
  * @see RegistrationCenterMachine
- * @see BaseRepository
+ * @see JpaRepository
  *
  */
 @Repository
 public interface RegistrationCenterMachineRepository
-		extends BaseRepository<RegistrationCenterMachine, RegistrationCenterMachineID> {
+		extends JpaRepository<RegistrationCenterMachine, RegistrationCenterMachineID> {
 	/**
 	 * 
 	 * @param machineId - machine id

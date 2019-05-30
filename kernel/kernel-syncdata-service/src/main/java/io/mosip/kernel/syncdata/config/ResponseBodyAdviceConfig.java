@@ -77,7 +77,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 			mosipLogger.error("", "", "", e.getMessage());
 		}
 		if (body != null) {
-			try {
+			/*try {
 				String timestamp = DateUtils.getUTCCurrentDateTimeString();
 				body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
 				SignatureResponse cryptoManagerResponseDto = signatureUtil
@@ -86,7 +86,7 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());
-			}
+			}*/
 		}
 
 		return body;

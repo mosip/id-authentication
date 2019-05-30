@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistory;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistoryPk;
 
@@ -17,12 +17,12 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterDeviceHistoryPk;
  * @author Uday Kumar
  * @since 1.0.0
  * @see RegistrationCenterDeviceHistory
- * @see BaseRepository
+ * @see JpaRepository
  *
  */
 @Repository
 public interface RegistrationCenterDeviceHistoryRepository
-		extends BaseRepository<RegistrationCenterDeviceHistory, RegistrationCenterDeviceHistoryPk> {
+		extends JpaRepository<RegistrationCenterDeviceHistory, RegistrationCenterDeviceHistoryPk> {
 
 	/**
 	 * 
