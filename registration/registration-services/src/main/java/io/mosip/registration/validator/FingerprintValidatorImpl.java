@@ -53,7 +53,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		LOGGER.info(LoggerConstants.FINGER_PRINT_AUTHENTICATION, APPLICATION_NAME, APPLICATION_ID, "Validating Scanned Finger");
 
 		if (RegistrationConstants.FINGER_PRINT_SINGLE.equals(authenticationValidatorDTO.getAuthValidationType())) {
-			return validateOneToOneFP(authenticationValidatorDTO.getUserId(),
+			return validateOneToManyFP(authenticationValidatorDTO.getUserId(),
 					authenticationValidatorDTO.getFingerPrintDetails().get(0));
 		} else if (RegistrationConstants.FINGER_PRINT_MULTIPLE
 				.equals(authenticationValidatorDTO.getAuthValidationType())) {
@@ -70,10 +70,9 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 * @param capturedFingerPrintDto
 	 * @return
 	 */
-	private boolean validateOneToOneFP(String userId, FingerprintDetailsDTO capturedFingerPrintDto) {
-		UserBiometric userFingerprintDetail = userDetailDAO.getUserSpecificBioDetail(userId, "FIN",
-				capturedFingerPrintDto.getFingerType());
-			return validateFpWithBioApi(capturedFingerPrintDto, Arrays.asList(userFingerprintDetail));
+	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO capturedFingerPrintDto) {
+		List<UserBiometric> userFingerprintDetails = userDetailDAO.getUserSpecificBioDetails(userId, "FIN");
+			return validateFpWithBioApi(capturedFingerPrintDto, userFingerprintDetails);
 	}
 
 	private boolean validateFpWithBioApi(FingerprintDetailsDTO capturedFingerPrintDto,
