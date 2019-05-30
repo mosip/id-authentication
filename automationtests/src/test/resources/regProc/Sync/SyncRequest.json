@@ -18,5 +18,11 @@
 	"requesttimeEmpty" : "",
 	"requesttimeInvalid" : "",
 	"langCodeEmpty" : "",
-	"langCodeInvalid" : ""
+	"langCodeInvalid" : "",
+	"registrationTypeEmpty" : "",
+	"registrationTypeInvalid" : "",
+	"packetHashValueEmpty" : "",
+	"packetHashValueInvalid" : "",
+	"supervisorStatusInvalid" : "",
+	"supervisorStatusEmpty" : ""
  }

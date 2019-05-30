@@ -1,1 +1,0 @@
-{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID","actionMessage":"Please retry with correct VID"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"5802567578","id":"mosip.identity.auth"}

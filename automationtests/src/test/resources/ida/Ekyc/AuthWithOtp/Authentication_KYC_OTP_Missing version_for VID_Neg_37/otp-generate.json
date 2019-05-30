@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"7061025180","requestTime":"2019-05-29T21:19:28.028+05:30","individualId":"org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'","individualIdType":"VID","otpChannel":["EMAIL","PHONE"]}
