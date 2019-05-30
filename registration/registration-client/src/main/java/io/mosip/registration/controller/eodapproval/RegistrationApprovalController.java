@@ -518,11 +518,11 @@ public class RegistrationApprovalController extends BaseController implements In
 			primaryStage.close();
 			reloadTableView();
 
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
+			/*if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
 
 				uploadPacketsInBackground(regIds);
 
-			}
+			}*/
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()

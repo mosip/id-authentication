@@ -71,7 +71,8 @@ public enum RegistrationExceptionConstants {
 	ID_OBJECT_SCHEMA_VALIDATOR("REG-IOS-001", "Invalid ID Object Schema"),
 	
 	//
-	ID_OBJECT_PATTERN_VALIDATOR("REG-IOS-002", "Invalid ID Object Pattern");
+	ID_OBJECT_PATTERN_VALIDATOR("REG-IOS-002", "Invalid ID Object Pattern"),
+	ID_OBJECT_MASTER_DATA_VALIDATOR("REG-IOS-003", "Invalid Master Data Object Pattern");
 
 	/**
 	 * The constructor
