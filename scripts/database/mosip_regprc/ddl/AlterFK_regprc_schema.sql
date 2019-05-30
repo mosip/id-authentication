@@ -8,8 +8,6 @@ alter table regprc.individual_demographic_dedup add constraint fk_idemogd_reg fo
 alter table regprc.reg_manual_verification add constraint fk_rmnlver_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
 alter table regprc.reg_manual_verification add constraint fk_rmnlver_trntyp foreign key (trntyp_code, lang_code) references regprc.transaction_type(code, lang_code) on delete no action on update no action ;
 
-alter table regprc.reg_uin add constraint fk_reguin_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
-
 
 -- object: fk_regded_regtrn | type: CONSTRAINT --
 -- ALTER TABLE regprc.reg_demo_dedupe_list DROP CONSTRAINT IF EXISTS fk_regded_regtrn CASCADE;
@@ -41,4 +39,11 @@ ALTER TABLE regprc.abis_response_det ADD CONSTRAINT fk_abisresp_resp_id FOREIGN 
 REFERENCES regprc.abis_response (id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
+
+
+-- object: fk_rlostd_reg | type: CONSTRAINT --
+-- ALTER TABLE regprc.reg_lost_uin_det DROP CONSTRAINT IF EXISTS fk_rlostd_reg CASCADE;
+ALTER TABLE regprc.reg_lost_uin_det ADD CONSTRAINT fk_rlostd_reg FOREIGN KEY (reg_id)
+REFERENCES regprc.registration (id) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
 

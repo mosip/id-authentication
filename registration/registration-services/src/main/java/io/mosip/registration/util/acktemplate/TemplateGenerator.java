@@ -50,7 +50,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
@@ -119,7 +119,7 @@ public class TemplateGenerator extends BaseService {
 					.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG));
 			String faceDisableFlag = String
 					.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG));
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
+			IndividualIdentity individualIdentity = (IndividualIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
 			boolean isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
@@ -127,7 +127,7 @@ public class TemplateGenerator extends BaseService {
 			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
 				/* Set-up Registration Acknowledgement related content */
 				setUpAcknowledgementContent(registration, templateValues, response, applicationLanguageProperties,
-						localProperties, fingerPrintDisableFlag, irisDisableFlag, moroccoIdentity);
+						localProperties, fingerPrintDisableFlag, irisDisableFlag, individualIdentity);
 			} else {
 				/* Set-up Registration Preview related content */
 				setUpPreviewContent(registration, templateValues, isChild, response, applicationLanguageProperties,
@@ -153,10 +153,10 @@ public class TemplateGenerator extends BaseService {
 
 			/* Set-up demographic information related content */
 			setUpDemographicInfo(registration, templateValues, applicationLanguageProperties, localProperties,
-					moroccoIdentity);
+					individualIdentity);
 
 			/* Set-up the list of documents submitted by the applicant */
-			setUpDocuments(templateValues, applicationLanguageProperties, localProperties, moroccoIdentity,
+			setUpDocuments(templateValues, applicationLanguageProperties, localProperties, individualIdentity,
 					documentDisableFlag);
 
 			/* Set-up captured biometrics count */
@@ -499,33 +499,33 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpDocuments(Map<String, Object> templateValues, ResourceBundle applicationLanguageProperties,
-			ResourceBundle localProperties, MoroccoIdentity moroccoIdentity, String documentDisableFlag) {
+			ResourceBundle localProperties, IndividualIdentity individualIdentity, String documentDisableFlag) {
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(documentDisableFlag)) {
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("documents"));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
 					localProperties.getString("documents"));
 			StringBuilder documentsList = new StringBuilder();
-			if (moroccoIdentity.getProofOfIdentity() != null) {
-				documentsList.append(moroccoIdentity.getProofOfIdentity().getValue());
+			if (individualIdentity.getProofOfIdentity() != null) {
+				documentsList.append(individualIdentity.getProofOfIdentity().getValue());
 			}
-			if (moroccoIdentity.getProofOfAddress() != null) {
+			if (individualIdentity.getProofOfAddress() != null) {
 				if (documentsList.length() > 0) {
 					documentsList.append(", ");
 				}
-				documentsList.append(moroccoIdentity.getProofOfAddress().getValue());
+				documentsList.append(individualIdentity.getProofOfAddress().getValue());
 			}
-			if (moroccoIdentity.getProofOfRelationship() != null) {
+			if (individualIdentity.getProofOfRelationship() != null) {
 				if (documentsList.length() > 0) {
 					documentsList.append(", ");
 				}
-				documentsList.append(moroccoIdentity.getProofOfRelationship().getValue());
+				documentsList.append(individualIdentity.getProofOfRelationship().getValue());
 			}
-			if (moroccoIdentity.getProofOfDateOfBirth() != null) {
+			if (individualIdentity.getProofOfDateOfBirth() != null) {
 				if (documentsList.length() > 0) {
 					documentsList.append(", ");
 				}
-				documentsList.append(moroccoIdentity.getProofOfDateOfBirth().getValue());
+				documentsList.append(individualIdentity.getProofOfDateOfBirth().getValue());
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, RegistrationConstants.EMPTY);
@@ -537,10 +537,10 @@ public class TemplateGenerator extends BaseService {
 
 	private void setUpDemographicInfo(RegistrationDTO registration, Map<String, Object> templateValues,
 			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
-			MoroccoIdentity moroccoIdentity) {
+			IndividualIdentity individualIdentity) {
 		String platformLanguageCode = ApplicationContext.applicationLanguage();
 		String localLanguageCode = ApplicationContext.localLanguage();
-		String dob = getValue(moroccoIdentity.getDateOfBirth());
+		String dob = getValue(individualIdentity.getDateOfBirth());
 
 		templateValues.put(RegistrationConstants.TEMPLATE_DATE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("date"));
@@ -560,17 +560,17 @@ public class TemplateGenerator extends BaseService {
 				localProperties.getString("fullName"));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME,
 				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
-						: moroccoIdentity.getFullName(), platformLanguageCode));
+						: individualIdentity.getFullName(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 				getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
-						: moroccoIdentity.getFullName(), localLanguageCode));
+						: individualIdentity.getFullName(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("gender"));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL, localProperties.getString("gender"));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER,
-				getValue(moroccoIdentity.getGender(), platformLanguageCode));
+				getValue(individualIdentity.getGender(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
-				getValue(moroccoIdentity.getGender(), localLanguageCode));
+				getValue(individualIdentity.getGender(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_DOB_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("ageDatePicker"));
 		templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
@@ -584,9 +584,9 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_AGE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("ageField"));
 		templateValues.put(RegistrationConstants.TEMPLATE_AGE_LOCAL_LANG_LABEL, localProperties.getString("ageField"));
-		templateValues.put(RegistrationConstants.TEMPLATE_AGE, getValue(moroccoIdentity.getAge()));
+		templateValues.put(RegistrationConstants.TEMPLATE_AGE, getValue(individualIdentity.getAge()));
 
-		if (!getValue(moroccoIdentity.getAge()).isEmpty()) {
+		if (!getValue(individualIdentity.getAge()).isEmpty()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_USER_LANG,
 					applicationLanguageProperties.getString("years"));
 			templateValues.put(RegistrationConstants.TEMPLATE_YEARS_LOCAL_LANG, localProperties.getString("years"));
@@ -599,63 +599,63 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_FOREIGNER_LOCAL_LANG_LABEL,
 				localProperties.getString("foreigner"));
 		templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS,
-				getValue(moroccoIdentity.getResidenceStatus(), platformLanguageCode));
+				getValue(individualIdentity.getResidenceStatus(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_RESIDENCE_STATUS_LOCAL_LANG,
-				getValue(moroccoIdentity.getResidenceStatus(), localLanguageCode));
+				getValue(individualIdentity.getResidenceStatus(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("addressLine1"));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
 				localProperties.getString("addressLine1"));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
-				getValue(moroccoIdentity.getAddressLine1(), platformLanguageCode));
+				getValue(individualIdentity.getAddressLine1(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
-				getValue(moroccoIdentity.getAddressLine1(), localLanguageCode));
+				getValue(individualIdentity.getAddressLine1(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("addressLine2"));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
 				localProperties.getString("addressLine2"));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
-				getValue(moroccoIdentity.getAddressLine2(), platformLanguageCode));
+				getValue(individualIdentity.getAddressLine2(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
-				getValue(moroccoIdentity.getAddressLine2(), localLanguageCode));
+				getValue(individualIdentity.getAddressLine2(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_REGION_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("region"));
 		templateValues.put(RegistrationConstants.TEMPLATE_REGION_LOCAL_LANG_LABEL, localProperties.getString("region"));
 		templateValues.put(RegistrationConstants.TEMPLATE_REGION,
-				getValue(moroccoIdentity.getRegion(), platformLanguageCode));
+				getValue(individualIdentity.getRegion(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_REGION_LOCAL_LANG,
-				getValue(moroccoIdentity.getRegion(), localLanguageCode));
+				getValue(individualIdentity.getRegion(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("province"));
 		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG_LABEL,
 				localProperties.getString("province"));
 		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE,
-				getValue(moroccoIdentity.getProvince(), platformLanguageCode));
+				getValue(individualIdentity.getProvince(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_LOCAL_LANG,
-				getValue(moroccoIdentity.getProvince(), localLanguageCode));
+				getValue(individualIdentity.getProvince(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("localAdminAuthority"));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
 				localProperties.getString("localAdminAuthority"));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY,
-				getValue(moroccoIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
+				getValue(individualIdentity.getLocalAdministrativeAuthority(), platformLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
-				getValue(moroccoIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
+				getValue(individualIdentity.getLocalAdministrativeAuthority(), localLanguageCode));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("mobileNo"));
 		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
 				localProperties.getString("mobileNo"));
-		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone()));
+		templateValues.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(individualIdentity.getPhone()));
 		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("postalCode"));
 		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
 				localProperties.getString("postalCode"));
-		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(moroccoIdentity.getPostalCode()));
+		templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(individualIdentity.getPostalCode()));
 		templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
 				applicationLanguageProperties.getString("emailId"));
 		templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL, localProperties.getString("emailId"));
 
-		String email = getValue(moroccoIdentity.getEmail());
+		String email = getValue(individualIdentity.getEmail());
 		if (email != null && !email.isEmpty()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
 		} else {
@@ -666,18 +666,18 @@ public class TemplateGenerator extends BaseService {
 				applicationLanguageProperties.getString("cniOrPinNumber"));
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
 				localProperties.getString("cniOrPinNumber"));
-		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(moroccoIdentity.getCnieNumber()));
-		boolean isChild = moroccoIdentity.getParentOrGuardianName() != null;
+		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(individualIdentity.getCnieNumber()));
+		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
 
 		if (isChild || registration.isUpdateUINChild()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
-					getValue(moroccoIdentity.getParentOrGuardianName(), platformLanguageCode));
+					getValue(individualIdentity.getParentOrGuardianName(), platformLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
 					localProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
-					getValue(moroccoIdentity.getParentOrGuardianName(), localLanguageCode));
+					getValue(individualIdentity.getParentOrGuardianName(), localLanguageCode));
 			if (registration.getSelectionListDTO() != null) {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
 						applicationLanguageProperties.getString("uinUpdateParentUIN"));
@@ -690,8 +690,8 @@ public class TemplateGenerator extends BaseService {
 						localProperties.getString("parentUIN"));
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
-					getValue(moroccoIdentity.getParentOrGuardianRID() == null ? moroccoIdentity.getParentOrGuardianUIN()
-							: moroccoIdentity.getParentOrGuardianRID()));
+					getValue(individualIdentity.getParentOrGuardianRID() == null ? individualIdentity.getParentOrGuardianUIN()
+							: individualIdentity.getParentOrGuardianRID()));
 		} else {
 			templateValues.put(RegistrationConstants.TEMPLATE_WITH_PARENT,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -808,7 +808,7 @@ public class TemplateGenerator extends BaseService {
 
 	private void setUpAcknowledgementContent(RegistrationDTO registration, Map<String, Object> templateValues,
 			ResponseDTO response, ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
-			String fingerPrintDisableFlag, String irisDisableFlag, MoroccoIdentity moroccoIdentity) {
+			String fingerPrintDisableFlag, String irisDisableFlag, IndividualIdentity individualIdentity) {
 		ByteArrayOutputStream byteArrayOutputStream = null;
 
 		templateValues.put(RegistrationConstants.TEMPLATE_PREVIEW, RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -1152,12 +1152,12 @@ public class TemplateGenerator extends BaseService {
 			String applicationLanguageCode = ApplicationContext.applicationLanguage().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
+			IndividualIdentity individualIdentity = (IndividualIdentity) registration.getDemographicDTO().getDemographicInfoDTO()
 					.getIdentity();
 
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
 					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
-							: moroccoIdentity.getFullName(), applicationLanguageCode));
+							: individualIdentity.getFullName(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_RID, getValue(registration.getRegistrationId()));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
@@ -1166,42 +1166,42 @@ public class TemplateGenerator extends BaseService {
 			values.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
 			values.put(RegistrationConstants.TEMPLATE_FULL_NAME,
 					getValue(registration.isNameNotUpdated() ? registration.getRegistrationMetaDataDTO().getFullName()
-							: moroccoIdentity.getFullName(), applicationLanguageCode));
-			String dob = getValue(moroccoIdentity.getDateOfBirth());
+							: individualIdentity.getFullName(), applicationLanguageCode));
+			String dob = getValue(individualIdentity.getDateOfBirth());
 
 			if (dob == null || dob == "") {
-				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(moroccoIdentity.getAge()));
+				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(individualIdentity.getAge()));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 			}
 
 			values.put(RegistrationConstants.TEMPLATE_GENDER,
-					getValue(moroccoIdentity.getGender(), applicationLanguageCode));
+					getValue(individualIdentity.getGender(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
-					getValue(moroccoIdentity.getAddressLine1(), applicationLanguageCode));
-			String addressLine2 = getValue(moroccoIdentity.getAddressLine2(), applicationLanguageCode);
+					getValue(individualIdentity.getAddressLine1(), applicationLanguageCode));
+			String addressLine2 = getValue(individualIdentity.getAddressLine2(), applicationLanguageCode);
 			if (addressLine2 == null || addressLine2.isEmpty()) {
 				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2, RegistrationConstants.EMPTY);
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2, addressLine2);
 			}
-			String addressLine3 = getValue(moroccoIdentity.getAddressLine3(), applicationLanguageCode);
+			String addressLine3 = getValue(individualIdentity.getAddressLine3(), applicationLanguageCode);
 			if (addressLine3 == null || addressLine3.isEmpty()) {
 				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3, RegistrationConstants.EMPTY);
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3, addressLine3);
 			}
 			values.put(RegistrationConstants.TEMPLATE_PROVINCE,
-					getValue(moroccoIdentity.getProvince(), applicationLanguageCode));
+					getValue(individualIdentity.getProvince(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_CITY,
-					getValue(moroccoIdentity.getCity(), applicationLanguageCode));
+					getValue(individualIdentity.getCity(), applicationLanguageCode));
 			values.put(RegistrationConstants.TEMPLATE_REGION,
-					getValue(moroccoIdentity.getRegion(), applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(moroccoIdentity.getPostalCode()));
-			values.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(moroccoIdentity.getPhone()));
+					getValue(individualIdentity.getRegion(), applicationLanguageCode));
+			values.put(RegistrationConstants.TEMPLATE_POSTAL_CODE, getValue(individualIdentity.getPostalCode()));
+			values.put(RegistrationConstants.TEMPLATE_MOBILE, getValue(individualIdentity.getPhone()));
 
-			String email = getValue(moroccoIdentity.getEmail());
+			String email = getValue(individualIdentity.getEmail());
 			if (email == null || email.isEmpty()) {
 				values.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
 			} else {

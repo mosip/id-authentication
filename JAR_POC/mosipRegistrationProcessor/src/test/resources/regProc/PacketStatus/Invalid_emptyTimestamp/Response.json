@@ -1,7 +1,0 @@
-{
-  "timestamp": "2019-02-28T06:10:37.735+0000",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "RPR-RGS-018 --> Unknown Exception Occurs; \nnested exception is io.mosip.registration.processor.status.exception.RegStatusAppException: RPR-RGS-023 --> Invalid Input Parameter - requestTimestamp; \nnested exception is io.mosip.registration.processor.status.exception.RegStatusValidationException",
-  "path": "/registrationstatus/v0.1/registration-processor/registration-status/registrationstatus"
-}

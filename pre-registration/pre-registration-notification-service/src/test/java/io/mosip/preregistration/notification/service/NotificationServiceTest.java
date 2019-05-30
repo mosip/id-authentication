@@ -6,9 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -127,8 +125,8 @@ public class NotificationServiceTest {
 		notificationDTO.setBatch(false);
 		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		mapper.setDateFormat(df);
+		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		//mapper.setDateFormat(df);
 //2019-04-8T07:22:57.186Z
 //		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
 		
