@@ -84,7 +84,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		BIRType[] registeredBir = new BIRType[userFingerprintDetails.size()];
 		BIRType capturedBir = new BIRType();
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-				.convert(capturedFingerPrintDto.getFingerPrintISOImage());
+				.convert(capturedFingerPrintDto.getFingerPrint());
 		String minutiae = fingerprintTemplate.serialize();
 		capturedBir.setBDB(minutiae.getBytes());
 		int i = 0;

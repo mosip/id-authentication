@@ -170,6 +170,7 @@ public class DeviceCaptureController {
 		captureResponseData.setBioSubType(mosipBioRequest.getDeviceSubId());
 		captureResponseData.setBioType(mosipBioRequest.getDeviceId());
 		captureResponseData.setBioValue(getCapturedByte(bioType));
+		captureResponseData.setBioExtract(getCapturedByte(bioType));
 		captureResponseData.setDeviceCode("");
 		captureResponseData.setDeviceProviderID("");
 		captureResponseData.setDeviceServiceVersion("");
@@ -191,7 +192,7 @@ public class DeviceCaptureController {
 		String imgFormat = ".png";
 		if (imageType.equals("FINGERPRINT_SINGLE")) {
 			imgFormat = ".iso";
-			imageType="ISOTemplate";
+			imageType = "ISOTemplate";
 		}
 		byte[] scannedBytes = null;
 		try {

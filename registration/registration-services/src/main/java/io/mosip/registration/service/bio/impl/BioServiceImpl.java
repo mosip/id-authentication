@@ -82,7 +82,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		boolean fingerPrintStatus = false;
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
-			isoTemplate = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+			isoTemplate = mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
 		} else {
 			try {
 				isoTemplate = IOUtils.toByteArray(
@@ -103,7 +103,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-			fingerprintDetailsDTO.setFingerPrintISOImage(isoTemplate);
+			fingerprintDetailsDTO.setFingerPrint(isoTemplate);
 			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 			authenticationValidatorDTO.setUserId(userId);
