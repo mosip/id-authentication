@@ -66,11 +66,10 @@ public class BioMatcherUtil {
 			try {
 				match = bioApi.match(reqBIR.get(), entityBIR, null);
 				internalScore = match.length == 1 ? match[0].getInternalScore() : 0;
-				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
+				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"Threshold Value >>>" + internalScore);
 			} catch (BiometricException e) {
-				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
-						"Threshold Value >>>" + internalScore);
+				logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue", "Biovalue not Matched");
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 			}
 
@@ -106,14 +105,13 @@ public class BioMatcherUtil {
 	private double matchCompositeValue(Object[] reqInfo, Object[] entityInfo) throws IdAuthenticationBusinessException {
 		BIR[] reqBIR = Stream.of(reqInfo).map(this::getBir).toArray(size -> new BIR[size]);
 		BIR[] entityBIR = Stream.of(entityInfo).map(this::getBir).toArray(size -> new BIR[size]);
-		CompositeScore compositeScore = null;
+		CompositeScore compositeScore;
 		try {
 			compositeScore = bioApi.compositeMatch(reqBIR, entityBIR, null);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
 					"Threshold Value >>>" + compositeScore.getInternalScore());
 		} catch (BiometricException e) {
-			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
-					"Threshold Value >>>" + compositeScore.getInternalScore());
+			logger.error(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator", "Biovalue not Matched");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 
 		}
@@ -128,9 +126,10 @@ public class BioMatcherUtil {
 	 * @param reqInfo
 	 * @param entityInfo
 	 * @return
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	public double matchMultiValue(Map<String, String> reqInfo, Map<String, String> entityInfo) throws IdAuthenticationBusinessException {
+	public double matchMultiValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
+			throws IdAuthenticationBusinessException {
 		return matchMultiValues(reqInfo, entityInfo);
 	}
 
@@ -141,9 +140,10 @@ public class BioMatcherUtil {
 	 * @param entityInfo the entity info
 	 * @param matchScore the match score
 	 * @return the double
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private double matchMultiValues(Map<String, String> reqInfo, Map<String, String> entityInfo) throws IdAuthenticationBusinessException {
+	private double matchMultiValues(Map<String, String> reqInfo, Map<String, String> entityInfo)
+			throws IdAuthenticationBusinessException {
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];

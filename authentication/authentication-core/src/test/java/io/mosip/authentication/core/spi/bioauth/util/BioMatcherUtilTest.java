@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -24,13 +23,13 @@ import io.mosip.kernel.bioapi.impl.BioApiImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, BioApiImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class BioMatcherUtilTest {
 
 	@InjectMocks
 	private BioMatcherUtil bioMatcherUtil;
 
-	@Autowired
+	@InjectMocks
 	private BioApiImpl bioApiImpl;
 
 	@Before
