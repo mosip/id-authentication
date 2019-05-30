@@ -21,12 +21,11 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	@SuppressWarnings("unchecked")
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			String reqInfoValue = ((Map<String, String>) reqInfo).values().stream().findFirst().orElse("");
-			String entityInfoValue = ((Map<String, String>) entityInfo).values().stream().findFirst().orElse("");
 			Object object = props.get(IdaIdMapping.FINGERPRINT.getIdname());
 			if (object instanceof BiFunction) {
-				BiFunction<String, String, Double> func = (BiFunction<String, String, Double>) object;
-				return (int) func.apply((String) reqInfoValue, (String) entityInfoValue).doubleValue();
+				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
+				return (int) func.apply((Map<String, String>) entityInfo, (Map<String, String>) entityInfo)
+						.doubleValue();
 			} else {
 				logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);
@@ -62,7 +61,6 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(FingerPrintMatchingStrategy.class);
 
-
 	/** The Constant AGE Matching strategy. */
 	private static final String TYPE = "FingerPrintMatchingStrategy";
 
@@ -72,8 +70,8 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 	}
 
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside Fingerprint Strategy" + errorConstants.getErrorCode(),
-				errorConstants.getErrorMessage());
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE,
+				"Inside Fingerprint Strategy" + errorConstants.getErrorCode(), errorConstants.getErrorMessage());
 	}
 
 	@Override

@@ -36,35 +36,34 @@ public class BioMatcherUtilTest {
 		ReflectionTestUtils.setField(bioMatcherUtil, "bioApi", bioApiImpl);
 	}
 
+	Map<String, String> valueMap = new HashMap<>();
 	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 
 	@Test
 	public void TestmatchValue() {
-		double matchValue = bioMatcherUtil.matchValue(value, value);
+		valueMap.put(value, value);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(90.0, matchValue));
 	}
 
 	@Test
 	public void TestInvalidMatchValue() {
-		double matchValue = bioMatcherUtil.matchValue(value, "Invalid");
+		valueMap.put(value, value);
+		Map<String, String> invalidMap = new HashMap<>();
+		invalidMap.put("invalid", "invalid");
+		double matchValue = bioMatcherUtil.matchValue(valueMap, invalidMap);
 		assertNotEquals("90.0", matchValue);
 	}
 
 	@Test
-	public void TestMatchValuereturnsZero() {
-		double matchValue = bioMatcherUtil.matchValue(10, "Invalid");
-		assertEquals(0, Double.compare(0, matchValue));
-	}
-
-	@Test
 	public void TestMatchValuereturnsZerowhenreqInfoisINvalid() {
-		double matchValue = bioMatcherUtil.matchValue("Invalid", 10);
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
 	@Test
 	public void TesInvalidtMatchValuereturnsZero() {
-		double matchValue = bioMatcherUtil.matchValue(10, "test");
+		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
