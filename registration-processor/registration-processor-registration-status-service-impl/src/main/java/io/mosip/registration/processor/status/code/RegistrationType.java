@@ -21,6 +21,6 @@ public enum RegistrationType {
 	DEACTIVATED,
 	
 	/** The resupdate. */
-	RESUPDATE;
+	RES_UPDATE;
 	
 }

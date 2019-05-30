@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -17,11 +18,11 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 @RunWith(VertxUnitRunner.class)
 public class MosipVerticleManagerConsumeTest {
-	
+
 	private MessageDTO messageDTO;
 	private Vertx vertx;
 
-	private ConsumerVerticle consumerVerticle; 
+	private ConsumerVerticle consumerVerticle;
 
 	@Before
 	public void setup(TestContext testContext) throws Exception {
@@ -33,6 +34,7 @@ public class MosipVerticleManagerConsumeTest {
 		this.messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 		this.messageDTO.setIsValid(true);
 		this.messageDTO.setInternalError(false);
+		messageDTO.setReg_type(RegistrationType.NEW);
 
 		vertx = Vertx.vertx();
 		vertx.deployVerticle(ConsumerVerticle.class.getName(), testContext.asyncAssertSuccess());
@@ -52,7 +54,7 @@ public class MosipVerticleManagerConsumeTest {
 		Vertx vertx= consumerVerticle.deployVerticle().getEventbus();
 		assertTrue(vertx.isClustered());
 	}
-	
+
 	@Test
 	public void checkSend(TestContext testContext) {
 		final Async async = testContext.async();

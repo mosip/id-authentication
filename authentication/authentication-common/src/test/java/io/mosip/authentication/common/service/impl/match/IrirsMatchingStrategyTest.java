@@ -7,12 +7,12 @@ import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 
 public class IrirsMatchingStrategyTest {
@@ -65,7 +65,7 @@ public class IrirsMatchingStrategyTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		matchProperties.put(IdaIdMapping.IRIS.getIdname(),
-				(BiFunction<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
+				(BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}

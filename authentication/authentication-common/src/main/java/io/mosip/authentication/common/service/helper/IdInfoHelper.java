@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -54,7 +54,6 @@ public class IdInfoHelper {
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
-
 
 	/** The id mapping config. */
 	@Autowired
@@ -334,8 +333,8 @@ public class IdInfoHelper {
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
-				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType, " is not allowed for - ",
-						matchType + " MatchType");
+				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
+						" is not allowed for - ", matchType + " MatchType");
 			}
 
 		}

@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
@@ -131,7 +132,10 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+		Mockito.doAnswer((idObject) -> {
+			return "Success";
+		}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
+		// when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(devices);
@@ -155,7 +159,9 @@ public class PacketCreationServiceTest {
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes()))
 				.thenThrow(new Exception("Invalid BIR"));
-		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+		Mockito.doAnswer((idObject) -> {
+			return "Success";
+		}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -168,8 +174,11 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any()))
-				.thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
+		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
+		/*
+		 * when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any()))
+		 * .thenThrow(new RegBaseCheckedException("errorCode", "errorMessage"));
+		 */
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
@@ -187,7 +196,9 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+		Mockito.doAnswer((idObject) -> {
+			return "Success";
+		}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
@@ -216,7 +227,9 @@ public class PacketCreationServiceTest {
 		when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		when(cbeffI.createXML(Mockito.anyList(), Mockito.anyString().getBytes())).thenReturn("cbeffXML".getBytes());
-		when(idObjectValidator.validateIdObject(Mockito.any(),Mockito.any())).thenReturn(true);
+		Mockito.doAnswer((idObject) -> {
+			return "Success";
+		}).when(idObjectValidator).validateIdObject(Mockito.any(), Mockito.any());
 		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 

@@ -1484,7 +1484,7 @@ public class BookingServiceTest {
 		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
 		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = service.cancelAppointment("23587986034785");
-		assertEquals("Appointment cancelled successfully", responseDto.getResponse().getMessage());
+		assertEquals("Appointment for the selected application has been successfully cancelled", responseDto.getResponse().getMessage());
 
 	}
 
