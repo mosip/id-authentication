@@ -370,7 +370,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 				String key = "mosip.registration.important_guidelines_" + applicationContext.getApplicationLanguage();
 				String guidelines = getValueFromApplicationContext(key);
-				templateGenerator.setConsentText(guidelines);
+				templateGenerator.setGuidelines(guidelines);
 				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
 						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 				if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
