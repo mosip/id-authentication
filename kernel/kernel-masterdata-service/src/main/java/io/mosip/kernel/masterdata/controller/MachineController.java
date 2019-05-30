@@ -193,6 +193,7 @@ public class MachineController {
 	 * @return MachineResponseDto all machines details those are mapped with given
 	 *         registration Id {@link MachineResponseDto}
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")

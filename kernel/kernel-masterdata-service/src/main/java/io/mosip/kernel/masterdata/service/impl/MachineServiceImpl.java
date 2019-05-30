@@ -316,7 +316,6 @@ public class MachineServiceImpl implements MachineService {
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		
-		//pageDto=MapperUtils.map(pageEntity,pageDto);
 		pageDto.setPageNo(pageEntity.getNumber());
 		pageDto.setPageSize(pageEntity.getSize());
 		pageDto.setSort(pageEntity.getSort());
@@ -324,8 +323,6 @@ public class MachineServiceImpl implements MachineService {
 		pageDto.setTotalPages(pageEntity.getTotalPages());
 		pageDto.setData(machineRegistrationCenterDtoList);
 		
-		// return new PageDto<>(pageEntity.getNumber(), pageEntity.getTotalPages(),
-		// pageEntity.getTotalElements(),machineRegistrationCenterDtoList);
 		return pageDto;
 
 	}
