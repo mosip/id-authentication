@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -15,6 +16,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
@@ -72,11 +74,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				"Validating credentials using database");
 
 		UserDTO userDTO = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+		try {
 
-		if (HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
-				CryptoUtil.decodeBase64(userDTO.getSalt())).equals(userDTO.getUserPassword().getPwd())) {
-			return RegistrationConstants.PWD_MATCH;
-		} else {
+			if (null != userDTO && null != userDTO.getSalt()
+					&& HMACUtils
+							.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
+									CryptoUtil.decodeBase64(userDTO.getSalt()))
+							.equals(userDTO.getUserPassword().getPwd())) {
+				return RegistrationConstants.PWD_MATCH;
+			} else {
+				return RegistrationConstants.PWD_MISMATCH;
+			}
+
+		} catch (RuntimeException runtimeException) {
+
+			LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(runtimeException));
+
 			return RegistrationConstants.PWD_MISMATCH;
 		}
 	}
