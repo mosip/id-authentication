@@ -80,7 +80,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 */
 	private void routes(MosipRouter router) {
 		router.post(contextPath + "/securezone");
-		router.nonSecureHandler(this::processURL, this::failure);
+		router.handler(this::processURL, this::failure);
 
 	}
 

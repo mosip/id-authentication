@@ -186,20 +186,20 @@ public class OTPManager {
 					.equalsIgnoreCase(OtpErrorConstants.PHONENOTREGISTERED.getErrorCode()))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdaIdMapping.PHONE.name(),
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+								IdaIdMapping.PHONE.name()));
 			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
 					.equalsIgnoreCase(OtpErrorConstants.EMAILNOTREGISTERED.getErrorCode()))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdaIdMapping.EMAIL.name(),
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+								IdaIdMapping.EMAIL.name()));
 			} else if (errorList.stream().anyMatch(errors -> errors.getErrorCode()
 					.equalsIgnoreCase(OtpErrorConstants.EMAILPHONENOTREGISTERED.getErrorCode()))) {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(),
-						String.format(IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name(),
-								IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage()));
+						String.format(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorMessage(),
+								IdaIdMapping.EMAIL.name() + "," + IdaIdMapping.PHONE.name()));
 			}
 		}
 	}

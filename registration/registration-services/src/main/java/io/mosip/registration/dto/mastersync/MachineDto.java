@@ -50,6 +50,17 @@ public class MachineDto extends MasterSyncBaseDto{
 	 * Field for is validity of the Device
 	 */
 	private LocalDateTime validityDateTime;
+	
+	/**
+	 * Field for is validity of the Device
+	 */
+	private String publicKey;
+	
+	/**
+	 * Field for is validity of the Device
+	 */
+	private String keyIndex;
+	
 	/**
 	 * @return the id
 	 */
@@ -158,8 +169,17 @@ public class MachineDto extends MasterSyncBaseDto{
 	public void setValidityDateTime(LocalDateTime validityDateTime) {
 		this.validityDateTime = validityDateTime;
 	}
+	public String getPublicKey() {
+		return publicKey;
+	}
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+	public String getKeyIndex() {
+		return keyIndex;
+	}
+	public void setKeyIndex(String keyIndex) {
+		this.keyIndex = keyIndex;
+	}
 	
-	
-	
-
 }

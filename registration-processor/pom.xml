@@ -116,14 +116,14 @@
 		<registration.processor.print.service.impl.version>${version}</registration.processor.print.service.impl.version>
 		
 		<!-- Kernel -->
-		<kernel.core.version>0.11.2</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.11.2</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.11.2</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.11.2</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.11.2</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.11.2</kernel.idvalidator.version>
-		<kernel.clamav.version>0.11.2</kernel.clamav.version>
-		<kernel.idgenerator.rid.version>0.11.2</kernel.idgenerator.rid.version>
+		<kernel.core.version>0.12.2</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.12.2</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.12.2</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.12.2</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.12.2</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.12.2</kernel.idvalidator.version>
+		<kernel.clamav.version>0.12.2</kernel.clamav.version>
+		<kernel.idgenerator.rid.version>0.12.2</kernel.idgenerator.rid.version>
 
 			<sonar.coverage.exclusions>**/dto/**,
 			**/exception/*Exception.java,

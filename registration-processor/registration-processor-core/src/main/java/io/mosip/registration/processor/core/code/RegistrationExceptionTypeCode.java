@@ -237,5 +237,9 @@ public enum RegistrationExceptionTypeCode {
 	IDA_AUTHENTICATION_FAILURE,
 
     /** The password otp failure. */
-    PASSWORD_OTP_FAILURE
+    PASSWORD_OTP_FAILURE,
+
+    /** The biometric exception*/
+	BIOMETRIC_EXCEPTION
+
 }

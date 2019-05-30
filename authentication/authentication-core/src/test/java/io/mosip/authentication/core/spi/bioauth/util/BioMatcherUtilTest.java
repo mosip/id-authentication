@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 
 @RunWith(SpringRunner.class)
@@ -40,14 +41,14 @@ public class BioMatcherUtilTest {
 	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 
 	@Test
-	public void TestmatchValue() {
+	public void TestmatchValue() throws IdAuthenticationBusinessException {
 		valueMap.put(value, value);
 		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(90.0, matchValue));
 	}
 
 	@Test
-	public void TestInvalidMatchValue() {
+	public void TestInvalidMatchValue() throws IdAuthenticationBusinessException {
 		valueMap.put(value, value);
 		Map<String, String> invalidMap = new HashMap<>();
 		invalidMap.put("invalid", "invalid");
@@ -56,19 +57,19 @@ public class BioMatcherUtilTest {
 	}
 
 	@Test
-	public void TestMatchValuereturnsZerowhenreqInfoisINvalid() {
+	public void TestMatchValuereturnsZerowhenreqInfoisINvalid() throws IdAuthenticationBusinessException {
 		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
 	@Test
-	public void TesInvalidtMatchValuereturnsZero() {
+	public void TesInvalidtMatchValuereturnsZero() throws IdAuthenticationBusinessException {
 		double matchValue = bioMatcherUtil.matchValue(valueMap, valueMap);
 		assertEquals(0, Double.compare(0, matchValue));
 	}
 
 	@Test
-	public void TestMultipleValues() {
+	public void TestMultipleValues() throws IdAuthenticationBusinessException {
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("", value);
 		double matchMultiValue = bioMatcherUtil.matchMultiValue(valueMap, valueMap);
@@ -76,7 +77,7 @@ public class BioMatcherUtilTest {
 	}
 
 	@Test
-	public void TestInvaidMultipleValues() {
+	public void TestInvaidMultipleValues() throws IdAuthenticationBusinessException {
 		Map<String, String> reqInfo = new HashMap<>();
 		reqInfo.put("", value);
 		Map<String, String> entityInfo = new HashMap<>();
@@ -86,7 +87,7 @@ public class BioMatcherUtilTest {
 	}
 
 	@Test
-	public void TestUnknownValues() {
+	public void TestUnknownValues() throws IdAuthenticationBusinessException {
 		Map<String, String> reqInfo = new HashMap<>();
 		reqInfo.put(IdAuthCommonConstants.UNKNOWN_BIO, value);
 		Map<String, String> entityInfo = new HashMap<>();

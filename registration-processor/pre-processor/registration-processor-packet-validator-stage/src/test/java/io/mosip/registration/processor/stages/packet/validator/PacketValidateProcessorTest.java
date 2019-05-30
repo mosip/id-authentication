@@ -54,6 +54,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -76,7 +77,6 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
-import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -209,13 +209,14 @@ public class PacketValidateProcessorTest {
 		listAppender = new ListAppender<>();
 
 		dto.setRid("2018701130000410092018110735");
+		dto.setReg_type(RegistrationType.valueOf("UPDATE"));
 
 		MockitoAnnotations.initMocks(this);
 		packetMetaInfo = new PacketMetaInfo();
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("NEW");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -473,7 +474,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-		dto.setReg_type("ACTIVATED");
+		dto.setReg_type(RegistrationType.ACTIVATED);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 
