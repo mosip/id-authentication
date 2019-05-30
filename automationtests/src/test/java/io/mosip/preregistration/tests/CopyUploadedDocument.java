@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
@@ -142,6 +143,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		// Document Upload for created application
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
+		logger.info("Doc Upload response:"+docUploadResponse.asString());
 		// PreId of Uploaded document
 		String srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 		String docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
@@ -362,3 +364,4 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	}
 
 }
+

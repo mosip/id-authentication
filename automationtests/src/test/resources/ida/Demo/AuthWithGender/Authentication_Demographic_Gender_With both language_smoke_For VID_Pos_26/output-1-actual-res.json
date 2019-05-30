@@ -1,0 +1,1 @@
+{"transactionID":"1831475282","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - IdentityInfoDTO"},{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - gender"}],"responseTime":"2019-05-29T21:20:03.098+05:30","response":{"authStatus":false,"staticToken":null}}
