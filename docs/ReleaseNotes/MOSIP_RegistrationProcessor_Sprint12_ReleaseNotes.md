@@ -71,12 +71,11 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 
 
 ### 1.8 DB Changes :
-Table modified: regprc.registration_list
+Below are the changes in registration processor DB -
 
-
-Column Name|Description
------------------|----------------------
-
+1.	Removal of uin column from regprc.undividual_demogrphic_dedupe table
+2.	Deletion of regprc.reg_uin table from DB
+3.	New table for lost uin regprc.reg_lost_uin_det
 
 
 
