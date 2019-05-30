@@ -3,11 +3,12 @@ package io.mosip.registration.validator;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.core.bioapi.model.Score;
@@ -19,6 +20,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.device.fp.FingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
@@ -74,13 +76,17 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		List<UserBiometric> userFingerprintDetails = userDetailDAO.getUserSpecificBioDetails(userId, RegistrationConstants.FIN);
 			return validateFpWithBioApi(capturedFingerPrintDto, userFingerprintDetails);
 	}
+	
 
 	private boolean validateFpWithBioApi(FingerprintDetailsDTO capturedFingerPrintDto,
 			List<UserBiometric> userFingerprintDetails) {
 		boolean flag = false;
 		BIRType[] registeredBir = new BIRType[userFingerprintDetails.size()];
 		BIRType capturedBir = new BIRType();
-		capturedBir.setBDB(capturedFingerPrintDto.getFingerPrintISOImage());
+		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+				.convert(capturedFingerPrintDto.getFingerPrintISOImage());
+		String minutiae = fingerprintTemplate.serialize();
+		capturedBir.setBDB(minutiae.getBytes());
 		int i = 0;
 		for (UserBiometric userBiometric : userFingerprintDetails) {
 			registeredBir[i]=new BIRType();
@@ -92,7 +98,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		int fingerPrintScore = Integer
 				.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGER_PRINT_SCORE)));
 		for (Score score : scores) {
-			if (score.getInternalScore() > fingerPrintScore) {
+			if (score.getInternalScore() >= fingerPrintScore) {
 				flag = true;
 			}
 		}
