@@ -2,7 +2,9 @@ package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -138,7 +140,8 @@ public class ValidationUtil {
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
 					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
-					if (localDate.isBefore(LocalDate.now()) || localDate.isAfter(LocalDate.now())) {
+					LocalDate serverDate=new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+					if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
 								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
 					}

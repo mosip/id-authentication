@@ -1,1 +1,0 @@
-{"transactionID":"0701043308","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - version"}],"responseTime":"2019-05-28T12:12:03.405+05:30","response":{"authStatus":false,"staticToken":null}}
