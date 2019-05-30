@@ -17,7 +17,7 @@ public enum DeviceErrorCode {
 	DEPENDENCY_EXCEPTION("KER-MSD-147", "Cannot delete as dependency found"),
 	REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION("KER-MSD-XXX",
 			"Error occurred while fetching a Device details mapped with the given Registration Center"),
-	DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found");
+	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found");
 
 	private final String errorCode;
 	private final String errorMessage;

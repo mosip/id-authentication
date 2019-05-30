@@ -278,8 +278,8 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceRegistrationCenterDto.setRegCentId(regCenterId);
 			}
 		} else {
-			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_REGISTRATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		//pageDto = MapperUtils.map(pageEntity, PageDto.class);
 		pageDto.setPageNo(pageEntity.getNumber());
