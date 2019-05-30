@@ -137,7 +137,7 @@ public class PacketReceiverServiceTest {
 		regEntity.setId("001");
 		regEntity.setLangCode("eng");
 		regEntity.setRegistrationId("0000");
-		regEntity.setRegistrationType("new");
+		regEntity.setRegistrationType("NEW");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 		regEntity.setPacketHashValue("abcd1234");

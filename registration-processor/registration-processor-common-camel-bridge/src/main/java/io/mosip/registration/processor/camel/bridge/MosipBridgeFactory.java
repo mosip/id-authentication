@@ -3,6 +3,8 @@ package io.mosip.registration.processor.camel.bridge;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
@@ -54,11 +56,11 @@ public class MosipBridgeFactory extends AbstractVerticle {
         String zone = BridgeUtil.getZone();
         if(zone.equalsIgnoreCase("dmz")) {
             clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
-            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.dmz.file.name");
+            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.dmz.active.flows.file.names");
         }
         else {
         	clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
-            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.secure.file.name");
+            camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.secure.active.flows.file.names");
         }
         String clusterUrl = BridgeUtil.getCloudConfigUri();
         String eventBusPort = PropertyFileUtil.getProperty(MosipBridgeFactory.class,"bootstrap.properties","eventbus.port");
@@ -94,17 +96,24 @@ public class MosipBridgeFactory extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        CamelContext camelContext = new DefaultCamelContext();
+    	CamelContext camelContext = new DefaultCamelContext();
         VertxComponent vertxComponent = new VertxComponent();
         vertxComponent.setVertx(vertx);
+        List<String> camelRoutesFilesArr = Arrays.asList(camelRoutesFileName.split(","));
         RestTemplate restTemplate = new RestTemplate();
-        String camelRoutesUrl = BridgeUtil.getCloudConfigUri();
-        camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
-                + "/" + camelRoutesFileName;
-        ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
-                Resource.class);
-        RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
-        camelContext.addRouteDefinitions(routes.getRoutes());
+        String camelRoutesBaseUrl = BridgeUtil.getCloudConfigUri();
+        String profile = BridgeUtil.getActiveProfile();
+        camelRoutesBaseUrl = camelRoutesBaseUrl + "/*/" + profile + "/" + BridgeUtil.getCloudConfigLabel()
+                + "/";
+        ResponseEntity<Resource> responseEntity;
+        RoutesDefinition routes;
+        for (String camelRouteFileName : camelRoutesFilesArr) {
+			String camelRoutesUrl = camelRoutesBaseUrl + camelRouteFileName;
+			responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
+	                Resource.class);
+			routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+			camelContext.addRouteDefinitions(routes.getRoutes());
+		}
         camelContext.addComponent("vertx", vertxComponent);
         camelContext.start();
         CamelBridge.create(vertx, new CamelBridgeOptions(camelContext)).start();
