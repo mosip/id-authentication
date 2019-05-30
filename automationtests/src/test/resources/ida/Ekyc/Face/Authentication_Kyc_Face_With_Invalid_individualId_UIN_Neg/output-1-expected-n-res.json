@@ -1,0 +1,1 @@
+{"transactionID":"3152642845","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

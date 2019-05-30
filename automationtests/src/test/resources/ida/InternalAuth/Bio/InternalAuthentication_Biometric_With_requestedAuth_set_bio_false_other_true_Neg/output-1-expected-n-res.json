@@ -1,0 +1,1 @@
+{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MPA-006","errorMessage":"$REGEXP:.*authentiation usage not allowed as per policy$"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
