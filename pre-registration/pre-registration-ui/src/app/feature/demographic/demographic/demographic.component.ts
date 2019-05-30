@@ -95,6 +95,7 @@ export class DemographicComponent implements OnInit {
   secondaryGender = [];
   primaryResidenceStatus = [];
   secondaryResidenceStatus = [];
+  secondaryResidenceStatusTemp = [];
   genders: any;
   residenceStatus: any;
   message = {};
@@ -402,7 +403,7 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   private async setLocations() {
-    await this.getLocationMetadataHirearchy(); 
+    await this.getLocationMetadataHirearchy();
     this.selectedLocationCode = [
       this.uppermostLocationHierarchy,
       this.formControlValues.region,
@@ -450,6 +451,9 @@ export class DemographicComponent implements OnInit {
     await this.getResidentDetails();
     this.filterOnLangCode(this.primaryLang, this.primaryResidenceStatus, this.residenceStatus);
     this.filterOnLangCode(this.secondaryLang, this.secondaryResidenceStatus, this.residenceStatus);
+    // if(this.dataModification){
+    //   this.getValueFromCode(this.secondaryResidenceStatus,this.user.request.demographicDetails.identity.residenceStatus[0].value)
+    // }
   }
 
   /**
@@ -595,7 +599,7 @@ export class DemographicComponent implements OnInit {
           if (element.code === this.formControlValues.gender) {
             const codeValue: CodeValueModal = {
               valueCode: element.code,
-              valueName: element.genderName,
+              valueName: element.genderName ,
               languageCode: element.langCode
             };
             this.addCodeValue(codeValue);
@@ -603,13 +607,13 @@ export class DemographicComponent implements OnInit {
           if (element.code === this.formControlValues.residenceStatus) {
             const codeValue: CodeValueModal = {
               valueCode: element.code,
-              valueName: element.genderName,
+              valueName: element.name,
               languageCode: element.langCode
             };
             this.addCodeValue(codeValue);
           }
         });
-      }
+      } 
     }
   }
 
@@ -757,6 +761,20 @@ export class DemographicComponent implements OnInit {
         });
       });
     }
+    // this.getValueFromCode(entity[1], event.value);
+  }
+
+  // In progress to do 
+  getValueFromCode(entity:any, value:string) {
+    this.secondaryResidenceStatusTemp = JSON.parse(JSON.stringify(entity));
+    console.log('secondaryResidenceStatusTemp ', this.secondaryResidenceStatusTemp);
+    console.log("index", entity.findIndex((item) => {
+      console.log("item", item);
+      
+      item.code !== value}));
+    this.secondaryResidenceStatusTemp.splice(entity.findIndex(item => item.code !== value), 1);
+    console.log('enityt1', this.secondaryResidenceStatusTemp);
+    console.log('enityt2', entity);
   }
 
   /**
@@ -1011,6 +1029,8 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onSubmission() {
+    this.loggerService.info("codevalue",this.codeValue);  
+    
     this.checked = true;
     this.dataUploadComplete = true;
     let url = '';

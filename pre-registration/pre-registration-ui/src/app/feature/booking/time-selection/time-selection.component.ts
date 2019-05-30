@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import smoothscroll from 'smoothscroll-polyfill';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { BookingModel } from '../center-selection/booking.model';
 
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
@@ -55,7 +54,7 @@ export class TimeSelectionComponent implements OnInit {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
-    smoothscroll.polyfill();
+    // smoothscroll.polyfill();
     this.translate.use(localStorage.getItem('langCode'));
   }
 
@@ -78,14 +77,22 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   public scrollRight(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft + 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
       behavior: 'smooth'
     });
   }
 
   public scrollLeft(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft - 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
       behavior: 'smooth'
     });
@@ -175,7 +182,7 @@ export class TimeSelectionComponent implements OnInit {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -225,30 +232,11 @@ export class TimeSelectionComponent implements OnInit {
             title: this.secondaryLanguagelabels.title_success,
             message: this.secondaryLanguagelabels.msg_success
           };
-          const dialogRef = this.dialog
-            .open(DialougComponent, {
-              width: '350px',
-              data: data
-            })
-            .afterClosed()
-            .subscribe(() => {
-              this.temp.forEach(name => {
-                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                if (booking[0]) {
-                  this.bookingService.addNameList(name);
-                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
-                  this.bookingService.updateBookingDetails(name.preRegId, appointmentDateTime);
-                }
-              });
-              this.bookingService.setSendNotification(true);
-              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
-              this.router.navigateByUrl(url);
-            });
         } else {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -284,7 +272,6 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   navigateDashboard() {
-    const routeParams = this.router.url.split('/');
     this.router.navigate(['dashboard']);
   }
 
