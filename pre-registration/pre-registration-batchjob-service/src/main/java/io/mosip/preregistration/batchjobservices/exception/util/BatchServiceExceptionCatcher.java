@@ -38,6 +38,10 @@ public class BatchServiceExceptionCatcher {
 			throw new NoValidPreIdFoundException(((NoValidPreIdFoundException) ex).getErrorCode(),
 					((NoValidPreIdFoundException) ex).getErrorText(),response);
 		}
+		else if (ex instanceof TableNotAccessibleException) {
+			throw new TableNotAccessibleException(((TableNotAccessibleException) ex).getErrorCode(),
+					((TableNotAccessibleException) ex).getErrorText(),response);
+		}
 	}
 
 }

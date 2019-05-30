@@ -1,1 +1,1 @@
-{"transactionID":"5565180504","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - individualId"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
+{"transactionID":"1408472044","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - individualId"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}

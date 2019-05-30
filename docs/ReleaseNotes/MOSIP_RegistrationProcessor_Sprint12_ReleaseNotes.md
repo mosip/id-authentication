@@ -26,6 +26,8 @@ MOS-13141|New|As ABIS Middle-ware, I should be able to Communicate with ABISs
 MOS-22023|New|Tech Story - As Registration Processor, I should be able to Authenticate My Self when I fetch file from File System
 MOS-24251|New|Tech Story - Trigger VID generation post UIN generation.
 MOS-24252|New|Tech Story - Validate Sync List Data with Packet Meta Data in Packet Validator and Implement Changes in Manual Verification.
+MOS-22026|New|As Registration Processor, I should be able to Authenticate Officer and Supervisor using their RID
+MOS-21718|New|As Registration Processor, I should be able to Perform Parent or Guardian (Introducer) Bio-metric Validation for a Child 
 
 
 #### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
@@ -69,12 +71,11 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 
 
 ### 1.8 DB Changes :
-Table modified: regprc.registration_list
+Below are the changes in registration processor DB -
 
-
-Column Name|Description
------------------|----------------------
-
+1.	Removal of uin column from regprc.undividual_demogrphic_dedupe table
+2.	Deletion of regprc.reg_uin table from DB
+3.	New table for lost uin regprc.reg_lost_uin_det
 
 
 
