@@ -12,7 +12,7 @@
               <parameter name="testType" value="smoke" />
               <classes>
               <class name="io.mosip.preregistration.tests.DocumentUpload" />
-             <!--   <class name="io.mosip.preregistration.tests.BookingAppointment" />
+               <class name="io.mosip.preregistration.tests.BookingAppointment" />
               <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
                <class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
                 <class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
@@ -21,7 +21,7 @@
                   <class name="io.mosip.preregistration.tests.MultipleBookingAppointment" />
                    <class name="io.mosip.preregistration.tests.QRCode" />
                    <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
-                            <class name="io.mosip.preregistration.tests.TriggerNotification" /> -->
+                            <class name="io.mosip.preregistration.tests.TriggerNotification" />
              <!--  <class name="io.mosip.preregistration.tests.Audit" /> 
                <class name="io.mosip.preregistration.tests.BatchJob" />
                 <class name="io.mosip.preregistration.tests.BookingAppointment" />

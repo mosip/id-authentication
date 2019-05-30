@@ -70,7 +70,7 @@ public class PreRegistrationUtil
 		Map<String, String> mapProp = propConfig.entrySet().stream()
 				.collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
 
-		logger.info("Map :"+mapProp);
+		//logger.info("Map :"+mapProp);
 		return mapProp;
 
 	}

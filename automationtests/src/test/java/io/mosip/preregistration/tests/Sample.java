@@ -81,13 +81,7 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 	@Test
 	public void makeHolidayAndCheckNotificationSendToEmail() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10009");
-		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		
 	}
 
 	@BeforeMethod(alwaysRun = true)

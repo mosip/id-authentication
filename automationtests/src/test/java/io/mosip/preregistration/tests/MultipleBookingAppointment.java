@@ -110,7 +110,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	
 
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "bookAppointment")
+	@Test(dataProvider = "multipleBookAppointment")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
 
 		List<String> outerKeys = new ArrayList<String>();
