@@ -35,9 +35,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.FingerprintProvider;
-import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -51,7 +49,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.impl.BioServiceImpl;
-import io.mosip.registration.service.security.impl.AuthenticationService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 @RunWith(PowerMockRunner.class)
