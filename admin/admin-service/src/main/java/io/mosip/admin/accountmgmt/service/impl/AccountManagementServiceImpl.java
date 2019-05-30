@@ -12,8 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -27,7 +25,8 @@ import io.mosip.admin.accountmgmt.dto.PasswordDto;
 import io.mosip.admin.accountmgmt.dto.RegistrationCenterUserDto;
 import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
-import io.mosip.admin.accountmgmt.dto.UserDetailDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailRestClientDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailsDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.dto.request.UserDetailRequestDto;
 import io.mosip.admin.accountmgmt.entity.RegistrationCenterUser;
@@ -37,8 +36,6 @@ import io.mosip.admin.accountmgmt.exception.DataNotFoundException;
 import io.mosip.admin.accountmgmt.repository.RegistrationCenterUserRepository;
 import io.mosip.admin.accountmgmt.service.AccountManagementService;
 import io.mosip.admin.accountmgmt.util.MapperUtils;
-import io.mosip.kernel.auth.adapter.exception.AuthNException;
-import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -127,7 +124,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	public StatusResponseDto unBlockUserName(String userId) {
 		String response = null;
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl + "registrationclient/").append(userId);
+		urlBuilder.append(authManagerBaseUrl).append(unBlockUrl +appId+"/").append(userId);
 		response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getSuccessResponse(response);
 
@@ -218,7 +215,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	 * getUserDetailBasedOnMobileNumber(java.lang.String)
 	 */
 	@Override
-	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile) {
+	public UserDetailsDto getUserDetailBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(authManagerBaseUrl).append(userDetailUrl + appId + "/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
@@ -227,7 +224,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	}
 
 	@Override
-	public UserDetailDto getUserDetailBasedOnUserId(String regCenterId) {
+	public UserDetailRestClientDto getUserDetailBasedOnRegId(String regCenterId) {
 		StringBuilder urlBuilder = new StringBuilder();
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = getUsersBasedOnRegistrationCenterId(regCenterId);
 		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
@@ -235,7 +232,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		HttpEntity<RequestWrapper<?>> userDetailReqEntity = getHttpRequest(userIds);
 		urlBuilder.append(authManagerBaseUrl).append(userDetailBasedOnUidUrl).append(appId);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.POST, userDetailReqEntity);
-		return getUserFromResponse(response);
+		return getUserDetailListFromResponse(response);
 	}
 
 	/**
@@ -257,31 +254,14 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 			response = responeEntity.getBody();
 		} catch (HttpServerErrorException | HttpClientErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
-
-			if (ex.getRawStatusCode() == 401) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthNException(validationErrorsList);
-				} else {
-					throw new BadCredentialsException("Authentication failed from AuthManager");
-				}
-			}
-			if (ex.getRawStatusCode() == 403) {
-				if (!validationErrorsList.isEmpty()) {
-					throw new AuthZException(validationErrorsList);
-				} else {
-					throw new AccessDeniedException("Access denied from AuthManager");
-				}
-			}
-
-			if (validationErrorsList != null) {
+			if (validationErrorsList!=null && !validationErrorsList.isEmpty()) {
 				throw new AccountServiceException(validationErrorsList);
 			} else {
 				throw new AccountManagementServiceException(
 						AccountManagementErrorCode.REST_SERVICE_EXCEPTION.getErrorCode(),
 						AccountManagementErrorCode.REST_SERVICE_EXCEPTION.getErrorMessage() + ""
-								+ ex.getResponseBodyAsString());
+								+ ex.getCause());
 			}
-
 		}
 
 		return response;
@@ -358,17 +338,17 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	 *            the response body
 	 * @return the user detail from response
 	 */
-	private UserDetailDto getUserFromResponse(String responseBody) {
+	private UserDetailsDto getUserFromResponse(String responseBody) {
 		List<ServiceError> validationErrorsList = null;
 		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
-		UserDetailDto userDetailDto = null;
+		UserDetailsDto userDetailDto = null;
 		if (!validationErrorsList.isEmpty()) {
 			throw new AccountServiceException(validationErrorsList);
 		}
-		ResponseWrapper<UserDetailDto> responseObject = null;
+		ResponseWrapper<UserDetailsDto> responseObject = null;
 		try {
 
-			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<UserDetailDto>>() {
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<UserDetailsDto>>() {
 			});
 			userDetailDto = responseObject.getResponse();
 		} catch (IOException | NullPointerException exception) {
@@ -377,6 +357,34 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		}
 
 		return userDetailDto;
+	}
+	
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return the user detail from response
+	 */
+	private UserDetailRestClientDto getUserDetailListFromResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		UserDetailRestClientDto userDetailRestClientDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AccountServiceException(validationErrorsList);
+		}
+		ResponseWrapper<UserDetailRestClientDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<UserDetailRestClientDto>>() {
+			});
+			userDetailRestClientDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
+					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		return userDetailRestClientDto;
 	}
 
 	private List<RegistrationCenterUserDto> getUsersBasedOnRegistrationCenterId(String regCenterId) {

@@ -73,7 +73,7 @@ public enum AuthErrorCode {
 	 */
 	INVALID_DATASOURCE_ERROR("KER-ATH-008", "Invalid datasource and Please check the application id"),
 
-	NAMING_EXCEPTION("KER-ATH-009", "Exception occued while unblocking the account"),
+	NAMING_EXCEPTION("KER-ATH-009", "Naming Exception occured"),
 	
 	UNABLE_CLOSE_LDAP_CONTEXT("KER-ATH-010","Exception occured while closing the context"),
 	
@@ -93,7 +93,8 @@ public enum AuthErrorCode {
 	
 	INVALID_DN("KER-ATH-018","Exception occured while creating DN"), 
 	INVALID_REQUEST("KER-ATH-019","should not be null or empty"),
-	IO_EXCEPTION("KER-ATH-020","IO Exception occured while passing paging request");
+	IO_EXCEPTION("KER-ATH-020","IO Exception occured while passing paging request"),
+	RUNTIME_EXCEPTION("KER-ATH-021","Runtime exception");
 	
 	
 

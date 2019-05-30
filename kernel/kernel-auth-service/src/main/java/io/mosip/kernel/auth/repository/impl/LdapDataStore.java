@@ -5,7 +5,6 @@ package io.mosip.kernel.auth.repository.impl;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,7 +33,6 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.commons.lang3.CharSequenceUtils;
 import org.apache.directory.api.ldap.model.constants.LdapSecurityConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -80,7 +78,6 @@ import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
@@ -759,17 +756,7 @@ public class LdapDataStore implements DataStore {
 			while (searchResult.hasMore()) {
 				Attributes attributes = searchResult.next().getAttributes();
 				mosipUserDto.setUserId((String) attributes.get("uid").get());
-				Dn searchBase = new Dn("ou=roles,c=morocco");
-				String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid="
-						+ (String) attributes.get("uid").get() + ",ou=people,c=morocco))";
-				NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
-						new SearchControls());
-				Set<String> roles = new HashSet<String>();
-				while (searchResultRoles.hasMore()) {
-					Attributes attributeRoles = searchResultRoles.next().getAttributes();
-					roles.add((String) attributeRoles.get("cn").get());
-				}
-				String rolesAsString = convertRolesToString(roles);
+				String rolesAsString = getRolesBasedOnUid((String) attributes.get("uid").get());
 				mosipUserDto.setMail((String) attributes.get("mail").get());
 				mosipUserDto.setMobile((String) attributes.get("mobile").get());
 				mosipUserDto.setName((String) attributes.get("cn").get());
@@ -781,7 +768,7 @@ public class LdapDataStore implements DataStore {
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
 		} catch (LdapInvalidDnException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
-					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + " " + e.getCause());
 		}
 
 		return mosipUserDto;
@@ -814,19 +801,20 @@ public class LdapDataStore implements DataStore {
 		UserDetailsDto userDetailsDto = null;
 		List<UserDetailsDto> userDetails = new ArrayList<>();
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
-		// Map<Object,Object> userPagenatedMap=null;
 		try {
 			for (String userId : userIds) {
+
 				NamingEnumeration<SearchResult> searchResult = getSearchResultBasedOnId(userId);
 				while (searchResult.hasMore()) {
 					SearchResult result = searchResult.next();
 					userDetailsDto = setUserDetail(result);
 					userDetailsDto.setUserId(userId);
+					String rolesAsString = getRolesBasedOnUid(userId);
+					userDetailsDto.setRole(rolesAsString);
 					userDetails.add(userDetailsDto);
 					break;
 				}
 			}
-			// userPagenatedMap=getPagenatedMap(userDetails, 2);
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getCause());
@@ -853,15 +841,11 @@ public class LdapDataStore implements DataStore {
 		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
 		SearchControls searchControls = new SearchControls();
 		NamingEnumeration<SearchResult> searchResult = null;
-		Attributes attributes = context.getAttributes(searchBase.getName(), new String[] {"*", "+"});
-		String createdTimeStamp=(String) attributes.get("createTimestamp").get();
-		System.out.println(LocalDateTime.parse(createdTimeStamp));
-		String modifyTimeStamp=(String) attributes.get("modifyTimeStamp").get();
-		System.out.println(LocalDateTime.parse(modifyTimeStamp));
-		System.out.println(createdTimeStamp+" modTime:"+modifyTimeStamp);
+
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		searchResult = context.search(searchBase.getName(),
 				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+
 		context.close();
 		return searchResult;
 	}
@@ -919,6 +903,39 @@ public class LdapDataStore implements DataStore {
 	public Map<Object, Object> getPagenatedMap(List<UserDetailsDto> list, int pageSize) {
 		return IntStream.iterate(0, i -> i + pageSize).limit((list.size() + pageSize - 1) / pageSize).boxed().collect(
 				Collectors.toMap(i -> i / pageSize, i -> list.subList(i, Math.min(i + pageSize, list.size()))));
+	}
+
+	/**
+	 * Gets the roles based on uid.
+	 *
+	 * @param uid
+	 *            the uid
+	 * @param context
+	 *            the context
+	 * @return the roles based on uid
+	 * @throws LdapInvalidDnException
+	 *             the ldap invalid dn exception
+	 * @throws NamingException
+	 *             the naming exception
+	 */
+	private String getRolesBasedOnUid(String uid) throws LdapInvalidDnException, NamingException {
+		LdapContext context = getContext();
+		Dn searchBase = new Dn("ou=roles,c=morocco");
+		String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid=" + uid + ",ou=people,c=morocco))";
+		NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		Set<String> roles = new HashSet<>();
+		while (searchResultRoles.hasMore()) {
+			Attributes attributeRoles = searchResultRoles.next().getAttributes();
+			roles.add((String) attributeRoles.get("cn").get());
+		}
+		context.close();
+		try {
+			return convertRolesToString(roles);
+		} catch (Exception e) {
+			throw new AuthManagerException(AuthErrorCode.RUNTIME_EXCEPTION.getErrorCode(),
+					AuthErrorCode.RUNTIME_EXCEPTION.getErrorMessage());
+		}
 	}
 
 }

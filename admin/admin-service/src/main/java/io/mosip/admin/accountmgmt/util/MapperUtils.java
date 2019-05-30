@@ -17,7 +17,7 @@ import javax.persistence.Entity;
 import org.springframework.stereotype.Component;
 
 import io.mosip.admin.accountmgmt.dto.BaseDto;
-import io.mosip.admin.accountmgmt.dto.UserDetailDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailsDto;
 import io.mosip.admin.accountmgmt.entity.BaseEntity;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 
@@ -340,11 +340,11 @@ public class MapperUtils {
 		ef.setAccessible(false);
 	}
 
-	public static List<UserDetailDto> mapUserDetailsToUserDetailMap(List<UserDetailDto> userDetails) {
-		List<UserDetailDto> userDetailMapDtoList = new ArrayList<>();
+	public static List<UserDetailsDto> mapUserDetailsToUserDetailMap(List<UserDetailsDto> userDetails) {
+		List<UserDetailsDto> userDetailMapDtoList = new ArrayList<>();
 
-		for (UserDetailDto userDetail : userDetails) {
-			UserDetailDto userDetailMapDto = new UserDetailDto();
+		for (UserDetailsDto userDetail : userDetails) {
+			UserDetailsDto userDetailMapDto = new UserDetailsDto();
 			userDetailMapDto.setName(userDetail.getUserId());
 			userDetailMapDto.setMail(userDetail.getMail());
 			userDetailMapDto.setMobile(userDetail.getMobile());
