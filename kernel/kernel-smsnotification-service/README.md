@@ -4,7 +4,13 @@
 
 [Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#sms-notification)
 
-This service is developed based on **MSG91** SMS gateway. Register on https://control.msg91.com/signup/ as developer and get an authkey.
+** Infobip Registartion**
+
+- This service is developed based on **infobip** SMS gateway. 
+
+- Register on [Infobip](https://www.infobip.com/en/get-started) and configure same username and password in properties.
+
+- Update **mosip.kernel.sms.api** property with the api got after registration, Follow [Infobib-Api](https://dev.infobip.com/send-sms/single-sms-message) and get api from **Resource** .
 
 Default Port and Context Path
 
@@ -23,8 +29,9 @@ localhost:8084/smsnotifier/swagger-ui.html
  
  
  ```
-mosip.kernel.sms.api=http://api.msg91.com/api/v2/sendsms
-mosip.kernel.sms.authkey=240764AwCGPlwv5bb455b0
+mosip.kernel.sms.api=https://9qqdy.api.infobip.com/sms/2/text/single
+mosip.kernel.sms.username=MDTMOSIP
+mosip.kernel.sms.password=Start$01
 mosip.kernel.sms.country.code=91
 mosip.kernel.sms.sender=MOSMSG
 mosip.kernel.sms.route=4

@@ -14,6 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,7 +27,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 
-
 /**
  * Central class for handling exceptions.
  * 
@@ -36,6 +37,9 @@ import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+	/**
+	 * Reference to ObjectMapper.
+	 */
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -89,6 +93,17 @@ public class ApiExceptionHandler {
 
 	}
 
+	/**
+	 * This method handle HttpMessageNotReadableException type of exception.
+	 * 
+	 * @param httpServletRequest
+	 *            the request.
+	 * @param e
+	 *            the exception.
+	 * @return the response entity.
+	 * @throws IOException
+	 *             IOException.
+	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
@@ -96,6 +111,52 @@ public class ApiExceptionHandler {
 		ServiceError error = new ServiceError(SmsExceptionConstant.SMS_ILLEGAL_INPUT.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	/**
+	 * This method handle HttpClientErrorException type of exception.
+	 * 
+	 * @param httpServletRequest
+	 *            the request.
+	 * @param e
+	 *            the exception.
+	 * @return the response entity.
+	 * @throws IOException
+	 *             IOException.
+	 */
+	@ExceptionHandler(HttpClientErrorException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> smsVendorServiceException(
+			final HttpServletRequest httpServletRequest, final HttpClientErrorException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+
+		JsonNode responseTree = objectMapper.readTree(e.getResponseBodyAsString());
+		String errorMessage = null;
+		if (responseTree != null) {
+			responseTree = responseTree.get("requestError").get("serviceException");
+			errorMessage = responseTree.get("text").asText();
+		} else {
+			errorMessage = e.getMessage();
+		}
+		ServiceError error = new ServiceError(SmsExceptionConstant.SMS_INVALID_CREDENTIAL.getErrorCode(), errorMessage);
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	@ExceptionHandler(HttpServerErrorException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> httpServerErrorException(HttpServletRequest httpServletRequest,
+			final HttpServerErrorException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		JsonNode responseTree = objectMapper.readTree(exception.getResponseBodyAsString());
+		String errorMessage = null;
+		if (responseTree != null) {
+			responseTree = responseTree.get("requestError").get("serviceException");
+			errorMessage = responseTree.get("text").asText();
+		} else {
+			errorMessage = exception.getMessage();
+		}
+		ServiceError error = new ServiceError("KER-NOS-004", errorMessage);
+		errorResponse.getErrors().add(error);
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
