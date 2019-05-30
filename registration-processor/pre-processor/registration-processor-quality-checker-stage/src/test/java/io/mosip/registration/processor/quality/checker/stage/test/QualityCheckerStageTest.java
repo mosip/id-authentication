@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -159,7 +161,9 @@ public class QualityCheckerStageTest {
 		birType4.setBDBInfo(bdbInfoType4);
 		birTypeList.add(birType4);
 
+		List<BIR> birList = getBIRList(birTypeList);
 		Mockito.when(cbeffUtil.getBIRDataFromXML(any())).thenReturn(birTypeList);
+		Mockito.when(cbeffUtil.convertBIRTypeToBIR(any())).thenReturn(birList);
 	}
 
 	@Test
@@ -246,6 +250,21 @@ public class QualityCheckerStageTest {
 		MessageDTO result = qualityCheckerStage.process(dto);
 
 		assertTrue(result.getInternalError());
+	}
+
+	private static List<BIR> getBIRList(List<BIRType> birTypeList) {
+		List<BIR> birList = new ArrayList<>();
+		for(BIRType birType:birTypeList)
+		{
+			BIR bir = new BIR.BIRBuilder().withBdb(birType.getBDB()).withElement(birType.getAny())
+					.withBdbInfo(new BDBInfo.BDBInfoBuilder()
+							.withQuality(birType.getBDBInfo().getQuality())
+							.withType(birType.getBDBInfo().getType())
+							.withSubtype(birType.getBDBInfo().getSubtype()).build())
+					.build();
+			birList.add(bir);
+		}
+		return birList;
 	}
 
 }

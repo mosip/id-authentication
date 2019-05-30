@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
-import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
@@ -120,10 +119,12 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	private Utilities utilities;
 
 	/** The bio Api. */
-	private IBioApi bioAPi = new BioApiImpl();
+	@Autowired
+	private IBioApi bioAPi;
 
 	/** The cbeff util. */
-	private CbeffUtil cbeffUtil = new CbeffImpl();
+	@Autowired
+	private CbeffUtil cbeffUtil;
 
 	/** The registration status mapper util. */
 	private RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
@@ -195,19 +196,20 @@ public class QualityCheckerStage extends MosipVerticleManager {
 							PlatformErrorMessages.RPR_QCR_BIO_FILE_MISSING.getMessage());
 				}
 				List<BIRType> birTypeList = cbeffUtil.getBIRDataFromXML(IOUtils.toByteArray(cbeffStream));
+				List<BIR> birList = cbeffUtil.convertBIRTypeToBIR(birTypeList);
 				int scoreCounter = 0;
-				for (BIRType birType : birTypeList) {
-					SingleType singleType = birType.getBDBInfo().getType().get(0);
-					List<String> subtype = birType.getBDBInfo().getSubtype();
+				for (BIR bir : birList) {
+					SingleType singleType = bir.getBdbInfo().getType().get(0);;
+					List<String> subtype = bir.getBdbInfo().getSubtype();
 					Integer threshold = getThresholdBasedOnType(singleType, subtype);
-					QualityScore qualityScore = bioAPi.checkQuality(birType, null);
+					QualityScore qualityScore = bioAPi.checkQuality(bir, null);
 					if (qualityScore.getInternalScore() < threshold) {
 						object.setIsValid(Boolean.FALSE);
 						isTransactionSuccessful = Boolean.FALSE;
 						registrationStatusDto
 								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-						description = "The " + birType.getBDBInfo().getType().get(0)
+						description = "The " + bir.getBdbInfo().getType().get(0)
 								+ " information captured is below the configured threshold";
 						break;
 					} else {
