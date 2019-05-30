@@ -102,6 +102,7 @@ public class DataProvider {
 			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		} else {
 			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
+			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
 			biometricInfoDTO.setFace(DataProvider.getFaceDTO());
 			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		}
