@@ -113,9 +113,6 @@ public class BaseController {
 	protected FXComponents fXComponents;
 
 	@Autowired
-	private AuthenticationService authenticationService;
-
-	@Autowired
 	private DemographicDetailController demographicDetailController;
 	@Autowired
 	public RegistrationPreviewController registrationPreviewController;
@@ -132,6 +129,9 @@ public class BaseController {
 
 	@Autowired
 	private TemplateService templateService;
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -647,10 +647,6 @@ public class BaseController {
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-		if (password.isEmpty()) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
-			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
-		} else {
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
 			authenticationValidatorDTO.setPassword(password);
@@ -659,7 +655,6 @@ public class BaseController {
 				return RegistrationConstants.SUCCESS;
 			}
 			return RegistrationConstants.FAILURE;
-		}
 	}
 
 	/**

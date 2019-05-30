@@ -5,6 +5,7 @@ import java.util.Set;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.UserDTO;
 
 /**
@@ -86,5 +87,13 @@ public interface LoginService {
 	 *            invalid login time
 	 */
 	String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime);
+	
+	/**
+	 * Validating user
+	 * 
+	 * @param userId
+	 *            userid
+	 */
+	ResponseDTO validateUser(String userId);
 
 }

@@ -28,7 +28,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -38,7 +37,6 @@ import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.login.LoginService;
-import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,16 +104,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Label registrationNavlabel;
 
 	@Autowired
-	private FingerprintFacade fingerprintFacade;
-
-	@Autowired
 	private PacketHandlerController packetHandlerController;
 
 	@Autowired
 	private RegistrationController registrationController;
-
-	@Autowired
-	private AuthenticationService authService;
 
 	@Autowired
 	private OTPManager otpGenerator;
@@ -238,17 +230,21 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			if (!username.getText().isEmpty()) {
 				if (fetchUserRole(username.getText())) {
-					status = validatePwd(username.getText(), password.getText());
-					if (RegistrationConstants.SUCCESS.equals(status)) {
-						userAuthenticationTypeListValidation.remove(0);
-						userNameField = username.getText();
-						if (!isEODAuthentication) {
-							getOSIData().setSupervisorID(userNameField);
-							getOSIData().setSuperviorAuthenticatedByPassword(true);
+					if (password.getText().isEmpty()) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+					} else {						
+						status = validatePwd(username.getText(), password.getText());
+						if (RegistrationConstants.SUCCESS.equals(status)) {
+							userAuthenticationTypeListValidation.remove(0);
+							userNameField = username.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+								getOSIData().setSuperviorAuthenticatedByPassword(true);
+							}
+							loadNextScreen();
+						} else if (RegistrationConstants.FAILURE.equals(status)) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 						}
-						loadNextScreen();
-					} else if (RegistrationConstants.FAILURE.equals(status)) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -258,17 +254,21 @@ public class AuthenticationController extends BaseController implements Initiali
 			}
 		} else {
 			if (!username.getText().isEmpty()) {
-				status = validatePwd(username.getText(), password.getText());
-				if (RegistrationConstants.SUCCESS.equals(status)) {
-					userAuthenticationTypeListValidation.remove(0);
-					userNameField = username.getText();
-					if (!isEODAuthentication) {
-						getOSIData().setOperatorAuthenticatedByPassword(true);
+				if (password.getText().isEmpty()) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+				} else {
+					status = validatePwd(username.getText(), password.getText());
+					if (RegistrationConstants.SUCCESS.equals(status)) {
+						userAuthenticationTypeListValidation.remove(0);
+						userNameField = username.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setOperatorAuthenticatedByPassword(true);
+						}
+						loadNextScreen();
+					} else if (RegistrationConstants.FAILURE.equals(status)) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 					}
-					loadNextScreen();
-				} else if (RegistrationConstants.FAILURE.equals(status)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
-				}
+				}				
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}

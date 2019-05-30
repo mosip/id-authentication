@@ -5,8 +5,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +26,8 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
@@ -31,13 +37,18 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserDetailService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * Class for implementing login service
@@ -47,7 +58,7 @@ import io.mosip.registration.service.sync.PublicKeySync;
  *
  */
 @Service
-public class LoginServiceImpl implements LoginService {
+public class LoginServiceImpl extends BaseService implements LoginService {
 
 	/**
 	 * Instance of LOGGER
@@ -96,6 +107,9 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private UserDetailService userDetailService;
 
+	@Autowired
+	private UserOnboardService userOnboardService;
+	
 	@Autowired
 	private UserSaltDetailsService userSaltDetailsService;
 	
@@ -329,5 +343,94 @@ public class LoginServiceImpl implements LoginService {
 		return (loginCount >= invalidLoginCount
 				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
 						- loginTime.getTime()) > invalidLoginTime);
+	}
+	
+	/**
+	 * Validating user
+	 * 
+	 * @param userId
+	 * 			userid
+	 */
+	public ResponseDTO validateUser(String userId) {
+		ResponseDTO responseDTO = new ResponseDTO();
+		
+		UserDTO userDTO = getUserDetail(userId);
+		if (userDTO == null) {
+			setErrorResponse(responseDTO, RegistrationConstants.USER_MACHINE_VALIDATION_MSG, null);
+		} else {
+			Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
+
+			String centerId = centerAndMachineId.get(RegistrationConstants.USER_CENTER_ID);
+
+			if (userDTO.getRegCenterUser().getRegcntrId().equals(centerId)) {
+				ApplicationContext.map().put(RegistrationConstants.USER_CENTER_ID, centerId);
+				if (userDTO.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+					setErrorResponse(responseDTO, RegistrationConstants.BLOCKED_USER_ERROR, null);
+				} else {
+					for (UserMachineMappingDTO userMachineMapping : userDTO.getUserMachineMapping()) {
+						ApplicationContext.map().put(RegistrationConstants.DONGLE_SERIAL_NUMBER,
+								userMachineMapping.getMachineMaster().getSerialNum());
+					}
+
+					Set<String> roleList = new LinkedHashSet<>();
+
+					userDTO.getUserRole().forEach(roleCode -> {
+						if (roleCode.isActive()) {
+							roleList.add(String.valueOf(roleCode.getRoleCode()));
+						}
+					});
+
+					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							"Validating roles");
+					// Checking roles
+					if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
+							|| roleList.contains(RegistrationConstants.SUPERVISOR)
+							|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {						
+						setErrorResponse(responseDTO, RegistrationConstants.ROLES_EMPTY_ERROR, null);
+					} else {
+						Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
+
+						ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
+								centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
+
+						boolean status = getCenterMachineStatus(userDTO);
+						sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
+						sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+						Map<String,Object> params = new LinkedHashMap<>();
+						params.put(RegistrationConstants.ROLES_LIST, roleList);
+						params.put(RegistrationConstants.UPLOAD_STATUS, status);
+						setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, params);
+					}
+				}
+			} else {
+				setErrorResponse(responseDTO, RegistrationConstants.USER_MACHINE_VALIDATION_MSG, null);
+			}
+		}
+		return responseDTO;
+	}
+	
+	/**
+	 * Fetching and Validating machine and center id
+	 * 
+	 * @param userDetail
+	 *            the userDetail
+	 * @return boolean
+	 * @throws RegBaseCheckedException
+	 */
+	private boolean getCenterMachineStatus(UserDTO userDTO) {
+		List<String> machineList = new ArrayList<>();
+		List<String> centerList = new ArrayList<>();
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Validating User machine and center mapping");
+
+		userDTO.getUserMachineMapping().forEach(machineMapping -> {
+			if (machineMapping.isActive()) {
+				machineList.add(machineMapping.getMachineMaster().getMacAddress());
+				centerList.add(machineMapping.getCentreID());
+			}
+		});
+		return machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
+				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId());
 	}
 }

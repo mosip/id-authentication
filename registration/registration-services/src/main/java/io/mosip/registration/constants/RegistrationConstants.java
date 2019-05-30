@@ -150,6 +150,10 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
+	public static final String USER_MACHINE_VALIDATION_MSG = "USER_MACHINE_VALIDATION_MSG"; 
+	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
+	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
+	public static final String ROLES_LIST = "roleList";
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
