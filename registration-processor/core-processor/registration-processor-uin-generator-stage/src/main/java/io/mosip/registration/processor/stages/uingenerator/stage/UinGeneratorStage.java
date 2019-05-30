@@ -882,7 +882,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	private void generateVid(String UIN) throws ApisResourceAccessException, IOException, VidCreationException {
 		ObjectMapper mapper = new ObjectMapper();
 		VidRequestDto vidRequestDto = new VidRequestDto();
-		VidResponseDto vidResponseDto= new VidResponseDto();
+		VidResponseDto vidResponseDto;
 		RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
 		ResponseWrapper<VidResponseDto> response;
 		try {

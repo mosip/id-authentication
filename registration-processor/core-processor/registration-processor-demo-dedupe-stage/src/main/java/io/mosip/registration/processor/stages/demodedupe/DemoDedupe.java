@@ -59,7 +59,7 @@ public class DemoDedupe {
 				"DemoDedupe::performDedupe()::entry");
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
-		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
+		List<DemographicInfoDto> demographicInfoDtos;
 		List<DemographicInfoDto> infoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			infoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(), demoDto.getGenderCode(),
@@ -98,7 +98,7 @@ public class DemoDedupe {
 	 * @throws IllegalAccessException
 	 */
 	private void setFingerBiometricDto(Object obj, String fieldName, Object value)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+			throws IllegalAccessException, InvocationTargetException, IntrospectionException {
 		PropertyDescriptor pd;
 		if (fieldName != null) {
 			pd = new PropertyDescriptor(fieldName, obj.getClass());
@@ -119,7 +119,7 @@ public class DemoDedupe {
 	 * @throws IllegalAccessException
 	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
+			throws IllegalAccessException, InvocationTargetException, IntrospectionException {
 		String finger = null;
 		String[] fingerType = env.getProperty("fingerType").split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(fingerType));

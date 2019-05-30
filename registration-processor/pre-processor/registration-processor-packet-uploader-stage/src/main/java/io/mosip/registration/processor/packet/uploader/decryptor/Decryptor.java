@@ -110,11 +110,11 @@ public class Decryptor {
 			String encryptedPacketString = IOUtils.toString(encryptedPacket, "UTF-8");
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response;
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(refId);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
+			CryptomanagerResponseDto cryptomanagerResponseDto;
 
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");

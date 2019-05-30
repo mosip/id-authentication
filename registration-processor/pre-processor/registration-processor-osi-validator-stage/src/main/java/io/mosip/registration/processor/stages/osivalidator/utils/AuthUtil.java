@@ -105,7 +105,7 @@ public class AuthUtil {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
 		RequestDTO req = new RequestDTO();
-		List<BioInfo> biometrics = new ArrayList<>();
+		List<BioInfo> biometrics;
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authRequestDTO.setId(authRequestId);
 		authRequestDTO.setIndividualId(individualId);

@@ -364,8 +364,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid=null;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		JSONObject ridJson=new JSONObject();
+		ResponseWrapper<?> responseWrapper;
+		JSONObject ridJson;
 		try {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "",
 					"", ResponseWrapper.class);
