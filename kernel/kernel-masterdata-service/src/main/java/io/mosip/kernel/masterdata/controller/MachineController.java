@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -193,7 +194,7 @@ public class MachineController {
 	 *         registration Id {@link MachineResponseDto}
 	 */
 	@ResponseFilter
-	@GetMapping(value = "machines/mappedmachines/{regCenterId}")
+	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Registration Center Id"),

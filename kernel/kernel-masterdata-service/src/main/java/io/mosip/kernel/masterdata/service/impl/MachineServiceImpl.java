@@ -299,7 +299,7 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			pageEntity = machineRepository.findMachineByRegCenterId(regCenterId,
 					PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
-		} catch (DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
 					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage()
