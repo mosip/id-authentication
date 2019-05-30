@@ -368,6 +368,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 			String ackTemplateText = templateContent.toString();
 
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
+				String key = "mosip.registration.important_guidelines_" + applicationContext.getApplicationLanguage();
+				String guidelines = getValueFromApplicationContext(key);
+				templateGenerator.setConsentText(guidelines);
 				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
 						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 				if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
@@ -691,21 +694,20 @@ public class PacketHandlerController extends BaseController implements Initializ
 						.with(address -> address.setLine3(individualIdentity.getAddressLine3() != null
 								? individualIdentity.getAddressLine3().get(0).getValue()
 								: null))
-						.with(address -> address
-								.setLocationDTO(Builder.build(LocationDTO.class)
-										.with(location -> location.setCity(individualIdentity.getCity() != null
-												? individualIdentity.getCity().get(0).getValue()
+						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+								.with(location -> location.setCity(individualIdentity.getCity() != null
+										? individualIdentity.getCity().get(0).getValue()
+										: null))
+								.with(location -> location.setProvince(individualIdentity.getProvince() != null
+										? individualIdentity.getProvince().get(0).getValue()
+										: null))
+								.with(location -> location.setRegion(individualIdentity.getRegion() != null
+										? individualIdentity.getRegion().get(0).getValue()
+										: null))
+								.with(location -> location.setPostalCode(
+										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
 												: null))
-										.with(location -> location.setProvince(individualIdentity.getProvince() != null
-												? individualIdentity.getProvince().get(0).getValue()
-												: null))
-										.with(location -> location.setRegion(individualIdentity.getRegion() != null
-												? individualIdentity.getRegion().get(0).getValue()
-												: null))
-										.with(location -> location.setPostalCode(individualIdentity.getPostalCode() != null
-												? individualIdentity.getPostalCode()
-												: null))
-										.get()))
+								.get()))
 						.get();
 
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
@@ -766,7 +768,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -837,7 +840,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 									RegistrationConstants.LOST_UIN_SMS_TEMPLATE);
 						} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
 								.getRegistrationCategory().equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
-							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.UPDATE_UIN_SMS_TEMPLATE);
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.UPDATE_UIN_SMS_TEMPLATE);
 						} else {
 							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
 						}
