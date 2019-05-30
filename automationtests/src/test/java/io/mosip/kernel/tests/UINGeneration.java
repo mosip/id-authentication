@@ -71,7 +71,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	@DataProvider(name = "UINValidator")
 	public Object[][] readData1(ITestContext context) throws Exception {
 		
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 	}
 	
 	

@@ -41,14 +41,14 @@ import io.restassured.response.Response;
  * @author M9010714
  *
  */
-public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
+public class GetUsersBasedOnRegCenter extends BaseTestCase implements ITest {
 
-	public GetusersBasedOnRegCenter() {
+	public GetUsersBasedOnRegCenter() {
 		
 		super();
 	}
 	// Declaration of all variables
-	private static Logger logger = Logger.getLogger(GetusersBasedOnRegCenter.class);
+	private static Logger logger = Logger.getLogger(GetUsersBasedOnRegCenter.class);
 	protected static String testCaseName = "";
 	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
@@ -102,28 +102,22 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		outerKeys.add("responsetime");
 		innerKeys.add("lastSyncTime");
-		if(testCaseName.equalsIgnoreCase("smoke")||testCaseName.equalsIgnoreCase("response_time"))
+		if(testCaseName.equalsIgnoreCase("Kernel_GetusersBasedOnRegCenter_smoke") || testCaseName.equals("Kernel_GetusersBasedOnRegCenter_response_time"))
 		{
-			String password = res.getBody().jsonPath().get("response.userDetails[0,1,2].userPassword").toString();
-			outerKeys.add(password);
-			innerKeys.add(password);
+			String password = res.getBody().jsonPath().get("response.userDetails[0].userPassword").toString();
+			String password1 = res.getBody().jsonPath().get("response.userDetails[1].userPassword").toString();
+			 ((JSONObject)((JSONArray)((JSONObject)Expectedresponse.get("response")).get("userDetails")).get(0)).put("userPassword", password).toString();
+			 ((JSONObject)((JSONArray)((JSONObject)Expectedresponse.get("response")).get("userDetails")).get(1)).put("userPassword", password1).toString();
 		}
-		
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
-		
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
-		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			//softAssert.assertTrue(false);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -133,14 +127,12 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 			setFinalStatus=true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-
 }
 		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
 		} 
-		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {	
 	try {
@@ -150,12 +142,11 @@ public class GetusersBasedOnRegCenter extends BaseTestCase implements ITest {
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-				f.set(baseTestMethod, GetusersBasedOnRegCenter.testCaseName);		
+				f.set(baseTestMethod, GetUsersBasedOnRegCenter.testCaseName);		
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
 		}  
-		
 		@AfterClass
 		public void updateOutput() throws IOException {
 			String configPath = "src/test/resources/kernel/GetusersBasedOnRegCenter/GetusersBasedOnRegCenterOutput.json";

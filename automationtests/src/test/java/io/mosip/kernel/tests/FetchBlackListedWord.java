@@ -82,7 +82,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		logger.info("Test Case Name is :: "+testCaseName);
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForZonalAdmin();
 	}
 
 	/**

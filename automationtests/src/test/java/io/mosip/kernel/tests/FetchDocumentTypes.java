@@ -82,7 +82,7 @@ public class FetchDocumentTypes extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForZonalApprover();
 
 	}
 

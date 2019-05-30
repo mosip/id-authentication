@@ -67,8 +67,8 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -81,8 +81,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForRegistrationProcessor();
-
+		cookie=auth.getAuthForZonalAdmin();
 	}
 
 	/**
