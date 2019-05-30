@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -34,7 +36,7 @@ public class RegProcTransactionDb {
 	 session = factory.getCurrentSession();
 	 return session;
 	}
-	public List<String> readStatus(String regId) {
+	public Set<String> readStatus(String regId) {
 		Session session=getCurrentSession();
 		 Transaction t=session.beginTransaction();
 		
@@ -53,18 +55,24 @@ public class RegProcTransactionDb {
 			 TestData = (Object[]) obj;
 			 statusComment.add((String) TestData[1]);
 			 transactionStatus.setRegistrationId(TestData[0].toString());
-			 transactionStatus.setStatus_code(TestData[1].toString());
-			 transactionStatus.setTrn_type_code(TestData[2].toString());
+			 transactionStatus.setStatus_code(TestData[2].toString());
+			 transactionStatus.setTrn_type_code(TestData[1].toString());
 			 transactionStatus.setCr_dtimes(TestData[3].toString());
 			 listOfEntries.add(transactionStatus);
 			 packetTransactionStatus.put(TestData[1].toString(),TestData[2].toString());
 			 }
-		 	System.out.println(listOfEntries);
-		 List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes)).collect(Collectors.toList());
-		 System.out.println("Sorted Order is :: "+sortedregId);
+		 	
+		 List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes).reversed()).collect(Collectors.toList());
+		 
+		 
+		 Set<String> statusFromDb=new LinkedHashSet<String>();
+		 for(TransactionStatusDTO statusDto:sortedregId) {
+			 statusFromDb.add(statusDto.getStatus_code());
+		 }
 	        t.commit();
 	        session.close();
-			return statusComment;
+	        
+			return statusFromDb;
 	}
 	public boolean compareTransactionOfDeactivatePackets(String regId,String testCaseName) {
 		Session session=getCurrentSession();
