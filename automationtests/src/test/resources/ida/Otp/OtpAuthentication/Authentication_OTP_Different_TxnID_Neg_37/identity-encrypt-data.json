@@ -1,1 +1,1 @@
-{"identityRequest":{"timestamp":"2019-05-29T20:08:53.053+05:30","otp":"select otp from kernel.otp_transaction where id like '%$UIN$%':5"}}
+{"identityRequest":{"timestamp":"2019-05-29T21:19:25.025+05:30","otp":"select otp from kernel.otp_transaction where id like '%$UIN$%':5"}}
