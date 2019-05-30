@@ -17,7 +17,6 @@
 		<module>authentication</module>
 		<module>id-repository</module>
 		<module>admin</module>
-		<module>automationtests</module>
 		<module>e2etestrig</module>
 	</modules>
 </project>
