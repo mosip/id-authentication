@@ -42,7 +42,7 @@ public enum IdAuthenticationErrorConstants {
 	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013", "Unsupported Authentication Type - %s",
 			"Please use other Authentication Types in the request"),
 	CONSENT_NOT_AVAILABLE("IDA-MLC-014", "Individual's Consent is not available"),
-	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
+	MISSING_AUTHTYPE("IDA-MLC-015", "Missing %s auth attribute"),
 	PHONE_EMAIL_NOT_REGISTERED("IDA-MLC-016", "%s not registered. Individual has to register and try again",
 			"Please register your %s and try again"),
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-017", "Identity Type - %s not configured for the country"),
