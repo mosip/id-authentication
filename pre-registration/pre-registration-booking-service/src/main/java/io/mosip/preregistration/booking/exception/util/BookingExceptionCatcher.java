@@ -7,8 +7,6 @@ package io.mosip.preregistration.booking.exception.util;
 import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 
-import org.springframework.web.client.HttpClientErrorException;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -30,6 +28,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.NotificationException;
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
@@ -152,6 +151,9 @@ public class BookingExceptionCatcher {
 		}else if (ex instanceof RestCallException) {
 			throw new RestCallException(((RestCallException) ex).getErrorCode(),
 					((RestCallException) ex).getErrorText(),mainResponseDTO);
+		}	else if (ex instanceof NotificationException) {
+			throw new NotificationException(((NotificationException) ex).getValidationErrorList(),((NotificationException) ex).getMainResposneDTO());
+		
 		}
 
 	}
