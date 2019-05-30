@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.PridValidator;
@@ -1433,32 +1434,7 @@ public class DemographicDetailController extends BaseController {
 							.get()));
 			SessionContext.map().put(RegistrationConstants.IS_Child, isChild);
 			demographicInfoDTO = buildDemographicInfo();
-
-			try {
-				// Generating Demographic JSON as byte array
-				String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
-				if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
-					if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_NEW)) {
-						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-								IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
-					} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
-						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-								IdObjectValidatorSupportedOperations.UPDATE_UIN);
-					} else if (registrationCategory.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
-						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-								IdObjectValidatorSupportedOperations.LOST_UIN);
-					} else if ((Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-						idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-								IdObjectValidatorSupportedOperations.CHILD_REGISTRATION);
-					}
-				}
-			} catch (RuntimeException runtimeException) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
-				LOGGER.error("JSON VALIDATION FAILED ", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-				throw runtimeException;
-			}
-
+			
 			if (isChild) {
 				osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 			}
@@ -1474,6 +1450,12 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
 		} catch (Exception exception) {
+			if(exception instanceof IdObjectValidationFailedException) {
+				IdObjectValidationFailedException idObjectValidationFailedException = (IdObjectValidationFailedException)exception;
+				LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						idObjectValidationFailedException.getErrorText() + ExceptionUtils.getStackTrace(exception));
+			}
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
