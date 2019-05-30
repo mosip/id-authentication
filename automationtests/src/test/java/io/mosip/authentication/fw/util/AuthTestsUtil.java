@@ -927,8 +927,13 @@ public class AuthTestsUtil extends BaseTestCase {
 						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
 						+ '"' + demoAppJarPath.toString() + '"';
 			} else if (getOSType().toString().equals("OTHERS")) {
+<<<<<<< HEAD
 				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey()));
 			    String mavenPath = System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey());
+=======
+				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv("M2_HOME"));
+			        String mavenPath = System.getenv("M2_HOME");
+>>>>>>> branch '0.12.0_AutomationTest_Authentication' of https://github.com/mosip/mosip
 				String settingXmlPath = mavenPath + "/conf/settings.xml";
 				String repoPath = XmlPrecondtion.getValueFromXmlFile(settingXmlPath, "//localRepository");
 				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"
