@@ -61,6 +61,8 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		try {
 			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+			
+			
 			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
@@ -461,7 +463,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	}
 
-	private void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
+	public void setLatestVersionReleaseTimestamp(String latestVersionReleaseTimestamp) {
 		this.latestVersionReleaseTimestamp = latestVersionReleaseTimestamp;
 	}
 
