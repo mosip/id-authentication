@@ -294,7 +294,7 @@ public class OSIValidatorTest {
 
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
 		UserDetailsDto userDetailsDto = new UserDetailsDto();
-		userDetailsDto.setActive(true);
+		userDetailsDto.setIsActive(true);
 		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
 		userResponseDto.setResponse(userDetailsResponseDto);
 		ridDto.setRid("reg4567");
@@ -356,7 +356,7 @@ public class OSIValidatorTest {
 	public void testusernotActive() throws Exception {	
 		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
 		UserDetailsDto userDetailsDto = new UserDetailsDto();
-		userDetailsDto.setActive(false);
+		userDetailsDto.setIsActive(false);
 		userDetailsResponseDto.setUserResponseDto(Arrays.asList(userDetailsDto));
 		userResponseDto.setResponse(userDetailsResponseDto);
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any()))

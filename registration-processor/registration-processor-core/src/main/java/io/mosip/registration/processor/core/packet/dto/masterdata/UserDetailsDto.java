@@ -12,5 +12,5 @@ public class UserDetailsDto {
     private String email;
     private String mobile;
     private String statusCode;
-    private boolean isActive;
+    private Boolean isActive;
 }

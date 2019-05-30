@@ -1,1 +1,1 @@
-{"identityRequest":{"biometrics":[{"data":{"bioType":"FID","bioSubType":"UNKNOWN","deviceCode":"cogent","bioValue":"Content is not allowed in prolog.","deviceProviderID":"cogent","timestamp":"2019-05-28T12:22:46.046+05:30"}}],"timestamp":"2019-05-28T12:22:46.046+05:30"}}
+{"identityRequest":{"biometrics":[{"data":{"bioType":"FID","bioSubType":"FACE","deviceCode":"cogent","bioValue":"Content is not allowed in prolog.","deviceProviderID":"cogent","timestamp":"2019-05-29T20:08:40.040+05:30"}}],"timestamp":"2019-05-29T20:08:40.040+05:30"}}
