@@ -55,6 +55,9 @@ public interface DeviceService {
 	 * @throws MasterDataServiceException if any error occurred while saving Device
 	 */
 	public IdAndLanguageCodeID createDevice(DeviceDto deviceRequestDto);
+	
+	
+	//public IdAndLanguageCodeID createInactiveDevice(DeviceDto deviceRequestDto);
 
 	/**
 	 * This method is used to update an existing Device to master data
