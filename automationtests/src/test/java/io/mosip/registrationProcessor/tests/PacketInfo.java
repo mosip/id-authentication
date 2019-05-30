@@ -80,6 +80,7 @@ public class PacketInfo extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
+			testLevel=System.getProperty("env.testLevel");
 			switch (testLevel) {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -126,6 +127,7 @@ public class PacketInfo extends BaseTestCase implements ITest {
 			outerKeys.add("responsetime");
 			innerKeys.add("createdDateTime");
 			innerKeys.add("updatedDateTime");
+			innerKeys.add("qualityScore");
 
 			// Assertion of actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
@@ -138,7 +140,7 @@ public class PacketInfo extends BaseTestCase implements ITest {
 				logger.info("isError ========= : "+isError);
 
 				if(!isError){
-					String response = actualResponse.jsonPath().get("response"); 
+					Map<String,String> response = actualResponse.jsonPath().get("response"); 
 					logger.info("response : "+response );
 					if(response!=null) {
 						finalStatus = "Pass";
