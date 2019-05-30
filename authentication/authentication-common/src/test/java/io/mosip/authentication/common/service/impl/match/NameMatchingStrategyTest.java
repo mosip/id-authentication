@@ -110,6 +110,9 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
+		int value2 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value2);
+
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}
@@ -173,6 +176,9 @@ public class NameMatchingStrategyTest {
 
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
+
+		int value1 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value1);
 
 	}
 
@@ -241,6 +247,9 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
+
+		int value1 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value1);
 
 	}
 
