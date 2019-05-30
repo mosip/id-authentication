@@ -199,7 +199,10 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 		if (individualAuthentication == null || individualAuthentication.isEmpty())
 			return false;
 		InputStream inputStream = adapter.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC + FILE_SEPERATOR + individualAuthentication.toUpperCase());
+				PacketFiles.BIOMETRIC + FILE_SEPERATOR + individualAuthentication.toUpperCase());
+		if(inputStream == null) {
+			return false;
+		}
 		Long uin = utility.getUIn(registrationId);
 
 		return idaAuthenticate(inputStream, uin);
