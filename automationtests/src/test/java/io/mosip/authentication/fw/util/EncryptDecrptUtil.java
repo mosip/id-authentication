@@ -164,4 +164,36 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 			return e.toString();
 		}
 	}
+	/**
+	 * The method get decrypt data from file
+	 * 
+	 * @param filename, file to to be decoded
+	 * @return String, decoded data
+	 */
+	public static String getDecryptFromFile(String filename) {
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getDecryptPath(),
+					objectData.toJSONString(), MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON).asString();
+		} catch (Exception e) {
+			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
+	
+	/**
+	 * The method get decrypt data from string
+	 * 
+	 * @param content, String to be decoded
+	 * @return String, decoded data
+	 */
+	public static String getDecyptFromStr(String content) {
+		try {
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + RunConfigUtil.objRunConfig.getDecryptPath(), content,
+					MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON).asString();
+		} catch (Exception e) {
+			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
 }

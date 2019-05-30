@@ -846,4 +846,28 @@ public class IdRepoRunConfig extends RunConfig{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getDecryptPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDecryptPath(String decryptPath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUinIdentityMapper(String uinIdentityMapper) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getUinIdentityMapper() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

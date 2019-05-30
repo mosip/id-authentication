@@ -73,7 +73,7 @@ public class IdRepoUtil extends AuthTestsUtil {
 										.getAbsolutePath())
 								.toString(),
 						new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
-								+ RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/mapping.properties")
+								+ RunConfigUtil.objRunConfig.getUinIdentityMapper() + "/mapping.properties")
 										.getAbsolutePath(),
 										mappingTopass);
 				if (mapping.contains("dateOfBirth") && mapping.contains("input")) {

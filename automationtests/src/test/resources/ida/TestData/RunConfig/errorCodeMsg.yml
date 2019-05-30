@@ -68,6 +68,9 @@ errors:
   InvalidIdentityTimestamp:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - request/timestamp  
+  InvalidIdentityBioTimestamp:
+    errorCode: IDA-MLC-009
+    errorMessage: Invalid Input Parameter - biometrics/timestamp
   MissingId:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - id 
@@ -80,6 +83,9 @@ errors:
   MissingIdentityTimestamp:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - request/timestamp  
+  MissingIdentityBioTimestamp:
+    errorCode: IDA-MLC-006
+    errorMessage: Missing Input Parameter - biometrics/timestamp  
   MissingtransactionID:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - transactionID 
@@ -161,15 +167,25 @@ errors:
     errorCode: IDA-BIA-006
     errorMessage: $REGEXP:Biometric data IIR not available in database$
     actionMessage: Your Biometric data is not available in MOSIP
+  MisssingFingerBioInMosipDB:
+    errorCode: IDA-BIA-006
+    errorMessage: $REGEXP:Biometric data FMR not available in database$
+    actionMessage: Your Biometric data is not available in MOSIP
   InvalidBioSubtype:
     errorCode: IDA-MLC-009
     errorMessage: $REGEXP:Invalid Input Parameter - bioSubType - .* for bioType .*$
   FaceExceed1:
     errorCode: IDA-BIA-009
     errorMessage: Number of FID records should not exceed 1
+  FingerExceed2:
+    errorCode: IDA-BIA-003
+    errorMessage: Number of FMR should not exceed 2
   IrisExceed2:
     errorCode: IDA-BIA-007
     errorMessage: Duplicate Irises in request
+  PolicyWithoutBioFinger:
+    errorCode: IDA-MPA-006
+    errorMessage: Finger-authentiation usage not allowed as per policy
   PolicyWithoutBioFace:
     errorCode: IDA-MPA-006
     errorMessage: Face-authentiation usage not allowed as per policy

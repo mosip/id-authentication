@@ -338,8 +338,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 		return dateFormatter.format(cal.getTime()) + "05:30";
 	}	
 	/**
-	 * The method generate timestamo with Z timezone
-	 * 
+E	 * 
 	 * @return string
 	 */
 	private String generateTimeStampWithZTimeZone() {

@@ -15,6 +15,12 @@ indvId_Uin_valid:
       - UIN
 indvId_Vid_valid:
       - VID
+indvId_userid_valid:
+      - USERID
+userid_invalid:
+      - 12345
+      - 34567
+      - yu679
 indvId_invalid:
       - VI
       - UI
@@ -365,7 +371,7 @@ invalid:
       - DFR
       - FTY
 primary_lang_code:
-      - fra
+      - eng
 secondary_lang_code:
       - ara
 #Auth_transaction
@@ -397,21 +403,29 @@ auth_transaction_VID_idType:
       - VID
 auth_transaction_DEMO_authTypeCode:
       - DEMO-AUTH
+auth_transaction_EKYC_authTypeCode:
+      - KYC-AUTH
 auth_transaction_DEMO_success_statusComment:
       - $REGEXP:.*Demo.*Authentication.*Success.*$
 auth_transaction_DEMO_fail_statusComment:
       - $REGEXP:.*Demo.*Authentication.*Failed.*$
+auth_transaction_EKYC_success_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Success.*$
+auth_transaction_EKYC_fail_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Failed.*$
 #Audit_log
 audit_log_eventId:
       - $REGEXP:.*IDA.*$
 audit_log_auth_eventName:
       - Authentication Request
+audit_log_ekyc_eventName:
+      - eKYC Request
 audit_log_ida_appId:
       - IDA
 audit_log_ida_appName:
       - ID-Authentication
 audit_log_ekyc_moduleName:
-      - EKYC_AUTH
+      - eKYC Authenticator
 audit_log_iris_moduleName:
       - Iris Authenticator
 audit_log_finger_moduleName:

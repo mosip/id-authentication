@@ -69,7 +69,21 @@ public class IdaRunConfig extends RunConfig{
 	private String idRepoCreateVIDRecordPath;
 	private String idRepoUpdateVIDStatusPath;
 	private String idRepoVersion;
+	private String decryptPath;
+	private String uinIdentityMapper;
 	
+	public String getUinIdentityMapper() {
+		return uinIdentityMapper;
+	}
+	public void setUinIdentityMapper(String uinIdentityMapper) {
+		this.uinIdentityMapper = uinIdentityMapper;
+	}
+	public String getDecryptPath() {
+		return decryptPath;
+	}
+	public void setDecryptPath(String decryptPath) {
+		this.decryptPath = decryptPath;
+	}
 	public String getIdRepoVersion() {
 		return idRepoVersion;
 	}
@@ -329,6 +343,7 @@ public class IdaRunConfig extends RunConfig{
 		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
 		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));
 		setDecodePath(AuthTestsUtil.getPropertyValue("decodePath"));
+		setDecryptPath(AuthTestsUtil.getPropertyValue("decryptPath"));
 		setUserDirectory();
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));
@@ -363,6 +378,7 @@ public class IdaRunConfig extends RunConfig{
 		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
+		setUinIdentityMapper(AuthTestsUtil.getPropertyValue("uinIdentityMapper"));
 	}	
 	
 	/**

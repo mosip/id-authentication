@@ -377,4 +377,8 @@ public class RunConfigUtil {
 		}
 		return "NoLoadedVIDFound";
 	}
+	
+	public static String getLinuxMavenEnvVariableKey() {
+		return AuthTestsUtil.getPropertyValue("linuxMavenEnvVarKey");
+	}
 }
