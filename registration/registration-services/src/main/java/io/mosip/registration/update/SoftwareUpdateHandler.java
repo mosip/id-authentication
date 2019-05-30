@@ -506,6 +506,7 @@ public class SoftwareUpdateHandler extends BaseService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
+
 		if (resource != null) {
 
 			File sqlFile = getSqlFile(resource.getPath());
@@ -514,11 +515,6 @@ public class SoftwareUpdateHandler extends BaseService {
 			try {
 
 				runSqlFile(sqlFile);
-
-				// Update global param with current version
-				globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
-
-				setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
 
 			} catch (RuntimeException | IOException runtimeException) {
 
@@ -530,9 +526,11 @@ public class SoftwareUpdateHandler extends BaseService {
 						runSqlFile(rollBackFile);
 					}
 				} catch (RuntimeException | IOException exception) {
-					// Prepare Error Response
-					setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+					
+					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
+					
 				}
 				// Prepare Error Response
 				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
@@ -540,8 +538,15 @@ public class SoftwareUpdateHandler extends BaseService {
 				// Replace with backup
 				rollback(responseDTO, previousVersion);
 
+				return responseDTO;
+
 			}
 		}
+
+		// Update global param with current version
+		globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
+
+		setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"DB-Script files execution completed");
@@ -613,6 +618,10 @@ public class SoftwareUpdateHandler extends BaseService {
 					isBackUpCompleted = true;
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
 				} catch (io.mosip.kernel.core.exception.IOException exception) {
+					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+				
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 				}
 				break;
