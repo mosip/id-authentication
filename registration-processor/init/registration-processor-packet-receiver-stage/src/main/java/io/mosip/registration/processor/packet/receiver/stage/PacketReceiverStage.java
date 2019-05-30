@@ -85,7 +85,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-
 	}
 
 	/** The Constant APPLICATION_JSON. */

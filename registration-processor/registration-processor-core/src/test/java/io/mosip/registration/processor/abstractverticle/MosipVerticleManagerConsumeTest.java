@@ -18,11 +18,11 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 @RunWith(VertxUnitRunner.class)
 public class MosipVerticleManagerConsumeTest {
-	
+
 	private MessageDTO messageDTO;
 	private Vertx vertx;
 
-	private ConsumerVerticle consumerVerticle; 
+	private ConsumerVerticle consumerVerticle;
 
 	@Before
 	public void setup(TestContext testContext) throws Exception {
@@ -54,7 +54,7 @@ public class MosipVerticleManagerConsumeTest {
 		Vertx vertx= consumerVerticle.deployVerticle().getEventbus();
 		assertTrue(vertx.isClustered());
 	}
-	
+
 	@Test
 	public void checkSend(TestContext testContext) {
 		final Async async = testContext.async();
