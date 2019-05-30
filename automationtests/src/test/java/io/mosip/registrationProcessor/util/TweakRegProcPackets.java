@@ -1,7 +1,6 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,12 +20,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.annotations.Test;
 
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
+
 
 /**
  * 
@@ -46,6 +45,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
+	String token="";
 
 	/**
 	 * 
@@ -256,9 +256,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
-					// f.getName());
-					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
+					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
+					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();

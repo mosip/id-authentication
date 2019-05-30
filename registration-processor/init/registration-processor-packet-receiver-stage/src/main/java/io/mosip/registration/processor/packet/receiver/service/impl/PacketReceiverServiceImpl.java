@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -163,6 +164,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 				storePacket(stageName);
+				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");

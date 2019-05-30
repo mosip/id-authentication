@@ -38,6 +38,7 @@ public class LoggerConstants {
 	private static final String AUTHZ = APP_NAME + "AUTHORIZATION - ";
 	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
 	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
+	private static final String REG_ID_MASTER_DATA_VALIDATOR = APP_NAME + "MASTER_DATA_VALIDATION - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -129,6 +130,7 @@ public class LoggerConstants {
 	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
 	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
 	public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";
+	public static final String REG_ID_OBJECT_MASTER_DATA_VALIDATOR = REG_ID_MASTER_DATA_VALIDATOR + "REGISTRATION_ID_OBJECT_MASTER_DATA_VALIDATOR";
 
 	// Util
 	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME

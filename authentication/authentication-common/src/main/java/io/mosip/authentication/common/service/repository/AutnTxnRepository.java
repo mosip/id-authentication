@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.repository;
 
+import java.lang.annotation.Native;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param refId                       the ref id
 	 * @return the list
 	 */
-	@Query("Select requestTrnId from AutnTxn where requestTrnId=:txnId AND (refId = :uin OR refId= :vid) AND authTypeCode=:authtypecode")
-	public List<String> findByUinorVid(@Param("txnId") String txnId, @Param("uin") String uin, @Param("vid") String vid,
+	@Query(value="Select * from ida.auth_transaction where request_trn_id=:txnId AND auth_type_code=:authtypecode ORDER BY cr_dtimes DESC", nativeQuery = true)
+	public List<AutnTxn> findByUinorVid(@Param("txnId") String txnId,
 			Pageable pagaeable, @Param("authtypecode")String authtypecode);
 
 	/**

@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -62,7 +63,7 @@ public class ExternalStageTest {
 		dto.setInternalError(false);
 		dto.setIsValid(true);
 		dto.setRid("2758415120462");
-		dto.setReg_type("NEW");
+		dto.setReg_type(RegistrationType.valueOf("NEW"));
 		dto.setRetryCount(5);
 		dto.setMessageBusAddress(MessageBusAddress.EXTERNAL_STAGE_BUS_IN);
 		registrationStatusDto.setRegistrationId("2758415120462");
