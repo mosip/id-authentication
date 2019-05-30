@@ -83,7 +83,8 @@ public class Assignment extends BaseTestCase implements ITest {
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
-			switch (testLevel) {
+			testLevel=System.getProperty("env.testLevel");
+			switch ("smoke") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;
