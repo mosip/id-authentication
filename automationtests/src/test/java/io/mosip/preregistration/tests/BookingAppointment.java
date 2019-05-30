@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
@@ -476,17 +477,6 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		return this.testCaseName;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -436,11 +436,21 @@
 	-fx-pref-width: 625.0px;
 }
 
-.reRegToggle{
+.reRegInformToggle{
 	-fx-pref-height: 30.0px; 
-	-fx-pref-width: 86.0px;
+	-fx-pref-width: 120.0px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;
 }
 
+.reRegCantInformToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 120.0px;
+	-fx-background-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
+	-fx-font-family: Roboto;
+}
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
 	-fx-pref-width: 850.0px;
@@ -797,6 +807,13 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 }	
 
+
+
+.bioIris{
+	-fx-border-color : black;
+	-fx-border-width : 2.0;
+}
+
 .paneAtDisplayIris{
 	-fx-background-color:#FFFFFF;
 	-fx-pref-height: 600.0px;	
@@ -967,7 +984,7 @@ Working on new Css by taleev
     -fx-background-color: #FFFFFF;
     -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
 	-fx-pref-height : 45.0;
-	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-padding: 10 0 10 0;
 	-fx-pref-width : 35.0;
     -fx-text-fill: #000000;
     -fx-border-width : 0.0 0.0 1.0 0.0;
@@ -978,7 +995,7 @@ Working on new Css by taleev
 	-fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #FF4081;
     -fx-pref-height : 45.0;
-	-fx-padding: 10.0 10.0 10.0 10.0;
+	-fx-padding: 10 0 10 0;
 	-fx-pref-width : 35.0;
 }
 
@@ -996,7 +1013,6 @@ Working on new Css by taleev
     -fx-background-color: #FFFFFF;
     -fx-border-width : 0.0 0.0 1.0 0.0;
     -fx-border-color : #E457A0;
-    -fx-padding : 0.0 0.0 0.0 15.0;	
 }
 
 .table-view .column-header .label{
@@ -1524,9 +1540,7 @@ Working on new Css by taleev
 .removeBorderStyle{
 	-fx-border-color:white; 
 }
-.addBorderStyle{
-	-fx-border-color: black;
-}
+
 .onboardInfoDetails{
 	-fx-font-family: Roboto;
 	-fx-font-size: 12.0px;

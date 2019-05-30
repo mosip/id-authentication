@@ -39,7 +39,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 import io.mosip.kernel.cryptosignature.dto.PublicKeyResponse;
 import io.mosip.kernel.cryptosignature.dto.SignatureRequestDto;
-import io.mosip.kernel.cryptosignature.utils.CryptosignatureUtil;
+import io.mosip.kernel.cryptosignature.exception.ExceptionHandler;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
@@ -142,7 +142,7 @@ public class SignatureUtilImpl implements SignatureUtil {
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-			CryptosignatureUtil.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
+			ExceptionHandler.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
 
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
@@ -151,8 +151,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 						SigningDataErrorCode.REST_CRYPTO_CLIENT_EXCEPTION.getErrorMessage());
 			}
 		}
-		CryptosignatureUtil.throwExceptionIfExist(responseEntity);
-		SignatureResponse signatureResponse = CryptosignatureUtil.getResponse(objectMapper, responseEntity,
+		ExceptionHandler.throwExceptionIfExist(responseEntity);
+		SignatureResponse signatureResponse = ExceptionHandler.getResponse(objectMapper, responseEntity,
 				SignatureResponse.class);
 		signatureResponse.setData(signatureResponse.getData());
 		signatureResponse.setTimestamp(DateUtils.convertUTCToLocalDateTime(timestamp));
@@ -167,14 +167,14 @@ public class SignatureUtilImpl implements SignatureUtil {
 		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", signApplicationid);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timestamp", timestamp).queryParam("referenceId", signRefid);
+				.queryParam("timeStamp", timestamp).queryParam("referenceId", signRefid);
 		try {
 			response = restTemplate.exchange(builder.buildAndExpand(uriParams).toUri(), HttpMethod.GET, null,
 					String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
-			CryptosignatureUtil.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
+			ExceptionHandler.authExceptionHandler(ex, validationErrorsList, RESPONSE_SOURCE);
 
 			if (!validationErrorsList.isEmpty()) {
 				throw new SignatureUtilClientException(validationErrorsList);
@@ -184,8 +184,8 @@ public class SignatureUtilImpl implements SignatureUtil {
 			}
 
 		}
-		CryptosignatureUtil.throwExceptionIfExist(response);
-		PublicKeyResponse publicKeyResponse = CryptosignatureUtil.getResponse(objectMapper, response,
+		ExceptionHandler.throwExceptionIfExist(response);
+		PublicKeyResponse publicKeyResponse = ExceptionHandler.getResponse(objectMapper, response,
 				PublicKeyResponse.class);
 		PublicKey publicKey = KeyFactory.getInstance(asymmetricAlgorithmName)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponse.getPublicKey())));

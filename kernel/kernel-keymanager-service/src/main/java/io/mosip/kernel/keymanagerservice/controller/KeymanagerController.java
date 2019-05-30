@@ -64,7 +64,7 @@ public class KeymanagerController {
 	@GetMapping(value = "/publickey/{applicationId}")
 	public ResponseWrapper<PublicKeyResponse<String>> getPublicKey(
 			@ApiParam("Id of application") @PathVariable("applicationId") String applicationId,
-			@ApiParam("Timestamp as metadata") @RequestParam("timestamp") String timestamp,
+			@ApiParam("Timestamp as metadata") @RequestParam("timeStamp") String timestamp,
 			@ApiParam("Refrence Id as metadata") @RequestParam("referenceId") Optional<String> referenceId) {
 
 		ResponseWrapper<PublicKeyResponse<String>> response = new ResponseWrapper<>();

@@ -49,6 +49,11 @@ public class KernelMasterDataR {
 			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
 		
 		break;
+
+		case "int":
+				factory = new Configuration().configure("kernelqa.cfg.xml")
+			.addAnnotatedClass(UinEntity.class).buildSessionFactory();
+		
 		}
 		session1 = factory.getCurrentSession();
 		session1.beginTransaction();

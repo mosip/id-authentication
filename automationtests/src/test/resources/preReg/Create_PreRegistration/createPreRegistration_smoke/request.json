@@ -6,11 +6,12 @@
                 "gender": [
                     {
                         "language": "fra",
-                        "value": "MLE"
+                        "value": "FLE"
                     },
                     {
                         "language": "ara",
-                        "value": "MLE"
+                        "value": "FLE"
+
                     }
                 ],
                 "city": [
@@ -106,12 +107,14 @@
                         "value": "RSK"
                     }
                 ],
-                "email": "jagadishwari.selvaraj@mindtree.com"
+                "email": "ashish.rastogi@mindtree.com"
+
             }
         },
         "langCode": "fra"
     },
-    "requesttime": "2019-05-28T16:07:42.774Z",
+    "requesttime": "2019-05-28T16:20:05.383Z",
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0"
 }
+

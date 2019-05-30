@@ -1,1 +1,8 @@
-"PACKET_UPLOADED_TO_VIRUS_SCAN"
+{
+    "response": {
+        "status": "Packet is in PACKET_RECEIVED status"
+    },
+    "id": "mosip.registration.packet",
+    "version": "1.0",
+    "responsetime": "2019-05-20T10:15:10.077Z"
+}

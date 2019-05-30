@@ -1,0 +1,1 @@
+{"id":"mosip.vid.create","version":"v1","responsetime":"2019-05-28T03:50:18.084Z","metadata":null,"response":null,"errors":[{"errorCode":"IDR-VID-009","message":"Failed to retrieve uin data using Identity Service"}]}

@@ -1,1 +1,0 @@
-{"transactionID":"5504658034","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-DEA-001","errorMessage":"Demographic data name in ara did not match","actionMessage":"Please re-enter your name in ara"}],"responseTime":"2019-05-23T11:17:10.224+05:30","response":{"authStatus":false,"staticToken":"273496201374065383022126545382404120"}}

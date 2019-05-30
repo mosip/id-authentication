@@ -167,7 +167,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			}
 		
 			preReg_URI = preReg_URI + preId;
-			Actualresponse = applicationLibrary.get_RequestWithoutBody(preReg_URI);
+			Actualresponse = applicationLibrary.getRequestWithoutBody(preReg_URI);
 			logger.info("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
 			
 			//outer and inner keys which are dynamic in the actual response

@@ -181,7 +181,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdsByRegId = preReg_URI + registartionCenterId;
 
 			Actualresponse = applicationLibrary
-					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
+					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
 
 			logger.info("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
@@ -201,7 +201,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdByRegId = preReg_URI + regCenterId;
 
 			Actualresponse = applicationLibrary
-					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
+					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
@@ -222,7 +222,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdByRegId_InvTodate = preReg_URI + regCenterId;
 
 			Actualresponse = applicationLibrary
-					.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
+					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response

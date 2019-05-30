@@ -93,10 +93,11 @@ public class DocumentExceptionCatcher {
 		}
 		else if(ex instanceof FSAdapterException) {
 			throw new FSServerException(((FSAdapterException) ex).getErrorCode(), ((FSAdapterException) ex).getErrorText(),response);
-		}else if (ex instanceof EncryptionFailedException) {
-			throw new EncryptionFailedException(((EncryptionFailedException) ex).getErrorCode(),((EncryptionFailedException) ex).getErrorText(),response);
 		}else if (ex instanceof DecryptionFailedException) {
 			throw new EncryptionFailedException(((DecryptionFailedException) ex).getErrorCode(),((DecryptionFailedException) ex).getErrorText(),response);
+		}
+		else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), response);
 		}
 
 	}

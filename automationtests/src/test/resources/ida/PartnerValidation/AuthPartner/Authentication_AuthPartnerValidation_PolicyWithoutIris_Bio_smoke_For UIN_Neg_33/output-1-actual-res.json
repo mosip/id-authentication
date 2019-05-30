@@ -1,1 +1,0 @@
-{"transactionID":"1276648604","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-006","errorMessage":"Iris-authentiation usage not allowed as per policy"}],"responseTime":"2019-05-23T11:52:59.035+05:30","response":{"authStatus":false,"staticToken":null}}

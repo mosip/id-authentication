@@ -84,6 +84,9 @@ public final class PlatformConstants {
 	/** The Constant RPR_UIN_GENERATOR_STAGE. */
 	public static final String RPR_AUTHENTICATION = RPR_REGISTRATION_PROCESSOR_PREFIX + "AUT-";
 
+	/** The Constant RPR_BIOMETRIC_AUTHENTICATION_MODULE. */
+	public static final String RPR_BIOMETRIC_AUTHENTICATION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BAS-";
+
 	public static final String RPR_REPROCESSOR_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RS-";
 
 	public static final String RPR_EXTERNAL_STAGE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EX-";
@@ -92,7 +95,7 @@ public final class PlatformConstants {
 
 	public static final String ABIS = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
 
-	public static final String RPR_ABIS_MIDDLEWARE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-MIDDLEWARE";
+	public static final String RPR_ABIS_MIDDLEWARE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-MIDDLEWARE-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.

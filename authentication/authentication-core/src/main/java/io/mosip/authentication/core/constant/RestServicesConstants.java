@@ -43,9 +43,15 @@ public enum RestServicesConstants {
 	
 	RID_UIN("rid-uin"),
 	
+	RID_UIN_WITHOUT_TYPE("rid-uin-auth"),
+	
 	VID_SERVICE("vid-service.vid-uin"),
 	
-	TOKEN_ID_GENERATOR("token-id-generator");
+	VID_UPDATE_STATUS_SERVICE("id-repo-service-vidupdate-status"),
+	
+	TOKEN_ID_GENERATOR("token-id-generator"),
+	
+	DIGITAL_SIGNATURE_SIGN_SERVICE("digital-signature-sign-service");
 
 	/** The service name. */
 	private final String serviceName;

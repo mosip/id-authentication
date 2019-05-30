@@ -53,9 +53,6 @@ public class PacketInfoDao {
 	@Autowired
 	private RegistrationRepositary<BaseRegistrationEntity, String> registrationRepositary;
 
-	/** The mached ref ids. */
-	List<String> machedRefIds = new ArrayList<>();
-
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 

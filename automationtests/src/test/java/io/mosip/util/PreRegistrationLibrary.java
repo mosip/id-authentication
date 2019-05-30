@@ -162,21 +162,29 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return createPregResponse;
 	}
 
-	public  JSONObject getRequest(String testSuite) {
+	public JSONObject getRequest(String testSuite) {
 		JSONObject request = null;
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					e.printStackTrace();
 					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -203,13 +211,21 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					translitrationRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					e.printStackTrace();
 					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -779,9 +795,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
-		request.put("requesttime", getCurrentDate());
+		request.put("requesttime", getCurrentDate());	
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
-		
 		return response;
 	}
 
@@ -796,14 +811,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		File file = new File(configPath + "/" + fileName + ".pdf");
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 		JSONObject object = null;
@@ -1004,15 +1028,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		ObjectNode fetchAvailabilityrequest = null;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
+			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					request.put("registrationCenterId", regCenterId);
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 
@@ -1366,7 +1398,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response expiredStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
+
+			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1394,7 +1428,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response consumedStatus() {
 		try {
 
-			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
+
+			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+
 		} catch (Exception e) {
 			logger.info(e);
 		}
@@ -1425,7 +1461,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		parm.put("to_date", toDate);
 		String preReg_RetriveBookedPreIdsByRegIdURI = preReg_RetriveBookedPreIdsByRegId + regCenterId;
 		
-		response = applnLib.get_Request_multiplePathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
+		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
 
 
 		return response;
@@ -1528,14 +1564,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 		String value = null;
@@ -1593,13 +1638,21 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
+			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -1918,14 +1971,23 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 

@@ -70,5 +70,13 @@ public class CryptoSignatureIntegrationTest {
 		mockMvc.perform(post("/public/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHPUBLICKEY))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("reg-processor")
+	public void signResponseTimeStampValidationInvalid() throws Exception {
+		when(signatureUtil.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+		mockMvc.perform(post("/validate").contentType(MediaType.APPLICATION_JSON).content(VALIDATEWITHTIMESTAMP))
+				.andExpect(status().isOk());
+	}
 
 }

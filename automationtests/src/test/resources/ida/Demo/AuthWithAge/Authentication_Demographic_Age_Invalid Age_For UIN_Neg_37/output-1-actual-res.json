@@ -1,1 +1,0 @@
-{"transactionID":"3253540628","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-DEA-001","errorMessage":"Demographic data age did not match","actionMessage":"Please re-enter your age"}],"responseTime":"2019-05-23T11:45:08.974+05:30","response":{"authStatus":false,"staticToken":"284257629731193827312998861991111380"}}

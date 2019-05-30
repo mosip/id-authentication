@@ -32,22 +32,19 @@ public class StatusMessage {
 	/** otp/pwd validation failed */
 	public static final String VALIDATE_OTP_PASSWORD = "OTP/Password validation failed";
 
-
 	/** The Constant PIN. */
 	public static final String PIN = "Pin validation failed";
 
 	/** The Constant VALIDATION_DETAILS. */
-	public static final String VALIDATION_DETAILS_SUCCESS = "Either iris/fingerprint/face/pin is null but password/OTP is verified for ";
-	public static final String VALIDATION_DETAILS_FAILURE = "Either iris/fingerprint/face/pin is null and password/OTP is not verified for ";
+	public static final String VALIDATION_DETAILS_SUCCESS = "Password/OTP is verified for ";
+	public static final String PASSWORD_OTP_FAILURE = "Password/OTP is not verified for ";
 	public static final String VALIDATION_DETAILS = "Either iris/fingerprint/photo is null for Introducer";
-
 
 	/** The Constant OSI_VALIDATION_SUCCESS. */
 	public static final String OSI_VALIDATION_SUCCESS = "OSI Validation is successful";
 	/** Osi Validation failed */
 	public static final String OSI_VALIDATION_FAILURE = "OSI Validation failed ";
 
- 
 	/** The Constant PARENT_UIN_AND_RID_NOT_IN_PACKET. */
 	public static final String PARENT_UIN_AND_RID_NOT_IN_PACKET = "The UIN and RID of Parent is not present in Packet";
 
@@ -55,7 +52,7 @@ public class StatusMessage {
 	public static final String PARENT_RID_NOT_IN_REGISTRATION_TABLE = "The RID of Parent is not present in Packet";
 
 	/** The Constant PACKET_IS_ON_HOLD. */
-	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
+	public static final String PACKET_IS_ON_HOLD = "On-Hold due to Parent Packet";
 
 	/** The Constant MACHINE_ID_NOT_FOUND. */
 	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID";
@@ -104,15 +101,33 @@ public class StatusMessage {
 
 	/** The Constant THE_CENTER_ID. */
 	public static final String THE_CENTER_ID = "The Center ID";
-	
+
 	/** The Constant CENTER_NOT_FOUND. */
 	public static final String CENTER_NOT_FOUND = " was not available for Registration ID";
-	
+
 	/** The Constant TIMESTAMP_VALIDATION1. */
 	public static final String TIMESTAMP_VALIDATION1 = "The Packet with Registration ID";
-	
+
 	/** The Constant TIMESTAMP_VALIDATION2. */
 	public static final String TIMESTAMP_VALIDATION2 = " was not created in Working Hours of the Center with Center ID";
 
+	public static final String PARENT_UIN_NOT_AVAIALBLE = "Parent UIN not available";
 
+	public static final String OSI_FAILED_REJECTED_PARENT = "Rejected as Parent is Rejected";
+
+	public static final String PARENT_BIOMETRIC_NOT_IN_PACKET = "Parent biometric file name not present in packet";
+
+	public static final String SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET = "OfficerId and SupervisorId are null in packet";
+
+	public static final String SUPERVISOR_OR_OFFICER_WAS_INACTIVE = "officer or supervisor was inactive during packet creation time";
+
+	public static final String PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET = "packet creationDate is null in packet";
+
+	public static final String OFFICER_BIOMETRIC_NOT_IN_PACKET = "Officer biometric file not present in file";
+
+	public static final String SUPERVISOR_BIOMETRIC_NOT_IN_PACKET = "Supervisor biometric file not present in file";
+
+	public static final String AUTHENTICATION_FAILED = "Authentication failed";
+
+    public static final String IDA_AUTHENTICATION_FAILURE = "IDA Authentication failed for the Supervisor/Officer";
 }

@@ -1,8 +1,11 @@
-<html>
-<head><title>413 Request Entity Too Large</title></head>
-<body>
-<center><h1>413 Request Entity Too Large</h1></center>
-<hr><center>nginx/1.15.7</center>
-</body>
-</html>
-
+{
+    "errors": [
+        {
+            "errorCode": "RPR-PKR-002",
+            "message": "The Registration Packet Size is invalid"
+        }
+    ],
+    "id": "mosip.registration.packet",
+    "version": "1.0",
+    "responsetime": "2019-04-11T06:55:39.948Z"
+}

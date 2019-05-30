@@ -119,7 +119,7 @@ public class SignatureUtilImplTest {
 		uriParams = new HashMap<>();
 		uriParams.put("applicationId", "KERNEL");
 		builder = UriComponentsBuilder.fromUriString(getPublicKeyUrl)
-				.queryParam("timestamp", "2019-09-09T09:09:09.000Z").queryParam("referenceId", "SIGN");
+				.queryParam("timeStamp", "2019-09-09T09:09:09.000Z").queryParam("referenceId", "SIGN");
 
 	}
 

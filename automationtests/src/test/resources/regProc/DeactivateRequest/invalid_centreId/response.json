@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorcode": "RPR-PGS-004",
+      "message": "Registration Center not found"
+    }
+  ],
+  "id": "mosip.registration.packetgenerator",
+  "version": "1.0",
+  "responsetime": "2019-04-19T09:47:03.055Z"
+}

@@ -1,6 +1,5 @@
 package io.mosip.preregistration.documents.repository.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class DocumentDAO {
 		try {
 			entity = documentRepository.findBydocumentId(documentId);
 			if (entity == null) {
-				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findBydocumentId method of DocumnetDAO - " + ex);

@@ -159,7 +159,9 @@ public class RejectionController extends BaseController implements Initializable
 			
 			int rowNum=packetIds.get(regRejectionTable.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
+					regRejectionTable.getSelectionModel().getSelectedItem().getSlno(),
 					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getDate(),
 					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.REJECTED);
 

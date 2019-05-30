@@ -41,39 +41,35 @@ public enum IdRepoErrorConstants {
 	// Identity Service
 	
 	/** The identity mismatch. */
-	IDENTITY_HASH_MISMATCH("IDR-IDS-003", "Identity Element hash does not match"),
+	IDENTITY_HASH_MISMATCH("IDR-IDS-001", "Identity Element hash does not match"),
 
-	DOCUMENT_HASH_MISMATCH("IDR-IDS-004", "Biometric/Document hash does not match"),
+	DOCUMENT_HASH_MISMATCH("IDR-IDS-002", "Biometric/Document hash does not match"),
 
 	/** The record exists. */
-	RECORD_EXISTS("IDR-IDS-010", "Record already exists in DB"),
+	RECORD_EXISTS("IDR-IDS-003", "Record already exists in DB"),
 
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-011", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
+	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-004", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
 
-	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-013", "Failed to store/retrieve files in DFS"),
+	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-005", "Failed to store/retrieve files in DFS"),
 
-	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-014", "Failed to parse/process Identity"),
+	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-006", "Failed to process Id Object using kernel Id Object validator"),
 
-	ID_OBJECT_SCHEMA_PROCESSING_FAILED("IDR-IDS-015", "Unable to process id object schema"),
-
-	ID_OBJECT_SCHEMA_RETRIEVAL_FAILED("IDR-IDS-016", "Unable to retrieve id object schema from server"),
-
-	FILE_NOT_FOUND("IDR-IDS-020", "File(s) not found in DFS"),
+	FILE_NOT_FOUND("IDR-IDS-007", "File(s) not found in DFS"),
 	
 	// VID Service
 	
-	INVALID_VID("IDR-VID-002","%s VID"),
+	INVALID_VID("IDR-VID-001","VID is %s"),
 	
-	VID_GENERATION_FAILED("IDR-VID-003","Failed to %s VID"),
+	VID_GENERATION_FAILED("IDR-VID-002","Failed to %s VID"),
 	
-	VID_POLICY_FAILED("IDR-VID-005","Could not generate/regenerate VID as per policy"),
+	VID_POLICY_FAILED("IDR-VID-003","Could not generate/regenerate VID as per policy"),
 	
-	INVALID_UIN("IDR-VID-008","%s UIN"),
+	INVALID_UIN("IDR-VID-004","%s UIN"),
 	
-	UIN_RETRIEVAL_FAILED("IDR-VID-009", "Failed to retrieve uin data using Identity Service"),
+	UIN_RETRIEVAL_FAILED("IDR-VID-005", "Failed to retrieve uin data using Identity Service"),
 	
-	UIN_HASH_MISMATCH("IDR-IDS-010", "Uin hash does not match");
+	UIN_HASH_MISMATCH("IDR-IDS-006", "Uin hash does not match");
 	
 
 	/** The error code. */

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.tests;
+	package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
 import java.io.IOException;

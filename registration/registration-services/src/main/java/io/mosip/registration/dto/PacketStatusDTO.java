@@ -24,5 +24,6 @@ public class PacketStatusDTO {
 	private String supervisorComments;
 	private BigInteger packetSize;
 	private String packetHash;
+	private String createdTime;
 	
 }

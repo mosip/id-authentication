@@ -65,7 +65,13 @@ public enum RegistrationExceptionConstants {
 	TPM_UTIL_GET_SIGN_KEY_ERROR("TPM-UTL-005", "Exception while getting the public part of the TPM signing key"),
 	TPM_UTIL_GET_TPM_INSTANCE_ERROR("TPM-UTL-006", "Exception while getting the TPM instance"),
 	TPM_UTIL_CLOSE_TPM_INSTANCE_ERROR("TPM-UTL-007", "Exception while closing the TPM instance"),
-	TPM_INIT_CLOSE_TPM_INSTANCE_ERROR("TPM-INT-001", "Exception while closing the TPM instance");
+	TPM_INIT_CLOSE_TPM_INSTANCE_ERROR("TPM-INT-001", "Exception while closing the TPM instance"),
+	
+	// ID Object Schema Validator
+	ID_OBJECT_SCHEMA_VALIDATOR("REG-IOS-001", "Invalid ID Object Schema"),
+	
+	//
+	ID_OBJECT_PATTERN_VALIDATOR("REG-IOS-002", "Invalid ID Object Pattern");
 
 	/**
 	 * The constructor

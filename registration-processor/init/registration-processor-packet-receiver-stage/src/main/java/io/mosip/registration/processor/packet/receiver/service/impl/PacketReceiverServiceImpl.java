@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -48,7 +47,6 @@ import io.mosip.registration.processor.packet.receiver.exception.UnequalHashSequ
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -59,8 +57,6 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
-
 /**
  * The Class PacketReceiverServiceImpl.
  *
