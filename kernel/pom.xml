@@ -123,7 +123,7 @@
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
-	<!-- <modules> -->
+	<modules> 
 		<!-- <module>kernel-core</module> -->
 		<!-- <module>kernel-logger-logback</module> -->
 		<!-- <module>kernel-auth-adapter</module> -->
