@@ -232,7 +232,10 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 			NotificationTemplateType type=null;
 			StatusNotificationTypeMapUtil map = new StatusNotificationTypeMapUtil();
-			if(registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSED.toString())) {
+			
+			if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.LOST.getValue()))
+				type=NotificationTemplateType.LOST_UIN;
+			else if(registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSED.toString())) {
 				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
 					type=NotificationTemplateType.UIN_CREATED;
 				if(registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
@@ -367,6 +370,12 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 */
 	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType) {
 		switch (templatetype) {
+		case LOST_UIN:
+			smsTemplateCode = NotificationTemplateCode.RPR_UIN_LOST_SMS;
+			emailTemplateCode = NotificationTemplateCode.RPR_UIN_LOST_EMAIL;
+			idType = IdType.UIN;
+			subject = uinGeneratedSubject;
+			break;
 		case UIN_CREATED:
 			smsTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_SMS;
 			emailTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_EMAIL;

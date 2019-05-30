@@ -70,6 +70,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -162,6 +163,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+	
+	/** The demographic dedupe repository. */
+	@Autowired
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetEntity;
 
 	/** The packet info manager. */
 	@Autowired
@@ -258,6 +263,18 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UIN_GENERATOR.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
+			
+			if ((RegistrationType.LOST.toString()).equalsIgnoreCase(object.getReg_type().name())) {
+				String lostPacketRegId = object.getRid();
+				String matchedRegId = regLostUinDetEntity.getLostUinMatchedRegId(lostPacketRegId);
+				if (matchedRegId != null) {
+					linkRegIdWrtUin(lostPacketRegId, matchedRegId, object);
+				}
+
+			}else {
+			
+			
+			
 			InputStream idJsonStream = adapter.getFile(registrationId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
@@ -320,6 +337,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						|| (RegistrationType.RES_UPDATE.toString().equalsIgnoreCase(object.getReg_type().toString()))) {
 					idResponseDTO = uinUpdate(registrationId, uinFieldCheck, object);
 				}
+			}
+			
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 		} catch (FSAdapterException e) {
@@ -925,6 +944,142 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 							+ e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw e;
 		}
+	}
+	
+	
+	/**
+	 * Link reg id wrt uin.
+	 *
+	 * @param lostPacketRegId
+	 *            the lost packet reg id
+	 * @param matchedRegId
+	 *            the matched reg id
+	 * @param object
+	 *            the object
+	 * @return the id response DTO
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private IdResponseDTO linkRegIdWrtUin(String lostPacketRegId, String matchedRegId, MessageDTO object)
+			throws ApisResourceAccessException, IOException {
+
+		IdResponseDTO idResponse = getIdRepoDataByRegId(matchedRegId);
+		RequestDto requestDto = new RequestDto();
+		String statusComment = "";
+
+		if (idResponse != null && idResponse.getResponse() != null) {
+
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(idResponse.getResponse());
+			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+			JSONObject identityObject = JsonUtil.getJSONObject(identityJson,
+					utility.getGetRegProcessorDemographicIdentity());
+
+			//identityObject.remove("postalCode");
+			//Number number = JsonUtil.getJSONValue(identityObject, UIN);
+			//Long uinFieldValue = number != null ? number.longValue() : null;
+			//requestDto.setBiometricReferenceId(Long.toString(uinFieldValue));
+
+			requestDto.setRegistrationId(lostPacketRegId);
+			requestDto.setIdentity(identityObject);
+			idRequestDTO.setId(idRepoUpdate);
+			idRequestDTO.setRequest(requestDto);
+			idRequestDTO.setMetadata(null);
+			idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+			idRequestDTO.setVersion(idRepoApiVersion);
+			Gson gson = new GsonBuilder().create();
+			String idReq = gson.toJson(idResponse);
+
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, "Update Request to IdRepo API",
+					"is : " + idReq);
+
+			idResponse = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY, null, "",
+					"", idRequestDTO, IdResponseDTO.class);
+
+			if (idResponse != null && idResponse.getResponse() != null) {
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());
+				registrationStatusDto
+				.setStatusComment(UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId);
+				registrationStatusDto
+				.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
+				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId;
+				object.setIsValid(Boolean.TRUE);
+				statusComment = idResponse.getResponse().getEntity().toString();
+
+			} else {
+
+				statusComment = idResponse != null && idResponse.getErrors() != null
+						? idResponse.getErrors().get(0).getMessage()
+								: UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG+"  "+ NULL_IDREPO_RESPONSE + "for lostPacketRegId " + lostPacketRegId;
+						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
+						registrationStatusDto.setStatusComment(statusComment);
+						registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+								.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
+						description = UIN_FAILURE + lostPacketRegId + "::" + idResponse != null
+								&& idResponse.getErrors() != null ? idResponse.getErrors().get(0).getMessage()
+										: NULL_IDREPO_RESPONSE;
+								object.setIsValid(Boolean.FALSE);
+			}
+
+		} else {
+			statusComment = idResponse != null && idResponse.getErrors() != null
+					? idResponse.getErrors().get(0).getMessage()
+							:UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG+"  "+ NULL_IDREPO_RESPONSE + "for matchedRegId " + matchedRegId;
+					registrationStatusDto.setStatusComment(statusComment);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
+					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
+					description = UIN_FAILURE + matchedRegId + "::" + idResponse != null && idResponse.getErrors() != null
+							? idResponse.getErrors().get(0).getMessage()
+									: NULL_IDREPO_RESPONSE;
+							object.setIsValid(Boolean.FALSE);
+		}
+
+		return idResponse;
+	}
+
+	/**
+	 * Gets the id repo data by reg id.
+	 *
+	 * @param regID
+	 *            the reg ID
+	 * @return the id repo data by reg id
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
+	private IdResponseDTO getIdRepoDataByRegId(String regID) throws ApisResourceAccessException {
+		IdResponseDTO response;
+
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("rid");
+		pathSegments.add(regID);
+		try {
+			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
+					"", "", IdResponseDTO.class);
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				description =UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::"
+						+ httpClientException.getResponseBodyAsString();
+				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
+						httpClientException);
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::"
+						+ httpServerException.getResponseBodyAsString();
+
+				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
+						httpServerException);
+			} else {
+				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::" + e.getMessage();
+				throw e;
+			}
+		}
+		return response;
 	}
 }
 

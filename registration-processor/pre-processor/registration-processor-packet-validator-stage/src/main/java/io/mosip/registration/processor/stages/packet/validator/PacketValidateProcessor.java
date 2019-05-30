@@ -65,6 +65,7 @@ import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -123,6 +124,9 @@ public class PacketValidateProcessor {
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
+
+	@Autowired
+	ABISHandlerUtil handlerUtil;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -461,6 +465,15 @@ public class PacketValidateProcessor {
 				return false;
 			}
 		}
+		// check if uin is in idrepisitory
+		if (RegistrationType.UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
+				|| RegistrationType.RES_UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
+				|| RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
+				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
+
+			if (!ifUinIDRepo(registrationStatusDto.getRegistrationId()))
+				return false;
+		}
 
 		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
 				&& !mandatoryValidation(registrationStatusDto)) {
@@ -477,6 +490,11 @@ public class PacketValidateProcessor {
 
 	}
 
+	private boolean ifUinIDRepo(String regId) throws ApisResourceAccessException, IOException {
+		if (handlerUtil.getUinFromIDRepo(regId)== null)
+			return false;
+		return true;
+	}
 	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
 		String regId = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONID);
 		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);

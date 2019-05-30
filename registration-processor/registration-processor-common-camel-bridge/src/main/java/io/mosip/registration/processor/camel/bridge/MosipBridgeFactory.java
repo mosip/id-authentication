@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.camel.bridge;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,6 +11,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.component.vertx.VertxComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RoutesDefinition;
+import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -106,13 +108,16 @@ public class MosipBridgeFactory extends AbstractVerticle {
                 + "/";
         ResponseEntity<Resource> responseEntity;
         RoutesDefinition routes;
-        for (String camelRouteFileName : camelRoutesFilesArr) {
-			String camelRoutesUrl = camelRoutesBaseUrl + camelRouteFileName;
-			responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
-	                Resource.class);
-			routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
-			camelContext.addRouteDefinitions(routes.getRoutes());
-		}
+//        for (String camelRouteFileName : camelRoutesFilesArr) {
+//			String camelRoutesUrl = camelRoutesBaseUrl + camelRouteFileName;
+//			responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
+//	                Resource.class);
+//			routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+//			camelContext.addRouteDefinitions(routes.getRoutes());
+//		}
+        routes = camelContext.loadRoutesDefinition(FileUtils.openInputStream(new File("C:\\Users\\M1039303\\Desktop\\camel-int.xml")));
+        camelContext.addRouteDefinitions(routes.getRoutes());
+        
         camelContext.addComponent("vertx", vertxComponent);
         camelContext.start();
         CamelBridge.create(vertx, new CamelBridgeOptions(camelContext)).start();
