@@ -768,7 +768,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validated the dedupecheck of the captured fingers");
 
-		return isValid;
+		return true;
 	}
 
 	/**

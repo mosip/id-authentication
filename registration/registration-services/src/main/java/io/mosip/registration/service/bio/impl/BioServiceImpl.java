@@ -480,13 +480,15 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		try {
 			if (isMdmEnabled()) {
-				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan("IRIS_SINGLE");
+				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
 				capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
 			} else
 				capturedByte = IOUtils.toByteArray(
-						this.getClass().getResourceAsStream("images/scanned-iris.png"));
+						this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
-			exception.printStackTrace();
+			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"Exception while reading image from the file",
+					exception.getMessage(), exception.getCause()));
 		}
 		return capturedByte;
 	}
@@ -608,15 +610,15 @@ public class BioServiceImpl extends BaseService implements BioService {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
-			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/images/scanned-iris.png"));
+			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 
 			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
 
 			double qualityScore;
-			if (irisType.equalsIgnoreCase("LeftEye")) {
+			if (irisType.equalsIgnoreCase(RegistrationConstants.TEMPLATE_LEFT_EYE)) {
 				qualityScore = 90.5;
 			} else {
 				qualityScore = 50.0;
@@ -624,7 +626,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new WeakHashMap<>();
-			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, "png");
+			scannedIris.put(RegistrationConstants.IMAGE_FORMAT_KEY, RegistrationConstants.IMAGE_FORMAT_PNG);
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
@@ -657,7 +659,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			if (RegistrationConstants.ENABLE
 					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
-				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan("FACE");
+				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
 				capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
 			} else
 				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
@@ -731,12 +733,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 				"Stubbing face details for user registration");
 
 		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail.getFace(), face.getBioIsoImage()));
-	}
-
-	@Override
-	public CaptureResponseDto captureBio(String bioType) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

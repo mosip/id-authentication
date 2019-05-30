@@ -63,12 +63,14 @@ public class RegistrationConstants {
 	public static final String BIOMETRIC_EXCEPTION = "biometricException";
 	public static final String FINGER_PANE = "fingerPane";
 	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
+	public static final String FIN="FIN";
 	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
 	public static final String MDM_ENVIRONMENT = "DEV";
 	public static final int MDM_TIMEOUT = 1000;
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
+	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -366,7 +368,7 @@ public class RegistrationConstants {
 	 */
 	public static final String ACKNOWLEDGEMENT_FORMAT = "html";
 
-	public static final String IMAGE_FORMAT = "png";
+	public static final String IMAGE_FORMAT_PNG = "png";
 
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration

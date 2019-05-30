@@ -7,7 +7,6 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.mdm.dto.CaptureResponseDto;
 
 public interface BioService {
 
@@ -16,8 +15,6 @@ public interface BioService {
 	public boolean validateIris(String userId) throws RegBaseCheckedException;
 
 	public boolean validateFace(String userId) throws RegBaseCheckedException;
-
-	public CaptureResponseDto captureBio(String bioType) throws RegBaseCheckedException;
 
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException;
