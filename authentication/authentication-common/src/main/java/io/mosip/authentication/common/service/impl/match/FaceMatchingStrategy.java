@@ -1,10 +1,10 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -22,8 +22,8 @@ public enum FaceMatchingStrategy implements MatchingStrategy {
 
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Object object = props.get(IdaIdMapping.FACE.getIdname());
-			if (object instanceof BiFunction) {
-				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
+			if (object instanceof BiFunctionWithBusinessException) {
+				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = (BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) object;
 				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
