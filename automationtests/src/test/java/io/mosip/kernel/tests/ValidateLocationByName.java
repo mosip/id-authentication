@@ -108,18 +108,17 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		 // Getting the response time in milliseconds	
 		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
 	
-		
 		 // Comparing expected and actual response	
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
-			/*	if(response_time<=300)
+				if(response_time<=500)
 					finalStatus = "Pass";
 
 				else {
 					finalStatus = "Fail";
-					logger.info("ValidateLocationByName service response time is more than 300ms");
-				}*/
+					logger.info("ValidateLocationByName service response time is more than 500ms");
+				}
     	  finalStatus = "Pass";
 			}	
 		
@@ -127,7 +126,6 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -137,7 +135,6 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 			setFinalStatus=true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-
 }
 		@SuppressWarnings("static-access")
 		@Override

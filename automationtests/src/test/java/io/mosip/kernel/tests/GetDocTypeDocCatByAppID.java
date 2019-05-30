@@ -71,7 +71,7 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "Kernel_"+"GetDocType_DocCatByAppID_"+object.get("testCaseName").toString();
 		 cookie=auth.getAuthForIndividual();
 	} 
 	

@@ -98,6 +98,10 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
+		if(testCaseName.equals("Kernel_GetRegistrationCenterDeviceHistory_smoke_2") || testCaseName.equals("Kernel_GetRegistrationCenterDeviceHistory_response_time")) {
+			String effectDateTime = res.jsonPath().get("response.registrationCenterDeviceHistoryDetails.effectivetimes");
+			((JSONObject)((JSONObject)Expectedresponse.get("response")).get("registrationCenterDeviceHistoryDetails")).put("effectivetimes", effectDateTime).toString();
+		}
 		
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);

@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -28,9 +27,9 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;

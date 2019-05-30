@@ -65,7 +65,7 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		 cookie=auth.getAuthForIndividual();
+		 cookie=auth.getAuthForZonalApprover();
 	} 
 	
 	// Data Providers to read the input json files from the folders

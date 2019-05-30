@@ -51,9 +51,9 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 	private AssertKernel assertKernel = new AssertKernel();
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String getRIDByUserId = props.get("getRIDByUserId");
-	private String folderPath = "kernel/GetRIDByUserId";
-	private String outputFile = "GetRIDByUserIdOutput.json";
-	private String requestKeyFile = "GetRIDByUserIdInput.json";
+	private String folderPath = "kernel/GetRIDByUserIDAndAppID";
+	private String outputFile = "GetRIDByUserIDAndAppIDOutput.json";
+	private String requestKeyFile = "GetRIDByUserIDAndAppIDInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
@@ -63,7 +63,7 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "Kernel_"+"GetRIDByUserId_"+object.get("testCaseName").toString();
 		 cookie=auth.getAuthForIndividual();
 	} 
 	
@@ -136,10 +136,10 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetRIDByUserId/GetRIDByUserIdOutput.json";
+			String configPath = "src/test/resources/kernel/GetRIDByUserIDAndAppID/GetRIDByUserIDAndAppIDOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetRIDByUserIdOutput.json file.......................!!");
+				logger.info("Successfully updated Results to GetRIDByUserIDAndAppIDOutput.json file.......................!!");
 			}
 		}
 }

@@ -52,7 +52,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String getusersBasedOnRegCenter = props.get("getusersBasedOnRegCenter");
+	private final String getUserHistory = props.get("getUserHistory");
 	private String folderPath = "kernel/GetUserHistory";
 	private String outputFile = "GetUserHistoryOutput.json";
 	private String requestKeyFile = "GetUserHistoryInput.json";
@@ -65,7 +65,6 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
 		 cookie=auth.getAuthForRegistrationProcessor();
 	} 
@@ -92,7 +91,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getusersBasedOnRegCenter, actualRequest,cookie);
+		Response res=applicationLibrary.getRequestPathPara(getUserHistory, actualRequest,cookie);
 		
 		// Removing of unstable attributes from response		
 		List<String> outerKeys = new ArrayList<String>();
@@ -111,8 +110,6 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
