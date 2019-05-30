@@ -37,6 +37,8 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.match.DOBType;
+import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -47,6 +49,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
 @RunWith(SpringRunner.class)
@@ -62,6 +65,9 @@ public class IdMappingValidationTest {
 
 	@Autowired
 	Environment environment;
+
+	@Mock
+	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Mock
 	private IdInfoHelper idinfoHelper;
@@ -95,7 +101,6 @@ public class IdMappingValidationTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 
 	@Test
@@ -121,6 +126,16 @@ public class IdMappingValidationTest {
 		valueList.add("MLE");
 		valueMap.put("ara", valueList);
 		Mockito.when(masterDataManager.fetchGenderType()).thenReturn(valueMap);
+		List<String> phoneList = new ArrayList<>();
+		phoneList.add("phone");
+		List<String> emailList = new ArrayList<>();
+		emailList.add("phone");
+		List<String> pincodeList = new ArrayList<>();
+		pincodeList.add("phone");
+		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE)).thenReturn(phoneList);
+		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL)).thenReturn(emailList);
+		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
+				.thenReturn(pincodeList);
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -364,6 +379,7 @@ public class IdMappingValidationTest {
 		identity.setLocation1(addressLine1List);
 		identity.setLocation2(addressLine1List);
 		identity.setLocation3(addressLine1List);
+		identity.setPostalCode("343434");
 		IdentityInfoDTO agedto = new IdentityInfoDTO();
 		agedto.setLanguage("ara");
 		agedto.setValue("19");
@@ -400,13 +416,7 @@ public class IdMappingValidationTest {
 		identity.setGender(genderList);
 		/* Phone Number */
 		identity.setPhoneNumber("9002020012");
-		/* Pin code */
-		List<IdentityInfoDTO> pincodeList = new ArrayList<>();
-		IdentityInfoDTO pincode = new IdentityInfoDTO();
-		pincode.setLanguage("ara");
-		pincode.setValue("345323");
-		pincodeList.add(pincode);
-		identity.setPinCode(pincodeList);
+		identity.setPostalCode("2323232");
 
 		request.setDemographics(identity);
 		authRequestDTO.setRequest(request);
