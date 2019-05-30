@@ -928,10 +928,10 @@ public class AuthTestsUtil extends BaseTestCase {
 						+ '"' + demoAppJarPath.toString() + '"';
 			} else if (getOSType().toString().equals("OTHERS")) {
 				String mavenPath = "MAVEN PATH NOT SET";
-				if (System.getenv("MAVEN_HOME").equals(null)) {
+				if (System.getenv("MAVEN_HOME").contains(null) || System.getenv("MAVEN_HOME").equals(null) || System.getenv("MAVEN_HOME")==null) {
 					IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv("M2_HOME"));
 					mavenPath = System.getenv("M2_HOME");
-				} else if (System.getenv("M2_HOME").equals(null)) {
+				} else if (System.getenv("M2_HOME").contains(null) || System.getenv("M2_HOME").equals(null) || System.getenv("M2_HOME")==null) {
 					IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv("MAVEN_HOME"));
 					mavenPath = System.getenv("MAVEN_HOME");
 				}
