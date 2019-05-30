@@ -59,7 +59,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
             camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.dmz.active.flows.file.names");
         }
         else {
-        	clusterFileName=BridgeUtil.getPropertyFromConfigServer("dmz.cluster.manager.file.name");
+        	clusterFileName=BridgeUtil.getPropertyFromConfigServer("cluster.manager.file.name");
             camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.secure.active.flows.file.names");
         }
         String clusterUrl = BridgeUtil.getCloudConfigUri();
@@ -102,7 +102,8 @@ public class MosipBridgeFactory extends AbstractVerticle {
         List<String> camelRoutesFilesArr = Arrays.asList(camelRoutesFileName.split(","));
         RestTemplate restTemplate = new RestTemplate();
         String camelRoutesBaseUrl = BridgeUtil.getCloudConfigUri();
-        camelRoutesBaseUrl = camelRoutesBaseUrl + "*/*/" + BridgeUtil.getCloudConfigLabel()
+        String profile = BridgeUtil.getActiveProfile();
+        camelRoutesBaseUrl = camelRoutesBaseUrl + "/*/" + profile + "/" + BridgeUtil.getCloudConfigLabel()
                 + "/";
         ResponseEntity<Resource> responseEntity;
         RoutesDefinition routes;

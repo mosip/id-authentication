@@ -209,6 +209,7 @@ public class PacketValidateProcessorTest {
 		listAppender = new ListAppender<>();
 
 		dto.setRid("2018701130000410092018110735");
+		dto.setReg_type(RegistrationType.valueOf("UPDATE"));
 
 		MockitoAnnotations.initMocks(this);
 		packetMetaInfo = new PacketMetaInfo();
