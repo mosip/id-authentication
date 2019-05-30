@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -12,7 +10,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -36,9 +33,8 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
-
 
 /**
  * @author Ravi Kant
@@ -68,8 +64,8 @@ public class AuditLog extends BaseTestCase implements ITest {
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -78,11 +74,11 @@ public class AuditLog extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
+	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIDA();
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForIDA();
 	}
 
 	/**
@@ -94,8 +90,9 @@ public class AuditLog extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
-		}
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+	}
+
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -108,61 +105,34 @@ public class AuditLog extends BaseTestCase implements ITest {
 	public void auditLog(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		// sending post request
+		response = applicationLibrary.postRequest(objectData.toJSONString(), auditLog_URI, cookie);
 
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), auditLog_URI,cookie);
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
-
-		logger.info("Expected Response:" + responseObject.toJSONString());
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-		
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		
+
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		
-	
-			finalStatus = (status)? "Pass":"Fail";
 
-		object.put("status", finalStatus);
-
-		arr.add(object);
 		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
+		if (!status) {
 			setFinalStatus = false;
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
+			object.put("status", "Fail");
+		} else if (status) {
 			setFinalStatus = true;
+			object.put("status", "Pass");
+		}
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override
@@ -190,8 +160,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
