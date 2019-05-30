@@ -18,7 +18,15 @@ public final class StatusMessage {
 	/** The Constant PACKET_BIODEDUPE_SUCCESS. */
 	public static final String PACKET_BIODEDUPE_SUCCESS = "Packet biodedupe successful";
 
+	public static final String PACKET_BIODEDUPE_INPROGRESS = "Packet biodedupe Inprogress";
+
 	/** The Constant PACKET_BIOMETRIC_POTENTIAL_MATCH. */
 	public static final String PACKET_BIOMETRIC_POTENTIAL_MATCH = "Potential match found while processing bio dedupe";
+
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_NO_MATCH = "No match found while processing bio dedupe for lost";
+
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_UNIQUE_MATCH = "Unique match found while processing bio dedupe for lost";
+
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_MULTIPLE_MATCH = "Multiple match found while processing bio dedupe for lost";
 
 }
