@@ -16,7 +16,7 @@ testdata:
     input.create-request:
       version: $idrepoVersion$
       requesttime: $TIMESTAMPZ$
-      vidStatus: REVOKE
+      vidStatus: REVOKED
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
       output.1.res.status: REVOKED
@@ -29,7 +29,7 @@ testdata:
     input.create-request:
       version: $idrepoVersion$
       requesttime: $TIMESTAMPZ$
-      vidStatus: REVOKE
+      vidStatus: REVOKED
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
       output.1.res.status: REVOKED
@@ -42,7 +42,7 @@ testdata:
     input.create-request:
       version: $idrepoVersion$
       requesttime: $TIMESTAMPZ$
-      vidStatus: REVOKE
+      vidStatus: REVOKED
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
       output.1.res.status: REVOKED

@@ -54,7 +54,7 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 	 * @param testType
 	 */
 	@BeforeClass
-	public void setTestType(String testType) {
+	public void setTestType() {
 		this.testType = RunConfigUtil.getTestLevel();
 	}
 

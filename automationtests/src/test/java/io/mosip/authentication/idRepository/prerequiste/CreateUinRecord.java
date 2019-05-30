@@ -183,7 +183,7 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		// Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid),true);
+		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid),true);
 		if (OutputValidationUtil.publishOutputResult(ouputValid))
 			storeUinData.put(uin, testcaseName);
 	}

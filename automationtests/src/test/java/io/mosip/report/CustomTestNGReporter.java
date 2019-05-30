@@ -43,12 +43,11 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	private static final Logger CustomTestNGReporterLog = Logger.getLogger(CustomTestNGReporter.class);
 	private static final String defaultTestNgEmailableReport="./target/surefire-reports/emailable-report.html";
 	private static final String extendtReport="./extent-report.html";
-	// This is the customize emailable report template file path.
 	private static final String emailableReportTemplateFile = new File(
 			"./src/test/resources/customize-emailable-report-template.html").getAbsolutePath();
 	private static String customReportTemplateStr;
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
-	private static final String reportProfixFileName = "Mosip_testingReport_";
+	private static final String reportProfixFileName = "Mosip_AutomationTest_Report";
 	// PieChart
 	private int passTestCount = 0;
 	private int skipTestCount = 0;
@@ -85,7 +84,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					'"' + encodeExtentReportFile() + '"');	*/		
 			// Write replaced test report content to custom-emailable-report.html.
 			removeOldCustomMosipReport(outputDirectory);
-			File targetFile = new File(outputDirectory + "/"+reportProfixFileName+getCurrentTimestampForReport()+".html");
+			File targetFile = new File(outputDirectory + "/"+reportProfixFileName/*getCurrentTimestampForReport()*/+".html");
 			FileWriter fw = new FileWriter(targetFile);
 			fw.write(customReportTemplateStr);
 			fw.flush();
