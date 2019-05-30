@@ -1434,6 +1434,7 @@ testdata:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.individualId: $VID:WHERE:UIN:WITH:EVEN$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1473,6 +1474,7 @@ testdata:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.individualId: $VID:WITH:EXPIRED$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1490,13 +1492,14 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
       output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$ 
+      output.1.response.error.actionMessage: $errors:ExpiredVID:actionMessage$ 
       
   Authentication_Biometric_Face_With_Revoke_VID_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.individualId: $VID:WITH:REVOKE$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1512,15 +1515,16 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
-      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$  
+      output.1.response.error.errorCode: $errors:RevokedVID:errorCode$
+      output.1.response.error.errorMessage: $errors:RevokedVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:RevokedVID:actionMessage$  
       
   Authentication_Biometric_Face_With_Inactive_VID_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.individualId: $VID:WITH:INACTIVE$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1536,15 +1540,16 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
-      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$  
+      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:InactiveVID:actionMessage$  
       
   Authentication_Biometric_Face_With_Deactivated_VID_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.individualId: $VID:WITH:DEACTIVATED$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1560,6 +1565,6 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
-      output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$   
+      output.1.response.error.errorCode: $errors:DeactivatedVID:errorCode$
+      output.1.response.error.errorMessage: $errors:DeactivatedVID:errorMessage$
+      output.1.response.error.actionMessage: $errors:DeactivatedVID:actionMessage$   

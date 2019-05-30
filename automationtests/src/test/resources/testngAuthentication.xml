@@ -1,192 +1,26 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="idaTestSuite">
-	 <test name="CreateUINData">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.CreateUinRecord" />
-		</classes>
-	</test>
-	<test name="UpdateUINData">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.UpdateUinRecord" />
-		</classes>
-	</test> 
-	<test name="GenerateVID">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.CreateVID" />
-		</classes>
-	</test>
-	<test name="IrisAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.BioIrisAuthentication" />
-		</classes>
-	</test>
-	<test name="InternalBio.IrisAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.InternalBioIrisAuthentication" />
-		</classes>
-	</test>
-	<test name="Eyc.IrisAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.EkycWithBioIrisAuthentication" />
-		</classes>
-	</test>
-	<test name="OtpGeneration">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.OtpGeneration" />
-		</classes>
-	</test>
-	<test name="OtpAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.OtpAuthentication" />
-		</classes>
-	</test>
-	<test name="OtpFlooding">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.OtpGeneration" />
-		</classes>
-	</test>
-	<test name="Ekyc.OtpAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.EkycWithOtpAuthentication" />
-		</classes>
-	</test>
-	<test name="Bio.FingerPrintAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.BioFingerAuthentication" />
-		</classes>
-	</test>
-	<test name="InternalBio.FingerPrintAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.InternalBioFingerAuthentication" />
-		</classes>
-	</test>
-	<test name="eKYC.FingerPrintAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.EkycWithBioFingerAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.NameAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoNameAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.EmailAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoEmailAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.PhoneNumberAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoPhoneNumberAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.DateOfBirthAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoDOBAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.GenderAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoGenderAuthentication" />
-		</classes>
-	</test>
-	<test name="demo.AddressAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.DemoAddressAuthentication" />
-		</classes>
-	</test>
-	<test name="StaticTokenIdGeneration.demo">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.StaticTokenIdGenerationForDemoAuth" />
-		</classes>
-	</test>
-	<test name="StaticTokenIdGeneration.fingerprintauthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioFingerAuth" />
-		</classes>
-	</test>
-	<test name="StaticTokenIdGeneration.irisAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.StaticTokenIdGenerationForBioIrisAuth" />
-		</classes>
-	</test>
-	<test name="StaticTokenIdGeneration.otpAuthentication">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class
-				name="io.mosip.authentication.tests.StaticTokenIdGenerationForOTPAuth" />
-		</classes>
-	</test>
-	<test name="VID-Generation">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.authentication.tests.VidGeneration" />
-		</classes>
-	</test>
-</suite>
 
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="AuthenticationSuite">
+<suite name="Mosip API Suite">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
 	<listeners>
-        <listener class-name="io.mosip.util.CustomTestNGReporter" />
-        <listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
-    </listeners>
-    <test name="AuthenticationTest">
-		<parameter name="testType" value="smokeandregression" />		
+		<listener class-name="io.mosip.report.CustomTestNGReporter" />
+		<listener class-name="io.mosip.report.ExtentReportListener" />
+		<listener
+			class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
+	</listeners>
+	<test name="AuthenticationTest">
 		<classes>
-		    <class name="io.mosip.authentication.tests.CreateUinRecord" />
-			<class name="io.mosip.authentication.tests.UpdateUinRecord" />
-			<class name="io.mosip.authentication.tests.CreateVID" />
-			<class name="io.mosip.authentication.tests.DemographicAuthentication" />
-			<class name="io.mosip.authentication.tests.AuthPartnerAuthentication" />
-			 <class name="io.mosip.authentication.tests.EkycPartnerAuthentication" />
-			<class name="io.mosip.authentication.tests.BiometricAuthentication" />
-			<class name="io.mosip.authentication.tests.EkycWithBiometricAuthentication" />
-			<class name="io.mosip.authentication.tests.OtpGeneration" />
+			<!-- <class
+				name="io.mosip.authentication.idRepository.prerequiste.CreateVID" /> -->
 			<class name="io.mosip.authentication.tests.OtpAuthentication" />
-			<class name="io.mosip.authentication.tests.EkycWithOtpAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.DemographicAuthentication" />
+			<class
+				name="io.mosip.authentication.tests.BiometricAuthentication" />
 		</classes>
 	</test>
 </suite>
->>>>>>> QA_IDA
+		
+	

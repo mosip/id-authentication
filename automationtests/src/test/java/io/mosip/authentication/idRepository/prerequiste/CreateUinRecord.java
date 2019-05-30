@@ -178,13 +178,14 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
 		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
-				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
+				"create", "output-1-actual-res", AUTHORIZATHION_COOKIENAME, cookieValue, 0);
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		OutputValidationUtil.publishOutputResult(ouputValid);
-		storeUinData.put(uin, testcaseName);
+		// Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid),true);
+		if (OutputValidationUtil.publishOutputResult(ouputValid))
+			storeUinData.put(uin, testcaseName);
 	}
 
 	/**

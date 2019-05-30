@@ -13,20 +13,20 @@
 	<test name="AuthenticationTest">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
-			<!-- <class name="io.mosip.authentication.tests.CreateUinRecord" />
-			<class name="io.mosip.authentication.tests.UpdateUinRecord" /> -->
-			<!--  <class name="io.mosip.authentication.tests.CreateVID" />
-		   <class name="io.mosip.authentication.tests.UpdateVID" /> -->
-		 <!--   <class name="io.mosip.authentication.tests.OtpGeneration" /> -->
-			<class
-				name="io.mosip.authentication.tests.DemographicAuthentication" />
+			<class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
+			 <!-- <class name="io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord" /> -->
+			<!-- <class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" /> -->
+		  <!-- <class name="io.mosip.authentication.idRepository.prerequiste.UpdateVID" /> -->
+		 <!--  <class name="io.mosip.authentication.tests.OtpAuthentication" /> -->
+			<!-- <class
+				name="io.mosip.authentication.tests.DemographicAuthentication" /> -->
 			<!-- <class
 				name="io.mosip.authentication.tests.AuthPartnerAuthentication" />
 			<class
-				name="io.mosip.authentication.tests.EkycPartnerAuthentication" />
-			<class
-				name="io.mosip.authentication.tests.BiometricAuthentication" />
-			<class
+				name="io.mosip.authentication.tests.EkycPartnerAuthentication" /> -->
+			<!-- <class
+				name="io.mosip.authentication.tests.BiometricAuthentication" /> -->
+			<!--<class
 				name="io.mosip.authentication.tests.EkycWithBiometricAuthentication" />
 			<class name="io.mosip.authentication.tests.OtpGeneration" />
 			<class name="io.mosip.authentication.tests.OtpAuthentication" />

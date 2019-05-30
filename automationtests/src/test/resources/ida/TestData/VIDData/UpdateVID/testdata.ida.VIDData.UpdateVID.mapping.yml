@@ -19,7 +19,7 @@ testdata:
       vidStatus: REVOKE
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
-      output.1.res.status: REVOKE
+      output.1.res.status: REVOKED
       output.1.res.responsetime: $IGNORE$
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
@@ -32,7 +32,7 @@ testdata:
       vidStatus: REVOKE
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
-      output.1.res.status: REVOKE
+      output.1.res.status: REVOKED
       output.1.res.responsetime: $IGNORE$
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
@@ -45,7 +45,7 @@ testdata:
       vidStatus: REVOKE
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
-      output.1.res.status: REVOKE
+      output.1.res.status: REVOKED
       output.1.res.responsetime: $IGNORE$
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
