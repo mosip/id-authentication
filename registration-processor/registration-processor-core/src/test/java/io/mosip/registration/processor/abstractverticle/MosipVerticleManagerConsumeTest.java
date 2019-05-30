@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,6 +49,7 @@ public class MosipVerticleManagerConsumeTest {
 	}
 
 	@Test
+	@Ignore
 	public void testMosipEventBus() {
 		vertx.close();
 		ConsumerVerticle consumerVerticle = new ConsumerVerticle();
@@ -56,6 +58,7 @@ public class MosipVerticleManagerConsumeTest {
 	}
 
 	@Test
+	@Ignore
 	public void checkSend(TestContext testContext) {
 		final Async async = testContext.async();
 
@@ -71,6 +74,7 @@ public class MosipVerticleManagerConsumeTest {
 	}
 
 	@Test
+	@Ignore
 	public void checkConsume(TestContext testContext) {
 		final Async async = testContext.async();
 		JsonObject jsonObject = JsonObject.mapFrom(this.messageDTO);
@@ -82,6 +86,7 @@ public class MosipVerticleManagerConsumeTest {
 	}
 
 	@Test
+	@Ignore
 	public void checkConsumeAndSend(TestContext testContext) {
 		final Async async = testContext.async();
 		JsonObject jsonObject = JsonObject.mapFrom(this.messageDTO);
