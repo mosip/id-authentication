@@ -193,6 +193,8 @@ public class RegistrationCenterController {
 		return responseWrapper;
 	}
 
+	
+
 	/**
 	 * This method updates registration center.
 	 * 
