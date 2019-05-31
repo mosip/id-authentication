@@ -22,6 +22,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
@@ -131,7 +132,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 							String ackFileName = registration.getPacketPath();
 							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 							String packetPath = ackFileName.substring(0, lastIndex);
-							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							File packet = FileUtils.getFile(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							if (packet.exists() && packet.delete()) {
 								registration.setPacketClientStatus(RegistrationClientStatusCode.DELETED.getCode());
 							}
@@ -178,7 +179,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
 			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
 			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
-			packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime())); 
+			packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime()));
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;

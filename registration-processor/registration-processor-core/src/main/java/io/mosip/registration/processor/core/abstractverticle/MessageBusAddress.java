@@ -1,6 +1,11 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import io.mosip.registration.processor.core.constant.RegistrationType;
 
 /**
  * This class contains the address values to be used in Registration process.
@@ -19,6 +24,18 @@ public class MessageBusAddress implements Serializable {
 	 */
 	public MessageBusAddress() {
 	}
+
+	public MessageBusAddress(MessageBusAddress messageBusAddress, RegistrationType regType) {
+
+		               List<String> addressList = (List<String>)Arrays.asList(messageBusAddress.getAddress().split("-"));
+
+		               ArrayList<String> modifiableArrayList = new ArrayList<String>(addressList);
+
+		               modifiableArrayList.add(addressList.size() - 2, regType.toString());
+		               String modifiedAddress = String.join("-", modifiableArrayList);
+
+		               this.address = modifiedAddress;
+		       }
 
 	/** The address. */
 	private String address;
@@ -148,6 +165,18 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant ABIS_HANDLER_BUS_OUT. */
 	public static final MessageBusAddress ABIS_HANDLER_BUS_OUT = new MessageBusAddress("abis-handler-bus-out");
+
+	/** The Constant BIOMETRIC_AUTHENTICATION_BUS_IN. */
+	public static final MessageBusAddress BIOMETRIC_AUTHENTICATION_BUS_IN = new MessageBusAddress("biometric-authentication-bus-in");
+
+	/** The Constant BIOMETRIC_AUTHENTICATION_BUS_OUT. */
+	public static final MessageBusAddress BIOMETRIC_AUTHENTICATION_BUS_OUT = new MessageBusAddress("biometric-authentication-bus-out");
+
+	/** The Constant QUALITY_CHECKER_BUS_IN. */
+	public static final MessageBusAddress QUALITY_CHECKER_BUS_IN = new MessageBusAddress("quality-checker-bus-in");
+
+	/** The Constant QUALITY_CHECKER_BUS_OUT. */
+	public static final MessageBusAddress QUALITY_CHECKER_BUS_OUT = new MessageBusAddress("quality-checker-bus-out");
 
 	/*
 	 * (non-Javadoc)

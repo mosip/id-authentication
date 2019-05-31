@@ -94,11 +94,11 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		
-		
 		 // Calling GET method with path parameters
-		 
 		Response res=applicationLibrary.getRequestPathPara(validateLocationByName, actualRequest,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		 // Removing the unstable attributes from response	
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();

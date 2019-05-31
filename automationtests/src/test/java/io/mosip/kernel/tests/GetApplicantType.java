@@ -95,6 +95,8 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 		
 		// Calling the get method 
 		Response res=applicationLibrary.postRequest(actualRequest, getApplicantType,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();

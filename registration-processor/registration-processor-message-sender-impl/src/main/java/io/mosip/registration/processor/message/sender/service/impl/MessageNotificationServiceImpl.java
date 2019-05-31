@@ -314,10 +314,12 @@ public class MessageNotificationServiceImpl
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		String demographicInfo = IOUtils.toString(demographicInfoStream, ENCODING);
 
-		if (regType.equalsIgnoreCase(RegistrationType.NEW.name()) || regType.equalsIgnoreCase(RegistrationType.UPDATE.name())) {
+		if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
 			setAttributes(demographicInfo, attributes, regType);
 		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
-				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
+				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
+				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
+				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
 		} else{
 			setAttributes(demographicInfo, attributes, regType);
@@ -391,7 +393,9 @@ public class MessageNotificationServiceImpl
 				demographicIdentity = JsonUtil.getJSONObject(demographicjson,
 						utility.getGetRegProcessorDemographicIdentity());
 			} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
-					|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
+					|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
+					|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
+					|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 				demographicIdentity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
 			}
 

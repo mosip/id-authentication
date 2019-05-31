@@ -95,7 +95,8 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		
 		// Calling GET method with path parameters
 		Response res=applicationLibrary.getRequestPathPara(fetchDeviceHistory, actualRequest,cookie);
-		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		//  Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");

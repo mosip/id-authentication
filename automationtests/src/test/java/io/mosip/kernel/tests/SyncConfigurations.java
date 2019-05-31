@@ -57,7 +57,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String syncConf = props.get("syncConf");
 	private String folderPath = "kernel/SyncConfigurations";
-	private String outputFile = "SyncConfigurationsrOutput.json";
+	private String outputFile = "SyncConfigurationsOutput.json";
 	private String requestKeyFile = "SyncConfigurationsInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
@@ -96,6 +96,9 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestNoParameter(syncConf,cookie);
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+				
 		String lastSyncTime=res.jsonPath().get("response.lastSyncTime").toString();
 		logger.info("lastsync--------"+lastSyncTime);
 		JSONObject expectedres = (JSONObject) Expectedresponse.get("response");

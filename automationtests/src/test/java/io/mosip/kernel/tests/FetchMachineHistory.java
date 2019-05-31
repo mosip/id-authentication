@@ -125,7 +125,9 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 		time = time.replace(' ', 'T')+"Z";
 		objectData.put("effdatetimes", time);
 				response = applicationLibrary.getRequestPathPara(FetchMachineHistory_URI, objectData,cookie);
-				// DB Validation
+
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String query = "select count(*) from master.machine_master_h where id = '" + objectData.get("id")

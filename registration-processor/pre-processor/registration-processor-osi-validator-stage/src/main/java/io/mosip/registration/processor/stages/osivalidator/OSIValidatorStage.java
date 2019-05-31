@@ -15,7 +15,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -80,8 +79,6 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 
 	private MosipEventBus mosipEventBus = null;
 
-	private static final String OSI_VALIDATOR_FAILED = "OSI validation failed for registrationId ";
-
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
 	/**
@@ -128,16 +125,31 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
-			}
-			if (isValidUMC && isValidOSI) {
-				registrationStatusDto
-						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-				object.setIsValid(Boolean.TRUE);
-				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
-				isTransactionSuccessful = true;
-				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
-				description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage();
+				if (isValidOSI) {
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+					object.setIsValid(Boolean.TRUE);
+					registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+					isTransactionSuccessful = true;
+					code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
+					description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage();
+				} else {
+					object.setIsValid(Boolean.FALSE);
+					int retryCount = registrationStatusDto.getRetryCount() != null
+							? registrationStatusDto.getRetryCount() + 1
+							: 1;
+					registrationStatusDto.setLatestTransactionStatusCode(
+							osiValidator.registrationStatusDto.getLatestTransactionStatusCode());
+					registrationStatusDto.setRetryCount(retryCount);
+
+					registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
+					registrationStatusDto.setStatusCode(osiValidator.registrationStatusDto.getStatusCode());
+
+					code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
+					description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::"
+							+ "OSI(" + isValidOSI + ") is not valid";
+				}
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				int retryCount = registrationStatusDto.getRetryCount() != null
@@ -147,13 +159,14 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED));
 				registrationStatusDto.setRetryCount(retryCount);
 
-				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
+				registrationStatusDto.setStatusComment(umcValidator.getRegistrationStatusDto().getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 
 				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
 				description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::"
-						+ "either UMC(" + isValidUMC + ")/OSI(" + isValidOSI + ") is not valid";
+						+ " UMC(" + isValidUMC + ") is not valid";
 			}
+
 			registrationStatusDto.setUpdatedBy(USER);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, "OSIValidatorStage::process()::exit");
@@ -161,7 +174,8 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 					code + " -- " + registrationId, description);
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getCode();
@@ -172,7 +186,8 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getMessage());
+			registrationStatusDto.setStatusComment(
+					PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getCode();

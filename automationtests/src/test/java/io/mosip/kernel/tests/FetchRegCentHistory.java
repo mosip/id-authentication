@@ -127,6 +127,9 @@ public class FetchRegCentHistory extends BaseTestCase implements ITest {
 		response = applicationLibrary.getRequestPathPara(FetchRegCentHistory_URI, objectData, cookie);
 
 		// DB Validation
+
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String query = "select count(*) from master.registration_center_h where id = '"

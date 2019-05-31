@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
-import io.mosip.registration.config.RegistrationUpdate;
+import io.mosip.registration.config.SoftwareInstallationHandler;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
 import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
@@ -119,7 +119,7 @@ public class ClientJarDecryption extends Application {
 
 	private static boolean checkForJars(boolean isToBeDownloaded)
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+		SoftwareInstallationHandler registrationUpdate = new SoftwareInstallationHandler();
 
 		if (registrationUpdate.getCurrentVersion() != null && registrationUpdate.hasRequiredJars()) {
 
@@ -127,7 +127,7 @@ public class ClientJarDecryption extends Application {
 
 		} else if (isToBeDownloaded) {
 			System.out.println("Jars Dowloading Starts");
-			registrationUpdate.getWithLatestJars();
+			registrationUpdate.installJars();
 
 			return checkForJars(false);
 		}
@@ -183,8 +183,8 @@ public class ClientJarDecryption extends Application {
 				protected Boolean call() throws IOException, InterruptedException {
 					try {
 						return checkForJars(true);
-					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-							| SAXException | IOException e) {
+					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException | SAXException
+							| IOException exception) {
 						return false;
 					}
 
@@ -251,9 +251,17 @@ public class ClientJarDecryption extends Application {
 								FileUtils.deleteDirectory(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException e) {
+						} catch (IOException | InterruptedException | RuntimeException exception) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							exception.printStackTrace();
+
+							try {
+								FileUtils.forceDelete(new File("MANIFEST.MF"));
+								new SoftwareInstallationHandler();
+							} catch (IOException ioException) {
+								ioException.printStackTrace();
+							}
+
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");

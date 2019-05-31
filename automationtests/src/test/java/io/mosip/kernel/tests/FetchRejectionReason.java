@@ -109,6 +109,9 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 				response = applicationLibrary.getRequestPathPara(FetchRejectionReason_URI,objectData,cookie);
 
+
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");

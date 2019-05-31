@@ -96,6 +96,9 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestAsQueryParam(fetchIncrementalData, actualRequest,cookie);
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+		
 		// Removing of unstable attributes from response
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();

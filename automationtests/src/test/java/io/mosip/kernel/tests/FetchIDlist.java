@@ -113,6 +113,8 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		if (!status) {
 			logger.debug(response);

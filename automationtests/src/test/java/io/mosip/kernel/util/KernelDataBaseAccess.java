@@ -9,6 +9,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 
 /**
@@ -31,11 +32,17 @@ public class KernelDataBaseAccess {
 		String dbConfigXml = dbName+env+".cfg.xml";
 		try {
 		factory = new Configuration().configure(dbConfigXml).buildSessionFactory();
-		} catch (HibernateException e) {
+		session = factory.getCurrentSession();
+		} 
+		catch (HibernateException e) {
 			logger.info("Exception in Database Connection with following message: ");
 			logger.info(e.getMessage());
+			Assert.assertTrue(false, "Exception in creating the sessionFactory");
 		}
-		session = factory.getCurrentSession();
+		
+		catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception in getting the session");
+		}
 		session.beginTransaction();
 		logger.info("==========session  begins=============");
 		return session;

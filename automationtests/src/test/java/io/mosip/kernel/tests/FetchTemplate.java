@@ -133,7 +133,8 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 			response = applicationLibrary.getRequestPathPara(FetchTemplate_URI, objectData,cookie);
 			objectData = null;
 		}
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String queryPart = "select count(*) from master.template";

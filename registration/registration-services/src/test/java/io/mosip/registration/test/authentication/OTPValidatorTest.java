@@ -15,7 +15,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.validator.OTPValidatorImpl;
@@ -35,8 +34,7 @@ public class OTPValidatorTest {
 	
 	public void OtpValidateTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		ResponseDTO responseDTO=new ResponseDTO();
-		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
-	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId("mosip");
 		authenticationValidatorDTO.setOtp("1234");
 		when(otpManager.validateOTP(authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp())).thenReturn(responseDTO);

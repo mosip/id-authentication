@@ -14,7 +14,6 @@ create schema if not exists regprc
 
 CREATE TABLE regprc.individual_demographic_dedup(
 	reg_id 			character varying(39) not null,	   	-- regprc.registration.id
-	uin				character varying(28),				-- UIN of indivisuals and referenced from idrepo database
 	name 			character varying(128),            	-- Name of an individual, This is combination of fname, mname and lname or full name
 	dob 	character varying(64),
 	gender 	character varying(64),
@@ -41,8 +40,6 @@ create index idx_idemogd_namedob on regprc.individual_demographic_dedup (name, d
 COMMENT ON TABLE regprc.individual_demographic_dedup IS 'Individual demographic table stores applicant demographic details for deduplication';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.reg_id IS 'Registration id of applicant';
--- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.uin IS 'UIN of Individuals';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.name IS 'Name of an individual, This is combination of fname, mname and lname or full name';
 -- ddl-end --

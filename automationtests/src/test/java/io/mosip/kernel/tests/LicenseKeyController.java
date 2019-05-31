@@ -101,9 +101,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		// Calling the Post method 
 		 Response res = applicationLibrary.postRequest(actualRequest1, licKeyGenerator);
-		 
-		 //Storing the licence key and its corrosponding tspid
-
+		
+		//Storing the licence key and its corrosponding tspid
 		 if(testCaseName.equals("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
 			{
 			 tspId=((JSONObject)actualRequest1.get("request")).get("tspId").toString();
@@ -119,25 +118,19 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
-     if(status)
-     {
-    	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
-    	  {     
+     if(status){
+    	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey")){     
     		  int length=licenseKey.length();
-    		  if(length==16)
-    		  	{
+    		  if(length==16){
     			  finalStatus ="Pass";
     		  	}
-    		  else
-    		  	{
+    		  else{
 				finalStatus="fail";
     		  	}
     	   }
     	  else
 			finalStatus ="Pass";
-    	   
      }			
-			
 		else {
 			finalStatus="Fail";
 			logger.error(res);
@@ -177,7 +170,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		List<String> innerKeys = new ArrayList<String>();
 		 outerKeys.add("responsetime");
 		 
-
 	    // adding the tspid and corresponding license key to the request and expected response od smok test case
 	    JSONObject request = (JSONObject) actualRequest_map.get("request");
 	    if(testCaseName.contains("Kernel_MapLicenseKeyPermission_smoke_MapLicenseKeyPermission"))

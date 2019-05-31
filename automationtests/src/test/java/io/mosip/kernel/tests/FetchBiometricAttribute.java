@@ -112,7 +112,9 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		// sending get request
 		response = applicationLibrary.getRequestPathPara(FetchBiometricAttribute_URI, objectData, cookie);
-		// DB validation
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String query = "select count(*) from master.biometric_attribute where lang_code = '"

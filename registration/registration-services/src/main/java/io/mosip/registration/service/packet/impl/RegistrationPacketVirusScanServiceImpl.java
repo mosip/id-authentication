@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.config.AppConfig;
@@ -116,7 +117,7 @@ public class RegistrationPacketVirusScanServiceImpl extends BaseService implemen
 	 * @return
 	 */
 	private List<File> getFilesFromFolders(String folderPath, List<File> filesList) {
-		File directory = new File(folderPath);
+		File directory = FileUtils.getFile(folderPath);
 
 		// Get all files from a directory.
 		File[] filesToScan = directory.listFiles();

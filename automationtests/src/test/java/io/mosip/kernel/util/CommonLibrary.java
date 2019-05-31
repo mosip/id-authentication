@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.client.RestTemplate;
+import org.testng.Assert;
 
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
@@ -485,7 +487,27 @@ Cookie.Builder builder = new Cookie.Builder("Authorization",cookie);
  	              System.out.println(map);
  	       }*/
 
-
+ 	 	 	
+ 	 	 	/**
+ 	 	 	 * @param response
+ 	 	 	 * This method is for checking the authentication is pass or fail in rest services
+ 	 	 	 */
+ 	 	 	public void responseAuthValidation(Response response){
+ 	 	 		JSONArray errors = null;
+				try {
+					errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
+				} catch (ParseException e) {
+					Assert.assertTrue(false, "Response from the service is not able to parse ");
+				}
+ 				// fetching json array of objects from response
+ 	 	 		if(errors != null) {
+ 	 	 			String errorCode = ((JSONObject) errors.get(0)).get("errorCode").toString();
+ 	 	 			String errorMessage = ((JSONObject)errors.get(0)).get("message").toString();
+ 	 	 			if(errorCode.contains("ATH")) {
+ 	 	 				Assert.assertTrue(false, "Failed due to Authentication failure. Error message is='"+errorMessage+"'");
+ 	 	 			}
+ 	 	 		}
+ 	 	 	}
 	
 
 

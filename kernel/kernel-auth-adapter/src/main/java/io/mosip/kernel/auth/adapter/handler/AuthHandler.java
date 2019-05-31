@@ -122,8 +122,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		System.out.println("\nInside Auth Handler");
-		System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
+		//System.out.println("\nInside Auth Handler");
+		//System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
@@ -209,9 +209,12 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			JsonParseException, JsonMappingException, JsonProcessingException, IOException {
 		boolean isAuthorized = false;
 		HttpServerRequest httpRequest = routingContext.request();
-		String token = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
-		if (token == null || !token.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)
-				|| (token = token.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim()).isEmpty()) {
+		String token = null;
+		String cookies = httpRequest.getHeader(AuthAdapterConstant.AUTH_HEADER_COOKIE);
+		if (cookies != null && !cookies.isEmpty() && cookies.contains(AuthAdapterConstant.AUTH_COOOKIE_HEADER)) {
+			token = cookies.replace(AuthAdapterConstant.AUTH_COOOKIE_HEADER, "").trim();
+		}
+		if (token == null || token.isEmpty()) {
 			List<ServiceError> errors = new ArrayList<>();
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),
 					AuthAdapterErrorCode.UNAUTHORIZED.getErrorMessage());

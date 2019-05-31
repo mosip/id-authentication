@@ -108,6 +108,8 @@ public class FetchTitle extends BaseTestCase implements ITest {
 				response = applicationLibrary.getRequestPathPara(FetchTitle_URI,objectData,cookie);
 
 
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");

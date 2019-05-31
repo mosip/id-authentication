@@ -65,7 +65,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		testCaseName = "Kernel_"+"GetUserHistory_"+object.get("testCaseName").toString();
 		 cookie=auth.getAuthForRegistrationProcessor();
 	} 
 	
@@ -92,6 +92,9 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestPathPara(getUserHistory, actualRequest,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		// Removing of unstable attributes from response		
 		List<String> outerKeys = new ArrayList<String>();

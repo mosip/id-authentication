@@ -150,7 +150,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 			// generating the tokenId with the generation logic
 			String tokenId = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("tokenID").toString();

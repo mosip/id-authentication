@@ -23,8 +23,10 @@ public enum RegistrationExceptionTypeCode {
 	/** The fsadapter exception. */
 	FSADAPTER_EXCEPTION,
 
+	/** The jsch connection. */
 	JSCH_CONNECTION,
 
+	/** The sftp operation exception. */
 	SFTP_OPERATION_EXCEPTION,
 
 	/** The unsupported encoding exception. */
@@ -185,9 +187,59 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED,
-
-	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
 	
+	/** The registration processor checked exception. */
+	REGISTRATIONPROCESSORCHECKEDEXCEPTION,
+
+	/** The adult cbeff not present exception. */
+	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+
+	/** The demo dedupe abis response error. */
 	DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
+
+	/** The osi failed on hold parent packet. */
+	OSI_FAILED_ON_HOLD_PARENT_PACKET,
+
+	/** The parent uin and rid not in packet. */
+	PARENT_UIN_AND_RID_NOT_IN_PACKET,
+
+	/** The parent uin not avaialble. */
+	PARENT_UIN_NOT_AVAIALBLE,
+
+	/** The osi failed rejected parent. */
+	OSI_FAILED_REJECTED_PARENT,
+
+	/** The parent biometric not in packet. */
+	PARENT_BIOMETRIC_NOT_IN_PACKET,
+
+	/** The supervisorid and officerid not present in packet. */
+	SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET,
+
+	/** The packet creation date not present in packet. */
+	PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET,
+
+	/** The supervisor or officer was inactive. */
+	SUPERVISOR_OR_OFFICER_WAS_INACTIVE,
+
+	/** The officer biometric not in packet. */
+	OFFICER_BIOMETRIC_NOT_IN_PACKET,
+
+	/** The supervisor biometric not in packet. */
+	SUPERVISOR_BIOMETRIC_NOT_IN_PACKET,
+
+	/** The auth error. */
+	AUTH_ERROR,
+
+	/** The auth failed. */
+	AUTH_FAILED,
+
+	/** The ida authentication failure. */
+	IDA_AUTHENTICATION_FAILURE,
+
+    /** The password otp failure. */
+    PASSWORD_OTP_FAILURE,
+
+    /** The biometric exception*/
+	BIOMETRIC_EXCEPTION
 
 }

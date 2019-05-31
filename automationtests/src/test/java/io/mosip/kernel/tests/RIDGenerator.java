@@ -88,7 +88,6 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationProcessor();
-
 	}
 
 	/**
@@ -153,7 +152,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String rid = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString();
