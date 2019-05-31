@@ -65,11 +65,11 @@ public class SessionContext {
 	/**
 	 * making sessionContext as singleton
 	 * 
-	 * @param : userDTO
+	 * @param userDTO - UserInfo to create session
 	 * 
 	 * @return sessionContext
 	 */
-	public static SessionContext create(UserDTO  userDTO){
+	public static SessionContext create(UserDTO userDTO){
 		if (userDTO != null) {
 			List<String> roleList = new ArrayList<>();
 
@@ -102,10 +102,11 @@ public class SessionContext {
 	/**
 	 * Return the Type casted object based on the input
 	 * 
-	 * @param map
-	 * @param key
-	 * @param returnType
-	 * @return
+	 * @param map - map that contains key and values to be typecasted
+	 * @param key - input to typecast
+	 * @param returnType - the type to which the object has to be typecasted
+	 * @param <T> - Generic type
+	 * @return T - typecasted object
 	 */
 	public static <T> T getValue(Map<String,Object> map, String key, Class<T> returnType){
 		return returnType.cast(map.get(key));
@@ -573,10 +574,9 @@ public class SessionContext {
 		}
 
 		/**
-		 * Setter for userMap
+		 * Setter for securityAuthenticationMap
 		 * 
-		 * @param userMap
-		 *            user map
+		 * @param securityAuthenticationMap - Security Authentication Map
 		 */
 		public void setSecurityAuthenticationMap(Map<String, Object> securityAuthenticationMap) {
 			this.securityAuthenticationMap = securityAuthenticationMap;

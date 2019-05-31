@@ -175,7 +175,6 @@ public class SoftwareUpdateHandler extends BaseService {
 	 * Get Current version of setup
 	 * 
 	 * @return current version
-	 * @throws IOException
 	 */
 	public String getCurrentVersion() {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -200,7 +199,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	/**
 	 * update the binaries
 	 * 
-	 * @throws Exception
+	 * @throws Exception - IOException
 	 */
 	public void update() throws Exception {
 
@@ -643,7 +642,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	 *            jarName
 	 * @param manifest
 	 *            localManifestFile
-	 * @return
+	 * @return String - the checksum
 	 */
 	public String getCheckSum(String jarName, Manifest manifest) {
 
