@@ -337,45 +337,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
-	 */
-	@Override
-	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
-		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getLatitude());
-				Float.parseFloat(registrationCenterDto.getLongitude());
-			}
-		} catch (NullPointerException | NumberFormatException latLongException) {
-			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(latLongException));
-		}
-		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
-		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
-		RegistrationCenter registrationCenter;
-		try {
-			registrationCenter = registrationCenterRepository.create(entity);
-			registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
-		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(registrationCenter.getId());
-		return idResponseDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
