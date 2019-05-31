@@ -163,7 +163,7 @@ public class DeviceServiceImpl implements DeviceService {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
-			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
 					deviceRequestDto.getId(), deviceRequestDto.getLangCode());
 
 			if (oldDevice != null) {
