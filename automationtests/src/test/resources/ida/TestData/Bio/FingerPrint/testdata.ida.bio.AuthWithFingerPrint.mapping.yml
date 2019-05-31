@@ -1281,31 +1281,6 @@ testdata:
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
       
-  Authentication_Biometric_Finger_Without_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $REMOVE$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
-      
   Authentication_Biometric_Finger_Without_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1406,31 +1381,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
-      
-  Authentication_Biometric_Finger_Without_timestamp_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $REMOVE$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingIdentityBioTimestamp:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingIdentityBioTimestamp:errorMessage$
            
   Authentication_Biometric_Finger_Without_bio_requestAuth_In_request_Neg:
     endpoint.url:
