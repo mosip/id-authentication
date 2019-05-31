@@ -220,6 +220,13 @@
 			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
 			**/registration/processor/stages/demodedupe/DemoDedupeStage.java,
 			**/registration/processor/print/stage/PrintStage.java,
+			
+			**/registration/processor/packet/storage/mapper/PacketInfoMapper.java
+			**/registration/processor/packet/storage/dao/PacketInfoDao.java
+			**/registration/processor/packet/uploader/constants/*.java
+			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java
+			**/registration/processor/packet/receiver/constants/*.java
+			**/registration/processor/print/service/exception/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>
