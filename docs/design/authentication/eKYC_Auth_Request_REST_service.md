@@ -76,4 +76,4 @@ Below are the proxy implementations used in ID-Authentication:
 - ***Encrypted KYC response*** - KYC Response is encrypted using mocked MOSIP public key with reference ID **PARTNER** and application ID **IDA**, and private key of the same should be used to decrypt the response.
 - ***Digital Signature in request*** - Any digital signature added in the eKYC auth request is not currently validated .
 - ***Digital Signature in response*** - The eKYC auth response is digitally signed using the MOSIP private key with reference ID **SIGN** and application ID **KERNEL**, and public key of the same should be used to verify the signature.
-- ***bioValue*** attribute in biometric data should be only encoded, and not encrypted.
+- ***bioValue*** - The bioValue attribute in biometric data should be only base 64 encoded, and not encrypted.
