@@ -249,7 +249,7 @@ public class LoginController extends BaseController implements Initializable {
 						isInitialSetUp);
 
 			} else if (!isInitialSetUp) {
-				// executePreLaunchTask(loginRoot, progressIndicator);
+				executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
 

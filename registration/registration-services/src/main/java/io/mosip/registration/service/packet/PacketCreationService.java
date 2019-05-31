@@ -2,8 +2,6 @@ package io.mosip.registration.service.packet;
 
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.util.advice.AuthenticationAdvice;
-import io.mosip.registration.util.advice.PreAuthorizeUserId;
 
 /**
  * Class for creating the Resident Registration as zip file

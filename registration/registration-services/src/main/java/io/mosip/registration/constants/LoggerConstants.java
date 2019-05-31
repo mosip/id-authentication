@@ -84,6 +84,8 @@ public class LoggerConstants {
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
 	public static final String AUTHENTICATION_SRVICE = "AUTHENTICATION_SRVICE";
 	public static final String FINGER_PRINT_AUTHENTICATION = "FINGER_PRINT_AUTHENTICATION";
+	public static final String VALIDATE_FP_WITH_BIO_API = " VALIDATE_FP_WITH_BIO_API";
+	
 	public static final String BIO_SERVICE = "BIO_SERVICE";
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";

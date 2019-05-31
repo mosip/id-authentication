@@ -41,9 +41,6 @@ public class RegIdObjectValidator {
 	@Qualifier("pattern")
 	private IdObjectValidator idOjectPatternvalidator;
 
-	@Autowired
-	private RegIdObjectMasterDataValidator regIdObjectMasterDataValidator;
-
 	/**
 	 * This method validates the input object against the schema, mandatory, pattern and Master data using differnt validator.
 	 * If any validation failure, the packet won't get created and user will be notified with the issue. 
