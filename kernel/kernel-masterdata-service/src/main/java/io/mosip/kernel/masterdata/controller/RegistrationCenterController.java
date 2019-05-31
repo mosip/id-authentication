@@ -200,6 +200,7 @@ public class RegistrationCenterController {
 	 *                              center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<IdResponseDto> createRegistrationCenter(
