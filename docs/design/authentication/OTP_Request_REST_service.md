@@ -69,6 +69,6 @@ Below are details on the above classes –
 
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
-- ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
-- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the OTP request is allowed.
+- ***MISP verification*** - Mocked the verification of MISP by using mocked *License Key*.
+- ***Partner verification*** - Mocked the verification of Partner by using mocked *Policy* for the partner which provides the information on whether the OTP request is allowed.
 
