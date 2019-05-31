@@ -284,7 +284,7 @@ public class BaseService {
 
 		if (applicationMap.isEmpty()) {
 
-			applicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+			ApplicationContext.map().putAll(globalParamService.getGlobalParams());
 
 		}
 
