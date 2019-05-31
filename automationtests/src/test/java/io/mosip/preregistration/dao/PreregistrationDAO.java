@@ -24,7 +24,7 @@ public class PreregistrationDAO
 	{
 		String hql = "SELECT preRegistrationId,statusCode FROM DemographicEntity E WHERE E.preRegistrationId = '"+preRegId+"'";
 		
-		List<? extends Object> result = PreregDB.validateDB(hql);
+		List<? extends Object> result = PreregDB.validateDBVal(hql, "prereg");
 		//List<? extends Object> result = dbAccess.updateDbData(hql, "prereg");
 		return result;
 		
