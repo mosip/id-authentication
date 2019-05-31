@@ -218,6 +218,7 @@ public class RegistrationCenterController {
 	 *                              center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<IdAndLanguageCodeID> updateRegistrationCenter(
