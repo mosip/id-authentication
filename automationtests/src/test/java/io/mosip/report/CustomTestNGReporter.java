@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import javax.mail.Folder;
 
@@ -405,6 +404,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		// Sorting testClassName
 		SortedSet<String> sortedTestsName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {
+
 			sortedTestsName.add(testResult.getTestClass().getName());
 		}
 		// Sorting testMethodName
@@ -452,8 +452,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					String log="";
 
 					// Get testClassName
-					String testClass[]=object.getTestClassName().toString().split(Pattern.quote("."));
-					testClassName = testClass[testClass.length-1];
+					testClassName = object.getTestClassName().toString();
 
 					// Get testMethodName
 					testMethodName = testMethod.toString();
@@ -533,6 +532,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		return retStrBuf.toString();
 	}
 	
+
 	private int getStringCount(String whatToFind, String content) {
 		int M = whatToFind.length();
 		int N = content.length();

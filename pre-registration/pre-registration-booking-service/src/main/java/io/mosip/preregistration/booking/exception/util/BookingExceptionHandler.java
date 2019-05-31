@@ -22,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -51,6 +52,7 @@ import io.mosip.preregistration.booking.exception.DemographicStatusUpdationExcep
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.NotificationException;
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
@@ -410,6 +412,16 @@ public class BookingExceptionHandler {
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
+	}
+	
+	@ExceptionHandler(NotificationException.class)
+	public ResponseEntity<MainResponseDTO<?>> authServiceException(final NotificationException e,WebRequest request){
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getMessage())));
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(errorList);
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 }

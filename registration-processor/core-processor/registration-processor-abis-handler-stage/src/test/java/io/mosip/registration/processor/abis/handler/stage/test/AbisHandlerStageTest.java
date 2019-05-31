@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.abis.handler.stage.test;
+package io.mosip.registration.processor.abis.handler.stage.test;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -6,7 +6,10 @@ import static org.mockito.Matchers.any;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,42 +38,33 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
 
-
-*//**
- * The Class AbisHandlerStageTest.
- *//*
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class AbisHandlerStageTest {
 
-	*//** The audit log request builder. *//*
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-	*//** The registration status service. *//*
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	*//** The packet info manager. *//*
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	*//** The registration status dto. *//*
 	@Mock
 	private InternalRegistrationStatusDto registrationStatusDto;
 
-	*//** The abis application dtos. *//*
+	@Mock
+	private Utilities utility;
+
 	List<AbisApplicationDto> abisApplicationDtos = new ArrayList<>();
 	
-	*//** The bio ref dtos. *//*
 	List<RegBioRefDto> bioRefDtos = new ArrayList<>();
 	
-	*//** The reg demo dedupe list dto list. *//*
 	List<RegDemoDedupeListDto> regDemoDedupeListDtoList = new ArrayList<>();
 
 	List<AbisRequestDto> abisRequestDtoList = new ArrayList<>();
 
-	*//** The abis handler stage. *//*
 	@InjectMocks
 	private AbisHandlerStage abisHandlerStage = new AbisHandlerStage() {
 		@Override
@@ -87,11 +81,8 @@ public class AbisHandlerStageTest {
 		}
 	};
 
-	*//**
-	 * Sets the up.
-	 *//*
 	@Before
-	public void setUp() {
+	public void setUp() throws RegistrationProcessorCheckedException {
 		ReflectionTestUtils.setField(abisHandlerStage, "maxResults", 30);
 		ReflectionTestUtils.setField(abisHandlerStage, "targetFPIR", 30);
 
@@ -103,6 +94,12 @@ public class AbisHandlerStageTest {
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
 		Mockito.when(packetInfoManager.getAbisRequestsByBioRefId(any())).thenReturn(abisRequestDtoList);
+
+		AbisQueueDetails abisQueueDetails = new AbisQueueDetails();
+		abisQueueDetails.setName("ABIS1");
+		List<AbisQueueDetails> abisQueueDetailsList = new ArrayList<>();
+		abisQueueDetailsList.add(abisQueueDetails);
+		Mockito.when(utility.getAbisQueueDetails()).thenReturn(abisQueueDetailsList);
 		
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -111,17 +108,11 @@ public class AbisHandlerStageTest {
 				.thenReturn(responseWrapper);
 	}
 
-	*//**
-	 * Test deploy verticle.
-	 *//*
 	@Test
 	public void testDeployVerticle() {
 		abisHandlerStage.deployVerticle();
 	}
 
-	*//**
-	 * Test demo to abis handler TO middleware success.
-	 *//*
 	@Test
 	public void testDemoToAbisHandlerTOMiddlewareSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -148,9 +139,7 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 
-	*//**
-	 * Test bio to abis handler to middleware success.
-	 *//*
+
 	@Test
 	public void testBioToAbisHandlerToMiddlewareSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -180,9 +169,7 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 	
-	*//**
-	 * Test middleware to abis handler to demo success.
-	 *//*
+
 	@Test
 	public void testMiddlewareToAbisHandlerToDemoSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -198,9 +185,7 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("demo-dedupe-bus-in"));
 	}
 	
-	*//**
-	 * Test middleware to abis handler to bio success.
-	 *//*
+
 	@Test
 	public void testMiddlewareToAbisHandlerToBioSuccess() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -216,9 +201,7 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("bio-dedupe-bus-in"));
 	}
 	
-	*//**
-	 * Test demo dedupe data not found.
-	 *//*
+
 	@Test
 	public void testDemoDedupeDataNotFound() {
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
@@ -275,5 +258,22 @@ public class AbisHandlerStageTest {
 		assertTrue(result.getMessageBusAddress().getAddress().equalsIgnoreCase("abis-middle-ware-bus-in"));
 	}
 
+	@Test
+	public void testAbisDetailsNotFound() throws RegistrationProcessorCheckedException {
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode()).thenReturn("BIOGRAPHIC_VERIFICATION");
+		Mockito.when(registrationStatusDto.getLatestRegistrationTransactionId())
+				.thenReturn("dd7b7d20-910a-4b84-be21-c9f211318563");
+		Mockito.when(packetInfoManager.getIdentifyByTransactionId(any(), any())).thenReturn(Boolean.FALSE);
+
+		List<AbisQueueDetails> abisQueueDetails = new ArrayList<>();
+		Mockito.when(utility.getAbisQueueDetails()).thenReturn(abisQueueDetails);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("10003100030001520190422074511");
+		MessageDTO result = abisHandlerStage.process(dto);
+
+		assertTrue(result.getInternalError());
+	}
+
 }
-*/

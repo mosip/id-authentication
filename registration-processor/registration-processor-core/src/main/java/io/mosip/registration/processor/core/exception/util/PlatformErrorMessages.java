@@ -248,6 +248,18 @@ public enum PlatformErrorMessages {
 	/** The rpr qcr invalid registration id. */
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004", "Registration Id is null"),
 
+	/** The rpr qcr file name missing. */
+	RPR_QCR_FILENAME_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "006", 
+			"Individual Biometric Filename is not present in ID Json"),
+
+	/** The rpr qcr bio file missing. */
+	RPR_QCR_BIO_FILE_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Individual Biometric File is not present in packet"),
+
+	/** The rpr qcr biometric exception. */
+	RPR_QCR_BIOMETRIC_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Biometric Exception from IDA"),
+
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 
@@ -315,6 +327,10 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"),
 
+	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007",
+			"BioType exception while fetcing data from cbeff file from kernel"),
+
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
@@ -348,6 +364,8 @@ public enum PlatformErrorMessages {
 
 	/** ABIS_BATCH_ID_NOT_FOUND. */
 	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006"," abis batchId not found"),
+	
+	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007"," abis Queue not found"),
 	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
@@ -365,8 +383,21 @@ public enum PlatformErrorMessages {
 
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
-	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"), REVERSE_DATA_SYNC_SUCCESS("",
+	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"), 
+	
+	REVERSE_DATA_SYNC_SUCCESS("",
 			"Reverse data sync success"),
+
+	/** The Biometric-Authentication stage failed. */
+	//stages - Biometric-Authentication stage error code and message
+	BIOMETRIC_AUTHENTICATION_FAILED(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE,"Biometric authentication failed"),
+
+	/** The Biometric-Authentication io exception. */
+	BIOMETRIC_AUTHENTICATION_IOEXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "001","IO Exception in Biometric Authentication stage"),
+
+	/** The Biometric-Authentication api resource exception. */
+	BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "002","API resource exception in Biometric Authentication stage"),
+
 
 	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message

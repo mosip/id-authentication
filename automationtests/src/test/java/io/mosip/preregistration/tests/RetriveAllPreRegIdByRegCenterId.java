@@ -92,9 +92,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	 */
 	@DataProvider(name = "RetrivePreIdByRegCenterId")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -134,7 +132,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			val = testCaseName;
 		} else {
 			String[] parts = testCaseName.split("_");
-			val = parts[0]+parts[1]+parts[2];
+			val = parts[0]+"_"+parts[1]+"_"+parts[2];
 			name = parts[3];
 		}
 
@@ -155,7 +153,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
 		
-		
+		logger.info("Val::"+val);
 		switch (val) {
 
 		case "preReg_RetrivePreIdByRegCenterId_smoke":
@@ -187,9 +185,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			logger.info("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("resTime");
-			innerKeys.add("registartion_center_id");
-			innerKeys.add("pre_registration_ids");
+			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -209,9 +205,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("resTime");
-			innerKeys.add("registartion_center_id");
-			innerKeys.add("pre_registration_ids");
+			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -232,9 +226,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("resTime");
-			innerKeys.add("registartion_center_id");
-			innerKeys.add("pre_registration_ids");
+			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -298,7 +290,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, RetriveAllPreRegIdByRegCenterId.testCaseName);
+			//f.set(baseTestMethod, RetriveAllPreRegIdByRegCenterId.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_RetriveAllPreRegIdByRegCenterId_" +RetriveAllPreRegIdByRegCenterId.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

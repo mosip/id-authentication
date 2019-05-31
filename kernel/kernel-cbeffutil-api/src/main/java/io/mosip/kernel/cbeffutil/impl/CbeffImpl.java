@@ -190,4 +190,16 @@ public class CbeffImpl implements CbeffUtil {
 		return bdbMap;
 	}
 
+	@Override
+	public List<BIR> convertBIRTypeToBIR(List<BIRType> birType) {
+		List<BIR> birList = CbeffValidator.convertBIRTypeToBIR(birType);
+		return birList;
+	}
+	
+	@Override
+	public List<BIRType> getBIRDataFromXMLType(byte[] xmlBytes,String type) throws Exception {
+		List<BIRType> birTypeList = CbeffValidator.getBIRDataFromXMLType(xmlBytes,type);
+		return birTypeList;
+	}
+
 }

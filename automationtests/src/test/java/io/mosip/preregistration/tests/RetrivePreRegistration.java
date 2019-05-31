@@ -91,8 +91,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 
 	@DataProvider(name = "Retrive_PreRegistration")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 String testParam = context.getCurrentXmlTest().getParameter("testType");
-		 switch (testParam) {
+		 switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -128,7 +127,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 			Response avilibityResponse = lib.FetchCentre();
 			lib.BookAppointment(documentResponse, avilibityResponse, preID);
 			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
-			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse, preID, createResponse);
+			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse,preID , createResponse);
 		} else {
 			try {
 				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, actualRequest);
@@ -175,18 +174,15 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 		//CommonLibrary.backUpFiles(configPaths, dest);
 	}
 
-	@AfterMethod(alwaysRun = true)
-	public void setResultTestName(ITestResult result) {
+	@AfterMethod
+	public void setResultTestName(ITestResult result, Method method) {
 		try {
-			Field method = TestResult.class.getDeclaredField("m_method");
-			method.setAccessible(true);
-			method.set(result, result.getMethod().clone());
-			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, RetrivePreRegistration.testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
+			f.set(bm, "preReg_DataSync_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
 		}
 	}
 

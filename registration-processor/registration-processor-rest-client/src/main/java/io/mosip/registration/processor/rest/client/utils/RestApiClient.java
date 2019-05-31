@@ -155,7 +155,6 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.patchForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
-			JSONObject resObj = (JSONObject) result;
 
 		} catch (Exception e) {
 

@@ -14,34 +14,11 @@ import io.mosip.registration.validator.AuthenticationBaseValidator;
  * @author SaravanaKumar G
  *
  */
-@Service
-public class AuthenticationService {
 
-	private List<AuthenticationBaseValidator> authenticationBaseValidators;
+public interface AuthenticationService {
 
-	/**
-	 * Common Validator for all the Authentications
-	 * @param validatorType The type of validator
-	 * @param authenticationValidatorDTO The authentication validation inputs
-	 * @return Boolean returning whether it is matched or not
-	 */
-	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO);
 
-		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
-			if (validator.getClass().getName().toLowerCase().contains(validatorType.toLowerCase())) {
-				return validator.validate(authenticationValidatorDTO);
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * This method is used to set the Authentication validators
-	 * @param authBaseValidators List of validators
-	 */
-	@Autowired
-	public void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators) {
-		this.authenticationBaseValidators = authBaseValidators;
-	}
+	void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators);
 
 }

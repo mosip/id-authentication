@@ -39,6 +39,9 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
+	
+	@Autowired
+	private UserMachineMappingServiceImpl userMachineMappingServiceImpl;
 
 	/**
 	 * logger for logging
@@ -79,6 +82,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 			if (count >= UserOnBoardThresholdLimit) {
 				responseDTO = save(biometricDTO);
+				
 			} else {
 				responseDTO = errorRespone(RegistrationConstants.ERROR,
 						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
@@ -123,6 +127,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 					sucessResponse.setMessage(RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
 					responseDTO = new ResponseDTO();
 					responseDTO.setSuccessResponseDTO(sucessResponse);
+					userMachineMappingServiceImpl.syncUserDetails();
 				}
 			}
 

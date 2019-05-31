@@ -7,7 +7,6 @@ import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage
 /**
  * The Class PacketReceiverApplication.
  */
-
 public class PacketReceiverApplication {
 	
 	/**

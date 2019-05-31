@@ -37,6 +37,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.codes.RequestCodes;
@@ -64,6 +66,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.NotificationException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -712,20 +715,31 @@ public class BookingServiceUtil {
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
+		try {
 		request.setRequest(notificationDTO);
 		request.setId("mosip.pre-registration.notification.notify");
 		request.setVersion("1.0");
 		request.setRequesttime(new Date());
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		// emailMap.add("attachments", doc);
 		emailMap.add("NotificationRequestDTO", request);
 		emailMap.add("langCode", langCode);
 		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 		log.info("sessionId", "idType", "id",
 				"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
 		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
+		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
+		if (!validationErrorList.isEmpty()) {
+			throw new NotificationException(validationErrorList,null);
+		} 
+		} catch (HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id",
+					"In emailNotification method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_025.getCode(),
+					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage());
 
+		}
 	}
 
 	/**

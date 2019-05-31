@@ -1,12 +1,7 @@
 {
-   "id": "mosip.pre-registration.document.fetch.content",
-   "version" : "1.0",
-   "responsetime": "2019-01-16T17:31:04.021Z",
-   "response": null,
-   "errors":[ 
-      {
-         "errorCode": "PRG_PAM_DOC_005",
-         "message": "document is not found for the requested pre-registration id and document id"
-      }
-   ]
-}
+    "timestamp": "2019-05-26T11:55:26.398+0000",
+    "status": 404,
+    "error": "Not Found",
+    "message": "No message available",
+    "path": "/preregistration/v1/documents/"
+} 

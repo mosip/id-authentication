@@ -50,7 +50,7 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, BioApiImpl.class })
 public class BioAuthServiceTest {
 
 	@InjectMocks

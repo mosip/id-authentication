@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Verify;
 
+import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -68,16 +69,16 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	Response Actualresponse = null;
 	JSONObject Expectedresponse = null;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	String preReg_URI;
+	 String preReg_URI;
 	String dest = "";
 	String configPaths = "";
-	String folderPath = "preReg/BookingAppointment";
-	String outputFile = "BookingAppointmentOutput.json";
-	String requestKeyFile = "BookingAppointmentRequest.json";
+	String folderPath = "preReg/MultipleBookingAppointment";
+	String outputFile = "MultipleBookingAppointmentOutput.json";
+	String requestKeyFile = "MultipleBookingAppointmentRequest.json";
 	String testParam = null;
 	boolean status_val = false;
 	JSONParser parser = new JSONParser();
-	
+	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
 
 	/* implement,IInvokedMethodListener */
 	public MultipleBookingAppointment() {
@@ -94,12 +95,9 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	 * should get Error response along with Error Code and Error messages as per
 	 * Specification
 	 */
-	@DataProvider(name = "bookAppointment")
+	@DataProvider(name = "multipleBookAppointment")
 	public  Object[][] readData(ITestContext context) throws Exception {
-		
-		
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -112,7 +110,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 	
 
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "bookAppointment")
+	@Test(dataProvider = "multipleBookAppointment")
 	public void bookingAppointment(String testSuite, Integer i, JSONObject object) throws Exception {
 
 		List<String> outerKeys = new ArrayList<String>();
@@ -135,58 +133,114 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 		
 		/*Creating the Pre-Registration Application*/
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		String preIDFirstUsr = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
-		/* Fetch availability[or]center details */
-		Response fetchCenter = preRegLib.FetchCentre();
+		/* Fetch availability[or]center details for  one*/
+		Response FetchCentreResponseOne = preRegLib.FetchCentre();
+		
+		/*Creating the Pre-Registration Application*/
+		Response createApplicationRes = preRegLib.CreatePreReg();
+		String preIDSecondUsr = createApplicationRes.jsonPath().get("response.preRegistrationId").toString();
+		
+		/* Fetch availability[or]center details for two*/
+		Response FetchCentreResponseTwo = preRegLib.FetchCentre();
 
 		/* Book An Appointment for the available data */
-		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+		/*Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 		logger.info("bookAppointmentResponse::"+bookAppointmentResponse.asString());
+		*/
+		Response mulBookAppointmentResponse = preRegLib.multipleBookApp(FetchCentreResponseOne, FetchCentreResponseTwo, preIDFirstUsr, preIDSecondUsr);
+		logger.info("Multiple BookAppointmentResponse::"+mulBookAppointmentResponse.asString());
+		logger.info("valval::"+val);
 		
+		
+		JSONObject rebookAppointmentResInvPreId;
 		switch (val) {
 
-		case "BookingAppointment_smoke":
+		case "MultipleBookingAppointment_smoke":
 
 			outerKeys.add("responsetime");
-			status = AssertResponses.assertResponses(bookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
+			status = AssertResponses.assertResponses(mulBookAppointmentResponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-
-		case "ReBookingAppointment_smoke":
 			
+		case "ReBookForMultipleBookedAppointment_smoke":
+			logger.info("MulBook App");
 			Response rebookAppointmentRes = null;
-			try {
-				fetchCenter = preRegLib.FetchCentre();
-				 rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
-				break;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			Response FetchCentreResponse1 = preRegLib.FetchCentre();
+			Response  FetchCentreResponse2= preRegLib.FetchCentre();
+			 rebookAppointmentRes = preRegLib.multipleBookApp(FetchCentreResponse1, FetchCentreResponse2, preIDFirstUsr, preIDSecondUsr);
+			logger.info("Multiple Re-BookAppointmentResponse::"+rebookAppointmentRes.asString());
+			
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(rebookAppointmentRes, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-
-		case "BookAnAppointmentByPassingInvalidPreRegistrationId":
-			String preRegBookingAppointmentURI = preReg_URI + preId;
-
-			Response response = applicationLibrary.postRequest(actualRequest, preRegBookingAppointmentURI);
-
+			
+		case "MultipleBookAnAppointmentByPassingInvalidPreRegistrationId":
+            // Response rebookAppointmentResInvPreId = null;
+			
+			Response FetchCentreResponseInv1PreId = preRegLib.FetchCentre();
+			Response  FetchCentreResponseInv2PreId= preRegLib.FetchCentre();
+			JSONObject mulBookWithInvalidPreId = preRegLib.multipleBookAppRequest(FetchCentreResponseInv1PreId, FetchCentreResponseInv2PreId, preIDFirstUsr, preIDSecondUsr);
+			mulBookWithInvalidPreId.put("requesttime", preRegLib.getCurrentDate());
+			logger.info("Res::"+mulBookWithInvalidPreId.toString());
+			JSONObject actReqInvRegCenter = preRegUtil.dynamicChangeOfRequest(mulBookWithInvalidPreId, "$.request.bookingRequest[0].preRegistrationId", "ABCD");
+			//(JSONObject) parser.parse(actReqInvRegCenter);
+			Response response = applicationLibrary.postRequest(actReqInvRegCenter, preReg_URI);
+			logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
 			outerKeys.add("responsetime");
-			innerKeys.add("preRegistrationId");
+			
 			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
 			break;
+			
+			
+			
+           case "MultipleBookAnAppointmentByPassingInvalidRequestTime":
+			
+        	Response FetchCentResInvReqTime = preRegLib.FetchCentre();
+   			Response  FetchCentResInvReqTimeVal= preRegLib.FetchCentre();
+   			JSONObject mulBookWithInvReqTime= preRegLib.multipleBookAppRequest(FetchCentResInvReqTime, FetchCentResInvReqTimeVal, preIDFirstUsr, preIDSecondUsr);
+   			mulBookWithInvReqTime.put("requesttime", preRegLib.getCurrentDate());
+   			logger.info("Res::"+mulBookWithInvReqTime.toString());
+   			JSONObject actReqInvReqTime = preRegUtil.dynamicChangeOfRequest(mulBookWithInvReqTime, "$.request.bookingRequest[0].preRegistrationId", "ABCD");
+   			//(JSONObject) parser.parse(actReqInvRegCenter);
+   			Response resInvReqTime = applicationLibrary.postRequest(actReqInvReqTime, preReg_URI);
+   			//logger.info("MultipleBookAnAppointmentByPassingIgfgfnvalidPreRegistrationId::"+actReqInvRegCenter+"Res:"+response.asString());
+   			outerKeys.add("responsetime");
+   			
+   			//status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
 
+			break;
+			
+			
+    /* case "MultipleBookAnAppointmentByPassingInvalidPreRegistrationId":
+			
+			String preRegId= actualRequest.get("preRegistrationId").toString();
+			String preRegBookingAppointmentURI = preReg_URI + preRegId;
+			Response fetchCentInvPreId = preRegLib.FetchCentre();
+			JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
+			//JSONObject actualReqInvPreId = preRegLib.BookAppointmentRequest(fetchCentInvPreId, preId.toString());
+			actualReqInvPreId.put("requesttime", preRegLib.getCurrentDate());
+			logger.info("BookAnAppointmentByPassingRegCen::"+actualReqInvPreId.toString());
+			Response respInvPreId = applicationLibrary.postRequest(actualReqInvPreId, preRegBookingAppointmentURI);
+			logger.info("BookAnAppointmentByPassingInvalidRegistrationCenterId::"+respInvPreId.asString());
+			outerKeys.add("responsetime");
+			innerKeys.add("preRegistrationId");
+			status = AssertResponses.assertResponses(respInvPreId, Expectedresponse, outerKeys, innerKeys);
+
+			break;*/
+			
+			/*
 		case "BookAnAppointmentByPassingInvalidStatusCode":
 
 			preRegLib.updateStatusCode("Consumed", preId);
-			/* Fetch availability[or]center details */
+			 Fetch availability[or]center details 
 			Response fetchCen = preRegLib.FetchCentre();
 
-			/* Book An Appointment for the available data */
+			 Book An Appointment for the available data 
 			Response bookAppointmentRes = preRegLib.BookAppointment(fetchCen, preId.toString());
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
@@ -205,16 +259,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-		case "BookAnAppointmentByPassingInvalidRegistrationCenterId":
-
-			String preRegBookAppURI = preReg_URI + preId;
-
-			Response resp = applicationLibrary.postRequest(actualRequest, preRegBookAppURI);
-			outerKeys.add("responsetime");
-			innerKeys.add("preRegistrationId");
-			status = AssertResponses.assertResponses(resp, Expectedresponse, outerKeys, innerKeys);
-
-			break;
+		
 		case "BookAnAppointmentByPassingInvalidAppointmentDate":
 
 			String preRegiBookAppURI = preReg_URI + preId;
@@ -246,7 +291,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(respons, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-
+*/
 		default:
 
 			break;
@@ -333,8 +378,9 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		// Booking Appointment Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
+		// Booking Appointment Resource URI 
+		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_MultipleBooking");
+		//preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_MultipleBooking");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}

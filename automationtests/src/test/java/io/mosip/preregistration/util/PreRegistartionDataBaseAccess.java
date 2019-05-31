@@ -24,12 +24,10 @@ public class PreRegistartionDataBaseAccess {
 		try {
 		factory = new Configuration().configure(dbConfigXml).buildSessionFactory();
 		} catch (HibernateException e) {
-			logger.info("Exception in Database Connection with following message: ");
 			logger.info(e.getMessage());
 		}
 		session = factory.getCurrentSession();
 		session.beginTransaction();
-		logger.info("==========session  begins=============");
 		return session;
 	}
 
@@ -44,6 +42,10 @@ public class PreRegistartionDataBaseAccess {
 		int res = query.executeUpdate();
 		session.getTransaction().commit();	
 	}
+	@SuppressWarnings("unchecked")
+	public List<String> getConsumedStatus(String queryString, String dbName) {
+		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+	}
 	
 	@AfterClass(alwaysRun = true)
 	public void closingSession() {
@@ -53,5 +55,6 @@ public class PreRegistartionDataBaseAccess {
 		factory.close();
 	}
 
-
+	
+	
 }
