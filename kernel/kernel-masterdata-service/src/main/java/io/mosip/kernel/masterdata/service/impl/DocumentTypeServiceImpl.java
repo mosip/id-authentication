@@ -176,23 +176,4 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return responseDto;
 	}
 
-	@Override
-	public CodeAndLanguageCodeID createInActiveDocumentType(DocumentTypeDto documentTypeDto) {
-		DocumentType entity = MetaDataUtils.setCreateMetaData(documentTypeDto, DocumentType.class);
-		DocumentType documentType;
-		try {
-			entity.setIsActive(false);
-			documentType = documentTypeRepository.create(entity);
-
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ExceptionUtils.parseException(e));
-		}
-
-		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		MapperUtils.map(documentType, codeLangCodeId);
-
-		return codeLangCodeId;
-	}
-
 }

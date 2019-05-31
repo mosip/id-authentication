@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  *
  */
 public interface DocumentTypeService {
-	/*
+	/**
 	 * methods to fetch list of valid document types for given document category
 	 * code and language code
 	 * 
@@ -56,14 +56,5 @@ public interface DocumentTypeService {
 	 * @return {@link CodeResponseDto}.
 	 */
 	public CodeResponseDto deleteDocumentType(String code);
-
-	/**
-	 * Method to create document type with isActive is false .
-	 * 
-	 * @param documentTypeDto
-	 *            dto with documents type.
-	 * @return {@link CodeAndLanguageCodeID}.
-	 */
-	public CodeAndLanguageCodeID createInActiveDocumentType(DocumentTypeDto documentTypeDto);
 
 }
