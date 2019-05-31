@@ -14,6 +14,7 @@ MOSIP Partner will request for an OTP on behalf of an Individual
 -	MOSIP Partner will capture Individual’s UIN/VID and construct OTP Request
 -	Once OTP Request is received, authenticate and authorize Partner
 -	Check Individual’s UIN/VID for authenticity and validity
+-	Same ID type should be used later in OTP authentication request. For example, if Individual's UIN is used in the OTP request, only the Individual's UIN should be used later in the OTP Authentication request. Similarly, if Individual's VID is used in the OTP request, only the Individual's VID should be used later in the OTP Authentication request. And it should not be like UIN used in the OTP request and VID used in OTP authentication request, or vise versa.
 -	Create and send OTP to the Individual via message and/or email
 
  ***1.3. Key non-functional requirements -***   
