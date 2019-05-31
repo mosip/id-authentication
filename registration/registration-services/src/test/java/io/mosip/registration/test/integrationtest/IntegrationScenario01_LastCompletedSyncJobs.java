@@ -4,27 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
-
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ibm.icu.text.SimpleDateFormat;
 
-import cern.colt.matrix.doublealgo.Formatter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SyncDataProcessDTO;
-import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.login.LoginService;
@@ -45,7 +36,7 @@ public class IntegrationScenario01_LastCompletedSyncJobs extends BaseIntegration
 	
 	public void login() {
 		// Get user Details
-		UserDetail userDetail = loginService.getUserDetail("mosip");
+		UserDTO userDetail = loginService.getUserDetail("mosip");
 		
 		
 				// Password check for login Check if Password is same

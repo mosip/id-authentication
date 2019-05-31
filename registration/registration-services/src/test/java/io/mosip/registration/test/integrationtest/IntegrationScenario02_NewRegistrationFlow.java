@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.util.IOUtils;
 import org.junit.Assert;
@@ -31,10 +31,10 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserOnboardService;
@@ -62,7 +62,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 	//////////////////////////////////////////login
 	public void login() {
 		// Get user Details
-		UserDetail userDetail = loginService.getUserDetail("mosip");
+		UserDTO userDetail = loginService.getUserDetail("mosip");
 		
 		
 				// Password check for login Check if Password is same
