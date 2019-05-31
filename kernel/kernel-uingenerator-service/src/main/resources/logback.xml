@@ -5,12 +5,21 @@
 			<pattern>%d [%t] %p [%C{1}].%M.%L : %m%n</pattern>
 		</encoder>
 	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>logs/kernel-uingenerator-service.log</file>
+		<append>true</append>
+		<immediateFlush>true</immediateFlush>
+		<encoder>
+			<pattern>%d [%t] %p [%C{1}].%M.%L : %m%n</pattern>
+		</encoder>
+	</appender>
+
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
 	</root>
-
-
+	
+	
 	<logger name="io.vertx.core.impl.BlockedThreadChecker"
 		level="OFF" />
-
 </configuration>

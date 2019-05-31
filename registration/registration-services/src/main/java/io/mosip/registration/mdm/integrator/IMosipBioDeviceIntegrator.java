@@ -1,7 +1,6 @@
 package io.mosip.registration.mdm.integrator;
 
 import java.util.List;
-import java.util.Map;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
