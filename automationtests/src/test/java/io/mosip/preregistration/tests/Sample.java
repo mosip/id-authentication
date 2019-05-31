@@ -82,7 +82,10 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test
 	public void validateWithoutGeneratingOtp(){
 		
-		dao.makeregistartionCenterDeActive("10012");
+		dao.makeregistartionCenterActive("10006");
+		dao.makeregistartionCenterActive("10012");
+
+		
 		lib.syncAvailability();
 	}
 
