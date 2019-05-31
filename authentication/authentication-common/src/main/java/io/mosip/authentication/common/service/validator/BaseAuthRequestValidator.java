@@ -296,7 +296,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), new Object[] { bioType },
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
 			} else {
-				validateBioType(errors, availableAuthTypeInfos, bioInfo);
+				validateBioType(errors, allowedAuthTypesFromConfig, bioInfo);
 			}
 		}
 
