@@ -159,7 +159,8 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
 		logger.info("Expected Response:" + responseObject.toJSONString());
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		int statusCode = response.statusCode();
 		logger.info("Encryption Status Code is : " + statusCode);
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
@@ -196,7 +197,8 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI, cookie);
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
-
+			//This method is for checking the authentication is pass or fail in rest services
+			new CommonLibrary().responseAuthValidation(response);
 			responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
 			if (responseJson!=null) {
 

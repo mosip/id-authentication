@@ -162,6 +162,9 @@ import io.restassured.response.Response;
 	              int statusCode=response.statusCode();
 	              logger.info("Status Code is : " +statusCode);
 	              
+	              //This method is for checking the authentication is pass or fail in rest services
+	      		  new CommonLibrary().responseAuthValidation(response);
+	      		  
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 	              listOfElementToRemove.add("responsetime");
 	              listOfElementToRemove.add("timestamp");

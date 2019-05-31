@@ -17,6 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -34,11 +35,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -144,7 +145,6 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
 					response = applicationLibrary.getRequestPathPara(FetchGenderType_id_lang_URI, objectData,cookie);
-					
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")
 					&& !testcaseName.toLowerCase().contains("smoke")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
@@ -160,7 +160,7 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 				}
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String queryPart = "select count(*) from master.gender where is_active = true";
@@ -169,14 +169,17 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 		query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 
 			}
-
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
-
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
-			JSONArray genderTypeFromGet = (JSONArray) responseJson.get("genderType");
+			JSONArray genderTypeFromGet=new JSONArray();;
+			try {
+				genderTypeFromGet = (JSONArray) responseJson.get("genderType");
+			} catch (NullPointerException e) {
+				Assert.assertTrue(status, "Not able to get the Gender type from ");
+			}
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + genderTypeFromGet.size());
 
 			// validating number of objects obtained form db and from get request
@@ -194,7 +197,6 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 				if (objectData != null) {
 						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
-
 				status = AssertKernel.validator(genderTypeFromGet, attributesToValidateExistance, passedAttributesToFetch);
 			} else
 				status = false;

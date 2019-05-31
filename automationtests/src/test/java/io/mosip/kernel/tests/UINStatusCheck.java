@@ -74,8 +74,6 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	public Object[][] readData1(ITestContext context) throws Exception {
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "status");
 	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -95,6 +93,9 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 
 		// Calling the GET method with no parameters 
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		//Getting the UIN from response
 		String uin_number = res.jsonPath().getMap("response").get("uin").toString();

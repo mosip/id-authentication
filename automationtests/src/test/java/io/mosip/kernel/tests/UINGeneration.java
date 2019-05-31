@@ -73,8 +73,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -88,9 +86,11 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	@Test(dataProvider="UINValidator",invocationCount=1)
 	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
 		// Calling the get method with no parameter
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		//Getting UIN from response
 		 String uin = res.jsonPath().getMap("response").get("uin").toString();
@@ -106,11 +106,9 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
-		 
 		boolean isAscending = UIN_Assertions.ascendingMethod(uin);
      	boolean isDescending = UIN_Assertions.ascendingMethod(uin);
      	boolean alpanumeric = UIN_Assertions.asserUinWithPattern(uin, alphanumeric_regEx);
-     	
 		if(uin_length==10){
         	   if(first_half.equals(second_half)){ 
         		   finalStatus="Fail";

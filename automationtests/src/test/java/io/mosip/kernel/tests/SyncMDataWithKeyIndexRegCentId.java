@@ -85,7 +85,6 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 		cookie=auth.getAuthForIndividual();
-
 	}
 
 	/**
@@ -100,8 +99,6 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	
 			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -151,8 +148,11 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
-			// add parameters to remove in response before comparison like time stamp
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
+		
+		// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

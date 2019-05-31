@@ -154,7 +154,8 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String queryPart = "select count(*) from master.doc_category where is_active = true";

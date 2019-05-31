@@ -126,8 +126,10 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     		// Calling the post method 
     		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);
 
-    	  
-    	// Comparing expected and actual response
+    	//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+    	
+		// Comparing expected and actual response
     	 status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);	
 		
     	  if(status)

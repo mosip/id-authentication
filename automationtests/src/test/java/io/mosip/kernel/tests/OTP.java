@@ -85,7 +85,7 @@ public class OTP extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
 	/**
@@ -150,7 +150,8 @@ public class OTP extends BaseTestCase implements ITest {
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -210,8 +211,8 @@ public class OTP extends BaseTestCase implements ITest {
 				}
 				
 				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
-
-
+				//This method is for checking the authentication is pass or fail in rest services
+				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
 				logger.info("Expected Response:" + responseObject.toJSONString());
 				status = assertions.assertKernel( response, responseObject, listOfElementToRemove);

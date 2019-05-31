@@ -72,7 +72,7 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = "Kernel_"+"GetDocType_DocCatByAppID_"+object.get("testCaseName").toString();
-		 cookie=auth.getAuthForIndividual();
+		 cookie=auth.getAuthForZonalApprover();
 	} 
 	
 	// Data Providers to read the input json files from the folders
@@ -112,7 +112,8 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		
 		// Calling the get method
 		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
-		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");

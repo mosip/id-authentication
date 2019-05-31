@@ -68,9 +68,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
-		
 		cookie=auth.getAuthForRegistrationAdmin();
 	} 
 	
@@ -95,16 +93,13 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestNoParameter(getRoles,cookie);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		outerKeys.add("responsetime");
 		innerKeys.add("lastSyncTime");
-		
-		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("$response.lastSyncTime");
-		listOfElementToRemove.add("responsetime");
 
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);

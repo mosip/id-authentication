@@ -129,7 +129,8 @@ public class FetchTitle extends BaseTestCase implements ITest {
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");

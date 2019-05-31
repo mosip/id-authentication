@@ -107,11 +107,13 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		innerKeys.add("uin");
 		innerKeys.add("status");
 		
-		
+		//Fetching UIN which status is unused
+		res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 	switch(testCaseName)
 		{
 		case "Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused": 
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin=res1.jsonPath().get("response.uin");
 			JSONObject request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin);
@@ -120,7 +122,6 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			break;
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued" : 
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
@@ -130,7 +131,6 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			break;
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
@@ -140,7 +140,6 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			break;
 
 		case "Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned" :
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
@@ -152,6 +151,10 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		}
 		
 		res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		// Comparing expected and actual response

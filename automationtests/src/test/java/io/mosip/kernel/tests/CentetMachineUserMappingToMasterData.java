@@ -101,6 +101,8 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
 	            

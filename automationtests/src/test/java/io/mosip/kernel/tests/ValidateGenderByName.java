@@ -91,15 +91,15 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	@Test(dataProvider="ValidateGenderByName")
 	public void validateGenderByName(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		
 		//  Calling GET method with path parameters
-		 
 		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest,cookie);
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+				
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");	
