@@ -397,17 +397,17 @@ audit_log_demo_moduleName:
 audit_log_VID_refIdType:
       - VID
 #Demo-Name Normalisation
-name_tittle_UnMarriedfemale_english_lang:
-      - Miss.
-name_tittle_female_english_lang:
-      - Mrs.
-name_tittle_male_english_lang:
-      - Mr.
 name_tittle_UnMarriedfemale_primary_lang:
-      - Mademoiselle.
+      - Miss.
 name_tittle_female_primary_lang:
-      - Madame.
+      - Mrs.
 name_tittle_male_primary_lang:
+      - Mr.
+name_tittle_UnMarriedfemale_fra_lang:
+      - Mademoiselle.
+name_tittle_female_fra_lang:
+      - Madame.
+name_tittle_male_fra_lang:
       - Monsieur.
 name_tittle_UnMarriedfemale_secondary_lang:
       - 'آنسة '
