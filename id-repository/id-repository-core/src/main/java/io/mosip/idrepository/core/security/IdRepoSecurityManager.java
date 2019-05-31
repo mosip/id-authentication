@@ -67,6 +67,18 @@ public class IdRepoSecurityManager {
 	}
 
 	/**
+	 * Hash with salt.
+	 *
+	 * @param data the identity info
+	 * @param salt the salt
+	 * @return the string
+	 */
+	public String hashwithSalt(final byte[] data, final byte[] salt) {
+		// add salt in argument
+		return HMACUtils.digestAsPlainTextWithSalt(HMACUtils.generateHash(data), HMACUtils.generateHash(salt));
+	}
+
+	/**
 	 * Encrypt.
 	 *
 	 * @param dataToEncrypt the data to encrypt
@@ -74,6 +86,7 @@ public class IdRepoSecurityManager {
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	public byte[] encrypt(final byte[] dataToEncrypt) throws IdRepoAppException {
+		// salt as input param
 		try {
 			ObjectNode baseRequest = new ObjectNode(mapper.getNodeFactory());
 			baseRequest.put("id", "string");
@@ -85,6 +98,36 @@ public class IdRepoSecurityManager {
 			request.put("timeStamp",
 					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
 			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
+			baseRequest.set("request", request);
+			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT,
+					baseRequest, ObjectNode.class));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+		}
+	}
+	
+	/**
+	 * Encrypt.
+	 *
+	 * @param dataToEncrypt the data to encrypt
+	 * @return the byte[]
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	public byte[] encryptWithSalt(final byte[] dataToEncrypt,final byte[] saltToEncrypt) throws IdRepoAppException {
+		// salt as input param
+		try {
+			ObjectNode baseRequest = new ObjectNode(mapper.getNodeFactory());
+			baseRequest.put("id", "string");
+			baseRequest.put("requesttime",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			baseRequest.put("version", "1.0");
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			request.put("data", CryptoUtil.encodeBase64(dataToEncrypt));
+			request.put("salt", CryptoUtil.encodeBase64(saltToEncrypt));
 			baseRequest.set("request", request);
 			return encryptDecryptData(restBuilder.buildRequest(RestServicesConstants.CRYPTO_MANAGER_ENCRYPT,
 					baseRequest, ObjectNode.class));
