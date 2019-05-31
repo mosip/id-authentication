@@ -1,12 +1,12 @@
 {
     "id": "mosip.pre-registration.appointment.fetch",
     "version": "1.0",
-    "responsetime": "2019-05-30T16:27:30.471Z",
+    "responsetime": "2019-05-31T05:52:10.156Z",
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_PAM_APP_005",
-            "message": "No data found for the requested pre-registration id"
+            "errorCode": "PRG_BOOK_RCI_013",
+            "message": "Booking data not found"
         }
     ]
 }

@@ -157,7 +157,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		else {
 
-			if (testCase.contains("FetchAppointmentDetails_statusCode")) {
+			if (testCase.contains("prereg_FetchAppointmentDetails_statusCode")) {
 
 				String statusCode = actualRequest.get("statusCode").toString();
 				preRegLib.updateStatusCode(statusCode, preId);
