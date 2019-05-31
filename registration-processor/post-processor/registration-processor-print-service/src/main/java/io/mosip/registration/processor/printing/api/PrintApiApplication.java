@@ -25,7 +25,7 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
 		"io.mosip.registration.processor.print.service.*", "io.mosip.registration.processor.packet.storage.*",
 		"io.mosip.registration.processor.message.sender.*", "io.mosip.registration.processor.status.*",
 		"io.mosip.registration.processor.rest.client.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				RestConfigBean.class, CoreConfigBean.class, PacketStorageBeanConfig.class, KernelConfig.class,
+				RestConfigBean.class,  PacketStorageBeanConfig.class, KernelConfig.class,
 				PrintServiceBeanConfig.class, RegistrationStatusBeanConfig.class }))
 
 public class PrintApiApplication {

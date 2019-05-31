@@ -2,11 +2,9 @@ package io.mosip.registration.processor.packet.manager.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -375,7 +373,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		try {
 
 			JSch jsch = new JSch();
-			ClassLoader classLoader = getClass().getClassLoader();
 			jsch.addIdentity(getPPKPath());
 			session = jsch.getSession(sftpConnectionDto.getUser(), sftpConnectionDto.getHost(),
 					sftpConnectionDto.getPort());
@@ -387,13 +384,12 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channel.connect();
 			channelSftp = (ChannelSftp) channel;
 
-		} catch (JSchException e) {
+		} catch (JSchException |IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
-
 		return channelSftp;
 
 	}
@@ -506,21 +502,15 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		return extension;
 	}
 
-	public String getPPKPath() throws JschConnectionException {
+	public String getPPKPath() throws  IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		String data= restTemplate.getForObject(configServerFileStorageURL + regProcPPK, String.class);
 		File file = new File(regProcPPK);
-		FileOutputStream out;
+		FileOutputStream out = new FileOutputStream(file);
 		try {
-			out = new FileOutputStream(file);
 			out.write(data.getBytes());
+		} finally {
 			out.close();
-
-		} catch (IOException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), "",
-					e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
 		return file.getPath();
 
