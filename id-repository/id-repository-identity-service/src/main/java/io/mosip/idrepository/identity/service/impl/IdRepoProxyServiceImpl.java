@@ -40,6 +40,7 @@ import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.spi.IdRepoService;
 import io.mosip.idrepository.identity.controller.IdRepoController;
 import io.mosip.idrepository.identity.entity.Uin;
+import io.mosip.idrepository.identity.repository.UinHashSaltRepo;
 import io.mosip.idrepository.identity.repository.UinHistoryRepo;
 import io.mosip.idrepository.identity.repository.UinRepo;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -56,8 +57,6 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
  */
 @Service
 public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO> {
-
-	private static final String RID = "rid";
 
 	private static final String GET_FILES = "getFiles";
 
@@ -151,7 +150,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	@Autowired
 	private IdRepoSecurityManager securityManager;
-
+	
+	@Autowired
+	private UinHashSaltRepo uinHashSaltRepo;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -187,35 +189,9 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Override
 	public IdResponseDTO retrieveIdentityByUin(String uin, String type) throws IdRepoAppException {
 		try {
-			if (uinRepo.existsByUin(uin)) {
-				List<Documents> documents = new ArrayList<>();
-				Uin uinObject = service.retrieveIdentityByUin(uin, type);
-				if (Objects.isNull(type)) {
-					mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
-							"filter - null");
-					return constructIdResponse(this.id.get(READ), uinObject, null);
-				} else if (type.equalsIgnoreCase(BIO)) {
-					getFiles(uinObject, documents, BIOMETRICS);
-					mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - bio",
-							"bio documents  --> " + documents);
-					return constructIdResponse(this.id.get(READ), uinObject, documents);
-				} else if (type.equalsIgnoreCase(DEMO)) {
-					getFiles(uinObject, documents, DEMOGRAPHICS);
-					mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - demo",
-							"docs documents  --> " + documents);
-					return constructIdResponse(this.id.get(READ), uinObject, documents);
-				} else if (type.equalsIgnoreCase(ALL)) {
-					getFiles(uinObject, documents, BIOMETRICS);
-					getFiles(uinObject, documents, DEMOGRAPHICS);
-					mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - all",
-							"docs documents  --> " + documents);
-					return constructIdResponse(this.id.get(READ), uinObject, documents);
-				} else {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
-					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
-				}
+			String uinHash = retrieveUinHash(uin);
+			if (uinRepo.existsByUinHash(uinHash)) {
+				return retrieveIdentityByUinHash(type, uinHash);
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
@@ -236,6 +212,45 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		}
 	}
 
+	private String retrieveUinHash(String uin) {
+		Integer moduloValue = env.getProperty("mosip.idrepo.identity.modulo",Integer.class);
+		int modResult=(int) (Long.parseLong(uin)%moduloValue);
+		String hashSalt =uinHashSaltRepo.retrieveSaltById(modResult);
+		String uinHash = modResult+ "_" +securityManager.hashwithSalt(uin.getBytes(),hashSalt.getBytes());
+		return uinHash;
+	}
+
+	private IdResponseDTO retrieveIdentityByUinHash(String type, String uinHash) throws IdRepoAppException {
+		List<Documents> documents = new ArrayList<>();
+		Uin uinObject = service.retrieveIdentityByUin(uinHash, type);
+		if (Objects.isNull(type)) {
+			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
+					"filter - null");
+			return constructIdResponse(this.id.get(READ), uinObject, null);
+		} else if (type.equalsIgnoreCase(BIO)) {
+			getFiles(uinObject, documents, BIOMETRICS);
+			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - bio",
+					"bio documents  --> " + documents);
+			return constructIdResponse(this.id.get(READ), uinObject, documents);
+		} else if (type.equalsIgnoreCase(DEMO)) {
+			getFiles(uinObject, documents, DEMOGRAPHICS);
+			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - demo",
+					"docs documents  --> " + documents);
+			return constructIdResponse(this.id.get(READ), uinObject, documents);
+		} else if (type.equalsIgnoreCase(ALL)) {
+			getFiles(uinObject, documents, BIOMETRICS);
+			getFiles(uinObject, documents, DEMOGRAPHICS);
+			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - all",
+					"docs documents  --> " + documents);
+			return constructIdResponse(this.id.get(READ), uinObject, documents);
+		} else {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -245,12 +260,12 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO retrieveIdentityByRid(String rid, String type) throws IdRepoAppException {
-		String uin = uinRepo.getUinByRid(rid);
-		if (Objects.isNull(uin)) {
-			uin = uinHistoryRepo.getUinByRid(rid);
+		String uinHash = uinRepo.getUinHashByRid(rid);
+		if (Objects.isNull(uinHash)) {
+			uinHash = uinHistoryRepo.getUinHashByRid(rid);
 		}
-		if (Objects.nonNull(uin)) {
-			return retrieveIdentityByUin(uin, type);
+		if (Objects.nonNull(uinHash)) {
+			return retrieveIdentityByUinHash(type, uinHash);
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
@@ -287,7 +302,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId();
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				byte[] data = securityManager
-						.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
+						.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUinHash(), fileName)));
 				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 						"time taken to get file in millis: " + fileName + "  - "
 								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
@@ -331,7 +346,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
 					LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 					byte[] data = securityManager
-							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
+							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUinHash(), fileName)));
 					mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
 							"time taken to get file in millis: " + fileName + "  - "
 									+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
@@ -373,14 +388,15 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Override
 	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			if (uinRepo.existsByUin(uin)) {
+			String uinHash = retrieveUinHash(uin);
+			if (uinRepo.existsByUinHash(uinHash)) {
 				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 				}
 				service.updateIdentity(request, uin);
-				return constructIdResponse(MOSIP_ID_UPDATE, service.retrieveIdentityByUin(uin, null), null);
+				return constructIdResponse(MOSIP_ID_UPDATE, service.retrieveIdentityByUin(uinHash, null), null);
 			} else {
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
