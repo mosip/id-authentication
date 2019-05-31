@@ -52,6 +52,7 @@
                 <argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/batch</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
               </arguments>
             </configuration>
           </execution>
