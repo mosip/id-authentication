@@ -3,7 +3,6 @@ package io.mosip.registration.processor.reprocessor.stage;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.registration.processor.core.code.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +13,12 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.code.ModuleName;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -29,7 +34,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.VertxContextPRNG;
 
 /**
  * The Reprocessor Stage to deploy the scheduler and implement re-processing
@@ -139,7 +143,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 		EventBus eventBus = vertx.eventBus();
 		// listen the timer events
 		eventBus.consumer(("scheduler:stage_timer"), message -> {
-
 			process(new MessageDTO());
 		});
 

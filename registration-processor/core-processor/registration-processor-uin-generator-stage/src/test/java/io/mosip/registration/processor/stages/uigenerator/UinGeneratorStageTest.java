@@ -274,6 +274,73 @@ public class UinGeneratorStageTest {
 
 	}
 
+	
+	
+	@Test
+	public void testUinGenerationF() throws Exception {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setRid("27847657360002520181210094052");
+		String str="{\"id\":\"mosip.id.read\",\"version\":\"1.0\",\"responsetime\":\"2019-04-05\",\"metadata\":null,\"response\":{\"uin\":\"2812936908\"},\"errors\":[{\"errorCode\":null,\"errorMessage\":null}]}";
+		String response = "{\"uin\":\"6517036426\",\"status\":\"ASSIGNED\"}";
+		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(str);
+		Mockito.when(registrationProcessorRestClientService.putApi(any(), any(),  any(), any(), any(), any(), any())).thenReturn(response);
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
+		InputStream idJsonStream = new FileInputStream(idJsonFile);
+
+		File idJsonFile2 = new File(classLoader.getResource("ID.json").getFile());
+		InputStream idJsonStream2 = new FileInputStream(idJsonFile2);
+
+		ClassLoader classLoader1 = getClass().getClassLoader();
+		File idJsonFile1 = new File(classLoader1.getResource("packet_meta_info.json").getFile());
+		InputStream idJsonStream1 = new FileInputStream(idJsonFile1);
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052",
+				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenReturn(idJsonStream).thenReturn(idJsonStream2);
+
+		Mockito.when(adapter.getFile("27847657360002520181210094052", PacketFiles.PACKET_META_INFO.name()))
+		.thenReturn(idJsonStream1);
+
+		List<ErrorDTO> errors=new ArrayList<>();
+		ErrorDTO errorDTO= new ErrorDTO("tets","error");
+		errors.add(errorDTO);
+		
+		
+		IdResponseDTO idResponseDTO = new IdResponseDTO();
+		idResponseDTO.setErrors(errors);
+		idResponseDTO.setId("mosip.id.create");
+		idResponseDTO.setResponse(null);
+		idResponseDTO.setResponsetime("2019-01-17T06:29:01.940Z");
+		idResponseDTO.setVersion("1.0");
+
+		ResponseWrapper<VidResponseDto> responseVid = new ResponseWrapper<VidResponseDto>();
+		//List<ErrorDTO> errors = new ArrayList<>();
+		responseVid.setErrors(errors);
+		responseVid.setVersion("v1");
+		responseVid.setMetadata(null);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		LocalDateTime localdatetime = LocalDateTime
+				.parse(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format);
+		responseVid.setResponsetime(localdatetime);
+		VidResponseDto vidResponseDto= new VidResponseDto();
+		vidResponseDto.setVID("123456");
+		vidResponseDto.setVidStatus("ACTIVE");
+		responseVid.setResponse(vidResponseDto);
+
+
+		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
+		.thenReturn(idResponseDTO).thenReturn(responseVid).thenReturn(response);
+
+//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any()));
+
+		MessageDTO result = uinGeneratorStage.process(messageDTO);
+		assertTrue(result.getInternalError());
+
+	}
+
+	
+	
 	@Test
 	public void testUinGenerationSuccessWithoutUINAndUinUnused() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();

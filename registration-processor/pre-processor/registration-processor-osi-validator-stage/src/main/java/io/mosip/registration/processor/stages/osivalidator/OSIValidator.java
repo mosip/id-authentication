@@ -97,7 +97,7 @@ public class OSIValidator {
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	/** The Constant TRUE. */
-	private static final String TRUE = "true";
+	private static final String ISTRUE = "true";
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -529,7 +529,7 @@ public class OSIValidator {
 	 * @return true, if successful
 	 */
 	boolean validateOtpAndPwd(String password, String otp) {
-		return (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE));
+		return (password != null && password.equals(ISTRUE) || otp != null && otp.equals(ISTRUE));
 	}
 
 	/**

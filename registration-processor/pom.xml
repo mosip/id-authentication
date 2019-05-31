@@ -226,7 +226,8 @@
 			**/registration/processor/packet/uploader/constants/*.java,
 			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java,
 			**/registration/processor/packet/receiver/constants/*.java,
-			**/registration/processor/print/service/exception/*.java
+			**/registration/processor/print/service/exception/*.java,
+			**/registration/processor/print/exception/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>
