@@ -93,7 +93,8 @@ public enum AuthErrorCode {
 	
 	INVALID_DN("KER-ATH-018","Exception occured while creating DN"), 
 	INVALID_REQUEST("KER-ATH-019","should not be null or empty"),
-	USER_NOT_FOUND("KER-ATH-020","User not found");
+	USER_NOT_FOUND("KER-ATH-020","User not found"),
+	IS_ACTIVE_FLAG_NOT_FOUND("KER-ATH-021","IsActive flag is not present for this user");
 	
 	
 

@@ -418,40 +418,38 @@ public class LdapDataStore implements DataStore {
 			authZResponseDto = new AuthZResponseDto();
 			authZResponseDto.setMessage("Successfully Unblocked");
 			authZResponseDto.setStatus("Sucesss");
-
+            closeContext(context);
 		} catch (NamingException e) {
+			 closeContext(context);
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getExplanation());
-		} finally {
-			if (context != null) {
-				context.close();
-			}
-		}
+		} 
 		return authZResponseDto;
 	}
 
 	@Override
-	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws NamingException {
+	public AuthZResponseDto changePassword(PasswordDto passwordDto) {
 		LdapContext ldapContext = null;
 		AuthZResponseDto authZResponseDto = null;
-		LdapConnection ldapConnection = null;
+		String mailId = null;
+		String userId = null;
 		try {
 			ldapContext = getContext();
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
-
 		}
-
 		try {
-			ldapConnection = createAnonymousConnection();
-			Dn userdn = createUserDn(passwordDto.getUserId());
-			MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
-			Objects.requireNonNull(mosipUserDto);
-			String ldapPassword = getPassword(mosipUserDto.getUserId(), ldapContext);
+
+			NamingEnumeration<SearchResult> userDetailSearchResult = getUserDetailSearchResult(passwordDto.getUserId());
+			while (userDetailSearchResult.hasMore()) {
+				SearchResult searchObject = userDetailSearchResult.next();
+				mailId = (String) searchObject.getAttributes().get(LdapConstants.MAIL).get();
+				userId = (String) searchObject.getAttributes().get("uid").get();
+			}
+			String ldapPassword = getPassword(passwordDto.getUserId(), ldapContext);
 			Objects.requireNonNull(ldapPassword);
-			boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
-					passwordDto.getNewPassword());
+			boolean isNotMatching = isNotAMatchWithUserOrEmail(userId, mailId, passwordDto.getNewPassword());
 
 			validateOldPassword(passwordDto.getOldPassword(), ldapPassword);
 
@@ -463,7 +461,6 @@ public class LdapDataStore implements DataStore {
 				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("userPassword", newUserPassword));
 				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
-				mosipUserDto.setUserPassword(new String(newUserPassword));
 				authZResponseDto = new AuthZResponseDto();
 				authZResponseDto.setMessage("Successfully changed");
 				authZResponseDto.setStatus("Success");
@@ -471,18 +468,12 @@ public class LdapDataStore implements DataStore {
 				throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
 						AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
 			}
-
+			closeContext(ldapContext);
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			ldapContext.close();
-			try {
-				ldapConnection.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			closeContext(ldapContext);
+			throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(),
+					AuthErrorCode.SERVER_ERROR.getErrorMessage() + " " + e.getCause());
 		}
-
 		return authZResponseDto;
 	}
 
@@ -494,37 +485,45 @@ public class LdapDataStore implements DataStore {
 	 * entities.PasswordDto)
 	 */
 	@Override
-	public AuthZResponseDto resetPassword(PasswordDto passwordDto) throws Exception {
+	public AuthZResponseDto resetPassword(PasswordDto passwordDto) {
 		LdapContext ldapContext = null;
 		AuthZResponseDto authZResponseDto = null;
-		ldapContext = getContext();
-		LdapConnection ldapConnection;
-		ldapConnection = createAnonymousConnection();
-		Dn userdn = createUserDn(passwordDto.getUserId());
-		MosipUserDto mosipUserDto = lookupUserDetails(userdn, ldapConnection);
-		Objects.requireNonNull(mosipUserDto);
-		boolean isNotMatching = isNotAMatchWithUserOrEmail(mosipUserDto.getUserId(), mosipUserDto.getMail(),
-				passwordDto.getNewPassword());
-		if (!isNotMatching) {
-			byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
-					LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
+		String mailId = null;
+		String userId = null;
+		try {
+			ldapContext = getContext();
+			NamingEnumeration<SearchResult> userDetailSearchResult = getUserDetailSearchResult(passwordDto.getUserId());
+			while (userDetailSearchResult.hasMore()) {
+				SearchResult searchObject = userDetailSearchResult.next();
+				mailId = (String) searchObject.getAttributes().get(LdapConstants.MAIL).get();
+				userId = (String) searchObject.getAttributes().get("uid").get();
+			}
+			boolean isNotMatching = isNotAMatchWithUserOrEmail(userId, mailId, passwordDto.getNewPassword());
+			if (!isNotMatching) {
+				byte[] newUserPassword = PasswordUtil.createStoragePassword(passwordDto.getNewPassword().getBytes(),
+						LdapSecurityConstants.getAlgorithm(passwordDto.getHashAlgo()));
 
-			ModificationItem[] modItems = new ModificationItem[1];
-			modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-					new BasicAttribute("userPassword", newUserPassword));
-			ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
-			mosipUserDto.setUserPassword(new String(newUserPassword));
-			authZResponseDto = new AuthZResponseDto();
-			authZResponseDto.setMessage("Successfully the password has been reset");
-			authZResponseDto.setStatus("Success");
-			ldapContext.close();
-			ldapConnection.close();
+				ModificationItem[] modItems = new ModificationItem[1];
+				modItems[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+						new BasicAttribute("userPassword", newUserPassword));
+				ldapContext.modifyAttributes("uid=" + passwordDto.getUserId() + ",ou=people,c=morocco", modItems);
 
-		} else {
-			ldapContext.close();
-			ldapConnection.close();
-			throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
-					AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+				authZResponseDto = new AuthZResponseDto();
+				authZResponseDto.setMessage("Successfully the password has been reset");
+				authZResponseDto.setStatus("Success");
+			} else {
+				throw new AuthManagerException(AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorCode(),
+						AuthErrorCode.PASSWORD_POLICY_EXCEPTION.getErrorMessage());
+			}
+			closeContext(ldapContext);
+		} catch (LdapInvalidDnException ex) {
+			closeContext(ldapContext);
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + ex.getCause());
+		} catch (NamingException ex) {
+			closeContext(ldapContext);
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + ex.getCause());
 		}
 		return authZResponseDto;
 	}
@@ -797,21 +796,14 @@ public class LdapDataStore implements DataStore {
 	@Override
 	public ValidationResponseDto validateUserName(String userId) {
 		ValidationResponseDto validationResponseDto = new ValidationResponseDto();
-		LdapContext context = null;
 		try {
-			context = getContext();
-			Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
-			SearchControls searchControls = new SearchControls();
-			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(),
-					"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))",
-					searchControls);
-			if (!searchResult.hasMore()) {
-				throw new AuthManagerException(AuthErrorCode.USER_NOT_FOUND.getErrorCode(),
-						AuthErrorCode.USER_NOT_FOUND.getErrorMessage());
-			}
+			NamingEnumeration<SearchResult> searchResult = getUserDetailSearchResult(userId);
 			while (searchResult.hasMore()) {
 				Attributes attributes = searchResult.next().getAttributes();
+				if (attributes.get("isActive") == null) {
+					throw new AuthManagerException(AuthErrorCode.IS_ACTIVE_FLAG_NOT_FOUND.getErrorCode(),
+							AuthErrorCode.IS_ACTIVE_FLAG_NOT_FOUND.getErrorMessage());
+				}
 				String isActive = (String) attributes.get("isActive").get();
 				if (isActive.equalsIgnoreCase("true")) {
 					validationResponseDto.setStatus("VALID");
@@ -819,8 +811,6 @@ public class LdapDataStore implements DataStore {
 					validationResponseDto.setStatus("INVALID");
 				}
 			}
-
-			context.close();
 
 		} catch (NamingException e) {
 
@@ -832,5 +822,31 @@ public class LdapDataStore implements DataStore {
 		}
 
 		return validationResponseDto;
+	}
+
+	private NamingEnumeration<SearchResult> getUserDetailSearchResult(String userId)
+			throws NamingException, LdapInvalidDnException {
+		LdapContext context = getContext();
+		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		NamingEnumeration<SearchResult> searchResult = context.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+		if (!searchResult.hasMore()) {
+			throw new AuthManagerException(AuthErrorCode.USER_NOT_FOUND.getErrorCode(),
+					AuthErrorCode.USER_NOT_FOUND.getErrorMessage());
+		}
+		context.close();
+		return searchResult;
+	}
+
+	private void closeContext(LdapContext context) {
+		try {
+			Objects.requireNonNull(context,"context not initialized");
+			context.close();
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+		}
 	}
 }
