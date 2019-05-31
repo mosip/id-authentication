@@ -23,7 +23,7 @@ public class ApplicationLibrary extends BaseTestCase {
 				MediaType.APPLICATION_JSON);
 	}
 	public Response postRequestWithParm(Object body, String Resource_URI,HashMap<String, String> pathValue) {
-		return commonLibrary.post_Request_WithQueryParams(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+		return commonLibrary.postRequestWithParm(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON,pathValue);
 	}
 

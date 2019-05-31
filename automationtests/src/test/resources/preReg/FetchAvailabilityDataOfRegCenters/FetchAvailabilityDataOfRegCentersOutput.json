@@ -1,1 +1,1 @@
-[]
+[{"prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withEmptyValue":"valid","jiraId":"MOS-1002","testType":"smoke","testCaseName":"prereg_FetchAvailabilityDataOfRegCenters_smoke","status":"Pass"}]
