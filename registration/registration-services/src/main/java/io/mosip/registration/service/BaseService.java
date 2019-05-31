@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -309,7 +310,7 @@ public class BaseService {
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
 		
-		try (FileInputStream fis = new FileInputStream(new File(registration.getAckFilename()
+		try (FileInputStream fis = new FileInputStream(FileUtils.getFile(registration.getAckFilename()
 				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
 			byte[] byteArray = new byte[(int) fis.available()];
 			fis.read(byteArray);

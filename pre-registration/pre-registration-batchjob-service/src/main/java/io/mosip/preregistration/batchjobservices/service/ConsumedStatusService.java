@@ -44,16 +44,15 @@ public class ConsumedStatusService {
 	/** The Constant LOGGER. */
 	private Logger log = LoggerConfiguration.logConfig(ConsumedStatusService.class);
 
-
 	/** The Constant Status comments. */
 	private static final String STATUS_COMMENTS = "Processed by registration processor";
 
 	/** The Constant Status comments. */
 	private static final String NEW_STATUS_COMMENTS = "Application consumed";
-	
+
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-	
+
 	@Value("${version}")
 	String versionUrl;
 
@@ -67,12 +66,13 @@ public class ConsumedStatusService {
 	private BatchServiceDAO batchServiceDAO;
 
 	/**
-	 * This method will copy demographic , document , booking details to the respective 
-	 * consumed table and delete from original table if status is consumed.
+	 * This method will copy demographic , document , booking details to the
+	 * respective consumed table and delete from original table if status is
+	 * consumed.
 	 * 
 	 * @return Response DTO
 	 */
-	
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainResponseDTO<String> demographicConsumedStatus() {
 
@@ -87,9 +87,9 @@ public class ConsumedStatusService {
 				String preRegId = iterate.getPreRegistrationId();
 
 				DemographicEntityConsumed demographicEntityConsumed = new DemographicEntityConsumed();
-				
+
 				RegistrationBookingEntityConsumed bookingEntityConsumed = new RegistrationBookingEntityConsumed();
-				
+
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 				if (demographicEntity != null) {
 
@@ -98,39 +98,43 @@ public class ConsumedStatusService {
 					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
 
 					List<DocumentEntity> documentEntityList = batchServiceDAO.getDocumentDetails(preRegId);
-					documentEntityList.forEach(documentEntity->{
-						if(documentEntity!=null) {
+					if (documentEntityList != null) {
+						documentEntityList.forEach(documentEntity -> {
+
 							DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
 							BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
 							batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
-						}
-					});
-					
-					
+
+						});
+
+					}
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
 					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
-					RegistrationBookingPKConsumed consumedPk=new RegistrationBookingPKConsumed();
+					RegistrationBookingPKConsumed consumedPk = new RegistrationBookingPKConsumed();
 					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
 					consumedPk.setPreregistrationId(bookingEntity.getBookingPK().getPreregistrationId());
 					bookingEntityConsumed.setBookingPK(consumedPk);
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
-					if(documentEntityList!=null) {
+					if (documentEntityList != null) {
 						batchServiceDAO.deleteDocument(documentEntityList);
 					}
 					batchServiceDAO.deleteBooking(bookingEntity);
 					batchServiceDAO.deleteDemographic(demographicEntity);
-					log.info("sessionId", "idType", "id", "Update the status successfully into Consumed tables for Pre-RegistrationId: "+preRegId);
-					
+					log.info("sessionId", "idType", "id",
+							"Update the status successfully into Consumed tables for Pre-RegistrationId: " + preRegId);
+
 					iterate.setStatusComments(NEW_STATUS_COMMENTS);
 					batchServiceDAO.updateProcessedList(iterate);
-					log.info("sessionId", "idType", "id", "Update the comment successfully into Processed PreId List table for Pre-RegistrationId: "+preRegId);
+					log.info("sessionId", "idType", "id",
+							"Update the comment successfully into Processed PreId List table for Pre-RegistrationId: "
+									+ preRegId);
 				}
 
 			});
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e,response);
+			new BatchServiceExceptionCatcher().handle(e, response);
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		response.setId(idUrl);

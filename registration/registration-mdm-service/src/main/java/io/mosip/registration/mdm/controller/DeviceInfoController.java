@@ -22,7 +22,12 @@ public class DeviceInfoController {
 	@GetMapping("/deviceInfo")
 	public List<DeviceInfoResponseData> getDevicesInfo() {
 		return Arrays.asList(
-				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_LEFT),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_RIGHT),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_THUMB),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_LEFT_ONBOARD),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_RIGHT_ONBOARD),
+				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SLAP_THUMB_ONBOARD),
 				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_SINGLE),
 				getDeviceInfo(MosipBioDeviceConstants.VALUE_FINGERPRINT, MosipBioDeviceConstants.VALUE_TOUCHLESS),
 				getDeviceInfo(MosipBioDeviceConstants.VALUE_IRIS, MosipBioDeviceConstants.VALUE_SINGLE), 

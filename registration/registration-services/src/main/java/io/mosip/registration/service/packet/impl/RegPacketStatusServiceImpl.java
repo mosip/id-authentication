@@ -28,6 +28,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -364,9 +365,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		File ackFile = null;
 		File zipFile = null;
 		String ackPath = registration.getAckFilename();
-		ackFile = new File(ackPath);
+		ackFile = FileUtils.getFile(ackPath);
 		String zipPath = ackPath.replace("_Ack.html", RegistrationConstants.ZIP_FILE_EXTENSION);
-		zipFile = new File(zipPath);
+		zipFile = FileUtils.getFile(zipPath);
 
 		if (zipFile.exists()) {
 
