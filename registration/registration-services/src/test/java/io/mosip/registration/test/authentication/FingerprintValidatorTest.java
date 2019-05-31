@@ -24,8 +24,10 @@ import org.mockito.junit.MockitoRule;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.Score;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -53,7 +55,7 @@ public class FingerprintValidatorTest {
 	private BioService bioService;
 
 	@Mock
-	private BioApiImpl bioApiImpl;
+	private IBioApi bioApiImpl;
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 	private ApplicationContext applicationContext = ApplicationContext.getInstance();
@@ -86,7 +88,7 @@ public class FingerprintValidatorTest {
 	}
 
 	@Test
-	public void validateSingleTest() {
+	public void validateSingleTest() throws BiometricException {
 		// FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
 		// fingerprintDetailsDTO.setFingerType("right index");
 		UserBiometric userBiometric = new UserBiometric();
@@ -117,7 +119,7 @@ public class FingerprintValidatorTest {
 	}
 
 	@Test
-	public void validateMultipleTest() {
+	public void validateMultipleTest() throws BiometricException {
 		
 		authenticationValidatorDTO.setAuthValidationType("multiple");
 		FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
