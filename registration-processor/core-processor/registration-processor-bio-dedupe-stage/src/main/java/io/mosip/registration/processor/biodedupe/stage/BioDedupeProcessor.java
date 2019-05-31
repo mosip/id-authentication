@@ -156,7 +156,8 @@ public class BioDedupeProcessor {
 
 				}
 
-			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
+			} else if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())
+					|| registrationType.equalsIgnoreCase(SyncTypeDto.RES_UPDATE.toString())) {
 				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto);
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
 					updatePacketPreAbisIdentification(registrationStatusDto, object);
@@ -304,7 +305,7 @@ public class BioDedupeProcessor {
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PVM_IDENTITY_NOT_FOUND.getMessage());
 		JSONObject json = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUAL_BIOMETRICS);
-		if (!json.isEmpty()) {
+		if (json!=null && !json.isEmpty()) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment("Bio dedupe Inprogress");
 			registrationStatusDto

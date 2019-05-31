@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.2</version>
+		<version>0.12.4</version>
 	</parent>
 
 
@@ -176,8 +176,8 @@
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-syncjob-service</module>
+		<module>kernel-config-server</module>
 		<module>kernel-signature-service</module>
-		<module>kernel-config-server</module> 
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
 

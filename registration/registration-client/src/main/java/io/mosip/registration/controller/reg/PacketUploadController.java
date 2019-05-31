@@ -85,11 +85,11 @@ public class PacketUploadController extends BaseController implements Initializa
 	private TableColumn<PacketStatusVO, Boolean> checkBoxColumn;
 	
 	@FXML
-	private TableColumn<PacketStatusVO, Boolean> regDate; 
-	
+	private TableColumn<PacketStatusVO, Boolean> regDate;
+
 	@FXML
 	private TableColumn<PacketStatusVO, Boolean> slno;
-
+	
 	@FXML
 	private Button saveToDevice;
 
@@ -504,7 +504,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			packetStatusVO.setSupervisorStatus(packet.getSupervisorStatus());
 			packetStatusVO.setSupervisorComments(packet.getSupervisorComments());
 			packetStatusVO.setCreatedTime(packet.getCreatedTime());
-			packetStatusVO.setSlno(String.valueOf(count++)); 
+			packetStatusVO.setSlno(String.valueOf(count++));
 			packetsToBeExport.add(packetStatusVO);
 		}
 		if (packetsToBeExport.isEmpty()) {
@@ -520,6 +520,7 @@ public class PacketUploadController extends BaseController implements Initializa
 		loadInitialPage();
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
+		regDate.setResizable(false);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
 	}

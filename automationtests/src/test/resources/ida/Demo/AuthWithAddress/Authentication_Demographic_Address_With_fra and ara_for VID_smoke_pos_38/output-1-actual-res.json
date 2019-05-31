@@ -1,1 +1,1 @@
-{"transactionID":"6667246501","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - id"}],"responseTime":"2019-05-28T09:16:54.511+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}
+{"transactionID":"5630351180","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - IdentityInfoDTO"}],"responseTime":"2019-05-30T15:08:53.270+05:30","response":{"authStatus":false,"staticToken":null}}

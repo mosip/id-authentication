@@ -35,7 +35,9 @@ public interface GlobalParamService {
 	 * Update software update status.
 	 * 
 	 * @param isUpdateAvailable
-	 *            update status
+	 *          - update status
+	 * @param timestamp
+	 * 			- the timestamp
 	 *
 	 * @return the response DTO
 	 */

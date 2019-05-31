@@ -1,1 +1,1 @@
-[]
+[{"testType":"smoke","testCaseName":"MultipleBookingAppointment_smoke","jiraId":"MOS-1011","MultipleBookAnAppointmentByPassingInvalidPreRegistrationId_Alphabets":"valid","MultipleBookAnAppointmentByPassingInvalidPreRegistrationId_RequestTime":"valid","status":""}, {"testType":"smoke","testCaseName":"ReBookForMultipleBookedAppointment_smoke","jiraId":"MOS-1012","MultipleBookAnAppointmentByPassingInvalidPreRegistrationId_Alphabets":"valid","MultipleBookAnAppointmentByPassingInvalidPreRegistrationId_RequestTime":"valid","status":""}]

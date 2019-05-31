@@ -1,1 +1,1 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"6752264753","requestTime":"2019-05-28T09:15:04.004+05:30","individualId":"NoLoadedUINFound","individualIdType":"UIN","otpChannel":["EMAIL","PHONE"]}
+{"id":"mosip.identity.otp","version":"1.0","transactionID":"1570630060","requestTime":"2019-05-30T13:08:39.039+05:30","individualId":"NoLoadedUINFound","individualIdType":"UIN","otpChannel":["EMAIL","PHONE"]}

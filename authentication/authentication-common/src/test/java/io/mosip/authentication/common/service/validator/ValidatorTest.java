@@ -43,6 +43,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
@@ -50,9 +51,9 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class ValidatorTest {
-	
+
 	@Mock
 	private SpringValidatorAdapter validator;
 
@@ -82,18 +83,20 @@ public class ValidatorTest {
 
 	@Mock
 	private IDAMappingConfig idMappingConfig;
-	
+
 	@Mock
 	private IdInfoFetcher idInfoFetcher;
+	
+	@Mock
+	private IdObjectValidator IdObjectValidator;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "uinValidator", uinValidator);
 		ReflectionTestUtils.setField(authRequestValidator, "vidValidator", vidValidator);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
-	
+
 	@Test
 	public void validateIDNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -102,7 +105,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
+
 	@Test
 	public void validateIDEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -111,7 +114,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
+
 	@Test
 	public void validateIdvIdNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -120,7 +123,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
+
 	@Test
 	public void validateIdvIdEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -129,7 +132,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
+
 	@Test
 	public void validateIdvIdUinFailure() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -138,7 +141,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-002")));
 	}
-	
+
 	@Test
 	public void validateIdvIdVidFailure() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -148,7 +151,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-004")));
 	}
-	
+
 	@Test
 	public void validateIdtypeUinVidNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -157,7 +160,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
+
 	@Test
 	public void validateIdtypeUinVidEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -166,7 +169,6 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
-	
 
 	@Test
 	public void validateTxnIdNull() {
@@ -175,9 +177,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
 	}
-	
+
 	@Test
 	public void validateTxnIdEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -185,19 +188,21 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
 	}
-	
+
 	@Test
 	public void validateTxnIdInvalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		authRequestDTO.setTransactionID("awer4w5445");
+		authRequestDTO.setTransactionID("!@#$4w5445");
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("transactionID"))));
 	}
-	
+
 	@Test
 	public void validateReqTimeNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -205,9 +210,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
 	}
-	
+
 	@Test
 	public void validateReqTimeEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -215,9 +221,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
 	}
-	
+
 	@Test
 	public void validateReqTimeInvalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -225,9 +232,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("requestTime"))));
 	}
-	
+
 	@Test
 	public void validateReqTimeInvalid2() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -237,7 +245,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 	}
-	
+
 	@Test
 	public void validateRequestReqTimeNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -247,9 +255,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
 	}
-	
+
 	@Test
 	public void validateRequestReqTimeEmpty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -259,9 +268,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
 	}
-	
+
 	@Test
 	public void validateRequestReqTimeInvalid2() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -273,7 +283,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 	}
-	
+
 	@Test
 	public void validateRequestReqTimeInvalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -283,9 +293,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("request/timestamp"))));
 	}
-	
+
 	@Test
 	public void validateConsentReqInvalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -294,7 +305,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-014")));
 	}
-	
+
 	@Test
 	public void validateAllowedAuthTypes() {
 		MockEnvironment mockEnv = new MockEnvironment();
@@ -305,7 +316,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
 	}
-	
+
 	@Test
 	public void validateAllowedAuthTypes2() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -314,7 +325,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
 	}
-	
+
 	@Test
 	public void validateAuthType() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -323,7 +334,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-008")));
 	}
-	
+
 	@Test
 	public void validateRequestTimedOut() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -333,7 +344,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 	}
-	
+
 	@Test
 	public void checkDemoAuth() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -349,9 +360,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
 	}
-	
+
 	@Test
 	public void checkIdentityInfoValue() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -368,9 +380,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
 	}
-	
+
 	@Test
 	public void checkLangaugeDetails() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -393,9 +406,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("LanguageCode"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("LanguageCode"))));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -405,31 +419,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-010")));
 	}
-	
-	@Test
-	public void validateBioMetadataDetails_validateDeviceInfo_Null() {
-		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		RequestDTO requestDto = authRequestDTO.getRequest();
-		requestDto.getBiometrics().get(0).getData().setDeviceProviderID(null);;
-		authRequestDTO.setRequest(requestDto);
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("deviceProviderID"))));
-	}
-	
-	@Test
-	public void validateBioMetadataDetails_validateDeviceInfo_Empty() {
-		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
-		RequestDTO requestDto = authRequestDTO.getRequest();
-		requestDto.getBiometrics().get(0).getData().setDeviceProviderID("");;
-		authRequestDTO.setRequest(requestDto);
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("deviceProviderID"))));
-	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateBioType_Null() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -439,9 +429,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateBioType_Empty() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -451,9 +442,10 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioType"))));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateBioData_Null() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -464,7 +456,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-010")));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateBioType_Invalid() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -474,11 +466,12 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("XYZ"))));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("XYZ"))));
 	}
-	
+
 	@Test
-	public void validateBioMetadataDetails_validateBioSubType_Null() { //TODO check error code
+	public void validateBioMetadataDetails_validateBioSubType_Null() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		requestDto.getBiometrics().get(0).getData().setBioSubType(null);
@@ -486,11 +479,12 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
 	}
-	
+
 	@Test
-	public void validateBioMetadataDetails_validateBioSubType_Empty() { //TODO check error code
+	public void validateBioMetadataDetails_validateBioSubType_Empty() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		requestDto.getBiometrics().get(0).getData().setBioSubType("");
@@ -498,7 +492,8 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
+		errors.getAllErrors().stream().forEach(
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType"))));
 	}
 
 	@Test
@@ -510,24 +505,26 @@ public class ValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FID"))));
+		errors.getAllErrors().stream().forEach(err -> assertTrue(
+				Stream.of(err.getArguments()).anyMatch(error -> error.equals("bioSubType - XYZ for bioType FID"))));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateFaceBioType() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FID");
 		dataDTO.setBioSubType("UNKNOWN");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
 		requestDto.setBiometrics(biometrics);
@@ -536,24 +533,26 @@ public class ValidatorTest {
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(BioMatchType.FACE)).thenReturn(Boolean.TRUE);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-009")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("face"))));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("face"))));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestValueCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("UNKNOWN");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
 		requestDto.setBiometrics(biometrics);
@@ -563,22 +562,23 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-002")));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestTypeCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setBioValue("AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
 		requestDto.setBiometrics(biometrics);
@@ -588,33 +588,35 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-002")));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestExceedingCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("RIGHT_INDEX");
-		dataDTO.setBioValue("AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
-		DataDTO dataDTO1 = new DataDTO();//DataDTO
+		DataDTO dataDTO1 = new DataDTO();// DataDTO
 		dataDTO1.setBioType("FMR");
 		dataDTO1.setBioSubType("UNKNOWN");
-		dataDTO1.setBioValue("ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO1.setBioValue(
+				"ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO1.setDeviceProviderID("cogent");
 		dataDTO1.setTransactionID("1234567890");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO1.setData(dataDTO1);
 		biometrics.add(bioIdentityInfoDTO1);
 		requestDto.setBiometrics(biometrics);
@@ -624,22 +626,23 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-003")));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateIrisRequestValueCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForIris();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
 		dataDTO.setBioSubType("RIGHT");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
 		requestDto.setBiometrics(biometrics);
@@ -649,33 +652,35 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-007")));
 	}
-	
+
 	@Test
 	public void validateBioMetadataDetails_validateIrisRequestExceedingCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForIris();
 		RequestDTO requestDto = authRequestDTO.getRequest();
 		List<BioIdentityInfoDTO> biometrics = new ArrayList<>();
 		biometrics.addAll(requestDto.getBiometrics());
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
 		dataDTO.setBioSubType("RIGHT");
-		dataDTO.setBioValue("AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
 		biometrics.add(bioIdentityInfoDTO);
-		DataDTO dataDTO1 = new DataDTO();//DataDTO
+		DataDTO dataDTO1 = new DataDTO();// DataDTO
 		dataDTO1.setBioType("IIR");
 		dataDTO1.setBioSubType("LEFT");
-		dataDTO1.setBioValue("ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO1.setBioValue(
+				"ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO1.setDeviceProviderID("cogent");
 		dataDTO1.setTransactionID("1234567890");
 		dataDTO1.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO1 = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO1.setData(dataDTO1);
 		biometrics.add(bioIdentityInfoDTO1);
 		requestDto.setBiometrics(biometrics);
@@ -684,9 +689,10 @@ public class ValidatorTest {
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-008")));
-		errors.getAllErrors().stream().forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("iris"))));
+		errors.getAllErrors().stream()
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("iris"))));
 	}
-	
+
 	@Test
 	public void validateAllowedAuthTypesNull() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -695,7 +701,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
 	}
-	
+
 	@Test
 	public void checkAuthRequest() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
@@ -704,7 +710,7 @@ public class ValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-008")));
 	}
-	
+
 	private AuthRequestDTO createAuthRequestForFace() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setConsentObtained(true);
@@ -719,24 +725,25 @@ public class ValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FID");
 		dataDTO.setBioSubType("UNKNOWN");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
-		RequestDTO reqDTO = new RequestDTO();//RequestDTO
+		RequestDTO reqDTO = new RequestDTO();// RequestDTO
 		reqDTO.setBiometrics(Collections.singletonList(bioIdentityInfoDTO));
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequest(reqDTO);
-		return authRequestDTO;		
+		return authRequestDTO;
 	}
-	
+
 	private AuthRequestDTO createAuthRequestForFinger() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setConsentObtained(true);
@@ -751,24 +758,25 @@ public class ValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("FMR");
 		dataDTO.setBioSubType("LEFT_INDEX");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
-		RequestDTO reqDTO = new RequestDTO();//RequestDTO
+		RequestDTO reqDTO = new RequestDTO();// RequestDTO
 		reqDTO.setBiometrics(Collections.singletonList(bioIdentityInfoDTO));
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequest(reqDTO);
-		return authRequestDTO;		
+		return authRequestDTO;
 	}
-	
+
 	private AuthRequestDTO createAuthRequestForIris() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setConsentObtained(true);
@@ -783,22 +791,23 @@ public class ValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(true);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
-		DataDTO dataDTO = new DataDTO();//DataDTO
+		DataDTO dataDTO = new DataDTO();// DataDTO
 		dataDTO.setBioType("IIR");
 		dataDTO.setBioSubType("LEFT");
-		dataDTO.setBioValue("Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
+		dataDTO.setBioValue(
+				"Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA");
 		dataDTO.setDeviceProviderID("cogent");
 		dataDTO.setTransactionID("1234567890");
 		dataDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
-		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();//BioIdentityInfoDTO
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();// BioIdentityInfoDTO
 		bioIdentityInfoDTO.setData(dataDTO);
-		RequestDTO reqDTO = new RequestDTO();//RequestDTO
+		RequestDTO reqDTO = new RequestDTO();// RequestDTO
 		reqDTO.setBiometrics(Collections.singletonList(bioIdentityInfoDTO));
 		reqDTO.setTimestamp(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setRequest(reqDTO);
-		return authRequestDTO;		
+		return authRequestDTO;
 	}
 
 }

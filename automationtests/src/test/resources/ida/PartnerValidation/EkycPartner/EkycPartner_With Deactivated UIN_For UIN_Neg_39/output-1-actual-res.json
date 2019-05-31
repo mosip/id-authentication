@@ -1,1 +1,0 @@
-{"transactionID":"3560260061","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated","actionMessage":"Your UIN status is not active"}],"responseTime":"2019-05-23T12:03:42.673+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

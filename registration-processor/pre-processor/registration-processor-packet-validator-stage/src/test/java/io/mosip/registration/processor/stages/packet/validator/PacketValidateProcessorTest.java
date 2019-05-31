@@ -54,6 +54,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -208,13 +209,14 @@ public class PacketValidateProcessorTest {
 		listAppender = new ListAppender<>();
 
 		dto.setRid("2018701130000410092018110735");
+		dto.setReg_type(RegistrationType.valueOf("UPDATE"));
 
 		MockitoAnnotations.initMocks(this);
 		packetMetaInfo = new PacketMetaInfo();
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("NEW");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -348,6 +350,15 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(statusResponseDto);
 
+		JSONObject jsonObject = Mockito.mock(JSONObject.class);
+		Mockito.when(utility.getUIn(any())).thenReturn(12345678l);
+		Mockito.when(utility.retrieveIdrepoJson(any())).thenReturn(jsonObject);
+
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jsonObject);
+		// PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.getJSONObject(jsonObject, "individualBiometrics")).thenReturn(jsonObject);
+		Mockito.when(jsonObject.get("value")).thenReturn("applicantCBEF");
+
 		List<SyncRegistrationEntity> synchRecordList = new ArrayList<>();
 		synchRecordList.add(new SyncRegistrationEntity());
 
@@ -405,7 +416,7 @@ public class PacketValidateProcessorTest {
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("resupdate");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -463,7 +474,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
 				.thenReturn(packetMetaInfo);
-		dto.setReg_type("ABC");
+		dto.setReg_type(RegistrationType.ACTIVATED);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 
@@ -483,7 +494,7 @@ public class PacketValidateProcessorTest {
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
-		registrationType.setValue("New");
+		registrationType.setValue("resupdate");
 
 		FieldValue applicantType = new FieldValue();
 		applicantType.setLabel("applicantType");
@@ -816,5 +827,6 @@ public class PacketValidateProcessorTest {
 		assertEquals(true, messageDto.getInternalError());
 
 	}
+
 
 }

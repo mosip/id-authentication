@@ -32,7 +32,6 @@ export class MapComponent implements OnInit {
   centers: any;
   markers = [];
 
-  // tslint:disable-next-line:max-line-length
   googleMapsUrl =
     'http://maps.google.com/maps/vt?pb=!1m5!1m4!1i{z}!2i{x}!3i{y}!4i256!2m3!1e0!2sm!3i375060738!3m9!2spl!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0';
 
@@ -62,11 +61,7 @@ export class MapComponent implements OnInit {
   }
 
   createMap() {
-    console.log(this.lonLat);
-    console.log(this.centers);
-
     addCommonProjections();
-
     for (let i in this.centers) {
       this.marker = new OlFeature({
         geometry: new OlPoint(fromLonLat([this.centers[i]['longitude'], this.centers[i]['latitude']]))
@@ -119,7 +114,6 @@ export class MapComponent implements OnInit {
   }
 
   changeCenter() {
-    console.log(this.lonLat);
     const view = this.map.getView();
     view.setCenter(fromLonLat([this.lonLat[0], this.lonLat[1]]));
     view.setZoom(14);

@@ -174,8 +174,5 @@ public class UINGeneration extends BaseTestCase implements ITest{
 				logger.info("Successfully updated Results to UINGenerationOutput.json file.......................!!");
 			}
 		}
-
-		
-		
-	
 }
+

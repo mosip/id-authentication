@@ -50,11 +50,6 @@ export class AutoLogoutService {
    * @memberof AutoLogoutService
    */
   getValues(langCode: string) {
-    /*
-          ******Documentation
-          This method is used to get values for idle , timeout and ping which comes from confi data...
-    */
-    console.log(this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_idle));
     (this.idle = Number(
       this.configservice.getConfigByKey(appConstants.CONFIG_KEYS.mosip_preregistration_auto_logout_idle)
     )),
@@ -109,15 +104,12 @@ export class AutoLogoutService {
 
     this.userIdle.onTimerStart().subscribe(
       res => {
-        console.log('hi');
         if (res == 1) {
           this.setisActive(false);
           this.openPopUp();
-          console.log(res);
         } else {
           if (this.isActive) {
-            if (this.dialogref)
-            this.dialogref.close();
+            if (this.dialogref) this.dialogref.close();
           }
         }
       },
@@ -159,7 +151,6 @@ export class AutoLogoutService {
    */
 
   openPopUp() {
-    // console.log("keepspoping up");
     const data = {
       case: 'POPUP',
       content: this.secondaryLanguagelabels.preview

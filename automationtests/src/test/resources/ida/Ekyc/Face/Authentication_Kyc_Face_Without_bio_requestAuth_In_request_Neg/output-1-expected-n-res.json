@@ -1,1 +1,1 @@
-{"transactionID":"5106204365","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
-import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,8 +20,7 @@ public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	/** The err. */
 	private List<ErrorDTO> error;
 
-	/** The status. */
-	private String status;
+	private Object metadata;
 
 	/** The response. */
 	@JsonFilter("responseFilter")
