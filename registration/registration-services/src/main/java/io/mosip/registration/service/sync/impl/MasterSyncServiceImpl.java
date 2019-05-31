@@ -326,7 +326,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 			}
 
 			// Add the Key Index
-			if (null != keyIndex) {
+			if (null != keyIndex && !RegistrationConstants.EMPTY.equalsIgnoreCase(keyIndex)) {
 				requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
 			}
 
