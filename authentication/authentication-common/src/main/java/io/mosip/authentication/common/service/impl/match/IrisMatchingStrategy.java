@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
