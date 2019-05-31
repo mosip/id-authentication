@@ -1464,8 +1464,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		parm.put("from_date", fromDate.toString());
 		parm.put("to_date", toDate);
 		String preReg_RetriveBookedPreIdsByRegIdURI = preReg_RetriveBookedPreIdsByRegId + regCenterId;
-		
-		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
+		logger.info("preReg_RetriveBookedPreIdsByRegIdURI:"+preReg_RetriveBookedPreIdsByRegIdURI);
+		response = applnLib.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
 
 
 		return response;
