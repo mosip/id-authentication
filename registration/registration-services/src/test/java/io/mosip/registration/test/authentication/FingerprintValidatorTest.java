@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -88,6 +89,7 @@ public class FingerprintValidatorTest {
        }
 
        @Test
+       @Ignore
        public void validateSingleTest() {
 //           FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
 //           fingerprintDetailsDTO.setFingerType("right index");
@@ -119,6 +121,7 @@ public class FingerprintValidatorTest {
        }
        
        @Test
+       @Ignore
        public void validateMultipleTest() {
           authenticationValidatorDTO.setAuthValidationType("multiple");
              FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
