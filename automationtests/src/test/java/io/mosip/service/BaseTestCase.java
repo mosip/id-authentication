@@ -149,7 +149,7 @@ public class BaseTestCase{
 
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
-			AuthTestsUtil.wakeDemoApp();
+			//AuthTestsUtil.wakeDemoApp();
 		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
