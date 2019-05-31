@@ -72,8 +72,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * Validates FingerPrint after getting the scanned data
 	 * 
 	 * @param userId
+	 *            - the user ID
 	 * @return boolean
 	 * @throws IOException
+	 *             - Exception that may occur while reading the resource
 	 */
 	@Override
 	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException {
@@ -115,8 +117,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * Validates Iris after getting the scanned data
 	 * 
 	 * @param userId
+	 *            - the user ID
 	 * @return boolean
 	 * @throws IOException
+	 *             - Exception that may occur in reading the resource
 	 */
 	@Override
 	public boolean validateIris(String userId) throws RegBaseCheckedException, IOException {
@@ -244,8 +248,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 	}
 
 	/**
-	 * Stub method to get the finger print scanned image from local hard disk.
-	 * Once SDK and device avilable then we can remove it.
+	 * Stub method to get the finger print scanned image from local hard disk. Once
+	 * SDK and device avilable then we can remove it.
 	 *
 	 * @param path
 	 *            the path
@@ -404,8 +408,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * Preparing segmentation detail of Biometric from MDM
 	 * 
 	 * @param fingerprintDetailsDTO
+	 *            - the fingerprints which have to be segmented
 	 * @param fingerType
+	 *            - type of finger, whether right or left
 	 * @throws RegBaseCheckedException
+	 *             - generalized exception with errorCode and errorMessage
 	 */
 	protected void prepareSegmentedBiometricsFromMdm(FingerprintDetailsDTO fingerprintDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -514,7 +521,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validates Face after getting the scanned data
 	 * 
-	 * @param userId
+	 * @param userId - the userID
 	 * @return boolean
 	 */
 	@Override
@@ -700,8 +707,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	}
 
 	/**
-	 * Validate the Input Finger with the finger that is fetched from the
-	 * Database.
+	 * Validate the Input Finger with the finger that is fetched from the Database.
 	 *
 	 * @param fingerprintDetailsDTO
 	 *            the fingerprint details DTO

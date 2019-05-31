@@ -85,6 +85,7 @@ public interface LoginService {
 	 *            invalid login count
 	 * @param invalidLoginTime
 	 *            invalid login time
+	 * @return String - returns whether validation successful or not
 	 */
 	String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime);
 	
@@ -93,6 +94,7 @@ public interface LoginService {
 	 * 
 	 * @param userId
 	 *            userid
+	 * @return {@link ResponseDTO}
 	 */
 	ResponseDTO validateUser(String userId);
 
