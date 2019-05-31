@@ -49,5 +49,13 @@ public class SystemFileIOException extends BaseUncheckedException {
 		this.mainResposneDTO=response;
 	}
 
+	/**
+	 * @param errCode  pass the error code
+	 * @param msg  pass the error message
+	 * @param cause  pass the error cause
+	 */
+	public SystemFileIOException(String errCode, String msg, Throwable cause) {
+		super(errCode, msg, cause);
+	}
 
 }

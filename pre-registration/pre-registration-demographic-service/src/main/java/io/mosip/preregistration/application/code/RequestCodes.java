@@ -30,10 +30,8 @@ public enum RequestCodes {
 	FULLNAME("fullName"),
 	
 	/*postalCode*/
-	POSTAL_CODE("postalCode"),
-
-	/* POA */
-	POA("POA");
+	POSTAL_CODE("postalCode");
+	
 	
 	/**
 	 * @param code
