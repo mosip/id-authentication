@@ -72,8 +72,8 @@ Below are the proxy implementations used in ID-Authentication:
 - ***MISP verification*** - Mocked the verification of MISP by the using mocked *License Key*.
 - ***Partner verification*** - Mocked the verification of Partner by using Mocked *Policy* for the partner which provides the information on whether the KYC Auth request is allowed.
 - ***MOSIP public key for encrypting Request block*** - The private key used for decrypting the request would be maintained in Partner Management Service, which is currently mocked using reference ID **PARTNER** and application ID **IDA**, and public key of the same should be used while encrypting the request.
-- ***keyIndex*** - No validation is performed for keyIndex which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
+- ***keyIndex*** - No validation is performed for `keyIndex` which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
 - ***Encrypted KYC response*** - KYC Response is encrypted using mocked MOSIP public key with reference ID **PARTNER** and application ID **IDA**, and private key of the same should be used to decrypt the response.
 - ***Digital Signature in request*** - Any digital signature added in the eKYC auth request is not currently validated .
 - ***Digital Signature in response*** - The eKYC auth response is digitally signed using the MOSIP private key with reference ID **SIGN** and application ID **KERNEL**, and public key of the same should be used to verify the signature.
-- ***bioValue*** - The bioValue attribute in biometric data should be only base 64 encoded, and not encrypted.
+- ***bioValue*** - The `bioValue` attribute in biometric data of the authentication request should be only base 64 encoded, and not encrypted.
