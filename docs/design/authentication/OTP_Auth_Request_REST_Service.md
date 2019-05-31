@@ -15,7 +15,7 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 -	Partner will send Individual's UIN/VID to enable authentication of Individual
 -	Partner will send Partner ID and MISP License Key to authenticate and authorize a Partner to authenticate an Individual
 -	Check Individual's UIN/VID for authenticity and validity. 
--	Same ID type should be used in both OTP request and OTP authentication request. For example, if Individual's UIN is used earilier in the OTP request, only the Individual's UIN should be used in the OTP Authentication request. Similarly, if Individual's VID is used earilier in the OTP request, only the Individual's VID should be used in the OTP Authentication request. And it cannot be vise versa.
+-	Same ID type should be used in both OTP request and OTP authentication request. For example, if Individual's UIN is used earilier in the OTP request, only the Individual's UIN should be used in the OTP Authentication request. Similarly, if Individual's VID is used earilier in the OTP request, only the Individual's VID should be used in the OTP Authentication request. And it should not be like UIN used in the OTP request and VID used in OTP authentication request, or vise versa.
 -	Validate OTP value of the Individual against the one generated earlier in the OTP request.
 -	Inform authentication status (success/failure) to the Individual in the form of message and/or email
 
