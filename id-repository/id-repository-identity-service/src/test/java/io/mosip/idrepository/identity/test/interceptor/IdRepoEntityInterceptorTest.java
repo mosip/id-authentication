@@ -78,8 +78,9 @@ public class IdRepoEntityInterceptorTest {
 				.thenReturn(mapper.readValue("{\"response\":{\"data\":\"1234\"}}".getBytes(), ObjectNode.class));
 		Uin uin = new Uin();
 		uin.setUinData(new byte[] { 0 });
-		Object[] state = new Object[] { new byte[] { 0 } };
-		String[] propertyNames = new String[] { "uinData" };
+		uin.setUin("461_7329815461_7C9JlRD32RnFTzAmeTfIzg");
+		Object[] state = new Object[] { new byte[] { 0 } ,"461_7329815461_7C9JlRD32RnFTzAmeTfIzg"};
+		String[] propertyNames = new String[] { "uinData" ,"uin"};
 		interceptor.onSave(uin, null, state, propertyNames, null);
 	}
 
@@ -91,8 +92,9 @@ public class IdRepoEntityInterceptorTest {
 				.thenReturn(mapper.readValue("{\"response\":{\"data\":\"1234\"}}".getBytes(), ObjectNode.class));
 		UinHistory uin = new UinHistory();
 		uin.setUinData(new byte[] { 0 });
-		Object[] state = new Object[] { new byte[] { 0 } };
-		String[] propertyNames = new String[] { "uinData" };
+		uin.setUin("461_7329815461_7C9JlRD32RnFTzAmeTfIzg");
+		Object[] state = new Object[] { new byte[] { 0 } ,"461_7329815461_7C9JlRD32RnFTzAmeTfIzg"};
+		String[] propertyNames = new String[] { "uinData" ,"uin"};
 		interceptor.onSave(uin, null, state, propertyNames, null);
 	}
 

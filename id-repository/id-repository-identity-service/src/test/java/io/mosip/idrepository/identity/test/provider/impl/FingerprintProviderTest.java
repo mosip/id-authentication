@@ -58,8 +58,8 @@ public class FingerprintProviderTest {
 				.build();
 		BIRType birType = new BIRType();
 		birType.setBDB(rFinger.getBdb());
-		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(birType);
-		List<BIR> data = fp.convertFIRtoFMR(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(rFinger);
+		List<BIR> data = fp.convertFIRtoFMR(Collections.singletonList(rFinger));
 		assertTrue(data.get(0).getBdbInfo().getFormatType() == 2);
 	}
 
@@ -85,9 +85,9 @@ public class FingerprintProviderTest {
 				.build();
 		BIRType birType = new BIRType();
 		birType.setBDB(rFinger.getBdb());
-		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(birType);
+		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(rFinger);
 		List<BIR> data = fp
-				.convertFIRtoFMR(Lists.newArrayList(rFinger.toBIRType(rFinger), rFinger2.toBIRType(rFinger2)));
+				.convertFIRtoFMR(Lists.newArrayList(rFinger, rFinger2));
 		assertTrue(data.get(0).getBdbInfo().getFormatType() == 2);
 	}
 }
