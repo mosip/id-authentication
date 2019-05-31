@@ -445,7 +445,7 @@
       "title_success": "Success",
       "title_error": "Error",
       "cancelAppointment": {
-        "msg_confirm": "Appointment for The selected application will be cancelled. Please confirm.",
+        "msg_confirm": "Appointment for the selected application will be cancelled.",
         "msg_deleted": "Appointment for the selected application has been successfully cancelled.",
         "msg_could_not_deleted": "Appointment for The selected application could not be cancelled"
       },
