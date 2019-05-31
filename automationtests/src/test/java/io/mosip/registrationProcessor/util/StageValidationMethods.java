@@ -8,17 +8,17 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import io.mosip.dbaccess.RegProcTransactionDb;
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbentity.TransactionStatus;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-import io.mosip.dbaccess.RegProcTransactionDb;
-import io.mosip.dbdto.RegistrationPacketSyncDTO;
 
 public class StageValidationMethods extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
@@ -79,8 +79,8 @@ public class StageValidationMethods extends BaseTestCase {
 		Response response=applnMethods.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
 		logger.info("Response from packet upload :: "+ response.asString());
 	}
-	public List<String> getStatusList(String regID) {
-		List<String> regStatus = packetTransaction.readStatus(regID);
+	public Set<String> getStatusList(String regID) {
+		Set<String> regStatus = packetTransaction.readStatus(regID);
 		return regStatus;
 	}
 	

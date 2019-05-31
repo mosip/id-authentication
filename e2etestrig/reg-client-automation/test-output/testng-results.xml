@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Registration Client Integration Scenario" duration-ms="45241" started-at="2019-05-28T12:12:17Z" finished-at="2019-05-28T12:13:02Z">
+    <groups>
+    </groups>
+    <test name="EmailNotificationServiceTest" duration-ms="45241" started-at="2019-05-28T12:12:17Z" finished-at="2019-05-28T12:13:02Z">
+      <class name="io.mosip.registration.main.PacketCreation">
+        <test-method status="PASS" signature="springTestContextBeforeTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="springTestContextBeforeTestClass" is-config="true" duration-ms="6" started-at="2019-05-28T17:42:17Z" finished-at="2019-05-28T17:42:17Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestClass -->
+        <test-method status="PASS" signature="springTestContextPrepareTestInstance()[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="springTestContextPrepareTestInstance" is-config="true" duration-ms="20126" started-at="2019-05-28T17:42:17Z" depends-on-methods="org.springframework.test.context.testng.AbstractTestNGSpringContextTests.springTestContextBeforeTestClass" finished-at="2019-05-28T17:42:37Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextPrepareTestInstance -->
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="1" started-at="2019-05-28T17:42:37Z" finished-at="2019-05-28T17:42:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.registration.main.PacketCreation.createPacket() throws java.io.FileNotFoundException,java.io.IOException,org.json.simple.parser.ParseException]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextBeforeTestMethod -->
+        <test-method status="PASS" signature="createPacket()[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="createPacket" duration-ms="25097" started-at="2019-05-28T17:42:37Z" finished-at="2019-05-28T17:43:02Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createPacket -->
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="1" started-at="2019-05-28T17:43:02Z" finished-at="2019-05-28T17:43:02Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.registration.main.PacketCreation.createPacket() throws java.io.FileNotFoundException,java.io.IOException,org.json.simple.parser.ParseException]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestMethod -->
+        <test-method status="PASS" signature="springTestContextAfterTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@1af2d44a]" name="springTestContextAfterTestClass" is-config="true" duration-ms="0" started-at="2019-05-28T17:43:02Z" finished-at="2019-05-28T17:43:02Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- springTestContextAfterTestClass -->
+      </class> <!-- io.mosip.registration.main.PacketCreation -->
+    </test> <!-- EmailNotificationServiceTest -->
+  </suite> <!-- Registration Client Integration Scenario -->
+</testng-results>
