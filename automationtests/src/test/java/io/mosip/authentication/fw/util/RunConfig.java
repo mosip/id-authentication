@@ -491,4 +491,12 @@ public abstract class RunConfig {
 	public abstract String getErrorsConfigPath();	
 	public abstract String getClientidsecretkey();
 	public abstract void setClientidsecretkey(String clientidsecretkey);
+	public abstract String getModuleFolderName();
+	public abstract void setModuleFolderName(String moduleFolderName);
+	public abstract String getGenerateVIDPath();
+	public abstract void setGenerateVIDPath(String generateVIDPath);
+	public abstract String getIdRepoCreateVIDRecordPath();
+	public abstract void setIdRepoCreateVIDRecordPath(String idRepoCreateVIDRecordPath);
+	public abstract String getIdRepoUpdateVIDStatusPath();
+	public abstract void setIdRepoUpdateVIDStatusPath(String IdRepoUpdateVIDStatusPath);
 }

@@ -3,7 +3,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: 4235064580
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.secondaryLangCode: $REMOVE$
@@ -11,6 +11,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -18,7 +19,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-one-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-one-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.phone: $idrepo~$input.bio-auth-request:AuthReq.individualId$~phone$
@@ -74,6 +75,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -81,7 +83,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-two-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-two-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.phone: $idrepo~$input.bio-auth-request:AuthReq.individualId$~phone$
@@ -139,6 +141,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -146,7 +149,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-two-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-two-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.phone: $idrepo~$input.bio-auth-request:AuthReq.individualId$~phone$
@@ -204,6 +207,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -211,7 +215,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-two-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-two-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.phone: $idrepo~$input.bio-auth-request:AuthReq.individualId$~phone$
@@ -268,6 +272,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -275,7 +280,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-one-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-one-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.staticToken: $TOKENID~$input.bio-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
@@ -289,9 +294,10 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
+      identityReq.bioSubType: LFTINDEX
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -301,7 +307,7 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:InvalidBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioSubtype:errorMessage$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
     output.output-2-expected-n-kyc-res:
       output.2.res.kyc.status: $IGNORE$
       output.2.res.kyc.staticToken: $IGNORE$
@@ -318,6 +324,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -325,7 +332,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -344,6 +351,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$HOUR+1
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -351,7 +359,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:RequestTimeIsFuture:errorCode$
       output.1.response.error.errorMessage: $errors:RequestTimeIsFuture:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeIsFuture:actionMessage$
@@ -371,6 +379,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -378,6 +387,7 @@ testdata:
       identityReq.bioSubType1: $TestData:bio_face_subType$
       identityReq.bioType1: $TestData:bio_face_type$
       identityReq.timestamp1: $TIMESTAMP$
+      identityReq.data.timestamp1: $TIMESTAMP$
       identityReq.deviceCode1: $TestData:bio_face_deviceCode$
       identityReq.transactionID1: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID1: $TestData:bio_face_deviceProviderID$
@@ -385,7 +395,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:FaceExceed1:errorCode$
       output.1.response.error.errorMessage: $errors:FaceExceed1:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -408,6 +418,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -415,7 +426,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -434,6 +445,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$HOUR-24
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -441,7 +453,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:RequestTimeLT24HR:errorCode$
       output.1.response.error.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeLT24HR:actionMessage$
@@ -461,6 +473,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$HOUR-30
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -468,7 +481,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:RequestTimeLT24HR:errorCode$
       output.1.response.error.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeLT24HR:actionMessage$
@@ -492,6 +505,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -499,7 +513,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -519,6 +533,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -526,7 +541,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -546,6 +561,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -553,7 +569,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:PolicyWithoutBioFace:errorCode$
       output.1.response.error.errorMessage: $errors:PolicyWithoutBioFace:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -574,6 +590,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -581,7 +598,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.error.actionMessage: $errors:InvalidVID:actionMessage$
@@ -604,6 +621,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -611,7 +629,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:Missingversion:errorCode$
       output.1.response.error.errorMessage: $errors:Missingversion:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -632,6 +650,7 @@ testdata:
       identityReq.bioSubType: $REMOVE$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -639,7 +658,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioSubtype:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -660,6 +679,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $REMOVE$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -667,7 +687,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -688,6 +708,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -695,7 +716,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -717,6 +738,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -724,7 +746,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -745,6 +767,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $REMOVE$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -752,7 +775,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioDeviceCode:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -773,6 +796,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $REMOVE$
@@ -780,7 +804,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -802,6 +826,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -809,7 +834,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -830,6 +855,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -837,7 +863,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.error.errorMessage: $errors:MissingUIN:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -858,6 +884,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -865,7 +892,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingindividualIdType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -886,6 +913,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -893,7 +921,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -914,6 +942,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $REMOVE$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -921,7 +950,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -942,6 +971,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $REMOVE$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -949,7 +979,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -970,6 +1000,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -977,7 +1008,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -998,6 +1029,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1005,7 +1037,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingtransactionID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1027,6 +1059,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1034,7 +1067,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.error.errorMessage: $errors:Invalidversion:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1055,6 +1088,7 @@ testdata:
       identityReq.bioSubType: $TestData:invalid$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1062,7 +1096,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioSubtype:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1083,6 +1117,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:invalid$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1090,7 +1125,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidBioType:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1111,6 +1146,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1118,7 +1154,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:BiometricFaceMismatch:errorCode$
       output.1.response.error.errorMessage: $errors:BiometricFaceMismatch:errorMessage$
       output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$
@@ -1141,6 +1177,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1148,7 +1185,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1170,6 +1207,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1177,7 +1215,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1198,6 +1236,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:invalid$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1205,7 +1244,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidBioDeviceCode:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1226,6 +1265,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:invalid$
@@ -1233,7 +1273,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidDeviceProviderId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1255,6 +1295,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1262,7 +1303,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidId:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1283,6 +1324,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1290,7 +1332,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidUIN:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1311,6 +1353,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1318,7 +1361,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1338,6 +1381,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1345,7 +1389,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:DeactivatedUIN:errorCode$
       output.1.response.error.errorMessage: $errors:DeactivatedUIN:errorMessage$
       output.1.response.error.actionMessage: $errors:DeactivatedUIN:actionMessage$
@@ -1367,6 +1411,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1374,7 +1419,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidindividualIdType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1395,6 +1440,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1402,7 +1448,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidrequestTime:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1423,6 +1469,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TestData:timestamp_invalid$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1430,7 +1477,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidIdentityTimestamp:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1451,6 +1498,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $TestData:txnID_Invalid$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1458,7 +1506,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidReqtxnID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidReqtxnID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1479,6 +1527,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1486,7 +1535,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidtransactionID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1508,6 +1557,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1515,7 +1565,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:Missingversion:errorCode$
       output.1.response.error.errorMessage: $errors:Missingversion:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1536,6 +1586,7 @@ testdata:
       identityReq.bioSubType: ''
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1543,7 +1594,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioSubtype:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioSubtype:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1564,6 +1615,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: ''
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1571,7 +1623,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1592,6 +1644,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1599,7 +1652,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1621,6 +1674,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1628,7 +1682,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1649,6 +1703,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: ''
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1656,7 +1711,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingBioDeviceCode:errorCode$
       output.1.response.error.errorMessage: $errors:MissingBioDeviceCode:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1677,6 +1732,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: ''
@@ -1684,7 +1740,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1706,6 +1762,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1713,7 +1770,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingId:errorCode$
       output.1.response.error.errorMessage: $errors:MissingId:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1734,6 +1791,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1741,7 +1799,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.error.errorMessage: $errors:MissingUIN:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1762,6 +1820,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1769,7 +1828,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.error.errorMessage: $errors:MissingindividualIdType:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1790,6 +1849,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1797,7 +1857,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1818,6 +1878,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: ''
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1825,7 +1886,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingIdentityTimestamp:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTimestamp:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1846,6 +1907,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: ''
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1853,7 +1915,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingIdentityTransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingIdentityTransactionID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1874,6 +1936,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1881,7 +1944,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.error.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1902,6 +1965,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1909,7 +1973,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.error.errorMessage: $errors:MissingtransactionID:errorMessage$
     output.output-2-expected-n-kyc-res:
@@ -1928,6 +1992,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1935,7 +2000,7 @@ testdata:
     output.output-1-expected-y-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-decoded-one-lang-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:true
     output.output-2-expected-decoded-one-lang-kyc-res:
       output.2.res.kyc.status: BOOLEAN:true
       output.2.res.kyc.staticToken: $IGNORE$
@@ -1954,6 +2019,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1961,7 +2027,7 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:BiometricFaceMismatch:errorCode$
       output.1.response.error.errorMessage: $errors:BiometricFaceMismatch:errorMessage$
       output.1.response.error.actionMessage: $errors:BiometricFaceMismatch:actionMessage$
@@ -1981,6 +2047,7 @@ testdata:
       identityReq.bioSubType: $TestData:bio_face_subType$
       identityReq.bioType: $TestData:bio_face_type$
       identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -1988,12 +2055,37 @@ testdata:
     output.output-1-expected-n-res:
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.response: '$DECODE$->output-2-expected-n-kyc-res.json'
+      output.1.response.response.kycStatus: BOOLEAN:false
       output.1.response.error.errorCode: $errors:MisssingBioInMosipDB:errorCode$
       output.1.response.error.errorMessage: $errors:MisssingBioInMosipDB:errorMessage$
-      output.1.response.error.actionMessage: $errors:MisssingBioInMosipDB:actionMessage$
     output.output-2-expected-n-kyc-res:
       output.2.res.kyc.status: $IGNORE$
       output.2.res.kyc.staticToken: $IGNORE$
       output.2.res.kyc.identity: $IGNORE$
+    
+  Authentication_Kyc_Face_set_invalid_sec_lang_smoke_Neg:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.bio-auth-request:
+      AuthReq.individualId: 4235064580
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.secondaryLangCode: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    output.output-1-expected-n-res:
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
+      output.1.response.response.kycStatus: BOOLEAN:false
+      output.1.response.error.errorCode: $errors:InvalidSecLang:errorCode$
+      output.1.response.error.errorMessage: $errors:InvalidSecLang:errorMessage$
+      output.1.response.error.actionMessage: $errors:InvalidSecLang:actionMessage$
+ 
   

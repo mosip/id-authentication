@@ -1,11 +1,12 @@
 package io.mosip.kernel.keymanagerservice.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.EncryptDataResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.PublicKeyResponse;
+import io.mosip.kernel.keymanagerservice.dto.SignatureRequestDto;
+import io.mosip.kernel.keymanagerservice.dto.SignatureResponseDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
 
@@ -13,6 +14,7 @@ import io.mosip.kernel.keymanagerservice.dto.SymmetricKeyResponseDto;
  * This interface provides the methods which can be used for Key management
  * 
  * @author Dharmesh Khandelwal
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -36,17 +38,9 @@ public interface KeymanagerService {
 	 */
 	public PublicKeyResponse<String> getPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 
-	// TODO: To be removed added for debugging
-	List<String> getAllAlias();
 
-	
-	
-	/**
-	 * encrypts the data with private key.
-	 *
-	 * @param encryptDataRequestDto the encrypt data request dto
-	 * @return {@link EncryptDataResponseDto} encrypted data
-	 */
-	public EncryptDataResponseDto encrypt(EncryptDataRequestDto encryptDataRequestDto);
+	public SignatureResponseDto sign(SignatureRequestDto signatureRequestDto);
+
+	public PublicKeyResponse<String> getSignPublicKey(String applicationId, String timeStamp, Optional<String> referenceId);
 
 }

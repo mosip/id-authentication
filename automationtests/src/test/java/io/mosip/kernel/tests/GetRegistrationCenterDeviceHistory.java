@@ -76,8 +76,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetRegistrationCenterDeviceHistory")
 	public Object[][] readData1(ITestContext context) throws Exception {
-	 testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

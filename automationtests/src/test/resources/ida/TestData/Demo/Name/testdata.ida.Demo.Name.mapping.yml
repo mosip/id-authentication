@@ -42,7 +42,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_female_secondary_lang$
+      identityReq.valuename: ست +$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
@@ -77,7 +77,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuename: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$+$TestData:name_tittle_UnMarriedfemale_secondary_lang$
+      identityReq.valuename: آنسة +$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
       identityReq.languagename: $TestData:secondary_lang_code$ 
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$

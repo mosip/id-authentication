@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<groupId>io.mosip.preregistration</groupId>
@@ -58,7 +58,7 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<kernel.core.version>0.11.1</kernel.core.version>
+		<kernel.core.version>${project.version}</kernel.core.version>
 
 
 		<!-- Test & Logging -->

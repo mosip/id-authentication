@@ -1,4 +1,4 @@
-package io.mosip.preregistration.tests;
+	package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	String requestKeyFile = "CancelAnBookedAppointmentRequest.json";
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	CommonLibrary commonLibrary = new CommonLibrary();
-	String preReg_URI;
+	static String preReg_URI;
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	Object[][] readFolder = null;
 	String testParam = null;
@@ -94,8 +94,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 	@DataProvider(name = "CancelAnBookedAppointment")
 	public Object[][] readData(ITestContext context) throws Exception {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -118,7 +117,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
-		if (testCaseName.contains("smoke")) {
+		
 			Response fetchCenter = null;
 
 			/* Fetch availability[or]center details */
@@ -127,6 +126,8 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			/* Book An Appointment for the available data */
 			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
 
+			if (testCaseName.contains("smoke")) {
+			
 			/* Cancel an Re-booked Appointment */
 			if (testCaseName.contains("CancelAnReBookedAppointment")) {
 				fetchCenter = preRegLib.FetchCentre();
@@ -135,7 +136,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 			/* Cancel Booked Appointment Details */
 			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
-			logger.info("CancelBookingApp" + CancelBookingApp.asString());
+			logger.info("CancelBookingApp::" + CancelBookingApp.asString());
 			List<? extends Object> val = preRegLib.preregFetchPreregDetails(preId);
 			logger.info("Vall" + val);
 			Object[] TestData = null;
@@ -165,10 +166,10 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			} else {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
-
+            logger.info("Pre Reg URI::"+preReg_URI);
 			preRegURI = preReg_URI + preId;
 			Actualresponse = applicationLibrary.putRequest_WithoutBody(preRegURI);
-
+            logger.info("Test Case name:"+testCaseName+"Actual res:"+Actualresponse.asString());
 			// outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("transactionId");
@@ -208,7 +209,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 		testCaseName = object.get("testCaseName").toString();
 		// Cancel Appointment Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI1");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 		// Fetch the generated Authorization Token by using following Kernel
 		// AuthManager APIs
 		authToken = preRegLib.getToken();
@@ -228,7 +229,8 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, CancelAnBookedAppointment.testCaseName);
+			//f.set(baseTestMethod, CancelAnBookedAppointment.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_CancelAnBookedAppointment_" +CancelAnBookedAppointment.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

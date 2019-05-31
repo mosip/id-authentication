@@ -111,7 +111,7 @@ public class ConsumedStatusServiceTest {
 	DemographicEntity demographicEntity = new DemographicEntity();
 	DemographicEntityConsumed demographicEntityConsumed=new DemographicEntityConsumed();
 	
-	DocumentEntity documentEntity=new DocumentEntity();
+	List<DocumentEntity> documentEntityList=new ArrayList<>();
 	DocumentEntityConsumed documentEntityConsumed=new DocumentEntityConsumed();
 	
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
@@ -126,8 +126,9 @@ public class ConsumedStatusServiceTest {
 
 		String preregId="12345678909876";
 		demographicEntity.setPreRegistrationId(preregId);
-		
+		DocumentEntity documentEntity=new DocumentEntity();
 		documentEntity.setPreregId(preregId);
+		documentEntityList.add(documentEntity);
 		documentEntityConsumed.setPreregId(preregId);
 
 		bookingPK.setPreregistrationId(preregId);
@@ -153,7 +154,7 @@ public class ConsumedStatusServiceTest {
 		demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 		Mockito.when(demographicConsumedRepository.save(demographicEntityConsumed)).thenReturn(demographicEntityConsumed);
 		Mockito.when(documentRespository.findBypreregId(preregId))
-		.thenReturn(documentEntity);
+		.thenReturn(documentEntityList);
 		//BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
 		documentEntityConsumed.setPreregId(preregId);
 		Mockito.when(documentConsumedRepository.save(documentEntityConsumed)).thenReturn(documentEntityConsumed);

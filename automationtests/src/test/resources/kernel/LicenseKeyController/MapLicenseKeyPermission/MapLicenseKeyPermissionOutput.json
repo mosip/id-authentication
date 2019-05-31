@@ -1,0 +1,1 @@
+[{"testType":"smoke","testCaseName":"Kernel_MapLicenseKeyPermission_smoke_MapLicenseKeyPermission","jiraId":"MOS-1005","Kernel_MapLicenseKeyPermission_licenseKey_missing":"valid","licenseKey":"valid","Kernel_MapLicenseKeyPermission_tspId_missing":"valid","tspId":"valid","permissions":"valid","Kernel_MapLicenseKeyPermission_response_time":"valid","status":""}]

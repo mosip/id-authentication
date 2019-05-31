@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -305,7 +310,7 @@ public class BaseService {
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
 		
-		try (FileInputStream fis = new FileInputStream(new File(registration.getAckFilename()
+		try (FileInputStream fis = new FileInputStream(FileUtils.getFile(registration.getAckFilename()
 				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
 			byte[] byteArray = new byte[(int) fis.available()];
 			fis.read(byteArray);
@@ -328,6 +333,19 @@ public class BaseService {
 
 	public static Map<String, Object> getBaseGlobalMap() {
 		return applicationMap;
+	}
+	
+	/**
+	 * Registration date conversion.
+	 *
+	 * @param timestamp the timestamp
+	 * @return the string
+	 */
+	protected String regDateConversion(Timestamp timestamp) {
+
+		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
+		Date date = new Date(timestamp.getTime());
+		return dateFormat.format(date);
 	}
 
 }

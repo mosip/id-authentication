@@ -36,6 +36,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -101,6 +103,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	private GridPane biometricException;
 	@FXML
 	private GridPane operatorExceptionLayout;
+	@FXML
+	private GridPane rightEyePaneHolder;
+	@FXML
+	private GridPane leftEyePaneHolder;
 	@FXML
 	private GridPane registrationExceptionHeader;
 	@FXML
@@ -238,6 +244,18 @@ public class BiometricExceptionController extends BaseController implements Init
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
+		EventHandler<Event> mouseClick = event -> {
+			if (event.getSource() instanceof GridPane) {
+				GridPane sourcePane = (GridPane) event.getSource();
+				if(sourcePane.getStyleClass().contains("bioIris")) {
+					sourcePane.getStyleClass().remove("bioIris");
+				}else {
+					sourcePane.getStyleClass().add("bioIris");
+				}
+			}
+		};
+		rightEyePaneHolder.setOnMouseClicked(mouseClick);
+		leftEyePaneHolder.setOnMouseClicked(mouseClick);
 	}
 
 	/**
@@ -256,8 +274,8 @@ public class BiometricExceptionController extends BaseController implements Init
 			 * (non-Javadoc)
 			 * 
 			 * @see
-			 * javafx.beans.value.ChangeListener#changed(javafx.beans.value.ObservableValue,
-			 * java.lang.Object, java.lang.Object)
+			 * javafx.beans.value.ChangeListener#changed(javafx.beans.value.
+			 * ObservableValue, java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
@@ -350,10 +368,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, false);
 
-				if (fingerList.size() == 10 && irisList.size() == 2) {
-					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FACECAPTURE, true);
-
-				} else if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)) && !isChild()) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 
@@ -365,13 +380,6 @@ public class BiometricExceptionController extends BaseController implements Init
 				}
 				registrationController.showUINUpdateCurrentPage();
 			} else {
-				if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
-					if (fingerList.size() == 10 && irisList.size() == 2) {
-						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
-					} else {
-						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
-					}
-				}
 				registrationController.showCurrentPage(RegistrationConstants.BIOMETRIC_EXCEPTION, getPageDetails(
 						RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, RegistrationConstants.NEXT));
 			}
@@ -441,8 +449,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	/**
-	 * This method will call on click of previous button and toggle the visibility
-	 * based
+	 * This method will call on click of previous button and toggle the
+	 * visibility based
 	 */
 	public void goToPreviousPage() {
 		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),

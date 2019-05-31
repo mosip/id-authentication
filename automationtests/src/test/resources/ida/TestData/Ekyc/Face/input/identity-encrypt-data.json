@@ -7,11 +7,12 @@
 					"bioType": "FID",
 					"bioValue": "afsdfadsvdsaffd",
 					"deviceCode": "cogent",
-					"deviceProviderID": "cogent"
+					"deviceProviderID": "cogent",
+					"timestamp": "2019-04-04T09:41:57.086+05:30",
+		            "transactionID": "1234567890"
 				}
 			}
 		],
-		"timestamp": "2019-04-04T09:41:57.086+05:30",
-		"transactionID": "1234567890"
+		"timestamp": "2019-04-04T09:41:57.086+05:30"
 	}
 }

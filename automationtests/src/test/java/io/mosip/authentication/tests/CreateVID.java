@@ -90,9 +90,9 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 		for (Entry<String, String> entry : uinMap.entrySet()) {
 			if (!(entry.getValue().contains("NoVID") || entry.getValue().contains("Deactivated")
 					|| entry.getValue().contains("novid"))) {
-				String url = RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getVidGenPath();
-				url = url.replace("$uin$", entry.getKey());
-				String vidJson = getResponse(url);
+				String url = RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoCreateVIDRecordPath();
+				String vidJson=getVidRequestContent().replaceAll("$uin$", entry.getKey());
+				
 				String vid = JsonPrecondtion.getValueFromJson(vidJson, "response.vid");
 				vidMap.put(vid, entry.getKey());
 			}
@@ -109,7 +109,7 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	 */
 	@BeforeMethod
 	public void testData(Method method, Object[] testData) {
-		this.testCaseName = String.format("CreateVID");
+		this.testCaseName = String.format("Authenticaiton_CreateVID");
 		invocationCount++;
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);

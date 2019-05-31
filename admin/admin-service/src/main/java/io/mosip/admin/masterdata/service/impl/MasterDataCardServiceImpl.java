@@ -3,7 +3,7 @@ package io.mosip.admin.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +33,12 @@ public class MasterDataCardServiceImpl implements MasterDataCardService {
 		List<MasterDataCardDto> cards = new ArrayList<>();
 		Map<String, String> map = masterDataCardUtil.getMasterDataCards(langCode);
 		if (map != null && !map.isEmpty()) {
-			Set<String> keySet = map.keySet();
-			for (String key : keySet) {
-				cards.add(new MasterDataCardDto(key, map.get(key)));
+			for (Entry<String, String> entry : map.entrySet()) {
+				cards.add(new MasterDataCardDto(entry.getKey(), entry.getValue()));
 			}
 		} else {
-			throw new MasterDataCardException(MasterDataErrorConstant.DATANOTFOUND.errorCode(),MasterDataErrorConstant.DATANOTFOUND.errorMessage());
+			throw new MasterDataCardException(MasterDataErrorConstant.DATANOTFOUND.errorCode(),
+					MasterDataErrorConstant.DATANOTFOUND.errorMessage());
 		}
 
 		responseDto = new MasterDataCardResponseDto();

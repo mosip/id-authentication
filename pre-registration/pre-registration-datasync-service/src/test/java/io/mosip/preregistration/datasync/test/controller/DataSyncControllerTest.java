@@ -117,7 +117,7 @@ public class DataSyncControllerTest {
 
 		signResponse=new SignatureResponse();
 		signResponse.setData("asdasdsadf4e");
-		signResponse.setResponseTime(LocalDateTime.now(ZoneOffset.UTC));
+		signResponse.setTimestamp(LocalDateTime.now(ZoneOffset.UTC));
 	}
 
 	@WithUserDetails("reg-officer")
@@ -134,7 +134,7 @@ public class DataSyncControllerTest {
 		mainPreRegArchiveDTO.setResponse(preRegArchiveDTO);
 		mainPreRegArchiveDTO
 		.setResponsetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
-		Mockito.when(signingUtil.signResponse(Mockito.any())).thenReturn(signResponse);
+		Mockito.when(signingUtil.sign(Mockito.any(),Mockito.any())).thenReturn(signResponse);
 		Mockito.when(dataSyncService.getPreRegistrationData("97285429827016")).thenReturn(mainPreRegArchiveDTO);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/sync/{preRegistrationId}", "97285429827016")
 				.contentType(MediaType.APPLICATION_JSON);

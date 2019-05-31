@@ -1,15 +1,33 @@
-/*package io.mosip.registration.processor.packet.receiver.stage;
+package io.mosip.registration.processor.packet.receiver.stage;
+
+import static org.mockito.Matchers.any;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.packet.receiver.PacketReceiverApplication;
-import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
-import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -25,186 +43,118 @@ import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Locale;
 import io.vertx.ext.web.ParsedHeaderValues;
 import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 
 @RunWith(SpringRunner.class)
 public class PacketReceiverStageTest {
-
-	private Vertx vertx;
+	@Mock
+	Environment env;
+	public RoutingContext ctx;
+	private File file;
 	private String id = "2018782130000113112018183001.zip";
 	private String newId = "2018782130000113112018183000.zip";
-	private File file;
-	private String jsonData;
-	private String registrationStatusCode;
-	Gson gson = new GsonBuilder().create();
-
-	@Mock
-	public PacketReceiverService<File, MessageDTO> packetReceiverService;
-
-	public RoutingContext ctx;
-
-	@Mock
-	private Environment env;
-
 	public FileUpload fileUpload;
 	@Mock
-	PacketReceiverResponseBuilder packetReceiverResponseBuilder;
-	@Mock
-	io.mosip.kernel.core.signatureutil.model.SignatureResponse signatureResponse;
+	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 	@Mock
 	SignatureUtil signatureUtil;
-
+	@Mock
+	SignatureResponse signatureResponse;
+	@Mock
+	private MosipRouter router;
+	@Mock
+	PacketReceiverExceptionHandler exceptionhandler;
 	@InjectMocks
 	PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
-
-		@Override
-		public void setResponse(RoutingContext ctx, Object object,String jsonType,String digSignature) {
-			jsonData = object.toString();
-			PacketReceiverResponseDTO packetReceiverResponseDTO =gson.fromJson(jsonData, PacketReceiverResponseDTO.class);
-			registrationStatusCode=packetReceiverResponseDTO.getResponse().getStatus();
-		}
 
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
 
 		@Override
-		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+		public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl, int instance) {
 			return null;
+		}
+
+		@Override
+		public void createServer(Router router, int port) {
+
+		}
+
+		@Override
+		public Router postUrl(Vertx vertx, MessageBusAddress consumeAddress, MessageBusAddress sendAddress) {
+			return null;
+		}
+
+		@Override
+		public void setResponseWithDigitalSignature(RoutingContext ctx, Object object, String contentType) {
+
 		}
 	};
 
 	@Before
-	public void setup() throws IOException {
-
+	public void setup() throws IOException, io.mosip.kernel.core.exception.IOException {
+		ReflectionTestUtils.setField(packetReceiverStage, "port", "8080");
+		ReflectionTestUtils.setField(packetReceiverStage, "contextPath", "/registrationprocessor/v1/packetreceiver");
+		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+		.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		Mockito.doNothing().when(router).setRoute(any());
+		Mockito.when(router.post(any())).thenReturn(null);
+		Mockito.when(router.get(any())).thenReturn(null);
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("0000.zip").getFile());
 		FileUtils.copyFile(file, new File(file.getParentFile().getPath() + "/" + id));
 		file = new File(classLoader.getResource(id).getFile());
 		fileUpload = setFileUpload();
 		ctx = setContext();
-		when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		PacketReceiverApplication.main(null);
-		signatureResponse=Mockito.mock(SignatureResponse.class);//new SignatureResponse();
-		when(signatureUtil.signResponse(anyString())).thenReturn(signatureResponse);
-		when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
-
-
-	}
-	public String getDataAsJson(String Status) {
-		JsonObject obj= new JsonObject();
-		obj.put("id", "mosip.registration.packet");
-		obj.put("version", "1.0");
-		obj.put("responsetime", "2019-02-04T13:46:39.919+0000");
-		JsonObject obj1= new JsonObject();
-		obj1.put("status", Status);
-		obj.put("response",obj1);
-		obj1=null;
-		obj.put("errors",obj1);
-		return obj.toString();
 	}
 
 	@Test
-	public void testAllProcess() throws Exception {
-		testProcessURLSuccess();
-		healthCheckTest();
-		//testDeployVerticle();
-		testSendMessage();
+	public void testStart() {
+		packetReceiverStage.start();
 	}
 
+	@Test
 	public void testProcessURLSuccess() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.TRUE);
-		when(packetReceiverService.storePacket(any(File.class),any(String.class))).thenReturn(messageDTO);
+		Mockito.when(packetReceiverService.validatePacket(any(File.class), any(String.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
-		assertEquals(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString(), registrationStatusCode);
 	}
 
 	@Test
-	public void testProcessURLFail() throws Exception {
+	public void testProcessURLFailure() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setIsValid(Boolean.FALSE);
-		when(packetReceiverService.storePacket(any(File.class),any(String.class))).thenReturn(messageDTO);
+		Mockito.when(packetReceiverService.validatePacket(any(File.class), any(String.class))).thenReturn(messageDTO);
 		packetReceiverStage.processURL(ctx);
-		assertEquals(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.name(), registrationStatusCode);
-	}
-
-	public void healthCheckTest() throws ClientProtocolException, IOException {
-		HttpGet httpGet = new HttpGet("http://localhost:8081/packetreceiver/health");
-		HttpClient client = HttpClientBuilder.create().build();
-		HttpResponse response = client.execute(httpGet);
-		assertEquals(200, response.getStatusLine().getStatusCode());
 	}
 
 	@Test
-	public void packetUploaderTest() throws ClientProtocolException, IOException {
-		FileBody fileBody = new FileBody(file, ContentType.DEFAULT_BINARY);
-
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-		builder.addPart("file", fileBody);
-		HttpEntity entity = builder.build();
-
-		HttpPost request = new HttpPost("http://localhost:8081/packetreceiver/registration-processor/registrationpackets/v1.0");
-		request.setEntity(entity);
-
-		HttpClient client = HttpClientBuilder.create().build();
-
-		HttpResponse response = client.execute(request);
-
-	}
-
-	public void testDeployVerticle() {
+	public void testDeployVerticle() throws Exception {
 		packetReceiverStage.deployVerticle();
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setIsValid(Boolean.FALSE);
+		packetReceiverStage.process(messageDTO);
 	}
 
-	public void testSendMessage() {
-		packetReceiverStage.sendMessage(null);
+	@Test
+	public void testProcessPacket() {
+		MessageDTO messageDTO = new MessageDTO();
+		messageDTO.setIsValid(Boolean.TRUE);
+		Mockito.when(packetReceiverService.processPacket(any(File.class))).thenReturn(messageDTO);
+		packetReceiverStage.processPacket(ctx);
 	}
 
-	@After
-	public void destroy() throws IOException {
-		if(file.exists())
-			FileUtils.forceDelete(file);
+	@Test
+	public void testFailure() {
+		Mockito.when(exceptionhandler.handler(ctx.failure()))
+		.thenReturn("{\"response\":{\"status\":\"error\"},\"responsetime\":\"2019-05-15T05:55:07.490Z\"}");
+		Mockito.when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
+		packetReceiverStage.failure(ctx);
 	}
-
 
 	private FileUpload setFileUpload() {
 		return new FileUpload() {
@@ -476,4 +426,3 @@ public class PacketReceiverStageTest {
 	}
 
 }
-*/

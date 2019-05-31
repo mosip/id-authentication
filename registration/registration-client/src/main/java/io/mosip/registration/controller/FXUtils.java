@@ -13,9 +13,9 @@ import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
@@ -454,7 +454,7 @@ public class FXUtils {
 	 *            hidden
 	 */
 	private void hideErrorMessageLabel(Pane parentPane, TextField field) {
-		if (field.getId().matches("dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
+		if (field.getId().matches("ageField|dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage")) {
 			toggleUIField(parentPane, RegistrationConstants.DOB_MESSAGE, false);
 		} else {
 			toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, false);
@@ -633,6 +633,8 @@ public class FXUtils {
 					value = ((GenderDto) object).getGenderName();
 				} else if (object instanceof DocumentCategoryDto) {
 					value = ((DocumentCategoryDto) object).getName();
+				} else if(object instanceof BiometricAttributeDto) {
+					value = ((BiometricAttributeDto) object).getName();
 				}
 				return value;
 			}

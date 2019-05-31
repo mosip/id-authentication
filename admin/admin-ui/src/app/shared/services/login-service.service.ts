@@ -5,8 +5,9 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { loginURL } from '../../app.constants';
+import { loginURL, admin_base_url, logoutUrl } from '../../app.constants';
 import { RequestModel } from '../models/request-model';
+import { Router } from '@angular/router';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json'
@@ -16,7 +17,7 @@ const httpOptions = {
 export class LoginServiceService {
   username: string;
   authtype: string[];
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   setAuthTypes(authType: string[]) {
     this.authtype = authType;
@@ -25,7 +26,6 @@ export class LoginServiceService {
   getAuthTypes() {
     return this.authtype;
   }
-
   setUserName(username: string) {
     this.username = username;
   }
@@ -51,6 +51,9 @@ export class LoginServiceService {
     return this.http
       .post(loginURL.verifyOtp, dto, httpOptions)
       .catch(this.errorHandler);
+  }
+  logout() {
+    return this.http.post(logoutUrl, '');
   }
   errorHandler(error: HttpErrorResponse): Observable<any> {
     return Observable.throw(error.message || 'Server Error').catch(

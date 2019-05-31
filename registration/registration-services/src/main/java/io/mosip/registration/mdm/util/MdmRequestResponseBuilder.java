@@ -13,14 +13,12 @@ import java.util.Random;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
-import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
-import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegratorImpl;
+import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
-import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
+import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
 
 /**
  * Handles all the request response parsing of biometric data
@@ -102,7 +100,7 @@ public class MdmRequestResponseBuilder {
 			for (CaptureResponseBioDto mosipBioCaptureResponse : mosipBioCaptureResponseDto
 					.getMosipBioDeviceDataResponses()) {
 				// TODO - have to clarify how the array of bio data response handled
-				// TODO- clarify how the sengmented values handled
+				// TODO- clarify how the segmented values handled
 				if (mosipBioCaptureResponse.getCaptureResponseData() != null) {
 					String capturedType= mosipBioCaptureResponse.getCaptureResponseData().getBioType();
 					if(mosipBioCaptureResponse.getCaptureResponseData().getBioSubType()!=null || !mosipBioCaptureResponse.getCaptureResponseData().getBioSubType().isEmpty()) {

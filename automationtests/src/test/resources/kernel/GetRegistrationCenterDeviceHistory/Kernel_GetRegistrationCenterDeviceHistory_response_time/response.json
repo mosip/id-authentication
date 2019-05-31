@@ -1,11 +1,7 @@
 {
   "id": null,
   "version": null,
-<<<<<<< HEAD:automationtests/src/test/resources/kernel/GetRegistrationCenterDeviceHistory/smoke_2/response.json
-  "responsetime": "2019-04-25T06:50:51.551Z",
-=======
   "responsetime": "2019-05-17T12:55:13.174Z",
->>>>>>> origin/0.11.0_automationtests_kernel:automationtests/src/test/resources/kernel/GetRegistrationCenterDeviceHistory/Kernel_GetRegistrationCenterDeviceHistory_response_time/response.json
   "metadata": null,
   "response": {
     "registrationCenterDeviceHistoryDetails": {
@@ -13,11 +9,7 @@
       "deviceId": "3000021",
       "isActive": true,
       "langCode": "eng",
-<<<<<<< HEAD:automationtests/src/test/resources/kernel/GetRegistrationCenterDeviceHistory/smoke_2/response.json
-      "effectivetimes": "2019-04-17T07:08:40.887Z"
-=======
       "effectivetimes": "2019-05-16T07:06:48.361Z"
->>>>>>> origin/0.11.0_automationtests_kernel:automationtests/src/test/resources/kernel/GetRegistrationCenterDeviceHistory/Kernel_GetRegistrationCenterDeviceHistory_response_time/response.json
     }
   },
   "errors": null

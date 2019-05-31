@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.exception;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -21,6 +24,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.constant.SyncDataConstant;
 import io.mosip.kernel.syncdata.utils.EmptyCheckUtils;
 
 /**
@@ -79,15 +83,15 @@ public class SyncHandlerControllerAdvice {
 		responseWrapper.getErrors().add(error);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(SyncServiceException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> syncServiceException(
-			HttpServletRequest httpServletRequest, final SyncServiceException exception) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> syncServiceException(HttpServletRequest httpServletRequest,
+			final SyncServiceException exception) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(SyncInvalidArgumentException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> syncInvalidArgumentException(
 			HttpServletRequest httpServletRequest, final SyncInvalidArgumentException exception) throws IOException {
@@ -95,7 +99,7 @@ public class SyncHandlerControllerAdvice {
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(CryptoManagerServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServiceException(
 			HttpServletRequest httpServletRequest, final CryptoManagerServiceException exception) throws IOException {
@@ -103,7 +107,7 @@ public class SyncHandlerControllerAdvice {
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@ExceptionHandler(SignatureUtilClientException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> signatureUtilClientException(
 			HttpServletRequest httpServletRequest, final SignatureUtilClientException exception) throws IOException {
@@ -112,6 +116,19 @@ public class SyncHandlerControllerAdvice {
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
+			HttpServletRequest httpServletRequest, final MethodArgumentNotValidException e) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+		fieldErrors.forEach(x -> {
+			ServiceError error = new ServiceError(MasterDataErrorCode.INVALID_INPUT_REQUEST.getErrorCode(),
+					x.getField() + SyncDataConstant.WHITESPACE+ x.getDefaultMessage());
+			errorResponse.getErrors().add(error);
+		});
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);	
+	}
+	
 	private ResponseEntity<ResponseWrapper<ServiceError>> getServiceErrorResponseEntity(BaseUncheckedException e,
 			HttpStatus httpStatus, HttpServletRequest httpServletRequest) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
@@ -135,5 +152,7 @@ public class SyncHandlerControllerAdvice {
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
 	}
+
+	
 
 }

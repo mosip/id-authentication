@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.admin.securitypolicy.config.PolicyProperties;
 import io.mosip.admin.securitypolicy.constant.SecurityPolicyErrorConstant;
 import io.mosip.admin.securitypolicy.dto.AuthFactorsDto;

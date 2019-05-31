@@ -344,8 +344,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
+      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
       
   Authentication_AuthPartnerValidation_Invalid MSK Liscence Key_For UIN_Neg_22:
     endpoint.url:
@@ -362,8 +362,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
-      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
   
   Authentication_AuthPartnerValidation_PIDMISP_NotMapped_For UIN_Neg_23:
     endpoint.url:

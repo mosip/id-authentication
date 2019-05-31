@@ -21,9 +21,6 @@ import io.mosip.preregistration.core.common.dto.CryptoManagerResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
-import io.mosip.preregistration.core.errorcodes.ErrorCodes;
-import io.mosip.preregistration.core.errorcodes.ErrorMessages;
-import io.mosip.preregistration.core.exception.DecryptionFailedException;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 
 /**
@@ -57,28 +54,32 @@ public class CryptoUtil {
 			dto.setData(encodedBytes);
 			dto.setReferenceId("");
 			dto.setTimeStamp(localDateTime);
-			RequestWrapper<CryptoManagerRequestDTO> requestKernel=new RequestWrapper<>();
+			RequestWrapper<CryptoManagerRequestDTO> requestKernel = new RequestWrapper<>();
 			requestKernel.setRequest(dto);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			HttpEntity<RequestWrapper<CryptoManagerRequestDTO>> request = new HttpEntity<>(requestKernel, headers);
-			log.info("sessionId", "idType", "id", "In encrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/encrypt");
+			log.info("sessionId", "idType", "id",
+					"In encrypt method of CryptoUtil service cryptoResourceUrl: " + cryptoResourceUrl + "/encrypt");
 			response = restTemplate.exchange(cryptoResourceUrl + "/encrypt", HttpMethod.POST, request,
 					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
 					});
+			if (!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
+				throw new EncryptionFailedException(response.getBody().getErrors(), null);
+			}
 			encryptedBytes = response.getBody().getResponse().getData().getBytes();
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In encrypt method of CryptoUtil Util for Exception- "
-					+ ex.getMessage());
-			throw new EncryptionFailedException(ErrorCodes.PRG_CORE_REQ_011.getCode(),ErrorMessages.FAILED_TO_ENCRYPT.getMessage());
+			log.error("sessionId", "idType", "id",
+					"In encrypt method of CryptoUtil Util for Exception- " + ex.getMessage());
+			throw ex;
 		}
 		return encryptedBytes;
 
 	}
 
 	public byte[] decrypt(byte[] originalInput, LocalDateTime localDateTime) {
-		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service ") ;
+		log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service ");
 		ResponseEntity<ResponseWrapper<CryptoManagerResponseDTO>> response = null;
 		byte[] decodedBytes = null;
 		try {
@@ -88,23 +89,27 @@ public class CryptoUtil {
 			dto.setData(new String(originalInput, StandardCharsets.UTF_8));
 			dto.setReferenceId("");
 			dto.setTimeStamp(localDateTime);
-			RequestWrapper<CryptoManagerRequestDTO> requestKernel=new RequestWrapper<>();
+			RequestWrapper<CryptoManagerRequestDTO> requestKernel = new RequestWrapper<>();
 			requestKernel.setRequest(dto);
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			HttpEntity<RequestWrapper<CryptoManagerRequestDTO>> request = new HttpEntity<>(requestKernel, headers);
-			log.info("sessionId", "idType", "id", "In decrypt method of CryptoUtil service cryptoResourceUrl: "+cryptoResourceUrl+"/decrypt");
+			log.info("sessionId", "idType", "id",
+					"In decrypt method of CryptoUtil service cryptoResourceUrl: " + cryptoResourceUrl + "/decrypt");
 			response = restTemplate.exchange(cryptoResourceUrl + "/decrypt", HttpMethod.POST, request,
 					new ParameterizedTypeReference<ResponseWrapper<CryptoManagerResponseDTO>>() {
 					});
+			if (!(response.getBody().getErrors() == null || response.getBody().getErrors().isEmpty())) {
+				throw new EncryptionFailedException(response.getBody().getErrors(), null);
+			}
 			decodedBytes = Base64.decodeBase64(response.getBody().getResponse().getData().getBytes());
 
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In decrypt method of CryptoUtil Util for Exception- "
-					+ ex.getMessage());
-			throw new DecryptionFailedException(ErrorCodes.PRG_CORE_REQ_012.getCode(),ErrorMessages.FAILED_TO_DECRYPT.getMessage());
+			log.error("sessionId", "idType", "id",
+					"In decrypt method of CryptoUtil Util for Exception- " + ex.getMessage());
+			throw ex;
 		}
 		return decodedBytes;
 

@@ -96,7 +96,7 @@ errors:
     errorMessage: OTP-authentiation usage not allowed as per policy 
   PIDMISPNotMapped:
     errorCode: IDA-MPA-010
-    errorMessage: MISP and Partner not mapped 
+    errorMessage: MISP and Partner not mapped
   MSLKNotRegisteredToPID:
     errorCode: IDA-MPA-007
     errorMessage: License key does not belong to a registered MISP
@@ -104,8 +104,8 @@ errors:
     errorCode: IDA-MPA-008
     errorMessage: License key of MISP has expired
   InactiveMSLK:
-    errorCode: IDA-MPA-011
-    errorMessage: License key of MISP is suspended
+    errorCode: IDA-MPA-017
+    errorMessage: License key of MISP is blocked
   PartnerIDNotRegistered:
     errorCode: IDA-MPA-009
     errorMessage: Partner is not registered
@@ -138,7 +138,11 @@ errors:
     errorMessage: Demographic data - emailId did not match
   MisssingBioInMosipDB:
     errorCode: IDA-BIA-006
-    errorMessage: Missing biometric data in MOSIP database for the given UIN/Virtual ID
+    errorMessage: $REGEXP:Biometric data.*not available in database$
+    actionMessage: Your Biometric data is not available in MOSIP
+  MisssingFaceBioInMosipDB:
+    errorCode: IDA-BIA-006
+    errorMessage: $REGEXP:Biometric data FID not available in database$
     actionMessage: Your Biometric data is not available in MOSIP
   InvalidBioSubtype:
     errorCode: IDA-MLC-009
@@ -148,7 +152,7 @@ errors:
     errorMessage: Number of FID records should not exceed 1
   PolicyWithoutBioFace:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-Face-authentiation usage not allowed as per policy
+    errorMessage: Face-authentiation usage not allowed as per policy
   MissingBioSubtype:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - bioSubType
@@ -216,5 +220,19 @@ errors:
     errorCode: IDA-MPA-006
     errorMessage: demo-authentiation usage not allowed as per policy
     actionMessage: Please use other Authentication Types in the request
+  OtherAuthTypeForInternal:
+    errorCode: IDA-MPA-006
+    errorMessage: $REGEXP:.*authentiation usage not allowed as per policy$
+    actionMessage: Please use other Authentication Types in the request
+  InvalidSecLang:
+    errorCode: IDA-DEA-002
+    errorMessage: $REGEXP:Unsupported Language Code - secondaryLangCode.*$
+    actionMessage: Please provide valid Language
+  PartnerWithoutEkyc:
+    errorCode: IDA-MPA-013
+    errorMessage: Partner is unauthorised for eKYC
+  InvalidUserId:
+    errorCode: IDA-BIA-012
+    errorMessage: Invalid userid of the individual
   
   

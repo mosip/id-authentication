@@ -9,13 +9,13 @@ import javax.jms.Message;
 import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.abis.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.abis.service.AbisService;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
@@ -36,25 +36,10 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
  * 
  * @author jyoti-prakash
  * @author Kiran Raj
+ * @author Girish Yarru
  */
 @Component
 public class AbisMessageQueueImpl {
-
-	/** The username. */
-	@Value("${registration.processor.queue.username}")
-	private String username;
-
-	/** The password. */
-	@Value("${registration.processor.queue.password}")
-	private String password;
-
-	/** The url. */
-	@Value("${registration.processor.queue.url}")
-	private String url;
-
-	/** The type of queue. */
-	@Value("${registration.processor.queue.typeOfQueue}")
-	private String typeOfQueue;
 
 	/** The utilities. */
 	@Autowired
@@ -97,29 +82,20 @@ public class AbisMessageQueueImpl {
 	 * @throws RegistrationProcessorCheckedException
 	 */
 	public void runAbisQueue() throws RegistrationProcessorCheckedException {
+		List<AbisQueueDetails> abisQueueDetails = utilities.getAbisQueueDetails();
+		if (abisQueueDetails != null && !abisQueueDetails.isEmpty()) {
 
-		List<String> abisInboundAddresses;
-		List<String> abisOutboundAddresses;
-
-		List<List<String>> inboundOutBoundAddressList;
-		List<MosipQueue> mosipQueseList;
-
-		inboundOutBoundAddressList = utilities.getInboundOutBoundAddressList();
-		mosipQueseList = utilities.getMosipQueuesForAbis();
-		if (mosipQueseList != null) {
-
-			abisInboundAddresses = inboundOutBoundAddressList.get(0);
-			abisOutboundAddresses = inboundOutBoundAddressList.get(1);
-			for (int i = 0; i < abisOutboundAddresses.size(); i++) {
-				String outBoundAddress = abisOutboundAddresses.get(i);
-				MosipQueue queue = mosipQueseList.get(i);
+			for (int i = 0; i < abisQueueDetails.size(); i++) {
+				String outBoundAddress = abisQueueDetails.get(i).getOutboundQueueName();
+				MosipQueue queue = abisQueueDetails.get(i).getMosipQueue();
 				QueueListener listener = new QueueListener() {
 					@Override
 					public void setListener(Message message) {
 						consumeLogic(message, outBoundAddress, queue);
 					}
 				};
-				mosipQueueManager.consume(mosipQueseList.get(i), abisInboundAddresses.get(i), listener);
+				mosipQueueManager.consume(abisQueueDetails.get(i).getMosipQueue(),
+						abisQueueDetails.get(i).getInboundQueueName(), listener);
 			}
 
 			isConnection = true;

@@ -9,7 +9,7 @@
 	"requestTime": "2019-03-21T14:43:57.086+05:30",
 	"requestedAuth": {
 		"bio": false,
-		"demo": true,
+		"demo": false,
 		"otp": false,
 		"pin": false
 	},

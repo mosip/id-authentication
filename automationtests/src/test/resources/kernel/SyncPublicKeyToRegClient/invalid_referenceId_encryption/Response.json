@@ -1,21 +1,12 @@
 {
     "id": null,
     "version": null,
-<<<<<<< HEAD
-    "responsetime": "2019-04-22T05:36:53.792Z",
-    "metadata": null,
-    "response": {
-        "publicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArCpCbFZqKduT6gdPq58yyab365Mj14SqOiwgCkh3ou5TxxDpLWPwUaLRnU6zrwRDDQoNzSUH4vZFrVJBJzeSVo1PuH24nHQWI_n1zTBXjK8nAL_xV_0DxwhhpXlR2w4G7ZFux7kJwaW8Xn7dbHIcnSRIUQJ2NmbAgPec8As2szrci7SP7JbsJDheQopJKUzXWHfcQWD0E77qW9oRRoT0U-5nQ8VgCxEdxn3hJQ9lAS6nv7KCtILpsgTLixl4di7YFCA7Y_bFF4fU2H_JbFVBYcjLOpSFYrWS3I1CO8dZIA--UFOBWqRYJEIA7Vig-YVws_6j6BenTfcm1-pUyhHFEwIDAQAB",
-        "issuedAt": "2018-12-10T06:12:52.994",
-        "expiryAt": "2019-04-09T16:05:07.305"
-=======
     "responsetime": "2019-05-16T12:25:35.986Z",
     "metadata": null,
     "response": {
         "publicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuDWmku39ZLsTQpDptlSDBzW0ZGjF2t1UYgNM2l7MNIUN6dSL6V1KrI3BzMAj02Sdt5k3Sc2hDRJ0tFJkryTBd9OLWXEujjBO75MP6XFVkPghLgarlBCK3PVEHq1HjUgVjQWClC5YUzOjUj3S4QL22CZciJ_nP9DkOSkWh2miSVUzxUPlY4qFrnHHUL3hn9VovwZrF2pWfhyKx-oaLV_-mqZH7UVe5ulaTl0FMISe1sWCLbyeTUceAj-IjPyxOLPlxoql5SBcrp0SAVd87o6tgokF7NxL2cjNwWeFVcs9RCS-zzZUV0uMJKLl-Ja5giCfKhwvwJxVzyJDBAUQez0ALQIDAQAB",
         "issuedAt": "2018-12-10T06:12:52.994",
         "expiryAt": "2019-12-10T06:12:52.994"
->>>>>>> origin/0.11.0_automationtests_kernel
     },
     "errors": null
 }

@@ -123,7 +123,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, uin,
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, uin,
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
 					AuditModules.EKYC_AUTH.getDesc());
 

@@ -51,6 +51,7 @@ export class DashBoardComponent implements OnInit {
   modify = false;
   isNewApplication = false;
   isFetched = false;
+  allApplicants: any[];
 
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
@@ -87,8 +88,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   ngOnInit() {
-    console.log('IN DASHBOARD', this.primaryLangCode);
-
     this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
@@ -104,7 +103,6 @@ export class DashBoardComponent implements OnInit {
 
     this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
       if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
-      console.log(this.secondaryLanguagelabels);
     });
     this.regService.setSameAs('');
   }
@@ -128,7 +126,6 @@ export class DashBoardComponent implements OnInit {
   getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: any) => {
-        console.log('applicants', applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] ===
@@ -141,7 +138,12 @@ export class DashBoardComponent implements OnInit {
 
         if (applicants[appConstants.RESPONSE] && applicants[appConstants.RESPONSE] !== null) {
           localStorage.setItem('newApplicant', 'false');
-          this.bookingService.addApplicants(applicants);
+
+          this.allApplicants =
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails];
+          this.bookingService.addApplicants(
+            applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails]
+          );
           for (
             let index = 0;
             index <
@@ -152,14 +154,10 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         } else {
-          // localStorage.setItem('newApplicant', 'true');
-          // this.onNewApplication();
           this.onError();
         }
       },
       error => {
-        console.log(error);
-        // this.router.navigate(['error']);
         this.onError();
         this.isFetched = true;
       },
@@ -178,8 +176,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private createAppointmentDateTime(applicant: any) {
-    console.log(applicant);
-
     const bookingRegistrationDTO = applicant[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
     const date = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
     const fromTime = bookingRegistrationDTO[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
@@ -232,8 +228,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    console.log('applicants test', applicants);
-
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     let primaryIndex = 0;
@@ -273,7 +267,6 @@ export class DashBoardComponent implements OnInit {
   onNewApplication() {
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
-      console.log('OUT DASHBOARD IN DEMOGRAPHIC');
       this.isNewApplication = true;
     } else {
       this.router.navigate(['/']);
@@ -333,11 +326,23 @@ export class DashBoardComponent implements OnInit {
     return dialogRef;
   }
 
+  removeApplicant(preRegId: string) {
+    let x: number = -1;
+    for (let i of this.allApplicants) {
+      x++;
+      if (i.preRegistrationId == preRegId) {
+        this.allApplicants.splice(x, 1);
+        break;
+      }
+    }
+    this.bookingService.addApplicants(this.allApplicants);
+  }
+
   deletePreregistration(element: any) {
     this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
       response => {
-        console.log(response);
         if (!response['errors']) {
+          this.removeApplicant(element.applicationID);
           this.displayMessage(
             this.secondaryLanguagelabels.title_success,
             this.secondaryLanguagelabels.deletePreregistration.msg_deleted
@@ -353,7 +358,6 @@ export class DashBoardComponent implements OnInit {
         }
       },
       error => {
-        console.log(error);
         this.displayMessage(
           this.secondaryLanguagelabels.title_error,
           this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
@@ -368,7 +372,6 @@ export class DashBoardComponent implements OnInit {
       .cancelAppointment(new RequestModel(appConstants.IDS.booking, element.regDto), element.applicationID)
       .subscribe(
         response => {
-          console.log(response);
           if (!response['errors']) {
             this.displayMessage(
               this.secondaryLanguagelabels.title_success,
@@ -386,7 +389,6 @@ export class DashBoardComponent implements OnInit {
           }
         },
         error => {
-          console.log(error);
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
             this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
@@ -404,25 +406,15 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.deletePreregistration(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
-            );
           }
-        });
+         });
       } else if (selectedOption && Number(selectedOption) === 2) {
         dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
-          } else {
-            this.displayMessage(
-              this.secondaryLanguagelabels.title_error,
-              this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
-            );
           }
-        });
+         });
       }
     });
   }
@@ -449,22 +441,16 @@ export class DashBoardComponent implements OnInit {
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
       error => {
-        console.log('response from modify data', error);
         this.disableModifyDataButton = false;
         this.onError();
       },
       () => {
         this.addtoNameList(user);
-        console.log(this.bookingService.getNameList());
-        console.log('preid', preId);
         this.dataStorageService.getUser(preId).subscribe(
           response => {
-            console.log('RESPONSE [Modify Information]', response);
             this.onModification(response, preId);
           },
           error => {
-            console.log('error', error);
-            // return this.router.navigate(['error']);
             this.onError();
           }
         );
@@ -516,7 +502,6 @@ export class DashBoardComponent implements OnInit {
   onModifyMultipleAppointment() {
     for (let index = 0; index < this.selectedUsers.length; index++) {
       this.addtoNameList(this.selectedUsers[index]);
-      console.log('index', index);
     }
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/booking/pick-center');
@@ -560,21 +545,13 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
-    console.log('user files', response);
     if (!response['errors']) {
-      console.log('if');
-
       this.userFile = response[appConstants.RESPONSE][appConstants.METADATA];
-      console.log('user file from daashboard', this.userFile);
     } else {
-      console.log('else');
-
       let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
       this.userFile.push(fileModel);
-      console.log('user file from daashboard', this.userFile);
     }
     this.userFiles['documentsMetaData'] = this.userFile;
-    console.log('user files from daashboard', this.userFiles);
   }
 
   getColor(value: string) {

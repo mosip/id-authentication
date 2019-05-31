@@ -1,0 +1,1 @@
+{"errors":[{"errorCode":"IDA-MPA-007","errorMessage":"License key does not belong to a registered MISP"}],"responseTime":"$TIMESTAMP$","version":"1.0","response":{"kycStatus":false,"staticToken":"$IGNORE$","identity":"$IGNORE$"}}

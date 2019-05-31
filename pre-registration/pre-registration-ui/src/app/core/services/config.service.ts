@@ -8,7 +8,6 @@ export class ConfigService {
 
   public setConfig(configJson: any) {
     this.configs = configJson.response;
-    console.log(this.configs);
   }
 
   public getConfigByKey(key: string) {

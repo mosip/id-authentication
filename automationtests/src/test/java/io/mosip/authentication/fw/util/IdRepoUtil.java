@@ -164,5 +164,27 @@ public class IdRepoUtil extends AuthTestsUtil {
 		LocalDate currentDate = LocalDate.now();
 		return String.valueOf(Period.between(birthDate, currentDate).getYears());
 	}
+	
+	/**
+	 * Get create VID api path
+	 *
+	 * @return url
+	 */
+	public static String getCreateVidPath() {
+		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoCreateVIDRecordPath();
+		//url = url.replace("$uin$", UinNumber);
+		return url;
+	}
+	/**
+	 * Get update VID api path 
+	 * 
+	 * @param vid number
+	 * @return url
+	 */
+	public static String getUpdateVidStatusPath(String vidNumer) {
+		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoUpdateVIDStatusPath();
+		url = url.replace("$vid$", vidNumer);
+		return url;
+	}
 
 }

@@ -68,7 +68,7 @@ public class BookingController {
 	 * 
 	 * @return MainResponseDto .
 	 */
-	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR')")
+	@PreAuthorize("hasAnyRole('PRE_REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','INDIVIDUAL')")
 	@GetMapping(path = "/appointment/availability/sync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),

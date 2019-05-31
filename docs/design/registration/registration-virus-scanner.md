@@ -1,4 +1,4 @@
-Design for the Registration -- Virus Scan
+**Design for the Registration -- Virus Scan**
 
 **Background**
 

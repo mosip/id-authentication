@@ -1,4 +1,7 @@
-<div *ngIf="secondaryLanguagelabels">
+<div class="spinner" *ngIf="!dataIncomingSuccessful && !hasError">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="(secondaryLanguagelabels && dataIncomingSuccessful) || hasError">
   <div class="wrapper">
     <div class="user">
       <header>{{ 'demographic.title' | translate }}</header>
@@ -115,10 +118,13 @@
               name="fontStyle"
               aria-label="Font Style"
             >
-              <mat-button-toggle value="NFR"> {{ 'demographic.button_national' | translate }} </mat-button-toggle>
+              <!-- <mat-button-toggle value="NFR"> {{ 'demographic.button_national' | translate }} </mat-button-toggle>
               <mat-button-toggle value="FR">
                 {{ 'demographic.button_foreigner' | translate }}
-              </mat-button-toggle>
+              </mat-button-toggle> -->
+              <mat-button-toggle *ngFor="let resident of primaryResidenceStatus" [value]="resident.code">{{
+                resident.name
+              }}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div
@@ -410,8 +416,11 @@
               name="fontStyle"
               aria-label="Font Style"
             >
-              <mat-button-toggle value="NFR"> {{ secondaryLanguagelabels.button_national }} </mat-button-toggle>
-              <mat-button-toggle value="FR"> {{ secondaryLanguagelabels.button_foreigner }} </mat-button-toggle>
+              <!-- <mat-button-toggle value="NFR"> {{ secondaryLanguagelabels.button_national }} </mat-button-toggle>
+              <mat-button-toggle value="FR"> {{ secondaryLanguagelabels.button_foreigner }} </mat-button-toggle> -->
+              <mat-button-toggle *ngFor="let resident of secondaryResidenceStatus" [value]="resident.code">{{
+                resident.name
+              }}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div

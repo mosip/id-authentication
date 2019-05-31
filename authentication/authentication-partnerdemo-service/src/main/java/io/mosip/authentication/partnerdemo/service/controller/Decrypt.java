@@ -129,7 +129,7 @@ public class Decrypt {
 		return null;
 	}
 	
-	private String generateAuthToken() {
+	public String generateAuthToken() {
 		ObjectNode requestBody = objMapper.createObjectNode();
 		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));
 		requestBody.put("secretKey", env.getProperty("auth-token-generator.rest.secretKey"));

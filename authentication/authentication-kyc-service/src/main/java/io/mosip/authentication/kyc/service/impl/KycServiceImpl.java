@@ -14,13 +14,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycResponseDTO;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 
@@ -55,46 +55,59 @@ public class KycServiceImpl implements KycService {
 	 * io.mosip.authentication.core.spi.indauth.service.KycService#retrieveKycInfo(
 	 * java.lang.String, java.util.List, java.lang.String, java.util.Map)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public KycResponseDTO retrieveKycInfo(String uin, List<String> allowedkycAttributes, String secLangCode,
 			Map<String, List<IdentityInfoDTO>> identityInfo) throws IdAuthenticationBusinessException {
 		KycResponseDTO kycResponseDTO = new KycResponseDTO();
-		Map<String, Object> filteredIdentityInfo = constructIdentityInfo(allowedkycAttributes, identityInfo,
-				secLangCode);
-		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.get("face") instanceof List) {
-			List<IdentityInfoDTO> faceValue = (List<IdentityInfoDTO>) filteredIdentityInfo.get("face");
-			List<BioIdentityInfoDTO> bioValue = new ArrayList<>();
-			if (Objects.nonNull(faceValue)) {
-				BioIdentityInfoDTO bioIdentityInfoDTO = null;
-				for (IdentityInfoDTO identityInfoDTO : faceValue) {
-					DataDTO dataDTO = new DataDTO();
-					bioIdentityInfoDTO = new BioIdentityInfoDTO();
-					dataDTO.setBioType("face");
-					dataDTO.setBioValue(identityInfoDTO.getValue());
-					bioIdentityInfoDTO.setData(dataDTO);
-					bioValue.add(bioIdentityInfoDTO);
-				}
+		if (Objects.nonNull(identityInfo)) {
+			Map<String, String> idEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, identityInfo,
+					null);
+			List<IdentityInfoDTO> bioValue = null;
+			String face = Objects.nonNull(idEntityInfoMap) ? idEntityInfoMap.get(CbeffDocType.FACE.getName()) : null;
+			if (Objects.nonNull(idEntityInfoMap)) {
+				bioValue = new ArrayList<>();
+				IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+				identityInfoDTO.setValue(face);
+				bioValue.add(identityInfoDTO);
 			}
-			filteredIdentityInfo.put("biometrics", bioValue);
-		}
-		if (Objects.nonNull(filteredIdentityInfo)) {
-			Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
-					.filter(entry -> entry.getKey() != null)
-					.map(entry -> new SimpleEntry<>(
-							IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
-							entry.getValue()))
-					.filter(entry -> !entry.getKey().isEmpty())
-					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-			for (String kycAttribute : allowedkycAttributes) {
-				String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
-				if (!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
-					idMappingIdentityInfo.put(idname, null);
-				}
+			identityInfo.put("photo", bioValue);
+			Map<String, Object> filteredIdentityInfo = constructIdentityInfo(allowedkycAttributes, identityInfo,
+					secLangCode);
+			if (Objects.nonNull(filteredIdentityInfo)) {
+				constructIdentityInfo(allowedkycAttributes, kycResponseDTO, bioValue, face, filteredIdentityInfo);
 			}
-			kycResponseDTO.setIdentity(idMappingIdentityInfo);
 		}
 		return kycResponseDTO;
+	}
+
+	/**
+	 * Construct identity info.
+	 *
+	 * @param allowedkycAttributes the allowedkyc attributes
+	 * @param kycResponseDTO the kyc response DTO
+	 * @param bioValue the bio value
+	 * @param face the face
+	 * @param filteredIdentityInfo the filtered identity info
+	 */
+	private void constructIdentityInfo(List<String> allowedkycAttributes, KycResponseDTO kycResponseDTO,
+			List<IdentityInfoDTO> bioValue, String face, Map<String, Object> filteredIdentityInfo) {
+		Map<String, Object> idMappingIdentityInfo = filteredIdentityInfo.entrySet().stream()
+				.filter(entry -> entry.getKey() != null)
+				.map(entry -> new SimpleEntry<>(
+						IdaIdMapping.getIdNameForMapping(entry.getKey(), mappingConfig).orElse(""),
+						entry.getValue()))
+				.filter(entry -> !entry.getKey().isEmpty())
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		for (String kycAttribute : allowedkycAttributes) {
+			String idname = IdaIdMapping.getIdNameForMapping(kycAttribute, mappingConfig).orElse("");
+			if (!idname.isEmpty() && !idMappingIdentityInfo.containsKey(idname)) {
+				idMappingIdentityInfo.put(idname, null);
+			}
+		}
+		if (Objects.nonNull(filteredIdentityInfo) && filteredIdentityInfo.containsKey("photo")) {
+			idMappingIdentityInfo.put(CbeffDocType.FACE.getName(), Objects.nonNull(bioValue) ? face : null);
+		}
+		kycResponseDTO.setIdentity(idMappingIdentityInfo);
 	}
 
 	/**

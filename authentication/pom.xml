@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<groupId>io.mosip.authentication</groupId>
@@ -47,6 +47,7 @@
 		<!-- Kernel components -->
 		<kernel.version>${project.version}</kernel.version>
 		<kernel.core.version>${kernel.version}</kernel.core.version>
+		<json.utility.version>20180130</json.utility.version>
 		<kernel.hibernate.version>${kernel.version}</kernel.hibernate.version>
 		<kernel.template.version>${kernel.version}</kernel.template.version>
 		<kernel.pdfgenerate.version>${kernel.version}</kernel.pdfgenerate.version>

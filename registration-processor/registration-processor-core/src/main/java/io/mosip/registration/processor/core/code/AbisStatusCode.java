@@ -7,7 +7,8 @@ package io.mosip.registration.processor.core.code;
 public enum AbisStatusCode {
 	IN_PROGRESS,
 	SENT, 
-	PROCESSED, 
+	PROCESSED,
+	ALREADY_PROCESSED,
 	FAILED,
 	SUCCESS,
 	

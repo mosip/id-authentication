@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
 import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.util.ResponseFilter;
 import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
@@ -29,7 +30,6 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<MainResponse
 	
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-		// TODO Auto-generated method stub
 		return returnType.hasMethodAnnotation(ResponseFilter.class);
 	}
 
@@ -39,10 +39,11 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<MainResponse
 			ServerHttpRequest request, ServerHttpResponse response) {
 		if (body != null) {
 			try {
+				String timestamp = DateUtils.getUTCCurrentDateTimeString();
+				body.setResponsetime(timestamp); 
 				SignatureResponse cryptoManagerResponseDto = signatureUtil
-						.signResponse(objectMapper.writeValueAsString(body));
+						.sign(objectMapper.writeValueAsString(body),timestamp);
 				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
-				body.setResponsetime(cryptoManagerResponseDto.getResponseTime().toString());
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(ErrorCodes.PRG_DATA_SYNC_017.toString(),
 						ErrorMessages.ERROR_WHILE_PARSING.getMessage(),body);

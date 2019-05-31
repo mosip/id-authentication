@@ -1,0 +1,1 @@
+[{"jiraId":"MOS-1006","testType":"regression","testCaseName":"BookAnAppointmentByPassingInvalidRequestTime_InvalidValue","BookAnAppointmentByPassingInvalidRequestTime_InvalidValue":"invalid","status":"Pass"}]

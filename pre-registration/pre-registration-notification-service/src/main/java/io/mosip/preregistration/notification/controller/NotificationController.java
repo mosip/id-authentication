@@ -48,7 +48,7 @@ public class NotificationController {
 	 *            the file to send.
 	 * @return the response entity.
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','PRE_REGISTRATION_ADMIN')")
 	@PostMapping(path = "/notify", consumes = {
 			"multipart/form-data" })
 	@ApiOperation(value = "Trigger notification")

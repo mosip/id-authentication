@@ -247,10 +247,22 @@ phone_Mismatch:
       - 9446933347
 bio_face_subType:
       - FACE
+      - UNKNOWN
+bio_iris_left_subType:
+      - LEFT
+      - UNKNOWN
+bio_iris_right_subType:
+      - RIGHT
+      - UNKNOWN
 bio_finger_LeftIndex_subType:
       - LEFT_INDEX
+      - UNKNOWN
 bio_face_type:
       - FID
+bio_finger_type:
+      - FMR
+bio_iris_type:
+      - IIR
 bio_face_deviceCode:
       - cogent
 bio_face_deviceProviderID:
@@ -270,12 +282,24 @@ primary_lang_code:
 secondary_lang_code:
       - ara
 #Auth_transaction
+auth_transaction_IRIS_authTypeCode:
+      - IRIS-AUTH
+auth_transaction_FINGER_authTypeCode:
+      - FINGER-AUTH
 auth_transaction_FACE_authTypeCode:
       - FACE-AUTH
 auth_transaction_success_statusCode:
       - Y
 auth_transaction_fail_statusCode:
       - N
+auth_transaction_IRIS_success_statusComment:
+      - $REGEXP:.*Iris.*Authentication.*Success.*$
+auth_transaction_IRIS_fail_statusComment:
+      - $REGEXP:.*Iris.*Authentication.*Failed.*$
+auth_transaction_FINGER_success_statusComment:
+      - $REGEXP:.*Finger.*Authentication.*Success.*$
+auth_transaction_FINGER_fail_statusComment:
+      - $REGEXP:.*Finger.*Authentication.*Failed.*$
 auth_transaction_FACE_success_statusComment:
       - $REGEXP:.*Face.*Authentication.*Success.*$
 auth_transaction_FACE_fail_statusComment:
@@ -301,6 +325,10 @@ audit_log_ida_appName:
       - ID-Authentication
 audit_log_ekyc_moduleName:
       - EKYC_AUTH
+audit_log_iris_moduleName:
+      - IRIS_AUTH
+audit_log_finger_moduleName:
+      - FINGERPRINT_AUTH
 audit_log_face_moduleName:
       - FACE_AUTH
 audit_log_UIN_refIdType:
@@ -323,11 +351,11 @@ name_tittle_female_primary_lang:
 name_tittle_male_primary_lang:
       - Monsieur.
 name_tittle_UnMarriedfemale_secondary_lang:
-      - '.آنسة '
+      - 'آنسة '
 name_tittle_female_secondary_lang:
-      - '.ست '
+      - 'ست '
 name_tittle_male_secondary_lang:
-      - '.أستاذ '
+      - 'أستاذ'
 #otp
 otpChannel_EMAIL:
       - EMAIL

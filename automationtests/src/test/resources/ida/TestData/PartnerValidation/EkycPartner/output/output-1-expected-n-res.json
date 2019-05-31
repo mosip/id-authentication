@@ -1,11 +1,11 @@
 {
-	"status": "N",
-	"err": [],
-	"txnID": "4656338635",
-	"resTime": "2019-02-20T13:16:59.593+05:30",
-	"info": {
-		"idType": "D",
-		"reqTime": "2019-02-20T13:14:56.056+05:30"
-	},
-	"ver": "$version$"
+	"transactionID": "3823370061",
+	"version": "1.0",
+	"id": "mosip.identity.kyc",
+	"responseTime": "2019-05-20T12:32:26.948+05:30",
+	"response": {
+		"kycStatus": false,
+		"staticToken": "$IGNORE$",
+		"identity": "$IGNORE$"
+	}
 }

@@ -72,6 +72,7 @@ public class RegistrationUIConstants {
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
 	public static final String FACE_CAPTURE_ERROR = bundle.getString("FACE_CAPTURE_ERROR");
+	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
 	// LOCK ACCOUNT
@@ -109,6 +110,8 @@ public class RegistrationUIConstants {
 	public static final String APPROVED = bundle.getString("APPROVED");
 	public static final String REJECTED = bundle.getString("REJECTED");
 	public static final String PENDING = bundle.getString("PENDING");
+	public static final String INFORMED = bundle.getString("INFORMED");
+	public static final String CANTINFORMED = bundle.getString("CANTINFORMED");
 
 	// CAMERA
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
@@ -153,6 +156,14 @@ public class RegistrationUIConstants {
 	public static final String FUTURE_DOB = bundle.getString("FUTURE_DOB");
 	public static final String INVALID_AGE = bundle.getString("INVALID_AGE");
 	public static final String INVALID_MONTH = bundle.getString("INVALID_MONTH");
+	public static final String SELECT = bundle.getString("SELECT");
+	public static final String LEFT_SLAP = bundle.getString("LEFT_SLAP");
+	public static final String RIGHT_SLAP = bundle.getString("RIGHT_SLAP");
+	public static final String THUMBS = bundle.getString("THUMBS");
+	public static final String RIGHT_IRIS = bundle.getString("RIGHT_IRIS");
+	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
+	public static final String PHOTO = bundle.getString("PHOTO");
+	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
@@ -219,7 +230,8 @@ public class RegistrationUIConstants {
 	public static final String BIOMETRIC_SCANNING_ERROR = bundle.getString("BIOMETRIC_SCANNING_ERROR");
 	public static final String IRIS_SCANNING_ERROR = bundle.getString("IRIS_SCANNING_ERROR");
 	public static final String FINGERPRINT_SCANNING_ERROR = bundle.getString("FINGERPRINT_SCANNING_ERROR");
-	public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
+	public static final String NO_DEVICE_FOUND = bundle.getString("NO_DEVICE_FOUND");
+public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
 	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
 	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
 	public static final String FINGERPRINT_DUPLICATION_ALERT = bundle.getString("FINGERPRINT_DUPLICATION_ALERT");
@@ -264,6 +276,10 @@ public class RegistrationUIConstants {
 	public static final String SUPERVISOR_VERIFICATION = bundle.getString("SUPERVISOR_VERIFICATION");
 	public static final String EOD_DETAILS_EXPORT_FAILURE = bundle.getString("EOD_DETAILS_EXPORT_FAILURE");
 	public static final String EOD_DETAILS_EXPORT_SUCCESS = bundle.getString("EOD_DETAILS_EXPORT_SUCCESS");
+	public static final String EOD_SLNO_LABEL = bundle.getString("EOD_SLNO_LABEL");
+	public static final String EOD_REGISTRATIONID_LABEL = bundle.getString("EOD_REGISTRATIONID_LABEL");
+	public static final String EOD_REGISTRATIONDATE_LABEL = bundle.getString("EOD_REGISTRATIONDATE_LABEL");
+	public static final String EOD_STATUS_LABEL = bundle.getString("EOD_STATUS_LABEL");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

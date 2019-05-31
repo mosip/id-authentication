@@ -1,5 +1,7 @@
 package io.mosip.preregistration.login.exception.util;
 
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -25,7 +27,7 @@ import io.mosip.preregistration.login.exception.UserIdOtpFaliedException;
 public class LoginExceptionCatcher {
 
 	public void handle(Exception ex,String serviceType,MainResponseDTO<?> mainResponsedto) {
-		if(ex instanceof RestClientException && (serviceType !=null && serviceType.equals("sendOtp"))) {
+		if((ex instanceof RestClientException || ex instanceof HttpClientErrorException || ex instanceof HttpServerErrorException )&& (serviceType !=null && serviceType.equals("sendOtp"))) {
 			throw new SendOtpFailedException(ErrorCodes.PRG_AUTH_001.name(),(ErrorMessages.SEND_OTP_FAILED.getMessage()),mainResponsedto );
 		}
 		else if(ex instanceof RestClientException && (serviceType != null && serviceType.equals("userIdOtp"))) {

@@ -16,7 +16,7 @@
             <a>Logout</a>
         </div>
     </div> -->
-  <button mat-button [matMenuTriggerFor]="menu"><mat-icon class="icon">account_circle</mat-icon>&nbsp;<span>John Doe</span></button>
+  <button mat-button [matMenuTriggerFor]="menu"><mat-icon class="icon">account_circle</mat-icon>&nbsp;<span>{{username}}</span></button>
   <mat-menu [overlapTrigger]="false" #menu="matMenu">
     <button mat-menu-item (click)="logOut()">Logout</button>
   </mat-menu>

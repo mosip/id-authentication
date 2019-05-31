@@ -10,6 +10,7 @@ public enum RegistrationExternalStatusCode {
  REREGISTER, /** The processed. */
  PROCESSED,
  RESEND,
- RECEIVED
+ RECEIVED,
+ REJECTED
 
 }

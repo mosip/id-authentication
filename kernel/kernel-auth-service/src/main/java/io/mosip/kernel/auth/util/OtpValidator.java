@@ -40,7 +40,7 @@ public class OtpValidator {
 		}
 		if(otpUser.getAppId().equals("preregistration") && otpUser.getOtpChannel().size()>1)
 		{
-			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(),"Multiple channels are supported for this application ");
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(),"Multiple channels are not supported for this application ");
 		}
 		
 	}

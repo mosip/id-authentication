@@ -19,7 +19,9 @@ import io.mosip.kernel.auth.service.UinService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,10 +62,15 @@ public class UinServiceImpl implements UinService {
 	MosipEnvironment env;
 	
 	@Autowired
+	Environment en;
+	
+	@Autowired
 	private ObjectMapper mapper;
 	
 	@Autowired
 	private TokenGenerationService tokenService;
+	
+	public static final String MOSIP_NOTIFICATIONTYPE = "mosip.notificationtype";
 
 	/*
 	 * (non-Javadoc)
@@ -71,7 +80,7 @@ public class UinServiceImpl implements UinService {
 	 * .auth.entities.otp.OtpUser)
 	 */
 	@Override
-	public MosipUserDto getDetailsFromUin(String uin) throws Exception {
+	public MosipUserDto getDetailsFromUin(OtpUser otpUser) throws Exception {
 		String token=null;
 		MosipUserDto mosipDto = null;
 		ResponseDTO idResponse = null;
@@ -80,11 +89,11 @@ public class UinServiceImpl implements UinService {
 		try {
 			token = tokenService.getUINBasedToken();
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage());
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()),e.getMessage(),e);
 		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(AuthConstant.COOKIE, AuthConstant.AUTH_HEADER+token);
-		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), uin);
+		uriParams.put(AuthConstant.APPTYPE_UIN.toLowerCase(), otpUser.getUserId());
 		ResponseEntity<String> response = null;
 		String url = UriComponentsBuilder.fromHttpUrl(env.getUinGetDetailsUrl()).buildAndExpand(uriParams).toUriString();
 		try
@@ -105,15 +114,15 @@ public class UinServiceImpl implements UinService {
 						ResponseDTO.class);
 				
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
 			}
 		}
 			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
 			if(res!=null)
 			{
 				mosipDto = new MosipUserDto();
-				mosipDto.setUserId(uin);
-				validate(res);
+				mosipDto.setUserId(otpUser.getUserId());
+				validate(res,otpUser.getOtpChannel());
 				if(res.get("phone")!=null)
 				{
 					mosipDto.setMobile((String) res.get("phone"));
@@ -144,7 +153,7 @@ public class UinServiceImpl implements UinService {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage() + ex.getMessage());
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
 			}
 		}
 		
@@ -192,7 +201,7 @@ public class UinServiceImpl implements UinService {
 						ResponseDTO.class);
 				
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage());
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
 			}
 		}
 			Map<String,String> res = (LinkedHashMap<String, String>) idResponse.getIdentity();
@@ -200,7 +209,7 @@ public class UinServiceImpl implements UinService {
 			{
 				mosipDto = new MosipUserDto();
 				mosipDto.setUserId(uin);
-				validate(res);
+				validate(res,null);
 				if(res.get("phone")!=null)
 				{
 					mosipDto.setMobile((String) res.get("phone"));
@@ -239,19 +248,43 @@ public class UinServiceImpl implements UinService {
 	}
 	
 
-	private void validate(Map<String, String> res) {
-		if((String) res.get("phone")==null && (String) res.get("email")==null)
+	private void validate(Map<String, String> res, List<String> channelList) {
+		String notficationType = en.getProperty(MOSIP_NOTIFICATIONTYPE);
+		String phone,email;
+		String[] notificationArray = notficationType.split("[\\|\\s]+");
+		List<String> notifyList = Arrays.asList(notificationArray);		
+		phone =(String) res.get("phone");
+		email = (String) res.get("email");
+		validateConfigChannel(notifyList,channelList);
+		if((StringUtils.isBlank(phone) && StringUtils.isBlank(email)) && (channelList.contains(AuthConstant.PHONE) && channelList.contains(AuthConstant.EMAIL)))
 		{
 			throw new AuthManagerException(OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILPHONENOTREGISTERED.getErrorMessage());
 		}
-		else if(res.get("phone")==null)
+		else if(StringUtils.isBlank(phone) && channelList.contains(AuthConstant.PHONE))
 		{
 			throw new AuthManagerException(OTPErrorCode.PHONENOTREGISTERED.getErrorCode(),OTPErrorCode.PHONENOTREGISTERED.getErrorMessage());
 		}
-		else if(res.get("email")==null)
+		else if(StringUtils.isBlank(email) && channelList.contains(AuthConstant.EMAIL))
 		{
 			throw new AuthManagerException(OTPErrorCode.EMAILNOTREGISTERED.getErrorCode(),OTPErrorCode.EMAILNOTREGISTERED.getErrorMessage());
 		}
+		
+	}
+
+	private void validateConfigChannel(List<String> notifyList, List<String> channelList) {
+		if((!notifyList.contains(AuthConstant.SMS_NOTIFYTYPE) && !notifyList.contains(AuthConstant.EMAIL_NOTIFYTYPE)) && (channelList.contains(AuthConstant.PHONE) && channelList.contains(AuthConstant.EMAIL)))
+		{
+			throw new AuthManagerException(OTPErrorCode.EMAILSMSNOTCONFIGURED.getErrorCode(),OTPErrorCode.EMAILSMSNOTCONFIGURED.getErrorMessage());
+		}
+		else if(!notifyList.contains(AuthConstant.SMS_NOTIFYTYPE) && channelList.contains(AuthConstant.PHONE))
+		{
+			throw new AuthManagerException(OTPErrorCode.SMSNOTCONFIGURED.getErrorCode(),OTPErrorCode.SMSNOTCONFIGURED.getErrorMessage());
+		}
+		else if(!notifyList.contains(AuthConstant.EMAIL_NOTIFYTYPE) && channelList.contains(AuthConstant.EMAIL))
+		{
+			throw new AuthManagerException(OTPErrorCode.SMSNOTCONFIGURED.getErrorCode(),OTPErrorCode.SMSNOTCONFIGURED.getErrorMessage());
+		}
+		
 		
 	}
 

@@ -1,12 +1,13 @@
 {
-  "id": "mosip.pre-registration.document.copy",
-  "version" : "1.0",
-  "responsetime": "2019-01-16T17:31:04.021Z",
-  "response":null,
-  "errors":[
+    "id": "mosip.pre-registration.document.copy",
+    "version": "1.0",
+    "responsetime": "2019-05-25T14:34:25.794Z",
+    "response": null,
+    "errors": [
         {
-	   "errorCode": "PRG_PAM_DOC_005",
-	   "message": "Document not found for the source pre-registration Id"
+            "errorCode": "PRG_PAM_DOC_020",
+            "message": "Demographic record failed to fetch"
+
         }
-   ]
+    ]
 }

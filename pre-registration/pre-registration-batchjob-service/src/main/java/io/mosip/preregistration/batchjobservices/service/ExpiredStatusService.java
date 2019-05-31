@@ -35,7 +35,7 @@ public class ExpiredStatusService {
 
 	
 	
-	@Value("${ver}")
+	@Value("${version}")
 	String versionUrl;
 
 	@Value("${mosip.preregistration.batchjob.service.expired.id}")

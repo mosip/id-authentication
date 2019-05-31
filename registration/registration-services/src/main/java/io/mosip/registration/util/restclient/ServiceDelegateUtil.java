@@ -121,11 +121,22 @@ public class ServiceDelegateUtil {
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
 
+		
+			Map<String, String> queryParams = new HashMap<>();
+			for (String key : requestParams.keySet()) {
+				if (!url.contains("{" + key + "}")) {
+					queryParams.put(key, requestParams.get(key));
+				}
+
+			}
+
 			if (hasPathParams) {
 				requestHTTPDTO.setUri(UriComponentsBuilder.fromUriString(url).build(requestParams));
-			} else {
+				url=requestHTTPDTO.getUri().toString();
+			}
+			if (!queryParams.isEmpty()) {
 				/** Set URI */
-				setURI(requestHTTPDTO, requestParams, url);
+				setURI(requestHTTPDTO, queryParams, url);
 			}
 
 			LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
@@ -265,7 +276,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setIsSignRequired(false);
 		try {
 			requestHTTPDTO.setUri(new URI(url));
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException uriSyntaxException) {
 		}
 		// set timeout
 		setTimeout(requestHTTPDTO);

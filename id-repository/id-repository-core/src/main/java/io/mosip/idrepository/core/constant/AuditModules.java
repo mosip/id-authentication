@@ -21,7 +21,9 @@ public enum AuditModules {
 	
 	UPDATE_VID("IDR-MOD-105"),
 	
-	RETRIEVE_VID("IDR-MOD-106");
+	RETRIEVE_VID("IDR-MOD-106"),
+	
+	REGENERATE_VID("IDR-MOD-107");
 
 	/** The module id. */
 	private final String moduleId;

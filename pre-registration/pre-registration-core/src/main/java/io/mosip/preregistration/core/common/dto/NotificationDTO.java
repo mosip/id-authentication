@@ -40,6 +40,11 @@ public class NotificationDTO {
 	private String emailID;
 	
 	/**
+	 * batch config field
+	 */
+	private boolean isBatch;
+	
+	/**
 
 	 * additionalRecipient for notififcation
 	 */

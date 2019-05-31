@@ -15,16 +15,16 @@ import java.util.stream.Stream;
 public enum IdAuthenticationErrorConstants {
 
 	// OTP
-	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-001", "Request to be received at MOSIP within 20 minutes",
-			"Please resend the request within 20 min"),
-	OTP_REQUEST_FLOODED("IDA-OTA-002", "Innumerous OTP requests received"),
-	OTP_GENERATION_FAILED("IDA-OTA-003", "Could not generate/send OTP"),
-	EXPIRED_OTP("IDA-OTA-004", "OTP has expired", "Please regenerate OTP and try again after sometime"),
-	INVALID_OTP("IDA-OTA-005", "OTP is invalid", "Please provide correct OTP value"),
-	INVALID_TXN_ID("IDA-OTA-006", "Input transactionID does not match transactionID of OTP Request"),
-	BLOCKED_OTP_GENERATE("IDA-OTA-008", "UIN is locked for OTP generation. Please try again later"),
-	BLOCKED_OTP_VALIDATE("IDA-OTA-009", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
-	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-010", "%s not configured for the country"),
+	OTP_REQUEST_FLOODED("IDA-OTA-001", "Innumerous OTP requests received"),
+	OTP_GENERATION_FAILED("IDA-OTA-002", "Could not generate/send OTP"),
+	EXPIRED_OTP("IDA-OTA-003", "OTP has expired", "Please regenerate OTP and try again after sometime"),
+	INVALID_OTP("IDA-OTA-004", "OTP is invalid", "Please provide correct OTP value"),
+	INVALID_TXN_ID("IDA-OTA-005", "“Input transactionID does not match transactionID of OTP Request"),
+	BLOCKED_OTP_GENERATE("IDA-OTA-006", "UIN is locked for OTP generation. Please try again later"),
+	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
+	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-010", "%s not configured for the country"),
+	OTP_ID_MISMATCH("IDA-OTA-010", "Input transactionID does not match transactionID of OTP Request"),
+	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-011", "OTP Notification Channel not provided"),
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
 			"Please send the request within %s minutes"),

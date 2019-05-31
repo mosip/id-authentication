@@ -49,7 +49,7 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
+	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Za-z0-9]{10}");
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
@@ -166,9 +166,12 @@ public abstract class IdAuthValidator implements Validator {
 
 		if (reqDateAndTime != null && DateUtils.after(reqDateAndTime, new Date())) {
 			mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), VALIDATE, "Invalid Date");
-			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(),
-							env.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES)));
+			Long reqDateMaxTimeLong = env
+					.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES, Long.class);
+			errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
+					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
+					new Object[] { reqDateMaxTimeLong },
+					IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 		}
 	}
 

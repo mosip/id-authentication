@@ -78,16 +78,17 @@
         [attr.src]="fileUrl"
         type="application/pdf;Base64,"
       ></iframe>
+
       <img
         *ngIf="fileExtension == 'jpg'"
         class="file-uplaoad__body__2__preview"
-        [attr.src]="fileUrl"
+        [src]="fileUrl"
         type="image/jpeg;Base64,"
       />
       <img
         *ngIf="fileExtension == 'png'"
         class="file-uplaoad__body__2__preview"
-        [attr.src]="fileUrl"
+        [src]="fileUrl"
         type="image/png;Base64,"
       />
       <div class="file-buttons" *ngIf="users[0].files.documentsMetaData">

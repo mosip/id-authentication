@@ -1,7 +1,11 @@
 {
-    "transactionID": "8557676061",
-    "version": "1.0",
-    "id": "mosip.identity.kyc",
-    "responseTime": "2019-04-09T15:54:54.476+05:30",
-    "response": "eyJreWNTdGF0dXMiOnRydWUsInN0YXRpY1Rva2VuIjoiNDg3ODI3MjczMjEzNTI5MzM3OTI4NzIzMjQ1OTcxNTc2NzMzIiwidHRsIjoiMjQiLCJpZGVudGl0eSI6eyJwaG9uZU51bWJlciI6W3sidmFsdWUiOiI5MzUzMzU2NTQzIn1dLCJnZW5kZXIiOlt7Imxhbmd1YWdlIjoiYXJhIiwidmFsdWUiOiLYp9mE2LDZg9ixIn1dLCJkb2IiOlt7InZhbHVlIjoiMTk2NS8wNC8xMSJ9XSwibmFtZSI6W3sibGFuZ3VhZ2UiOiJhcmEiLCJ2YWx1ZSI6ItmF2Y/Zh9mO2YXZhdmQ2K8g2Y7Ysdiz2YfZjtivIn1dLCJsb2NhdGlvbjEiOlt7Imxhbmd1YWdlIjoiYXJhIiwidmFsdWUiOiLar9mO2Y8ifV0sImxvY2F0aW9uMiI6W3sibGFuZ3VhZ2UiOiJhcmEiLCJ2YWx1ZSI6Itiq2Y7YsdmO2YXZjtmG2ZAifV0sImFkZHJlc3NMaW5lMSI6W3sibGFuZ3VhZ2UiOiJhcmEiLCJ2YWx1ZSI6ItmF2q/YsSDYs9mQ2KrZiiJ9XSwiZW1haWxJZCI6W3sidmFsdWUiOiJ2aWduZXNoLnZpamF5YWt1bWFyQG1pbmR0cmVlLmNvbSJ9XSwiYWRkcmVzc0xpbmUyIjpbeyJsYW5ndWFnZSI6ImFyYSIsInZhbHVlIjoi2K/Zj9io2Y7ZkCDZg9ix2Y/Ys9izINiz2KrYsdmQ2ZDYqiJ9XSwibG9jYXRpb24zIjpbeyJsYW5ndWFnZSI6ImFyYSIsInZhbHVlIjoi2KjYsdmQ2q/Zjtiv2ZAg2LHZjtmP2K8ifV0sImFkZHJlc3NMaW5lMyI6W3sibGFuZ3VhZ2UiOiJhcmEiLCJ2YWx1ZSI6Itm+2Y7Ys9mQ2YHZkNmDINmP2LPZjtmQ2YYifV19fQ\u003d\u003d"
+  "transactionID": "3823370061",
+  "version": "1.0",
+  "id": "mosip.identity.kyc",
+  "responseTime": "2019-05-20T12:32:26.948+05:30",
+  "response": {
+    "kycStatus": true,
+    "staticToken": "$IGNORE$",
+    "identity": "$IGNORE$"
+  }
 }

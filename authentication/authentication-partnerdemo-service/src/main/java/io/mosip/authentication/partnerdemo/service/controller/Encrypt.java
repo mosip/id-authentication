@@ -40,8 +40,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -99,10 +101,6 @@ public class Encrypt {
 	@Value("${application.id}")
 	private String appID;
 	
-	/** The IDA Public Key. */
-	@Value("${cryptomanager.partner.id}")
-	private String publicKeyId;
-
 	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(Encrypt.class);
@@ -132,10 +130,11 @@ public class Encrypt {
 	 */
 	@PostMapping(path = "/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
-	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto)
+	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto,
+			@RequestParam(name="isInternal",required=false) @Nullable Boolean isInternal)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-		return kernelEncrypt(encryptionRequestDto);
+		return kernelEncrypt(encryptionRequestDto, isInternal);
 	}
 
 	/**
@@ -143,6 +142,7 @@ public class Encrypt {
 	 *
 	 * @param encryptionRequestDto
 	 *            the encryption request dto
+	 * @param isInternal 
 	 * @return the encryption response dto
 	 * @throws KeyManagementException
 	 *             the key management exception
@@ -157,7 +157,7 @@ public class Encrypt {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
-	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto)
+	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
 			throws KeyManagementException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeyException,
 			NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException,
 			InvalidKeySpecException {
@@ -167,7 +167,7 @@ public class Encrypt {
 		EncryptionResponseDto encryptionResponseDto = new EncryptionResponseDto();
 		byte[] encryptedIdentityBlock = cryptoUtil.symmetricEncrypt(identityBlock.getBytes(), secretKey);
 		encryptionResponseDto.setEncryptedIdentity(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
-		String publicKeyStr = getPublicKey(identityBlock);
+		String publicKeyStr = getPublicKey(identityBlock, isInternal);
 		PublicKey publicKey = KeyFactory.getInstance(ASYMMETRIC_ALGORITHM_NAME)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyStr)));
 		byte[] encryptedSessionKeyByte = cryptoUtil.asymmetricEncrypt((secretKey.getEncoded()), publicKey);
@@ -184,6 +184,7 @@ public class Encrypt {
 	 *
 	 * @param data
 	 *            the data
+	 * @param isInternal 
 	 * @param tspID
 	 *            the tsp ID
 	 * @return the encrypted value
@@ -199,7 +200,7 @@ public class Encrypt {
 	 *             the JSON exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public String getPublicKey(String data)
+	public String getPublicKey(String data, boolean isInternal)
 			throws IOException, KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
@@ -221,7 +222,8 @@ public class Encrypt {
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
-		request.setReferenceId(publicKeyId);
+		String publicKeyId = isInternal ? env.getProperty("internal.reference.id") : env.getProperty("cryptomanager.partner.id");
+		request.setReferenceId(publicKeyId );
 		String utcTime = DateUtils.getUTCCurrentDateTimeString();
 		request.setTimeStamp(utcTime);
 		Map<String, String> uriParams = new HashMap<>();

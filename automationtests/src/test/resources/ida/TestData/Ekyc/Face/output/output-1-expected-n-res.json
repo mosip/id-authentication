@@ -9,5 +9,7 @@
     }
   ],
   "responseTime": "2019-04-16T14:04:01.595+05:30",
-  "response": "eyJhdXRoU3RhdHVzIjpmYWxzZSwic3RhdGljVG9rZW4iOm51bGx9"
+  "response": {
+		"kycStatus": false
+		}
 }

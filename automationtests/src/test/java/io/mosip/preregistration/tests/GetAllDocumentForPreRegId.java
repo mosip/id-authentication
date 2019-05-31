@@ -93,9 +93,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "GetAllDocumentForPreRegId")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -153,15 +151,24 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		} else {
 
-			preId = actualRequest.get("preRegistrationId").toString();
+		String	preIdVal = actualRequest.get("preRegistrationId").toString();
+		String preRegURL=preReg_URI+preIdVal;
 			HashMap<String, String> parm = new HashMap<>();
-			parm.put("preRegistrationId", preId);
-			Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
+			parm.put("preRegistrationId", preIdVal);
+			//Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
+			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURL);
 			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
+			if(testCaseName.contains("EmptyValue"))
+			{
+				outerKeys.add("timestamp");
+			}
+			else
+			{
 			outerKeys.add("responsetime");
 			innerKeys.add("docId");
 			innerKeys.add("multipartFile");
+			}
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}
@@ -197,7 +204,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		testCaseName = object.get("testCaseName").toString();
 		
 		//Get All document by PreReg Id Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllDocumentURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_GetDocByPreId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();
 	}
@@ -216,7 +223,8 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, GetAllDocumentForPreRegId.testCaseName);
+			//f.set(baseTestMethod, GetAllDocumentForPreRegId.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_GetAllDocumentForPreRegId_" +GetAllDocumentForPreRegId.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

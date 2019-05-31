@@ -90,10 +90,9 @@ public SoftAssert softAssert = new SoftAssert();
 	@DataProvider(name = "createPreReg")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-
 		
-		switch ("smoke") {
+		
+		switch (testLevel) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -189,7 +188,7 @@ public SoftAssert softAssert = new SoftAssert();
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
+		//lib.logOut();
 	}
 
 	@BeforeMethod(alwaysRun=true)
@@ -211,3 +210,4 @@ public SoftAssert softAssert = new SoftAssert();
 	}
 
 }
+

@@ -1,12 +1,12 @@
 {
-  "id": "mosip.pre-registration.document.copy",
-  "version" : "1.0",
-  "responsetime": "2019-01-16T17:31:04.021Z",
-  "response":null,
-  "errors":[
+    "id": "mosip.pre-registration.document.copy",
+    "version": "1.0",
+    "responsetime": "2019-05-19T15:06:00.408Z",
+    "response": null,
+    "errors": [
         {
-	   "errorCode": "PRG_PAM_DOC_005",
-	   "message": "Document not found for the source pre-registration Id"
+            "errorCode": "PRG_PAM_DOC_018",
+            "message": "Catagory code is invalid"
         }
-   ]
+    ]
 }

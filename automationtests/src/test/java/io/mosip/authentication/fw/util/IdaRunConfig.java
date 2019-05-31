@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.dto.ErrorsDto;
+import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
 
 /**
  * The class hold all the run config path available in runconfiguration file
@@ -64,7 +65,9 @@ public class IdaRunConfig extends RunConfig{
 	private  String testDataFolderName;
 	private  String authVersion;
 	private  String clientidsecretkey;
-	
+	private String moduleFolderName;
+	private String idRepoCreateVIDRecordPath;
+	private String idRepoUpdateVIDStatusPath;
 	/**
 	 * The method get endpoint url for IDA
 	 * 
@@ -321,6 +324,8 @@ public class IdaRunConfig extends RunConfig{
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));
 		setIdRepoRetrieveDataPath(AuthTestsUtil.getPropertyValue("idRepoRetrieveDataPath"));
+		setIdRepoCreateVIDRecordPath(AuthTestsUtil.getPropertyValue("idRepoCreateVIDRecordPath"));
+		setIdRepoUpdateVIDStatusPath(AuthTestsUtil.getPropertyValue("idRepoUpdateVIDStatusPath"));
 		setDbKernelTableName(AuthTestsUtil.getPropertyValue("dbKernelTableName"));
 		setDbKernelSchemaName(AuthTestsUtil.getPropertyValue("dbKernelSchemaName"));
 		setDbKernelUserName(AuthTestsUtil.getPropertyValue("dbKernelUserName"));
@@ -346,7 +351,7 @@ public class IdaRunConfig extends RunConfig{
 		setDbKernelUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbKernelUrl"));
 		setDbIdaUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbIdaUrl"));
 		setDbAuditUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbAuditUrl"));
-		setVidGenPath(AuthTestsUtil.getPropertyValue("vidGenPath"));
+		//setVidGenPath(AuthTestsUtil.getPropertyValue("vidGenPath"));
 		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
@@ -430,14 +435,17 @@ public class IdaRunConfig extends RunConfig{
 			temp = temp + "/" + folderList[i];
 		}
 		String testDataFolderName = "";
+		String moduleFolderName="";
 		if (testDataPath.contains("\\")) {
 			String[] list = testDataPath.split(Pattern.quote("\\\\"));
 			testDataFolderName = list[1];
 		} else if (testDataPath.contains("/")) {
 			String[] list = testDataPath.split(Pattern.quote("/"));
+			moduleFolderName=list[0];
 			testDataFolderName = list[1];
 		}
 		setTestDataFolderName(testDataFolderName);
+		setModuleFolderName(moduleFolderName);
 		scenarioPath = temp;
 		setScenarioPath(scenarioPath);
 	}
@@ -828,5 +836,40 @@ public class IdaRunConfig extends RunConfig{
 	}
 	public  void setClientidsecretkey(String cleintIdSecKey) {
 		this.clientidsecretkey = cleintIdSecKey;
+	}
+	@Override
+	public String getModuleFolderName() {
+		return this.moduleFolderName;
+	}
+	@Override
+	public void setModuleFolderName(String moduleFolderName) {
+		this.moduleFolderName=moduleFolderName;
+		
+	}
+	@Override
+	public String getGenerateVIDPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setGenerateVIDPath(String generateVIDPath) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public String getIdRepoCreateVIDRecordPath() {
+		return this.idRepoCreateVIDRecordPath;
+	}
+	@Override
+	public void setIdRepoCreateVIDRecordPath(String idRepoCreateVIDRecordPath) {
+		this.idRepoCreateVIDRecordPath=idRepoCreateVIDRecordPath;		
+	}
+	@Override
+	public String getIdRepoUpdateVIDStatusPath() {
+		return this.idRepoUpdateVIDStatusPath;
+	}
+	@Override
+	public void setIdRepoUpdateVIDStatusPath(String idRepoUpdateVIDStatusPath) {
+		this.idRepoUpdateVIDStatusPath=idRepoUpdateVIDStatusPath;		
 	}
 }

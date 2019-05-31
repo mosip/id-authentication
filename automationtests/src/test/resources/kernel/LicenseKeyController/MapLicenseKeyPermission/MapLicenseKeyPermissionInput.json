@@ -4,7 +4,6 @@
     "string"
   ],
   "tspId": "string",
-
   "Kernel_MapLicenseKeyPermission_licenseKey_missing":"string",
   "Kernel_MapLicenseKeyPermission_tspId_missing":"string",
   "Kernel_MapLicenseKeyPermission_response_time":"string"

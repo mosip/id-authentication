@@ -140,8 +140,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 										Duration.between(reqTimeInstance, now).toMinutes() - reqDateMaxTimeLong));
 				errors.rejectValue(IdAuthCommonConstants.REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage(), env
-								.getProperty(IdAuthConfigKeyConstants.AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES)));
+						new Object[] { reqDateMaxTimeLong },
+						IdAuthenticationErrorConstants.INVALID_TIMESTAMP.getErrorMessage());
 			}
 		} catch (DateTimeParseException | ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),

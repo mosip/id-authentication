@@ -51,21 +51,40 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void connect(int width, int height) {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "connecting to webcam");
+
 		String webcamName = String.valueOf(ApplicationContext.map().get(RegistrationConstants.WEBCAM_NAME));
 
+		boolean found = false;
 		List<Webcam> webcams = Webcam.getWebcams();
+
+		StringBuilder webcamNames = new StringBuilder();
+		String prefix = RegistrationConstants.EMPTY;
+		for (Webcam webcamera : webcams) {
+			webcamNames.append(prefix);
+			prefix = RegistrationConstants.COMMA;
+			webcamNames.append(webcamera.getName());
+		}
+		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Available webcams that are plugged in: " + webcamNames.toString());
+
 		if (!webcams.isEmpty()) {
 			for (Webcam webcamera : webcams) {
-				if (!webcamera.getName().toLowerCase().contains(webcamName.toLowerCase())) {
-					this.webcam = webcamera;
-					Dimension requiredDimension = new Dimension(width, height);
-					Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
-					webcamera.setCustomViewSizes(nonStandardResolutions);
-					webcamera.setViewSize(requiredDimension);
-					webcamera.open();
-					Webcam.getDiscoveryService().stop();
+				if (webcamera.getName().toLowerCase().contains(webcamName.toLowerCase())) {
+					webcam = webcamera;
+					found = true;
 					break;
 				}
+			}
+			if (!found) {
+				webcam = webcams.get(0);
+			}
+			if (!webcam.isOpen()) {
+				Dimension requiredDimension = new Dimension(width, height);
+				Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
+				webcam.setCustomViewSizes(nonStandardResolutions);
+				webcam.setViewSize(requiredDimension);
+				webcam.open();
+				Webcam.getDiscoveryService().stop();
 			}
 		}
 	}

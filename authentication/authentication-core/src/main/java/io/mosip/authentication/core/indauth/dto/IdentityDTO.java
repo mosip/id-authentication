@@ -54,7 +54,7 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> location3;
 
 	/** List of identity info to hold pinCode */
-	List<IdentityInfoDTO> pinCode;
+	String postalCode;
 
 	/** List of identity info to hold fullAddress */
 	List<IdentityInfoDTO> fullAddress;

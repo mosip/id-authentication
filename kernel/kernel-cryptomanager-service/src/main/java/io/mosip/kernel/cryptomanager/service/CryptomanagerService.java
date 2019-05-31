@@ -10,11 +10,8 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
-
 
 /**
  * This interface provides the methods which can be used for Encryption and
@@ -26,7 +23,7 @@ import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
  */
 @Service
 public interface CryptomanagerService {
-	
+
 	/**
 	 * Encrypt the data requested with metadata.
 	 *
@@ -42,13 +39,5 @@ public interface CryptomanagerService {
 	 * @return decrypted data
 	 */
 	public CryptomanagerResponseDto decrypt(@Valid CryptomanagerRequestDto cryptoRequestDto);
-	
-	/**
-	 * Encrypt with private.
-	 *
-	 * @param {@link CryptoEncryptRequestDto}cryptoRequestDto the crypto request dto
-	 * @return the cryptomanager response dto {@link CryptoEncryptResponseDto}
-	 */
-	public CryptoEncryptResponseDto encryptWithPrivate(@Valid CryptoEncryptRequestDto cryptoRequestDto );
 
 }

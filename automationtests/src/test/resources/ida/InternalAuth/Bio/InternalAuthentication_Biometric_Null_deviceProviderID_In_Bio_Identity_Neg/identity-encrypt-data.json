@@ -1,0 +1,1 @@
+{"identityRequest":{"biometrics":[{"data":{"bioSubType":"FACE","bioType":"FID","bioValue":"Content is not allowed in prolog.","deviceCode":"cogent","deviceProviderID":"","timestamp":"2019-05-30T13:08:45.045+05:30","transactionID":"$RANDOM:N:10$"}}],"timestamp":"2019-05-30T13:08:45.045+05:30"}}

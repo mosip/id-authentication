@@ -1,3 +1,10 @@
 {
-	"registrationIds" : "51130282650000320190117144316"
+	"request": {
+		"id": "mosip.registration.status",
+		"version": "1.0",
+		"requesttime": "2019-02-14T12:40:59.768Z",
+		"request": [{
+			"registrationId": "10031100110030620190304122930"
+		}]
+	}
 }
