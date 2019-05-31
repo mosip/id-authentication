@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITest;
@@ -34,7 +36,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	public PreregistrationDAO dao=new PreregistrationDAO();
 	
 	
-	
+	@Transactional(rollbackOn=Exception.class)
 	@Test
 	public void makeRegistartionCenterInactive() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";

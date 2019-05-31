@@ -217,7 +217,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 				try {
 					fileReader = new FileReader(f.getPath());
-					request = (JSONObject) new JSONParser().parse(fileReader);
+					translitrationRequest = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				} finally {
@@ -274,7 +274,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		testSuite = "generateOTP/generateOTP_smoke";
 		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
-		otp = dao.getOTP(userId).get(0);
+		try {
+			otp = dao.getOTP(userId).get(0);
+		} catch (IndexOutOfBoundsException e) {
+			logger.info("send otp failed");
+		}
 		testSuite = "validateOTP/validateOTP_smoke";
 		request = validateOTPRequest(testSuite);
 		Response validateOTPRes = validateOTP(request);
@@ -1399,7 +1403,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -1429,7 +1433,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
 
 		} catch (Exception e) {
 			logger.info(e);

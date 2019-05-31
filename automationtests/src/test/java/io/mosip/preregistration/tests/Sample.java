@@ -82,32 +82,13 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 
 	@Test
-
-	public void makeAdayAsHoliday() {
-		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10009");
-		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
-				"Appointment booked successfully");
-		Date date = dao.MakeDayAsHoliday();
-		Response syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
-				"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
-		dao.updateHoliday(date);
-		syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
-				"MASTER_DATA_SYNCED_SUCCESSFULLY");*/
+	public void validateWithoutGeneratingOtp(){
 		
-		//Response syncAvailabilityResponse = lib.syncAvailability();
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-
+		String validateTestSuite = "validateOTP/validateOTP_smoke";
+		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "9804605101", "385140");
+		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
+		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "User Detail doesn't exist");
+		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "KER-ATH-003");
 	}
 
 	@BeforeMethod(alwaysRun = true)

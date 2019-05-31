@@ -91,6 +91,12 @@ public class PreregistrationDAO
 		String documentId = preId_status.get(0).toString();
 		return documentId;
 	}
+	public Date getHolidayDate() {
+		String queryString = "SELECT c.holiday_date FROM master.loc_holiday c";
+		Date date = dbAccess.getHoliday(queryString, "masterdata");
+		return date;
+		 
+	}
 	public void makeregistartionCenterActive(String registartionCenter)
 	{
 		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
@@ -114,20 +120,16 @@ public class PreregistrationDAO
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String sDate1="2019-05-30";  
-	    Date date3 = null;
-		try {
-			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}  
+		
+			Date date3 = getHolidayDate();
+		  
 		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 		return date1;
 	}
 	public void updateHoliday(Date date)
 	{
-		String sDate1="2019-05-30";  
+		String sDate1="2019-05-01";  
 	    Date date3 = null;
 		try {
 			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
