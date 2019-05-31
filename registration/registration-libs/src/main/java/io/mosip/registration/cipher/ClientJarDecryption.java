@@ -32,13 +32,19 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -286,9 +292,24 @@ public class ClientJarDecryption extends Application {
 	private void showDialog() {
 
 		StackPane stackPane = new StackPane();
-		stackPane.setAlignment(Pos.CENTER);
-		stackPane.getChildren().add(progressBar);
-		Scene scene = new Scene(stackPane, 200, 100);
+		VBox vBox = new VBox();
+		HBox hBox = new HBox();
+		File file = new File("logo-final.png");
+		ImageView imageView = new ImageView(new Image(file.toURI().toString()));
+		imageView.setFitHeight(150);
+		imageView.setFitWidth(200);
+		hBox.setMinSize(200, 100);
+		hBox.getChildren().add(imageView);
+		Label downloadLabel = new Label("Downloading..");
+		vBox.setMinSize(150, 150);
+		vBox.setAlignment(Pos.CENTER_LEFT);
+		vBox.setPadding(new Insets(10.0));
+		vBox.getChildren().add(downloadLabel);
+		vBox.getChildren().add(progressBar);
+		hBox.getChildren().add(vBox);
+		hBox.setAlignment(Pos.CENTER_LEFT);
+		stackPane.getChildren().add(hBox);
+		Scene scene = new Scene(stackPane, 255, 150);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
 	}
