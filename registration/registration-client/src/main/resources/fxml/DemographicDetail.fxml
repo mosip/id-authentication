@@ -121,7 +121,7 @@
 																								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																							</rowConstraints>
 																							<children>
-																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" visible="true" />
+																								<Button fx:id="autoFillBtn" layoutX="619.0" layoutY="19.0" mnemonicParsing="false" onAction="#clickMe" styleClass="demoGraphicPaneContentButton" text="Click Me To Fill The Form!!" visible="false" />
 																							</children>
 																						</GridPane>
 																					</children>

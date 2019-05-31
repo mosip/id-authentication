@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
@@ -33,6 +34,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
@@ -46,6 +49,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
@@ -58,7 +62,9 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
+@ConfigurationProperties("mosip.id")
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class,
+		IdObjectPatternValidator.class })
 public class BaseAuthRequestValidatorTest {
 
 	/** The validator. */
@@ -68,9 +74,15 @@ public class BaseAuthRequestValidatorTest {
 	@Mock
 	private PinValidatorImpl pinValidator;
 
+	/** The validation. */
+	private Map<String, String> validation;
+
 	/** The auth request DTO. */
 	@Mock
 	AuthRequestDTO authRequestDTO;
+
+	@InjectMocks
+	private IdObjectPatternValidator idObjectValidator;
 
 	/** The environment. */
 	@Autowired
@@ -90,8 +102,15 @@ public class BaseAuthRequestValidatorTest {
 	/** The error. */
 	Errors error;
 
+	@Autowired
+	private ObjectMapper mapper;
+
 	@Mock
 	private MasterDataManager masterDataManager;
+
+	public void setValidation(Map<String, String> validation) {
+		this.validation = validation;
+	}
 
 	/**
 	 * Before.
@@ -104,7 +123,9 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(AuthRequestValidator, "masterDataManager", masterDataManager);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "initialize");
+		ReflectionTestUtils.setField(AuthRequestValidator, "idObjectValidator", idObjectValidator);
+		ReflectionTestUtils.setField(idObjectValidator, "mapper", mapper);
+		ReflectionTestUtils.setField(idObjectValidator, "validation", validation);
 
 	}
 
@@ -1027,82 +1048,6 @@ public class BaseAuthRequestValidatorTest {
 //	}
 
 	/**
-	 * Test validate email validate email is true.
-	 */
-	@Test
-	public void testValidateEmail_ValidateEmail_IsTrue() {
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-
-		RequestDTO request = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-
-		identity.setEmailId("sample@sample.com");
-		request.setDemographics(identity);
-		authRequestDTO.setRequest(request);
-
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateEmail", authRequestDTO, error);
-		assertFalse(error.hasErrors());
-	}
-
-	/**
-	 * Test validate email validate email is false.
-	 */
-	@Test
-	public void testValidateEmail_ValidateEmail_IsFalse() {
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-
-		RequestDTO request = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-
-		identity.setEmailId("sample5878");
-
-		identity.setEmailId("sample5878");
-		request.setDemographics(identity);
-		authRequestDTO.setRequest(request);
-
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateEmail", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test validate phone validate phone is true.
-	 */
-	@Test
-	public void testValidatePhone_ValidatePhone_IsTrue() {
-
-		IdentityDTO phone = new IdentityDTO();
-		phone.setPhoneNumber("8975476599");
-
-		RequestDTO phoneRequest = new RequestDTO();
-		phoneRequest.setDemographics(phone);
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		authRequestDTO.setRequest(phoneRequest);
-
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePhone", authRequestDTO, error);
-		assertFalse(error.hasErrors());
-
-	}
-
-	/**
-	 * Test validate phone validate phone is false.
-	 */
-	@Test
-	public void testValidatePhone_ValidatePhone_IsFalse() {
-
-		IdentityDTO phone = new IdentityDTO();
-		phone.setPhoneNumber("8975476lghfhhj");
-
-		RequestDTO phoneRequest = new RequestDTO();
-		phoneRequest.setDemographics(phone);
-		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
-		authRequestDTO.setRequest(phoneRequest);
-
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePhone", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-
-	}
-
-	/**
 	 * Gets the auth request DTO.
 	 *
 	 * @return the auth request DTO
@@ -1817,6 +1762,22 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		Mockito.when(masterDataManager.fetchGenderType()).thenThrow(new IdAuthenticationBusinessException());
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkGender", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void TestIdObjectvalidator() {
+		AuthRequestDTO demoauthrequest = new AuthRequestDTO();
+		demoauthrequest.setConsentObtained(true);
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		demographics.setPhoneNumber("phonenumber");
+		demographics.setEmailId("emailid");
+		demographics.setPostalCode("pincode");
+		request.setDemographics(demographics);
+		demoauthrequest.setRequest(request);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePattern", demoauthrequest, error);
+		System.err.println(error);
 		assertTrue(error.hasErrors());
 	}
 

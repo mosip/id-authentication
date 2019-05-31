@@ -319,7 +319,7 @@ public class MessageNotificationServiceImpl
 		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
-				|| regType.equalsIgnoreCase(RegistrationType.RESUPDATE.name())) {
+				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
 		} else{
 			setAttributes(demographicInfo, attributes, regType);
@@ -395,7 +395,7 @@ public class MessageNotificationServiceImpl
 			} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 					|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
 					|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
-					|| regType.equalsIgnoreCase(RegistrationType.RESUPDATE.name())) {
+					|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 				demographicIdentity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
 			}
 
