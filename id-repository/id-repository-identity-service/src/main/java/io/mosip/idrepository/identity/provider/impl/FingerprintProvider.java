@@ -17,7 +17,6 @@ import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.util.DateUtils;
@@ -28,7 +27,7 @@ import io.mosip.kernel.core.util.DateUtils;
  * @author Manoj SP
  */
 @Component
-public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BIR> {
+public class FingerprintProvider implements MosipFingerprintProvider<BIR, BIR> {
 
 	@Autowired
 	private BioApiImpl bioApiImpl;
@@ -40,17 +39,17 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	 * .util.List)
 	 */
 	@Override
-	public List<BIR> convertFIRtoFMR(List<BIRType> listOfBIR) {
+	public List<BIR> convertFIRtoFMR(List<BIR> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = filterTimestamp(listOfBIR);
-		return listOfBIR.parallelStream()
-				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && bir.getBDBInfo().getFormatType().equals(7l)
-						&& bir.getBDBInfo().getFormatOwner().equals(257l)
-						&& Objects.nonNull(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()))
-						&& DateUtils.isSameInstant(latestcreationDate.get(bir.getBDBInfo().getSubtype().toString()),
-								bir.getBDBInfo().getCreationDate()))
+		 return listOfBIR.parallelStream()
+				.filter(bir -> Objects.nonNull(bir.getBdbInfo()) && bir.getBdbInfo().getFormatType().equals(7l)
+						&& bir.getBdbInfo().getFormatOwner().equals(257l)
+						&& Objects.nonNull(latestcreationDate.get(bir.getBdbInfo().getSubtype().toString()))
+						&& DateUtils.isSameInstant(latestcreationDate.get(bir.getBdbInfo().getSubtype().toString()),
+								bir.getBdbInfo().getCreationDate()))
 				.map(bir -> new BIR.BIRBuilder().withBdb(convertToFMR(bir))
 						.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-						.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())
+						.withBdbInfo(Optional.ofNullable(bir.getBdbInfo())
 								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withFormatOwner(257l).withFormatType(2l)
 										.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
 										.withSubtype(bdbInfo.getSubtype()).withPurpose(PurposeType.IDENTIFY)
@@ -67,12 +66,12 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	 * @param listOfBIR the list of BIR
 	 * @return the map
 	 */
-	private Map<String, LocalDateTime> filterTimestamp(List<BIRType> listOfBIR) {
+	private Map<String, LocalDateTime> filterTimestamp(List<BIR> listOfBIR) {
 		Map<String, LocalDateTime> latestcreationDate = new HashMap<>();
 		listOfBIR.stream()
-				.filter(bir -> Objects.nonNull(bir.getBDBInfo()) && bir.getBDBInfo().getFormatType().equals(7l)
-						&& bir.getBDBInfo().getFormatOwner().equals(257l))
-				.forEach(bir -> Optional.ofNullable(bir.getBDBInfo()).ifPresent(bdbInfo -> {
+				.filter(bir -> Objects.nonNull(bir.getBdbInfo()) && bir.getBdbInfo().getFormatType().equals(7l)
+						&& bir.getBdbInfo().getFormatOwner().equals(257l))
+				.forEach(bir -> Optional.ofNullable(bir.getBdbInfo()).ifPresent(bdbInfo -> {
 					if (latestcreationDate.containsKey(bdbInfo.getSubtype().toString())) {
 						latestcreationDate.compute(bdbInfo.getSubtype().toString(),
 								(key, date) -> DateUtils.after(bdbInfo.getCreationDate(), date)
@@ -91,10 +90,10 @@ public class FingerprintProvider implements MosipFingerprintProvider<BIRType, BI
 	 * @param bdb the bdb
 	 * @return the byte[]
 	 */
-	private byte[] convertToFMR(BIRType bir) {
+	private byte[] convertToFMR(BIR bir) {
 		KeyValuePair[] flags=null;
-		BIRType birType = bioApiImpl.extractTemplate(bir, flags);
-		return birType.getBDB();
+		BIR birType = bioApiImpl.extractTemplate(bir, flags);
+		return birType.getBdb();
 	}
 
 }

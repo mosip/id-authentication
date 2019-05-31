@@ -164,7 +164,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 	/** The fp provider. */
 	@Autowired
-	private MosipFingerprintProvider<BIRType, BIR> fpProvider;
+	private MosipFingerprintProvider<BIR, BIR> fpProvider;
 
 	/** The cbeff util. */
 	@Autowired
@@ -399,7 +399,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
 			byte[] cbeffFileData = CryptoUtil.decodeBase64(encodedCbeffFile);
-			return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.getBIRDataFromXML(cbeffFileData)),
+			return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(cbeffFileData))),
 					cbeffFileData);
 		} catch (Exception e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
