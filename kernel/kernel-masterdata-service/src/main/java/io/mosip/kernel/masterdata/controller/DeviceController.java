@@ -122,6 +122,7 @@ public class DeviceController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
 		return responseWrapper;
+		
 	}
 
 	/**
