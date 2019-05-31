@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -34,6 +33,7 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -823,8 +823,8 @@ public class BioAuthServiceTest {
 		assertTrue(validateBioDetails.isStatus());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestInvalidFaceDetails() throws Exception {
+	@Test
+	public void TestInvalidFaceDetails() throws Exception  {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		RequestDTO request = new RequestDTO();
@@ -860,8 +860,13 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		assertFalse(validateBioDetails.isStatus());
+		try {
+			bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		}
+		
+		catch(IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),ex.getErrorCode());
+		}
 	}
 
 	@Test
@@ -1074,8 +1079,15 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", entityValue);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		assertTrue(!validateBioDetails.isStatus());
+		
+		try {
+			bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		}
+		
+		catch(IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),ex.getErrorText());
+		}
 	}
 
 }

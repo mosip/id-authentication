@@ -140,7 +140,9 @@ public enum DemoMatchType implements MatchType {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = (RequestDTO identityDTO) -> {
 			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
-			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO.getDemographics()));
+			if(identityDTO.getDemographics() != null) {
+				map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO.getDemographics()));
+			}
 			return map;
 		};
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
