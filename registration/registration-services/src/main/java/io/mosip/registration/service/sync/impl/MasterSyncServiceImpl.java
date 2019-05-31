@@ -342,7 +342,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 			return requestParamMap;
 		} catch (Exception exception) {
-			throw new RegBaseCheckedException("", "", exception);
+			throw new RegBaseCheckedException("REG_SYNC_MASTERDATA", "PREPARE_REQUEST_PARAMS", exception);
 		}
 	}
 
