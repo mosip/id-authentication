@@ -1,32 +1,18 @@
 {
-  "authType": {
-    "address": false,
-    "bio": true,
-    "otp": false,
-    "personalIdentity": false,
-    "pin": false
-  },
-  "bioInfo": [
-    {
-      "bioType": "fgrMin",
-      "deviceInfo": {
-        "deviceId": "123143",
-        "make": "mantra",
-        "model": "steel"
-      }
-    }
-  ],
-  "id": "mosip.identity.auth",
-  "idvId": "6213849376",
-  "idvIdType": "D",
-  "tspID": "7404012867",
-  "key": {
-    "publicKeyCert": "String",
-    "sessionKey": "VTAdfckUmfvbzghv3lzHCK6DV_Kds-aqrlw137eqiYOjiH8sdYBbGFLSxjJrhUAo9kN64-6xaZ6PsjIlXT081ANKtvYM4dOzDwP7MuSg6nVmu1AqhbGSApmNDU_emJYh_YF58KsDTtoPXbtXz8c-F5JurRg29ZpeSCvi2962TAQgM5N8ce5ZvpKVxRCdYBo2uwjy07z8fbe2anh2bhKXWeY1gLDM64Im6WSzAZMA0fpr9Qlt7O8Dz4K443dFK-q4R-uAzml5iDPAzPld4q3hjlaJqUQDB2baezly2pzeTxaXq_RxHH83rAFms3M7oaTCv14fO6LpvsgwHhwZI-Dhgw"
-  },
-  "muaCode": "7404012867",
-  "reqHmac": "string",
-  "reqTime": "2019-02-11T12:05:32.032+05:30",
-  "request": "JnFwtrNVTz86sH8T9US9nSBu2Kdez_mKoF3eJH5hTWjd_0Yb_t14hhdFe5Go-knJ7ZiCU1aKAnITzdKuFRc6MsLK-wnILal2fY4caN8Oo3FicAcKVD3DBlX8pFw83mZUfChQeYUZgyU43NikhBFxdr22JJO2_OalCn0teOafkJRngzHlCA3bV5XI6302vwELG_Tcji5QF4jw_dddPJAF-69Pn8lpGoN_zPH3tpiQOHYHTmJ__7ebJdIXS3MpC-LNbSvwLrOH4nQqOUUzulol_dr0_laPM8CTL1fWNmrzEjQlWm1XwiDgi1TqFIfhwq1fRhquVv4Pdk1bfKIyhqmEDnEKvTbB-xmHxboyyYZ634awa04u0exHHjAI6Wt-bLfIIU1klRVvHMezqT4xucjiPok_jOIdF2hB2xvYbJd3eTBDda9-X6IsdX_-sarQcjXMejBMwdvn_6JxN5QDQ4Qrbv7O282oplG9DPCrtFxkKS5IyVjG6fVEXlDTirY0Vo6G26wRRNuVMl7T9fGBF17Q1dhc23qehWfsPfEM8A9iPhQ9rCZI4uvJQfgs9bVXcyjRjAfmifJwIEf0NBgnMC5YcGmuycuZurRAZtTfAeLqRIyy9fsC28_8xcGazjrZyPHgD7linaGuJcHvkw1Oooqhb1hwV2BsbetLQcFKVRTHKkHTtXgVK8mbghtdHb0kMZH9a_xKlljjk5VAB4mKaoyZgdT3bqdJ0ELxwUVZRHlbibG0H3tSfPBd1Tz4QPJQ5cqgNZi1VQQ8zUCIQXBZldQJ8Ids0pJ3tQgiuQTiveAJoecG0-_AD7LJh7IfFm8rrRLrANnPLkzEsl8JRimnXcc_QEvzVEFQQwNoCUdpZtyzdTv7NEfPTEYCKlsr7Tha_PqHGqPJvgGAxwJmSqCeNeQnroqqT3OtxZNC-R4CaILljRlj21b4nzZeC2P0yk80WL6sOWOJBY9Fe3wH1D0zodKSKGnYHbxtewQLW7bmyA2WEbjzC_yypoP_6ZsHhITYL_Bj3tW164cjUAsl4VgtmFkzDbqS45B0HkmrAPkq9bCd7twMUeQghlCVbxfQrvR0VzrcHyxd4s_DMrJ3-CakqcRle8xQ-2jVMjeCIZrKknOWJSPEIuyMCDm07qGgjmfc_r7S16rsfWv_YF4Mp4IPEerv2fQe1SOMuQnR_Or9EaYe1tQTxFHAaXyVVT8R8xue5LeK5mxGVaOEIPhanx7zsX9u7X3EwhLcwYRlH1LQFqRJkAlyzH7HLg-5bzGivXI1slpOmL2KPLZuHOw1xq9nUTlfKLrEuRUwFm-DKwj4hYm5--eKR4mnadlIKDpk9rM9ZfI5ieK5eSIox4J0PUMacmVxhw",
-  "txnID": "7404012867"
+	"id": "mosip.identity.auth",
+	"consentObtained": true,
+	"individualId": "6521768301",
+	"individualIdType": "UIN",
+	"request": "wB6n9jA-jZ0NPJQjkyPyugYWzk4fJvgHnP8OKVu4urfnjdrT1O3hycb9HncVXMmgrmgbXwBAX-01RgHyB-EJJN9Ahk_u0JZTKiZfXLnmQI6lBjpruG-L2dJyfR0vAMt3Yb0W8BcNd1i2wMpAcu8tpm-aXz79nnh68_a3HdSM84799kopLW26pFo_iQzqNT0VuOg1OBEjtkb92NsCt-391v20UjRyIr1hIETHReOjCjI",
+	"requestHMAC": "EF4F5925A684CE1CE6D8F6E5C3385C641B06800AAE213C9F55696015FF7D8CFC",
+	"requestTime": "2019-03-21T14:43:57.086+05:30",
+	"requestedAuth": {
+		"bio": true,
+		"demo": false,
+		"otp": false,
+		"pin": false
+	},
+	"requestSessionKey": "P08GxfMz0Gb4ucxGbHsmhZYSQuDQ6-AyWs7fbpeYhOyAeMlF7MTfvRydmoj_cWGYIEUgp0__mlmlymxYXgEAX2scU9L-kEJ4G05re0h3HFEhjkthhDMmZVWiIF1f7aihNMVbw-quFAvpeY7weIEqmGHT1Q9ZvK3DCn9EX4nCEA8RpLDVg729Af5AxRjQjpcegKy4fvJYNsyLoJ5Lh0Aty8dD1lrNPjSuxxZNGxACcVXtbkdoJZQxBe0TtsAOeRt7fndehBRWsz4k1HbtelzVt0OU1M9ZdA6A2VVpT551GcUGXAGjLk5iz2wfuZ-YdaYISUsXA4SkEtusEBf2Iep7ig",
+	"transactionID": "1234567890",
+	"version": "$version$"
 }

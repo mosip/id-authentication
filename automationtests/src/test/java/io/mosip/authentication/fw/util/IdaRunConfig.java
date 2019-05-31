@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 import io.mosip.authentication.fw.dto.ErrorsDto;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 
 /**
  * The class hold all the run config path available in runconfiguration file
@@ -68,6 +68,28 @@ public class IdaRunConfig extends RunConfig{
 	private String moduleFolderName;
 	private String idRepoCreateVIDRecordPath;
 	private String idRepoUpdateVIDStatusPath;
+	private String idRepoVersion;
+	private String decryptPath;
+	private String uinIdentityMapper;
+	
+	public String getUinIdentityMapper() {
+		return uinIdentityMapper;
+	}
+	public void setUinIdentityMapper(String uinIdentityMapper) {
+		this.uinIdentityMapper = uinIdentityMapper;
+	}
+	public String getDecryptPath() {
+		return decryptPath;
+	}
+	public void setDecryptPath(String decryptPath) {
+		this.decryptPath = decryptPath;
+	}
+	public String getIdRepoVersion() {
+		return idRepoVersion;
+	}
+	public void setIdRepoVersion(String idRepoVersion) {
+		this.idRepoVersion = idRepoVersion;
+	}
 	/**
 	 * The method get endpoint url for IDA
 	 * 
@@ -309,6 +331,7 @@ public class IdaRunConfig extends RunConfig{
 	 * @param testType
 	 */
 	public  void setConfig(String testDataPath,String testDataFileName,String testType) {
+		setIdRepoVersion(AuthTestsUtil.getPropertyValue("idrepoVersion"));
 		setAuthVersion(AuthTestsUtil.getPropertyValue("authVersion"));
 		setEndPointUrl(AuthTestsUtil.getPropertyValue("endPointUrl"));
 		setEkycPath(AuthTestsUtil.getPropertyValue("ekycPath"));
@@ -320,6 +343,7 @@ public class IdaRunConfig extends RunConfig{
 		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
 		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));
 		setDecodePath(AuthTestsUtil.getPropertyValue("decodePath"));
+		setDecryptPath(AuthTestsUtil.getPropertyValue("decryptPath"));
 		setUserDirectory();
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));
@@ -351,10 +375,10 @@ public class IdaRunConfig extends RunConfig{
 		setDbKernelUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbKernelUrl"));
 		setDbIdaUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbIdaUrl"));
 		setDbAuditUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbAuditUrl"));
-		//setVidGenPath(AuthTestsUtil.getPropertyValue("vidGenPath"));
 		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
+		setUinIdentityMapper(AuthTestsUtil.getPropertyValue("uinIdentityMapper"));
 	}	
 	
 	/**

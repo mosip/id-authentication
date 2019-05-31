@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -56,10 +56,9 @@ public class OtpAuthentication extends AuthTestsUtil implements ITest {
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
-	public void setTestType(String testType) {
-		this.testType = testType;
+	public void setTestType() {
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**

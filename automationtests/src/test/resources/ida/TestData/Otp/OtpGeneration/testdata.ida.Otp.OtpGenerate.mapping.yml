@@ -25,6 +25,33 @@ testdata:
       #email.otp: '%$input.otp-generate-request:otpReq.transactionID$_$endpoint.url:partnerID$%_10'
       #email.template1: otp.generate.email.fra.message.body
       #email.template2: otp.generate.email.fra.message.address
+  
+  Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+    #email.emailNotification:
+      #email.uin: $input.otp-generate-request:otpReq.individualId$
+      #email.fullname: $idrepo~$input.otp-generate-request:otpReq.individualId$~valuefullName1$
+      #email.otp: '%$input.otp-generate-request:otpReq.transactionID$_$endpoint.url:partnerID$%_10'
+      #email.template1: otp.generate.email.fra.message.body
+      #email.template2: otp.generate.email.fra.message.address
       
   Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos:
     endpoint.url:
@@ -271,7 +298,7 @@ testdata:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
       otpReq.id: $TestData:id_otp_valid$
-      otpReq.individualId: $TestData:expired_vid_invalid$
+      otpReq.individualId: $VID:WITH:EXPIRED$
       otpReq.individualIdType: $TestData:indvId_Vid_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
       #otpReq.phone: $TestData:otpChannel_MOBILE$
@@ -482,8 +509,8 @@ testdata:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:MissingVID:errorMessage$
-      output.1.n.res.errorCode: $errors:MissingVID:errorCode$
+      output.1.n.res.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.n.res.errorCode: $errors:MissingUIN:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$  
       
   Authentication_OTPGenerate_With_Null_individualIdType_Neg:
@@ -622,8 +649,8 @@ testdata:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:MissingVID:errorMessage$
-      output.1.n.res.errorCode: $errors:MissingVID:errorCode$
+      output.1.n.res.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.n.res.errorCode: $errors:MissingUIN:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$  
       
   Authentication_OTPGenerate_Without_individualIdType_Neg:
@@ -704,7 +731,7 @@ testdata:
       output.1.n.res.errorCode: $errors:InvalidRequest:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$
    
-  Authentication_OTPGenerate_Check_OTP_Flooding_smoke_Neg1:
+  Authentication_OTPGenerate_Check_OTP_Flooding_Neg1:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
@@ -724,7 +751,7 @@ testdata:
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
       
-  Authentication_OTPGenerate_Check_OTP_Flooding_smoke_Neg2:
+  Authentication_OTPGenerate_Check_OTP_Flooding_Neg2:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
@@ -744,7 +771,7 @@ testdata:
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
       
-  Authentication_OTPGenerate_Check_OTP_Flooding_smoke_Neg3:
+  Authentication_OTPGenerate_Check_OTP_Flooding_Neg3:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
@@ -764,7 +791,7 @@ testdata:
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
    
-  Authentication_OTPGenerate_Check_OTP_Flooding_smoke_Neg4:
+  Authentication_OTPGenerate_Check_OTP_Flooding_Neg4:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
@@ -784,13 +811,113 @@ testdata:
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
       
-  Authentication_OTPGenerate_Check_OTP_Flooding_smoke_Neg5:
+  Authentication_OTPGenerate_Check_OTP_Flooding_Neg5:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate-request:
       otpReq.id: $TestData:id_otp_valid$
       otpReq.individualId: $UIN:WITH:OTP_FLOD$
       otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-n-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      #output.1.y.res.ver: $version$
+      output.1.n.res.errorMessage: $errors:OTPFlodding:errorMessage$
+      output.1.n.res.errorCode: $errors:OTPFlodding:errorCode$
+      #output.1.y.res.status: $TestData:auth_Fail_status$
+      
+  Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg1:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID:WHERE:UIN:WITH:OTP_FLOD$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+      
+  Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg2:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID:WHERE:UIN:WITH:OTP_FLOD$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $REMOVE$
+      output.1.y.res.txnID: $REMOVE$
+      output.1.y.res.maskedEmail: $REMOVE$
+      output.1.y.res.maskedMobile: $REMOVE$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+      
+  Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg3:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID:WHERE:UIN:WITH:OTP_FLOD$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+   
+  Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg4:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID:WHERE:UIN:WITH:OTP_FLOD$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+      
+  Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg5:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID:WHERE:UIN:WITH:OTP_FLOD$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
       otpReq.email: $TestData:otpChannel_EMAIL$
       otpReq.phone: $TestData:otpChannel_MOBILE$
       otpReq.requestTime: $TIMESTAMP$
