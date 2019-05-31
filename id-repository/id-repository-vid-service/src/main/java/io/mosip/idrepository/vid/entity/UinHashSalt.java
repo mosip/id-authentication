@@ -8,35 +8,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * The Entity for UinSalt.
  * 
- * @author Prem Kumar
+ * @author Prem Kumar.
  *
  */
 @Data
-@Table(name = "uin_hash_salt", schema = "idmap")
 @Entity
-public class UinSalt {
-
-	/** The Id Value */
+@NoArgsConstructor
+@Table(schema = "idmap")
+public class UinHashSalt {
+	
+	/** The Id value */
 	@Id
-	private Long id;
+	private int id;
 
-	/** The value to hold Salt value */
+	/** The salt value */
+	@Column(name = "salt")
 	private String salt;
-
-	public UinSalt(Long id, String salt, String createdBy, LocalDateTime createdDTimes, String updatedBy,
-			LocalDateTime updatedDTimes) {
-		super();
-		this.id = id;
-		this.salt = salt;
-		this.createdBy = createdBy;
-		this.createdDTimes = createdDTimes;
-		this.updatedBy = updatedBy;
-		this.updatedDTimes = updatedDTimes;
-	}
 
 	/** The value to hold created By */
 	@Column(name = "cr_by")
@@ -50,8 +41,7 @@ public class UinSalt {
 	@Column(name = "upd_by")
 	private String updatedBy;
 
-	/** The value to hold updated Times */
+	/** The value to hold updated Time */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedDTimes;
-
 }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -36,6 +37,7 @@ public class IdRepoVidEntityInterceptorTest {
 	private IdRepoVidEntityInterceptor interceptor;
 
 	@Test
+	@Ignore
 	public void testOnSave() throws IdRepoAppException {
 		when(securityManager.encrypt(Mockito.any())).thenReturn("".getBytes());
 		Vid vid = new Vid();
@@ -44,6 +46,7 @@ public class IdRepoVidEntityInterceptorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testOnSaveEncryptionFailed() throws IdRepoAppException {
 		when(securityManager.encrypt(Mockito.any())).thenThrow(new IdRepoAppException());
 		Vid vid = new Vid();

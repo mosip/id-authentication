@@ -164,6 +164,28 @@ public class IdRepoSecurityManager {
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 	}
+	
+	public byte[] decryptWithSalt(final byte[] dataToDecrypt, final byte[] saltToDecrypt) throws IdRepoAppException {
+		try {
+			ObjectNode baseRequest = new ObjectNode(mapper.getNodeFactory());
+			baseRequest.put("id", "string");
+			baseRequest.put("requesttime",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			baseRequest.put("version", "1.0");
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty(IdRepoConstants.APPLICATION_ID.getValue()));
+			request.put("timeStamp",
+					DateUtils.formatDate(new Date(), env.getProperty(IdRepoConstants.DATETIME_PATTERN.getValue())));
+			request.put("data", CryptoUtil.encodeBase64(dataToDecrypt));
+			request.put("salt", CryptoUtil.encodeBase64(saltToDecrypt));
+			baseRequest.set("request", request);
+			return CryptoUtil.decodeBase64(new String(encryptDecryptData(restBuilder
+					.buildRequest(RestServicesConstants.CRYPTO_MANAGER_DECRYPT, baseRequest, ObjectNode.class))));
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SECURITY_MANAGER, ENCRYPT_DECRYPT_DATA, e.getErrorText());
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+		}
+	}
 
 	/**
 	 * Encrypt decrypt data.

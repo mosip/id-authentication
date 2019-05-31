@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -66,6 +67,7 @@ import io.mosip.kernel.idgenerator.vid.exception.VidException;
 @WebMvcTest
 @ActiveProfiles("test")
 @ConfigurationProperties("mosip.idrepo.vid")
+@Ignore
 public class VidServiceImplTest {
 
 	@InjectMocks
