@@ -73,6 +73,7 @@ import io.mosip.registration.processor.packet.storage.entity.IndividualDemograph
 import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.uingenerator.dto.UinDto;
@@ -240,6 +241,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
 
+	@Autowired
+	ABISHandlerUtil aBISHandlerUtil;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -962,26 +965,21 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("unchecked")
 	private IdResponseDTO linkRegIdWrtUin(String lostPacketRegId, String matchedRegId, MessageDTO object)
 			throws ApisResourceAccessException, IOException {
 
-		IdResponseDTO idResponse = getIdRepoDataByRegId(matchedRegId);
+		IdResponseDTO idResponse = null;
+		Number number = aBISHandlerUtil.getUinFromIDRepo(matchedRegId);
+		Long uinFieldValue = number != null ? number.longValue() : null;
 		RequestDto requestDto = new RequestDto();
 		String statusComment = "";
 
-		if (idResponse != null && idResponse.getResponse() != null) {
-
-			Gson gsonObj = new Gson();
-			String jsonString = gsonObj.toJson(idResponse.getResponse());
-			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-			JSONObject identityObject = JsonUtil.getJSONObject(identityJson,
-					utility.getGetRegProcessorDemographicIdentity());
-
-			//identityObject.remove("postalCode");
-			//Number number = JsonUtil.getJSONValue(identityObject, UIN);
-			//Long uinFieldValue = number != null ? number.longValue() : null;
-			//requestDto.setBiometricReferenceId(Long.toString(uinFieldValue));
-
+		if (uinFieldValue != null) {
+			
+			JSONObject identityObject = new JSONObject();
+			identityObject.put(UIN,uinFieldValue);
+			
 			requestDto.setRegistrationId(lostPacketRegId);
 			requestDto.setIdentity(identityObject);
 			idRequestDTO.setId(idRepoUpdate);
@@ -990,7 +988,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 			idRequestDTO.setVersion(idRepoApiVersion);
 			Gson gson = new GsonBuilder().create();
-			String idReq = gson.toJson(idResponse);
+			String idReq = gson.toJson(idRequestDTO);
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, "Update Request to IdRepo API",
@@ -1025,61 +1023,17 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			}
 
 		} else {
-			statusComment = idResponse != null && idResponse.getErrors() != null
-					? idResponse.getErrors().get(0).getMessage()
-							:UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG+"  "+ NULL_IDREPO_RESPONSE + "for matchedRegId " + matchedRegId;
+			statusComment = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG+"  "+ NULL_IDREPO_RESPONSE + " UIN not available for matchedRegId " + matchedRegId;
 					registrationStatusDto.setStatusComment(statusComment);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 					registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
-					description = UIN_FAILURE + matchedRegId + "::" + idResponse != null && idResponse.getErrors() != null
-							? idResponse.getErrors().get(0).getMessage()
-									: NULL_IDREPO_RESPONSE;
+					description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG+"  "+ NULL_IDREPO_RESPONSE + " UIN not available for matchedRegId " + matchedRegId;
+					
 							object.setIsValid(Boolean.FALSE);
 		}
 
 		return idResponse;
-	}
-
-	/**
-	 * Gets the id repo data by reg id.
-	 *
-	 * @param regID
-	 *            the reg ID
-	 * @return the id repo data by reg id
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	private IdResponseDTO getIdRepoDataByRegId(String regID) throws ApisResourceAccessException {
-		IdResponseDTO response;
-
-		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add("rid");
-		pathSegments.add(regID);
-		try {
-			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
-					"", "", IdResponseDTO.class);
-
-		} catch (ApisResourceAccessException e) {
-			if (e.getCause() instanceof HttpClientErrorException) {
-				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
-				description =UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::"
-						+ httpClientException.getResponseBodyAsString();
-				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
-						httpClientException);
-			} else if (e.getCause() instanceof HttpServerErrorException) {
-				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
-				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::"
-						+ httpServerException.getResponseBodyAsString();
-
-				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
-						httpServerException);
-			} else {
-				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + regID + "::" + e.getMessage();
-				throw e;
-			}
-		}
-		return response;
 	}
 }
 

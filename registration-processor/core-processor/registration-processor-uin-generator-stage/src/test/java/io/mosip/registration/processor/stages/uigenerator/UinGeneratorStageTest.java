@@ -52,6 +52,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -67,6 +68,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -150,6 +152,9 @@ public class UinGeneratorStageTest {
 	private JsonUtil util;
 
 	@Mock
+	ABISHandlerUtil aBISHandlerUtil;
+
+	@Mock
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	/** The identitydemoinfo. */
@@ -166,7 +171,7 @@ public class UinGeneratorStageTest {
 	@Before
 	public void setup() throws Exception {
 
-	    MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.initMocks(this);
 		Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
 		auditLog.setAccessible(true);
 		@SuppressWarnings("unchecked")
@@ -212,11 +217,9 @@ public class UinGeneratorStageTest {
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Mockito.when(env.getProperty("registration.processor.id.repo.vidVersion")).thenReturn("v1");
 		Mockito.when(regLostUinDetRepository.getLostUinMatchedRegId(anyString())).thenReturn("27847657360002520181210094052");
-		
-
-
-//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any())).thenReturn(response);
-
+		demographicIdentity.put("UIN",  Long.parseLong("9403107397"));
+		Number uin =new Long("9403107397");
+		Mockito.when(aBISHandlerUtil.getUinFromIDRepo(anyString())).thenReturn(uin);
 
 	}
 
@@ -229,7 +232,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(registrationProcessorRestClientService.getApi(any(), any(), any(), any(), any())).thenReturn(str);
 		Mockito.when(registrationProcessorRestClientService.putApi(any(), any(),  any(), any(), any(), any(), any())).thenReturn(response);
 		messageDTO.setReg_type(RegistrationType.NEW);
-		
+
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);
@@ -275,7 +278,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO).thenReturn(responseVid).thenReturn(response);
 
-//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any()));
+		//		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any()));
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getInternalError());
@@ -340,7 +343,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))
 		.thenReturn(idResponseDTO).thenReturn(responseVid);
 
-	//	Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any(Class.class)));
+		//	Mockito.when(registrationProcessorRestClientService.postApi(any(), any(),  any(), any(), any(Class.class)));
 
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
@@ -957,8 +960,8 @@ public class UinGeneratorStageTest {
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		assertFalse(result.getIsValid());
 	}
-	
-	
+
+
 	@Test
 	public void testLinkSuccessForLostUin() throws Exception {
 		MessageDTO messageDTO = new MessageDTO();
