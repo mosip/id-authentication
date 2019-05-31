@@ -211,23 +211,6 @@ public class RegistrationCenterController {
 		return responseWrapper;
 	}
 
-	/**
-	 * This method updates registration center.
-	 * 
-	 * @param registrationCenterDto the request DTO for updating registration
-	 *                              center.
-	 * @return the response i.e. the id of the registration center updated.
-	 */
-	@ResponseFilter
-	@PutMapping("/registrationcenters")
-	public ResponseWrapper<IdAndLanguageCodeID> updateRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
-
-		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenter(registrationCenterDto));
-		return responseWrapper;
-	}
-
 	@ResponseFilter
 	@DeleteMapping("/registrationcenters/{registrationCenterId}")
 	public ResponseWrapper<IdResponseDto> deleteRegistrationCenter(
