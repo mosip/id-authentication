@@ -382,7 +382,7 @@ public class IdInfoHelperTest {
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.ADDR_LINE1);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestmappingInternalthrowsException() throws IdAuthenticationBusinessException {
 		MatchType matchType = DemoMatchType.DOB;
 		List<String> value = new ArrayList<>();
