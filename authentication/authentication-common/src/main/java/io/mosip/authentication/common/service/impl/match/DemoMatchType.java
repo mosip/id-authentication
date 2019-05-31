@@ -47,8 +47,8 @@ public enum DemoMatchType implements MatchType {
 	DOBTYPE(IdaIdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDobType, false),
 
 	/** Secondary Date of Birth Type Match. */
-	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()),
-		 false, entityInfoMap -> {
+	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), identityDTO -> getIdInfoList(identityDTO.getAge()), false,
+			entityInfoMap -> {
 				Optional<String> valueOpt = entityInfoMap.values().stream().findFirst();
 				if (valueOpt.isPresent()) {
 					String value = valueOpt.get();
@@ -93,13 +93,12 @@ public enum DemoMatchType implements MatchType {
 	LOCATION3(IdaIdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3),
 
 	/** The pincode pri. */
-	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,false),
+	PINCODE(IdaIdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT),
+			identityDTO -> getIdInfoList(identityDTO.getPostalCode()), false),
 
 	/** Primary Address MatchType. */
-	ADDR(IdaIdMapping.FULLADDRESS,
-			setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
-					FullAddressMatchingStrategy.PHONETICS),
-			IdentityDTO::getFullAddress),
+	ADDR(IdaIdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL,
+			FullAddressMatchingStrategy.PHONETICS), IdentityDTO::getFullAddress),
 
 	/**  */
 	// @formatter:on
@@ -182,9 +181,8 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction,boolean multiLanguage) {
-		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage,
-				Function.identity());
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, boolean multiLanguage) {
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, multiLanguage, Function.identity());
 	}
 
 	/*

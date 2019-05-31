@@ -108,9 +108,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
-		String uin = idRepoManager.getUINByVID(vid);
+		long  uin = idRepoManager.getUINByVID(vid);
 				try {
-					idRepo = idRepoManager.getIdenity(uin, isBio);
+					idRepo = idRepoManager.getIdenity(String.valueOf(uin), isBio);
 				} catch (IdAuthenticationBusinessException e) {
 					if (e.getErrorCode().equals(IdAuthenticationErrorConstants.UIN_DEACTIVATED.getErrorCode())) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);

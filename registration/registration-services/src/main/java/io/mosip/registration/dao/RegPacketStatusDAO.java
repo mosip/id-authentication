@@ -3,7 +3,6 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.TemplateFileFormat;
 
 /**
  * DAO class for Repository

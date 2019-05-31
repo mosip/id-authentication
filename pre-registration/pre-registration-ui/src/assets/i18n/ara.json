@@ -447,9 +447,9 @@
       "title_success": "نجاح",
       "title_error": "خطأ",
       "cancelAppointment": {
-        "msg_confirm": "سيتم حذف موعد التطبيق المحدد. يرجى تأكيد.",
-        "msg_deleted": "تم حذف التطبيق المحدد بنجاح",
-        "msg_could_not_deleted": "لا يمكن حذف موعد التطبيق المحدد"
+        "msg_confirm": "سيتم إلغاء تعيين التطبيق المحدد. يرجى تأكيد.",
+        "msg_deleted": "تم إلغاء موعد التطبيق المحدد بنجاح.",
+        "msg_could_not_deleted": "لا يمكن إلغاء تعيين التطبيق المحدد"
       },
       "deletePreregistration": {
         "msg_confirm": "سيتم حذف التطبيق المحدد. يرجى تأكيد.",
@@ -534,7 +534,8 @@
     "text_search": "بحث....",
     "action_back": "الى الخلف",
     "action_book_later": "كتاب لاحقا",
-    "action_continue": "استمر"
+    "action_continue": "استمر",
+    "noResult_found" : "لا توجد نتائج"
   },
   "autologout": {
     "preview": "ستنتهي مهلة 60 ثانية بسبب عدم النشاط. يرجى النقر في أي مكان لإعادة تنشيط جلستك",

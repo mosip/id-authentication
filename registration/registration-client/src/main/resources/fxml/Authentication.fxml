@@ -24,7 +24,7 @@
 				<RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<GridPane fx:id="pwdBasedLogin" styleClass="subMainComponent" visible="true">
+				<GridPane fx:id="pwdBasedLogin" styleClass="subMainComponent" visible="false">
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
@@ -67,7 +67,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%pwdAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+										<Label fx:id="pwdLabel" text="%pwdAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -149,7 +149,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label fx:id="otpLabel" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -258,7 +258,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label fx:id="fpLabel" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -452,7 +452,7 @@
 							<children>
 								<GridPane>
 									<children>
-										<Label text="%irisAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+										<Label fx:id="irisLabel" text="%irisAuthentication" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -506,7 +506,7 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
-                                          <TextField fx:id="fpUserId" promptText="%username" styleClass="authenticationStyle" />
+                                          <TextField fx:id="irisUserId" promptText="%username" styleClass="authenticationStyle" />
                                           <Button mnemonicParsing="false" onAction="#validateIris" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                                        </children>
                                     </GridPane>
@@ -545,7 +545,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%photoAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<Label fx:id="photoLabel" text="%photoAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
 										<Hyperlink onAction="#exitWindow" GridPane.columnIndex="1">
@@ -627,8 +627,8 @@
                                                 </ImageView>
                                              </children>
                                           </GridPane>
-                                          <TextField fx:id="fpUserId1" promptText="%username" styleClass="authenticationStyle" />
-                                          <Button mnemonicParsing="false" onAction="#validateIris" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                                          <TextField fx:id="faceUserId" promptText="%username" styleClass="authenticationStyle" />
+                                          <Button mnemonicParsing="false" onAction="#validateFace" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

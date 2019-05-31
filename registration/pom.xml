@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.2</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.12.2</version>
+	<version>0.12.4</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -92,6 +92,7 @@
 	<modules>
 		<module>registration-services</module>
 		<module>registration-client</module>
+		<module>registration-mdm-service</module>
 		<module>registration-libs</module>
 	</modules>
 

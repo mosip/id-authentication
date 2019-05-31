@@ -1,7 +1,9 @@
 package io.mosip.authentication.common.service.builder;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 
+import org.jose4j.lang.HashUtil;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
@@ -19,6 +21,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.UUIDUtils;
 
 /**
@@ -164,7 +167,7 @@ public class AuthTransactionBuilder {
 				String comment = isStatus ? requestType.getMessage() + " Success"
 						: requestType.getMessage() + " Failed";
 				AutnTxn autnTxn = new AutnTxn();
-				autnTxn.setRefId(idvId);
+				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(uin, env);
 				autnTxn.setId(id); // FIXME

@@ -16,25 +16,6 @@ public class IndividualDemographicDedupe {
 	/** The date of birth. */
 	private String dateOfBirth;
 
-	public JsonValue[] getName() {
-		return Arrays.copyOf(name,name.length);
-	}
-
-	public void setName(JsonValue[] name) {
-		this.name = name!=null?name:null;
-	}
-
-	public JsonValue[] getGender() {
-		if(gender != null)
-		return Arrays.copyOf(gender,gender.length);
-		else
-		return null;
-	}
-
-	public void setGender(JsonValue[] gender) {
-		this.gender = gender!=null?gender:null;
-	}
-
 	/** The gender. */
 	private JsonValue[] gender;
 	

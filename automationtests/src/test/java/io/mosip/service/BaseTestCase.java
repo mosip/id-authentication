@@ -99,40 +99,33 @@ public class BaseTestCase{
 	
 	public void initialize()
 	{
-		try {
-			
-			BasicConfigurator.configure();
-			
-			/**
-			 * Make sure test-output is there 
-			 */
-			File testOutput = new File("test-output");
-			File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
-			oldReport.delete();
-			testOutput.mkdirs();
-			
-			getOSType();
-			logger.info("We have created a Config Manager. Beginning to read properties!");
-			prop = new Properties();
-			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
-			prop.load(inputStream);
+		BasicConfigurator.configure();
+		
+		/**
+		 * Make sure test-output is there 
+		 */
+		File testOutput = new File("test-output");
+		File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
+		oldReport.delete();
+		testOutput.mkdirs();
+		
+		getOSType();
+		/*logger.info("We have created a Config Manager. Beginning to read properties!");
+		prop = new Properties();
+		InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
+		prop.load(inputStream);
 
-			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
-			// ApplnURI = prop.getProperty("testEnvironment");
+		logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
+		// ApplnURI = prop.getProperty("testEnvironment");
+*/
+		environment = System.getProperty("env.user");
+		logger.info("Environemnt is  ==== :" + environment);
+		ApplnURI = System.getProperty("env.endpoint");
+		logger.info("Application URI ======" + ApplnURI);
+		testLevel = System.getProperty("env.testLevel");
+		logger.info("Test Level ======" + testLevel);
 
-			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" + environment);
-			ApplnURI = System.getProperty("env.endpoint");
-			logger.info("Application URI ======" + ApplnURI);
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
-
-			logger.info("Configs from properties file are set.");
-			
-
-		} catch (IOException e) {
-			logger.error("Could not find the properties file.\n" + e);
-		}
+		logger.info("Configs from properties file are set.");
 		
 	
 	}
@@ -156,7 +149,7 @@ public class BaseTestCase{
 
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
-			//AuthTestsUtil.wakeDemoApp();
+			AuthTestsUtil.wakeDemoApp();
 		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();

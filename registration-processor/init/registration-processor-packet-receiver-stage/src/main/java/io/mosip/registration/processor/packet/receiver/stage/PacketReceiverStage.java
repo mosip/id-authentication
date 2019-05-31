@@ -85,7 +85,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-
 	}
 
 	/** The Constant APPLICATION_JSON. */
@@ -172,7 +171,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
 				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
-				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

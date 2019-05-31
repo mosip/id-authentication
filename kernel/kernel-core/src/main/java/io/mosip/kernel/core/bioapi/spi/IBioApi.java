@@ -5,7 +5,7 @@ import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.model.Score;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 
 /**
  * The Interface IBioApi.
@@ -22,7 +22,7 @@ public interface IBioApi {
 	 * @return the quality score
 	 * @throws BiometricException 
 	 */
-	QualityScore checkQuality(BIRType sample, KeyValuePair[] flags) throws BiometricException;
+	QualityScore checkQuality(BIR sample, KeyValuePair[] flags) throws BiometricException;
 	
 	/**
 	 * It compares the biometrics and provide the respective matching scores.
@@ -32,7 +32,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the score[]
 	 */
-	Score[] match(BIRType sample, BIRType[] gallery, KeyValuePair[] flags) throws BiometricException;
+	Score[] match(BIR sample, BIR[]gallery, KeyValuePair[] flags) throws BiometricException;
 
 	/**
 	 * It uses the composite logic while comparing the biometrics and provide the composite matching score. 
@@ -42,7 +42,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the composite score
 	 */
-	CompositeScore compositeMatch ( BIRType [] sampleList ,BIRType [] recordList , KeyValuePair [] flags ) throws BiometricException;
+	CompositeScore compositeMatch ( BIR[] sampleList ,BIR[] recordList , KeyValuePair [] flags ) throws BiometricException;
 
 	/**
 	 * Extract template.
@@ -51,7 +51,7 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the biometric record
 	 */
-	BIRType extractTemplate(BIRType sample, KeyValuePair[] flags) throws BiometricException;
+	BIR extractTemplate(BIR sample, KeyValuePair[] flags) throws BiometricException;
 
 	/**
 	 * It segment the single biometric image into multiple biometric images.
@@ -61,5 +61,5 @@ public interface IBioApi {
 	 * @param flags the flags
 	 * @return the biometric record[]
 	 */
-	BIRType[] segment(BIRType sample, KeyValuePair[] flags) throws BiometricException;
+	BIR[] segment(BIR sample, KeyValuePair[] flags) throws BiometricException;
 }

@@ -63,12 +63,14 @@ public class RegistrationConstants {
 	public static final String BIOMETRIC_EXCEPTION = "biometricException";
 	public static final String FINGER_PANE = "fingerPane";
 	public static final String FINGER_SINGLE = "FINGERPRINT_SINGLE";
+	public static final String FIN="FIN";
 	public static final String FINGER_SLAP = "FINGERPRINT_SLAP";
 	public static final String MDM_ENVIRONMENT = "DEV";
 	public static final int MDM_TIMEOUT = 1000;
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
+	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -150,6 +152,10 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
+	public static final String USER_MACHINE_VALIDATION_MSG = "USER_MACHINE_VALIDATION_MSG"; 
+	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
+	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
+	public static final String ROLES_LIST = "roleList";
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
@@ -362,7 +368,7 @@ public class RegistrationConstants {
 	 */
 	public static final String ACKNOWLEDGEMENT_FORMAT = "html";
 
-	public static final String IMAGE_FORMAT = "png";
+	public static final String IMAGE_FORMAT_PNG = "png";
 
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration
@@ -591,6 +597,15 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_CONSENT_SELECTED_YES = "SelectedYes";
 	public static final String TEMPLATE_CONSENT_SELECTED_NO = "SelectedNo";
 	public static final String TEMPLATE_CONSENT_CHECKED = "checked='checked'";
+	public static final String PARENT_PHOTO_CAPTURED = "parentPhotoCaptured";
+	public static final String PARENT_PHOTO_NOT_CAPTURED = "parentPhotoNotCaptured";
+	public static final String PARENT_PHOTO_PRIMARY_LANG = "ParentPhotoPrim";
+	public static final String PARENT_PHOTO_LOCAL_LANG = "ParentPhotoSec";
+	public static final String PARENT_IMAGE_SOURCE = "ParentImageSource";
+	public static final String LIST_ITEM_OPENING_TAG = "<li><span>";
+	public static final String LIST_ITEM_CLOSING_TAG = "</span></li><br/>";
+	public static final String SPLIT_DELIMITOR = "\\.";
+	public static final String TEMPLATE_GUIDELINES = "Guidelines";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
@@ -1362,5 +1377,37 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
+	
+	public static final String IDA_REFERENCE_ID = "PARTNER";
+	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
+	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
+	public static final String ID = "id";
+	public static final String IDENTITY  = "mosip.identity.auth";
+	public static final String VERSION  = "version";
+	public static final String REQUEST_TIME = "requestTime";
+	public static final String TRANSACTION_ID = "transactionID";
+	public static final String TRANSACTION_ID_VALUE = "1234567890";
+	public static final String BIO = "bio";
+	public static final String REQUEST_AUTH = "requestedAuth";
+	public static final String CONSENT_OBTAINED = "consentObtained";
+	public static final String INDIVIDUAL_ID = "individualId";
+	public static final String INDIVIDUAL_ID_TYPE = "individualIdType";
+	public static final String KEY_INDEX = "keyIndex";
+	public static final String ON_BOARD_TIME_STAMP = "timestamp";
+	public static final String DEVICE_PROVIDER_ID="deviceProviderID";
+	public static final String ON_BOARD_BIO_TYPE="bioType";
+	public static final String ON_BOARD_BIO_SUB_TYPE="bioSubType";
+	public static final String ON_BOARD_BIO_VALUE="bioValue";
+	public static final String ON_BOARD_BIO_DATA="data";
+	public static final String ON_BOARD_BIOMETRICS="biometrics";
+	public static final String ON_BOARD_REQUEST="request";
+	public static final String ON_BOARD_REQUEST_HMAC="requestHMAC";
+	public static final String ON_BOARD_REQUEST_SESSION_KEY="requestSessionKey";
+	public static final String ON_BOARD_PUBLIC_KEY_ERROR="Public key is either null or invalid public key";
+	public static final String ON_BOARD_AUTH_STATUS="authStatus";
+	public static final String ON_BOARD_FACE_ID="FID";
+	public static final String ON_BOARD_IRIS_ID="IIR";
+	public static final String ON_BOARD_FINGER_ID="FMR";
+	public static final String ON_BOARD_COGENT="cogent";
 	
 }

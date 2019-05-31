@@ -448,9 +448,9 @@
       "title_success": "Succès",
       "title_error": "Erreur",
       "cancelAppointment": {
-        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera supprimée. Veuillez confirmer.",
-        "msg_deleted": "Rendez-vous pour L'application sélectionnée a été supprimée avec succès",
-        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être supprimée"
+        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera annulée. Veuillez confirmer.",
+        "msg_deleted": "Le rendez-vous pour l'application sélectionnée a été annulé avec succès.",
+        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être annulée"
       },
       "deletePreregistration": {
         "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
@@ -535,7 +535,8 @@
     "text_search": "Chercher....",
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
-    "action_continue": "CONTINUER"
+    "action_continue": "CONTINUER",
+    "noResult_found" : "Aucun résultat trouvé"
   },
   "autologout": {
     "preview": "Vous serez expiré dans 60 secondes en raison de votre inactivité. Veuillez cliquer n'importe où pour réactiver votre session",

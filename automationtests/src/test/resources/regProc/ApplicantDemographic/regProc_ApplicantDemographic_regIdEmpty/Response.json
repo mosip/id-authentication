@@ -1,0 +1,11 @@
+{
+    "errors": [
+        {
+            "errorCode": "KER-FSA-002",
+            "message": "Requested file not found"
+        }
+    ],
+    "id": "mosip.manual.verification.demographic",
+    "version": "1.0",
+    "responsetime": "2019-05-28T10:46:23.956Z"
+}
