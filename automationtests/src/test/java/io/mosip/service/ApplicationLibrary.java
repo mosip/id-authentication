@@ -19,16 +19,14 @@ public class ApplicationLibrary extends BaseTestCase {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	public Response postRequest(Object body, String Resource_URI) {
-
-		System.out.println("ApplnURI:"+Resource_URI);
 		return commonLibrary.post_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
 	public Response postRequestWithParm(Object body, String Resource_URI,HashMap<String, String> pathValue) {
-		return commonLibrary.post_Request_WithQueryParams(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+		return commonLibrary.postRequestWithParm(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON,pathValue);
 	}
-
+	
 	public Response dataSyncPostRequest(Object body, String Resource_URI) {
 		return commonLibrary.dataSyncPost_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
@@ -55,7 +53,7 @@ public class ApplicationLibrary extends BaseTestCase {
 
 
 	public Response postRequestToDecrypt(Object body, String Resource_URI) {
-		return commonLibrary.postRequestToDecrypt(Resource_URI, body,
+		return commonLibrary.postRequestToDecrypt(ApplnURI+Resource_URI, body,
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 	}
 

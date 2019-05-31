@@ -15,15 +15,13 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 import io.mosip.registration.validator.OTPValidatorImpl;
 
 public class AuthenticationServiceTest {
 
-	@InjectMocks
-	private AuthenticationService authenticationService;
 	
 	@Mock
 	FingerprintValidatorImpl fingerprintValidator;
@@ -34,34 +32,37 @@ public class AuthenticationServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
+	@InjectMocks
+	private AuthenticationServiceImpl authenticationServiceImpl;
+	
 	@Test
 	public void getOtpValidatorTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(otpValidator);
-		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
+		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(otpValidator.validate(authenticationValidatorDTO)).thenReturn(true);
-		assertTrue(authenticationService.authValidator("otp", authenticationValidatorDTO));
+		assertTrue(authenticationServiceImpl.authValidator("otp", authenticationValidatorDTO));
 	}
 	
 	@Test
 	public void getFPValidatorTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(fingerprintValidator);
-		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
+		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(true);
-		assertTrue(authenticationService.authValidator("Fingerprint", authenticationValidatorDTO));
+		assertTrue(authenticationServiceImpl.authValidator("Fingerprint", authenticationValidatorDTO));
 	}
 	
 	@Test
 	public void getFPValidatorNegativeTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(fingerprintValidator);
-		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
+		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(false);
-		assertFalse(authenticationService.authValidator("otp", authenticationValidatorDTO));
+		assertFalse(authenticationServiceImpl.authValidator("otp", authenticationValidatorDTO));
 	}
 
 }

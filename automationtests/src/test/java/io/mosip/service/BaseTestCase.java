@@ -56,6 +56,7 @@ import io.restassured.RestAssured;
  */
 
 
+
 public class BaseTestCase{
 
 	protected static Logger logger = Logger.getLogger(BaseTestCase.class);
@@ -71,8 +72,8 @@ public class BaseTestCase{
 	 */
 	// GLOBAL CLASS VARIABLES
 	private Properties prop;
-	public static String ApplnURI;	
-	public static String authToken;
+	public static String ApplnURI;
+	protected static String authToken;
 	public static String regProcAuthToken;
 	public static String getStatusRegProcAuthToken;
 	public static String environment;
@@ -84,6 +85,7 @@ public class BaseTestCase{
 		String type=System.getProperty("os.name");
 		if(type.toLowerCase().contains("windows")){
 			SEPRATOR="\\\\";
+
 			return "WINDOWS";
 		}else if(type.toLowerCase().contains("linux")||type.toLowerCase().contains("unix"))
 		{
@@ -97,46 +99,37 @@ public class BaseTestCase{
 	
 	public void initialize()
 	{
-		try {
-			
-			BasicConfigurator.configure();
-			
-			/**
-			 * Make sure test-output is there 
-			 */
-			File testOutput = new File("test-output");
-			File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
-			oldReport.delete();
-			testOutput.mkdirs();
-			
-			getOSType();
-			logger.info("We have created a Config Manager. Beginning to read properties!");
-			prop = new Properties();
-			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
-			prop.load(inputStream);
+		BasicConfigurator.configure();
+		
+		/**
+		 * Make sure test-output is there 
+		 */
+		File testOutput = new File("test-output");
+		File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
+		oldReport.delete();
+		testOutput.mkdirs();
+		
+		getOSType();
+		/*logger.info("We have created a Config Manager. Beginning to read properties!");
+		prop = new Properties();
+		InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
+		prop.load(inputStream);
 
-			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
-			// ApplnURI = prop.getProperty("testEnvironment");
+		logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
+		// ApplnURI = prop.getProperty("testEnvironment");
+*/
+		environment = System.getProperty("env.user");
+		logger.info("Environemnt is  ==== :" + environment);
+		ApplnURI = System.getProperty("env.endpoint");
+		logger.info("Application URI ======" + ApplnURI);
+		testLevel = System.getProperty("env.testLevel");
+		logger.info("Test Level ======" + testLevel);
 
-			
-			                    
-			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" + environment);
-			ApplnURI = System.getProperty("env.endpoint");
-			logger.info("Application URI ======" + ApplnURI);
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
-
-			logger.info("Configs from properties file are set.");
-			
-
-		} catch (IOException e) {
-			logger.error("Could not find the properties file.\n" + e);
-		}
+		logger.info("Configs from properties file are set.");
 		
 	
 	}
-	
+
 	// ================================================================================================================
 		// TESTNG BEFORE AND AFTER SUITE ANNOTATIONS
 		// ================================================================================================================
@@ -157,7 +150,7 @@ public class BaseTestCase{
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.wakeDemoApp();
-			//authToken=pil.getToken();
+		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
@@ -177,10 +170,7 @@ public class BaseTestCase{
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
 			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
-			//authToken=pil.getToken();
-			
-
-
+		
 		} // End suiteSetup
 
 		/**

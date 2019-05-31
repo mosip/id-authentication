@@ -1,1 +1,0 @@
-{"transactionID":"7142408732","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"responseTime":"2019-05-23T12:00:55.668+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

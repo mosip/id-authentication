@@ -70,6 +70,12 @@ public class MachineMaster extends RegistrationCommonFields implements Serializa
 	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
 
+	@Column(name = "public_key", columnDefinition = "CLOB")
+	private String publicKey;
+
+	@Column(name = "key_index")
+	private String keyIndex;
+
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
@@ -179,6 +185,22 @@ public class MachineMaster extends RegistrationCommonFields implements Serializa
 
 	public void setMachineSpecification(RegMachineSpec machineSpecification) {
 		this.machineSpecification = machineSpecification;
+	}
+
+	public String getPublicKey() {
+		return publicKey;
+	}
+
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+
+	public String getKeyIndex() {
+		return keyIndex;
+	}
+
+	public void setKeyIndex(String keyIndex) {
+		this.keyIndex = keyIndex;
 	}
 
 }

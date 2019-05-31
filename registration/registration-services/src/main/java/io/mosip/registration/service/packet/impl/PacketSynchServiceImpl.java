@@ -7,6 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,6 +111,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
+				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, "JSON String " + javaObjectToJsonString(registrationPacketSyncDTO));
 				responseDTO = syncPacketsToServer(
 						CryptoUtil.encodeBase64(
 								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
@@ -177,6 +180,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
 			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
 			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
+			packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime())); 
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;
