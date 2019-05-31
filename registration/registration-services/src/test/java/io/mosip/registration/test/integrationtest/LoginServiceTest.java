@@ -97,7 +97,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 	 * 
 	 * 
 	 */
-	@Test
+	//@Test
 	public void getUserDetailTest() {
 		String path = new ClassPathResource(
 				"src/test/resources/testData/LoginServiceData/LoginServiceTestResources.json").getPath();
@@ -200,7 +200,7 @@ public class LoginServiceTest extends BaseIntegrationTest {
 	 * attributes of a UserDetail object	 * 
 	 * 
 	 */
-	@Test
+	//@Test
 	public void updateLoginParamsTest() {
 
 //		UserDetail userDetail = loginServiceImpl.getUserDetail("mosip");

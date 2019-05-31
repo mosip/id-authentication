@@ -24,6 +24,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -45,7 +46,7 @@ public class IntegrationScenario01_LastCompletedSyncJobs extends BaseIntegration
 	
 	public void login() {
 		// Get user Details
-		UserDetail userDetail = loginService.getUserDetail("mosip");
+		UserDTO userDetail = loginService.getUserDetail("mosip");
 		
 		
 				// Password check for login Check if Password is same

@@ -74,7 +74,7 @@ public class SoftwareUpdateHandlerTest {
 
 	}
 
-	@Test
+	//@Test
 	public void executeSQLTestRollBack() throws Exception {
 
 		// SoftwareUpdateHandler softwareUpdateHandler =new SoftwareUpdateHandler();
