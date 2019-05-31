@@ -152,7 +152,12 @@ public enum ErrorMessages {
 	/**
 	 * PRG_PAM_APP_017
 	 */
-	INVALID_PREID_FOR_USER("Requested preregistration id does not belong to the user");
+	INVALID_PREID_FOR_USER("Requested preregistration id does not belong to the user"),
+
+	/**
+	 * PRG_PAM_APP_018
+	 */
+	UBALE_TO_READ_IDENTITY_JSON("Failed to read the identity json from the server");
 
 	private ErrorMessages(String message) {
 		this.message = message;

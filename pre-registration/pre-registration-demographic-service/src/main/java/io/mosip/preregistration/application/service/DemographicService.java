@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,7 +24,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
@@ -40,6 +39,8 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupporte
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicCreateResponseDTO;
@@ -70,6 +71,8 @@ import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
@@ -140,7 +143,7 @@ public class DemographicService {
 	 * Reference for ${document.resource.url} from property file
 	 */
 	@Value("${document.resource.url}")
-	private String resourceUrl;
+	private String docResourceUrl;
 
 	/**
 	 * Reference for ${createId} from property file
@@ -269,7 +272,8 @@ public class DemographicService {
 				ValidationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(), IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
+						IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 				log.info("sessionId", "idType", "id",
 						"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 				log.info("sessionId", "idType", "id",
@@ -339,7 +343,8 @@ public class DemographicService {
 					DemographicRequestDTO demographicRequest = request.getRequest();
 					log.info("sessionId", "idType", "id",
 							"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
-					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(), IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+					jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
+							IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 					log.info("sessionId", "idType", "id",
 							"JSON validator end time : " + DateUtils.getUTCCurrentDateTimeString());
 					DemographicEntity demographicEntity = demographicRepository
@@ -468,26 +473,37 @@ public class DemographicService {
 	}
 
 	private void prepareDemographicResponse(DemographicMetadataDTO demographicMetadataDTO,
-			List<DemographicEntity> demographicEntities) throws ParseException,EncryptionFailedException {
+			List<DemographicEntity> demographicEntities)
+			throws ParseException, EncryptionFailedException, JsonProcessingException {
 
 		List<DemographicViewDTO> viewList = new ArrayList<>();
 		for (DemographicEntity demographicEntity : demographicEntities) {
 			byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),
 					DateUtils.getUTCCurrentDateTime());
+
+			String nameValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getName().getValue();
+			String poaValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getProofOfAddress().getValue();
+			String postalCodeValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getPostalCode()
+					.getValue();
+
+			JSONObject documentJsonObject = getDocumentMetadata(demographicEntity, RequestCodes.POA.getCode());
+
 			JSONParser jsonParser = new JSONParser();
 			JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
-			String postalcode = serviceUtil.getIdJSONValue(jsonObj.toJSONString(), RequestCodes.POSTAL_CODE.getCode());
-			JSONArray identityValue = serviceUtil.getValueFromIdentity(decryptedString,
-					RequestCodes.FULLNAME.getCode());
+			JSONObject demographicMetadata = new JSONObject();
+			demographicMetadata.put(nameValue, serviceUtil.getValueFromIdentity(decryptedString, nameValue));
+			demographicMetadata.put(postalCodeValue,
+					serviceUtil.getIdJSONValue(jsonObj.toJSONString(), postalCodeValue));
+			demographicMetadata.put(poaValue, documentJsonObject);
+
 			DemographicViewDTO viewDto = new DemographicViewDTO();
 			viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
-			viewDto.setFullname(identityValue);
 			viewDto.setStatusCode(demographicEntity.getStatusCode());
-			viewDto.setPostalCode(postalcode);
+			viewDto.setDemographicMetadata(demographicMetadata);
 			BookingRegistrationDTO bookingRegistrationDTO = getAppointmentDetailsRestService(
 					demographicEntity.getPreRegistrationId());
 			if (bookingRegistrationDTO != null) {
-				viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
+				viewDto.setBookingMetadata(bookingRegistrationDTO);
 			}
 			viewList.add(viewDto);
 		}
@@ -517,10 +533,11 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 
 				if (demographicEntity != null) {
-				//	userValidation(userId, demographicEntity.getCreatedBy());
+					// userValidation(userId, demographicEntity.getCreatedBy());
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
-			        		
-					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
+
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),
+							hashString.getBytes())) {
 						statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 						statusdto.setStatusCode(demographicEntity.getStatusCode());
 						response.setResponse(statusdto);
@@ -632,7 +649,8 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
-					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),hashString.getBytes())) {
+					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),
+							hashString.getBytes())) {
 
 						DemographicResponseDTO createDto = serviceUtil.setterForCreateDTO(demographicEntity);
 						response.setResponse(createDto);
@@ -702,7 +720,7 @@ public class DemographicService {
 	 */
 	public void statusCheck(DemographicEntity demographicEntity, String status, String userId) {
 		if (demographicEntity != null) {
-			//userValidation(userId, demographicEntity.getCreatedBy());
+			// userValidation(userId, demographicEntity.getCreatedBy());
 			if (serviceUtil.isStatusValid(status)) {
 				demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
 				demographicRepository.update(demographicEntity);
@@ -716,7 +734,6 @@ public class DemographicService {
 		}
 	}
 
-	
 	/**
 	 * This method will iterate the list of demographicEntity and add pre-ids to
 	 * list of string
@@ -803,7 +820,7 @@ public class DemographicService {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preregId);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "/documents/preregistration/");
+					.fromHttpUrl(docResourceUrl + "/documents/preregistration/");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
@@ -940,4 +957,55 @@ public class DemographicService {
 		}
 	}
 
+	private JSONObject getDocumentMetadata(DemographicEntity demographicEntity, String poa)
+			throws JsonProcessingException, ParseException {
+		String documentJsonString = "";
+		DocumentsMetaData documentsMetaData = getDocDetails(demographicEntity.getPreRegistrationId());
+		if (documentsMetaData != null && documentsMetaData.getDocumentsMetaData() != null
+				&& !documentsMetaData.getDocumentsMetaData().isEmpty()) {
+			for (DocumentMultipartResponseDTO metaData : documentsMetaData.getDocumentsMetaData()) {
+				if (metaData.getDocCatCode().equals(poa)) {
+					documentJsonString = JsonUtils.javaObjectToJsonString(metaData);
+					JSONParser jsonParser = new JSONParser();
+					return (JSONObject) jsonParser.parse(documentJsonString);
+				}
+			}
+		}
+		return null;
+
+	}
+
+	public DocumentsMetaData getDocDetails(String preId) {
+		log.info("sessionId", "idType", "id", "In getDocDetails method of demographic service");
+		DocumentsMetaData responsestatusDto = new DocumentsMetaData();
+		try {
+			Map<String, String> params = new HashMap<>();
+			params.put("preRegistrationId", preId);
+			UriComponentsBuilder builder = UriComponentsBuilder
+					.fromHttpUrl(docResourceUrl + "/documents/preregistration/");
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			HttpEntity<MainResponseDTO<DocumentsMetaData>> httpEntity = new HttpEntity<>(headers);
+			String uriBuilder = builder.build().encode().toUriString();
+			uriBuilder += "{preRegistrationId}";
+			log.info("sessionId", "idType", "id", "In getDocDetails method URL- " + uriBuilder);
+			ResponseEntity<MainResponseDTO<DocumentsMetaData>> respEntity = restTemplate.exchange(uriBuilder,
+					HttpMethod.GET, httpEntity, new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
+					}, params);
+			if (respEntity.getBody().getErrors() != null) {
+				log.info("sessionId", "idType", "id",
+						"In getDocDetails method of demographic service - Document not found for the pre_registration_id");
+			} else {
+				Object obj = respEntity.getBody().getResponse();
+				ObjectMapper mapper = new ObjectMapper();
+				responsestatusDto = mapper.convertValue(obj, DocumentsMetaData.class);
+			}
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In getDocDetails method of demographic service - " + ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_PAM_APP_014.getCode(),
+					ErrorMessages.DOCUMENT_SERVICE_FAILED_TO_CALL.getMessage());
+		}
+		return responsestatusDto;
+	}
 }
