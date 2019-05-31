@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import smoothscroll from 'smoothscroll-polyfill';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
@@ -55,7 +54,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
-    smoothscroll.polyfill();
+    // smoothscroll.polyfill();
     this.translate.use(localStorage.getItem('langCode'));
   }
 
@@ -78,14 +77,22 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   public scrollRight(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft + 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
       behavior: 'smooth'
     });
   }
 
   public scrollLeft(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft - 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
       behavior: 'smooth'
     });
@@ -175,7 +182,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -248,7 +255,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -272,7 +279,6 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   navigateDashboard() {
-    const routeParams = this.router.url.split('/');
     this.router.navigate(['dashboard']);
   }
 
@@ -290,6 +296,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.reloadData();
+    if (!this.bookingService.getSendNotification())
+      this.reloadData();
   }
 }
