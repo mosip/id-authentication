@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.CamelContext;
@@ -63,22 +65,27 @@ public class MosipBridgeFactory extends MosipVerticleManager {
 		    }
 		String zone = environment.getProperty("registration.processor.zone");
 		if(zone.equalsIgnoreCase("dmz")) {
-            camelRoutesFileName = environment.getProperty("camel.routes.dmz.file.name");
+            camelRoutesFileName = environment.getProperty("camel.dmz.active.flows.file.names");
         }
         else {
-        	camelRoutesFileName = environment.getProperty("camel.routes.secure.file.name");
+        	camelRoutesFileName = environment.getProperty("camel.secure.active.flows.file.names");
         }
 		CamelContext camelContext = new DefaultCamelContext(registry);
 		camelContext.setStreamCaching(true);
 		VertxComponent vertxComponent = new VertxComponent();
 		vertxComponent.setVertx(vertx);
+		List<String> camelRoutesFilesArr = Arrays.asList(camelRoutesFileName.split(","));
         RestTemplate restTemplate = new RestTemplate();
-        String camelRoutesUri = environment.getProperty("camel.routes.url");
-        String camelRoutesUrl = camelRoutesUri + camelRoutesFileName;
-        ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
-                Resource.class);
-        RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
-		camelContext.addRouteDefinitions(routes.getRoutes());
+        String camelRoutesBaseUrl = environment.getProperty("camel.routes.url");
+        ResponseEntity<Resource> responseEntity;
+        RoutesDefinition routes;
+        for (String camelRouteFileName : camelRoutesFilesArr) {
+			String camelRoutesUrl = camelRoutesBaseUrl + camelRouteFileName;
+			responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
+	                Resource.class);
+			routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+			camelContext.addRouteDefinitions(routes.getRoutes());
+		}
 		camelContext.addComponent("vertx", vertxComponent);
 		camelContext.start();
 		CamelBridge.create(vertx, new CamelBridgeOptions(camelContext)).start();
