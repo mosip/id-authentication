@@ -180,7 +180,7 @@ public class DemodedupeProcessor {
 				}
 
 			} else if (registrationStatusDto.getRegistrationType().equals(RegistrationType.UPDATE.name())
-					|| registrationStatusDto.getRegistrationType().equals(RegistrationType.RESUPDATE.name())) {
+					|| registrationStatusDto.getRegistrationType().equals(RegistrationType.RES_UPDATE.name())) {
 				IndividualDemographicDedupe demoDedupeData = new IndividualDemographicDedupe();
 
 				demographicInfoStream = adapter.getFile(registrationId,

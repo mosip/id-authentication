@@ -454,11 +454,11 @@ public class IdRepoManagerTest {
 		vidResponse.setResponse(response);
 		Map<String,Object> vidResponseMap=new HashMap<>();
 		Map<String,Object> vidMap=new HashMap<>();
-		vidMap.put("UIN", "12123234432243");
+		vidMap.put("UIN", 12123234432243L);
 		vidResponseMap.put("response", vidMap);
 		Mockito.when(restHelper.requestSync(restReq)).thenReturn(vidResponseMap);
-		String actualVidResponse=idReposerviceImpl.getUINByVID("234433356");
-		assertEquals("12123234432243", actualVidResponse);
+		long actualVidResponse=idReposerviceImpl.getUINByVID("234433356");
+		assertEquals(12123234432243L, actualVidResponse);
 		}
 	
 	/**

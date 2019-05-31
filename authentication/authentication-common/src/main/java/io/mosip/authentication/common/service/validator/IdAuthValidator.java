@@ -49,7 +49,7 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant VALIDATE. */
 	private static final String VALIDATE = "VALIDATE";
 
-	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
+	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Za-z0-9]{10}");
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);

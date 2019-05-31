@@ -34,6 +34,8 @@ public enum RegistrationTransactionTypeCode {
     /** The print stage. */
     PRINT,
 	/** The reprocess. */
-	REPROCESS
+	REPROCESS,
+	/** The Quality Check*/
+	QUALITY_CHECK
 
 }

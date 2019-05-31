@@ -6,11 +6,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
-import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.message.sender.utility.NotificationStageStatus;
 import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 
 /**
  * The Class StatusNotificationTypeMapUtil.
@@ -41,7 +38,7 @@ public class StatusNotificationTypeMapUtil {
 	 * @return the map
 	 */
 	private static Map<NotificationStageStatus, NotificationTemplateType> statusMapper() {
-
+		statusMap.put(NotificationStageStatus.QUALITY_CHECK_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
 		statusMap.put(NotificationStageStatus.OSI_VALIDATE_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
 		statusMap.put(NotificationStageStatus.VALIDATE_PACKET_FAILED, NotificationTemplateType.TECHNICAL_ISSUE);
 		statusMap.put(NotificationStageStatus.MANUAL_VERIFICATION_FAILED, NotificationTemplateType.DUPLICATE_UIN);

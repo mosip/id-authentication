@@ -2,6 +2,8 @@ package io.mosip.registration.processor.core.abstractverticle;
 
 import java.io.Serializable;
 
+import io.mosip.registration.processor.core.constant.RegistrationType;
+
 /**
  * This class contains parameters for communication between MOSIP stages.
  *
@@ -21,8 +23,15 @@ public class MessageDTO implements Serializable {
 	}
 
 	/** The registration type. */
+	private RegistrationType reg_type;
 
-	private String reg_type;
+	public RegistrationType getReg_type() {
+		return reg_type;
+	}
+
+	public void setReg_type(RegistrationType reg_type) {
+		this.reg_type = reg_type;
+	}
 
 	/** The rid. */
 	private String rid;
@@ -39,25 +48,7 @@ public class MessageDTO implements Serializable {
 	/** The retry count. */
 	private Integer retryCount;
 
-	/**
-	 * Gets the reg type
-	 *
-	 * @return the reg_type
-	 */
-
-	public String getReg_type() {
-		return reg_type;
-	}
-
-	/**
-	 * Sets the reg_type
-	 *
-	 * @param the
-	 *            new reg_type.
-	 */
-	public void setReg_type(String reg_type) {
-		this.reg_type = reg_type;
-	}
+	
 
 	/**
 	 * Gets the rid.

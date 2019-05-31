@@ -28,6 +28,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -591,7 +592,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		if (bioRefId != null) {
 			MessageDTO messageDto = new MessageDTO();
 			messageDto.setRid(regId);
-			messageDto.setReg_type(regType);
+			messageDto.setReg_type(RegistrationType.valueOf(regType));
 			this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
 		}
 

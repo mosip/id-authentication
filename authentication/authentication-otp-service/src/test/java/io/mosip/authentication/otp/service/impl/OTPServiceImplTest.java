@@ -1,5 +1,7 @@
 package io.mosip.authentication.otp.service.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -189,15 +191,21 @@ public class OTPServiceImplTest {
 		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestOtpFloodisTrue() throws IdAuthenticationBusinessException {
 		OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
 		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(100);
+	   try {	
 		otpServiceImpl.generateOtp(otpRequestDTO, "1234567890");
+	   }
+	   catch(IdAuthenticationBusinessException ex) {
+		   assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED.getErrorCode(), ex.getErrorCode());
+		   assertEquals(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED.getErrorMessage(), ex.getErrorText());
+	   }
 	}
 
 	@SuppressWarnings("rawtypes")
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestPhonenumberisNull() throws IdAuthenticationBusinessException, RestServiceException {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
@@ -228,7 +236,13 @@ public class OTPServiceImplTest {
 		map.put("otp", "123456");
 		response.setResponse(map);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+	   try {	
 		otpServiceImpl.generateOtp(otpRequestDto, "1234567890");
+	   }
+	   catch(IdAuthenticationBusinessException ex) {
+		   assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
+		   assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(), ex.getErrorText());
+	   }
 
 	}
 
