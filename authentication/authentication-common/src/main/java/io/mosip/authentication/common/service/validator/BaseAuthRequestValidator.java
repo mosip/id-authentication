@@ -280,7 +280,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
 			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "Invalid bio type config");
+						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
 			}
 			return contains;
 		}).collect(Collectors.toSet());
