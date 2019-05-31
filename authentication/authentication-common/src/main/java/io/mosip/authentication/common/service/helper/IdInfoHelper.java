@@ -66,6 +66,9 @@ public class IdInfoHelper {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	/** The mosip logger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
+
 	/**
 	 * Get Authrequest Info
 	 * 
@@ -106,6 +109,7 @@ public class IdInfoHelper {
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
 			throws IdAuthenticationBusinessException {
+		String type = matchType.getCategory().getType();
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
 		if (mappings != null && !mappings.isEmpty()) {
 			List<String> fullMapping = new ArrayList<>();
@@ -119,12 +123,19 @@ public class IdInfoHelper {
 						fullMapping.add(mappingStr);
 					}
 				} else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 				}
 			}
 			return fullMapping;
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 

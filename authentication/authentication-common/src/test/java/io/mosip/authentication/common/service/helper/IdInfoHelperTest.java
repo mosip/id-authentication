@@ -16,8 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
@@ -36,6 +34,7 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
+import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -69,7 +68,7 @@ public class IdInfoHelperTest {
 	@Autowired
 	private Environment environment;
 
-	@Mock
+	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
 	@Before
@@ -162,10 +161,9 @@ public class IdInfoHelperTest {
 		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "getIdentityValue", key, "ara", demoInfo);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestgetIdMappingValue() throws IdAuthenticationBusinessException {
 		MatchType matchType = DemoMatchType.ADDR;
-		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(null);
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
@@ -228,7 +226,6 @@ public class IdInfoHelperTest {
 		idInfo.put("phoneNumber", identityInfoList);
 		List<String> value = new ArrayList<>();
 		value.add("fullAddress");
-		Mockito.when(idMappingConfig.getFullAddress()).thenReturn(value);
 		idInfoHelper.getEntityInfoAsString(DemoMatchType.ADDR, idInfo);
 	}
 
@@ -375,6 +372,22 @@ public class IdInfoHelperTest {
 		mockenv.setProperty(IdAuthConfigKeyConstants.MOSIP_SUPPORTED_LANGUAGES, "");
 		ReflectionTestUtils.setField(idInfoHelper, "environment", mockenv);
 		idInfoHelper.getAllowedLang();
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestmappingInternal() throws IdAuthenticationBusinessException {
+		MatchType matchType = BioMatchType.FACE;
+		List<String> value = new ArrayList<>();
+		value.add(IdaIdMapping.ADDRESSLINE1.getIdname());
+		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.ADDR_LINE1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestmappingInternalthrowsException() throws IdAuthenticationBusinessException {
+		MatchType matchType = DemoMatchType.NAME;
+		List<String> value = new ArrayList<>();
+		value.add(IdaIdMapping.NAME.getIdname());
+		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
 	private List<IdentityInfoDTO> getValueList() {
