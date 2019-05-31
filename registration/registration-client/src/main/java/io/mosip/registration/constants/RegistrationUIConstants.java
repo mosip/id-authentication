@@ -230,7 +230,8 @@ public class RegistrationUIConstants {
 	public static final String BIOMETRIC_SCANNING_ERROR = bundle.getString("BIOMETRIC_SCANNING_ERROR");
 	public static final String IRIS_SCANNING_ERROR = bundle.getString("IRIS_SCANNING_ERROR");
 	public static final String FINGERPRINT_SCANNING_ERROR = bundle.getString("FINGERPRINT_SCANNING_ERROR");
-	public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
+	public static final String NO_DEVICE_FOUND = bundle.getString("NO_DEVICE_FOUND");
+public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("FINGERPRINT_SELECTION_PANE_ALERT");
 	public static final String FINGERPRINT_SCAN_ALERT = bundle.getString("FINGERPRINT_SCAN_ALERT");
 	public static final String IRIS_VALIDATION_ERROR = bundle.getString("IRIS_VALIDATION_ERROR");
 	public static final String FINGERPRINT_DUPLICATION_ALERT = bundle.getString("FINGERPRINT_DUPLICATION_ALERT");

@@ -1028,6 +1028,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+			fingerprintDetailsDTOs.remove(detailsDTO);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			return;
 		}
 
 		if (detailsDTO.getFingerPrint() != null) {

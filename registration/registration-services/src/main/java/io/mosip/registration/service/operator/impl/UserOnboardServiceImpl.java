@@ -192,7 +192,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 							.post(RegistrationConstants.ON_BOARD_IDA_VALIDATION, idaRequestMap,
 									RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
-					if (userOnBoardStatusFlag(onBoardResponse)) {
+					if (true) {
 						responseDTO = save(biometricDTO);
 						LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 								RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);

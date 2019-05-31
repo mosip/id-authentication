@@ -249,7 +249,7 @@ public class LoginController extends BaseController implements Initializable {
 						isInitialSetUp);
 
 			} else if (!isInitialSetUp) {
-				 executePreLaunchTask(loginRoot, progressIndicator);
+				// executePreLaunchTask(loginRoot, progressIndicator);
 				jobConfigurationService.startScheduler();
 			}
 
@@ -576,8 +576,8 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 				bioLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.FINGER_PRINT_MATCH);
 			}
-		} catch (RegBaseCheckedException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
+		} catch (RegBaseCheckedException | IOException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			bioLoginStatus = false;
@@ -620,8 +620,8 @@ public class LoginController extends BaseController implements Initializable {
 			} else {
 				irisLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.IRIS_MATCH);
 			}
-		} catch (RegBaseCheckedException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+		} catch (RegBaseCheckedException | IOException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			irisLoginStatus = false;

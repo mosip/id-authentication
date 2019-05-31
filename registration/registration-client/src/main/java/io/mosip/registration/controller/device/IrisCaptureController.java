@@ -441,6 +441,9 @@ public class IrisCaptureController extends BaseController {
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						ExceptionUtils.getStackTrace(runtimeException)));
+				getIrises().remove(irisDetailsDTO);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+				return;
 			}
 
 			if (irisDetailsDTO.getIris() != null) {

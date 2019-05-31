@@ -69,13 +69,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 	private byte[] isoTemplate;
 
 	/**
-	 * Validating User Biometrics using Minutia with MDM
+	 * Validates FingerPrint after getting the scanned data
 	 * 
+	 * @param userId
 	 * @return boolean
+	 * @throws IOException
 	 */
-
 	@Override
-	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException {
+	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
 
@@ -84,15 +85,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
 			isoTemplate = mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
 		} else {
-			try {
-				isoTemplate = IOUtils.toByteArray(
-						this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
-			} catch (IOException exception) {
-				LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
-						"Exception while reading image from the file",
-						exception.getMessage(), exception.getCause()));
-			}
-		} // TODo isoTemplate value to be decoded
+			isoTemplate = IOUtils.toByteArray(
+					this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
+		}
 
 		if (isoTemplate == null) {
 			return false;
@@ -116,8 +111,15 @@ public class BioServiceImpl extends BaseService implements BioService {
 		return fingerPrintStatus;
 	}
 
+	/**
+	 * Validates Iris after getting the scanned data
+	 * 
+	 * @param userId
+	 * @return boolean
+	 * @throws IOException
+	 */
 	@Override
-	public boolean validateIris(String userId) {
+	public boolean validateIris(String userId) throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
@@ -157,6 +159,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 	}
 
+	/**
+	 * Helper method to find the finger type mapping
+	 * 
+	 * @param fingerType
+	 * @return String
+	 */
 	private String findFingerPrintType(String fingerType) {
 		switch (fingerType) {
 		case RegistrationConstants.LEFTPALM:
@@ -392,6 +400,13 @@ public class BioServiceImpl extends BaseService implements BioService {
 		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
 	}
 
+	/**
+	 * Preparing segmentation detail of Biometric from MDM
+	 * 
+	 * @param fingerprintDetailsDTO
+	 * @param fingerType
+	 * @throws RegBaseCheckedException
+	 */
 	protected void prepareSegmentedBiometricsFromMdm(FingerprintDetailsDTO fingerprintDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 		CaptureResponseDto biometricData = mosipBioDeviceManager.scan(findFingerPrintType(fingerType));
@@ -424,7 +439,15 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 	}
 
-	protected void prepareSegmentedBiometrics(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path,
+	/**
+	 * Preparing segmentation detail of Biometric
+	 * 
+	 * @param fingerprintDetailsDTO
+	 * @param path
+	 * @param biometricExceptionDTOs
+	 * @throws IOException
+	 */
+	private void prepareSegmentedBiometrics(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path,
 			List<BiometricExceptionDTO> biometricExceptionDTOs) throws IOException {
 		List<String> filePaths = Arrays.asList(path);
 
@@ -471,28 +494,29 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * Capture Iris
 	 * 
 	 * @return byte[] of captured Iris
+	 * @throws IOException
 	 */
-	private byte[] captureIris() {
+	private byte[] captureIris() throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
 
 		byte[] capturedByte = null;
 
-		try {
-			if (isMdmEnabled()) {
-				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
-				capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
-			} else
-				capturedByte = IOUtils.toByteArray(
-						this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
-		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
-			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
-					"Exception while reading image from the file",
-					exception.getMessage(), exception.getCause()));
-		}
+		if (isMdmEnabled()) {
+			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
+			capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+		} else
+			capturedByte = IOUtils
+					.toByteArray(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 		return capturedByte;
 	}
 
+	/**
+	 * Validates Face after getting the scanned data
+	 * 
+	 * @param userId
+	 * @return boolean
+	 */
 	@Override
 	public boolean validateFace(String userId) {
 
@@ -527,6 +551,13 @@ public class BioServiceImpl extends BaseService implements BioService {
 			getIrisImageAsDTONonMdm(irisDetailsDTO, irisType);
 	}
 
+	/**
+	 * Get the Iris Image with MDM
+	 * 
+	 * @param detailsDTO
+	 * @param eyeType
+	 * @throws RegBaseCheckedException
+	 */
 	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType) throws RegBaseCheckedException {
 
 		String type = eyeType;
@@ -567,7 +598,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-
 	private void getIrisImageAsDTONonMdm(IrisDetailsDTO irisDetailsDTO, String irisType)
 			throws RegBaseCheckedException {
 		try {
@@ -610,7 +640,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
-			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
+			BufferedImage bufferedImage = ImageIO
+					.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
@@ -657,8 +688,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		byte[] capturedByte = null;
 
 		try {
-			if (RegistrationConstants.ENABLE
-					.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED)))) {
+			if (isMdmEnabled()) {
 				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
 				capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
 			} else

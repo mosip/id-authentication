@@ -1,5 +1,6 @@
 package io.mosip.registration.service.bio;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -10,9 +11,9 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 
 public interface BioService {
 
-	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException;
+	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException;
 
-	public boolean validateIris(String userId) throws RegBaseCheckedException;
+	public boolean validateIris(String userId) throws RegBaseCheckedException, IOException;
 
 	public boolean validateFace(String userId) throws RegBaseCheckedException;
 

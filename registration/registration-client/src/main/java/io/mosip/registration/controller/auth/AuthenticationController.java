@@ -3,6 +3,7 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -742,8 +743,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean captureAndValidateFP(String userId) {
 		try {
 			return bioService.validateFingerPrint(userId);
-		} catch (RegBaseCheckedException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
+		} catch (RegBaseCheckedException | IOException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			return false;
@@ -760,8 +761,8 @@ public class AuthenticationController extends BaseController implements Initiali
 	private boolean captureAndValidateIris(String userId) {
 		try {
 			return bioService.validateIris(userId);
-		} catch (RegBaseCheckedException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+		} catch (RegBaseCheckedException | IOException exception) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			return false;
