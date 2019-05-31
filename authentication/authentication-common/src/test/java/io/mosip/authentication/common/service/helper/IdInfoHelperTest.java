@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
@@ -381,6 +380,14 @@ public class IdInfoHelperTest {
 		List<String> value = new ArrayList<>();
 		value.add(IdaIdMapping.ADDRESSLINE1.getIdname());
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.ADDR_LINE1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestmappingInternalthrowsException() throws IdAuthenticationBusinessException {
+		MatchType matchType = DemoMatchType.NAME;
+		List<String> value = new ArrayList<>();
+		value.add(IdaIdMapping.NAME.getIdname());
+		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
 	private List<IdentityInfoDTO> getValueList() {
