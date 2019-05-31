@@ -126,14 +126,6 @@ public interface RegistrationCenterService {
 	 */
 	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
 
-	/**
-	 * This method updates the registration center.
-	 * 
-	 * @param registrationCenterDto - the updated registration center DTO.
-	 * 
-	 * @return - the id response DTO.
-	 */
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto);
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
