@@ -290,7 +290,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
 			FileUtils.deleteDirectory(
-					new File((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+					FileUtils.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,

@@ -6,9 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.WeakHashMap;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,13 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -104,7 +103,7 @@ public class IrisCaptureController extends BaseController {
 	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
-	private IrisFacade irisFacade;
+	private BioService bioservice;
 
 	@Autowired
 	private UserOnboardParentController userOnboardParentController;
@@ -126,10 +125,9 @@ public class IrisCaptureController extends BaseController {
 
 	@FXML
 	private Button backBtn;
-	
+
 	@Autowired
 	MosipBioDeviceManager mosipBioDeviceManager;
-
 
 	/**
 	 * This method is invoked when IrisCapture FXML page is loaded. This method
@@ -413,46 +411,6 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
-	/**
-	 * Scan irises by making the  call to service Api.
-	 *
-	 * @param detailsDTO             the details DTO
-	 * @param fingerType             the eye type
-	 */
-	public void getIrisImage(IrisDetailsDTO detailsDTO, String eyeType) {
-		String type = eyeType;
-		switch (eyeType) {
-		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			break;
-		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			break;
-		case RegistrationConstants.IRIS_DOUBLE:
-			eyeType = RegistrationConstants.IRIS_DOUBLE;
-			break;
-
-		default:
-			break;
-		}
-		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
-		try {
-			byteMap = mosipBioDeviceManager.scan(eyeType);
-			if (byteMap != null) {
-				byte[] imageByte = byteMap.get(eyeType);
-				if (imageByte != null) {
-					detailsDTO.setIris(imageByte);
-					detailsDTO.setIrisType(type);
-					detailsDTO.setQualityScore(80);
-				}
-			}
-		} catch (RegBaseCheckedException exception) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
-					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, exception.getMessage(),
-					ExceptionUtils.getStackTrace(exception)));
-		}
-	}
-
 	@Override
 	public void scan(Stage popupStage) {
 		try {
@@ -477,16 +435,16 @@ public class IrisCaptureController extends BaseController {
 					: RegistrationConstants.RIGHT;
 
 			try {
-				irisFacade.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
+				bioservice.getIrisImageAsDTO(irisDetailsDTO, irisType.concat(RegistrationConstants.EYE));
 			} catch (RegBaseCheckedException runtimeException) {
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						ExceptionUtils.getStackTrace(runtimeException)));
+				getIrises().remove(irisDetailsDTO);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+				return;
 			}
-
-			// getIrisImage(irisDetailsDTO,
-			// irisType.concat(RegistrationConstants.EYE));
 
 			if (irisDetailsDTO.getIris() != null) {
 				// Display the Scanned Iris Image in the Scan pop-up screen

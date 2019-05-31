@@ -655,5 +655,31 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return locationNames;
 	}
+	
+	@Override
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
+			String sortBy, String orderBy) {
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		PageDto<RegistrationCenterExtnDto> registrationCenterPages = null;
+		try {
+			Page<RegistrationCenter> pageData = registrationCenterRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
+				registrationCenterPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
+						pageData.getTotalElements(), registrationCenters);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return registrationCenterPages;
+
+	}
 
 }

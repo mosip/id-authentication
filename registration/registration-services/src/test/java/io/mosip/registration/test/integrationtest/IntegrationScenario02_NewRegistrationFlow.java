@@ -31,6 +31,7 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
@@ -62,7 +63,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 	//////////////////////////////////////////login
 	public void login() {
 		// Get user Details
-		UserDetail userDetail = loginService.getUserDetail("mosip");
+		UserDTO userDetail = loginService.getUserDetail("mosip");
 		
 		
 				// Password check for login Check if Password is same

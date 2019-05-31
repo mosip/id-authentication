@@ -148,5 +148,13 @@ public interface RegistrationCenterService {
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			String languageCode, Short hierarchyLevel, List<String> names);
+			
+	/**
+	 * Function to fetch all registration centers list.
+	 * 
+	 * @return the list of all registration centers.
+	 */
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNo,int pageSize,String sortBy,String orderBy);
 
 }
+

@@ -247,7 +247,7 @@ public class MosipBioDeviceManagerTest {
 
 	}
 
-	@Test
+	//@Test
 	public void scan() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());

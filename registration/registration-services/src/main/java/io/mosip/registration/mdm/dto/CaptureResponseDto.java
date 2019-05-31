@@ -17,6 +17,8 @@ import lombok.Setter;
 @Setter
 public class CaptureResponseDto {
 
+	private byte[] slapImage;
+	
 	@JsonProperty("biometrics")
 	List<CaptureResponseBioDto> mosipBioDeviceDataResponses;
 
