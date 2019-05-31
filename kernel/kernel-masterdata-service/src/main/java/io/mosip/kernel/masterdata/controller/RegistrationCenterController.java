@@ -221,12 +221,12 @@ public class RegistrationCenterController {
 	 *            the request DTO for creating registration center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<IdResponseDto> createRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
-
-		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+      ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(registrationCenterDto.getRequest()));
 		return responseWrapper;
@@ -239,6 +239,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<IdAndLanguageCodeID> updateRegistrationCenter(
