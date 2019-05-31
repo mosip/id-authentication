@@ -382,6 +382,7 @@ public class SoftwareInstallationHandler {
 		List<File> deletableJars = new LinkedList<>();
 
 		if (bin.listFiles().length != 0) {
+
 			addDeletableJars(bin.listFiles(), deletableJars, localManifestAttributes, binFolder);
 		}
 		if (lib.listFiles().length != 0) {
@@ -409,11 +410,14 @@ public class SoftwareInstallationHandler {
 			Map<String, Attributes> localManifestAttributes, String folder) {
 		for (File jar : jarFiles) {
 
-			if ((jar.getName().contains(mosip) && folder.equals(libFolder))
-					|| (!jar.getName().contains(mosip) && folder.equals(binFolder)) || localManifestAttributes == null
-					|| !localManifestAttributes.containsKey(jar.getName())) {
+			if (!(jar.getName().contains("run") && folder.equals(binFolder))
+					&& ((jar.getName().contains(mosip) && folder.equals(libFolder))
+							|| (!jar.getName().contains(mosip)) && folder.equals(binFolder)
+							|| localManifestAttributes == null
+							|| !localManifestAttributes.containsKey(jar.getName()))) {
 
 				deletableJars.add(jar);
+
 			}
 		}
 	}

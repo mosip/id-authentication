@@ -35,7 +35,7 @@ public class ClientJarEncryption {
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
 	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
-	private static final String MOSIP_EXE_JAR = "run.jar";
+	private static final String MOSIP_EXE_JAR = "bin/run.jar";
 	private static final String MDM_EXE_JAR = "mdm.jar";
 	private static final String MDM_FOLDER = "mdm";
 	private static final String MOSIP_LIB = "lib";

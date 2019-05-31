@@ -6,5 +6,5 @@ set t=%t: =%
 set logfile="%d%_%t%.log"
 
 
-jre\jre\bin\java.exe -jar run.jar
+jre\jre\bin\java.exe -jar bin/run.jar
 pause
