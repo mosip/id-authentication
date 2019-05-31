@@ -428,6 +428,47 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Transactional
+	@Override
+	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
+		RegistrationCenter updRegistrationCenter = null;
+		try {
+
+			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
+					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
+			if (renRegistrationCenter != null) {
+				MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(), renRegistrationCenter, false);
+				updRegistrationCenter = registrationCenterRepository.update(renRegistrationCenter);
+
+				RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+				MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
+				MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
+				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
+				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+				registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
+
+			} else {
+				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+
+		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+		MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID);
+		return idAndLanguageCodeID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * deleteRegistrationCenter(java.lang.String)
 	 */
 	@Override
