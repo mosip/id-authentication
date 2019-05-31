@@ -15,6 +15,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -28,8 +32,10 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -655,6 +661,32 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return locationNames;
+	}
+
+	@Override
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
+			String sortBy, String orderBy) {
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		PageDto<RegistrationCenterExtnDto> registrationCenterPages = null;
+		try {
+			Page<RegistrationCenter> pageData = registrationCenterRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
+				registrationCenterPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
+						pageData.getTotalElements(), registrationCenters);
+			} else {
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return registrationCenterPages;
+
 	}
 
 }
