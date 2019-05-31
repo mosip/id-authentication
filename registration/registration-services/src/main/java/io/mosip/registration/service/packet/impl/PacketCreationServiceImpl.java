@@ -71,6 +71,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
+import io.mosip.registration.util.advice.AuthenticationAdvice;
+import io.mosip.registration.util.advice.PreAuthorizeUserId;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
@@ -109,6 +111,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		try {
@@ -154,33 +157,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				}
 			}
 
-			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
-				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
-
-				if (cbeffInBytes != null) {
-
-					filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
-							RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
-					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
-							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
-				}
-
-				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-						.getFace();
-				if (cbeffInBytes != null) {
-					if (registrationDTO.isUpdateUINChild()
-							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-									.equals(RegistrationConstants.ENABLE)) {
-						filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
-								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-					} else {
-						filesGeneratedForPacket.put(RegistrationConstants.PARENT
-								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-					}
-				}
-			}
+			introducerCbeff(registrationDTO, rid, loggerMessageForCBEFF, birUUIDs, filesGeneratedForPacket);
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.OFFICER, birUUIDs);
@@ -298,6 +275,38 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		} finally {
 			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
+		}
+	}
+
+	private void introducerCbeff(final RegistrationDTO registrationDTO, String rid, String loggerMessageForCBEFF,
+			Map<String, String> birUUIDs, Map<String, byte[]> filesGeneratedForPacket) throws RegBaseCheckedException {
+		byte[] cbeffInBytes;
+		if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
+			cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
+
+			if (cbeffInBytes != null) {
+
+				filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
+				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
+						RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
+				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+			}
+
+			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+					.getFace();
+			if (cbeffInBytes != null) {
+				if (registrationDTO.isUpdateUINChild()
+						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+								.equals(RegistrationConstants.ENABLE)) {
+					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				} else {
+					filesGeneratedForPacket.put(RegistrationConstants.PARENT
+							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+				}
+			}
 		}
 	}
 
