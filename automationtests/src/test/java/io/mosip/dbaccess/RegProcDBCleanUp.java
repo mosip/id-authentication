@@ -24,7 +24,7 @@ public class RegProcDBCleanUp {
 	}
 	
 	public void deleteFromRegProcTables(String regID,String queryString) {
-		logger.info("Reistration ID is :: "+regID);
+		logger.info("Registration ID is :: "+regID);
 		SessionFactory sessionFactory= getSessionFactory();
 		session=sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -79,7 +79,7 @@ public class RegProcDBCleanUp {
 		queryList.add(deleteRegistration);
 		
 		for(String query:queryList) {
-			cleanUp.deleteFromRegProcTables("10006100060000720190518153303", query);
+			cleanUp.deleteFromRegProcTables("10007100260001220190522065002", query);
 		}
 
 	}

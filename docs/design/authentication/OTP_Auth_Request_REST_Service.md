@@ -14,8 +14,9 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 -	Partner can authenticate an Individual using one or more authentication types
 -	Partner will send Individual's UIN/VID to enable authentication of Individual
 -	Partner will send Partner ID and MISP License Key to authenticate and authorize a Partner to authenticate an Individual
--	Check Individual's UIN/VID for authenticity and validity
--	Validate OTP value of the Individual against the one in the generated in the earlier OTP request
+-	Check Individual's UIN/VID for authenticity and validity. 
+-	Same ID type should be used in both OTP request and OTP authentication request. For example, if Individual's UIN is used earilier in the OTP request, only the Individual's UIN should be used in the OTP Authentication request. Similarly, if Individual's VID is used earilier in the OTP request, only the Individual's VID should be used in the OTP Authentication request. And it should not be like UIN used in the OTP request and VID used in OTP authentication request, or vise versa.
+-	Validate OTP value of the Individual against the one generated earlier in the OTP request.
 -	Inform authentication status (success/failure) to the Individual in the form of message and/or email
 
 
@@ -60,8 +61,9 @@ The below class diagram shows relationship between all the classes which are req
 
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
-- ***MISP verification*** - Mocked the verification of MISP based on the using mocked *License Key*.
-- ***Partner verification*** - Mocked the verification of Partner based on Mocked *Policy* for the partner which provides the information on whether the OTP Authentication request is allowed.
-- ***MOSIP public key for encrypting Request block*** - The public key used for decrypting the request would be published in Partner Management Service, which is currently mocked using referenceID **"PARTNER"**, and the same should be used while encrypting the request.
-- ***keyIndex*** - No validation has been added for keyIndex which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
-- ***Digital Signature*** - Any digital signature added in the Authentication request is currently not validated.
+- ***MISP verification*** - Mocked the verification of MISP by using mocked *License Key*.
+- ***Partner verification*** - Mocked the verification of Partner by using mocked *Policy* for the partner which provides the information on whether the OTP Authentication request is allowed.
+- ***MOSIP public key for encrypting Request block*** - The private key used for decrypting the request would be maintained in Partner Management Service, which is currently mocked using reference ID **PARTNER** and application ID **IDA**, and public key of the same should be used while encrypting the request.
+- ***keyIndex*** - No validation has been added for `keyIndex` which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
+- ***Digital Signature in request*** - Any digital signature added in the Auth request is not currently validated .
+- ***Digital Signature in response*** - The Auth response is digitally signed using the MOSIP private key with reference ID **SIGN** and application ID **KERNEL**, and public key of the same should be used to verify the signature.

@@ -1,1 +1,1 @@
-{"id":"mosip.vid.create","version":"9.*","requesttime":"2019-05-29T14:14:47.628Z","request":{"vidType":"Temporary","UIN":"3240137254"}}
+{"id":"mosip.vid.create","version":"^.*","requesttime":"2019-05-30T07:43:22.620Z","request":{"vidType":"Temporary","UIN":"3540913620"}}

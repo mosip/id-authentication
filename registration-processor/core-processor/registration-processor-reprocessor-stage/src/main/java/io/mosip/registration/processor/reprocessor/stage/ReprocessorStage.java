@@ -15,6 +15,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -208,7 +209,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 						this.registrationId = dto.getRegistrationId();
 						object.setRid(registrationId);
 						object.setIsValid(true);
-						object.setReg_type(dto.getRegistrationType());
+						object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
 						description = "";
 						isTransactionSuccessful = true;
 						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());

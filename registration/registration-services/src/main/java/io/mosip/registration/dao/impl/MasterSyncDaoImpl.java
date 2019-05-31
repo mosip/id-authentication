@@ -902,4 +902,23 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<BiometricAttribute> getBiometricType(String langCode, List<String> biometricType) {
 		return biometricAttributeRepository.findByLangCodeAndBiometricTypeCodeIn(langCode, biometricType);
 	}
+	
+	public List<Language> getActiveLanguages(){
+		
+		return languageRepository.findAllByIsActiveTrue();
+	}
+	
+	public List<Gender> getGenders(){
+		return genderRepository.findAllByIsActiveTrue();
+	}
+	
+	public List<DocumentCategory> getDocumentCategory(){
+		return documentCategoryRepository.findAllByIsActiveTrue();
+	}
+	
+	
+	public List<Location> getLocationDetails(){
+		return locationRepository.findAllByIsActiveTrue();
+	}
+	
 }

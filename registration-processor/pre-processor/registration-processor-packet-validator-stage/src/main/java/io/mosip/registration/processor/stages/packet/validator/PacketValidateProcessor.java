@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -74,7 +75,7 @@ import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationType;
+
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -430,11 +431,10 @@ public class PacketValidateProcessor {
 			return false;
 
 		List<FieldValue> metadataList = identity.getMetaData();
-		object.setReg_type(identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE));
-		if (object.getReg_type().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
-				|| object.getReg_type().equalsIgnoreCase(RegistrationType.UPDATE.toString())
-				|| object.getReg_type().equalsIgnoreCase(RegistrationType.RESUPDATE.toString())) {
+		if (object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.RES_UPDATE.toString())) {
 			Long uin = utility.getUIn(registrationId);
 			if (uin == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage());
@@ -442,8 +442,8 @@ public class PacketValidateProcessor {
 			if (jsonObject == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 		}
-		boolean regTypeCheck = object.getReg_type().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| object.getReg_type().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString());
+		boolean regTypeCheck = object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString());
 
 		if (!regTypeCheck) {
 			if (!applicantDocumentValidation(jsonString)) {

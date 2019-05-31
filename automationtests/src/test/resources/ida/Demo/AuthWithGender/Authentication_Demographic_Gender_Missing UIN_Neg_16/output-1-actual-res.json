@@ -1,1 +1,0 @@
-{"transactionID":"8842255802","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-RST-007","errorMessage":"5XX - Server Error occurred"}],"responseTime":"2019-05-28T12:01:44.837+05:30","response":{"authStatus":false,"staticToken":null}}
