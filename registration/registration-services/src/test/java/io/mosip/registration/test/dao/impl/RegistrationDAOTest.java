@@ -346,8 +346,8 @@ public class RegistrationDAOTest {
 		
 		registration2.setRegistrationTransaction(new ArrayList<>());
 		Mockito.when(registrationRepository.findByServerStatusCodeIn(codes)).thenReturn(registrations);
-		assertSame("S",registrationDAOImpl.findByServerStatusCodeIn(codes).get(0).getClientStatusCode());
-		assertSame( "F",registrationDAOImpl.findByServerStatusCodeIn(codes).get(1).getClientStatusCode());
+		assertSame("Approved",registrationDAOImpl.findByServerStatusCodeIn(codes).get(0).getClientStatusCode());
+		assertSame( "Approved",registrationDAOImpl.findByServerStatusCodeIn(codes).get(1).getClientStatusCode());
 
 	}
 	
