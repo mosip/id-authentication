@@ -1,0 +1,9 @@
+[
+  {
+    "registrationId": "49996555530002520181208094000",
+    "status": "FAILURE",
+    "message": "RegistrationId and Parent RegistrationId cannot be same",
+    "parentRegistrationId": "49996555530002520181208094000",
+    "errorCode": "RPR-RGS-005"
+  }
+]

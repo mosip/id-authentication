@@ -26,7 +26,7 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.post_Request_WithQueryParams(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON,pathValue);
 	}
-	
+
 	public Response dataSyncPostRequest(Object body, String Resource_URI) {
 		return commonLibrary.dataSyncPost_Request(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
@@ -53,7 +53,7 @@ public class ApplicationLibrary extends BaseTestCase {
 
 
 	public Response postRequestToDecrypt(Object body, String Resource_URI) {
-		return commonLibrary.postRequestToDecrypt(ApplnURI+Resource_URI, body,
+		return commonLibrary.postRequestToDecrypt(Resource_URI, body,
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 	}
 

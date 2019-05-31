@@ -1,1 +1,1 @@
-{"transactionID":"0612263500","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - version"}],"responseTime":"2019-05-28T12:23:01.832+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}
+{"transactionID":"3135160887","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - version"}],"responseTime":"2019-05-23T12:00:47.677+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

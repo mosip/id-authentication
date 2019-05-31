@@ -31,8 +31,8 @@ public class IntegrationScenarios extends BaseTestCase {
 	IntegMethods scenario = new IntegMethods();
 	String moduleName="RegProc";
 	String apiName="Integration";
-	@DataProvider(name = "IntegrationScenarios")
-	public File[] getIntegrationScenarioPackets() {
+	@DataProvider(name = "packetValidatorStage")
+	public File[] getInvalidPacketValidatorPackets() {
 		
 		File file = new File(System.getProperty("user.dir") + "/src/test/resources/regProc/IntegrationScenarios");
 		File[] listOfPackets = file.listFiles();
@@ -49,7 +49,7 @@ public class IntegrationScenarios extends BaseTestCase {
 			
 	}
 
-	@Test(dataProvider = "IntegrationScenarios")
+	@Test(dataProvider = "packetValidatorStage")
 	public void syncSmokepacketUploadSmoke(File[] listOfInvpackets)
 			throws FileNotFoundException, IOException, ParseException {
 		File file1=new File(listOfInvpackets[0].getPath());

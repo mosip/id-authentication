@@ -1,0 +1,923 @@
+<html>
+<head>
+<title>TestNG:  RegistrationProcessor.PacketReceiver</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>RegistrationProcessor.PacketReceiver</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>0/22/0</td>
+</tr><tr>
+<td>Started on:</td><td>Wed Mar 06 17:07:55 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>15 seconds (15221 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-failed'>
+<tr><td colspan='4' align='center'><b>FAILED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_duplicatePacket()'><b>Invalid_duplicatePacket</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 14, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"invalid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1000","testCaseName":"Invalid_duplicatePacket","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace316750525", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace316750525'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_invalidFileExtension()'><b>Invalid_invalidFileExtension</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 20, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1001","testCaseName":"Invalid_invalidFileExtension","name_year":"valid","invalidFileExtension":"invalid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 24 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1088925353", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1088925353'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_invalidFileSize()'><b>Invalid_invalidFileSize</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 11, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"invalid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1002","testCaseName":"Invalid_invalidFileSize","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace2099834837", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace2099834837'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>8</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_date()'><b>Invalid_name_date</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 9, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"invalid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1003","testCaseName":"Invalid_name_date","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace748971195", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace748971195'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_hour()'><b>Invalid_name_hour</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 21, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1004","testCaseName":"Invalid_name_hour","name_year":"valid","invalidFileExtension":"valid","name_hour":"invalid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 24 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace685189361", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace685189361'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_lessthan29()'><b>Invalid_name_lessthan29</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 12, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"invalid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1005","testCaseName":"Invalid_name_lessthan29","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace895062568", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace895062568'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_minute()'><b>Invalid_name_minute</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 18, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"invalid","jiraId":"MOS-1006","testCaseName":"Invalid_name_minute","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 24 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1525969940", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1525969940'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_month()'><b>Invalid_name_month</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 13, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"invalid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1007","testCaseName":"Invalid_name_month","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace909978077", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace909978077'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_morethan29()'><b>Invalid_name_morethan29</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 7, {"name_morethan29":"invalid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1008","testCaseName":"Invalid_name_morethan29","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace911887259", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace911887259'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_second()'><b>Invalid_name_second</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 16, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"invalid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1009","testCaseName":"Invalid_name_second","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace598294540", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace598294540'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_symbol&number()'><b>Invalid_name_symbol&number</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 8, {"name_morethan29":"valid","name_symbol&number":"invalid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1010","testCaseName":"Invalid_name_symbol&number","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace783323948", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace783323948'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_text&number()'><b>Invalid_name_text&number</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 15, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"invalid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1011","testCaseName":"Invalid_name_text&number","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1137887459", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1137887459'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_text&symbol()'><b>Invalid_name_text&symbol</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 10, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"invalid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1012","testCaseName":"Invalid_name_text&symbol","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 25 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace869189990", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace869189990'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_name_year()'><b>Invalid_name_year</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 19, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1013","testCaseName":"Invalid_name_year","name_year":"invalid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 24 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace361542922", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace361542922'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.Invalid_packetWithoutSync()'><b>Invalid_packetWithoutSync</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 17, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"regression","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"invalid","name_minute":"valid","jiraId":"MOS-1014","testCaseName":"Invalid_packetWithoutSync","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+... Removed 24 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1168376659", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1168376659'><pre>java.lang.NullPointerException
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:194)
+	at sun.reflect.GeneratedMethodAccessor172.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke()'><b>PacketReceiver_smoke</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 0, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1017","testCaseName":"PacketReceiver_smoke","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace501455043", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace501455043'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_minute()'><b>PacketReceiver_smoke_minute</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 1, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1018","testCaseName":"PacketReceiver_smoke_minute","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace869140506", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace869140506'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_name_date()'><b>PacketReceiver_smoke_name_date</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 2, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1019","testCaseName":"PacketReceiver_smoke_name_date","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace746244504", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace746244504'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_name_hour()'><b>PacketReceiver_smoke_name_hour</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 3, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1020","testCaseName":"PacketReceiver_smoke_name_hour","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1270236380", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1270236380'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_name_month()'><b>PacketReceiver_smoke_name_month</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 4, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1021","testCaseName":"PacketReceiver_smoke_name_month","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1777328089", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1777328089'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_name_year()'><b>PacketReceiver_smoke_name_year</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 5, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1022","testCaseName":"PacketReceiver_smoke_name_year","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1739770043", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1739770043'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+<tr>
+<td title='io.mosip.registrationProcessor.tests.PacketReceiver.PacketReceiver_smoke_second()'><b>PacketReceiver_smoke_second</b><br>Test class: io.mosip.registrationProcessor.tests.PacketReceiver (Invalid_name_hour)<br>Parameters: regProc/PacketReceiver, 6, {"name_morethan29":"valid","name_symbol&number":"valid","name_date":"valid","name_text&symbol":"valid","testType":"smoke","invalidFileSize":"valid","name_lessthan29":"valid","name_month":"valid","duplicatePacket":"valid","name_text&number":"valid","name_second":"valid","packetWithoutSync":"valid","name_minute":"valid","jiraId":"MOS-1023","testCaseName":"PacketReceiver_smoke_second","name_year":"valid","invalidFileExtension":"valid","name_hour":"valid","status":""}</td>
+<td><div><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+... Removed 26 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1915567579", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1915567579'><pre>java.lang.AssertionError: The following asserts failed:
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false],
+	expected [true] but found [false]
+	at org.testng.asserts.SoftAssert.assertAll(SoftAssert.java:43)
+	at io.mosip.registrationProcessor.tests.PacketReceiver.packetReceiver(PacketReceiver.java:241)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:114)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+</pre></div></td>
+<td>0</td>
+<td>io.mosip.registrationProcessor.tests.PacketReceiver@72057ecf</td></tr>
+</table><p>
+</body>
+</html>

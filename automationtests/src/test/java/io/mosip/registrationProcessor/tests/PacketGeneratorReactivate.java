@@ -73,7 +73,6 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	 	 Object[][] readFolder = null;
 	 	 try {
 	 	 	 prop.load(new FileReader(new File(propertyFilePath)));
-	 	 	testLevel=System.getProperty("env.testLevel");
 	 	 	 switch (testLevel) {
 	 	 	 case "smoke":
 	 	 	 	 readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");

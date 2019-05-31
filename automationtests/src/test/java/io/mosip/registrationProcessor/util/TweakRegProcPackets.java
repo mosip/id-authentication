@@ -1,6 +1,7 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -20,12 +21,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.annotations.Test;
 
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
-
 
 /**
  * 
@@ -45,7 +46,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
-	String token="";
 
 	/**
 	 * 
@@ -256,8 +256,9 @@ public class TweakRegProcPackets extends BaseTestCase {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
+					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
+					// f.getName());
+					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -338,111 +339,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 		}
 
 	}
-	
-	private void generateUpdatePacket(String testCaseName, String property, String validPacketPath,
-			String invalidPacketPath) {
-		JSONObject metaInfo = null;
-		JSONObject metaInfoBio = null;
-		File decryptedPacket = null;
-		JSONObject identity = null;
-		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
-		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath + "UpdatePacket/"
-				+ testCaseName;
-		filesToBeDestroyed = configPath;
-		File file = new File(configPath);
-		File[] listOfFiles = file.listFiles();
-		for (File f : listOfFiles) {
-
-			if (f.getName().contains(".zip")) {
-				centerId = f.getName().substring(0, 5);
-				machineId = f.getName().substring(5, 10);
-				String regId = generateRegId(centerId, machineId);
-				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
-				try {
-
-					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
-					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
-					for (File info : decryptedPacket.listFiles()) {
-						if (info.getName().equals("Demographic")) {
-							File[] demographic = info.listFiles();
-							for (File metaFile : demographic) {
-								if (metaFile.getName().equals("ID.json")) {
-									FileReader metaFileReader = new FileReader(metaFile.getPath());
-									metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
-									metaFileReader.close();
-									identity = (JSONObject) metaInfo.get("identity");
-									identity.put("fullName", property);
-									logger.info("Identity is :: " + identity.get("fullName"));
-									try (FileWriter updatedFile = new FileWriter(metaFile.getAbsolutePath())) {
-										try {
-											updatedFile.write(metaInfo.toString());
-											updatedFile.close();
-										} catch (IOException e) {
-											logger.error("Could not find ID.json", e);
-										}
-										logger.info("Successfully updated json object to file...!!");
-
-									} catch (IOException e1) {
-										logger.error("Could not update ID.json", e1);
-									}
-
-								}
-
-							}
-						} /*else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
-							try {
-
-								FileReader metaFileReader = new FileReader(info.getPath());
-								metaInfoBio = (JSONObject) new JSONParser().parse(metaFileReader);
-								metaFileReader.close();
-							} catch (IOException | ParseException e) {
-								logger.error("packet_meta_info.json was not found", e);
-							}
-							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
-							JSONArray metaData = (JSONArray) identityObject.get("metaData");
-							JSONArray updatedData = updateRegId(metaData, regId);
-							logger.info("updatedData : " + updatedData);
-							metaInfoBio.put("identity", identityObject);
-							logger.info("metaInfoBio : " + metaInfoBio);
-							try (FileWriter updatedFile = new FileWriter(info.getAbsolutePath())) {
-								try {
-									updatedFile.write(metaInfoBio.toString());
-									updatedFile.close();
-								} catch (IOException e) {
-									logger.error("Could not update the packet_meta_info.json as file was not found", e);
-								}
-								logger.info("Successfully updated json object to file...!!");
-
-							} catch (IOException e1) {
-
-								logger.error("Could not update the packet_meta_info.json as file was not found", e1);
-							}
-						}*/
-
-					}
-					for (File info : decryptedPacket.listFiles()) {
-						byte[] checksum = encryptDecrypt.generateCheckSum(decryptedPacket.listFiles());
-
-						String str = new String(checksum, StandardCharsets.UTF_8);
-						logger.info("checksum is  :: " + str);
-						if (info.getName().equals("packet_data_hash.txt")) {
-							PrintWriter writer = new PrintWriter(info);
-							writer.print("");
-							writer.print(str);
-							writer.close();
-							encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId);
-						}
-
-					}
-
-				} catch (IOException | ZipException | ParseException e) {
-					logger.error("Could not create valid update packet packet", e);
-				}
-			}
-		}
-		
-	}
-
 
 	/**
 	 * 
@@ -562,43 +458,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
 		}
 	}
-	
-	public void updatePacketPropertyFileReader(String propertyFiles, String validPacketPath, String invalidPacketPath) {
-		Properties prop = new Properties();
-		TweakRegProcPackets e = new TweakRegProcPackets();
-		String propertyFilePath = System.getProperty("user.dir") + "/src/config/" + propertyFiles;
-		try {
-			FileReader readFile = new FileReader(new File(propertyFilePath));
-			prop.load(readFile);
-
-			for (String property : prop.stringPropertyNames()) {
-				logger.info("invalid" + property);
-				logger.info(prop.getProperty(property));
-
-				e.generateUpdatePacket(property, prop.getProperty(property), validPacketPath,
-						invalidPacketPath);
-			}
-			readFile.close();
-		} catch (IOException exc) {
-			logger.error("Could not find the file :: " + propertyFiles);
-		}
-		/*try {
-			demoDedupeStageString.append("1111000");
-			OutputStream stageBitFile = null;
-			stageBitFile = new FileOutputStream(invalidPacketPath + "/DemoDedupe/StageBits.properties");
-			Properties property = new Properties();
-			property.setProperty("StageBits", demoDedupeStageString.toString());
-			property.store(stageBitFile, null);
-			stageBitFile.close();
-			demoDedupeStageString.delete(0, demoDedupeStageString.length());
-			encryptDecrypt.destroyFiles(filesToBeDestroyed);
-
-		} catch (IOException e1) {
-			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
-		}*/
-		
-	}
-
 
 	/**
 	 * 
@@ -675,8 +534,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
-
-	
 
 
 }

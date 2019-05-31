@@ -70,7 +70,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 	}
 
 	/**

@@ -1,1 +1,1 @@
-{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-BIA-009","errorMessage":"Number of FID records should not exceed 1"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+{"transactionID":"3431524337","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-BIA-009","errorMessage":"Number of FID records should not exceed 1"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

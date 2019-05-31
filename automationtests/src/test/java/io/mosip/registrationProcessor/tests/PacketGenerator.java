@@ -73,7 +73,6 @@ public class PacketGenerator  extends  BaseTestCase implements ITest {
 	 public Object[][] readData(ITestContext context){
 	 	 String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	 	 String testParam = context.getCurrentXmlTest().getParameter("testType");
-	 	testLevel=System.getProperty("env.testLevel");
 	 	 Object[][] readFolder = null;
 	 	 try {
 	 	 	 prop.load(new FileReader(new File(propertyFilePath)));

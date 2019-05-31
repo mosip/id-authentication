@@ -12,7 +12,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import io.mosip.dbdto.DemoDedupeDto;
-import io.mosip.service.BaseTestCase;
 
 /**
  * This class is use for stage validation related data operations 
@@ -37,12 +36,7 @@ public class RegProcStageDb {
 	@SuppressWarnings("deprecation")
 	public List<DemoDedupeDto> regproc_IndividualDemoghraphicDedupe(String regId)
 	{
-		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
-				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -111,12 +105,7 @@ public class RegProcStageDb {
 	public List<DemoDedupeDto> regproc_AllIndividualDemoghraphicDedupe(String name, String genderCode, String dob,
 			String langCode) {
 
-		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
-				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
@@ -185,12 +174,7 @@ public class RegProcStageDb {
 	@SuppressWarnings("deprecation")
 	public String regproc_getUIN(String regId)
 	{
-		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
-			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
-				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
-		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
-			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 

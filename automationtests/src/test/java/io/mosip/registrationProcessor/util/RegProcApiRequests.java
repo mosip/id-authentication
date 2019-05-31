@@ -19,7 +19,7 @@ public class RegProcApiRequests extends BaseTestCase {
 		Cookie.Builder builder = new Cookie.Builder("Authorization", regProcAuthToken);
 		Response postResponse = given().cookie(builder.build()).header("Center-Machine-RefId", center_machine_refId)
 				.header("timestamp", ldt).relaxedHTTPSValidation().body("\"" + body + "\"").contentType(contentHeader)
-				.log().all().when().post(url).then().log().all().extract().response();
+				.log().all().when().post(ApplnURI+url).then().log().all().extract().response();
 		return postResponse;
 	}
 
@@ -28,7 +28,7 @@ public class RegProcApiRequests extends BaseTestCase {
 		logger.info("REST:ASSURED:Sending a data packet to" + ApplnURI+url);
 		Cookie.Builder builder = new Cookie.Builder("Authorization", regProcAuthToken);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart("file", file).expect().log().all().
-				when().post(url);
+				when().post(ApplnURI+url);
 		logger.info("REST:ASSURED: The response from request is:" + getResponse.asString());
 		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
 		return getResponse;

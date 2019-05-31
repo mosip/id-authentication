@@ -1,1 +1,1 @@
-{"transactionID":"8655631732","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+{"transactionID":"5335755026","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

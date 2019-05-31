@@ -1,1 +1,1 @@
-{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+{"transactionID":"1378107786","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

@@ -1,1 +1,1 @@
-{"transactionID":"$TestData:txnID_Invalid$","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
+{"transactionID":"6789056","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}

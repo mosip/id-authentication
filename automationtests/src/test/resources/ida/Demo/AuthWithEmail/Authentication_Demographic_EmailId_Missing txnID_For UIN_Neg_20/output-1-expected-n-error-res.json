@@ -1,1 +1,1 @@
-{"response":{"authStatus":false},"responseTime":"$TIMESTAMP$","id":"mosip.identity.auth","version":"1.0","errors":[{"errorMessage":"Missing Input Parameter - transactionID","errorCode":"IDA-MLC-006"}]}
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - individualIdType"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2381861355","id":"mosip.identity.auth"}

@@ -1,0 +1,1 @@
+{"transactionID":"4136631226","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MPA-006","errorMessage":"FTY-authentiation usage not allowed as per policy"}],"responseTime":"2019-05-23T12:09:41.144+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}
