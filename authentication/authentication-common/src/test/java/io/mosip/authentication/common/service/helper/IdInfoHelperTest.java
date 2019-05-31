@@ -390,6 +390,23 @@ public class IdInfoHelperTest {
 		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
+	@Test
+	public void TestmatchType() {
+		MatchInput matchInput = new MatchInput(DemoAuthType.ADDRESS, DemoMatchType.PHONE, "EXACT", 60, null, null);
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "matchType", null, null, null, matchInput, null, null);
+	}
+
+	@Test
+	public void TestconcatValue() throws IdAuthenticationBusinessException {
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> value = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setValue("2232222222");
+		value.add(identityInfoDTO);
+		demoEntity.put("phone", value);
+		idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, demoEntity);
+	}
+
 	private List<IdentityInfoDTO> getValueList() {
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
