@@ -23,10 +23,10 @@ public final class StatusMessage {
 	/** The Constant PACKET_BIOMETRIC_POTENTIAL_MATCH. */
 	public static final String PACKET_BIOMETRIC_POTENTIAL_MATCH = "Potential match found while processing bio dedupe";
 
-	public static final String PACKET_BIOMETRIC_LOST_PACKET_NO_MATCH = "No match found while processing bio dedupe for lost";
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_NO_MATCH = "No Match was Found for the Given Biometrics";
 
-	public static final String PACKET_BIOMETRIC_LOST_PACKET_UNIQUE_MATCH = "Unique match found while processing bio dedupe for lost";
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_UNIQUE_MATCH = "Unique Match was Found for the Given Biometrics";
 
-	public static final String PACKET_BIOMETRIC_LOST_PACKET_MULTIPLE_MATCH = "Multiple match found while processing bio dedupe for lost";
+	public static final String PACKET_BIOMETRIC_LOST_PACKET_MULTIPLE_MATCH = "Multiple Match was Found for the Given Biometrics";
 
 }
