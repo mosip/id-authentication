@@ -8,7 +8,14 @@
       >
         <div *ngIf="showPassword">
           <mat-form-field class="input-full-width">
-            <input matInput type="password" placeholder="PASSWORD" formControlName="password" />
+            <input
+              matInput
+              type="password"
+              placeholder="PASSWORD"
+              #password
+              formControlName="password"
+              (focusout)="validateUserPassword(password.value)"
+            />
           </mat-form-field>
           <div class="validation" *ngIf="errorMessage">Invaild Password</div>
           <div
@@ -28,7 +35,14 @@
         </div>
         <div *ngIf="showOtp">
           <mat-form-field class="input-full-width">
-            <input matInput placeholder="ENTER OTP" formControlName="otp" />
+            <input
+              matInput
+              type="text"
+              placeholder="ENTER OTP"
+              #otp
+              formControlName="otp"
+              (focusout)="validateUserOtp(otp.value)"
+            />
           </mat-form-field>
           <div class="validation" *ngIf="otpErrorMessage">Invaild OTP</div>
           <div
@@ -49,12 +63,7 @@
             type="submit"
             mat-raised-button
             class="login-button"
-            [disabled]="
-              !(
-                (this.showPassword || this.showOtp) &&
-                authenticationForm.controls['password'].value.length > 0
-              )
-            "
+            [disabled]="!buttonDisabled"
           >
             Login
           </button>

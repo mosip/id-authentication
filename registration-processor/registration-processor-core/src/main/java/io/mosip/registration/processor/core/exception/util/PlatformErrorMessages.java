@@ -248,6 +248,18 @@ public enum PlatformErrorMessages {
 	/** The rpr qcr invalid registration id. */
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004", "Registration Id is null"),
 
+	/** The rpr qcr file name missing. */
+	RPR_QCR_FILENAME_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "006", 
+			"Individual Biometric Filename is not present in ID Json"),
+
+	/** The rpr qcr bio file missing. */
+	RPR_QCR_BIO_FILE_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Individual Biometric File is not present in packet"),
+
+	/** The rpr qcr biometric exception. */
+	RPR_QCR_BIOMETRIC_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Biometric Exception from IDA"),
+
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 
@@ -281,6 +293,9 @@ public enum PlatformErrorMessages {
 	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
 			"A Mandatory Field is missing from ID JSON for NEW registration "),
 
+	RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011",
+			"Registration ID or Type are not Matched in Sync table"),
+
 	/** The rpr pvm invalid uin. */
 	RPR_PVM_INVALID_UIN(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011", "Invalid UIN"),
 
@@ -312,6 +327,10 @@ public enum PlatformErrorMessages {
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"),
 
+	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007",
+			"BioType exception while fetcing data from cbeff file from kernel"),
+
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
@@ -324,21 +343,30 @@ public enum PlatformErrorMessages {
 			"CBEFF not present for adult applicant type"),
 
 	/** The abis reference id not found. */
-	//stages - Abis Middleware
-	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001"," Abis ReferenceId not found for given registrationId"),
+	// stages - Abis Middleware
+	ABIS_REFERENCE_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "001",
+			" Abis ReferenceId not found for given registrationId"),
 
 	/** The latest transaction id not found. */
-	LATEST_TRANSACTION_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "002"," latest transactionId not found for given registrationId"),
+	LATEST_TRANSACTION_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "002",
+			" latest transactionId not found for given registrationId"),
 
 	/** The identify requests not found. */
-	IDENTIFY_REQUESTS_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "003"," no identify requests found for given registrationId"),
+	IDENTIFY_REQUESTS_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "003",
+			" no identify requests found for given registrationId"),
 
-    /** The abis queue json validation failed. */
-    ABIS_QUEUE_JSON_VALIDATION_FAILED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "004"," value not found for given key in abis json"),
+	/** The abis queue json validation failed. */
+	ABIS_QUEUE_JSON_VALIDATION_FAILED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "004",
+			" value not found for given key in abis json"),
 
 	/** The unknown exception occured. */
 	UNKNOWN_EXCEPTION_OCCURED(PlatformConstants.RPR_ABIS_MIDDLEWARE + "005"," unknown exception occured"),
-    /** The packet bio dedupe failed. */
+
+	/** ABIS_BATCH_ID_NOT_FOUND. */
+	ABIS_BATCH_ID_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "006"," abis batchId not found"),
+	
+	ABIS_QUEUE_NOT_FOUND(PlatformConstants.RPR_ABIS_MIDDLEWARE + "007"," abis Queue not found"),
+	/** The packet bio dedupe failed. */
 	// Stages - Bio-Dedupe error code and message
 	PACKET_BIO_DEDUPE_FAILED(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Bio dedupe Failed"),
 
@@ -355,8 +383,21 @@ public enum PlatformErrorMessages {
 
 	/** The reverse data sync failed. */
 	// Stages - Packet-Validator error message
-	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"),
-	REVERSE_DATA_SYNC_SUCCESS("","Reverse data sync success"),
+	REVERSE_DATA_SYNC_FAILED("", "Reverse data sync failed"), 
+	
+	REVERSE_DATA_SYNC_SUCCESS("",
+			"Reverse data sync success"),
+
+	/** The Biometric-Authentication stage failed. */
+	//stages - Biometric-Authentication stage error code and message
+	BIOMETRIC_AUTHENTICATION_FAILED(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE,"Biometric authentication failed"),
+
+	/** The Biometric-Authentication io exception. */
+	BIOMETRIC_AUTHENTICATION_IOEXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "001","IO Exception in Biometric Authentication stage"),
+
+	/** The Biometric-Authentication api resource exception. */
+	BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "002","API resource exception in Biometric Authentication stage"),
+
 
 	/** The rpr psj Packet Store not accessible. */
 	// Packet scanner job Exception error code and message
@@ -454,7 +495,9 @@ public enum PlatformErrorMessages {
 	/** The rpr mvs decode exception. */
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 	/** The rpr mvs no user id present. */
-	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id cannot be empty"),
+	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id does not exists master list"),
+
+	RPR_MVS_USER_STATUS_NOT_ACTIVE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "User is not in ACTIVE status"),
 
 	/** The rpr mvs no match type present. */
 	RPR_MVS_NO_MATCH_TYPE_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "Match Type is Invalid"),
@@ -620,19 +663,19 @@ public enum PlatformErrorMessages {
 	/** The rpr sys io exception. */
 	RPR_SYS_IO_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION "),
 
-	/**  The rpr sys data access exception. */
+	/** The rpr sys data access exception. */
 	RPR_SYS_DATA_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "013", "Data Access Exception"),
 
-	/**  The rpr sys api resource exception. */
+	/** The rpr sys api resource exception. */
 	RPR_SYS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "014", "API Resource Exception"),
 
-	/**  The rpr sys illegal access exception. */
+	/** The rpr sys illegal access exception. */
 	RPR_SYS_ILLEGAL_ACCESS_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "015", "ILLEGAL ACCESS Exception"),
 
-	/**  The rpr sys Invocation target exception. */
+	/** The rpr sys Invocation target exception. */
 	RPR_SYS_INVOCATION_TARGET_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "016", "Invocation target Exception"),
 
-	/**  The rpr sys Invocation target exception. */
+	/** The rpr sys Invocation target exception. */
 	RPR_SYS_INTROSPECTION_EXCEPTION(PlatformConstants.RPR_SYSTEM_EXCEPTION + "017", "Introspection Exception"),
 
 	// Cbeff Util Exceptions
@@ -691,6 +734,15 @@ public enum PlatformErrorMessages {
 	/** The rpr ugs packet store not accessible. */
 	RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "001",
 			"The Packet store set by the System is not accessible"),
+	RPR_UGS_JSON__PARSER_ERROR(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "002",
+			"Error while parsing Json"),
+	RPR_UGS_API_RESOURCE_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "003",
+			"Not able to access the API resource"),
+	RPR_UGS_IO_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "004",
+			"IO exception"),
+	RPR_UGS_VID_EXCEPTION(PlatformConstants.RPR_UIN_GENERATOR_STAGE + "005",
+			"VID status is not active"),
+
 	/** The rpr pgs file not present. */
 	RPR_PGS_FILE_NOT_PRESENT(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "001",
 			"The Packet store set by the System is not accessible"),
@@ -737,37 +789,37 @@ public enum PlatformErrorMessages {
 	RPR_PGS_DATA_VALIDATION_FAILED(PlatformConstants.RPR_PACKET_GENERATOR_MODULE + "012",
 			"Input Data Validation Failed"),
 
-	/**  invalid token present in header. */
+	/** invalid token present in header. */
 	RPR_AUT_INVALID_TOKEN(PlatformConstants.RPR_AUTHENTICATION + "01", "Invalid Token Present"),
 
-	/**  Access denied for the token present. */
+	/** Access denied for the token present. */
 	RPR_AUT_ACCESS_DENIED(PlatformConstants.RPR_AUTHENTICATION + "02", "Access Denied For Role - %s"),
 
-	/**  Reprocessor Stage Failed. */
+	/** Reprocessor Stage Failed. */
 	REPROCESSOR_STAGE_FAILED("", "Reprocessor Stage Failed"),
 
 	/** The external stage failed. */
 	EXTERNAL_STAGE_FAILED("", "External Stage Failed"),
 
-	/**  internal error for unknown reason. */
+	/** internal error for unknown reason. */
 	INTERNAL_ERROR_UNKNOWN(PlatformConstants.ABIS + "01", "internal error for reason - %s"),
 
-	/**  request aborted. */
+	/** request aborted. */
 	ABORTED(PlatformConstants.ABIS + "02", "request aborted"),
 
-	/**  Unexpected error - Unable to access biometric data. */
+	/** Unexpected error - Unable to access biometric data. */
 	UNEXPECTED_ERROR(PlatformConstants.ABIS + "03", "Unexpected error - Unable to access biometric data for - %s"),
 
-	/**  Unable to serve the request. */
+	/** Unable to serve the request. */
 	UNABLE_TO_SERVE_REQUEST(PlatformConstants.ABIS + "04", "Unable to serve the request"),
 
-	/**  Invalid request. */
+	/** Invalid request. */
 	INVALID_REQUEST(PlatformConstants.ABIS + "05", "Invalid request / Missing mandatory fields - %S"),
 
-	/**  Unauthorized Access. */
+	/** Unauthorized Access. */
 	UNAUTHORIZED_ACCESS(PlatformConstants.ABIS + "06", "Unauthorized Access"),
 
-	/**  Unable to fetch biometric details. */
+	/** Unable to fetch biometric details. */
 	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS + "07", "Unable to fetch biometric details"),
 
 	/** The missing mandatory fields. */

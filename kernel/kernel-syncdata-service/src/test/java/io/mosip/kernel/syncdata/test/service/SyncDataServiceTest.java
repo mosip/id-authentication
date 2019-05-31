@@ -93,7 +93,7 @@ public class SyncDataServiceTest {
 	@Value("${mosip.kernel.syncdata.auth-manager-roles}")
 	private String authAllRolesUri;
 
-	@Value("${mosip.kernel.syncdata.public-key-url}")
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String publicKeyUrl;
 
 	private String configServerUri = null;

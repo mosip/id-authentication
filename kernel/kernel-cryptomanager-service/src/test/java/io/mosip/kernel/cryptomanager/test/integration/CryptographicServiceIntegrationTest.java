@@ -44,10 +44,8 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.cryptomanager.dto.CryptoEncryptRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
 import io.mosip.kernel.cryptomanager.dto.CryptomanagerResponseDto;
-import io.mosip.kernel.cryptomanager.dto.KeyManagerEncryptResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyResponseDto;
 import io.mosip.kernel.cryptomanager.test.CryptoManagerTestBootApplication;
@@ -176,31 +174,6 @@ public class CryptographicServiceIntegrationTest {
 				objectMapper.writeValueAsString(responseWrapper.getResponse()), CryptomanagerResponseDto.class);
 
 		assertThat(cryptomanagerResponseDto.getData(), isA(String.class));
-	}
-
-	@WithUserDetails("reg-processor")
-	@Test
-	public void testEncryptPrivateKey() throws Exception {
-		KeyManagerEncryptResponseDto keyManagerEncryptResponseDto = new KeyManagerEncryptResponseDto();
-		keyManagerEncryptResponseDto.setEncryptedData("ABRTE43M-wer3-53u");
-		ResponseWrapper<KeyManagerEncryptResponseDto> response = new ResponseWrapper<>();
-		response.setResponse(keyManagerEncryptResponseDto);
-		server.expect(requestTo(encryptUrl))
-				.andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
-		RequestWrapper<CryptoEncryptRequestDto> reqWrapper = new RequestWrapper<>();
-		CryptoEncryptRequestDto cryptoEncryptRequestDto = new CryptoEncryptRequestDto();
-		cryptoEncryptRequestDto.setApplicationId("artvvfd");
-		cryptoEncryptRequestDto.setData("AbRCee-0eexcvsRe");
-		cryptoEncryptRequestDto.setReferenceId("REG");
-		cryptoEncryptRequestDto.setTimeStamp("2018-12-06T12:07:44.403Z");
-		reqWrapper.setId(ID);
-		reqWrapper.setVersion(VERSION);
-		reqWrapper.setRequesttime(DateUtils.parseToLocalDateTime("2018-12-06T12:07:44.403Z"));
-		reqWrapper.setRequest(cryptoEncryptRequestDto);
-		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		mockMvc.perform(post("/private/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isOk()).andReturn();
-
 	}
 
 }

@@ -1,0 +1,1 @@
+{"transactionID":"0178274271","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID","actionMessage":"Please retry with correct VID"}],"responseTime":"2019-05-30T15:10:00.760+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

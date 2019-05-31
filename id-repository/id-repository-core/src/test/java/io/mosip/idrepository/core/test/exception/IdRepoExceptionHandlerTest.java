@@ -46,7 +46,7 @@ import io.mosip.kernel.core.exception.ServiceError;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @ActiveProfiles("test")
-@ConfigurationProperties("mosip.idrepo")
+@ConfigurationProperties("mosip.idrepo.identity")
 public class IdRepoExceptionHandlerTest {
 
 	private Map<String, String> id;
@@ -227,6 +227,21 @@ public class IdRepoExceptionHandlerTest {
 		response.getErrors().forEach(e -> {
 			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.AUTHORIZATION_FAILED.getErrorMessage(), e.getMessage());
+		});
+	}
+	
+	@Test
+	public void testHandleIdAppExceptionWithOperation() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		IdRepoAppException ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST,
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST),"regenerate");
+		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
+				ex, request);
+		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
+		List<ServiceError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
 		});
 	}
 }

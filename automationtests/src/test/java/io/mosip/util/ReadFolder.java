@@ -41,6 +41,7 @@ public class ReadFolder {
 			reutr[i] = new Object[] { folderName, i, objec.get(i) };
 			i++;
 		}
+		fr.close();
 		return reutr;
 	}
 }

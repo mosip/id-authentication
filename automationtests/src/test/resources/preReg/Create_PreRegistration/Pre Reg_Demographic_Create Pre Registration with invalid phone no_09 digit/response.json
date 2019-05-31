@@ -1,0 +1,10 @@
+{
+     "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "errors": [{
+        "errorCode": "PRG_PAM_APP_014",
+        "message": "phone failed for the regex ^([6-9]{1})([0-9]{9})$"
+    }],
+    "responsetime": "2019-04-17T05:05:44.027Z",
+    "response": null
+}

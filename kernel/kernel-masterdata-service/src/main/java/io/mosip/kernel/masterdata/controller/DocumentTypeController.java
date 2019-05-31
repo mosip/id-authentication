@@ -75,8 +75,8 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
 	public ResponseWrapper<CodeAndLanguageCodeID> createDocumentType(
@@ -88,12 +88,13 @@ public class DocumentTypeController {
 	}
 
 	/**
-	 * Api to update document type.
+	 * Api to update document type. .
 	 * 
 	 * @param types
 	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")

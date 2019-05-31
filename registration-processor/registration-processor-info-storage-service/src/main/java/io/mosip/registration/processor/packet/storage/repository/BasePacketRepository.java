@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.packet.storage.entity.AbisRequestEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseDetEntity;
 import io.mosip.registration.processor.packet.storage.entity.AbisResponseEntity;
@@ -118,7 +117,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Transactional
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
-
 
 	/**
 	 * Gets the reference id by rid.
@@ -277,6 +275,13 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId =:abisRespId")
 	public List<AbisResponseDetEntity> getAbisResponseDetails(@Param("abisRespId") String responseId);
 
+	/**
+	 * Gets the abis response details list.
+	 *
+	 * @param responseId
+	 *            the response id
+	 * @return the abis response details list
+	 */
 	@Query("SELECT abisRespDet FROM AbisResponseDetEntity abisRespDet WHERE abisRespDet.id.abisRespId in :abisRespIds")
 	public List<AbisResponseDetEntity> getAbisResponseDetailsList(@Param("abisRespIds") List<String> responseId);
 
@@ -355,4 +360,19 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisReq FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:insert")
 	public List<AbisRequestEntity> getAbisRequestsByBioRefId(@Param("bioRefId") String bioRefId,
 			@Param("insert") String insert);
+
+	/**
+	 * Gets the abis processed requests app code by bio ref id.
+	 *
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param requestType
+	 *            the request type
+	 * @param statusCode
+	 *            the status code
+	 * @return the abis processed requests app code by bio ref id
+	 */
+	@Query("SELECT abisReq.abisAppCode FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:requestType and abisReq.statusCode =:statusCode")
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(@Param("bioRefId") String bioRefId,
+			@Param("requestType") String requestType, @Param("statusCode") String statusCode);
 }

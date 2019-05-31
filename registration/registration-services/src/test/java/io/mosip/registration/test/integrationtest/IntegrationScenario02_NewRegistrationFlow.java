@@ -31,9 +31,10 @@ import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.login.LoginService;
@@ -62,7 +63,7 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 	//////////////////////////////////////////login
 	public void login() {
 		// Get user Details
-		UserDetail userDetail = loginService.getUserDetail("mosip");
+		UserDTO userDetail = loginService.getUserDetail("mosip");
 		
 		
 				// Password check for login Check if Password is same
@@ -106,8 +107,8 @@ public class IntegrationScenario02_NewRegistrationFlow extends BaseIntegrationTe
 
 		RegistrationDTO obj = mapper.readValue(
 				new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
-		MoroccoIdentity identity = mapper.readValue(
-				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+		IndividualIdentity identity = mapper.readValue(
+				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), IndividualIdentity.class);
 
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));

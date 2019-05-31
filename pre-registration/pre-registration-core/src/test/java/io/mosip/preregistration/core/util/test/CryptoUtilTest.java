@@ -60,7 +60,7 @@ public class CryptoUtilTest {
 	}
 	
 
-	@Test(expected=EncryptionFailedException.class)
+	@Test(expected=HttpClientErrorException.class)
 	public void encryptFailedExceptionTest() {
 		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
@@ -85,7 +85,7 @@ public class CryptoUtilTest {
 
 	}
 
-	@Test(expected=DecryptionFailedException.class)
+	@Test(expected=HttpClientErrorException.class)
 	public void decryptFailedExceptionTest() {
 		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),

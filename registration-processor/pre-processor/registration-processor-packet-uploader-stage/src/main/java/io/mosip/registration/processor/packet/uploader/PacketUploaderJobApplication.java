@@ -17,11 +17,11 @@ public class PacketUploaderJobApplication {
 	 */
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
-		configApplicationContext.scan("io.mosip.registration.processor.packet.uploader.config",
+		configApplicationContext.scan("io.mosip.registration.processor.core.config",
+				"io.mosip.registration.processor.packet.uploader.config",
 				"io.mosip.registration.processor.packet.manager.config",
 				"io.mosip.registration.processor.status.config", "io.mosip.registration.processor.rest.client.config",
-				"io.mosip.registration.processor.core.kernel.beans",
-				"io.mosip.registration.processor.core.config");
+				"io.mosip.registration.processor.core.kernel.beans");
 		configApplicationContext.refresh();
 
 		PacketUploaderStage packetUploaderStage = configApplicationContext.getBean(PacketUploaderStage.class);

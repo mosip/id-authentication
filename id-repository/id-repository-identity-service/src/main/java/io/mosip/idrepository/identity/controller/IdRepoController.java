@@ -140,7 +140,7 @@ public class IdRepoController {
 			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
-			validator.validateId(request.getId(), errors, CREATE);
+			validator.validateId(request.getId(),CREATE);
 			validator.validateUin(uin,CREATE);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
@@ -221,7 +221,7 @@ public class IdRepoController {
 			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
-			validator.validateId(request.getId(), errors, UPDATE);
+			validator.validateId(request.getId(),UPDATE);
 			validator.validateUin(uin,UPDATE);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {

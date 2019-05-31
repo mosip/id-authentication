@@ -448,9 +448,9 @@
       "title_success": "Succès",
       "title_error": "Erreur",
       "cancelAppointment": {
-        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera supprimée. Veuillez confirmer.",
-        "msg_deleted": "Rendez-vous pour L'application sélectionnée a été supprimée avec succès",
-        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être supprimée"
+        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera annulée. Veuillez confirmer.",
+        "msg_deleted": "Le rendez-vous pour l'application sélectionnée a été annulé avec succès.",
+        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être annulée"
       },
       "deletePreregistration": {
         "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",
@@ -563,6 +563,13 @@
   },
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
-    "button_ok": "OK"
-  }
+    "button_ok": "OK",
+    "invalidPin": "Le code PIN entré est invalide"
+  },
+  "residentTypesMapping": {
+    "NFR": "Nationale",
+    "FR": "Étranger"
+  },
+  "sameAs": "Document téléchargé avec Identique à",
+  "DAYS": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 }

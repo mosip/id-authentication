@@ -5,10 +5,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 
 /**
@@ -37,11 +36,11 @@ public class IdObjectCompositeValidator implements IdObjectValidator {
 	 * @see io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator#validateIdObject(java.lang.Object)
 	 */
 	@Override
-	public boolean validateIdObject(Object identityObject) throws IdObjectValidationProcessingException,
-			IdObjectIOException, IdObjectSchemaIOException, FileIOException {
-		schemaValidator.validateIdObject(identityObject);
-		patternValidator.validateIdObject(identityObject);
-		masterDataValidator.validateIdObject(identityObject);
+	public boolean validateIdObject(Object identityObject, IdObjectValidatorSupportedOperations operation) throws IdObjectValidationFailedException,
+			IdObjectIOException {
+		schemaValidator.validateIdObject(identityObject, operation);
+		patternValidator.validateIdObject(identityObject, operation);
+		masterDataValidator.validateIdObject(identityObject, operation);
 		return true;
 	}
 

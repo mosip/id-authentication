@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<artifactId>authentication-partnerdemo-service</artifactId>
@@ -68,11 +68,6 @@
 			<artifactId>jersey-common</artifactId>
 			<version>2.22.2</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-pdfgenerator-itext</artifactId>
-			<version>${kernel.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

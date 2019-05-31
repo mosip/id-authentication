@@ -49,9 +49,11 @@
                      <children>
                         <TableView fx:id="table" GridPane.rowIndex="1">
                            <columns>
-                              <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*60/100}" text="%registrationid" styleClass="tableId" />
+                              <TableColumn fx:id="slno" editable="false" prefWidth="${tableContainer.width*11/100}" resizable="false" styleClass="tableId" text="%slno" />
+                              <TableColumn fx:id="id" editable="false" prefWidth="${tableContainer.width*39/100}" resizable="false" styleClass="tableId" text="%registrationid" />
+                              <TableColumn fx:id="date" editable="false" prefWidth="${tableContainer.width*26/100}" resizable="false" styleClass="tableId" text="%eodDate" />
                               <TableColumn fx:id="acknowledgementFormPath" editable="false" text="%registrtionid" visible="false" />
-                              <TableColumn fx:id="statusComment" editable="false" prefWidth="${tableContainer.width*40/100}" styleClass="pendingApprovalStatus" text="%status" />
+                              <TableColumn fx:id="statusComment" editable="false" prefWidth="${tableContainer.width*24/100}" resizable="false" styleClass="pendingApprovalStatus" text="%status" />
                            </columns>
                         </TableView>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">

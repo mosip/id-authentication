@@ -166,7 +166,7 @@ public enum ErrorMessages {
 	RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID("Record not found for date range and reg center id"),
 
 	/*
-	 * ErrorMessage for PRG_TRL_APP_031
+	 * ErrorMessage for PRG_BOOK_RCI_031
 	 */
 	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time"),
 	

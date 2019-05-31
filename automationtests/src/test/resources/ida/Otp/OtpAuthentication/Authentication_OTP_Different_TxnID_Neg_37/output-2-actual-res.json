@@ -1,1 +1,0 @@
-{"transactionID":"0277420272","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-OTA-006","errorMessage":"Input transactionID does not match transactionID of OTP Request"}],"responseTime":"2019-05-22T19:12:28.447+05:30","response":{"authStatus":false,"staticToken":"357315376927939933868164912024498420"}}

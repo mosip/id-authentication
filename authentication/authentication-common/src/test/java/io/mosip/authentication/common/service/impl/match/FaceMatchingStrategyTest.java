@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.provider.bio.FaceProvider;
-import io.mosip.authentication.core.spi.provider.bio.IrisProvider;
 
 public class FaceMatchingStrategyTest {
 
@@ -23,7 +23,7 @@ public class FaceMatchingStrategyTest {
 	public void TestUnknownError() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FaceMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		matchProperties.put(FaceProvider.class.getSimpleName(), "test");
+		matchProperties.put(IdaIdMapping.FACE.getIdname(), "test");
 		matchFunction.match("name", "name1", matchProperties);
 	}
 
@@ -68,12 +68,13 @@ public class FaceMatchingStrategyTest {
 		entityValues.put("face", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
-		matchProperties.put(FaceProvider.class.getSimpleName(),
-				(BiFunction<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 100.00);
+		matchProperties.put(IdaIdMapping.FACE.getIdname(),
+				(BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 100.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(100, value);
 	}
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInValidMatchingStrategy() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FaceMatchingStrategy.PARTIAL.getMatchFunction();
@@ -83,8 +84,8 @@ public class FaceMatchingStrategyTest {
 		entityValues.put("face", "test");
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
-		matchProperties.put(IrisProvider.class.getSimpleName(),
-				(BiFunction<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
+		matchProperties.put(IdaIdMapping.FACE.getIdname(),
+				(BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) (o1, o2) -> 0.00);
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
 	}

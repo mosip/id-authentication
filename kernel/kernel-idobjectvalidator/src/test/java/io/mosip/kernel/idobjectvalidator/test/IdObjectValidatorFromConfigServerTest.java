@@ -1,12 +1,15 @@
 package io.mosip.kernel.idobjectvalidator.test;
 
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
+import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.SCHEMA_IO_EXCEPTION;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.APPLICATION_ID;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.FIELD_LIST;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,21 +18,17 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jackson.JsonLoader;
 
-import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.HttpRequestException;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
-import io.mosip.kernel.core.idobjectvalidator.exception.NullJsonNodeException;
-import io.mosip.kernel.core.idobjectvalidator.exception.UnidentifiedJsonException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 
 /**
@@ -64,51 +63,44 @@ public class IdObjectValidatorFromConfigServerTest {
 		ReflectionTestUtils.setField(idValidator, "propertySource", "CONFIG_SERVER");
 		ReflectionTestUtils.setField(idValidator, "configServerFileStorageURL", "http://1.1.1.1:51000/");
 		ReflectionTestUtils.setField(idValidator, "schemaName", "schemaName");
+		MockEnvironment env = new MockEnvironment();
+		env.setProperty(APPLICATION_ID.getValue(), "reg-client");
+		env.setProperty(String.format(FIELD_LIST.getValue(), "reg-client", "new-registration"), "firstName");
+		ReflectionTestUtils.setField(idValidator, "env", env);
+		ReflectionTestUtils.setField(idValidator, "mapper", new ObjectMapper());
 	}
 
 	@Test
-	public void testWhenValidJsonProvided() throws HttpRequestException, IdObjectValidationProcessingException, IOException,
-			IdObjectIOException, IdObjectSchemaIOException, FileIOException {
+	public void testWhenValidJsonProvided() throws IdObjectValidationFailedException, IOException, IdObjectIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		JsonLoader.fromString("");
-		assertEquals(true, idValidator.validateIdObject(jsonSchemaNode));
+		assertEquals(true,
+				idValidator.validateIdObject(jsonSchemaNode, IdObjectValidatorSupportedOperations.NEW_REGISTRATION));
 	}
 
-	@Test(expected = NullJsonNodeException.class)
-	@Ignore
-	public void testForEmptyJsonString() throws IdObjectValidationProcessingException, HttpRequestException,
-			IdObjectIOException, IdObjectSchemaIOException, FileIOException {
-		String jsonString = "";
-		idValidator.validateIdObject(new ObjectMapper().createObjectNode());
+	@Test
+	public void testForEmptyJsonString() throws IdObjectValidationFailedException, IdObjectIOException {
+		try {
+			idValidator.validateIdObject(new ObjectMapper().createObjectNode(),
+					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+		} catch (IdObjectValidationFailedException e) {
+			e.getErrorCode().equals(ID_OBJECT_VALIDATION_FAILED.getErrorCode());
+			e.getErrorText().equals(ID_OBJECT_VALIDATION_FAILED.getMessage());
+		}
 
 	}
 
-	@Test(expected = IdObjectIOException.class)
-	@Ignore
-	public void testForinvalidJsonString() throws HttpRequestException, IdObjectValidationProcessingException,
-			IdObjectIOException, IdObjectSchemaIOException, FileIOException {
-		ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("", new byte[] { 0 });
-		idValidator.validateIdObject(objectNode);
-	}
-
-	@Test(expected = UnidentifiedJsonException.class)
-	public void testForUnidentifiedJson() throws HttpRequestException, IdObjectValidationProcessingException,
-			IdObjectIOException, IOException, IdObjectSchemaIOException, FileIOException {
-		JsonLoader.fromString("");
-		ObjectNode objectNode = new ObjectMapper().createObjectNode();
-		objectNode.put("", new byte[] { 0 });
-		idValidator.validateIdObject(objectNode);
-	}
-
-	@Test(expected = IdObjectSchemaIOException.class)
-	public void testForNullJsonSchemaSyntax() throws HttpRequestException, IdObjectValidationProcessingException,
-			IdObjectIOException, IdObjectSchemaIOException, FileIOException, IOException {
-		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
-		String jsonString = jsonSchemaNode.toString();
-		JsonLoader.fromString("");
-		PowerMockito.when(JsonLoader.fromURL(Mockito.any())).thenThrow(new FileNotFoundException(""));
-		idValidator.validateIdObject(new ObjectMapper().createObjectNode());
+	@Test
+	public void testForNullJsonSchemaSyntax()
+			throws IdObjectValidationFailedException, IdObjectIOException, IOException {
+		try {
+			PowerMockito.when(JsonLoader.fromURL(Mockito.any())).thenThrow(new FileNotFoundException(""));
+			idValidator.validateIdObject(new ObjectMapper().createObjectNode(),
+					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
+		} catch (IdObjectIOException e) {
+			e.getErrorCode().equals(SCHEMA_IO_EXCEPTION.getErrorCode());
+			e.getErrorText().equals(SCHEMA_IO_EXCEPTION.getMessage());
+		}
 	}
 
 }

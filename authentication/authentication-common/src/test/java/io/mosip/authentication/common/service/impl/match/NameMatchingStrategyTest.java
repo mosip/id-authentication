@@ -10,12 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import io.mosip.authentication.common.service.impl.match.NameMatchingStrategy;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
@@ -112,6 +110,9 @@ public class NameMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
+		int value2 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value2);
+
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}
@@ -175,6 +176,9 @@ public class NameMatchingStrategyTest {
 
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
+
+		int value1 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value1);
 
 	}
 
@@ -243,6 +247,9 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
+
+		int value1 = matchFunction.match("2", 2, matchProperties);
+		assertEquals(0, value1);
 
 	}
 

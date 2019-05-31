@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.apache.commons.httpclient.util.DateParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import javafx.scene.control.TextField;
@@ -148,7 +146,7 @@ public class DateValidation extends BaseController {
 						Integer.parseInt(date.getText()));
 				LocalDate localDate = LocalDate.now();
 
-				if (localDate.compareTo(givenDate) != -1) {
+				if (localDate.compareTo(givenDate) >= 0) {
 
 					int age = Period.between(givenDate, localDate).getYears();
 					ageField.setText(age + "");

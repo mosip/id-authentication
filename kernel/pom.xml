@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.4</version>
 	</parent>
 
 
@@ -87,6 +87,7 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons-io>2.6</commons-io>
 		<commons-codec>1.11</commons-codec>
+		<commons-collections4.version>4.3</commons-collections4.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
@@ -159,6 +160,8 @@
 		<module>kernel-transliteration-icu4j</module>
 		<module>kernel-applicanttype-api</module>
 		<module>kernel-crypto-signature</module>
+		<module>kernel-idobjectvalidator</module>
+		<module>kernel-bioapi-provider</module>
 
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
@@ -166,8 +169,6 @@
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
-		<module>kernel-keymanager-service</module>
-		<module>kernel-cryptomanager-service</module>
 		<module>kernel-syncdata-service</module>
 		<module>kernel-auth-service</module>
 		<module>kernel-licensekeymanager-service</module>
@@ -175,10 +176,11 @@
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-syncjob-service</module>
-		<module>kernel-signature-service</module>
 		<module>kernel-config-server</module>
-		<module>kernel-idobjectvalidator</module>
-		<module>kernel-bioapi-provider</module>
+		<module>kernel-signature-service</module>
+		<module>kernel-cryptomanager-service</module>
+		<module>kernel-keymanager-service</module>
+
 	</modules>
 
 	<dependencies>
@@ -262,5 +264,3 @@
 		</plugins>
 	</build>
 </project>
-
-

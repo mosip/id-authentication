@@ -749,8 +749,12 @@ public class DocumentScanController extends BaseController {
 							((ImageView) event.getSource()).getParent().getParent().getId())),
 					Components.REG_DOCUMENTS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+			
+			HBox hbox = (HBox) vboxElement.getParent();
+			ComboBox<String> comboBox=  (ComboBox) hbox.getChildren().get(1);
+			comboBox.setPromptText(comboBox.getPromptText());
 
-			((ImageView) ((VBox) (((HBox) vboxElement.getParent()).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
+			((ImageView) ((VBox) ((hbox).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
 
 			initializePreviewSection();		

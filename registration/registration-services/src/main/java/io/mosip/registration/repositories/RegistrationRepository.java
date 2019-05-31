@@ -42,7 +42,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the status code
 	 * @return the list of {@link Registration}
 	 */
-	List<Registration> findByclientStatusCode(String statusCode);
+	List<Registration> findByclientStatusCodeOrderByCrDtime(String statusCode);
 
 	/**
 	 * This method fetches the registration packets based on given client status

@@ -59,9 +59,7 @@ public class ResponseRequestMapper {
 		}
 		return null;
 	}
-	
-	public static JSONArray mapArrayRequest(String testSuite, JSONObject object)
-			throws FileNotFoundException, IOException, ParseException {
+	public static File getPacket(String testSuite,JSONObject object) {
 
 		String configPath = "src/test/resources/" + testSuite + "/";
 
@@ -69,36 +67,12 @@ public class ResponseRequestMapper {
 		File[] listOfFolders = folder.listFiles();
 		for (int j = 0; j < listOfFolders.length; j++) {
 			if (listOfFolders[j].isDirectory()) {
-				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
+				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString()) && object.get("testCaseName").toString().contains("smoke")) {
 					logger.info("Testcase name is" + listOfFolders[j].getName());
 					File[] listOfFiles = listOfFolders[j].listFiles();
 					for (File f : listOfFiles) {
-						if (f.getName().toLowerCase().contains("request")) {
-							JSONArray objectData = (JSONArray) new JSONParser().parse(new FileReader(f.getPath()));
-							return objectData;
-						}
-				 	}
-				}
-			}
-		}
-		return null; 
-	}
-	
-	public static JSONArray mapArrayResponse(String testSuite,JSONObject object) throws FileNotFoundException, IOException, ParseException {
-
-		String configPath = "src/test/resources/" + testSuite + "/";
-
-		File folder = new File(configPath);
-		File[] listOfFolders = folder.listFiles();
-		for (int j = 0; j < listOfFolders.length; j++) {
-			if (listOfFolders[j].isDirectory()) {
-				if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
-					logger.info("Testcase name is" + listOfFolders[j].getName());
-					File[] listOfFiles = listOfFolders[j].listFiles();
-					for (File f : listOfFiles) {
-						if (f.getName().toLowerCase().contains("response")) {
-							JSONArray objectData = (JSONArray) new JSONParser().parse(new FileReader(f.getPath()));
-							return objectData;
+						if(f.getName().contains(".zip")) {
+							return f;
 						}
 					}
 				}

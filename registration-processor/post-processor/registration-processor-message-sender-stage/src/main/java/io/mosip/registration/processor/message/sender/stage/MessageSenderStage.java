@@ -127,6 +127,9 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	@Value("${mosip.registration.processor.notification.types}")
 	private String notificationTypes;
+	
+	@Value("${registration.processor.updated.subject}")
+	private String uinUpdatedSubject;
 
 	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
@@ -386,7 +389,12 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				emailTemplateCode = NotificationTemplateCode.RPR_UIN_DEAC_EMAIL;
 				idType = IdType.UIN;
 				subject = uinDeactivateSubject;
-			} 
+			} else if(regType.equalsIgnoreCase(RegistrationType.UPDATE.name())) {
+				smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
+				emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
+				idType = IdType.UIN;
+				subject = uinUpdatedSubject;
+			}
 			break;
 		case DUPLICATE_UIN:
 			smsTemplateCode = NotificationTemplateCode.RPR_DUP_UIN_SMS;

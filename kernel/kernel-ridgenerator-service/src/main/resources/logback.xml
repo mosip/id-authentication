@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>logs/kernel-otpmanager-service.log</file>
+		<file>logs/kernel-ridgenerator-service.log</file>
 		<append>true</append>
 		<immediateFlush>true</immediateFlush>
 		<encoder>

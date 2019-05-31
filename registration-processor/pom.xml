@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.0</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -107,23 +107,25 @@
 		<filesystem.adapter.ceph.version>${version}</filesystem.adapter.ceph.version>
 		<packet.manager.version>${version}</packet.manager.version>
 		<registration.processor.rest.client.version>${version}</registration.processor.rest.client.version>
+		<registration.processor.abis.handler.stage.version>${version}</registration.processor.abis.handler.stage.version>
 		<packet.info.storage.service.version>${version}</packet.info.storage.service.version>
 		<packet.bio.dedupe.service.impl.version>${version}</packet.bio.dedupe.service.impl.version>
 		<registration.processor.message.sender.version>${version}</registration.processor.message.sender.version>
 		<packet.bio.dedupe.api.version>${version}</packet.bio.dedupe.api.version>
 		<registration.processor.print.service.version>${version}</registration.processor.print.service.version>
 		<registration.processor.print.service.impl.version>${version}</registration.processor.print.service.impl.version>
+		
 		<!-- Kernel -->
-		<kernel.core.version>0.11.2</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.11.2</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.11.2</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.11.2</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.11.2</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.11.2</kernel.idvalidator.version>
-		<kernel.clamav.version>0.11.2</kernel.clamav.version>
-		<kernel.idgenerator.rid.version>0.11.2</kernel.idgenerator.rid.version>
+		<kernel.core.version>${version}</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>${version}</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>${version}</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>${version}</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>${version}</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>${version}</kernel.idvalidator.version>
+		<kernel.clamav.version>${version}</kernel.clamav.version>
+		<kernel.idgenerator.rid.version>${version}</kernel.idgenerator.rid.version>
 
-		<sonar.coverage.exclusions>**/dto/**,
+			<sonar.coverage.exclusions>**/dto/**,
 			**/exception/*Exception.java,
 			**/config/*Config.java,
 			**/handler/*ExceptionHandler.java,
