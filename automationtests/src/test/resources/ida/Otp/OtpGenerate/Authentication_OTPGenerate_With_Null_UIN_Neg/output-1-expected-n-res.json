@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - individualId"}],"responseTime":"$TIMESTAMP$","transactionID":"5538270243","version":"1.0","response":null}
+=======
+{"errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - individualId"}],"responseTime":"$TIMESTAMP$","transactionID":"0663646782","version":"1.0","response":null}
+>>>>>>> 0.12.0

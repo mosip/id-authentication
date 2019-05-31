@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"identityRequest":{"demographics":{"gender":[{"language":"ara","value":""},{"language":"fra","value":"Mâle"}]},"timestamp":"2019-05-28T09:07:01.001+05:30"}}
+=======
+{"identityRequest":{"demographics":{"gender":[{"language":"ara","value":""},{"language":"fra","value":"Mâle"}]},"timestamp":"2019-05-30T15:05:03.003+05:30"}}
+>>>>>>> 0.12.0

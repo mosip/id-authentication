@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"547841412742","id":"mosip.identity.auth"}
+=======
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"167503572256","id":"mosip.identity.auth"}
+>>>>>>> 0.12.0

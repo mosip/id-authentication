@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"id":"mosip.identity.otp","version":"1.0","transactionID":"4211026855","responseTime":"$TIMESTAMP$","response":{"maskedMobile":"$REGEXP:XX.*XX.*$","maskedEmail":"$REGEXP:XX.*XX.*$"}}
+=======
+{"id":"mosip.identity.otp","version":"1.0","transactionID":"2502173624","responseTime":"$TIMESTAMP$","response":{"maskedMobile":"$REGEXP:XX.*XX.*$","maskedEmail":"$REGEXP:XX.*XX.*$"}}
+>>>>>>> 0.12.0

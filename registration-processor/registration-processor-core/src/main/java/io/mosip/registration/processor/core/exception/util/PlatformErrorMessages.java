@@ -248,6 +248,18 @@ public enum PlatformErrorMessages {
 	/** The rpr qcr invalid registration id. */
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004", "Registration Id is null"),
 
+	/** The rpr qcr file name missing. */
+	RPR_QCR_FILENAME_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "006", 
+			"Individual Biometric Filename is not present in ID Json"),
+
+	/** The rpr qcr bio file missing. */
+	RPR_QCR_BIO_FILE_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Individual Biometric File is not present in packet"),
+
+	/** The rpr qcr biometric exception. */
+	RPR_QCR_BIOMETRIC_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Biometric Exception from IDA"),
+
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 
@@ -314,6 +326,10 @@ public enum PlatformErrorMessages {
 	/** The osi validation packe api resouce access failed. */
 	OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "006",
 			"Not able to access the API resource"),
+
+	OSI_VALIDATION_BIO_TYPE_EXCEPTION(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "007",
+			"BioType exception while fetcing data from cbeff file from kernel"),
+
 
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message

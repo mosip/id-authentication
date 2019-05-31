@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"0336065724","id":"mosip.identity.auth"}
+=======
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"3447717810","id":"mosip.identity.auth"}
+>>>>>>> 0.12.0

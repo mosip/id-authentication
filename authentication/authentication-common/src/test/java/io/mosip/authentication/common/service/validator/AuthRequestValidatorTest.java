@@ -44,6 +44,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -66,6 +67,9 @@ public class AuthRequestValidatorTest {
 
 	@Mock
 	private PinValidatorImpl pinValidator;
+
+	@Mock
+	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Mock
 	Errors error;
@@ -97,7 +101,6 @@ public class AuthRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "initialize");
 	}
 
 	@Test
@@ -1111,42 +1114,12 @@ public class AuthRequestValidatorTest {
 	}
 
 	@Test
-	public void testValidateEmail() {
-		AuthRequestDTO authRequestDTO = getAuthRequestDto();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-
-		RequestDTO request = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-		identity.setEmailId("sample@sample.com");
-		request.setDemographics(identity);
-		authRequestDTO.setRequest(request);
-
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateEmail", authRequestDTO, errors);
-	}
-
-	@Test
 	public void TestTimeexceeds() {
 		AuthRequestDTO authRequestDTO = getAuthRequestDto();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut",
 				"2019-04-24T09:41:57.086+05:30", errors);
 		assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void testValidatePhone() {
-		AuthRequestDTO authRequestDTO = getAuthRequestDto();
-		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-
-		RequestDTO request = new RequestDTO();
-		IdentityDTO identity = new IdentityDTO();
-
-		identity.setPhoneNumber("76598749689");
-
-		request.setDemographics(identity);
-		authRequestDTO.setRequest(request);
-
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "validatePhone", authRequestDTO, errors);
 	}
 
 	// ----------- Supporting method ---------------

@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"responseTime":"$TIMESTAMP$","transactionID":"1554631504","version":"1.0","response":{"authStatus":true,"staticToken":"268136900528415268556238967072619184"}}
+=======
+{"responseTime":"$TIMESTAMP$","transactionID":"0170050728","version":"1.0","response":{"authStatus":true,"staticToken":"268136900528415268556238967072619184"}}
+>>>>>>> 0.12.0

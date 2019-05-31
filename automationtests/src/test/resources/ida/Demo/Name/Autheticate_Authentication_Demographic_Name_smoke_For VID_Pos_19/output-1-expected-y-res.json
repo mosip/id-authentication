@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"responseTime":"$TIMESTAMP$","transactionID":"4656513822","version":"1.0","id":"mosip.identity.auth","response":{"authStatus":true}}
+=======
+{"responseTime":"$TIMESTAMP$","transactionID":"2225225645","version":"1.0","id":"mosip.identity.auth","response":{"authStatus":true}}
+>>>>>>> 0.12.0

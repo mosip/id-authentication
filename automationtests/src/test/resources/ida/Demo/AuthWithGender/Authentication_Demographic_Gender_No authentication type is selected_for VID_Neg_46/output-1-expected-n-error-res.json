@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"6245506231","id":"mosip.identity.auth"}
+=======
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-008","errorMessage":"No authentication type selected"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"1117558724","id":"mosip.identity.auth"}
+>>>>>>> 0.12.0

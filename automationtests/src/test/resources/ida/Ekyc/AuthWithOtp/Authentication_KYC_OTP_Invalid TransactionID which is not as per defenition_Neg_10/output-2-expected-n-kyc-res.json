@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"transactionID":"018706020238","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID","actionMessage":"$IGNORE$"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+=======
+{"transactionID":"613151371680","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - transactionID","actionMessage":"$IGNORE$"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+>>>>>>> 0.12.0

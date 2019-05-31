@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"id":"mosip.identity.otp","version":"1.0","transactionID":"2564713417","responseTime":"2019-05-28T09:17:01.906+05:30","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN","actionMessage":"Please retry with the correct UIN"}],"response":null}
+=======
+{"id":"mosip.identity.otp","version":"1.0","transactionID":"4122438847","responseTime":"2019-05-30T13:10:36.840+05:30","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN","actionMessage":"Please retry with the correct UIN"}],"response":null}
+>>>>>>> 0.12.0

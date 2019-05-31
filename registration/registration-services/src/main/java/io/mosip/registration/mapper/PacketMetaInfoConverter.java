@@ -72,24 +72,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					getBIRUUID(RegistrationConstants.INDIVIDUAL, RegistrationConstants.VALIDATION_TYPE_FACE)));
 
 			// Set Exception Photograph
-			boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| source.isUpdateUINChild();
-			identity.setExceptionPhotograph(buildExceptionPhotograph(
-					isIntroducerFace || (source.isUpdateUINChild()
-							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-									.equals(RegistrationConstants.ENABLE))
-											? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-													.getNumOfRetries()
-											: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
-													.getNumOfRetries(),
-					isIntroducerFace || (source.isUpdateUINChild()
-							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-									.equals(RegistrationConstants.ENABLE))
-											? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-													.getFace()
-											: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
-													.getFace(),
-					source));
+			setExceptionPhotograph(source, identity);
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
@@ -170,6 +153,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 			// Set Checksum
 			List<FieldValue> checkSums = new LinkedList<>();
+			
 			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
 			checkSumMap.forEach((key, value) -> checkSums.add(buildFieldValue(key, value)));
 			identity.setCheckSum(checkSums);
@@ -182,6 +166,27 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					runtimeException.getMessage(), runtimeException);
 		}
 		return packetMetaInfo;
+	}
+
+	private void setExceptionPhotograph(RegistrationDTO source, Identity identity) {
+		boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+				|| source.isUpdateUINChild();
+		identity.setExceptionPhotograph(buildExceptionPhotograph(
+				isIntroducerFace || (source.isUpdateUINChild()
+						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+								.equals(RegistrationConstants.ENABLE))
+										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+												.getNumOfRetries()
+										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
+												.getNumOfRetries(),
+				isIntroducerFace || (source.isUpdateUINChild()
+						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+								.equals(RegistrationConstants.ENABLE))
+										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+												.getFace()
+										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
+												.getFace(),
+				source));
 	}
 
 	private Photograph buildPhotograph(int numRetry, String photographName) {

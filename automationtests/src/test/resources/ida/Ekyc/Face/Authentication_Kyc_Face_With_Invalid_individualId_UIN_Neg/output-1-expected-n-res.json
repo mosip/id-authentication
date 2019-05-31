@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"transactionID":"3317510755","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+=======
+{"transactionID":"8530771565","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
+>>>>>>> 0.12.0

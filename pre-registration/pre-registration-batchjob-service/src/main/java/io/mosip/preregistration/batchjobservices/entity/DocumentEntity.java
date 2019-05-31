@@ -26,11 +26,8 @@ import lombok.Setter;
 /**
  * This entity class defines the database table details for Document.
  * 
- * @author Rajath KR
  * @author Kishan Rathore
- * @author Sanober Noor
- * @author Tapaswini Behera
- * @author Jagadishwari S
+ * @author Rajath KR
  * @since 1.0.0
  *
  */
@@ -40,6 +37,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "applicant_document", schema = "prereg")
+@NamedQuery(name = "DocumentEntity.findSingleDocument", query = "SELECT d FROM DocumentEntity d WHERE d.preregId= :preId AND d.docCatCode= :catCode")
 public class DocumentEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

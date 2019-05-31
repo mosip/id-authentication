@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"identityRequest":{"demographics":{"name":[{"language":"ara","value":"ست "}]},"timestamp":"2019-05-24T18:56:10.010+05:30"}}
+=======
+{"identityRequest":{"demographics":{"name":[{"language":"ara","value":"ست "}]},"timestamp":"2019-05-30T15:04:37.037+05:30"}}
+>>>>>>> 0.12.0

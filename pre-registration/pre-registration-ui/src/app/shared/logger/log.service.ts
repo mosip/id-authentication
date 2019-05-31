@@ -7,8 +7,8 @@ import { LogPublishersService } from './log.publishers.service';
   providedIn: 'root'
 })
 export class LogService {
-  level: LogLevel = LogLevel.All;
-  logWithDate: boolean = true;
+  level: LogLevel = LogLevel.Info;
+  logWithDate: boolean = false;
   publishers: LogPublisher[];
   constructor(private publishersService: LogPublishersService) {
     this.publishers = this.publishersService.publishers;
@@ -46,7 +46,7 @@ export class LogService {
       entry.extraInfo = params;
       entry.logWithDate = this.logWithDate;
       for (let logger of this.publishers) {
-        logger.log(entry).subscribe(response => console.log(response));
+        logger.log(entry).subscribe();
       }
     }
   }

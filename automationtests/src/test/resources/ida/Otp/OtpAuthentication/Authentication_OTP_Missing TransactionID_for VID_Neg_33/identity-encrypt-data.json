@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"identityRequest":{"timestamp":"2019-05-28T09:15:04.004+05:30","otp":"select otp from kernel.otp_transaction where id like '%org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'%':5","transactionID":"1222415663"}}
+=======
+{"identityRequest":{"timestamp":"2019-05-30T13:08:38.038+05:30","otp":"select otp from kernel.otp_transaction where id like '%org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'%':5","transactionID":"5736325183"}}
+>>>>>>> 0.12.0

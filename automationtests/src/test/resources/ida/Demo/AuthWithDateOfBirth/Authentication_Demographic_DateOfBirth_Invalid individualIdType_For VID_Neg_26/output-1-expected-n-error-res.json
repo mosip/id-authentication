@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - individualIdType"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"5085886854","id":"mosip.identity.auth"}
+=======
+{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - individualIdType"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"5303646633","id":"mosip.identity.auth"}
+>>>>>>> 0.12.0

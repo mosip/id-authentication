@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"transactionID":"0304212018","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated","actionMessage":"Your UIN status is not active"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
+=======
+{"transactionID":"4638346223","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated","actionMessage":"Your UIN status is not active"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
+>>>>>>> 0.12.0

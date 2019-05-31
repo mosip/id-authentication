@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -186,7 +187,7 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 					String ackFileName = syncedPacket.getPacketPath();
 					int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 					String packetPath = ackFileName.substring(0, lastIndex);
-					File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+					File packet = FileUtils.getFile(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 					try {
 						if (packet.exists()) {
 							ResponseDTO response = pushPacket(packet);

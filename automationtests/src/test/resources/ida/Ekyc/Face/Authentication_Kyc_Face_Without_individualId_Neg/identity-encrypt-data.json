@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"identityRequest":{"biometrics":[{"data":{"bioSubType":"FACE","bioType":"FID","bioValue":"fgiuagiuefdiaidiufiuaiyi872186768767186836bhh","deviceCode":"cogent","deviceProviderID":"cogent","timestamp":"2019-05-23T12:01:44.044+05:30","transactionID":"7477753153"}}],"timestamp":"2019-05-23T12:01:44.044+05:30"}}
+=======
+{"identityRequest":{"biometrics":[{"data":{"bioSubType":"FACE","bioType":"FID","bioValue":"fgiuagiuefdiaidiufiuaiyi872186768767186836bhh","deviceCode":"cogent","deviceProviderID":"cogent","timestamp":"2019-05-30T15:08:02.002+05:30","transactionID":"7008308578"}}],"timestamp":"2019-05-30T15:08:02.002+05:30"}}
+>>>>>>> 0.12.0

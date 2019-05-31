@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"response":{"authStatus":false},"errors":[{"errorCode":"$IGNORE$","errorMessage":"$IGNORE$"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"6405767712","id":"mosip.identity.auth"}
+=======
+{"response":{"authStatus":false},"errors":[{"errorCode":"$IGNORE$","errorMessage":"$IGNORE$"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"0435548478","id":"mosip.identity.auth"}
+>>>>>>> 0.12.0

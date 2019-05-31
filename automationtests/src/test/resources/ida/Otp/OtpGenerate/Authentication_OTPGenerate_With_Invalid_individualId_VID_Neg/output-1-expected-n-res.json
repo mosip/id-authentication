@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","transactionID":"4177064027","version":"1.0","response":null}
+=======
+{"errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","transactionID":"6830678248","version":"1.0","response":null}
+>>>>>>> 0.12.0

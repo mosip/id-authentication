@@ -707,7 +707,7 @@ public class BookingService {
 					bookingDAO.updateAvailibityEntity(availableEntity);
 
 					cancelBookingResponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
-					cancelBookingResponseDTO.setMessage("Appointment cancelled successfully");
+					cancelBookingResponseDTO.setMessage("Appointment for the selected application has been successfully cancelled");
 
 				}
 			}
