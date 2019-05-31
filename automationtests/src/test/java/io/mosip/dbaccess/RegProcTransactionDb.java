@@ -16,6 +16,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import io.mosip.dbdto.TransactionStatusDTO;
+import io.mosip.service.BaseTestCase;
 /**
  * 
  * @author M1047227
@@ -28,9 +29,14 @@ public class RegProcTransactionDb {
 	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 	public Session getCurrentSession() {
-		SessionFactory factory;
+		SessionFactory factory = null;
 		Session session;
-		factory=new Configuration().configure(registrationListConfigFile).buildSessionFactory();
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
 	 session = factory.getCurrentSession();
 	 return session;
 	}

@@ -10,11 +10,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.testng.annotations.BeforeClass;
 
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.ManualVerificationDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.RegistrationStatusEntity;
+import io.mosip.dbentity.UinEntity;
+import io.mosip.service.BaseTestCase;
 
 
 /**
@@ -24,23 +27,32 @@ import io.mosip.dbentity.RegistrationStatusEntity;
  *
  */
 public class RegProcDataRead {
-	SessionFactory factory;
-	Session session;
+	public static Session session;
 	private static Logger logger = Logger.getLogger(RegProcDataRead.class);
+	public static String env=System.getProperty("env.user");
+	public static SessionFactory factory;
+
+
 	String auditLogConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\auditinteg.cfg.xml";
 	File auditLogConfigFile=new File(auditLogConfigFilePath);
 
-	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_qa.cfg.xml";
-	File registrationListConfigFile=new File(registrationListConfigFilePath);
-	
+	/*String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regProc_qa.cfg.xml";
+	File registrationListConfigFile=new File(registrationListConfigFilePath);*/
+
 	public SyncRegistrationDto regproc_dbDataInRegistrationList(String regId){
-	
-		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
 		SyncRegistrationDto dto =validateRegIdinRegistrationList(session,regId);
-//		int count = countRegIdInRegistrationList(session,regId);
+		//		int count = countRegIdInRegistrationList(session,regId);
 		if(dto!=null /*&& count== 0*/)
 		{
 			session.close();
@@ -50,19 +62,26 @@ public class RegProcDataRead {
 		return null;
 	}
 
-	
+
 
 	public RegistrationStatusEntity regproc_dbDataInRegistration(String regId)
 	{
-		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
 		RegistrationStatusEntity dto =validateRegIdinRegistration(session, regId);
 		if(dto!=null)
 		{
-			/*session.close();
-			factory.close();*/
+			session.close();
+			factory.close();
 			return dto;
 		}
 		return null;
@@ -179,10 +198,18 @@ public class RegProcDataRead {
 	}
 
 	public List<Object> countRegIdInRegistrationList(String regId) {
-		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
-		
+
 		String queryString= "Select regprc.registration_list.reg_id, count(1)"+
 				" From regprc.registration_list where regprc.registration_list.reg_id= :regId_value "
 				+ "Group By regprc.registration_list.reg_id Having count(1)>1";
@@ -192,16 +219,22 @@ public class RegProcDataRead {
 		query.setParameter("regId_value", regId);
 		List<Object> result = query.getResultList();
 		logger.info("result==== : "+result);
-		
+
 		session.getTransaction().commit();
 		return result;
 	}
-	
+
 	public List<Object> countRegIdInRegistration(String regIds) {
-		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
-		
+
 		String queryString= "Select regprc.registration.id, count(1)"+
 				" From regprc.registration where regprc.registration.id= :regId_value "
 				+ "Group By regprc.registration.id Having count(1)>1";
@@ -211,11 +244,11 @@ public class RegProcDataRead {
 		query.setParameter("regId_value", regIds);
 		List<Object> result = query.getResultList();
 		logger.info("result==== : "+result);
-		
+
 		session.getTransaction().commit();
 		return result;
 	}
-	
+
 	public boolean regproc_dbDeleteRecordInRegistrationList(String regId)
 	{
 		boolean flag=false;
@@ -363,12 +396,19 @@ public class RegProcDataRead {
 
 	public ManualVerificationDTO regproc_dbDataInManualVerification(String regIds, String matchedRegIds,
 			String statusCodeRes) {
-		factory = new Configuration().configure(registrationListConfigFile).buildSessionFactory();	
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
+
+
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 
 		ManualVerificationDTO dto =validateInManualVerification(session, regIds,matchedRegIds,statusCodeRes);
-		
+
 		if(dto!=null)
 		{
 			/*session.close();
@@ -408,7 +448,7 @@ public class RegProcDataRead {
 		for (Object obj : objs) {
 			TestData = (Object[]) obj;
 			//status_code = (String) (TestData[3]);
-			
+
 			manualVerificationDto.setRegId((String)TestData[0]);
 			manualVerificationDto.setMatchedRefId((String)TestData[1]);
 			manualVerificationDto.setStatusCode((String)TestData[5]);
@@ -430,9 +470,6 @@ public class RegProcDataRead {
 		}
 	}
 
-
-
-	
 
 
 }

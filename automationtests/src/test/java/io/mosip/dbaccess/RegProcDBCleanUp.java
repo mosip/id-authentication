@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import io.mosip.service.BaseTestCase;
+
 
 
 public class RegProcDBCleanUp {
@@ -19,7 +21,12 @@ public class RegProcDBCleanUp {
 	String registrationListConfigFilePath=System.getProperty("user.dir")+"\\"+"src\\test\\resources\\regproc_qa.cfg.xml";
 	File registrationListConfigFile=new File(registrationListConfigFilePath);
 	public SessionFactory getSessionFactory() {
-		factory=new Configuration().configure(registrationListConfigFile).buildSessionFactory();
+		if(BaseTestCase.environment.equalsIgnoreCase("dev"))
+			factory = new Configuration().configure("regProc_dev.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("int"))
+				factory = new Configuration().configure("regproc_int.cfg.xml").buildSessionFactory();	
+		else if(BaseTestCase.environment.equalsIgnoreCase("qa"))
+			factory = new Configuration().configure("regproc_qa.cfg.xml").buildSessionFactory();	
 		return factory;
 	}
 	
