@@ -36,6 +36,8 @@ public class ClientJarEncryption {
 	private static final String REGISTRATION = "registration";
 	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
 	private static final String MOSIP_EXE_JAR = "run.jar";
+	private static final String MDM_EXE_JAR = "mdm.jar";
+	private static final String MDM_FOLDER = "mdm";
 	private static final String MOSIP_LIB = "lib";
 	private static final String MOSIP_DB = "db";
 	private static final String MOSIP_ZIP = ".zip";
@@ -56,8 +58,7 @@ public class ClientJarEncryption {
 	/**
 	 * Encrypt the bytes
 	 * 
-	 * @param Jar
-	 *            bytes
+	 * @param Jar bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public byte[] encyrpt(byte[] data, byte[] encodedString) {
@@ -101,6 +102,7 @@ public class ClientJarEncryption {
 
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[3] + MOSIP_REG_LIBS + args[2] + MOSIP_JAR));
+					byte[] mdmExecutbale = FileUtils.readFileToByteArray(new File(args[11]));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
 
 					// Add files to be archived into zip file
@@ -112,6 +114,8 @@ public class ClientJarEncryption {
 
 					// Executable jar run.jar
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
+
+					fileNameByBytes.put(MDM_FOLDER + SLASH + MDM_EXE_JAR, mdmExecutbale);
 
 					// Bat file run.bat
 					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9]).listFiles()[0]));
@@ -132,7 +136,6 @@ public class ClientJarEncryption {
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
 
-					
 					String path = new File(args[3]).getPath();
 
 					File regLibFile = new File(path + SLASH + libraries);
