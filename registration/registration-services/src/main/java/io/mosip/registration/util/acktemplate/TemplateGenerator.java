@@ -458,17 +458,17 @@ public class TemplateGenerator extends BaseService {
 						}
 						templateValues.put(RegistrationConstants.TEMPLATE_IS_CHILD,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					} else {
 						templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					}
 				}
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_CHILD_LEFT,
 						RegistrationConstants.TEMPLATE_LEFT_INDEX_FINGER);

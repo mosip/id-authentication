@@ -105,6 +105,7 @@ public class LoginServiceTest {
 	public void getUserDetailTest() {
 
 		UserDetail userDetail = new UserDetail();
+		userDetail.setId("mosip");
 		List<UserDetail> userDetailList = new ArrayList<UserDetail>();
 		userDetailList.add(userDetail);
 		Mockito.when(userDetailRepository.findByIdIgnoreCaseAndIsActiveTrue(Mockito.anyString()))
@@ -112,7 +113,10 @@ public class LoginServiceTest {
 		
 		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
 		
-		assertEquals(userDetail,loginServiceImpl.getUserDetail("mosip"));		
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId(userDetail.getId());
+		
+		assertEquals(userDTO,loginServiceImpl.getUserDetail("mosip"));		
 	}
 
 	@Test
@@ -156,6 +160,17 @@ public class LoginServiceTest {
 		userDTO.setUnsuccessfulLoginCount(0);
 		userDTO.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
 		userDTO.setLastLoginMethod("PWD");
+		userDTO.setUserlockTillDtimes(new Timestamp(System.currentTimeMillis()));
+		
+		UserDetail userDetail = new UserDetail();
+		userDetail.setId(userDTO.getId());
+		userDetail.setUnsuccessfulLoginCount(userDTO.getUnsuccessfulLoginCount());
+		userDetail.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
+		userDetail.setLastLoginMethod(userDTO.getLastLoginMethod());
+		userDetail.setUserlockTillDtimes(userDTO.getUserlockTillDtimes());
+		
+		Mockito.when(userDetailDAO.getUserDetail(userDTO.getId())).thenReturn(userDetail);
+		
 		
 		loginServiceImpl.updateLoginParams(userDTO);
 	}
