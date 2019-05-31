@@ -243,7 +243,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				if (fetchUserRole(username.getText())) {
 					if (password.getText().isEmpty()) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
-					} else {						
+					} else {
 						status = validatePwd(username.getText(), password.getText());
 						if (RegistrationConstants.SUCCESS.equals(status)) {
 							userAuthenticationTypeListValidation.remove(0);
@@ -279,7 +279,7 @@ public class AuthenticationController extends BaseController implements Initiali
 					} else if (RegistrationConstants.FAILURE.equals(status)) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 					}
-				}				
+				}
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
@@ -302,15 +302,19 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
-					if (captureAndValidateFP(fpUserId.getText())) {
-						userAuthenticationTypeListValidation.remove(0);
-						userNameField = fpUserId.getText();
-						if (!isEODAuthentication) {
-							getOSIData().setSupervisorID(userNameField);
+					try {
+						if (captureAndValidateFP(fpUserId.getText())) {
+							userAuthenticationTypeListValidation.remove(0);
+							userNameField = fpUserId.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+							}
+							loadNextScreen();
+						} else {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 						}
-						loadNextScreen();
-					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
+					} catch (RegBaseCheckedException | IOException e) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -319,11 +323,15 @@ public class AuthenticationController extends BaseController implements Initiali
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
-			if (captureAndValidateFP(fpUserId.getText())) {
-				userAuthenticationTypeListValidation.remove(0);
-				loadNextScreen();
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
+			try {
+				if (captureAndValidateFP(fpUserId.getText())) {
+					userAuthenticationTypeListValidation.remove(0);
+					loadNextScreen();
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
+				}
+			} catch (RegBaseCheckedException | IOException exception) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			}
 		}
 	}
@@ -342,15 +350,19 @@ public class AuthenticationController extends BaseController implements Initiali
 		if (isSupervisor) {
 			if (!fpUserId.getText().isEmpty()) {
 				if (fetchUserRole(fpUserId.getText())) {
-					if (captureAndValidateIris(fpUserId.getText())) {
-						userAuthenticationTypeListValidation.remove(0);
-						userNameField = fpUserId.getText();
-						if (!isEODAuthentication) {
-							getOSIData().setSupervisorID(userNameField);
+					try {
+						if (captureAndValidateIris(fpUserId.getText())) {
+							userAuthenticationTypeListValidation.remove(0);
+							userNameField = fpUserId.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+							}
+							loadNextScreen();
+						} else {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
 						}
-						loadNextScreen();
-					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
+					} catch (RegBaseCheckedException | IOException exception) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
@@ -359,11 +371,15 @@ public class AuthenticationController extends BaseController implements Initiali
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
-			if (captureAndValidateIris(fpUserId.getText())) {
-				userAuthenticationTypeListValidation.remove(0);
-				loadNextScreen();
-			} else {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
+			try {
+				if (captureAndValidateIris(fpUserId.getText())) {
+					userAuthenticationTypeListValidation.remove(0);
+					loadNextScreen();
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
+				}
+			} catch (RegBaseCheckedException | IOException exception) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
 			}
 		}
 	}
@@ -726,9 +742,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		UserDTO userDTO = loginService.getUserDetail(userId);
 		if (userDTO != null) {
-			return userDTO.getUserRole().stream().anyMatch(userRole -> userRole.getRoleCode()
-					.equalsIgnoreCase(RegistrationConstants.SUPERVISOR)
-					|| userRole.getRoleCode().equalsIgnoreCase(RegistrationConstants.ADMIN_ROLE));
+			return userDTO.getUserRole().stream()
+					.anyMatch(userRole -> userRole.getRoleCode().equalsIgnoreCase(RegistrationConstants.SUPERVISOR)
+							|| userRole.getRoleCode().equalsIgnoreCase(RegistrationConstants.ADMIN_ROLE));
 		}
 		return false;
 	}
@@ -739,16 +755,11 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @param userId
 	 *            - username entered in the textfield
 	 * @return true/false after validating fingerprint
+	 * @throws IOException
+	 * @throws RegBaseCheckedException
 	 */
-	private boolean captureAndValidateFP(String userId) {
-		try {
-			return bioService.validateFingerPrint(userId);
-		} catch (RegBaseCheckedException | IOException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
-			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			return false;
-		}
+	private boolean captureAndValidateFP(String userId) throws RegBaseCheckedException, IOException {
+		return bioService.validateFingerPrint(userId);
 	}
 
 	/**
@@ -757,16 +768,10 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @param userId
 	 *            - username entered in the textfield
 	 * @return true/false after validating iris
+	 * @throws IOException
 	 */
-	private boolean captureAndValidateIris(String userId) {
-		try {
-			return bioService.validateIris(userId);
-		} catch (RegBaseCheckedException | IOException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_DEVICE_FOUND);
-			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			return false;
-		}
+	private boolean captureAndValidateIris(String userId) throws RegBaseCheckedException, IOException {
+		return bioService.validateIris(userId);
 	}
 
 	/**
@@ -894,7 +899,6 @@ public class AuthenticationController extends BaseController implements Initiali
 			break;
 		case RegistrationConstants.PWORD:
 			validatePwd();
-
 			break;
 		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			validateFingerprint();
