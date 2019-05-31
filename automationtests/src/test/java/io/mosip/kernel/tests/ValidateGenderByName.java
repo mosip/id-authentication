@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -28,9 +27,9 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
@@ -61,7 +60,6 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	private String requestKeyFile = "ValidateGenderByNameInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
 
@@ -76,14 +74,8 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateGenderByName")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+		
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
 	}
 	
 	
@@ -99,33 +91,23 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	@Test(dataProvider="ValidateGenderByName")
 	public void validateGenderByName(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-	
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		
 		//  Calling GET method with path parameters
-		 
 		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest,cookie);
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+				
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("responsetime");
-		
-		//  Getting the response time in milliseconds	
-		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
-	
+		listOfElementToRemove.add("responsetime");	
 		
 		// Comparing expected and actual response
-		 
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {  
-
-				/*if(response_time<=300)*/
 					finalStatus = "Pass";
-				/*else
-					finalStatus = "Fail";	*/
-
 			}	
 		
 		else {

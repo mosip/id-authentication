@@ -64,33 +64,22 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	private String requestKeyFile = "GetDocType_DocCatByAppIDInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie;
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
 	
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
-		testCaseName = object.get("testCaseName").toString();
-		
-		 cookie=auth.getAuthForIndividual();
+		testCaseName = "Kernel_"+"GetDocType_DocCatByAppID_"+object.get("testCaseName").toString();
+		 cookie=auth.getAuthForZonalApprover();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDocType_DocCatByAppID")
 	public Object[][] readData1(ITestContext context) throws Exception {	 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -123,7 +112,8 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		
 		// Calling the get method
 		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
-		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
@@ -132,16 +122,12 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
-		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

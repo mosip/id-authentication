@@ -232,25 +232,6 @@ export class TimeSelectionComponent implements OnInit {
             title: this.secondaryLanguagelabels.title_success,
             message: this.secondaryLanguagelabels.msg_success
           };
-          const dialogRef = this.dialog
-            .open(DialougComponent, {
-              width: '350px',
-              data: data
-            })
-            .afterClosed()
-            .subscribe(() => {
-              this.temp.forEach(name => {
-                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
-                if (booking[0]) {
-                  this.bookingService.addNameList(name);
-                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
-                  this.bookingService.updateBookingDetails(name.preRegId, appointmentDateTime);
-                }
-              });
-              this.bookingService.setSendNotification(true);
-              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
-              this.router.navigateByUrl(url);
-            });
         } else {
           this.displayMessage('Error', this.errorlabels.error);
         }

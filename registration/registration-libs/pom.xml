@@ -139,11 +139,9 @@
 								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/run.bat</argument>
+								<argument>${main.basedir}/registration-libs/src/main/resources/batch</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
 								<argument>${main.basedir}/registration-mdm-service/target/registration-mdm-service.jar</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_start.bat</argument>
-								<argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_stop.bat</argument>
 							</arguments>
 						</configuration>
 					</execution>
