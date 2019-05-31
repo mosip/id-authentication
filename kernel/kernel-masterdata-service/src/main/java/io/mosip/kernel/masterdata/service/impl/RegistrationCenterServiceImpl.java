@@ -676,7 +676,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
 						pageData.getTotalElements(), registrationCenters);
 			} else {
-				throw new MasterDataServiceException(
+				throw new DataNotFoundException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 			}
