@@ -308,7 +308,7 @@ public class CommonLibrary extends BaseTestCase{
       	 Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap)
                              .log().all().when().get(url).then().log().all().extract().response();
            // log then response
-           logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+           //logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
            logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
            return getResponse;
      } // end GET_REQUEST

@@ -1,1 +1,1 @@
-[{"Jira ID":"MOS-8268","langcode":"invalid","Test case Name":"invalid_langcode","status":"Pass"},{"Jira ID":"MOS-8268","langcode":"valid","Test case Name":"valid_smoke","status":"Pass"}]
+[{"Jira ID":"MOS-8268","langcode":"valid","testCaseName":"valid_smoke","status":"Pass"}]

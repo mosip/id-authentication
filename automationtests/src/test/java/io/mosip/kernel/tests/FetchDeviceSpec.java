@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,18 +36,17 @@ import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
  * @author Ravi Kant
  *
  */
-public class FetchDeviceSpec extends BaseTestCase implements ITest{
-	
-	
+public class FetchDeviceSpec extends BaseTestCase implements ITest {
+
 	FetchDeviceSpec() {
 		super();
 	}
@@ -67,14 +64,13 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -83,10 +79,10 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
+	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
 		cookie = auth.getAuthForZonalApprover();
 	}
 
@@ -99,8 +95,9 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
-		}
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+	}
+
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -110,52 +107,21 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchDeviceSpec(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
+	public void auditLog(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		if (objectData.containsKey("devicetypecode"))
+			response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_id_lang_URI, objectData, cookie);
+		else
+			response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_lang_URI, objectData, cookie);
 
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-				if(objectData.containsKey("devicetypecode"))
-					response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_id_lang_URI, objectData,cookie);
-					else
-					response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_lang_URI, objectData,cookie);
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")
-					&& !testcaseName.toLowerCase().contains("smoke")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-		}
-		
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-
+		// DB Validation
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String queryPart = "select count(*) from master.device_spec";
@@ -168,14 +134,15 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 				else
 					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
 			}
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
 			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
 			// fetching json array of objects from response
 			JSONArray deviceSpecFromGet = (JSONArray) responseJson.get("devicespecifications");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + deviceSpecFromGet.size());
-			
+
 			// validating number of objects obtained form db and from get request
 			if (deviceSpecFromGet.size() == obtainedObjectsCount) {
 
@@ -188,7 +155,8 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 				attributesToValidateExistance.add("minDriverversion");
 				attributesToValidateExistance.add("isActive");
 
-				// key value of the attributes passed to fetch the data, should be same in all obtained objects
+				// key value of the attributes passed to fetch the data (should be same in all
+				// obtained objects)
 				HashMap<String, String> passedAttributesToFetch = new HashMap();
 				if (objectData != null) {
 					if (objectData.containsKey("devicetypecode")) {
@@ -199,7 +167,8 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
 
-				status = AssertKernel.validator(deviceSpecFromGet, attributesToValidateExistance, passedAttributesToFetch);
+				status = AssertKernel.validator(deviceSpecFromGet, attributesToValidateExistance,
+						passedAttributesToFetch);
 			} else
 				status = false;
 
@@ -213,23 +182,15 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override
@@ -257,12 +218,10 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest{
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
 		}
 	}
 }
-

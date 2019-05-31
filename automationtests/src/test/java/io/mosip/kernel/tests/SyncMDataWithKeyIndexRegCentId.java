@@ -140,12 +140,14 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-
-					response = applicationLibrary.getRequestPathPara(syncMdatawithRegCentIdKeyIndex, objectData,cookie);
+				String regcenterId = objectData.get("regcenterId").toString();
+				HashMap regId = new HashMap();
+				regId.put("regcenterId", regcenterId);
+				objectData.remove("regcenterId");
+					response = applicationLibrary.getRequestPathQueryPara(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
 			}
 		}
 

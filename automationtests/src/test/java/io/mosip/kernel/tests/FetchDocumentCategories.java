@@ -2,8 +2,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -42,7 +40,7 @@ import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
@@ -99,8 +97,9 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
-		}
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+	}
+
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -108,53 +107,25 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchDocumentCategories(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
-		logger.info("Test case Name:" + testcaseName);
-
-		object.put("Test case Name", testcaseName);
+	public void auditLog(String testcaseName, JSONObject object)
+			throws ParseException {
+		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
 		
 				if(objectData.containsKey("code"))
 				response = applicationLibrary.getRequestPathPara(FetchDocumentCategories_URI_withcodeAndLangCode,objectData,cookie);
 				else
 				response = applicationLibrary.getRequestPathPara(FetchDocumentCategories_URI,objectData,cookie);
-
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")
-					&& !testcaseName.toLowerCase().contains("smoke")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-		}
-
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-
+				
+				// DB Validation
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String queryPart = "select count(*) from master.doc_category where is_active = true";
@@ -211,26 +182,17 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

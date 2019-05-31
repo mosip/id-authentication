@@ -134,11 +134,10 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-					response = applicationLibrary.getRequestPathPara(syncMdatawithKeyIndex, objectData,cookie);
+					response = applicationLibrary.getRequestAsQueryParam(syncMdatawithKeyIndex, objectData,cookie);
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
 			}
 		}
 

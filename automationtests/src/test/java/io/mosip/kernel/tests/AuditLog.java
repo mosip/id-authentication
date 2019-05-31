@@ -31,7 +31,7 @@ import com.google.common.base.Verify;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -58,7 +58,6 @@ public class AuditLog extends BaseTestCase implements ITest {
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
@@ -96,14 +95,13 @@ public class AuditLog extends BaseTestCase implements ITest {
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
-	 * @param fileName
+	 * @param testcaseName
 	 * @param object
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public void auditLog(String testcaseName, JSONObject object) {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -121,16 +119,13 @@ public class AuditLog extends BaseTestCase implements ITest {
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 
-		boolean setFinalStatus = false;
 		if (!status) {
-			setFinalStatus = false;
 			logger.debug(response);
 			object.put("status", "Fail");
 		} else if (status) {
-			setFinalStatus = true;
 			object.put("status", "Pass");
 		}
-		Verify.verify(setFinalStatus);
+		Verify.verify(status);
 		softAssert.assertAll();
 		arr.add(object);
 	}
