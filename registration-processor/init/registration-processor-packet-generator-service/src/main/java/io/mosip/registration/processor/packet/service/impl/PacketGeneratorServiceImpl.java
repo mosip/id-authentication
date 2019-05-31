@@ -122,7 +122,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				String packetCreatedDateTime = rid.substring(rid.length() - 14);
 				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
 				LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")); 
-				//String creationTime = packetCreationService.getCreationTime();
 				String creationTime = ldt.toString()+".000Z";
 
 				filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
