@@ -112,18 +112,4 @@ public interface MachineService {
 	 */
 	IdResponseDto deleteMachine(String id);
 
-	/**
-	 * Abstract method to save Machine Details of is active false to the Database
-	 * 
-	 * @param machine
-	 *            machine DTO
-	 * 
-	 * @return IdResponseDto returning machine id which is inserted successfully
-	 *         {@link IdResponseDto}
-	 * 
-	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving Machine
-	 */
-	public IdAndLanguageCodeID createInActiveMachine(MachineDto machine);
-
 }

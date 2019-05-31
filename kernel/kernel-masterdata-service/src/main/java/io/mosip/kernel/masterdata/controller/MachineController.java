@@ -181,35 +181,6 @@ public class MachineController {
 		responseWrapper.setResponse(machineService.updateMachine(machine.getRequest()));
 		return responseWrapper;
 
-		// /**
-		// * Post API to insert a new row of Machine data
-		// *
-		// * @param machine
-		// * input from user Machine DTO
-		// *
-		// * @return ResponseEntity Machine Id which is inserted successfully
-		// * {@link ResponseEntity}
-		// */
-		// @ResponseFilter
-		// @PostMapping("/admin/machines")
-		// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
-		// @ApiOperation(value = "Service to save Machine wiht is active false", notes =
-		// "Saves Machine Detail and return Machine id")
-		// @ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully
-		// created"),
-		// @ApiResponse(code = 400, message = "When Request body passed is null or
-		// invalid"),
-		// @ApiResponse(code = 404, message = "When No Machine found"),
-		// @ApiResponse(code = 500, message = "While creating Machine any error
-		// occured") })
-		// public ResponseWrapper<IdAndLanguageCodeID> createInActiveMachine(
-		// @Valid @RequestBody RequestWrapper<MachineDto> machine) {
-		// ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new
-		// ResponseWrapper<>();
-		// responseWrapper.setResponse(machineService.createInActiveMachine(machine.getRequest()));
-		// return responseWrapper;
-		// }
-
 	}
 
 }

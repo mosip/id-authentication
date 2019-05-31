@@ -194,8 +194,9 @@ public class MachineServiceImpl implements MachineService {
 	public IdAndLanguageCodeID updateMachine(MachineDto machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
-					machine.getId(), machine.getLangCode());
+			Machine renmachine = machineRepository
+					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
+							machine.getId(), machine.getLangCode());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine, renmachine, false);
@@ -277,26 +278,4 @@ public class MachineServiceImpl implements MachineService {
 
 	}
 
-	@Override
-	@Transactional
-	public IdAndLanguageCodeID createInActiveMachine(MachineDto machine) {
-		Machine crtMachine = null;
-		Machine entity = MetaDataUtils.setCreateMetaData(machine, Machine.class);
-		MachineHistory entityHistory = MetaDataUtils.setCreateMetaData(machine, MachineHistory.class);
-		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
-		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
-		try {
-			entity.setIsActive(false);
-			crtMachine = machineRepository.create(entity);
-			machineHistoryService.createMachineHistory(entityHistory);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(crtMachine, idAndLanguageCodeID);
-
-		return idAndLanguageCodeID;
-	}
 }
