@@ -532,7 +532,8 @@
     "text_search": "Search....",
     "action_back": "Back",
     "action_book_later": "Book Later",
-    "action_continue": "Continue"
+    "action_continue": "Continue",
+    "noResult_found": "No results Found"
   },
   "autologout": {
     "preview": "You will be timed out in 60 secs due to inactivity. Please click anywhere to re-activate your session",

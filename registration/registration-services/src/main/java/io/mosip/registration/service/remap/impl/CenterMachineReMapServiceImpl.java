@@ -3,7 +3,6 @@ package io.mosip.registration.service.remap.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -290,7 +289,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
 			FileUtils.deleteDirectory(
-					new File((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+					FileUtils.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
