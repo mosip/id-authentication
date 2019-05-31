@@ -384,10 +384,10 @@ public class IdInfoHelperTest {
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestmappingInternalthrowsException() throws IdAuthenticationBusinessException {
-		MatchType matchType = DemoMatchType.NAME;
+		MatchType matchType = DemoMatchType.DOB;
 		List<String> value = new ArrayList<>();
-		value.add(IdaIdMapping.NAME.getIdname());
-		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
+		value.add(IdaIdMapping.DOB.getIdname());
+		idInfoHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.DOB);
 	}
 
 	@Test
