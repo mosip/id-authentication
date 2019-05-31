@@ -97,4 +97,17 @@ public interface MasterSyncService {
 	 */
 	List<BiometricAttributeDto> getBiometricType(String langCode);
 
+	/**
+	 * Gets the master sync.
+	 *
+	 * @param masterSyncDetails
+	 *            the master sync details
+	 * @param triggerPoint
+	 *            the trigger point
+	 * @param keyIndex
+	 *            the key index for sync'ing the master data
+	 * @return the master sync
+	 */
+	ResponseDTO getMasterSync(String masterSyncDetails, String triggerPoint, String keyIndex);
+
 }

@@ -5,11 +5,13 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +35,7 @@ import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.ResponseDTO;
@@ -83,6 +86,10 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	/** Object for masterSyncDao class. */
 	@Autowired
 	private MasterSyncDao masterSyncDao;
+	
+	/** The machine mapping DAO. */
+	@Autowired
+	private MachineMappingDAO machineMappingDAO;
 
 	/** The global param service. */
 	@Autowired
@@ -106,39 +113,54 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 * String)
 	 */
 	@Override
-	public synchronized ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
 
 		ResponseDTO responseDTO = new ResponseDTO();
+		try {
+			responseDTO = syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
+		} catch (RegBaseCheckedException checkedException) {
+			setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
+		}
+
+		return responseDTO;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.MasterSyncService#getMasterSync(java.lang.
+	 * String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex) {
+		ResponseDTO responseDTO = new ResponseDTO();
+		try {
+			responseDTO = syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
+		} catch (RegBaseCheckedException checkedException) {
+			setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
+		}
+
+		return responseDTO;
+	}
+
+	private synchronized ResponseDTO syncMasterData(String masterSyncDtls, String triggerPoint,
+			Map<String, String> requestParam) {
+		ResponseDTO responseDTO = new ResponseDTO();
 		String resoponse = RegistrationConstants.EMPTY;
-		String machineId = RegistrationSystemPropertiesChecker.getMachineId();
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-		SyncControl masterSyncDetails;
-
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the last sync  and machine Id details from database Starts");
 		try {
 
-			// getting Last Sync date from Data from sync table
-			masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
-
-			LocalDateTime masterLastSyncTime = null;
-
-			if (masterSyncDetails != null) {
-				masterLastSyncTime = LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(),
-						ZoneOffset.ofHours(0));
-			}
-
-			// Getting machineID from data base
-
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching the last sync and machine Id details from databse Ends");
 
-			LinkedHashMap<String, Object> masterSyncResponse = getMasterSyncJson(machineId, masterLastSyncTime,
-					triggerPoint);
+			LinkedHashMap<String, Object> masterSyncResponse = getMasterSyncJson(triggerPoint, requestParam);
 
 			if (null != masterSyncResponse && !masterSyncResponse.isEmpty()
 					&& null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)
@@ -229,40 +251,33 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	@SuppressWarnings("unchecked")
-	private LinkedHashMap<String, Object> getMasterSyncJson(String machineId, LocalDateTime lastSyncTime,
-			String triggerPoint) throws RegBaseCheckedException {
+	private LinkedHashMap<String, Object> getMasterSyncJson(String triggerPoint,
+			Map<String, String> requestParamMap) throws RegBaseCheckedException {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		LinkedHashMap<String, Object> masterSyncResponse = null;
 		String serviceName;
-		String time = RegistrationConstants.EMPTY;
 
 		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Master Sync Restful service starts.....");
 
-		// Setting uri Variables
-
-		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
-
-		if (null != lastSyncTime) {
-			time = DateUtils.formatToISOString(lastSyncTime);
-			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
-		}
-
-		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
-				(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
-
-			serviceName = RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME;
-
-		} else {
-			requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
-			serviceName = RegistrationConstants.MASTER_CENTER_REMAP_SERVICE_NAME;
-		}
-
-		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MAC_ADDRESS + "===> "
-				+ machineId + " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> " + time);
-
 		try {
+
+			// Setting uri Variables
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
+
+				serviceName = RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME;
+
+			} else {
+				requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
+				serviceName = RegistrationConstants.MASTER_CENTER_REMAP_SERVICE_NAME;
+			}
+	
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MAC_ADDRESS + "===> " + requestParamMap.get(RegistrationConstants.MAC_ADDRESS)
+							+ " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> "
+							+ requestParamMap.get(RegistrationConstants.MASTER_DATA_LASTUPDTAE));
+
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil.get(serviceName,
 						requestParamMap, true, triggerPoint);
@@ -296,6 +311,39 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 				"Master Sync Restful service ends successful.....");
 
 		return masterSyncResponse;
+	}
+
+	private Map<String, String> getRequestParams(String masterSyncDtls, String keyIndex) throws RegBaseCheckedException {
+		try {
+			Map<String, String> requestParamMap = new HashMap<>();
+
+			// Add Mac Address
+			requestParamMap.put(RegistrationConstants.MAC_ADDRESS, RegistrationSystemPropertiesChecker.getMachineId());
+
+			// Get KeyIndex
+			if (keyIndex == null) {
+				keyIndex = machineMappingDAO.getMachineByName(InetAddress.getLocalHost().getHostName()).getKeyIndex();
+			}
+
+			// Add the Key Index
+			if (null != keyIndex) {
+				requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
+			}
+
+			// getting Last Sync date from Data from sync table
+			SyncControl masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
+
+			// Add the Last Updated Date
+			if (masterSyncDetails != null) {
+				requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE,
+						DateUtils.formatToISOString(LocalDateTime
+								.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(), ZoneOffset.ofHours(0))));
+			}
+
+			return requestParamMap;
+		} catch (Exception exception) {
+			throw new RegBaseCheckedException("", "", exception);
+		}
 	}
 
 	/*

@@ -1,5 +1,8 @@
 package io.mosip.registration.util.advice;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,17 +12,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -45,6 +48,8 @@ public class RestClientAuthAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	@Autowired
+	private MachineMappingDAO machineMappingDAO;
 
 	/**
 	 * The {@link Around} advice method which be invoked for all web services. This
@@ -65,7 +70,8 @@ public class RestClientAuthAdvice {
 
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 			
-			if (requestHTTPDTO.isRequestSignRequired()) {
+			if (requestHTTPDTO.isRequestSignRequired() && RegistrationConstants.ENABLE
+					.equals(String.valueOf(ApplicationContext.map().get(RegistrationConstants.TPM_AVAILABILITY)))) {
 				addRequestSignature(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getRequestBody());
 			}
 			
@@ -216,8 +222,10 @@ public class RestClientAuthAdvice {
 
 		try {
 			httpHeaders.add("request-signature", String.format("Authorization:%s",
-					CryptoUtil.encodeBase64(TPMUtil.signData(new ObjectMapper().writeValueAsBytes(requestBody)))));
-		} catch (JsonProcessingException jsonProcessingException) {
+					CryptoUtil.encodeBase64(TPMUtil.signData(JsonUtils.javaObjectToJsonString(requestBody).getBytes()))));
+			httpHeaders.add(RegistrationConstants.KEY_INDEX, CryptoUtil.encodeBase64String(machineMappingDAO
+					.getMachineByName(InetAddress.getLocalHost().getHostName()).getKeyIndex().getBytes()));
+		} catch (UnknownHostException | JsonProcessingException jsonProcessingException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorMessage(),
 					jsonProcessingException);

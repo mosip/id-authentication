@@ -64,6 +64,7 @@ public class Initialization extends Application {
 		try {
 			System.setProperty("java.net.useSystemProxies", "true");
 			System.setProperty("file.encoding", "UTF-8");
+			io.mosip.registration.context.ApplicationContext.getInstance();
 			applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 
 			launch(args);
