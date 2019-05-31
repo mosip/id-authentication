@@ -70,7 +70,7 @@ The below class diagram shows relationship between all the classes which are req
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
 - ***MISP verification*** - Mocked the verification of MISP by the using mocked *License Key*.
-- ***Partner verification*** - Mocked the verification of Partner by using Mocked *Policy* for the partner which provides the information on whether the KYC Auth request is allowed.
+- ***Partner verification*** - Mocked the verification of Partner by using mocked *Policy* for the partner which provides the information on whether the KYC Auth request is allowed.
 - ***MOSIP public key for encrypting Request block*** - The private key used for decrypting the request would be maintained in Partner Management Service, which is currently mocked using reference ID **PARTNER** and application ID **IDA**, and public key of the same should be used while encrypting the request.
 - ***keyIndex*** - No validation is performed for `keyIndex` which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
 - ***Encrypted KYC response*** - KYC Response is encrypted using mocked MOSIP public key with reference ID **PARTNER** and application ID **IDA**, and private key of the same should be used to decrypt the response.
