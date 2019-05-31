@@ -54,6 +54,8 @@ public class ClientJarEncryption {
 	private static final String MOSIP_JRE = "jre";
 
 	private static final String MOSIP_RUN_BAT = "run.bat";
+	private static final String MOSIP_MDM_STSRT_BAT = "mdm_start.bat";
+	private static final String MOSIP_MDM_STOP_BAT = "mdm_stop.bat";
 
 	/**
 	 * Encrypt the bytes
@@ -118,8 +120,9 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MDM_FOLDER + SLASH + MDM_EXE_JAR, mdmExecutbale);
 
 					// Bat file run.bat
-					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9]).listFiles()[0]));
-
+					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9])));
+					fileNameByBytes.put(MOSIP_MDM_STSRT_BAT, FileUtils.readFileToByteArray(new File(args[12])));
+					fileNameByBytes.put(MOSIP_MDM_STOP_BAT, FileUtils.readFileToByteArray(new File(args[13])));
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
 					// Certificate file
