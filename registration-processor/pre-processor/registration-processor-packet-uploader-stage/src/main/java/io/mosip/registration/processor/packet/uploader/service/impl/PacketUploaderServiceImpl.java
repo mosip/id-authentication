@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.JschConnectionException;
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -189,7 +190,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			dto = registrationStatusService.getRegistrationStatus(registrationId);
-
+			messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
 			dto.setRegistrationStageName(stageName);
 

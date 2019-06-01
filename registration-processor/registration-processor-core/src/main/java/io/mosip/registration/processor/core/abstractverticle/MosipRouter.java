@@ -99,8 +99,8 @@ public class MosipRouter {
 	 * @param routingContext
 	 */
 	private void validateToken(RoutingContext routingContext) {
-		String token = routingContext.request().getHeader("Cookie");
-		tokenValidator.validate(token, routingContext.normalisedPath());
+//		String token = routingContext.request().getHeader("Cookie");
+//		tokenValidator.validate(token, routingContext.normalisedPath());
 		routingContext.next();
 	}
 

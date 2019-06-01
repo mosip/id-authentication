@@ -204,8 +204,8 @@ public class ABISHandlerUtil {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response;
 
-		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
-				"", "", ResponseWrapper.class);
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
+				ResponseWrapper.class);
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
@@ -216,5 +216,30 @@ public class ABISHandlerUtil {
 			uin = JsonUtil.getJSONValue(demographicIdentity, AbisConstant.UIN);
 		}
 		return uin;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject getIdJsonFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("rid");
+		pathSegments.add(machedRegId);
+		JSONObject demographicIdentity = null;
+
+		@SuppressWarnings("unchecked")
+		ResponseWrapper<IdResponseDTO> response;
+
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
+				ResponseWrapper.class);
+
+		if (response.getResponse() != null) {
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(response.getResponse());
+			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(identityJson,
+					utilities.getGetRegProcessorDemographicIdentity());
+
+		}
+
+		return demographicIdentity;
 	}
 }

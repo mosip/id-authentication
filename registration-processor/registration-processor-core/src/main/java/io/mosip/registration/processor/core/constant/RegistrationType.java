@@ -26,7 +26,7 @@ public enum RegistrationType {
 
 	/** The deactivated. */
 	DEACTIVATED("deactivated"),
-	
+
 	/** The lost*/
 	LOST("lost");
 	
