@@ -196,7 +196,24 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       this.activeTab = selection;
     }
   }
-
+  
+  displayMessage(title: string, message: string) {
+    this.disableContinueButton = false;
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
+  
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -259,23 +276,6 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
-  }
-  
-  displayMessage(title: string, message: string) {
-    this.disableContinueButton = false;
-    const messageObj = {
-      case: 'MESSAGE',
-      title: title,
-      message: message
-    };
-    this.openDialog(messageObj, '250px');
-  }
-  openDialog(data, width) {
-    const dialogRef = this.dialog.open(DialougComponent, {
-      width: width,
-      data: data
-    });
-    return dialogRef;
   }
 
   navigateDashboard() {
