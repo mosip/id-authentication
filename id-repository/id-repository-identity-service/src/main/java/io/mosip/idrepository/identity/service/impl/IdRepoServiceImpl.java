@@ -211,7 +211,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		String uinToEncrypt=modResult+"_"+uin+"_"+encryptSalt;
 		String uinHash = modResult+ "_" +securityManager.hashwithSalt(uin.getBytes(),hashSalt.getBytes());
 		
-		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId()) && !uinRepo.existsByUin(uin)) {
+		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 			List<UinDocument> docList = new ArrayList<>();
 			List<UinBiometric> bioList = new ArrayList<>();
 			Uin uinEntity;
