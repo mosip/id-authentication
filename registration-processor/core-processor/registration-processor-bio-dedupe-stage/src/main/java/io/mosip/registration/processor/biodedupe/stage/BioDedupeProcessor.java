@@ -177,11 +177,11 @@ public class BioDedupeProcessor {
 				String packetStatus = abisHandlerUtil.getPacketStatus(registrationStatusDto);
 
 				if (packetStatus.equalsIgnoreCase(AbisConstant.PRE_ABIS_IDENTIFICATION)) {
-					lostPacketValidationPreAbisIdentification(registrationStatusDto, object);
+					lostPacketPreAbisIdentification(registrationStatusDto, object);
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
 					List<String> matchedRegIds = abisHandlerUtil
 							.getUniqueRegIds(registrationStatusDto.getRegistrationId(), registrationType);
-					lostPacketValidation(registrationStatusDto, object, matchedRegIds);
+					lostPacketPostAbisIdentification(registrationStatusDto, object, matchedRegIds);
 				}
 
 			}
@@ -268,16 +268,6 @@ public class BioDedupeProcessor {
 					moduleName, registrationId);
 		}
 		return object;
-	}
-
-	private void lostPacketValidationPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
-			MessageDTO object) {
-
-		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationStatusDto.getRegistrationId(), "Lost Packet Pre abis identification");
-
 	}
 
 	/**
@@ -443,8 +433,18 @@ public class BioDedupeProcessor {
 
 	}
 
-	private void lostPacketValidation(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object,
-			List<String> matchedRegIds) throws IOException, ApisResourceAccessException {
+	private void lostPacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
+			MessageDTO object) {
+
+		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationStatusDto.getRegistrationId(), "Lost Packet Pre abis identification");
+
+	}
+
+	private void lostPacketPostAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
+			MessageDTO object, List<String> matchedRegIds) throws IOException, ApisResourceAccessException {
 
 		String registrationId = registrationStatusDto.getRegistrationId();
 
