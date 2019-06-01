@@ -76,7 +76,11 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				List<Object> propertyNamesList = Arrays.stream(propertyNames).collect(Collectors.toList());
 				int uinIndex = propertyNamesList.indexOf("uin");
 				Vid vidEntity = (Vid) entity;
-				vidEntity.setUin(new String(securityManager.encrypt(vidEntity.getUin().getBytes())));
+				List<String> uinList = Arrays.stream(vidEntity.getUin().split("_")).collect(Collectors.toList());
+				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
+						CryptoUtil.decodeBase64(uinList.get(2)));
+				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				vidEntity.setUin(encryptedUinWithSalt);
 				currentState[uinIndex] = vidEntity.getUin();
 				entity = vidEntity;
 			}
