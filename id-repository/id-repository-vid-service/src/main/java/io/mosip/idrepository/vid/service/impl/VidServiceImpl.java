@@ -158,7 +158,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 
 	private Vid generateVid(String uin, String vidType) throws IdRepoAppException {
 		checkUinStatus(uin);
-		Integer moduloValue = env.getProperty("mosip.idrepo.identity.modulo",Integer.class);
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(),Integer.class);
 		int modResult=(int) (Long.parseLong(uin)%moduloValue);
 		String encryptSalt =uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
