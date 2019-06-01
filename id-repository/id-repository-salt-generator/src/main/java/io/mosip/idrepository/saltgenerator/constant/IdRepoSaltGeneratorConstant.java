@@ -6,7 +6,7 @@ package io.mosip.idrepository.saltgenerator.constant;
  */
 public enum IdRepoSaltGeneratorConstant {
 	
-	IDMAP("salt-generator.db"),
+	IDMAP("vid.db"),
 	IDREPO("identity.db.shard"),
 	PACKAGE_TO_SCAN("io.mosip.idrepository.saltgenerator.*"),
 	DB_SCHEMA_NAME("mosip.idrepo.salt-generator.schemaName"),
