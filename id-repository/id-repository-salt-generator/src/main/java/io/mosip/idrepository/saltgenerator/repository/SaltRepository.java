@@ -10,4 +10,5 @@ import io.mosip.idrepository.saltgenerator.entity.SaltEntity;
  */
 public interface SaltRepository extends JpaRepository<SaltEntity, Long> {
 
+	Long countAllById(Iterable<Long> ids);
 }
