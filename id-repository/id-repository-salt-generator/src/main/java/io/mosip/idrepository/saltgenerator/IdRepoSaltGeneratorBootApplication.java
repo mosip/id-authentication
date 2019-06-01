@@ -3,7 +3,7 @@ package io.mosip.idrepository.saltgenerator;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Manoj SP
@@ -11,10 +11,10 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 @SpringBootApplication
 @EnableBatchProcessing
-public class IdRepoSaltGeneratorApplication {
+public class IdRepoSaltGeneratorBootApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext applicationContext = SpringApplication.run(IdRepoSaltGeneratorApplication.class,
+		ApplicationContext applicationContext = SpringApplication.run(IdRepoSaltGeneratorBootApplication.class,
 				args);
 		SpringApplication.exit(applicationContext);
 	}
