@@ -132,7 +132,7 @@ public class ApplicationContext {
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
 		applicationMessagesBundle = ResourceBundle.getBundle("messages", applicationLanguageLocale);
 		localMessagesBundle = ResourceBundle.getBundle("messages", secondaryLanguageLocale);
-		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations", applicationLanguageLocale);
+		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations");
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class ApplicationContext {
 	 * 				the applicationMap to set
 	 */
 	public void setApplicationMap(Map<String, Object> applicationMap) {
-		this.applicationMap = applicationMap;
+		this.applicationMap.putAll(applicationMap);
 		BaseService.setBaseGlobalMap(applicationMap);
 	}
 

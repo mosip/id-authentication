@@ -1,6 +1,7 @@
 package io.mosip.registration.controller.device;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -9,9 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,13 +32,14 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
-import io.mosip.registration.device.fp.FingerPrintCaptureService;
-import io.mosip.registration.device.fp.FingerprintFacade;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
+import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.security.AuthenticationService;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -74,7 +74,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print capture service impl. */
 	@Autowired
-	private FingerPrintCaptureService fingerPrintCaptureService;
+	private AuthenticationService authenticationService;
 
 	/** The registration controller. */
 	@Autowired
@@ -192,7 +192,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 	/** The finger print facade. */
 	@Autowired
-	private FingerprintFacade fingerPrintFacade = null;
+	private BioService bioService;
 
 	/** The iris capture controller. */
 	@Autowired
@@ -812,7 +812,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.LEFTPALM),
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, leftHandPalmImageview,
 						leftSlapQualityScore, popupStage, leftHandPalmPane,
 						Double.parseDouble(
@@ -821,7 +821,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.RIGHTPALM),
 
 						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, rightHandPalmImageview,
 
@@ -832,7 +832,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, getOnboardFingertype(RegistrationConstants.THUMBS),
 
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD, thumbImageview, thumbsQualityScore,
 						popupStage, thumbPane,
@@ -859,6 +859,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
+	}
+
+	protected String getOnboardFingertype(String fingerType) {
+		if (bioService.isMdmEnabled()) {
+			fingerType = fingerType + "_onboard";
+		}
+		return fingerType;
 	}
 
 	/**
@@ -1012,11 +1019,19 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
-		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
-		// getFingerPrintImage(detailsDTO, fingerType);
+		try {
 
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
+		} catch (Exception exception) {
+			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
+							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+			fingerprintDetailsDTOs.remove(detailsDTO);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			return;
+		}
 
 		if (detailsDTO.getFingerPrint() != null) {
 
@@ -1117,49 +1132,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR);
 		}
 
-	}
-
-	/**
-	 * Scan fingers by making the call to service Api.
-	 *
-	 * @param detailsDTO
-	 *            the details DTO
-	 * @param fingerType
-	 *            the finger type
-	 */
-
-	public void getFingerPrintImage(FingerprintDetailsDTO detailsDTO, String fingerType) {
-		String type = fingerType;
-		switch (fingerType) {
-		case RegistrationConstants.LEFTPALM:
-			fingerType = RegistrationConstants.FINGER_SINGLE;
-			break;
-		case RegistrationConstants.RIGHTPALM:
-			fingerType = RegistrationConstants.FINGER_SINGLE;
-			break;
-		case RegistrationConstants.THUMBS:
-			fingerType = RegistrationConstants.FINGER_SLAP;
-			break;
-
-		default:
-			break;
-		}
-		Map<String, byte[]> byteMap = new WeakHashMap<String, byte[]>();
-		try {
-			byteMap = mosipBioDeviceManager.scan(fingerType);
-			if (byteMap != null) {
-				byte[] imageByte = byteMap.get(fingerType);
-				if (imageByte != null) {
-					detailsDTO.setFingerPrint(imageByte);
-					detailsDTO.setFingerType(type);
-					detailsDTO.setQualityScore(80);
-				}
-			}
-		} catch (RegBaseCheckedException exception) {
-			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-		}
 	}
 
 	/**
@@ -1317,7 +1289,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs,
 			boolean isValid, List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-			if (!fingerPrintCaptureService.validateFingerprint(segmentedFingerprintDetailsDTOs)) {
+			if (!validateFingerprint(segmentedFingerprintDetailsDTOs)) {
 				isValid = true;
 			} else {
 				FingerprintDetailsDTO duplicateFinger = (FingerprintDetailsDTO) SessionContext.map()
@@ -1542,5 +1514,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			str = ApplicationContext.applicationLanguageBundle().getString(str);
 			thumbSlapExceptionFingers.append(str.concat(RegistrationConstants.COMMA));
 		}
+	}
+
+	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
+		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
+		authenticationValidatorDTO.setAuthValidationType("multiple");
+		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
 	}
 }

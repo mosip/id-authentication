@@ -1,4 +1,4 @@
- package io.mosip.registration.service.external.impl;
+package io.mosip.registration.service.external.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -9,7 +9,6 @@ import static java.io.File.separator;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -27,8 +26,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
@@ -71,10 +70,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
 	private KeyGenerator keyGenerator;
-	
+
 	@Autowired
 	private DocumentTypeDAO documentTypeDAO;
-	
+
 	@Autowired
 	private MasterSyncDao masterSyncDao;
 
@@ -92,7 +91,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		RegistrationDTO registrationDTO = getRegistrationDtoContent();
 		DocumentDetailsDTO documentDetailsDTO;
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(preRegZipFile))) {
- 
+
 			ZipEntry zipEntry;
 			BufferedReader bufferedReader = null;
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
@@ -131,7 +130,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
-		
+
 		IndividualIdentity individualIdentity = (IndividualIdentity) getRegistrationDtoContent().getDemographicDTO()
 				.getDemographicInfoDTO().getIdentity();
 
@@ -145,8 +144,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		 * language irrespective of pre reg language
 		 */
 		docTypeName = getDocTypeForPrimaryLanguage(docTypeName);
-		documentDetailsDTO.setValue(docCatgory.concat("_")
-				.concat(docTypeName));
+		documentDetailsDTO.setValue(docCatgory.concat("_").concat(docTypeName));
 	}
 
 	private String getDocTypeForPrimaryLanguage(String docTypeName) {
@@ -214,13 +212,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
 						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
-				boolean isIDObjectValid = idObjectValidator.validateIdObject(
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
-				if (!isIDObjectValid) {
-					throw new RegBaseCheckedException(
-							RegistrationExceptionConstants.ID_OBJECT_SCHEMA_VALIDATOR.getErrorCode(),
-							RegistrationExceptionConstants.ID_OBJECT_SCHEMA_VALIDATOR.getErrorMessage());
-				}
+				idObjectValidator.validateIdObject(
+						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),
+						RegistrationConstants.PACKET_TYPE_NEW);
+
 			}
 		} catch (IOException exception) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
@@ -230,6 +225,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
 					jsonValidationException);
+		} catch (BaseCheckedException baseCheckedException) {
+			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		}
 
 	}
@@ -286,11 +283,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)).concat(separator).concat(PreRegistrationId)
-					.concat(ZIP_FILE_EXTENSION);
+			String filePath = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION))
+					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
-					new File(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
+					FileUtils.getFile(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 
@@ -310,7 +308,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		}
 	}
 
-	
 	/**
 	 * This method is used to decrypt the pre registration packet using the
 	 * symmetric key
@@ -329,9 +326,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	}
 
 	private RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.map()
-				.get(RegistrationConstants.REGISTRATION_DATA);
-	} 
+		return (RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA);
+	}
 
 	private boolean isListNotEmpty(List<?> values) {
 		return values != null && !values.isEmpty();

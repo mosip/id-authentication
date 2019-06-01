@@ -42,6 +42,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
@@ -57,6 +58,9 @@ public class InternalAuthRequestValidatorTest {
 
 	@Mock
 	private SpringValidatorAdapter validator;
+
+	@Mock
+	private IdObjectPatternValidator idObjectPatternValidator;
 
 	@Autowired
 	private Environment environment;

@@ -448,9 +448,9 @@
       "title_success": "Succès",
       "title_error": "Erreur",
       "cancelAppointment": {
-        "msg_confirm": "Rendez-vous pour L'application sélectionnée sera supprimée. Veuillez confirmer.",
-        "msg_deleted": "Rendez-vous pour L'application sélectionnée a été supprimée avec succès",
-        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être supprimée"
+        "msg_confirm": "Le rendez-vous pour l'application sélectionnée sera annulé.",
+        "msg_deleted": "Le rendez-vous pour l'application sélectionnée a été annulé avec succès.",
+        "msg_could_not_deleted": "Rendez-vous pour L'application sélectionnée n'a pas pu être annulée"
       },
       "deletePreregistration": {
         "msg_confirm": "L'application sélectionnée sera supprimée. Veuillez confirmer.",

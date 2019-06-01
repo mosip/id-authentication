@@ -38,6 +38,7 @@ public class LoggerConstants {
 	private static final String AUTHZ = APP_NAME + "AUTHORIZATION - ";
 	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
 	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
+	private static final String REG_ID_MASTER_DATA_VALIDATOR = APP_NAME + "MASTER_DATA_VALIDATION - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -81,6 +82,11 @@ public class LoggerConstants {
 	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
 	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
+	public static final String AUTHENTICATION_SRVICE = "AUTHENTICATION_SRVICE";
+	public static final String FINGER_PRINT_AUTHENTICATION = "FINGER_PRINT_AUTHENTICATION";
+	public static final String VALIDATE_FP_WITH_BIO_API = " VALIDATE_FP_WITH_BIO_API";
+	
+	public static final String BIO_SERVICE = "BIO_SERVICE";
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";
 	public static final String LOG_REG_USER_DETAIL_DAO = SYNC + "USER_DETAIL_DAO_IMPL";
@@ -129,6 +135,7 @@ public class LoggerConstants {
 	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
 	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
 	public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";
+	public static final String REG_ID_OBJECT_MASTER_DATA_VALIDATOR = REG_ID_MASTER_DATA_VALIDATOR + "REGISTRATION_ID_OBJECT_MASTER_DATA_VALIDATOR";
 
 	// Util
 	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME
@@ -145,6 +152,7 @@ public class LoggerConstants {
 	private static final String TPM_ASYMMETRIC_DECRYPTION = APP_NAME + "ASYMMETRIC_DECRYPTION_SERVICE - ";
 	private static final String TPM_SERVICE = APP_NAME + "TPM_SERVICE - ";
 	private static final String LOG_MODULE = APP_NAME + "TPM - ";
+	private static final String TPM_PUBLIC_KEY_SYNC = APP_NAME + "TPM_PUBLIC_KEY_SYNC - ";
 
 	public static final String LOG_TPM_INITIALIZATION = LOG_MODULE + "PLATFORM_TPM_INITIALIZATION";
 	public static final String LOG_PUBLIC_KEY = LOG_MODULE + "SIGN_KEY_CREATION_SERVICE";
@@ -159,6 +167,7 @@ public class LoggerConstants {
 	public static final String TPM_SERVICE_ASYMMETRIC_ENCRYPTION = TPM_SERVICE + "ASYMMETRIC_ENCRYPT";
 	public static final String TPM_SERVICE_ASYMMETRIC_DECRYPTION = TPM_SERVICE + "ASYMMETRIC_DECRYPT";
 	public static final String TPM_SERVICE_GET_SIGN_PUBLIC = TPM_SERVICE + "GET_SIGNING_PUBLIC_PART";
+	public static final String TPM_PUBLIC_KEY_UPLOAD = TPM_PUBLIC_KEY_SYNC + "SYNC_TPM_PUBLIC_KEY";
 
 	public static final String LOG_REG_MAC_ADDRESS = "MAC_ADDRESS_UTILL";
 

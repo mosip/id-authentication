@@ -249,8 +249,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
 		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
-
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
+		
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
@@ -259,7 +258,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 		regTransaction.setCrBy(SessionContext.isSessionContextAvailable() ? SessionContext.userContext().getUserId()
 				: RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-		regTransaction.setCrDtime(time);
+		regTransaction.setCrDtime(registrationPacket.getCrDtime());
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);

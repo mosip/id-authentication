@@ -248,6 +248,18 @@ public enum PlatformErrorMessages {
 	/** The rpr qcr invalid registration id. */
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "004", "Registration Id is null"),
 
+	/** The rpr qcr file name missing. */
+	RPR_QCR_FILENAME_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "006", 
+			"Individual Biometric Filename is not present in ID Json"),
+
+	/** The rpr qcr bio file missing. */
+	RPR_QCR_BIO_FILE_MISSING(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Individual Biometric File is not present in packet"),
+
+	/** The rpr qcr biometric exception. */
+	RPR_QCR_BIOMETRIC_EXCEPTION(PlatformConstants.RPR_QUALITY_CHECKER_MODULE + "007",
+			"Biometric Exception from IDA"),
+
 	/** The packet upload failed. */
 	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
 

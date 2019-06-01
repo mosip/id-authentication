@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import smoothscroll from 'smoothscroll-polyfill';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { BookingModel } from '../center-selection/booking.model';
 
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
@@ -21,7 +20,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit {
+export class TimeSelectionComponent implements OnInit, OnDestroy {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
   registrationCenter: String;
@@ -55,7 +54,7 @@ export class TimeSelectionComponent implements OnInit {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
-    smoothscroll.polyfill();
+    // smoothscroll.polyfill();
     this.translate.use(localStorage.getItem('langCode'));
   }
 
@@ -78,14 +77,22 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   public scrollRight(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft + 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
       behavior: 'smooth'
     });
   }
 
   public scrollLeft(): void {
-    this.widgetsContent.nativeElement.scrollBy({
+    // this.widgetsContent.nativeElement.scrollBy({
+    //   left: this.widgetsContent.nativeElement.scrollLeft - 100,
+    //   behavior: 'smooth'
+    // });
+    this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
       behavior: 'smooth'
     });
@@ -175,7 +182,7 @@ export class TimeSelectionComponent implements OnInit {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
@@ -189,7 +196,24 @@ export class TimeSelectionComponent implements OnInit {
       this.activeTab = selection;
     }
   }
-
+  
+  displayMessage(title: string, message: string) {
+    this.disableContinueButton = false;
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
+  
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -248,52 +272,32 @@ export class TimeSelectionComponent implements OnInit {
           this.displayMessage('Error', this.errorlabels.error);
         }
       },
-      error => {
+      () => {
         this.displayMessage('Error', this.errorlabels.error);
       }
     );
   }
 
-  // showError() {
-  //   this.disableContinueButton = false;
-  //   const data = {
-  //     case: 'MESSAGE',
-  //     title: this.secondaryLanguagelabels.title_failure,
-  //     message: this.secondaryLanguagelabels.msg_failure
-  //   };
-  //   const dialogRef = this.dialog.open(DialougComponent, {
-  //     width: '350px',
-  //     data: data
-  //   });
-  // }
-  displayMessage(title: string, message: string) {
-    this.disableContinueButton = false;
-    const messageObj = {
-      case: 'MESSAGE',
-      title: title,
-      message: message
-    };
-    this.openDialog(messageObj, '250px');
-  }
-  openDialog(data, width) {
-    const dialogRef = this.dialog.open(DialougComponent, {
-      width: width,
-      data: data
-    });
-    return dialogRef;
-  }
-
   navigateDashboard() {
-    const routeParams = this.router.url.split('/');
     this.router.navigate(['dashboard']);
   }
 
-  navigateBack() {
+  reloadData() {
     this.bookingService.flushNameList();
     this.temp.forEach(name => {
       this.bookingService.addNameList(name);
     });
+  }
+
+  navigateBack() {
+    this.reloadData();
     const url = Utils.getURL(this.router.url, 'pick-center');
     this.router.navigateByUrl(url);
+  }
+
+  ngOnDestroy() {
+    if (!this.bookingService.getSendNotification()) {
+      this.reloadData();
+    }
   }
 }

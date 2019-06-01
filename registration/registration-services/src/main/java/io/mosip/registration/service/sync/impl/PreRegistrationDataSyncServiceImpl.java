@@ -132,14 +132,20 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				}
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
-			/*	if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
-						&& mainResponseDTO.getErrors().getMessage() != null) {
-					errMsg += " : " + mainResponseDTO.getErrors().getMessage();
-				}*/
+				boolean isNoRecordMsg = false;
+				if (mainResponseDTO != null && mainResponseDTO.getErrors() != null
+						&& !mainResponseDTO.getErrors().isEmpty()
+						&& mainResponseDTO.getErrors().get(0).getMessage() != null) {
+					if ("Record not found for date range and reg center id"
+							.equalsIgnoreCase(mainResponseDTO.getErrors().get(0).getMessage())) {
+						setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, null);
+						isNoRecordMsg = true;
+					}
+				}
 				LOGGER.error("PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, errMsg);
-
-				setErrorResponse(responseDTO, errMsg, null);
+				if (!isNoRecordMsg)
+					setErrorResponse(responseDTO, errMsg, null);
 			}
 
 		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException
@@ -318,7 +324,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					 */
 					decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(
 							preRegistration.getPacketSymmetricKey(),
-							FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath())));
+							FileUtils.readFileToByteArray(FileUtils.getFile(preRegistration.getPacketPath())));
 				}
 
 				/* set decrypted packet into Response */
@@ -630,7 +636,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			for (PreRegistrationList preRegRecord : preRegList) {
 
 				/* Get File to be deleted from pre registartion */
-				File preRegPacket = new File(preRegRecord.getPacketPath());
+				File preRegPacket = FileUtils.getFile(preRegRecord.getPacketPath());
 				if (preRegPacket.exists() && preRegPacket.delete()) {
 					preRegistartionsToBeDeletedList.add(preRegRecord);
 				}

@@ -94,6 +94,7 @@ public class PacketSynchServiceImplTest {
 		Registration reg = new Registration();
 		reg.setCrDtime(Timestamp.from(Instant.now()));
 		reg.setId("12345");
+		reg.setCrDtime(Timestamp.from(Instant.now()));
 		syncList.add(reg);
 		List<PacketStatusDTO> packetsList = new ArrayList<>();
 		PacketStatusDTO packetStatusDTO = new PacketStatusDTO();

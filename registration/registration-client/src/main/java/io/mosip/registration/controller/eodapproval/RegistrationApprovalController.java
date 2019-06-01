@@ -46,7 +46,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -518,11 +517,11 @@ public class RegistrationApprovalController extends BaseController implements In
 			primaryStage.close();
 			reloadTableView();
 
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
+			/*if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
 
 				uploadPacketsInBackground(regIds);
 
-			}
+			}*/
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
