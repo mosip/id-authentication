@@ -31,7 +31,7 @@ public class SaltWriter implements ItemWriter<SaltEntity> {
 	@Override
 	@Transactional
 	public void write(List<? extends SaltEntity> entities) throws Exception {
-		if (repo.countAllById(entities.parallelStream().map(SaltEntity::getId).collect(Collectors.toList())) == 0l) {
+		if (repo.countByIdIn(entities.parallelStream().map(SaltEntity::getId).collect(Collectors.toList())) == 0l) {
 			repo.saveAll(entities);
 			mosipLogger.debug("ID_REPO_SALT_GENERATOR", "SaltWriter", "Entities written", String.valueOf(entities.size()));
 		} else {

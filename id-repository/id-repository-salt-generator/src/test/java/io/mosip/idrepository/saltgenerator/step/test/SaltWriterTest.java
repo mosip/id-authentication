@@ -31,7 +31,7 @@ public class SaltWriterTest {
 	public void testWriter() throws Exception {
 		SaltEntity entity = new SaltEntity();
 		entity.setId(0l);
-		when(repo.countAllById(Mockito.any())).thenReturn(0l);
+		when(repo.countByIdIn(Mockito.any())).thenReturn(0l);
 		writer.write(Collections.singletonList(entity));
 	}
 
@@ -40,7 +40,7 @@ public class SaltWriterTest {
 		try {
 			SaltEntity entity = new SaltEntity();
 			entity.setId(0l);
-			when(repo.countAllById(Mockito.any())).thenReturn(1l);
+			when(repo.countByIdIn(Mockito.any())).thenReturn(1l);
 			writer.write(Collections.singletonList(entity));
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.RECORD_EXISTS.getErrorCode(), e.getErrorCode());
