@@ -1,8 +1,5 @@
 package io.mosip.idrepository.identity.service.impl;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,7 +35,6 @@ import io.mosip.idrepository.core.helper.AuditHelper;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.spi.IdRepoService;
-import io.mosip.idrepository.identity.controller.IdRepoController;
 import io.mosip.idrepository.identity.entity.Uin;
 import io.mosip.idrepository.identity.repository.UinHashSaltRepo;
 import io.mosip.idrepository.identity.repository.UinHistoryRepo;
@@ -102,9 +98,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/** The Constant READ. */
 	private static final String READ = "read";
 
-	/** The Constant UPDATE. */
-	private static final String UPDATE = "update";
-
 	/** The Constant ALL. */
 	private static final String ALL = "all";
 
@@ -127,9 +120,9 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Resource
 	private List<String> allowedBioAttributes;
 
-//	/** The shard resolver. */
-//	@Autowired
-//	private ShardResolver shardResolver;
+	// /** The shard resolver. */
+	// @Autowired
+	// private ShardResolver shardResolver;
 
 	/** The uin repo. */
 	@Autowired
@@ -150,10 +143,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	@Autowired
 	private IdRepoSecurityManager securityManager;
-	
+
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -213,10 +206,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	}
 
 	private String retrieveUinHash(String uin) {
-		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(),Integer.class);
-		int modResult=(int) (Long.parseLong(uin)%moduloValue);
-		String hashSalt =uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinHash = modResult+ "_" +securityManager.hashwithSalt(uin.getBytes(),hashSalt.getBytes());
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
+		int modResult = (int) (Long.parseLong(uin) % moduloValue);
+		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
+		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 		return uinHash;
 	}
 
@@ -274,9 +267,12 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Gets the files.
 	 *
-	 * @param uinObject the uin object
-	 * @param documents the documents
-	 * @param type      the type
+	 * @param uinObject
+	 *            the uin object
+	 * @param documents
+	 *            the documents
+	 * @param type
+	 *            the type
 	 * @return the files
 	 */
 	private void getFiles(Uin uinObject, List<Documents> documents, String type) {
@@ -292,8 +288,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Gets the demographic files.
 	 *
-	 * @param uinObject the uin object
-	 * @param documents the documents
+	 * @param uinObject
+	 *            the uin object
+	 * @param documents
+	 *            the documents
 	 * @return the demographic files
 	 */
 	private void getDemographicFiles(Uin uinObject, List<Documents> documents) {
@@ -335,8 +333,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Gets the biometric files.
 	 *
-	 * @param uinObject the uin object
-	 * @param documents the documents
+	 * @param uinObject
+	 *            the uin object
+	 * @param documents
+	 *            the documents
 	 * @return the biometric files
 	 */
 	private void getBiometricFiles(Uin uinObject, List<Documents> documents) {
@@ -414,46 +414,42 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Construct id response.
 	 *
-	 * @param id        the id
-	 * @param uin       the uin
-	 * @param documents the documents
+	 * @param id
+	 *            the id
+	 * @param uin
+	 *            the uin
+	 * @param documents
+	 *            the documents
 	 * @return the id response DTO
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private IdResponseDTO constructIdResponse(String id, Uin uin, List<Documents> documents) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
-
 		idResponse.setId(id);
-
 		idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-
 		ResponseDTO response = new ResponseDTO();
-
 		response.setStatus(uin.getStatusCode());
-
-		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
-			response.setEntity(linkTo(methodOn(IdRepoController.class).retrieveIdentityByUin(uin.getUin().trim(), null))
-					.toUri().toString());
-		} else {
+		if (id.equals(this.id.get(READ))) {
 			if (!Objects.isNull(documents)) {
 				response.setDocuments(documents);
 			}
-
 			response.setIdentity(convertToObject(uin.getUinData(), Object.class));
 		}
-
 		idResponse.setResponse(response);
-
 		return idResponse;
 	}
 
 	/**
 	 * Convert to object.
 	 *
-	 * @param identity the identity
-	 * @param clazz    the clazz
+	 * @param identity
+	 *            the identity
+	 * @param clazz
+	 *            the clazz
 	 * @return the object
-	 * @throws IdRepoAppException the id repo app exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
 	 */
 	private Object convertToObject(byte[] identity, Class<?> clazz) throws IdRepoAppException {
 		try {
