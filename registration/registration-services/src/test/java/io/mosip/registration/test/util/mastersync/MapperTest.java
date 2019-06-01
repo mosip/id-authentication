@@ -17,7 +17,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
 import io.mosip.registration.entity.Language;

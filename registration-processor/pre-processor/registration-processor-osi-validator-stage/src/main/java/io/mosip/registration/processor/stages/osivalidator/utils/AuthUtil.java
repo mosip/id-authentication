@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.xml.sax.SAXException;
 
@@ -27,6 +28,7 @@ import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -54,6 +56,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 
 /**
  * @author Ranjitha Siddegowda
@@ -86,7 +89,7 @@ public class AuthUtil {
 	public static final String RSA = "RSA";
 
 	/** The Constant RSA. */
-	public static final String PARTNER_ID = "PARTNER";
+	public static final String PARTNER_ID = "INTERNAL";
 
 	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 
@@ -94,7 +97,10 @@ public class AuthUtil {
 
 	IBioApi bioAPi =  new BioApiImpl ();
 
-	CbeffUtil cbeffUtil = new CbeffImpl();
+	
+	
+	@Value("${mosip.identity.auth.internal.requestid}")
+	private String authRequestId;
 
 	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException, BiometricException, BioTypeException {
 		
@@ -103,7 +109,7 @@ public class AuthUtil {
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics = new ArrayList<>();
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setId(authRequestId);
 		authRequestDTO.setIndividualId(individualId);
 		authRequestDTO.setIndividualIdType(individualType);
 		authRequestDTO.setRequestTime(DateUtils.getUTCCurrentDateTimeString());
@@ -208,23 +214,24 @@ public class AuthUtil {
 
 	private List<BioInfo> getBioValue(byte[] cbefByteFile)
 			throws BiometricException, BioTypeException {
-		List<BIRType> list;
-		
+		List<BIR> list;
+		CbeffUtil cbeffUtil = new CbeffImpl();
+		CbeffToBiometricUtil CbeffToBiometricUtil=new CbeffToBiometricUtil(cbeffUtil);
 
 		List<BioInfo> biometrics = new ArrayList<>();
 		try {
-			list = cbeffUtil.getBIRDataFromXML(cbefByteFile);
+			list = CbeffToBiometricUtil.convertBIRTYPEtoBIR(cbeffUtil.getBIRDataFromXML(cbefByteFile));
 
-			for (BIRType birType : list) {
+			for (BIR bir : list) {
 				BioInfo bioInfo = new BioInfo();
 				DataInfoDTO dataInfoDTO = new DataInfoDTO();
-				BIRType birApiResponse = bioAPi.extractTemplate(birType, null);
+				BIR birApiResponse = bioAPi.extractTemplate(bir, null);
 				
-				getBioType(dataInfoDTO, birApiResponse.getBDBInfo().getType().get(0).toString());
+				getBioType(dataInfoDTO, birApiResponse.getBdbInfo().getType().get(0).toString());
 
 				StringBuilder bioSubTypeValue =new StringBuilder();  
 				
-				List<String> bioSubType = birApiResponse.getBDBInfo().getSubtype();
+				List<String> bioSubType = birApiResponse.getBdbInfo().getSubtype();
 				if (!bioSubType.isEmpty()) {
 					for (String value : bioSubType) {
 						bioSubTypeValue.append(value);
@@ -233,7 +240,7 @@ public class AuthUtil {
 				
 				getBioSubType(dataInfoDTO, bioSubTypeValue.toString());
 				
-				dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBDB()));
+				dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBdb()));
 				dataInfoDTO.setDeviceProviderID("cogent");
 				dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 				dataInfoDTO.setTransactionID("1234567890");

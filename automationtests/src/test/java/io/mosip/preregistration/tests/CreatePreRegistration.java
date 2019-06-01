@@ -188,7 +188,7 @@ public SoftAssert softAssert = new SoftAssert();
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
+		//lib.logOut();
 	}
 
 	@BeforeMethod(alwaysRun=true)
@@ -210,3 +210,4 @@ public SoftAssert softAssert = new SoftAssert();
 	}
 
 }
+

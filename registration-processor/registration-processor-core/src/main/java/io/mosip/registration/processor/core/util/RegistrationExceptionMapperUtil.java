@@ -146,6 +146,8 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.AUTH_FAILED, RegistrationTransactionStatusCode.FAILED);
         statusMap.put(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE, RegistrationTransactionStatusCode.FAILED);
         statusMap.put(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS );
+
 		return unmodifiableMap;
 
 	}

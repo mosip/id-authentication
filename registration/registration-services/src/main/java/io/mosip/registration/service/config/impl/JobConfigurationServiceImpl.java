@@ -29,7 +29,6 @@ import org.quartz.JobListener;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerListener;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -50,6 +49,7 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -274,18 +274,12 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
 
 				}
-			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
+			} catch (SchedulerException | RuntimeException exception) {
 				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 				/* Stop, Clear Scheduler and set Error response */
-				setStartExceptionError(responseDTO);
-
-			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID,
-						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 				setStartExceptionError(responseDTO);
 
 			}
@@ -453,13 +447,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 			}
 
-		} catch (NoSuchBeanDefinitionException | NullPointerException | IllegalArgumentException exception) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-			responseDTO = new ResponseDTO();
-			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -690,6 +677,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
+	@Autowired
+	ResponseDTOForSync responseDTOForSync;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -712,6 +702,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (jobResponse.getErrorResponseDTOs() != null) {
 					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
+					responseDTOForSync.getErrorJobs().add(syncJob.getKey());
+				} else {
+					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
 				}
 			}
 		}
@@ -721,6 +714,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		}
 
 		return responseDTO;
+
 	}
 
 	/*

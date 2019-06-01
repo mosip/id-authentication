@@ -86,10 +86,11 @@ public class DocumentTypeController {
 
 	/**
 	 * Api to update document type.
-	 * 
+	 * .
 	 * @param types the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")

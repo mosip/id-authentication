@@ -12,6 +12,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	private String cntrId;
 	private String machineId;
 	private String usrId;
+	private String langCode;
 
 	private boolean isActive;
 
@@ -76,5 +77,24 @@ public class RegistrationCenterUserMachineMappingDto {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+
+	/**
+	 * 
+	 * @return langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * 
+	 * @param langCode
+	 *      	  the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+	
+	
 
 }

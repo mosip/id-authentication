@@ -1,5 +1,10 @@
 package io.mosip.registration.test.util.common;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,16 +34,11 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
@@ -57,7 +57,7 @@ public class OTPManagerTest {
 	OTPValidatorImpl otpValidator;
 
 	@Mock
-	AuthenticationService authenticationService;
+	AuthenticationServiceImpl authenticationService;
 
 	@BeforeClass
 	public static void initialize() {

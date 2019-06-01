@@ -535,8 +535,7 @@
     "text_search": "Chercher....",
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
-    "action_continue": "CONTINUER",
-    "noResult_found" : "Aucun résultat trouvé"
+    "action_continue": "CONTINUER"
   },
   "autologout": {
     "preview": "Vous serez expiré dans 60 secondes en raison de votre inactivité. Veuillez cliquer n'importe où pour réactiver votre session",

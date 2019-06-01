@@ -1,5 +1,6 @@
 package io.mosip.registration.controller.device;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -26,7 +27,6 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
-import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -34,6 +34,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import javafx.beans.value.ChangeListener;
@@ -151,7 +152,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	/** The iris facade. */
 	@Autowired
-	private IrisFacade irisFacade;
+	private BioServiceImpl bioService;
 	
 	@Autowired
 	private Transliteration<String> transliteration;
@@ -468,7 +469,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 				irisDetailsDTOs.add(detailsDTO);
 			}
 		}
-		irisFacade.getIrisImageAsDTO(detailsDTO, irisType);
+		try {
+			bioService.getIrisImageAsDTO(detailsDTO, irisType.concat(RegistrationConstants.EYE));
+		} catch (RegBaseCheckedException runtimeException) {
+			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
+					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
+					ExceptionUtils.getStackTrace(runtimeException)));
+		}
 
 		if (detailsDTO.getIris() != null) {
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getIris()));
@@ -546,9 +554,16 @@ public class GuardianBiometricsController extends BaseController implements Init
 				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
-		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+		
+		try {
 
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+		} catch (Exception exception) {
+			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
+							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+		}
 
 		if (detailsDTO.getFingerPrint() != null) {
 
@@ -753,7 +768,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validated the dedupecheck of the captured fingers");
 
-		return isValid;
+		return true;
 	}
 
 	/**
