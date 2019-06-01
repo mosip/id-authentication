@@ -204,14 +204,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 				.toString();
 		byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
 		
-		Integer moduloValue = env.getProperty("mosip.idrepo.identity.modulo",Integer.class);
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(),Integer.class);
 		int modResult=(int) (Long.parseLong(uin)%moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
 		String uinToEncrypt=modResult+"_"+uin+"_"+encryptSalt;
 		String uinHash = modResult+ "_" +securityManager.hashwithSalt(uin.getBytes(),hashSalt.getBytes());
 		
-		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId()) && !uinRepo.existsByUin(uin)) {
+		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 			List<UinDocument> docList = new ArrayList<>();
 			List<UinBiometric> bioList = new ArrayList<>();
 			Uin uinEntity;
@@ -431,7 +431,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
 	public Uin updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		
-		Integer moduloValue = env.getProperty("mosip.idrepo.identity.modulo",Integer.class);
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(),Integer.class);
 		int modResult=(int) (Long.parseLong(uin)%moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);

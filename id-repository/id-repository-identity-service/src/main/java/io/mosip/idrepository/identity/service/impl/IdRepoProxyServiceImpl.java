@@ -213,7 +213,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	}
 
 	private String retrieveUinHash(String uin) {
-		Integer moduloValue = env.getProperty("mosip.idrepo.identity.modulo",Integer.class);
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(),Integer.class);
 		int modResult=(int) (Long.parseLong(uin)%moduloValue);
 		String hashSalt =uinHashSaltRepo.retrieveSaltById(modResult);
 		String uinHash = modResult+ "_" +securityManager.hashwithSalt(uin.getBytes(),hashSalt.getBytes());
