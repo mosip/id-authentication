@@ -296,7 +296,8 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (!this.bookingService.getSendNotification())
+    if (!this.bookingService.getSendNotification()) {
       this.reloadData();
+    }
   }
 }
