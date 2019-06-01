@@ -17,6 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -111,7 +112,7 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) throws ParseException{
+	public void fetchTemplate(String testcaseName, JSONObject object) throws ParseException{
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -137,6 +138,10 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			if (responseJson == null || !responseJson.containsKey("templates"))
+				Assert.assertTrue(false, "Response does not contain templates");
 			String queryPart = "select count(*) from master.template";
 			String query = queryPart;
 			if (objectData != null) {
@@ -149,8 +154,6 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray devicesFromGet = (JSONArray) responseJson.get("templates");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + devicesFromGet.size());

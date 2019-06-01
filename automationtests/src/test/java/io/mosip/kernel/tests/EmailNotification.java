@@ -99,7 +99,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object){
+	public void eamilNotification(String testcaseName, JSONObject object){
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
