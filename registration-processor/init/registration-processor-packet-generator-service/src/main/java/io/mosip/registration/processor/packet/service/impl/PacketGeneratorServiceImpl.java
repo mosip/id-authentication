@@ -124,11 +124,11 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")); 
 				String creationTime = ldt.toString()+".000Z";
 
-				filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
-						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);
+				/*filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
+						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);*/
 
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-						creationTime, request.getRegistrationType());
+						creationTime, request.getRegistrationType(),packetZipBytes);
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
