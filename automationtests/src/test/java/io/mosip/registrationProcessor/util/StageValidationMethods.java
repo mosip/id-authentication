@@ -30,7 +30,7 @@ public class StageValidationMethods extends BaseTestCase {
 	static public List<String> statusFromDb=new LinkedList<String>();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
 	EncryptData encryptData=new EncryptData();
-	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
 	public String syncPacket(File packet) {
 		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
