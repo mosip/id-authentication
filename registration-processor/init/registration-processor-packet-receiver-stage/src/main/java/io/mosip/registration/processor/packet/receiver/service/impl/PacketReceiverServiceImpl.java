@@ -154,10 +154,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithSync();
+				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());

@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -491,6 +492,7 @@ public class BioDedupeProcessorTest {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
+	@Ignore
 	@Test
 	public void testLostPacketValidationSingleMatchedRegId() throws ApisResourceAccessException, IOException {
 		registrationStatusDto.setRegistrationId("reg1234");
