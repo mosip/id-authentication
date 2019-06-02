@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","transactionID":"1688153634","version":"1.0","response":null}
-=======
 {"errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN"}],"responseTime":"$TIMESTAMP$","transactionID":"6700466583","version":"1.0","response":null}
->>>>>>> 0.12.0

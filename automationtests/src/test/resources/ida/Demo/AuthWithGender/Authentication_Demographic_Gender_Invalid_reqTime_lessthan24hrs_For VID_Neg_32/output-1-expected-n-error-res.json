@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-001","errorMessage":"Request to be received at MOSIP within 30 minutes"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2061807628","id":"mosip.identity.auth"}
-=======
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-001","errorMessage":"Request to be received at MOSIP within 30 minutes"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2064322278","id":"mosip.identity.auth"}
->>>>>>> 0.12.0

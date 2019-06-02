@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"5538270243","responseTime":"2019-05-28T09:17:06.203+05:30","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - individualId"}],"response":null}

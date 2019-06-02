@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"identityRequest":{"biometrics":[{"data":{"bioSubType":"UNKNOWN","bioType":"IIR","bioValue":"Content is not allowed in prolog.","deviceCode":"cogent","deviceProviderID":"cogent","timestamp":"2019-05-22T18:56:29.029+05:30","transactionID":"1815444755"}}],"timestamp":"2019-05-22T18:56:29.029+05:30"}}
-=======
 {"identityRequest":{"biometrics":[{"data":{"bioSubType":"UNKNOWN","bioType":"IIR","bioValue":"Content is not allowed in prolog.","deviceCode":"cogent","deviceProviderID":"cogent","timestamp":"2019-05-30T13:08:42.042+05:30","transactionID":"$RANDOM:N:10$"}}],"timestamp":"2019-05-30T13:08:42.042+05:30"}}
->>>>>>> 0.12.0

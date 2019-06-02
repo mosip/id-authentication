@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"7107818251","id":"mosip.identity.auth"}
-=======
 {"response":{"authStatus":false},"errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"2848712802","id":"mosip.identity.auth"}
->>>>>>> 0.12.0

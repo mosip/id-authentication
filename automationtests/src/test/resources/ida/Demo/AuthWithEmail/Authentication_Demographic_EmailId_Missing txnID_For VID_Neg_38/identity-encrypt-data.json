@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"identityRequest":{"transactionID":"8206663250","demographics":{},"timestamp":"2019-03-16T10:01:57.086+05:30"}}
-=======
 {"identityRequest":{"transactionID":"1056752483","demographics":{},"timestamp":"2019-03-16T10:01:57.086+05:30"}}
->>>>>>> 0.12.0

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated"}],"responseTime":"$TIMESTAMP$","transactionID":"0807888137","version":"1.0","response":null}
-=======
 {"errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated"}],"responseTime":"$TIMESTAMP$","transactionID":"0075837110","version":"1.0","response":null}
->>>>>>> 0.12.0

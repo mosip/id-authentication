@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"requestTime":"2019-05-28T09:14:58.058+05:30","otpChannel":["PHONE","EMAIL"],"id":"mosip.identity.otp","version":"1.0","transactionID":"5425356711","individualIdType":"UIN"}
-=======
 {"requestTime":"2019-05-30T13:08:35.035+05:30","otpChannel":["PHONE","EMAIL"],"id":"mosip.identity.otp","version":"1.0","transactionID":"0677704540","individualIdType":"UIN"}
->>>>>>> 0.12.0

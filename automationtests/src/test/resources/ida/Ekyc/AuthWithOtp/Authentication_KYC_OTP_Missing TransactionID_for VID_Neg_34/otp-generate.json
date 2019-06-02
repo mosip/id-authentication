@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"1543833333","requestTime":"2019-05-28T09:15:07.007+05:30","individualId":"org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'","individualIdType":"VID","otpChannel":["EMAIL","PHONE"]}
-=======
 {"id":"mosip.identity.otp","version":"1.0","transactionID":"1120778806","requestTime":"2019-05-30T13:08:42.042+05:30","individualId":"org.apache.commons.beanutils.NestedNullException: Null property value for 'response.vid' on bean class 'class java.util.LinkedHashMap'","individualIdType":"VID","otpChannel":["EMAIL","PHONE"]}
->>>>>>> 0.12.0

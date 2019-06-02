@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"identityRequest":{"demographics":{"location1":[{"language":"fra"},{"language":"ara"}],"addressLine1":[{"language":"fra"},{"language":"ara"}],"location2":[{"language":"fra"},{"language":"ara"}],"addressLine2":[{"language":"fra"},{"language":"ara"}],"location3":[{"language":"fra"},{"language":"ara"}],"addressLine3":[{"language":"fra"},{"language":"ara"}]},"timestamp":"2019-05-28T09:13:40.040+05:30"}}
-=======
 {"identityRequest":{"demographics":{"location1":[{"language":"fra"},{"language":"ara"}],"addressLine1":[{"language":"fra"},{"language":"ara"}],"location2":[{"language":"fra"},{"language":"ara"}],"addressLine2":[{"language":"fra"},{"language":"ara"}],"location3":[{"language":"fra"},{"language":"ara"}],"addressLine3":[{"language":"fra"},{"language":"ara"}]},"timestamp":"2019-05-30T15:06:00.000+05:30"}}
->>>>>>> 0.12.0
