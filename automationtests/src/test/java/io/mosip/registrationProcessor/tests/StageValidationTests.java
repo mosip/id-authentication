@@ -76,17 +76,18 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
 		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
 		try {
 			reader.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}*/
+		}
 	}
 
 	@DataProvider(name = "packetValidatorStage")
@@ -124,7 +125,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		 } 
 		return objArray;
 	}
-/*	@DataProvider(name="demoDedupeStage")
+	@DataProvider(name="demoDedupeStage")
 	public File[] getInvalidDemoDedupePackets() {
 		
 		File file = new File(invalidPacketPath + "/DemoDedupe");
@@ -141,7 +142,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		 } 
 		return objArray;
 	}
-	*/
+	
 	
 	@Test(dataProvider = "packetValidatorStage")
 	public void packetValidatorStage(File[] listOfInvpackets) {
@@ -225,7 +226,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	softAssert.assertAll();
 		regID="";
 	}
-	/*@Test(dataProvider = "demoDedupeStage")
+	@Test(dataProvider = "demoDedupeStage")
 	public void demoDedupeStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -263,7 +264,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";
-	}*/
+	}
 	
 
 
