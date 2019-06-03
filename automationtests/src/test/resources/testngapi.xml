@@ -18,7 +18,7 @@
                                                  
 
 
-			<test name="Kernel Tests">
+			<!-- <test name="Kernel Tests">
 						 <classes>
                            <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -77,7 +77,7 @@
                  </classes>
 				</test>   
 
- 
+  -->
 
 
 		 <test name="PreReg Tests">
@@ -116,7 +116,7 @@
 		</classes>
 	</test> 
 
-	    <test name="AuthenticationTest">
+	 <!--    <test name="AuthenticationTest">
 		<parameter name="testType" value="smoke" />
 		<classes>
 		<class name="io.mosip.authentication.tests.OtpGeneration" />
@@ -140,7 +140,7 @@
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />  
 		</classes>
 
-	</test> 
+	</test>  
 
 
  	 <test name="RegistrationProcessor Tests">
@@ -161,6 +161,6 @@
 
 		</classes>
 
-	</test>    
+	</test>    -->
 
 </suite>
