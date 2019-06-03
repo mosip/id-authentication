@@ -52,7 +52,6 @@ export class DashBoardComponent implements OnInit {
   isNewApplication = false;
   isFetched = false;
   allApplicants: any[];
-
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
 
@@ -88,7 +87,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   ngOnInit() {
-    this.regService.changeMessage({ modifyUser: 'false' });
     this.loginId = this.regService.getLoginId();
     this.initUsers();
     this.autoLogout.currentMessageAutoLogout.subscribe(message => (this.message = message));
@@ -113,9 +111,12 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   initUsers() {
+    this.getUsers();
+  }
+
+  flushArrays() {
     this.regService.flushUsers();
     this.bookingService.flushNameList();
-    this.getUsers();
   }
 
   /**
@@ -157,7 +158,7 @@ export class DashBoardComponent implements OnInit {
           this.onError();
         }
       },
-      error => {
+      () => {
         this.onError();
         this.isFetched = true;
       },
@@ -265,6 +266,8 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   onNewApplication() {
+    this.flushArrays();
+    this.regService.changeMessage({ modifyUser: 'false' });
     if (this.loginId) {
       this.router.navigate(['pre-registration', 'demographic']);
       this.isNewApplication = true;
@@ -357,7 +360,7 @@ export class DashBoardComponent implements OnInit {
           );
         }
       },
-      error => {
+      () => {
         this.displayMessage(
           this.secondaryLanguagelabels.title_error,
           this.secondaryLanguagelabels.deletePreregistration.msg_could_not_deleted
@@ -388,7 +391,7 @@ export class DashBoardComponent implements OnInit {
             );
           }
         },
-        error => {
+        () => {
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
             this.secondaryLanguagelabels.cancelAppointment.msg_could_not_deleted
@@ -407,14 +410,14 @@ export class DashBoardComponent implements OnInit {
           if (confirm) {
             this.deletePreregistration(element);
           }
-         });
+        });
       } else if (selectedOption && Number(selectedOption) === 2) {
         dialogRef = this.confirmationDialog(selectedOption);
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             this.cancelAppointment(element);
           }
-         });
+        });
       }
     });
   }
@@ -435,12 +438,13 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   onModifyInformation(user: Applicant) {
+    this.flushArrays();
     const preId = user.applicationID;
     this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      error => {
+      () => {
         this.disableModifyDataButton = false;
         this.onError();
       },
@@ -450,7 +454,7 @@ export class DashBoardComponent implements OnInit {
           response => {
             this.onModification(response, preId);
           },
-          error => {
+          () => {
             this.onError();
           }
         );
@@ -500,6 +504,7 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   onModifyMultipleAppointment() {
+    this.flushArrays();
     for (let index = 0; index < this.selectedUsers.length; index++) {
       this.addtoNameList(this.selectedUsers[index]);
     }
@@ -515,6 +520,7 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   onAcknowledgementView(user: Applicant) {
+    this.flushArrays();
     this.addtoNameList(user);
     let url = '';
     url = Utils.getURL(this.router.url, 'pre-registration/summary/acknowledgement');
@@ -588,7 +594,7 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private getErrorLabels() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
         this.errorLanguagelabels = response['error'];
         resolve(true);
