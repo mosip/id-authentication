@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,7 +23,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -152,7 +150,7 @@ public class PacketUploaderServiceTest {
 		regEntity.setId("001");
 		regEntity.setLangCode("eng");
 		regEntity.setRegistrationId("0000");
-		regEntity.setRegistrationType("new");
+		regEntity.setRegistrationType("NEW");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 		regEntity.setPacketHashValue("abcd1234");
@@ -178,7 +176,6 @@ public class PacketUploaderServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void testvalidateAndUploadPacketSuccess() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		ReflectionTestUtils.setField(packetuploaderservice, "maxRetryCount", 3);
@@ -192,7 +189,6 @@ public class PacketUploaderServiceTest {
 		Mockito.when(fileManager.cleanUp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Boolean.TRUE);
 		MessageDTO result = packetuploaderservice.validateAndUploadPacket(dto.getRid(), "PacketUploaderStage");
-		//TODO Update this test case
 		assertTrue(result.getIsValid());
 	}
 
