@@ -18,7 +18,7 @@
                                                  
 
 
-			 <test name="Kernel Tests">
+			<!--  <test name="Kernel Tests">
 						 <classes>
                             <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -72,15 +72,15 @@
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />  
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.UploadPublickey" />
-                           <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
+                           <class name="io.mosip.kernel.tests.ValidateGenderByName" />  
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
                  </classes>
-				</test>   
+				</test>    -->
 
   
 
 
-		 <test name="PreReg Tests">
+	  <test name="PreReg Tests">
 		<classes>
 		
 			 <class name="io.mosip.preregistration.tests.BatchJob" />		
@@ -116,7 +116,7 @@
 		</classes>
 	</test> 
 
-	   <test name="AuthenticationTest">
+<!-- 	   <test name="AuthenticationTest">
 		<parameter name="testType" value="smoke" />
 		<classes>
 		<class name="io.mosip.authentication.tests.OtpGeneration" />
@@ -162,6 +162,6 @@
 
 		</classes>
 
-	</test>    
+	</test>     -->
 
 </suite>
