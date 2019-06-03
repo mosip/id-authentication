@@ -70,6 +70,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
+		//authToken=lib.getToken();
 	}
 
 	/**
@@ -82,14 +83,20 @@ public class Sample extends BaseTestCase implements ITest {
 
 	@Test
 	public void makeRegistartionCenterInactive() {
-	//dao.makeregistartionCenterActive("10012");
-	lib.syncAvailability();
-	lib.FetchCentre("10012");
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		try {
+			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		} catch (NullPointerException e) {
+			Reporter.log("create application failed");
+		}
+		
 	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		authToken = lib.getToken();
+		//authToken = lib.getToken();
 
 	}
 
