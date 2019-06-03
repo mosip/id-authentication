@@ -21,16 +21,13 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
-import io.mosip.registration.entity.CenterMachine;
 import io.mosip.registration.entity.KeyStore;
-import io.mosip.registration.entity.id.CenterMachineId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;

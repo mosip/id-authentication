@@ -1,12 +1,9 @@
 {
-   "id": "mosip.pre-registration.document.fetch.metadata",
-   "version" : "1.0",
-   "responsetime": "2019-01-16T17:31:04.021Z",
-   "response":null,
-   "errors": [
-  	{
-    	    "errorCode": "PRG_PAM_DOC_005",
-    	    "message": "Documents is not found for the requested pre-registration id"
-        }
-    ]
+
+    "timestamp": "2019-05-26T13:47:13.252+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Required String parameter 'preRegistrationId' is not present",
+    "path": "/preregistration/v1/documents/preregistration/"
+
 }

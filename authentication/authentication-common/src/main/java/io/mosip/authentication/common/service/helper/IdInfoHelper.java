@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -55,7 +55,6 @@ public class IdInfoHelper {
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdInfoHelper.class);
 
-
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
@@ -66,6 +65,9 @@ public class IdInfoHelper {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
+
+	/** The mosip logger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
 
 	/**
 	 * Get Authrequest Info
@@ -107,6 +109,7 @@ public class IdInfoHelper {
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
 			throws IdAuthenticationBusinessException {
+		String type = matchType.getCategory().getType();
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
 		if (mappings != null && !mappings.isEmpty()) {
 			List<String> fullMapping = new ArrayList<>();
@@ -120,12 +123,19 @@ public class IdInfoHelper {
 						fullMapping.add(mappingStr);
 					}
 				} else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 				}
 			}
 			return fullMapping;
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 
@@ -334,8 +344,8 @@ public class IdInfoHelper {
 				}
 			} else {
 				// FIXME Log that matching strategy is not allowed for the match type.
-				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType, " is not allowed for - ",
-						matchType + " MatchType");
+				logger.info(IdAuthCommonConstants.SESSION_ID, "Matching strategy >>>>>: " + strategyType,
+						" is not allowed for - ", matchType + " MatchType");
 			}
 
 		}

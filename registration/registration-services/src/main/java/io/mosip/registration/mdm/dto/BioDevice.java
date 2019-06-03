@@ -1,7 +1,5 @@
 package io.mosip.registration.mdm.dto;
 
-import java.util.Map;
-
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
@@ -37,7 +35,7 @@ public class BioDevice {
 
 	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
-	public Map<String, byte[]> capture() throws RegBaseCheckedException {
+	public CaptureResponseDto capture() throws RegBaseCheckedException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
 

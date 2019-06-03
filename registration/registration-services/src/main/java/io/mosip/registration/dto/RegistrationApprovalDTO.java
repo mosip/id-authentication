@@ -17,6 +17,8 @@ public class RegistrationApprovalDTO {
 	 *
 	 * @param id 
 	 * 				the id
+	 * @param date
+	 * 				the date of registration
 	 * @param acknowledgementFormPath 
 	 * 				the acknowledgement form path
 	 * @param statusComment 

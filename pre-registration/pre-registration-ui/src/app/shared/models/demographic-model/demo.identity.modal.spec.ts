@@ -24,9 +24,6 @@ describe('Applicant interface check', () => {
       'string'
     );
     const applicant = new DemoIdentityModel(identity);
-
-    console.log('typeof applicant.identity', typeof applicant.identity);
-
     expect(typeof applicant.identity).toEqual('object');
   });
 });

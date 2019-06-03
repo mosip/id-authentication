@@ -11,8 +11,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
-import org.quartz.TriggerKey;
 import org.quartz.Trigger.CompletedExecutionInstruction;
+import org.quartz.TriggerKey;
 
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;

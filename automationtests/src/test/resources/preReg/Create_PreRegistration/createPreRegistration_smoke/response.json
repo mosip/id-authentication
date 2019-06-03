@@ -1,24 +1,23 @@
-
 {
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0",
-    "responsetime": "2019-05-21T12:55:01.739Z",
+    "responsetime": "2019-05-29T07:02:02.961Z",
     "response": {
-        "preRegistrationId": "75821504984239",
-        "createdDateTime": "2019-05-21T12:55:01.581Z",
+        "preRegistrationId": "48250492659703",
+        "createdDateTime": "2019-05-29T07:02:02.813Z",
         "statusCode": "Pending_Appointment",
         "langCode": "fra",
         "demographicDetails": {
             "identity": {
-                "CNIENumber": "123456789",
+                "CNIENumber": "2864123456765432",
                 "gender": [
                     {
                         "language": "fra",
-                        "value": "MLE"
+                        "value": "FLE"
                     },
                     {
                         "language": "ara",
-                        "value": "MLE"
+                        "value": "FLE"
                     }
                 ],
                 "city": [
@@ -31,28 +30,28 @@
                         "value": "KNT"
                     }
                 ],
-                "postalCode": "767882",
+                "postalCode": "14022",
                 "fullName": [
                     {
                         "language": "fra",
-                        "value": "ashish"
+                        "value": "jagadishwari s"
                     },
                     {
                         "language": "ara",
-                        "value": "َسهِسه"
+                        "value": "جَگَدِسهوَرِ سِلڤَرَج"
                     }
                 ],
                 "localAdministrativeAuthority": [
                     {
                         "language": "fra",
-                        "value": "MNAS"
+                        "value": "SATZ"
                     },
                     {
                         "language": "ara",
-                        "value": "MNAS"
+                        "value": "SATZ"
                     }
                 ],
-                "dateOfBirth": "1989/04/12",
+                "dateOfBirth": "1996/01/01",
                 "IDSchemaVersion": 1,
                 "province": [
                     {
@@ -64,45 +63,44 @@
                         "value": "KTA"
                     }
                 ],
-                "phone": "9900806086",
                 "addressLine1": [
                     {
                         "language": "fra",
-                        "value": "dresse est "
+                        "value": "mindtree phase 2, global village"
                     },
                     {
                         "language": "ara",
-                        "value": "درِسسِ ِست "
+                        "value": "مِندترِِ پهَسِ ٢، گلُبَل ڤِللَگِ"
                     }
                 ],
                 "residenceStatus": [
                     {
                         "language": "fra",
-                        "value": "national"
+                        "value": "FR"
                     },
                     {
                         "language": "ara",
-                        "value": "national"
+                        "value": "FR"
                     }
                 ],
                 "addressLine2": [
                     {
                         "language": "fra",
-                        "value": "yuwue utter"
+                        "value": "Karnataka"
                     },
                     {
                         "language": "ara",
-                        "value": "يُوُِ ُتتِر"
+                        "value": "كَرنَتَكَ"
                     }
                 ],
                 "addressLine3": [
                     {
                         "language": "fra",
-                        "value": "afterfh jdhdy"
+                        "value": ""
                     },
                     {
                         "language": "ara",
-                        "value": "َفتِرفه جدهدي"
+                        "value": ""
                     }
                 ],
                 "region": [

@@ -37,10 +37,9 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.mongodb.internal.thread.DaemonThreadFactory;
 
-import io.mosip.dbaccess.prereg_dbread;
 import io.mosip.dbentity.OtpEntity;
-import io.mosip.preregistration.dao.PreRegistartionDAOO;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -65,30 +64,55 @@ public class Sample extends BaseTestCase implements ITest {
 	static String folder = "preReg";
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applnLib = new ApplicationLibrary();
-	PreRegistartionDAOO dao = new PreRegistartionDAOO();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
+	PreregistrationDAO dao = new PreregistrationDAO();
+
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
 	 * Batch job service for expired application
+	 * 
+	 * @throws java.text.ParseException
+	 * 
+	 * 
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void preReg_IntTst_createAppUploadDocDeleteDocByPreRegId() {
 
-		lib.syncAvailability();
+	@Test
+	public void makeAdayAsHoliday() {
+		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre("10009");
+		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
+				"Appointment booked successfully");
+		Date date = dao.MakeDayAsHoliday();
+		Response syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
+				"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
+		dao.updateHoliday(date);
+		syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
+				"MASTER_DATA_SYNCED_SUCCESSFULLY");*/
 		
+		//Response syncAvailabilityResponse = lib.syncAvailability();
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
 	}
 
+	@BeforeMethod(alwaysRun = true)
+	public void run() {
 
-	@BeforeMethod(alwaysRun=true)
-	public void run()
-	{
-		
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
@@ -97,5 +121,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
+		//lib.logOut();
 	}
 }

@@ -665,7 +665,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------LanguageControllerTest--------------------------
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void testGetAllLanguages() throws Exception {
 		loadSuccessData();
 		Mockito.when(languageService.getAllLaguages()).thenReturn(respDto);
@@ -676,7 +676,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	@WithUserDetails("test")
+	@WithUserDetails("zonal-admin")
 	public void testGetAllLanguagesForLanguageNotFoundException() throws Exception {
 		Mockito.when(languageService.getAllLaguages())
 				.thenThrow(new DataNotFoundException("KER-MAS-0987", "No Language found"));

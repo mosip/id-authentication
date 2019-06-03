@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+
 import javax.net.ssl.HttpsURLConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -126,6 +126,12 @@ public class TokenValidator {
 			}
 		}else if (url.contains("bio")) {
 			for (String assignedRole : APIAuthorityList.BIO.getList()) {
+				if (role.compareToIgnoreCase(assignedRole) == 0)
+					return true;
+			}
+		}
+		else if (url.contains("uploader")) {
+			for (String assignedRole : APIAuthorityList.PACKETUPLOADER.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}

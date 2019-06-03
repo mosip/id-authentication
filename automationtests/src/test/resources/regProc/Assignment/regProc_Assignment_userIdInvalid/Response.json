@@ -1,13 +1,11 @@
 {
-    "response": {
-        "regId": "60012783330000520190114169009",
-        "mvUsrId": "67$$$",
-        "statusCode": "ASSIGNED",
-        "matchedRefId": "60012783330000520190114163233",
-        "matchedRefType": "uin",
-        "reasonCode": "Potential Match\n"
-    },
+    "errors": [
+        {
+            "errorCode": "RPR-MVS-014",
+            "message": "User Id does not exists master list"
+        }
+    ],
     "id": "mosip.manual.verification.assignment",
     "version": "1.0",
-    "responsetime": "2019-05-18T08:17:47.616Z"
+    "responsetime": "2019-05-27T13:22:43.950Z"
 }

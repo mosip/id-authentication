@@ -28,7 +28,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -228,9 +228,6 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		/* Validator response service API creation */
 		final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
 
-		/* prepare request params to pass through URI */
-		Map<String, String> requestParamMap = new HashMap<>();
-
 		PacketStatusReaderDTO packetStatusReaderDTO = new PacketStatusReaderDTO();
 		packetStatusReaderDTO.setId(RegistrationConstants.PACKET_STATUS_READER_ID);
 		packetStatusReaderDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
@@ -246,13 +243,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		packetStatusReaderDTO.setRequest(registrationIdDTOs);
 
 		try {
-			if (!packetIds.isEmpty()) {
-				String requestJson = JsonUtils.javaObjectToJsonString(packetStatusReaderDTO);
-				requestParamMap.put(RegistrationConstants.PACKET_STATUS_READER_URL_PARAMETER, requestJson);
-
+			if (!packetIds.isEmpty()) {				
 				/* Obtain RegistrationStatusDTO from service delegate util */
 				LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-						.get(SERVICE_NAME, requestParamMap, true, triggerPoint);
+						.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
 				List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
 						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 				if (!registrations.isEmpty()) {
@@ -297,7 +291,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						"Success Response Created");
 			}
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
-				| HttpServerErrorException | ResourceAccessException | JsonProcessingException exception) {
+				| HttpServerErrorException | ResourceAccessException  exception) {
 			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
@@ -309,7 +303,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
-		}
+		} 
 		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"Packet Status Sync ended");
 
@@ -371,9 +365,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		File ackFile = null;
 		File zipFile = null;
 		String ackPath = registration.getAckFilename();
-		ackFile = new File(ackPath);
+		ackFile = FileUtils.getFile(ackPath);
 		String zipPath = ackPath.replace("_Ack.html", RegistrationConstants.ZIP_FILE_EXTENSION);
-		zipFile = new File(zipPath);
+		zipFile = FileUtils.getFile(zipPath);
 
 		if (zipFile.exists()) {
 

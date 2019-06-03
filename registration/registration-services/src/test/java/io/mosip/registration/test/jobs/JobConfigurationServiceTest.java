@@ -41,6 +41,7 @@ import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
@@ -101,6 +102,9 @@ public class JobConfigurationServiceTest {
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
+	@Mock
+	ResponseDTOForSync responseDTOForSync;
+
 	@Before
 	public void intiate() {
 		syncJobList = new LinkedList<>();
@@ -131,18 +135,18 @@ public class JobConfigurationServiceTest {
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		applicationMap.put(RegistrationConstants.SYNC_DATA_FREQ, "0 0 11 * * ?");
-		
+
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
 		Map<String, Object> map = new HashMap<>();
 		map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
-		
+
 		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
-		
+
 		jobConfigurationService.setBaseGlobalMap(applicationMap);
-		//context.setApplicationMap(applicationMap);
+		// context.setApplicationMap(applicationMap);
 	}
 
 	@Test
@@ -327,8 +331,6 @@ public class JobConfigurationServiceTest {
 		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 		syncTransactions.add(syncTransaction);
-		
-		
 
 		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(), Mockito.anyString()))
 				.thenReturn(syncTransactions);
@@ -369,9 +371,18 @@ public class JobConfigurationServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		initiateJobTest();
+
+		List<String> list = new LinkedList<>();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
+		Mockito.when(responseDTOForSync.getErrorJobs()).thenReturn(list);
+		Mockito.when(responseDTOForSync.getSuccessJobs()).thenReturn(list);
 
 		Assert.assertNotNull(jobConfigurationService.executeAllJobs());
+	}
+
+	@Test
+	public void getRestartTimeTest() {
+		Assert.assertNotNull(jobConfigurationService.getRestartTime().getSuccessResponseDTO());
 	}
 }

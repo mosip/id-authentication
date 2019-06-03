@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.idrepository</groupId>
 		<artifactId>id-repository-parent</artifactId>
-		<version>0.12.2</version>
+		<version>0.12.5</version>
 	</parent>
 	<artifactId>id-repository-vid-service</artifactId>
 	<name>vid-service</name>

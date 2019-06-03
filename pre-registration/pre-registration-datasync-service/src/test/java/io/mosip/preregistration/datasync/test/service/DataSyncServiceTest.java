@@ -15,6 +15,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -67,8 +69,10 @@ public class DataSyncServiceTest {
 	private ProcessedDataSyncRepo processedDataSyncRepo;
 
 	@Autowired
+	@InjectMocks
 	private DataSyncService dataSyncService;
 
+	@SpyBean
 	private DataSyncService spyDataSyncService;
 
 	@MockBean
@@ -149,7 +153,7 @@ public class DataSyncServiceTest {
 	public void setUp() throws URISyntaxException, IOException, org.json.simple.parser.ParseException, ParseException,
 			java.text.ParseException {
 
-		spyDataSyncService = Mockito.spy(dataSyncService);
+		//spyDataSyncService = Mockito.spy(dataSyncService);
 
 		// ClassLoader classLoader = getClass().getClassLoader();
 		// JSONParser parser = new JSONParser();
@@ -327,8 +331,7 @@ public class DataSyncServiceTest {
 		InvalidRequestParameterException ex = new InvalidRequestParameterException(
 				ErrorCodes.PRG_DATA_SYNC_009.toString(), ErrorMessages.INVALID_REGISTRATION_CENTER_ID.toString(), null);
 		Mockito.when(serviceUtil.validateDataSyncRequest(Mockito.any(), Mockito.any())).thenThrow(ex);
-		Mockito.doNothing().when(spyDataSyncService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.doNothing().when(spyDataSyncService).setAuditValues(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 		dataSyncService.retrieveAllPreRegIds(datasyncReqDto);
 	}
 

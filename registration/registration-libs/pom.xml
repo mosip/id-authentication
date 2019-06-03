@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.12.2</version>
+		<version>0.12.5</version>
 	</parent>
 
 	<artifactId>registration-libs</artifactId>
@@ -131,7 +131,6 @@
 							<mainClass>io.mosip.registration.cipher.ClientJarEncryption</mainClass>
 							<arguments>
 								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}.jar</argument>
-								<argument>${main.basedir}/registration-client/target/registration-client-${project.version}-shaded.jar</argument>
 								<argument>bBQX230Wskq6XpoZ1c+Ep1D+znxfT89NxLQ7P4KFkc4=</argument>
 								<argument>${project.version}</argument>
 								<argument>${main.basedir}/registration-libs/target/</argument>
@@ -139,6 +138,10 @@
 								<argument>${main.basedir}/registration-libs/src/main/resources/db/reg</argument>
 								<argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
 								<argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
+								<argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
+								<argument>${main.basedir}/registration-libs/src/main/resources/batch</argument>
+								<argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
+								<argument>${main.basedir}/registration-mdm-service/target/registration-mdm-service.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
