@@ -213,7 +213,7 @@ public class BookingService {
 					if (!entityList.isEmpty()) {
 						for (int j = 0; j < entityList.size(); j++) {
 							cancelBooking(entityList.get(j).getBookingPK().getPreregistrationId(), true);
-							sendNotification(entityList.get(i));
+							sendNotification(entityList.get(j));
 						}
 					}
 
