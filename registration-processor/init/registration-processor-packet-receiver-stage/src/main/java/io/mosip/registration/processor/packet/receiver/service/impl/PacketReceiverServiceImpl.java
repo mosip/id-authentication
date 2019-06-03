@@ -434,9 +434,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Override
 	public MessageDTO processPacket(File file) {
 		MessageDTO messageDTO = new MessageDTO();
-
 		messageDTO.setInternalError(false);
-
 		messageDTO.setIsValid(false);
 		boolean scanningFlag;
 		String fileOriginalName = file.getName();
@@ -444,7 +442,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::processPacket()::entry");
 		messageDTO.setRid(registrationId);
-
+		regEntity = syncRegistrationService.findByRegistrationId(registrationId);
+		messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));

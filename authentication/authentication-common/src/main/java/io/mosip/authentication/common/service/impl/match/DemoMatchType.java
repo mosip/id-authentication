@@ -14,12 +14,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
+import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -250,6 +252,20 @@ public enum DemoMatchType implements MatchType {
 	@Override
 	public boolean isMultiLanguage() {
 		return multiLanguage;
+	}
+	
+	@Override
+	public boolean isPropMultiLang(String propName, MappingConfig cfg) {
+		DemoMatchType[] values = DemoMatchType.values();
+		Optional<DemoMatchType> demoMatchType = Stream.of(values).filter(
+				matchType ->  matchType.getIdMapping().getSubIdMappings().isEmpty()
+						&& matchType.getIdMapping().getMappingFunction().apply(cfg, matchType).contains(propName)
+				)
+		.findFirst();
+		if(demoMatchType.isPresent()) {
+			return demoMatchType.get().isMultiLanguage();
+		}
+		return MatchType.super.isPropMultiLang(propName, cfg);
 	}
 
 }
