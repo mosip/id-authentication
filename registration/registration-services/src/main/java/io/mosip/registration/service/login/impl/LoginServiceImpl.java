@@ -259,10 +259,10 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		ResponseDTO masterResponseDTO = null;
 		if (isInitialSetUp) {
 			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER);
+					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
 		} else {
 			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		}
 		
 		if (RegistrationConstants.ENABLE
