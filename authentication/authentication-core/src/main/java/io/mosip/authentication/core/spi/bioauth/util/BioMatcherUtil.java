@@ -65,7 +65,8 @@ public class BioMatcherUtil {
 			Score[] match;
 			try {
 				match = bioApi.match(reqBIR.get(), entityBIR, null);
-				internalScore = match.length == 1 ? match[0].getInternalScore() : 0;
+				internalScore = match.length == 1 ? match[0].getInternalScore()
+									: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"Threshold Value >>>" + internalScore);
 			} catch (BiometricException e) {

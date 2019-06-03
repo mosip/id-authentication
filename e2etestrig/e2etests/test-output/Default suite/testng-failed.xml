@@ -3,12 +3,12 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="io.mosip.e2e.tests.PreRegistrationTests">
+      <class name="io.mosip.e2e.tests.RegistrationProcessor">
         <methods>
           <include name="getPrids"/>
           <include name="setResultTestName"/>
         </methods>
-      </class> <!-- io.mosip.e2e.tests.PreRegistrationTests -->
+      </class> <!-- io.mosip.e2e.tests.RegistrationProcessor -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

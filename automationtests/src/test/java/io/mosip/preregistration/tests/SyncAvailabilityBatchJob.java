@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITest;
@@ -34,7 +36,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	public PreregistrationDAO dao=new PreregistrationDAO();
 	
 	
-	
+	@Transactional(rollbackOn=Exception.class)
 	@Test
 	public void makeRegistartionCenterInactive() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -98,7 +100,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 	}
-	@Test
+	/*@Test
 	public void changeHolidayToNormalDay() {
 		Date date = dao.MakeDayAsHoliday();
 		Response syncAvailabilityResponse = lib.syncAvailability();
@@ -108,7 +110,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 		Response avilibityResponse = lib.FetchCentre("10009");
 	}
-
+*/
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

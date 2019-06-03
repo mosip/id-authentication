@@ -25,9 +25,7 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 
 	public void onTestStart(ITestResult result) {
 		reports.addSystemInfo("Environment", getAppEnvironment());
-
-		reports.addSystemInfo("Build Version", getAppDepolymentVersion());
-
+		reports.addSystemInfo("Build Number", getAppDepolymentVersion());
 		test = reports.startTest(result.getName());
 		test.log(LogStatus.INFO, result.getName() + "testcase is started");
 	}

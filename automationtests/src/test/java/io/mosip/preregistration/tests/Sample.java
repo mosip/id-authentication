@@ -70,7 +70,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		//authToken=lib.getToken();
 	}
 
 	/**
@@ -82,34 +82,21 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 
 	@Test
-	public void makeAdayAsHoliday() {
-		/*testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10009");
-		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
-				"Appointment booked successfully");
-		Date date = dao.MakeDayAsHoliday();
-		Response syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
-				"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
-		dao.updateHoliday(date);
-		syncAvailabilityResponse = lib.syncAvailability();
-		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
-				"MASTER_DATA_SYNCED_SUCCESSFULLY");*/
-		
-		//Response syncAvailabilityResponse = lib.syncAvailability();
+	public void makeRegistartionCenterInactive() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
+		try {
+			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		} catch (NullPointerException e) {
+			Reporter.log("create application failed");
+		}
+		
 	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
+		//authToken = lib.getToken();
 
 	}
 
@@ -121,6 +108,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		//lib.logOut();
+		lib.logOut();
 	}
 }

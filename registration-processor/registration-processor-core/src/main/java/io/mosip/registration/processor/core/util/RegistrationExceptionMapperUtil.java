@@ -119,7 +119,7 @@ public class RegistrationExceptionMapperUtil {
 		statusMap.put(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED,
 				RegistrationTransactionStatusCode.FAILED);
 
-		statusMap.put(RegistrationExceptionTypeCode.ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+		statusMap.put(RegistrationExceptionTypeCode.CBEFF_NOT_PRESENT_EXCEPTION,
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
 				RegistrationTransactionStatusCode.REPROCESS);
@@ -144,10 +144,12 @@ public class RegistrationExceptionMapperUtil {
 				RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.AUTH_ERROR, RegistrationTransactionStatusCode.FAILED);
 		statusMap.put(RegistrationExceptionTypeCode.AUTH_FAILED, RegistrationTransactionStatusCode.FAILED);
-        statusMap.put(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE, RegistrationTransactionStatusCode.FAILED);
-        statusMap.put(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE, RegistrationTransactionStatusCode.FAILED);
-		statusMap.put(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS );
-
+		statusMap.put(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE,
+				RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.PASSWORD_OTP_FAILURE, RegistrationTransactionStatusCode.FAILED);
+		statusMap.put(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION, RegistrationTransactionStatusCode.REPROCESS);
+		statusMap.put(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_ID_REPO_ERROR,
+				RegistrationTransactionStatusCode.REPROCESS);
 		return unmodifiableMap;
 
 	}
@@ -155,7 +157,8 @@ public class RegistrationExceptionMapperUtil {
 	/**
 	 * Gets the status code.
 	 *
-	 * @param exceptionCode the exception code
+	 * @param exceptionCode
+	 *            the exception code
 	 * @return the status code
 	 */
 	public String getStatusCode(RegistrationExceptionTypeCode exceptionCode) {

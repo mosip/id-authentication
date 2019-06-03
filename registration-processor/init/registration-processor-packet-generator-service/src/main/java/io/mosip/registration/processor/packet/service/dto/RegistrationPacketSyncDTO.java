@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import lombok.Data;
 
 /**
@@ -31,7 +32,7 @@ public class RegistrationPacketSyncDTO implements Serializable {
 
 	/** The sync registration DT os. */
 	@JsonProperty("request")
-	private List<SyncRegistrationDTO> syncRegistrationDTOs;
+	private List<SyncRegistrationDto> syncRegistrationDTOs;
 
 	/**
 	 * Gets the id.
@@ -95,7 +96,7 @@ public class RegistrationPacketSyncDTO implements Serializable {
 	 *
 	 * @return the sync registration DT os
 	 */
-	public List<SyncRegistrationDTO> getSyncRegistrationDTOs() {
+	public List<SyncRegistrationDto> getSyncRegistrationDTOs() {
 		return syncRegistrationDTOs;
 	}
 
@@ -105,7 +106,7 @@ public class RegistrationPacketSyncDTO implements Serializable {
 	 * @param syncRegistrationDTOs
 	 *            the new sync registration DT os
 	 */
-	public void setSyncRegistrationDTOs(List<SyncRegistrationDTO> syncRegistrationDTOs) {
+	public void setSyncRegistrationDTOs(List<SyncRegistrationDto> syncRegistrationDTOs) {
 		this.syncRegistrationDTOs = syncRegistrationDTOs;
 	}
 

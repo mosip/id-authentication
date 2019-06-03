@@ -222,6 +222,11 @@ public class ApplicationLibrary extends BaseTestCase {
 			return commonLibrary.put_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
 
 		} 
+		public Response get_Request_pathAndMultipleQueryParam(String Resource_URI, HashMap<String, String> valueMap) {
+			return commonLibrary.get_Request_pathAndMultipleQueryParam(ApplnURI + Resource_URI, valueMap);
+
+		} 
+		
 		public Response deleteRequestWithPathParam(String Resource_URI) {
 			return commonLibrary.deleteRequestWithPathParam(ApplnURI + Resource_URI);
 		}

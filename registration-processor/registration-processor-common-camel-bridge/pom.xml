@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.12.4</version>
+		<version>0.12.5</version>
 	</parent>
 	<artifactId>registration-processor-common-camel-bridge</artifactId>
 	<packaging>jar</packaging>

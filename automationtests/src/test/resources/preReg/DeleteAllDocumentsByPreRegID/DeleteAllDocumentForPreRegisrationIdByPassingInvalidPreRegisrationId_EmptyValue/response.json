@@ -1,7 +1,13 @@
 {
-    "timestamp": "2019-05-26T06:03:06.625+0000",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Required String parameter 'preRegistrationId' is not present",
-    "path": "/preregistration/v1/documents/preregistration/"
+    "id": null,
+    "version": null,
+    "responsetime": "2019-06-02T11:15:42.291Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_CORE_REQ_016",
+            "message": "Required String parameter 'preRegistrationId' is not present"
+        }
+    ]
 }

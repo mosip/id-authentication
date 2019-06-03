@@ -66,6 +66,9 @@ public class IdInfoHelper {
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
+	/** The mosip logger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
+
 	/**
 	 * Get Authrequest Info
 	 * 
@@ -83,14 +86,15 @@ public class IdInfoHelper {
 	 * @param name                 the name
 	 * @param languageForMatchType the language for match type
 	 * @param identityInfo         the demo info
+	 * @param matchType 
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
-			Map<String, Entry<String, List<IdentityInfoDTO>>> identityInfo) {
+			Map<String, Entry<String, List<IdentityInfoDTO>>> identityInfo, MatchType matchType) {
 		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
-					.filter(idinfo -> idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
+					.filter(idinfo -> !matchType.isPropMultiLang(name, idMappingConfig) || idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
 					.map(idInfo -> idInfo.getValue());
 		}
 		return Stream.empty();
@@ -106,6 +110,7 @@ public class IdInfoHelper {
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
 			throws IdAuthenticationBusinessException {
+		String type = matchType.getCategory().getType();
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig, matchType);
 		if (mappings != null && !mappings.isEmpty()) {
 			List<String> fullMapping = new ArrayList<>();
@@ -119,12 +124,19 @@ public class IdInfoHelper {
 						fullMapping.add(mappingStr);
 					}
 				} else {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+							IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+					throw new IdAuthenticationBusinessException(
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+							IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 				}
 			}
 			return fullMapping;
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED);
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
+					IdAuthCommonConstants.VALIDATE, "IdMapping config is Invalid for Type -" + type);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage());
 		}
 	}
 
@@ -185,7 +197,7 @@ public class IdInfoHelper {
 				idInfoFetcher);
 		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName)).collect(Collectors.toMap(
 				propName -> mappedIdEntity.get(propName).getKey(),
-				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity).findAny().orElse(""),
+				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity,matchType).findAny().orElse(""),
 				(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 

@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -30,6 +28,7 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
@@ -38,9 +37,8 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
-
 
 /**
  * @author Ravi Kant
@@ -58,23 +56,22 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	private final String apiName = "EncrptionDecryption";
 	private final String requestJsonName = "encryptdecryptRequest";
 	private final String outputJsonName = "encryptdecryptOutput";
-	
+
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	
+
 	private final String encrypt_URI = props.get("encrypt_URI").toString();
 	private final String decrypt_URI = props.get("decrypt_URI").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -83,12 +80,11 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
-	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun = true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForRegistrationProcessor();
-
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForRegistrationProcessor();
 	}
 
 	/**
@@ -100,16 +96,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -117,114 +104,86 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	 * 
 	 * @param fileName
 	 * @param object
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws JsonProcessingException
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void encryptDecrypt(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
+	public void encrptionDecryption(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
 		String requestData = null;
-		JSONObject request =null;
-		String encDecCase="default";
-		for (int k = 0; k < listofFiles.length; k++) {
+		JSONObject request = null;
+		String encDecCase = "default";
+		if (objectData.containsKey("case"))
+			encDecCase = objectData.get("case").toString();
+		objectData.remove("case");
 
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				if(objectData.containsKey("case"))
-					encDecCase = objectData.get("case").toString();
-				objectData.remove("case");
+		requestData = ((JSONObject) objectData.get("request")).get("data").toString();
+		String encoded = Base64.getEncoder().encodeToString(requestData.getBytes());
+		request = (JSONObject) objectData.get("request");
+		request.put("data", encoded);
+		objectData.put("request", request);
 
-				requestData = ((JSONObject)objectData.get("request")).get("data").toString();
-				String encoded = Base64.getEncoder().encodeToString(requestData.getBytes());
-				request = (JSONObject)objectData.get("request");
-				request.put("data", encoded);
-				objectData.put("request", request);
-				
-				logger.info("Json Request Is : " + objectData.toJSONString());
-				
-				response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI,cookie);
+		logger.info("Json Request Is : " + objectData.toJSONString());
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
-		logger.info("Expected Response:" + responseObject.toJSONString());
+		response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI, cookie);
 
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		int statusCode = response.statusCode();
 		logger.info("Encryption Status Code is : " + statusCode);
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		
-		JSONObject responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
-		
-		if (responseJson!=null) {
 
-			request = ((JSONObject)objectData.get("request"));
-			request.put("data", ((HashMap<String, String>)response.jsonPath().get("response")).get("data"));
+		JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+				.get("response");
+
+		if (responseJson != null) {
+
+			request = ((JSONObject) objectData.get("request"));
+			request.put("data", ((HashMap<String, String>) response.jsonPath().get("response")).get("data"));
 			objectData.put("request", request);
-
-			switch(encDecCase) {
+			switch (encDecCase) {
 			case "diffRefToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("referenceId", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffAppIdToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("applicationId", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffDataToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("data", "diffFromEncrypt");
-				objectData.put("request", request);
 				break;
 			case "diffTimeStampBefToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("timeStamp", "2018-12-09T06:12:52.994Z");
-				objectData.put("request", request);
 				break;
 			case "diffTimeStampAfToDecrypt":
-				request = ((JSONObject)objectData.get("request"));
 				request.put("timeStamp", "2018-12-11T06:12:52.994Z");
-				objectData.put("request", request);
 				break;
-				
+
 			}
-			
-			
+			objectData.put("request", request);
 			
 			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI, cookie);
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
-
+			//This method is for checking the authentication is pass or fail in rest services
+			new CommonLibrary().responseAuthValidation(response);
 			responseJson = (JSONObject) ((JSONObject)new JSONParser().parse(response.asString())).get("response");
 			if (responseJson!=null) {
 
 				String responseData = new String(
-						Base64.getDecoder().decode(((HashMap<String, String>)response.jsonPath().get("response")).get("data").toString().getBytes()));
-				
+						Base64.getDecoder().decode(((HashMap<String, String>) response.jsonPath().get("response"))
+								.get("data").toString().getBytes()));
+
 				status = requestData.equals(responseData);
 
 			} else {
@@ -239,23 +198,15 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@SuppressWarnings("static-access")
