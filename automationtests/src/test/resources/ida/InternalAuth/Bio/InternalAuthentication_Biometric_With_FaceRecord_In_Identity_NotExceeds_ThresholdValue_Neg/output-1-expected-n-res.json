@@ -1,1 +1,0 @@
-{"transactionID":"$RANDOM:N:10$","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-BIA-001","errorMessage":"Biometric data – FID did not match","actionMessage":"Please give your biometrics again"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}
