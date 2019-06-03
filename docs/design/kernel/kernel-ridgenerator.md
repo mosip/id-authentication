@@ -1,4 +1,4 @@
-# SMS Notification Service
+# SMS RID Service
 
 #### Background
 
