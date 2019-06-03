@@ -11,7 +11,7 @@ Date Raised | 28-MAY-2019
 Impact of Release|NA
 Implementation Start Date |20-MAY-2019
 Implementation end date	|31-MAY-2019
-Jenkins Build #	|Min Version : 1681  [Any later version also]
+Jenkins Build #	|Min Version : 1686  [Any later version also]
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
@@ -36,9 +36,9 @@ MOS-23766|New|Bundling of JRE to the initial setup, and run the application (run
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module/Files|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-ZIP|jar,DB, MDM, Props and JRE|0.12.4|The ZIP contains jar,DB, MDM, Props and JRE. 
+ZIP|jar,DB, MDM, Props and JRE|0.12.5|The ZIP contains jar,DB, MDM, Props and JRE. 
 Clam AV |NA|NA|<br>Download the windows clam av antivirus by provided link and install the s\w.</br> <br>[https://www.clamav.net/downloads#otherversions]</br>
-mosip-sw-0.12.4.zip|NA|NA|<br>Please unzip the file and execute the run.bat</br><br> **“run.bat”**</br>
+mosip-sw-0.12.5.zip|NA|NA|<br>Please unzip the file and execute the run.bat</br><br> **“run.bat”**</br>
 mdm_start.bat|NA|NA|<br>To start the MDM </br>
 mdm_stop.bat|NA|NA|<br>To stop the MDM</br>
 Admin Configuration|NA|Latest Version|Admin has to setup the desired configuration for the registration-client.
