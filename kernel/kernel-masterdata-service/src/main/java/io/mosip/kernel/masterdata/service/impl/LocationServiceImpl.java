@@ -190,12 +190,17 @@ public class LocationServiceImpl implements LocationService {
 		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
 		locationId.setCode(locationDto.getCode());
 		locationId.setLangCode(locationDto.getLangCode());
+		childHierarchyList = new ArrayList<>();
 		try {
 			Location location = locationRepository.findById(Location.class, locationId);
 
 			if (location == null) {
 				throw new RequestException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+			if (!locationDto.getIsActive() && findIsActiveInHierarchy(location)) {
+				throw new RequestException(LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage());
 			}
 			location = MetaDataUtils.setUpdateMetaData(locationDto, location, true);
 			locationRepository.update(location);
@@ -420,5 +425,27 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return statusResponseDto;
 	}
+	
+	/**
+	 * This method to find, is there any child of given Location isActive is true then
+	 * return true and break the loop. Otherwise if all children of the given
+	 * location are false the return false.
+	 * 
+	 * @param location
+	 * @return boolean 
+	 *           return true or false
+	 */
+	public boolean findIsActiveInHierarchy(Location location) {
+		getChildList(location.getCode(), location.getLangCode());
+		boolean flag = false;
+		for (Location location1 : childHierarchyList) {
+			if (location1.getIsActive()) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
 
 }

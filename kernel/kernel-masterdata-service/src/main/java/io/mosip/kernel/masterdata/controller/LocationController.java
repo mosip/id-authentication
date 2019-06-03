@@ -107,6 +107,7 @@ public class LocationController {
 	 * @param locationRequestDto - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
+	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
