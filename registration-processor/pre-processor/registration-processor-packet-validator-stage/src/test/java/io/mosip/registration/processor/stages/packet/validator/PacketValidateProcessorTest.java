@@ -751,6 +751,7 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testPreRegIdsAreNull() {
 		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);

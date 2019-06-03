@@ -94,6 +94,11 @@
             <version>${powermock.api.mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-packet-manager</artifactId>
+			<version>${packet.manager.version}</version>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
