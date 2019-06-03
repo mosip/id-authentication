@@ -44,7 +44,7 @@ public class SaltReader implements ItemReader<SaltEntity> {
 		if (startSeq <= endSeq) {
 			SaltEntity entity = new SaltEntity();
 			entity.setId(startSeq++);
-			entity.setSalt(CryptoUtil.encodeBase64(HMACUtils.generateSalt()));
+			entity.setSalt(CryptoUtil.encodeBase64String(HMACUtils.generateSalt()));
 			entity.setCreatedBy("IdRepoSaltGenerator");
 			entity.setCreateDtimes(DateUtils.getUTCCurrentDateTime());
 			entity.setUpdatedBy("IdRepoSaltGenerator");
