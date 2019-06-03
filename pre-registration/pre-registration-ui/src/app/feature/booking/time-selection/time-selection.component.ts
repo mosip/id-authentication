@@ -196,24 +196,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       this.activeTab = selection;
     }
   }
-  
-  displayMessage(title: string, message: string) {
-    this.disableContinueButton = false;
-    const messageObj = {
-      case: 'MESSAGE',
-      title: title,
-      message: message
-    };
-    this.openDialog(messageObj, '250px');
-  }
-  openDialog(data, width) {
-    const dialogRef = this.dialog.open(DialougComponent, {
-      width: width,
-      data: data
-    });
-    return dialogRef;
-  }
-  
+
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -277,6 +260,23 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
+  displayMessage(title: string, message: string) {
+    this.disableContinueButton = false;
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
 
   navigateDashboard() {
     this.router.navigate(['dashboard']);
@@ -296,8 +296,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (!this.bookingService.getSendNotification()) {
+    if (!this.bookingService.getSendNotification())
       this.reloadData();
-    }
   }
 }

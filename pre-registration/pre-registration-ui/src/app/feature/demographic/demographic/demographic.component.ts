@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatSelectChange, MatButtonToggleChange, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { BookingService } from '../../booking/booking.service';
 
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
-import { BookingService } from '../../booking/booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
@@ -200,7 +199,14 @@ export class DemographicComponent implements OnInit {
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
     });
-    if (!this.dataModification) this.consentDeclaration();
+    let previousURL = this.routerService.getPreviousUrl();
+    if (!this.dataModification) {
+      if (
+        !previousURL.includes('demographic') ||
+        (previousURL.includes('demographic') && this.configService.navigationType !== 'popstate')
+      )
+        this.consentDeclaration();
+    }
   }
 
   /**
@@ -260,15 +266,10 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   private initialization() {
-    let uri = this.routerService.getPreviousUrl();
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    if (
-      this.message['modifyUser'] === 'true' ||
-      this.message['modifyUserFromPreview'] === 'true' ||
-      uri.includes('file-upload')
-    ) {
+    if (this.message['modifyUser'] === 'true' || this.message['modifyUserFromPreview'] === 'true') {
       this.dataModification = true;
       this.step = this.regService.getUsers().length - 1;
       if (this.message['modifyUserFromPreview'] === 'true') this.showPreviewButton = true;
@@ -599,7 +600,7 @@ export class DemographicComponent implements OnInit {
           if (element.code === this.formControlValues.gender) {
             const codeValue: CodeValueModal = {
               valueCode: element.code,
-              valueName: element.genderName ,
+              valueName: element.genderName,
               languageCode: element.langCode
             };
             this.addCodeValue(codeValue);
@@ -613,7 +614,7 @@ export class DemographicComponent implements OnInit {
             this.addCodeValue(codeValue);
           }
         });
-      } 
+      }
     }
   }
 
@@ -764,14 +765,18 @@ export class DemographicComponent implements OnInit {
     // this.getValueFromCode(entity[1], event.value);
   }
 
-  // In progress to do 
-  getValueFromCode(entity:any, value:string) {
+  // In progress to do
+  getValueFromCode(entity: any, value: string) {
     this.secondaryResidenceStatusTemp = JSON.parse(JSON.stringify(entity));
     console.log('secondaryResidenceStatusTemp ', this.secondaryResidenceStatusTemp);
-    console.log("index", entity.findIndex((item) => {
-      console.log("item", item);
-      
-      item.code !== value}));
+    console.log(
+      'index',
+      entity.findIndex(item => {
+        console.log('item', item);
+
+        item.code !== value;
+      })
+    );
     this.secondaryResidenceStatusTemp.splice(entity.findIndex(item => item.code !== value), 1);
     console.log('enityt1', this.secondaryResidenceStatusTemp);
     console.log('enityt2', entity);
@@ -1029,8 +1034,7 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onSubmission() {
-    this.loggerService.info("codevalue",this.codeValue);  
-    
+    this.loggerService.info('codevalue', this.codeValue);
     this.checked = true;
     this.dataUploadComplete = true;
     let url = '';
