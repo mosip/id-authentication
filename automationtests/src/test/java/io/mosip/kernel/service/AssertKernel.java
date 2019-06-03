@@ -53,6 +53,33 @@ public class AssertKernel {
 
 	}
 	
+	/**
+	 * this method accepts expected and actual response and return boolean value
+	 * 
+	 * @param expectedResponse
+	 * @param actualResponse
+	 * @param listOfElementToRemove
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public boolean assertKernelWithJsonObject(JSONObject actualResponse, JSONObject expectedResponse,
+			ArrayList<String> listOfElementToRemove){
+		
+		JSONObject actualResponseBody = null;
+		JSONObject expectedResponseBody = expectedResponse;
+		try {
+			actualResponseBody = (JSONObject) new JSONParser().parse(actualResponse.toString());
+			actualResponseBody = AssertKernel.removeElementFromBody(actualResponseBody, listOfElementToRemove);
+			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponse, listOfElementToRemove);
+			} catch (ParseException e) {
+				logger.info(e.getMessage());
+			}
+		
+		return jsonComparison(actualResponseBody, expectedResponseBody);
+
+	}
 	
 	/**
 	 * @author Arjun chandramohan

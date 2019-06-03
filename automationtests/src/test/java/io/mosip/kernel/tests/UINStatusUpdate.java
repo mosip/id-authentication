@@ -110,7 +110,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		//Fetching UIN which status is unused
 		res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
-		new CommonLibrary().responseAuthValidation(res);
+		new CommonLibrary().responseAuthValidation(res1);
 	switch(testCaseName)
 		{
 		case "Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused": 
