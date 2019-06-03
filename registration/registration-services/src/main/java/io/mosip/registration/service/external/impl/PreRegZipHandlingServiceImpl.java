@@ -9,7 +9,6 @@ import static java.io.File.separator;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
@@ -290,7 +288,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
-					new File(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
+					FileUtils.getFile(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 

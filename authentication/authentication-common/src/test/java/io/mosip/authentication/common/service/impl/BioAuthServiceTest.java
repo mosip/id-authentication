@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -33,6 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
+import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
@@ -95,6 +96,8 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 	}
+
+	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
@@ -820,8 +823,8 @@ public class BioAuthServiceTest {
 		assertTrue(validateBioDetails.isStatus());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void TestInvalidFaceDetails() throws Exception {
+	@Test
+	public void TestInvalidFaceDetails() throws Exception  {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		RequestDTO request = new RequestDTO();
@@ -857,12 +860,18 @@ public class BioAuthServiceTest {
 		cbeffValueMap.put("FACE__8", value);
 		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(cbeffValueMap);
-		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
-		assertFalse(validateBioDetails.isStatus());
+		try {
+			bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		}
+		
+		catch(IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BIOMETRIC_MISSING.getErrorCode(),ex.getErrorCode());
+		}
 	}
 
 	@Test
-	public void TestFaceDetailsNotMatched() throws Exception {
+	public void TestFaceDetailsMatched() throws Exception {
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		RequestDTO request = new RequestDTO();
@@ -905,6 +914,180 @@ public class BioAuthServiceTest {
 				.thenReturn(cbeffValueMap);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
 		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestMultiFingerPrint() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("2812936903");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> fingerList = new ArrayList<>();
+		BioIdentityInfoDTO leftIndexdto = new BioIdentityInfoDTO();
+		DataDTO leftIndexdatadto = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		leftIndexdatadto.setBioType(BioAuthType.FGR_MIN.getType());
+		leftIndexdatadto.setBioSubType("LEFT_INDEX");
+		leftIndexdatadto.setBioValue(value);
+		leftIndexdto.setData(leftIndexdatadto);
+		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
+		DataDTO rightIndexdto = new DataDTO();
+		rightIndexdto.setBioType(BioAuthType.FGR_MIN.getType());
+		rightIndexdto.setBioSubType("RIGHT_INDEX");
+		rightIndexdto.setBioValue(rightValue);
+		BioIdentityInfoDTO rightIndexdtovalue = new BioIdentityInfoDTO();
+		rightIndexdtovalue.setData(rightIndexdto);
+		fingerList.add(leftIndexdto);
+		fingerList.add(rightIndexdtovalue);
+		request.setBiometrics(fingerList);
+		authRequestDTO.setRequest(request);
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage(null);
+		identityInfoDTO1.setValue(value);
+		IdentityInfoDTO identityInfoDTO2 = new IdentityInfoDTO();
+		identityInfoDTO2.setLanguage(null);
+		identityInfoDTO2.setValue(rightValue);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		identityList.add(identityInfoDTO2);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
+		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestMultiFingerPrintwith3Fingers() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("2812936903");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> fingerList = new ArrayList<>();
+
+		BioIdentityInfoDTO leftIndexdto = new BioIdentityInfoDTO();
+		DataDTO leftIndexdatadto = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		leftIndexdatadto.setBioType(BioAuthType.FGR_MIN.getType());
+		leftIndexdatadto.setBioSubType("LEFT_INDEX");
+		leftIndexdatadto.setBioValue(value);
+		leftIndexdto.setData(leftIndexdatadto);
+
+		DataDTO rightIndexdto = new DataDTO();
+		String rightValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
+		rightIndexdto.setBioType(BioAuthType.FGR_MIN.getType());
+		rightIndexdto.setBioSubType("RIGHT_INDEX");
+		rightIndexdto.setBioValue(rightValue);
+		BioIdentityInfoDTO rightIndexdtovalue = new BioIdentityInfoDTO();
+		rightIndexdtovalue.setData(rightIndexdto);
+
+		DataDTO leftmiddledto = new DataDTO();
+		String leftmiddle = "Rk1SACAyMAAAAAEyAAABPAFiAMUAxQEAAAAoLkC8AOaiZEC3AQEoXYCkAQ4aZECLAM80V0CAAP0iZEDXAQQmXUDkAN6pZEBvAOMyV4DqAQAmPEDwAPanV0CpATUFZEDVATYHUEB2AI0nZEDSAVV+PECGAGumZEDDAGDyV4DCAOkzXUCVANMnV0CoAMWkV0ChALoqV0CGAQccZECMARMVZIDGALe/V4DFASQNZEDtAOOrZICUASkJZECYAJQXXUD5AL/FUED0AJ7NZEDfAVYAB0BXAVJ6ZEDCAPKlXYCHAOgpXUDNAQEnXUDZAN06ZEC9ALy0XYCHAMGwV0B0ANeyUEDYARgXV0DWALe/ZEBnAQcXZEB+ATECZECuAIv2XYB4AUsAZEBZAUUFZECcAGMSQwAA";
+		leftmiddledto.setBioType(BioAuthType.FGR_MIN.getType());
+		leftmiddledto.setBioSubType("LEFT_MIDDLE");
+		leftmiddledto.setBioValue(leftmiddle);
+		BioIdentityInfoDTO leftMiddledtovalue = new BioIdentityInfoDTO();
+		leftMiddledtovalue.setData(leftmiddledto);
+
+		fingerList.add(leftMiddledtovalue);
+		fingerList.add(leftIndexdto);
+		fingerList.add(rightIndexdtovalue);
+		request.setBiometrics(fingerList);
+		authRequestDTO.setRequest(request);
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage(null);
+		identityInfoDTO1.setValue(value);
+		IdentityInfoDTO identityInfoDTO2 = new IdentityInfoDTO();
+		identityInfoDTO2.setLanguage(null);
+		identityInfoDTO2.setValue(rightValue);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		identityList.add(identityInfoDTO2);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FINGER_Left IndexFinger_2", value);
+		cbeffValueMap.put("FINGER_Left MiddleFinger_2", leftmiddle);
+		cbeffValueMap.put("FINGER_Right IndexFinger_2", rightValue);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test
+	public void TestconstructBioError() throws Exception {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		RequestDTO request = new RequestDTO();
+		request.setDemographics(identity);
+		authRequestDTO.setIndividualId("2812936903");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setRequestTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setRequestHMAC("1234567890");
+		authRequestDTO.setTransactionID("1234567890");
+		List<BioIdentityInfoDTO> faceList = new ArrayList<>();
+		BioIdentityInfoDTO bioIdentityInfoDTO = new BioIdentityInfoDTO();
+		DataDTO dataDTO = new DataDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		dataDTO.setBioType("FID");
+		dataDTO.setBioSubType("UNKNOWN");
+		dataDTO.setBioValue(value);
+		bioIdentityInfoDTO.setData(dataDTO);
+		faceList.add(bioIdentityInfoDTO);
+		request.setDemographics(identity);
+		request.setBiometrics(faceList);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage(null);
+		String entityValue = "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNYCJAMS4Q4B7ALUBQ4BnAMK2ZICmAKrLZIBvAPAwXUBUAOa2ZIBbAPg5XYDOAOzCZEDSAJnOXYBfARghZICWAF31ZEBbAFIfZIDuARrEXUBCAE0eZEBsADygZICDAVkNG4DXAU+4L4AcAUEtB0B/AMmzPEB4AN4zXYCQAO+tXYC4ALVTXYBiAKQnZIBoAPguXYCUAQ6kZEB4AQ8oZEA8AOe0ZIBGAQszZIBPASEhZID3AIPVZIDkASq6ZEDKAEhpZEDtAFzdZEC1AVUlSUD0AFJgZEB0AAwHZICBAL/GQ4CoANBHZICJAJ7sZIB9APWmXUCGAIj7ZIDJAKzHXYBeAI+sZICLAHX9ZIDlANDKZEC1AGl0ZIDHAGNoZEA2ASQqUEB/AD8QZICHADeXZECfAVYQPEAxAT4cQ0A+AVIOQwAA";
+		identityInfoDTO1.setValue(entityValue);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("documents.individualBiometrics", identityList);
+		Map<String, String> cbeffValueMap = new HashMap<String, String>();
+		cbeffValueMap.put("FACE__8", entityValue);
+		Mockito.when(cbeffUtil.getBDBBasedOnType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(cbeffValueMap);
+		
+		try {
+			bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+		}
+		
+		catch(IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),ex.getErrorText());
+		}
 	}
 
 }

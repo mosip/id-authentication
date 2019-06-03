@@ -3,7 +3,6 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -281,13 +281,13 @@ public class BaseService {
 	 * @return value
 	 */
 	public String getGlobalConfigValueOf(String key) {
-
 		if (applicationMap.isEmpty()) {
 
-			applicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+			ApplicationContext.map().putAll(globalParamService.getGlobalParams());
 
 		}
-
+		applicationMap.putAll(ApplicationContext.map());
+		
 		return (String) applicationMap.get(key);
 	}
 
@@ -309,7 +309,7 @@ public class BaseService {
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
 		
-		try (FileInputStream fis = new FileInputStream(new File(registration.getAckFilename()
+		try (FileInputStream fis = new FileInputStream(FileUtils.getFile(registration.getAckFilename()
 				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
 			byte[] byteArray = new byte[(int) fis.available()];
 			fis.read(byteArray);

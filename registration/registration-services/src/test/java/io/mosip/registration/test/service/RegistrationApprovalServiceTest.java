@@ -22,8 +22,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.sun.jna.platform.win32.Sspi.TimeStamp;
-
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;

@@ -20,6 +20,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.tpm.spi.TPMUtil;
 
@@ -68,9 +69,11 @@ public class DaoConfig extends HibernateDaoConfig {
 			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)) {
 				driverManagerDataSource.setUrl(dbConnectionURL + new String(Base64
 						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes())));
+				ApplicationContext.map().put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.DISABLE);
 			} else {
 				driverManagerDataSource.setUrl(dbConnectionURL + new String(TPMUtil.asymmetricDecrypt(Base64
 						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
+				ApplicationContext.map().put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
 			}
 
 			dataSource = driverManagerDataSource;

@@ -99,8 +99,6 @@ public class RegIdObjectMasterDataValidator {
 
 	/**
 	 * Load data.
-	 * 
-	 * @throws IdObjectIOException
 	 */
 	@PostConstruct
 	public void loadData() {
@@ -137,6 +135,7 @@ public class RegIdObjectMasterDataValidator {
 			validateRegion(identityString, errorList);
 			validateProvince(identityString, errorList);
 			validateCity(identityString, errorList);
+			//validatePostalCode(identityString, errorList);
 			validateLocalAdministrativeAuthority(identityString, errorList);
 			validateDocuments(identityString, errorList);
 			LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating ID object has been ended");

@@ -22,69 +22,6 @@
       <RowConstraints minHeight="10.0" percentHeight="6.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-   	  <GridPane styleClass="headerFooter" GridPane.rowIndex="4">
-         <children>
-            <GridPane GridPane.columnIndex="1">
-               <children>
-                  <GridPane fx:id="backButton" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <children>
-                        <Button fx:id="biometricPrevBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back" GridPane.valignment="TOP">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/arrowLeft.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                  </GridPane>
-                  <GridPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-                     <children>
-                        <Button fx:id="saveBiometricDetailsBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
-                           <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/arrowRight.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                  </GridPane>
-               </children>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints percentHeight="10.0" />
-                  <RowConstraints percentHeight="90.0" />
-               </rowConstraints>
-            </GridPane>
-         </children>
-         <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="80.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints percentHeight="100" valignment="CENTER" vgrow="SOMETIMES" />
-         </rowConstraints>
-      </GridPane>
       <GridPane GridPane.rowIndex="2">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -181,7 +118,7 @@
                                                             <Label styleClass="attemptsLabel" text="-" />
                                                          </children>
                                                       </VBox>
-                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                                                          <children>
                                                             <Label styleClass="exceptionLabel" text="%exceptions" />
                                                             <Label styleClass="exceptionLabel" text="-" />
@@ -335,7 +272,7 @@
                                     		<Label layoutX="40.0" layoutY="-3.0" styleClass="completedPage" text="%exceptionTracker" />
                                     		<Label layoutX="40.0" layoutY="55.0" styleClass="completedPage" text="%fingerPrintTracker" />
                                     		<Label layoutX="40.0" layoutY="111.0" styleClass="completedPage" text="%irisTracker" />
-                                    		<Label layoutX="40.0" layoutY="161.0" styleClass="pendingPage" text="%photoTracker" />
+                                    		<Label layoutX="40.0" layoutY="161.0" styleClass="currentPage" text="%photoTracker" />
                                 		 </children>
                              		 </AnchorPane>                                	 
                                 </children>
@@ -421,7 +358,7 @@
          <children>
             <HBox spacing="5.0" styleClass="homeBox" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                  <Button mnemonicParsing="false" onAction="#goToHomePageFromOnboard" styleClass="homeButton" text="%home" />
                   <Label styleClass="headerLabel" text="%onboardOperator" />
                </children>
             </HBox>
@@ -442,6 +379,71 @@
                </rowConstraints>
             </GridPane>
          </children>
+      </GridPane>
+      <GridPane styleClass="headerFooter" GridPane.rowIndex="4">
+         <children>
+            <GridPane GridPane.columnIndex="1">
+               <children>
+                  <GridPane fx:id="backButton" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <children>
+                        <Button fx:id="biometricPrevBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back" GridPane.valignment="TOP">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/arrowLeft.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <children>
+                        <Button fx:id="saveBiometricDetailsBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="contiuneButton" text="%continue" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/arrowRight.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints percentHeight="10.0" />
+                  <RowConstraints percentHeight="90.0" />
+               </rowConstraints>
+            </GridPane>
+         </children>
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="80.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints percentHeight="100" valignment="CENTER" vgrow="SOMETIMES" />
+         </rowConstraints>
       </GridPane>
    </children>
 </GridPane>

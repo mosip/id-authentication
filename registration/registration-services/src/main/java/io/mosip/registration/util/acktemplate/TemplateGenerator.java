@@ -458,17 +458,17 @@ public class TemplateGenerator extends BaseService {
 						}
 						templateValues.put(RegistrationConstants.TEMPLATE_IS_CHILD,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
-								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					} else {
 						templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					}
 				}
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
+						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_CHILD_LEFT,
 						RegistrationConstants.TEMPLATE_LEFT_INDEX_FINGER);
@@ -834,7 +834,7 @@ public class TemplateGenerator extends BaseService {
 			BufferedImage modifyImage = ImageIO
 					.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_PATH));
 			byteArrayOutputStream = new ByteArrayOutputStream();
-			ImageIO.write(modifyImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+			ImageIO.write(modifyImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 			byte[] modifyImageBytes = byteArrayOutputStream.toByteArray();
 			String modifyImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(modifyImageBytes, false));
 			templateValues.put(RegistrationConstants.TEMPLATE_MODIFY_IMAGE_SOURCE,
@@ -953,7 +953,7 @@ public class TemplateGenerator extends BaseService {
 				BufferedImage eyeImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH));
 				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(eyeImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+				ImageIO.write(eyeImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 				byte[] eyeImageBytes = byteArrayOutputStream.toByteArray();
 				String eyeImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(eyeImageBytes, false));
 				templateValues.put(RegistrationConstants.TEMPLATE_EYE_IMAGE_SOURCE,
@@ -980,7 +980,7 @@ public class TemplateGenerator extends BaseService {
 				BufferedImage leftPalmImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH));
 				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(leftPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+				ImageIO.write(leftPalmImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 				byte[] leftPalmImageBytes = byteArrayOutputStream.toByteArray();
 				String leftPalmImageEncodedBytes = StringUtils
 						.newStringUtf8(Base64.encodeBase64(leftPalmImageBytes, false));
@@ -1006,7 +1006,7 @@ public class TemplateGenerator extends BaseService {
 				BufferedImage rightPalmImage = ImageIO.read(
 						this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH));
 				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(rightPalmImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+				ImageIO.write(rightPalmImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 				byte[] rightPalmImageBytes = byteArrayOutputStream.toByteArray();
 				String rightPalmImageEncodedBytes = StringUtils
 						.newStringUtf8(Base64.encodeBase64(rightPalmImageBytes, false));
@@ -1033,7 +1033,7 @@ public class TemplateGenerator extends BaseService {
 				BufferedImage thumbsImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH));
 				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(thumbsImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
+				ImageIO.write(thumbsImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 				byte[] thumbsImageBytes = byteArrayOutputStream.toByteArray();
 				String thumbsImageEncodedBytes = StringUtils
 						.newStringUtf8(Base64.encodeBase64(thumbsImageBytes, false));

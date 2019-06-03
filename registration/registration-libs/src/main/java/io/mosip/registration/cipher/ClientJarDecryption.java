@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
-import io.mosip.registration.config.RegistrationUpdate;
+import io.mosip.registration.config.SoftwareInstallationHandler;
 import io.mosip.registration.tpm.asymmetric.AsymmetricDecryptionService;
 import io.mosip.registration.tpm.asymmetric.AsymmetricEncryptionService;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
@@ -32,13 +32,19 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -119,7 +125,7 @@ public class ClientJarDecryption extends Application {
 
 	private static boolean checkForJars(boolean isToBeDownloaded)
 			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
-		RegistrationUpdate registrationUpdate = new RegistrationUpdate();
+		SoftwareInstallationHandler registrationUpdate = new SoftwareInstallationHandler();
 
 		if (registrationUpdate.getCurrentVersion() != null && registrationUpdate.hasRequiredJars()) {
 
@@ -127,7 +133,7 @@ public class ClientJarDecryption extends Application {
 
 		} else if (isToBeDownloaded) {
 			System.out.println("Jars Dowloading Starts");
-			registrationUpdate.getWithLatestJars();
+			registrationUpdate.installJars();
 
 			return checkForJars(false);
 		}
@@ -183,8 +189,8 @@ public class ClientJarDecryption extends Application {
 				protected Boolean call() throws IOException, InterruptedException {
 					try {
 						return checkForJars(true);
-					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
-							| SAXException | IOException e) {
+					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException | SAXException
+							| IOException exception) {
 						return false;
 					}
 
@@ -251,9 +257,17 @@ public class ClientJarDecryption extends Application {
 								FileUtils.deleteDirectory(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException e) {
+						} catch (IOException | InterruptedException | RuntimeException exception) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							exception.printStackTrace();
+
+							try {
+								FileUtils.forceDelete(new File("MANIFEST.MF"));
+								new SoftwareInstallationHandler();
+							} catch (IOException ioException) {
+								ioException.printStackTrace();
+							}
+
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");
@@ -278,9 +292,24 @@ public class ClientJarDecryption extends Application {
 	private void showDialog() {
 
 		StackPane stackPane = new StackPane();
-		stackPane.setAlignment(Pos.CENTER);
-		stackPane.getChildren().add(progressBar);
-		Scene scene = new Scene(stackPane, 200, 100);
+		VBox vBox = new VBox();
+		HBox hBox = new HBox();
+		File file = new File("logo-final.png");
+		ImageView imageView = new ImageView(new Image(file.toURI().toString()));
+		imageView.setFitHeight(150);
+		imageView.setFitWidth(200);
+		hBox.setMinSize(200, 100);
+		hBox.getChildren().add(imageView);
+		Label downloadLabel = new Label("Downloading..");
+		vBox.setMinSize(150, 150);
+		vBox.setAlignment(Pos.CENTER_LEFT);
+		vBox.setPadding(new Insets(10.0));
+		vBox.getChildren().add(downloadLabel);
+		vBox.getChildren().add(progressBar);
+		hBox.getChildren().add(vBox);
+		hBox.setAlignment(Pos.CENTER_LEFT);
+		stackPane.getChildren().add(hBox);
+		Scene scene = new Scene(stackPane, 255, 150);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
 	}

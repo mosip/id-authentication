@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.filter;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,32 +51,51 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IdAuthFilterTest.
+ */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @AutoConfigureMockMvc
 public class IdAuthFilterTest {
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The filter. */
 	IdAuthFilter filter = new IdAuthFilter();
 
+	/** The request body. */
 	Map<String, Object> requestBody = new HashMap<>();
 
+	/** The response body. */
 	Map<String, Object> responseBody = new HashMap<>();
 
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(filter, "mapper", mapper);
 		ReflectionTestUtils.setField(filter, "env", env);
 	}
 
+	/**
+	 * Test set txn id.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws ServletException the servlet exception
+	 */
 	@Test
 	public void testSetTxnId() throws IdAuthenticationAppException, ServletException {
 		requestBody.put("txnId", null);
@@ -83,6 +103,15 @@ public class IdAuthFilterTest {
 		assertEquals(responseBody.toString(), filter.setResponseParams(requestBody, responseBody).toString());
 	}
 
+	/**
+	 * Test decoded request.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws ServletException the servlet exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDecodedRequest() throws IdAuthenticationAppException, ServletException, JsonParseException,
@@ -103,6 +132,14 @@ public class IdAuthFilterTest {
 		assertEquals(responseBody.toString(), decipherRequest.toString());
 	}
 
+	/**
+	 * Test in valid decoded request.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws JsonParseException the json parse exception
+	 * @throws JsonMappingException the json mapping exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testInValidDecodedRequest()
 			throws IdAuthenticationAppException, JsonParseException, JsonMappingException, IOException {
@@ -112,6 +149,12 @@ public class IdAuthFilterTest {
 		filter.decipherRequest(requestBody);
 	}
 
+	/**
+	 * Test encoded response.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws ServletException the servlet exception
+	 */
 	@Test
 	public void testEncodedResponse() throws IdAuthenticationAppException, ServletException {
 		/*
@@ -126,66 +169,127 @@ public class IdAuthFilterTest {
 		assertEquals(requestBody.toString(), filter.encipherResponse(responseBody).toString());
 	}
 
+	/**
+	 * Test sign.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@Test
 	public void testSign() throws IdAuthenticationAppException {
 		assertEquals(true, filter.validateSignature("something", "something".getBytes()));
 	}
 
+	/**
+	 * Test valid misp license key.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@Test
 	public void testValidMispLicenseKey() throws IdAuthenticationAppException {
 		String mispId = ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "735899345");
 		assertEquals("5479834598", mispId);
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * Test expired license key.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void testExpiredLicenseKey() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-008 --> License key of MISP has expired";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "135898653");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
+	
+	@Test
+	public void testInvalidLicenseKey() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-007 --> License key does not belong to a registered MISP";
+		try {
+			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "1358986532332");
+		} catch (UndeclaredThrowableException ex) {
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
+		}
+	}
+	
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * Test inactive license key.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void testInactiveLicenseKey() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-017 --> License key of MISP is blocked";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "licenseKeyMISPMapping", "635899234");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
 
+	/**
+	 * Valid partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	public void validPartnerIdTest() throws IdAuthenticationAppException {
 		ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "1873299273");
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * In valid partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void inValidPartnerIdTest() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-009 --> Partner is not registered";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "18732937232");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * Inactive partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void inactivePartnerIdTest() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-012 --> Partner is deactivated";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "1873293764");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * Policy unmapped partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void policyUnmappedPartnerIdTest() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-014 --> Partner is not assigned with any policy";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "validPartnerId", "18248239994");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
 
+	/**
+	 * Valid MISP partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@Test
 	public void validMISPPartnerIdTest() throws IdAuthenticationAppException {
 		String policyId = ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", "1873299273",
@@ -193,17 +297,28 @@ public class IdAuthFilterTest {
 		assertEquals("92834787293", policyId);
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * In valid MISP partner id test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void inValidMISPPartnerIdTest() throws IdAuthenticationAppException {
+		String errorMessage="IDA-MPA-010 --> MISP and Partner not mapped";
 		try {
 			ReflectionTestUtils.invokeMethod(filter, "validMISPPartnerMapping", "1873299300", "9870862555");
 		} catch (UndeclaredThrowableException ex) {
-			throw new IdAuthenticationAppException();
+			assertTrue(ex.getCause().getMessage().equalsIgnoreCase(errorMessage));
 		}
 	}
 
+	/**
+	 * Mandatory auth policy test OTP check.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void mandatoryAuthPolicyTestOTPcheck() throws IdAuthenticationAppException {
 		String policyId = "92834787293";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
@@ -217,10 +332,18 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
+		}
 	}
 
+	/**
+	 * Mandatory auth policy testbiocheck.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void mandatoryAuthPolicyTestbiocheck() throws IdAuthenticationAppException {
 		String policyId = "92834787293";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -234,10 +357,18 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
+		}
 	}
 
+	/**
+	 * Mandatory auth policy testpincheck.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void mandatoryAuthPolicyTestpincheck() throws IdAuthenticationAppException {
 		String policyId = "0983222";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -251,10 +382,18 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
+		}
 	}
 
+	/**
+	 * Mandatory auth policy testdemocheck.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void mandatoryAuthPolicyTestdemocheck() throws IdAuthenticationAppException {
 		String policyId = "0983252";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -267,10 +406,18 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_MANDATORY.getErrorCode(), e.getErrorCode());
+		}
 	}
 
+	/**
+	 * Allowed auth policy  test OTP check.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void allowedAuthPolicyTestOTPCheck() throws IdAuthenticationAppException {
 		String policyId = "0983252";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -283,9 +430,17 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		 catch (IdAuthenticationAppException e) {
+				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
+			}
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	/**
+	 * Allowed auth policy test demo check.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
+	@Test
 	public void allowedAuthPolicyTestDemoCheck() throws IdAuthenticationAppException {
 		String policyId = "0983222";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -299,10 +454,18 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		 catch (IdAuthenticationAppException e) {
+				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
+			}
 	}
 
+	/**
+	 * Allowed auth policy test pin check.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void allowedAuthPolicyTestPinCheck() throws IdAuthenticationAppException {
 		String policyId = "0983754";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": false,\r\n"
@@ -315,10 +478,19 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		 catch (IdAuthenticationAppException e) {
+				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
+			}
+		
 	}
 
+	/**
+	 * Allowed auth policy test bio check.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void allowedAuthPolicyTestBioCheck() throws IdAuthenticationAppException {
 		String policyId = "0123456";
 		String requestedAuth = "{\"requestedAuth\": {\r\n" + "                             \"bio\": true,\r\n"
@@ -330,8 +502,16 @@ public class IdAuthFilterTest {
 		} catch (IOException e) {
 			throw new IdAuthenticationAppException();
 		}
+		 catch (IdAuthenticationAppException e) {
+				assertEquals(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), e.getErrorCode());
+			}
 	}
 
+	/**
+	 * Validate deciphered request test.
+	 *
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	@SuppressWarnings("unchecked")
 	@Test(expected = IdAuthenticationAppException.class)
 	public void validateDecipheredRequestTest() throws IdAuthenticationAppException {

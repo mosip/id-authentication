@@ -64,7 +64,9 @@ public class IdRepoManager {
 			IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 	
 	
-	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("Expired VID","USED VID"); //FIXME changed to Uppercase EXPIRED Once IDRepo changes completed 
+	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED","VID is USED","VID is REVOKED","VID is DEACTIVATED","VID is INVALIDATED"); 
+	
+	private static final String DEACTIVATEDUIN = "DEACTIVATED UIN";
 
 	/**
 	 * The Rest Helper
@@ -260,12 +262,19 @@ public class IdRepoManager {
 
 					else if (vidErrorList.stream()
 							.anyMatch(map -> map.containsKey(ERRORMESSAGE_VID)
+									&& ((String) map.get(ERRORMESSAGE_VID)).equalsIgnoreCase(DEACTIVATEDUIN))) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
+					}
+					
+					else if (vidErrorList.stream()
+							.anyMatch(map -> map.containsKey(ERRORMESSAGE_VID)
 									&& (ID_REPO_ERRORS_INVALID_VID.contains((String) map.get(ERRORMESSAGE_VID))))) {
 						throw new IdAuthenticationBusinessException(
 								IdAuthenticationErrorConstants.EXPIRED_VID.getErrorCode(),
 								String.format(IdAuthenticationErrorConstants.EXPIRED_VID.getErrorMessage(),
 										(String) vidErrorList.get(0).get(ERRORMESSAGE_VID)));
 					}
+					
 				}
 			}
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);

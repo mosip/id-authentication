@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -25,8 +24,7 @@ public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 			Object object = props.get(IdaIdMapping.FINGERPRINT.getIdname());
 			if (object instanceof BiFunctionWithBusinessException) {
 				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = (BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) object;
-				return (int) func.apply((Map<String, String>) entityInfo, (Map<String, String>) entityInfo)
-						.doubleValue();
+				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				logError(IdAuthenticationErrorConstants.BIO_MISMATCH);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH);

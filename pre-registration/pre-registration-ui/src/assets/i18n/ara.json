@@ -447,7 +447,7 @@
       "title_success": "نجاح",
       "title_error": "خطأ",
       "cancelAppointment": {
-        "msg_confirm": "سيتم إلغاء تعيين التطبيق المحدد. يرجى تأكيد.",
+        "msg_confirm": "سيتم إلغاء موعد التطبيق المحدد",
         "msg_deleted": "تم إلغاء موعد التطبيق المحدد بنجاح.",
         "msg_could_not_deleted": "لا يمكن إلغاء تعيين التطبيق المحدد"
       },

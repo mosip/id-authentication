@@ -593,7 +593,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			MessageDTO messageDto = new MessageDTO();
 			messageDto.setRid(regId);
 			messageDto.setReg_type(RegistrationType.valueOf(regType));
-			this.send(eventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN, messageDto);
+			this.send(eventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT, messageDto);
 		}
 
 	}
