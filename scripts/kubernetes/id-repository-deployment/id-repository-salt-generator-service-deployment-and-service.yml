@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: id-repository-salt-generator-service
+  name: id-repository-salt-generator-idrepo-uinhash
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: id-repository-salt-generator-service
+        app: id-repository-salt-generator-idrepo-uinhash
     spec:
       initContainers:
       - name: wait-for-config-server
@@ -30,7 +30,7 @@ spec:
            value: http://kernel-config-server:51000/config
       containers:
       - name: id-repository-identity-service
-        image: docker-registry.mosip.io:5000/id-repository-salt-generator-service
+        image: docker-registry.mosip.io:5000/id-repository-salt-generator-idrepo-uinhash
         env:
         - name: active_profile_env
           value: dev
@@ -43,13 +43,3 @@ spec:
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: id-repository-salt-generator-service
-spec:
-  ports:
-    - port: 8092
-  selector:
-    app: id-repository-salt-generator-service
