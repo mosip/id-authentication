@@ -28,6 +28,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 
 public class AuthStatusInfoBuilder {
 
+	private static final String ADDRESS_LINE_ITEMS = "address line item(s)";
+
 	/** The built flag. */
 	private boolean built;
 
@@ -124,7 +126,7 @@ public class AuthStatusInfoBuilder {
 	private static void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder,
 			IDAMappingConfig idMappingConfig) {
 		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage();
-		
+
 		Optional<AuthType> authTypeForMatchType;
 		AuthType[] authTypes;
 		authTypes = DemoAuthType.values();
@@ -134,8 +136,7 @@ public class AuthStatusInfoBuilder {
 			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
 					matchOutput.getMatchType());
 			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
-			String addressVariable = "address line item(s)";
-			String name = mappings.contains(idMapping.getIdname()) ? addressVariable : idMapping.getIdname();
+			String name = mappings.contains(idMapping.getIdname()) ? ADDRESS_LINE_ITEMS : idMapping.getIdname();
 
 			if (!multiLanguage) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
