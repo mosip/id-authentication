@@ -396,7 +396,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private boolean hasDuplicate(Map<String, Long> countsMap) {
 		return countsMap.entrySet().stream().anyMatch(
-				entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO) && entry.getValue() > 2)
+				entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO) && entry.getValue() > getMaxFingerCount())
 						|| (!entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO)
 								&& entry.getValue() > 1));
 	}
