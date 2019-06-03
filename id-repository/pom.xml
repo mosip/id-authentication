@@ -17,6 +17,7 @@
 		<module>id-repository-core</module>
 		<module>id-repository-vid-service</module>
 		<module>id-repository-identity-service</module>
+		<module>id-repository-salt-generator</module>
 		
 	</modules>
 
