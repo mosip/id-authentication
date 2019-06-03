@@ -60,7 +60,7 @@
                 "addressLine1": [
                     {
                         "language": "fra",
-                        "value": "mindtree phase 2, global village"
+                        "value": ""
                     },
                     {
                         "language": "ara",
@@ -107,6 +107,7 @@
                         "value": "RSK"
                     }
                 ],
+				"phone": "96256257061",
                 "email": "ashish.rastogi@mindtree.com"
 
             }
