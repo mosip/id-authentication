@@ -7,7 +7,7 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
-Date Raised | 28-MAY-2019
+Date Raised | 06-JUNE-2019
 Impact of Release|NA
 Implementation Start Date |28-MAY-2019
 Implementation end date	|07-JUN-2019
@@ -58,6 +58,13 @@ Open Items|Description
 ### 1.6 Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
+MOS-25388|DONE|Yes
+MOS-25383|DONE|Yes
+MOS-25264|DONE|Yes
+MOS-24329|DONE|Yes
+MOS-24325|DONE|Yes
+MOS-24348|DONE|Yes
+MOS-25385|DONE|Yes
 
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
