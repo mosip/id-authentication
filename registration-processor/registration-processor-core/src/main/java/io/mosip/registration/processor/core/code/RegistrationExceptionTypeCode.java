@@ -176,6 +176,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The packet uin generation failed. */
 	PACKET_UIN_GENERATION_FAILED,
 
+	PACKET_UIN_GENERATION_ID_REPO_ERROR,
+
 	/** The invocation target exception. */
 	INVOCATION_TARGET_EXCEPTION,
 
@@ -236,10 +238,10 @@ public enum RegistrationExceptionTypeCode {
 	/** The ida authentication failure. */
 	IDA_AUTHENTICATION_FAILURE,
 
-    /** The password otp failure. */
-    PASSWORD_OTP_FAILURE,
+	/** The password otp failure. */
+	PASSWORD_OTP_FAILURE,
 
-    /** The biometric exception*/
+	/** The biometric exception */
 	BIOMETRIC_EXCEPTION
 
 }
