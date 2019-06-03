@@ -1,4 +1,4 @@
-# SMS RID Service
+# RID Service
 
 #### Background
 
