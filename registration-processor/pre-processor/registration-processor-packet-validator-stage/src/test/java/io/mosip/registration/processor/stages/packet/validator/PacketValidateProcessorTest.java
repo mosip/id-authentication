@@ -71,6 +71,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -151,6 +152,9 @@ public class PacketValidateProcessorTest {
 	@Mock
 	DocumentUtility documentUtility;
 
+	@Mock
+	ABISHandlerUtil handlerUtil;
+	
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
@@ -277,6 +281,7 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 
+		Mockito.when(handlerUtil.getUinFromIDRepo(any())).thenReturn(1234);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
