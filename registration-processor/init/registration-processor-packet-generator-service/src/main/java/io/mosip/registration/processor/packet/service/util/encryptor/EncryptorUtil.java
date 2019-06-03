@@ -107,12 +107,11 @@ public class EncryptorUtil {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public void encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
+	public byte[] encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
 			ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, RegBaseCheckedException {
 		byte[] dataToEncrypt = IOUtils.toByteArray(decryptedFile);
 	byte[] encryptPacketByteArray = encrypt(dataToEncrypt, regId, creationTime).getBytes();
-	filemanager.put(regId, new ByteArrayInputStream(encryptPacketByteArray),
-				DirectoryPathDto.PACKET_GENERATED_ENCRYPTED);
+	return encryptPacketByteArray;
 	}
 
 	/**

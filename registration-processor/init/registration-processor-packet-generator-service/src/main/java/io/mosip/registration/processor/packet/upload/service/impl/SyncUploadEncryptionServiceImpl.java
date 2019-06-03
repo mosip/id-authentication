@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -101,6 +102,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String SYNCSTATUSCOMMENT = "UIN Reactivation and Deactivation By External Resources";
 	private static final String UPLOADSTATUSCOMMENT = "RECEIVED";
+	private static final String EXTENSION_OF_FILE=".zip";
 
 	/*
 	 * (non-Javadoc)
@@ -116,15 +118,19 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		String syncStatus = "";
 
 		InputStream decryptedFileStream = null;
-		File enryptedUinZipFile = null;
 		try {
 			
 			decryptedFileStream = new ByteArrayInputStream(packetZipBytes);
 
-			encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+			byte[] encryptedbyte=encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+			ByteArrayResource contentsAsResource = new ByteArrayResource(encryptedbyte) {
+		        @Override
+		        public String getFilename() {
+		            return registartionId+EXTENSION_OF_FILE; 
+		        }
+		    };
 
-			enryptedUinZipFile = filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_ENCRYPTED, registartionId);
-			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType, enryptedUinZipFile,creationTime);
+			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType, encryptedbyte,creationTime);
 			
 			if (regSyncResponseDTO != null) {
 				List<SyncResponseDto> synList = regSyncResponseDTO.getResponse();
@@ -137,7 +143,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 
 				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-				map.add("file", new FileSystemResource(enryptedUinZipFile));
+				map.add("file", contentsAsResource);
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 				HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
@@ -207,7 +213,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * @throws ApisResourceAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	private RegSyncResponseDTO packetSync(String regId, String regType, File enryptedUinZipFile, String creationTime)
+	private RegSyncResponseDTO packetSync(String regId, String regType, byte[] enryptedUinZipFile, String creationTime)
 			throws ApisResourceAccessException, RegBaseCheckedException {
 		RegSyncResponseDTO regSyncResponseDTO = null;
 		InputStream inputStream;
@@ -217,9 +223,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			SyncRegistrationDto syncDto = new SyncRegistrationDto();
 			
 			// Calculate HashSequense for the enryptedUinZipFile file
-			inputStream = new FileInputStream(enryptedUinZipFile);
-			byte[] isbytearray = IOUtils.toByteArray(inputStream);
-			HMACUtils.update(isbytearray);
+			HMACUtils.update(enryptedUinZipFile);
 			String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 			
 			//Prepare RegistrationSyncRequestDTO 
@@ -231,7 +235,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			syncDto.setRegistrationId(regId);
 			syncDto.setSyncType(regType);
 			syncDto.setPacketHashValue(hashSequence);
-			syncDto.setPacketSize(BigInteger.valueOf(enryptedUinZipFile.length()));
+			syncDto.setPacketSize(BigInteger.valueOf(enryptedUinZipFile.length));
 			syncDto.setSupervisorStatus(SupervisorStatus.APPROVED.toString());
 			syncDto.setSupervisorComment(SYNCSTATUSCOMMENT);
 			
