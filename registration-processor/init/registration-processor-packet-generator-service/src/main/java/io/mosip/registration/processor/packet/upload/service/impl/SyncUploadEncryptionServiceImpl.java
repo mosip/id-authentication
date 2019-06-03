@@ -100,7 +100,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String SYNCSTATUSCOMMENT = "UIN Reactivation and Deactivation By External Resources";
-	private static final String UPLOADSTATUSCOMMENT = RECEIVED;
+	private static final String UPLOADSTATUSCOMMENT = "RECEIVED";
 
 	/*
 	 * (non-Javadoc)
