@@ -17,8 +17,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.gson.Gson;
-
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biodedupe.stage.exception.CbeffNotFoundException;
@@ -40,8 +38,6 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
-import io.mosip.registration.processor.core.http.ResponseWrapper;
-import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -49,6 +45,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
@@ -75,6 +72,9 @@ public class BioDedupeProcessor {
 	/** The utilities. */
 	@Autowired
 	Utilities utilities;
+
+	@Autowired
+	private IdRepoService idRepoService;
 
 	/** The adapter. */
 	@Autowired
@@ -496,7 +496,8 @@ public class BioDedupeProcessor {
 				List<String> applicantKeysToMatch = new ArrayList<>(applicantAttribute.keySet());
 
 				for (String matchedRegId : matchedRegIds) {
-					JSONObject matchedDemographicIdentity = getIdJsonFromIDRepo(matchedRegId);
+					JSONObject matchedDemographicIdentity = idRepoService.getIdJsonFromIDRepo(matchedRegId,
+							utilities.getGetRegProcessorDemographicIdentity());
 					if (matchedDemographicIdentity != null) {
 						Map<String, String> matchedAttribute = getIdJson(matchedDemographicIdentity);
 						if (!matchedAttribute.isEmpty()) {
@@ -538,31 +539,6 @@ public class BioDedupeProcessor {
 			}
 
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private JSONObject getIdJsonFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
-		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add("rid");
-		pathSegments.add(machedRegId);
-		JSONObject demographicJsonObj = null;
-
-		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response;
-
-		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
-				ResponseWrapper.class);
-
-		if (response.getResponse() != null) {
-			Gson gsonObj = new Gson();
-			String jsonString = gsonObj.toJson(response.getResponse());
-			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-			demographicJsonObj = JsonUtil.getJSONObject(identityJson,
-					utilities.getGetRegProcessorDemographicIdentity());
-
-		}
-
-		return demographicJsonObj;
 	}
 
 	private boolean compareDemoDedupe(Map<String, String> applicantAttribute, Map<String, String> matchedAttribute,
