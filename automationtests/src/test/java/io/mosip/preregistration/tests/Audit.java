@@ -129,7 +129,6 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 2);
-		System.out.println("============" + auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -146,7 +145,6 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 1);
-		System.out.println(auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -198,13 +196,11 @@ public class Audit extends BaseTestCase implements ITest {
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditForCancelAppointment");
 		expectedRequest.put("session_user_id", userId);
-		expectedRequest.put("ref_id", regCenterId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 4);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForReBooking() {
@@ -224,7 +220,6 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("ref_id", regCenterId);
 		List<String> objs = dao.getAuditData(userId);
 		JSONObject auditDatas = lib.getAuditData(objs, 5);
-		System.out.println("actual result" + auditDatas.toString());
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}

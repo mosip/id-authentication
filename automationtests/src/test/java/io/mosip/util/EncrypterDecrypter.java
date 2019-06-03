@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -37,8 +35,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.dbdto.CryptomanagerDto;
 import io.mosip.dbdto.CryptomanagerRequestDto;
 import io.mosip.dbdto.DecrypterDto;
-import io.mosip.dbentity.TokenGenerationEntity;
-import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
@@ -53,25 +49,16 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	private final String decrypterURL="/v1/cryptomanager/decrypt";
-	private final String encrypterURL="/v1/cryptomanager/encrypt";
-	TokenGeneration generateToken=new TokenGeneration();
-	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
+			"";
+	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
-	RegProcApiRequests apiRequest=new RegProcApiRequests();
-	String token="";
 	public void generateHash(byte[] fileByte) {
 		if (fileByte != null) {
 			HMACUtils.update(fileByte);
 		}	
 	}
-	public String getToken(String tokenType) {
-		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
-		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-		String token=generateToken.getToken(tokenEntity);
-		return token;
-		}
 	/**
 	 * 
 	 * @param file
@@ -82,13 +69,12 @@ public class EncrypterDecrypter extends BaseTestCase {
 	 * @throws ParseException 
 	 */
 	public File decryptFile(JSONObject decryptDto,String destinationPath,String fileName) throws IOException, ZipException, ParseException {
-		token=getToken("syncTokenGenerationFilePath");
 		logger.info(destinationPath);
 		destinationPath=destinationPath+"//TemporaryValidPackets";
 		File folder=new File(destinationPath);
 		folder.mkdirs();
 		destinationPath=destinationPath+"//"+fileName;
-		Response response=apiRequest.postRequestToDecrypt(ApplnURI+decrypterURL,decryptDto,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,token);
+		Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
 		JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 		JSONObject responseObject=(JSONObject) data.get("response");
 		byte[] decryptedPacket = CryptoUtil.decodeBase64(responseObject.get("data").toString());
@@ -132,7 +118,6 @@ public class EncrypterDecrypter extends BaseTestCase {
 		 return extractedFile;
 	}
 	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName) throws ZipException, FileNotFoundException, IOException {
-		String encryptingTokwn=getToken("syncTokenGenerationFilePath");
 		sourcePath=sourcePath+"//TemporaryValidPackets";
 		File folder = new File(destinationPath);
 		folder.mkdirs();
@@ -140,7 +125,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		  File file1=new File(destinationPath+"/"+fileName+".zip");
 		  JSONObject decryptedFileBody=new JSONObject();
 		  decryptedFileBody=generateCryptographicDataEncryption(file1);
-		  Response response=apiRequest.postRequestToDecrypt(ApplnURI+encrypterURL,decryptedFileBody,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,encryptingTokwn);
+		  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 			  JSONObject responseObject=(JSONObject) data.get("response");
@@ -484,5 +469,17 @@ public class EncrypterDecrypter extends BaseTestCase {
 			return demo;
 			  
 		}
-
+	@Test
+	public void getpackts() throws IOException, ZipException, ParseException {
+		EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();
+		File file=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets");
+		File[] listOfPackets=file.listFiles();
+		for(File f:listOfPackets) {
+			if(f.getName().contains(".zip")) {
+			JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
+			encryptDecrypt.decryptFile(jsonObject, "src/test/resources/regProc/Packets/ValidPackets/packteForInvalidPackets", f.getName());
+			}
+		}
+		
+	}
 }

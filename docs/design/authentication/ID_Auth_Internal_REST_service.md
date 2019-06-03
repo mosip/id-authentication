@@ -57,10 +57,11 @@ The below class diagram shows relationship between all the classes which are req
 
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
-- ***MOSIP public key for encrypting Request block*** - The public key used for decrypting the request would be published in Partner Management Service, which is currently mocked using referenceID **"PARTNER"**, and the same should be used while encrypting the request.
-- ***keyIndex*** - No validation has been added for keyIndex which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
-- ***Digital Signature*** - Any digital signature added in the Authentication request is currently not validated.
+- ***MOSIP public key for encrypting Request block*** - The private key used for decrypting the request would be maintained in Partner Management Service, which is currently mocked using reference ID **INTERNAL** and application ID **IDA**, and public key of the same should be used while encrypting the request.
+- ***keyIndex*** - No validation is performed for `keyIndex` which is present in the Authentication Request. This will be part of V2 implementation when Kernel Crypto would accept keyIndex based key validation.
 - ***Biometric data*** - The biometric data such as Fingerprint/Iris/Face are stubbed.
 - ***BioAPI Provider*** - The Biometric API provider used for matching the stubbed Fingerprint/Iris/Face data is mocked with stubbed BioAPI provider implementation.
 - ***Device Specific Attributes*** - The Device Specific attributes in the Biometric Authentication request such as timestamp, transactionID, deviceCode,deviceProviderID, etc... are not validated. Only biometric attributes validated are bioType, bioSubType and bioValue.
-- ***BioValue*** is only encrypted, not encoded&lt;&lt;TBD&gt;&gt;
+- ***bioValue*** - The `bioValue` attribute in biometric data of the authentication request should be only base 64 encoded, and not encrypted.
+- ***Digital Signature in request*** - Any digital signature added in the Auth request is not currently validated .
+- ***Digital Signature in response*** - The Auth response is digitally signed using the MOSIP private key with reference ID **SIGN** and application ID **KERNEL**, and public key of the same should be used to verify the signature.

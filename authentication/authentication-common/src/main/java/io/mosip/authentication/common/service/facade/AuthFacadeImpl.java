@@ -18,6 +18,7 @@ import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
@@ -101,6 +102,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
+	
+	@Autowired
+	private IdRepoManager idRepoManager;
 
 	/** The Id Info Fetcher */
 	@Autowired
@@ -122,7 +126,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		String idvIdType = idType.getType();
 		Map<String, Object> idResDTO = idAuthService.processIdType(idvIdType, idvid.orElse(""),
 				authRequestDTO.getRequestedAuth().isBio());
-
+		  if(idvIdType.equalsIgnoreCase(IdType.VID.getType())) {
+			  idRepoManager.updateVIDstatus(authRequestDTO.getIndividualId());
+		  }
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder
 				.newInstance(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));

@@ -1,0 +1,16 @@
+[
+  {
+    "registrationId": "499965123002500004508094000",
+    "status": "FAILURE",
+    "message": "RegistrationId Length Must Be 29",
+    "parentRegistrationId": null,
+    "errorCode": "RPR-RGS-009"
+  },
+  {
+    "registrationId": "600000000fgbm190123211111ghjk",
+    "status": "FAILURE",
+    "message": "RegistrationId Must Be Numeric Only",
+    "parentRegistrationId": null,
+    "errorCode": "RPR-RGS-008"
+  }
+]

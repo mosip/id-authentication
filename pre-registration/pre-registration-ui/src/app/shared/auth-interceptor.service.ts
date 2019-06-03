@@ -28,7 +28,6 @@ export class AuthInterceptorService {
    * @memberof AuthInterceptorService
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('Intercepted!', req);
     const copiedReq = req.clone({
       withCredentials: true
     });

@@ -1,7 +1,6 @@
 package io.mosip.registration.dao;
 
 import io.mosip.registration.dto.biometric.BiometricDTO;
-import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**

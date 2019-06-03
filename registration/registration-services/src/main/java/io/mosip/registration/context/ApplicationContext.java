@@ -132,7 +132,7 @@ public class ApplicationContext {
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
 		applicationMessagesBundle = ResourceBundle.getBundle("messages", applicationLanguageLocale);
 		localMessagesBundle = ResourceBundle.getBundle("messages", secondaryLanguageLocale);
-		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations", applicationLanguageLocale);
+		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations");
 	}
 
 	/**

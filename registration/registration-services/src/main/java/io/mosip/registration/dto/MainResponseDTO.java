@@ -1,6 +1,7 @@
 package io.mosip.registration.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,19 +23,15 @@ public class MainResponseDTO<T> implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3384945682672832638L;
 
-	/** The error details. */
-	private PreRegistrationExceptionJSONInfoDTO err;
+	private List<PreRegistrationExceptionJSONInfoDTO> errors;
 
-	/*TODO- to be removed  */
-	private PreRegistrationExceptionJSONInfoDTO errors;
-	
 	private boolean status;
 
 	@JsonProperty("responsetime")
 	private String resTime;
-	
+
 	private String id;
-	
+
 	private String version;
 
 	private T response;

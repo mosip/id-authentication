@@ -3,6 +3,8 @@ package io.mosip.report;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -23,7 +25,9 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 
 	public void onTestStart(ITestResult result) {
 		reports.addSystemInfo("Environment", getAppEnvironment());
+
 		reports.addSystemInfo("Build Version", getAppDepolymentVersion());
+
 		test = reports.startTest(result.getName());
 		test.log(LogStatus.INFO, result.getName() + "testcase is started");
 	}
@@ -38,21 +42,20 @@ public class ExtentReportListener extends Reporter implements ITestListener {
 	}
 
 	public void onTestSkipped(ITestResult result) {
-		test.log(LogStatus.SKIP, result.getName() + "test is skipped");
+		//test.log(LogStatus.SKIP, result.getName() + "test is skipped");
 	}
 
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
 		System.out.println("on test sucess within percentage");
 	}
 
-	public void onStart(ITestContext context) {
+	public void onStart(ITestContext context) {	
 		reports = new ExtentReports(
 				"extent-report.html");
 	}
 
-	public void onFinish(ITestContext context) {
+	public void onFinish(ITestContext context) {		
 		reports.endTest(test);
 		reports.flush();
 	}
-
 }

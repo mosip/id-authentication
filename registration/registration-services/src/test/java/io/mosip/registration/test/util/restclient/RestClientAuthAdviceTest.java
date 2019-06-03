@@ -29,8 +29,8 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.LoginUserDTO;
+import io.mosip.registration.util.advice.RestClientAuthAdvice;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
-import io.mosip.registration.util.restclient.RestClientAuthAdvice;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)

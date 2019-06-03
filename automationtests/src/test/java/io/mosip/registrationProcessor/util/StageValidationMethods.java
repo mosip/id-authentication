@@ -8,21 +8,20 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import io.mosip.dbaccess.RegProcTransactionDb;
-import io.mosip.dbdto.RegistrationPacketSyncDTO;
-import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.dbentity.TransactionStatus;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
+import io.mosip.dbaccess.RegProcTransactionDb;
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
 
 public class StageValidationMethods extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
@@ -35,18 +34,7 @@ public class StageValidationMethods extends BaseTestCase {
 	static public List<String> statusFromDb=new LinkedList<String>();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
 	EncryptData encryptData=new EncryptData();
-	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
-	RegProcApiRequests apiRequests=new RegProcApiRequests();
-	TokenGeneration generateToken=new TokenGeneration();
-	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	
-	String validToken="";
-	public String getToken(String tokenType) {
-		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
-		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-		String token=generateToken.getToken(tokenEntity);
-		return token;
-		}
+	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
 	public String syncPacket(File packet) {
 		validToken=getToken("syncTokenGenerationFilePath");
@@ -97,8 +85,8 @@ public class StageValidationMethods extends BaseTestCase {
 		Response response=apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
 		logger.info("Response from packet upload :: "+ response.asString());
 	}
-	public Set<String> getStatusList(String regID) {
-		Set<String> regStatus = packetTransaction.readStatus(regID);
+	public List<String> getStatusList(String regID) {
+		List<String> regStatus = packetTransaction.readStatus(regID);
 		return regStatus;
 	}
 	

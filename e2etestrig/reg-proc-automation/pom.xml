@@ -6,6 +6,7 @@
     <version>0.12.2</version>
   </parent>
   <artifactId>reg-proc-automation</artifactId>
+<<<<<<< HEAD
   <dependencies>
   <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
@@ -67,4 +68,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+=======
+>>>>>>> 2125114ab1b5500a17b26a389107a3e1ca2fd74f
 </project>

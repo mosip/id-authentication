@@ -47,7 +47,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -164,19 +164,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	ProgressIndicator progressIndicator;
-	
+
 	@FXML
 	public GridPane progressPane;
-	
+
 	@FXML
 	public ProgressBar syncProgressBar;
-	
+
 	@FXML
 	private Label eodLabel;
-	
+
 	@Autowired
 	HeaderController headerController;
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -186,7 +185,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			eodProcessGridPane.setVisible(false);
 			eodLabel.setVisible(false);
 		}
-		
+
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
@@ -256,7 +255,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+							errorMessage.append(
+									RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage())
+											+ "\n\n");
 						}
 						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 					} else {
@@ -326,7 +327,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								errorMessage.append(RegistrationUIConstants
+										.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
@@ -366,6 +368,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 			String ackTemplateText = templateContent.toString();
 
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
+				String key = "mosip.registration.important_guidelines_" + applicationContext.getApplicationLanguage();
+				String guidelines = getValueFromApplicationContext(key);
+				templateGenerator.setGuidelines(guidelines);
 				ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
 						templateManagerBuilder, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 				if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
@@ -508,7 +513,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								errorMessage.append(RegistrationUIConstants
+										.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
 							}
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -625,7 +631,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
 
-			MoroccoIdentity moroccoIdentity = (MoroccoIdentity) registrationDTO.getDemographicDTO()
+			IndividualIdentity individualIdentity = (IndividualIdentity) registrationDTO.getDemographicDTO()
 					.getDemographicInfoDTO().getIdentity();
 
 			try {
@@ -654,10 +660,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				// Storing the Registration Acknowledge Receipt Image
 				FileUtils.copyToFile(new ByteArrayInputStream(ackInBytes),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.ACKNOWLEDGEMENT_FORMAT)));
-				
-				sendNotification(moroccoIdentity.getEmail(), moroccoIdentity.getPhone(),
+
+				sendNotification(individualIdentity.getEmail(), individualIdentity.getPhone(),
 						registrationDTO.getRegistrationId());
-				
+
 				// Sync and Uploads Packet when EOD Process Configuration is set to OFF
 				if (!getValueFromApplicationContext(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)
 						.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
@@ -679,30 +685,29 @@ public class PacketHandlerController extends BaseController implements Initializ
 			if (registrationDTO.getSelectionListDTO() == null) {
 
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
-						.with(address -> address.setAddressLine1(moroccoIdentity.getAddressLine1() != null
-								? moroccoIdentity.getAddressLine1().get(0).getValue()
+						.with(address -> address.setAddressLine1(individualIdentity.getAddressLine1() != null
+								? individualIdentity.getAddressLine1().get(0).getValue()
 								: null))
-						.with(address -> address.setAddressLine2(moroccoIdentity.getAddressLine2() != null
-								? moroccoIdentity.getAddressLine2().get(0).getValue()
+						.with(address -> address.setAddressLine2(individualIdentity.getAddressLine2() != null
+								? individualIdentity.getAddressLine2().get(0).getValue()
 								: null))
-						.with(address -> address.setLine3(moroccoIdentity.getAddressLine3() != null
-								? moroccoIdentity.getAddressLine3().get(0).getValue()
+						.with(address -> address.setLine3(individualIdentity.getAddressLine3() != null
+								? individualIdentity.getAddressLine3().get(0).getValue()
 								: null))
-						.with(address -> address
-								.setLocationDTO(Builder.build(LocationDTO.class)
-										.with(location -> location.setCity(moroccoIdentity.getCity() != null
-												? moroccoIdentity.getCity().get(0).getValue()
+						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+								.with(location -> location.setCity(individualIdentity.getCity() != null
+										? individualIdentity.getCity().get(0).getValue()
+										: null))
+								.with(location -> location.setProvince(individualIdentity.getProvince() != null
+										? individualIdentity.getProvince().get(0).getValue()
+										: null))
+								.with(location -> location.setRegion(individualIdentity.getRegion() != null
+										? individualIdentity.getRegion().get(0).getValue()
+										: null))
+								.with(location -> location.setPostalCode(
+										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
 												: null))
-										.with(location -> location.setProvince(moroccoIdentity.getProvince() != null
-												? moroccoIdentity.getProvince().get(0).getValue()
-												: null))
-										.with(location -> location.setRegion(moroccoIdentity.getRegion() != null
-												? moroccoIdentity.getRegion().get(0).getValue()
-												: null))
-										.with(location -> location.setPostalCode(moroccoIdentity.getPostalCode() != null
-												? moroccoIdentity.getPostalCode()
-												: null))
-										.get()))
+								.get()))
 						.get();
 
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
@@ -789,6 +794,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	}
 
+	@SuppressWarnings("resource")
 	private void sendNotification(String email, String mobile, String regID) {
 		try {
 			boolean emailSent = false;
@@ -798,10 +804,22 @@ public class PacketHandlerController extends BaseController implements Initializ
 						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
 				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					ResponseDTO notificationResponse;
-					Writer writeNotificationTemplate;
+					Writer writeNotificationTemplate = null;
 					if (email != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
-						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+
+						if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+								.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.LOST_UIN_EMAIL_TEMPLATE);
+						} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+								.getRegistrationCategory().equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.UPDATE_UIN_EMAIL_TEMPLATE);
+						} else {
+							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+						}
+
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendEmail(writeNotificationTemplate.toString(),
 									email, regID);
@@ -815,7 +833,19 @@ public class PacketHandlerController extends BaseController implements Initializ
 					}
 					if (mobile != null && (notificationServiceName.toUpperCase())
 							.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
-						writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+
+						if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+								.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.LOST_UIN_SMS_TEMPLATE);
+						} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO()
+								.getRegistrationCategory().equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+							writeNotificationTemplate = getNotificationTemplate(
+									RegistrationConstants.UPDATE_UIN_SMS_TEMPLATE);
+						} else {
+							writeNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+						}
+
 						if (!writeNotificationTemplate.toString().isEmpty()) {
 							notificationResponse = notificationService.sendSMS(writeNotificationTemplate.toString(),
 									mobile, regID);

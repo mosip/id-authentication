@@ -144,49 +144,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static String QRCodeFilePath;
 	private static String qrCode_URI;
 	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
-	/*static String preReg_CreateApplnURI;
-	PreregistrationDAO dao = new PreregistrationDAO();
-	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
-	static String preReg_DataSyncnURI;
-	static String preReg_NotifyURI;
-	static String preReg_DocumentUploadURI;
-	static String preReg_FetchRegistrationDataURI;
-	static String preReg_FetchCenterIDURI;
-	static String preReg_BookingAppointmentURI;
-	static String preReg_FecthAppointmentDetailsURI;
-	static String preReg_FetchAllDocumentURI;
-	static String prereg_DeleteDocumentByDocIdURI;
-	static String preReg_DeleteAllDocumentByPreIdURI;
-	static String preReg_CopyDocumentsURI;
-	static String preReg_ConsumedURI;
-	static String preReg_FetchBookedPreIdByRegIdURI;
-	static String preReg_FetchAllApplicationCreatedByUserURI;
-	static String preReg_DiscardApplnURI;
-	static String preReg_FetchStatusOfApplicationURI;
-	static String preReg_UpdateStatusAppURI;
-	static String preReg_CancelAppointmentURI;
-	static String preReg_ExpiredURI;
-	static String preReg_ReverseDataSyncURI;
-	static String preReg_DiscardBookingURI;
-	static String preReg_SyncMasterDataURI;
-	public static String otpSend_URI="";
-	static String validateOTP_URI;
-	static String langCodeKey;
-	static String preReg_AdminTokenURI;
-	static String preReg_translitrationRequestURI;
-	static String invalidateToken_URI;
-	static String preReg_GetDocByDocId;
-	static String preReg_CancelAppointmenturi;
-	static String preReg_RetriveBookedPreIdsByRegId;
-	static String preReg_GetPreRegistrationConfigData;
-	static String preReg_BookingAppointmenturi;
-	static String uiConfigParams;
-	static String preReg_syncAvailability;
-	static String preReg_FecthAppointmentDetailsuri;
-	static String qrCode_URI;
-	static String QRCodeFilePath;
-	static String preReg_GetDocByPreId;*/
-
 	/*
 	 * We configure the jsonProvider using Configuration builder.
 	 */
@@ -205,21 +162,29 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		return createPregResponse;
 	}
 
-	public static JSONObject getRequest(String testSuite) {
+	public JSONObject getRequest(String testSuite) {
 		JSONObject request = null;
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					e.printStackTrace();
 					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -243,16 +208,24 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					translitrationRequest = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					e.printStackTrace();
 					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -298,7 +271,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 
 	public String getToken() {
-
 		testSuite = "generateOTP/generateOTP_smoke";
 		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
@@ -308,7 +280,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		Response validateOTPRes = validateOTP(request);
 		String cookieValue = validateOTPRes.getCookie("Authorization");
 		return cookieValue;
-
 	}
 
 	/**
@@ -801,7 +772,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	@SuppressWarnings("unchecked")
 	public Response documentUpload(Response responseCreate) {
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
 		request = getRequest(testSuite);
 		testSuite = "Get_Pre_Registartion_data/Get Pre Pregistration Data of the application_smoke";
@@ -821,12 +792,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		parm.put("preRegistrationId", PreRegistrationId);
 
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POI.pdf");
 		request = getRequest(testSuite);
-		request.put("requesttime", getCurrentDate());
+		request.put("requesttime", getCurrentDate());	
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
-		//response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 		return response;
 	}
 
@@ -837,18 +807,27 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	@SuppressWarnings("unchecked")
 	public Response documentUpload(Response responseCreate, String fileName) {
 		testSuite = "DocumentUpload/DocumentUpload_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/" + fileName + ".pdf");
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 		JSONObject object = null;
@@ -1045,19 +1024,27 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	}
 	public Response fetchCentreWithCerterId(String regCenterId) {
 		testSuite = "FetchAvailabilityDataOfRegCenters/prereg_FetchAvailabilityDataOfRegCenters_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		ObjectNode fetchAvailabilityrequest = null;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
+			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					request.put("registrationCenterId", regCenterId);
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 
@@ -1412,7 +1399,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ExpiredURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ExpiredURI);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -1442,7 +1429,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		try {
 
 
-			response = applnLib.putRequest_WithoutBody(preReg_ConsumedURI);
+			response = applnLib.adminputRequest_WithoutBody(preReg_ConsumedURI);
 
 		} catch (Exception e) {
 			logger.info(e);
@@ -1537,7 +1524,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 		testSuite = folderPath;
 		// preReg_URI = commonLibrary.fetch_IDRepo("preReg_DocumentUploadURI");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 
 		File file = new File(configPath + documentName);
 		File folder = new File(configPath);
@@ -1572,19 +1559,28 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	@SuppressWarnings("unchecked")
 	public Response TriggerNotification() {
 		testSuite = "TriggerNotification/preReg_TriggerNotification_emailId_outlookAccount_smoke";
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		File file = new File(configPath + "/AadhaarCard_POA.pdf");
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 		String value = null;
@@ -1638,17 +1634,25 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 	public JSONObject requestJson(String filepath) {
 
-		String configPath = "src/test/resources/" + folder + "/" + filepath;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + filepath;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
-			if (f.getName().toLowerCase().contains("request")) {
+			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
 
 			}
@@ -1704,7 +1708,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		/**
 		 * Reading request body from configpath
 		 */
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 		request = getRequest(testSuite);
 		request.put("requesttime", getCurrentDate());
 		return request;
@@ -1759,7 +1763,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = "src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
@@ -1963,18 +1967,27 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	public Response QRCode() {
 		testSuite = QRCodeFilePath;
 		logger.info("Path Val:"+QRCodeFilePath);
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder + "/" + testSuite;
 
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
+		FileReader fileReader = null;
 		for (File f : listOfFiles) {
 			if (f.getName().contains("request")) {
+
 				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+					fileReader = new FileReader(f.getPath());
+					request = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage());
+				} finally {
+					try {
+						fileReader.close();
+					} catch (IOException e) {
+						logger.info(e.getMessage());
+					}
 				}
+
 			}
 		}
 

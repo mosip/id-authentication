@@ -1,0 +1,72 @@
+{
+	"identity": {
+		"gender": [
+			{
+				"language": "fre",
+				"value": "mâle"
+			}
+		],
+		"province": [
+			{
+				"language": "fre",
+				"value": "Fès-Meknès"
+			}
+		],
+		"city": [
+			{
+				"language": "fre",
+				"value": "MOROCCO"
+			}
+		],
+		"postalCode": [
+			{
+				"language": null,
+				"value": "600001"
+			}
+		],
+		"fullName": [
+			{
+				"language": "fre",
+				"value": "Osama Bin Laden"
+			}
+		],
+		"addressLine1": [
+			{
+				"language": "fre",
+				"value": "27 RUE PASTEUR"
+			}
+		],
+		"dateOfBirth": [
+			{
+				"language": null,
+				"value": "1995/04/15"
+			}
+		],
+		"addressLine2": [
+			{
+				"language": "fre",
+				"value": "14390 CABOURG Street"
+			}
+		],
+		"addressLine3": [
+			{
+				"language": "fre",
+				"value": "MOROCCO"
+			}
+		],
+		"region": [
+			{
+				"language": "fre",
+				"value": "NORTH AFRICA"
+			}
+		],
+		"email": [
+			{
+				"language": null,
+				"value": "vjvignesh4@gmail.com"
+			}
+		]
+	},
+	"idvId": "XXXXXXXX0174",
+	"eprint": "$IGNORE$"
+}
