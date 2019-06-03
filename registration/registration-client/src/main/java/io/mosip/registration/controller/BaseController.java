@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
@@ -50,13 +49,12 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
-import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.remap.CenterMachineReMapService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
@@ -106,16 +104,13 @@ public class BaseController {
 	@Autowired
 	protected AuditManagerService auditFactory;
 	@Autowired
-	private GlobalParamService globalParamService;
+	protected GlobalParamService globalParamService;
 
 	@Autowired
 	protected ServiceDelegateUtil serviceDelegateUtil;
 
 	@Autowired
 	protected FXComponents fXComponents;
-
-	@Autowired
-	private LoginService loginService;
 
 	@Autowired
 	private DemographicDetailController demographicDetailController;
@@ -134,6 +129,9 @@ public class BaseController {
 
 	@Autowired
 	private TemplateService templateService;
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -649,50 +647,14 @@ public class BaseController {
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-		if (password.isEmpty()) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
-			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
-		} else {
-			String hashPassword = null;
-
-			// password hashing
-			if (!(password.isEmpty())) {
-				byte[] bytePassword = password.getBytes();
-				hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-			}
-
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
-			authenticationValidatorDTO.setPassword(hashPassword);
+			authenticationValidatorDTO.setPassword(password);
 
-			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
+			if (authenticationService.validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
 				return RegistrationConstants.SUCCESS;
 			}
 			return RegistrationConstants.FAILURE;
-		}
-	}
-
-	/**
-	 * to validate the password and send appropriate message to display.
-	 *
-	 * @param authenticationValidatorDTO
-	 *            - DTO which contains the username and password entered by the user
-	 * @return appropriate message after validation
-	 */
-	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-				"Validating credentials using database");
-
-		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		// TO DO-- Yet to implement SSHA512
-		/*HMACUtils.digestAsPlainTextWithSalt(authenticationValidatorDTO.getPassword().getBytes(),
-				userDetail.getSalt().getBytes()).equals(userDetail)*/
-		if ("E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262"
-				.equals(authenticationValidatorDTO.getPassword())) {
-			return RegistrationConstants.PWD_MATCH;
-		} else {
-			return RegistrationConstants.PWD_MISMATCH;
-		}
 	}
 
 	/**
@@ -1010,7 +972,7 @@ public class BaseController {
 		GridPane HomePageRoot = null;
 		try {
 			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
-		} catch (IOException e) {
+		} catch (IOException ioException) {
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION,
 					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
@@ -1252,7 +1214,7 @@ public class BaseController {
 	/**
 	 * Exception fingers count.
 	 */
-	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount,int rightSlapCount,int thumbCount, int irisCount) {
+	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount, int irisCount) {
 		
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
@@ -1283,7 +1245,6 @@ public class BaseController {
 					&& biometricExceptionDTO.isMarkedAsException())) {
 				thumbCount++;
 			}
-			
 			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
 					&& biometricExceptionDTO.isMarkedAsException())) {
 				irisCount++;
@@ -1292,8 +1253,8 @@ public class BaseController {
 		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
 		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
 		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
-		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT, leftSlapCount+rightSlapCount+thumbCount+irisCount); 
-		
+		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT, leftSlapCount+rightSlapCount+thumbCount+irisCount);
+
 		return exceptionCountMap;
 	}
 	

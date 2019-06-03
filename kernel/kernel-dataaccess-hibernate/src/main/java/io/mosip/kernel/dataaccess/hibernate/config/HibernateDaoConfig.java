@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -24,6 +25,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+//import com.zaxxer.hikari.HikariConfig;
+//import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
@@ -59,6 +63,18 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 * 
 	 * @see io.mosip.kernel.core.dao.config.BaseDaoConfig#dataSource()
 	 */
+
+	@Value("${hikari.maximumPoolSize:100}")
+	private int maximumPoolSize;
+	@Value("${hikari.validationTimeout:3000}")
+	private int validationTimeout;
+	@Value("${hikari.connectionTimeout:60000}")
+	private int connectionTimeout;
+	@Value("${hikari.idleTimeout:200000}")
+	private int idleTimeout;
+	@Value("${hikari.minimumIdle:0}")
+	private int minimumIdle;
+
 	@Override
 	@Bean
 	public DataSource dataSource() {
@@ -67,6 +83,19 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
 		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
 		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+
+//		HikariConfig hikariConfig = new HikariConfig();
+//		hikariConfig.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+//		hikariConfig.setJdbcUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+//		hikariConfig.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+//		hikariConfig.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+//		hikariConfig.setMaximumPoolSize(maximumPoolSize);
+//		hikariConfig.setValidationTimeout(validationTimeout);
+//		hikariConfig.setConnectionTimeout(connectionTimeout);
+//		hikariConfig.setIdleTimeout(idleTimeout);
+//		hikariConfig.setMinimumIdle(minimumIdle);
+//		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+
 		return dataSource;
 	}
 

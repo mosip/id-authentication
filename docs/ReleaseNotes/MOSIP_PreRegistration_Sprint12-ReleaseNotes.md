@@ -9,11 +9,11 @@
 SubmittedBy|Ravi C Balaji
 Date Raised | 29-MAY-2019
 Impact of Release|NA
-Implementation Start Date |21-MAY-2019
+Implementation Start Date |20-MAY-2019
 Implementation end date	|07-JUN-2019
 Jenkins Build #	|Min Version : 1953  [Any later version also]
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
-Acceptance Criteria	| Unit Testing and Code Coverage > 85%
+Acceptance Criteria	| Unit Testing and Code Coverage > 88%
 Role/Job Title|Technical Lead
 RFC(s) #|	NA
 
@@ -31,8 +31,7 @@ MOS-23331 |Technical Debts of FIT-4
 #### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module/Files|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine.
-ZIP|Fat Jar + DB|Latest version|The ZIP contains the both fat jar and required the initial DB. 
+Java|JDK + JRE [Installed]|Main Version: Java 8 Min Version: 181|The Java Version is to be installed in the machine. 
 kernel-core|NA|0.12.2|Basic core kernel packages.
 kernel-logger-logback|NA|0.12.2|Use for the logging.
 kernel-dataaccess-hibernate|NA|0.12.2|Used for the communicating to the DB.
@@ -53,10 +52,7 @@ kernel-notification-api|NA|0.12.2|Used to notify the user.
 #### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
 -----------------|----------------------
-Demographic Service | Demographic master data validation
-File Upload Bug	| Same as is coming for the first applicant also. MOS-24028 , Names without POA displaying in same as. 
-Consent template	| Consent should show actual data as per configured template. MOS-23916
-emailID field validation | User is not getting any error code or error message by entering the invalid value for emailID field. MOS-18849
+Dashboard API change |  Names without POA displaying in same as. MOS-24119
 
 
 #### 1.6 Defects list
@@ -79,6 +75,9 @@ MOS-23989|FIXED|YES
 MOS-23938|FIXED|YES
 MOS-23903|FIXED|YES
 MOS-23245|FIXED|YES
+MOS-24028|FIXED|YES
+MOS-23916|FIXED|YES
+MOS-18849|FIXED|YES
 
 #### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason

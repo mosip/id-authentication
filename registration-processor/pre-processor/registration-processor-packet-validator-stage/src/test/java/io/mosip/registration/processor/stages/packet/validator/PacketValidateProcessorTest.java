@@ -173,9 +173,6 @@ public class PacketValidateProcessorTest {
 
 	ValidationReport validationReport;
 
-	private static final String CONFIG_SERVER_URL = "url";
-	private String identityMappingjsonString;
-
 	private static final String PRIMARY_LANGUAGE = "primary.language";
 
 	private static final String SECONDARY_LANGUAGE = "secondary.language";
@@ -277,7 +274,6 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 
-		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
@@ -295,6 +291,8 @@ public class PacketValidateProcessorTest {
 		registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
+		registrationStatusDto.setRegistrationType(RegistrationType.NEW.name());
+		
 		listAppender.start();
 		list.add(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByStatus(anyString())).thenReturn(list);
@@ -374,12 +372,21 @@ public class PacketValidateProcessorTest {
 	 */
 	@Test
 	public void testStructuralValidationSuccess() throws Exception {
-
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 
 	}
 
+	@Test
+	public void testMandatoryValidation() throws Exception {
+		when(env.getProperty(VALIDATEMANDATORY)).thenReturn("true");
+		
+		
+		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
+		assertFalse("Test for successful Structural Validation", messageDto.getIsValid());
+
+	}
+	
 	@Test
 	public void testStructuralValidationForConfigValues() throws Exception {
 		when(env.getProperty(VALIDATESCHEMA)).thenReturn("false");

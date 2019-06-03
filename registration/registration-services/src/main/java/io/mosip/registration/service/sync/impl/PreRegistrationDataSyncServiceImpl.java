@@ -324,7 +324,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					 */
 					decryptedPacket = preRegZipHandlingService.decryptPreRegPacket(
 							preRegistration.getPacketSymmetricKey(),
-							FileUtils.readFileToByteArray(new File(preRegistration.getPacketPath())));
+							FileUtils.readFileToByteArray(FileUtils.getFile(preRegistration.getPacketPath())));
 				}
 
 				/* set decrypted packet into Response */
@@ -636,7 +636,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			for (PreRegistrationList preRegRecord : preRegList) {
 
 				/* Get File to be deleted from pre registartion */
-				File preRegPacket = new File(preRegRecord.getPacketPath());
+				File preRegPacket = FileUtils.getFile(preRegRecord.getPacketPath());
 				if (preRegPacket.exists() && preRegPacket.delete()) {
 					preRegistartionsToBeDeletedList.add(preRegRecord);
 				}

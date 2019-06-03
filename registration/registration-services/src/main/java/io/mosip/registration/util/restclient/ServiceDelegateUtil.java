@@ -85,16 +85,23 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param serviceName   service to be invoked
-	 * @param requestParams parameters along with url
-	 * @param hasPathParams the has path params
-	 * @param triggerPoint  system or user driven invocation
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            parameters along with url
+	 * @param hasPathParams
+	 *            the has path params
+	 * @param triggerPoint
+	 *            system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
@@ -121,7 +128,6 @@ public class ServiceDelegateUtil {
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
 
-		
 			Map<String, String> queryParams = new HashMap<>();
 			for (String key : requestParams.keySet()) {
 				if (!url.contains("{" + key + "}")) {
@@ -132,7 +138,7 @@ public class ServiceDelegateUtil {
 
 			if (hasPathParams) {
 				requestHTTPDTO.setUri(UriComponentsBuilder.fromUriString(url).build(requestParams));
-				url=requestHTTPDTO.getUri().toString();
+				url = requestHTTPDTO.getUri().toString();
 			}
 			if (!queryParams.isEmpty()) {
 				/** Set URI */
@@ -162,16 +168,23 @@ public class ServiceDelegateUtil {
 	/**
 	 * prepare POST request.
 	 *
-	 * @param serviceName  service to be invoked
-	 * @param object       request type
-	 * @param triggerPoint system or user driven invocation
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
+	 * @param triggerPoint
+	 *            system or user driven invocation
 	 * @return Object requiredType of object response Body
-	 * @throws RegBaseCheckedException  generalised exception with errorCode and
-	 *                                  errorMessage
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws SocketTimeoutException   the socket timeout exception
-	 * @throws ResourceAccessException  the resource access exception
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws SocketTimeoutException
+	 *             the socket timeout exception
+	 * @throws ResourceAccessException
+	 *             the resource access exception
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object, String triggerPoint)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
@@ -217,8 +230,9 @@ public class ServiceDelegateUtil {
 	 *            - request data
 	 * @param responseType
 	 *            - response format
-	 * @return
+	 * @return Object - response body
 	 * @throws RegBaseCheckedException
+	 *             - generalized exception with errorCode and errorMessage
 	 */
 	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
@@ -250,7 +264,7 @@ public class ServiceDelegateUtil {
 		return responseBody;
 
 	}
-	
+
 	/**
 	 * prepares the request
 	 * 
@@ -262,6 +276,8 @@ public class ServiceDelegateUtil {
 	 *            - request data
 	 * @param responseType
 	 *            - response format
+	 * @param url
+	 *            - the URL
 	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
 			Class<?> responseType, String url) {
@@ -276,7 +292,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setIsSignRequired(false);
 		try {
 			requestHTTPDTO.setUri(new URI(url));
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException uriSyntaxException) {
 		}
 		// set timeout
 		setTimeout(requestHTTPDTO);
@@ -284,16 +300,21 @@ public class ServiceDelegateUtil {
 		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
 		requestHTTPDTO.setAuthRequired(false);
 	}
-	
+
 	/**
 	 * Prepare GET request.
 	 *
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param serviceName    service to be invoked
-	 * @param requestParams  params need to add along with url
-	 * @param authHeader     the auth header
+	 * @param requestHTTPDTO
+	 *            the request HTTPDTO
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param requestParams
+	 *            params need to add along with url
+	 * @param authHeader
+	 *            the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO, final String serviceName,
 			final Map<String, String> requestParams) throws RegBaseCheckedException {
@@ -325,11 +346,15 @@ public class ServiceDelegateUtil {
 	/**
 	 * Prepare POST request.
 	 *
-	 * @param serviceName service to be invoked
-	 * @param object      request type
-	 * @param authHeader  the auth header
+	 * @param serviceName
+	 *            service to be invoked
+	 * @param object
+	 *            request type
+	 * @param authHeader
+	 *            the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object)
 			throws RegBaseCheckedException {
@@ -358,9 +383,12 @@ public class ServiceDelegateUtil {
 	/**
 	 * Sets the URI.
 	 *
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @param requestParams  the request params
-	 * @param url            the url
+	 * @param requestHTTPDTO
+	 *            the request HTTPDTO
+	 * @param requestParams
+	 *            the request params
+	 * @param url
+	 *            the url
 	 */
 	private void setURI(RequestHTTPDTO requestHTTPDTO, Map<String, String> requestParams, String url) {
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_POST, APPLICATION_NAME, APPLICATION_ID,
@@ -387,8 +415,10 @@ public class ServiceDelegateUtil {
 	/**
 	 * Setup of headers
 	 * 
-	 * @param httpHeaders http headers
-	 * @param headers     headers
+	 * @param httpHeaders
+	 *            http headers
+	 * @param headers
+	 *            headers
 	 */
 	private void setHeaders(HttpHeaders httpHeaders, String headers) {
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
@@ -400,14 +430,14 @@ public class ServiceDelegateUtil {
 			for (String subheader : header) {
 				if (subheader != null) {
 					headerValues = subheader.split(":");
-					if(headerValues[0].equalsIgnoreCase("timestamp")) {
+					if (headerValues[0].equalsIgnoreCase("timestamp")) {
 						headerValues[1] = DateUtils.getUTCCurrentDateTimeString();
-					} else if(headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
+					} else if (headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
 						headerValues[1] = String
 								.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID))
 								.concat(RegistrationConstants.UNDER_SCORE).concat(String
 										.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID)));
-					} 
+					}
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}
@@ -419,9 +449,12 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * @param requestHTTPDTO create requestedHTTPDTO
-	 * @param serviceName    service name to be called
-	 * @param requestBody    object to be included in HTTP entities
+	 * @param requestHTTPDTO
+	 *            create requestedHTTPDTO
+	 * @param serviceName
+	 *            service name to be called
+	 * @param requestBody
+	 *            object to be included in HTTP entities
 	 */
 	private void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object requestBody) {
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_PREPARE_REQUEST, APPLICATION_NAME, APPLICATION_ID,
@@ -512,7 +545,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
 			requestHTTPDTO.setRequestSignRequired(false);
-			
+
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
 
@@ -520,7 +553,6 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
-			
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -628,7 +660,8 @@ public class ServiceDelegateUtil {
 	/**
 	 * Invalidate token.
 	 *
-	 * @param cookie the cookie
+	 * @param cookie
+	 *            the cookie
 	 */
 	public void invalidateToken(String cookie) {
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_VALIDATE_TOKEN, APPLICATION_NAME, APPLICATION_ID,
@@ -660,9 +693,12 @@ public class ServiceDelegateUtil {
 	 * Create a {@link RequestHTTPDTO} for a web-service. Add Cookie to the request
 	 * header and URL to request
 	 *
-	 * @param cookie         the cookie
-	 * @param requestHTTPDTO the request HTTPDTO
-	 * @throws URISyntaxException if requestURL is invalid
+	 * @param cookie
+	 *            the cookie
+	 * @param requestHTTPDTO
+	 *            the request HTTPDTO
+	 * @throws URISyntaxException
+	 *             if requestURL is invalid
 	 */
 	private RequestHTTPDTO buildRequestHTTPDTO(String cookie, String requestURL, HttpMethod httpMethod)
 			throws URISyntaxException {

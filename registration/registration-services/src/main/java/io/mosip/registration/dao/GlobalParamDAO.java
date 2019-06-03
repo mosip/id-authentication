@@ -62,6 +62,7 @@ public interface GlobalParamDAO {
 	 *
 	 * @param isUpdateAvailable
 	 *            the status
+	 * @param timestamp - the timestamp
 	 * @return the global param
 	 */
 	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp);

@@ -99,8 +99,6 @@ public class RegIdObjectMasterDataValidator {
 
 	/**
 	 * Load data.
-	 * 
-	 * @throws IdObjectIOException
 	 */
 	@PostConstruct
 	public void loadData() {

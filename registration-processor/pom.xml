@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.3</version>
+		<version>0.12.4</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -116,14 +116,14 @@
 		<registration.processor.print.service.impl.version>${version}</registration.processor.print.service.impl.version>
 		
 		<!-- Kernel -->
-		<kernel.core.version>0.12.2</kernel.core.version>
-		<kernel.dataaccess.hibernate.version>0.12.2</kernel.dataaccess.hibernate.version>
-		<kernel.templatemanager.velocity.version>0.12.2</kernel.templatemanager.velocity.version>
-		<kernel.emailnotification.service.version>0.12.2</kernel.emailnotification.service.version>
-		<kernel.smsnotification.service.version>0.12.2</kernel.smsnotification.service.version>
-		<kernel.idvalidator.version>0.12.2</kernel.idvalidator.version>
-		<kernel.clamav.version>0.12.2</kernel.clamav.version>
-		<kernel.idgenerator.rid.version>0.12.2</kernel.idgenerator.rid.version>
+		<kernel.core.version>${version}</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>${version}</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>${version}</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>${version}</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>${version}</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>${version}</kernel.idvalidator.version>
+		<kernel.clamav.version>${version}</kernel.clamav.version>
+		<kernel.idgenerator.rid.version>${version}</kernel.idgenerator.rid.version>
 
 			<sonar.coverage.exclusions>**/dto/**,
 			**/exception/*Exception.java,
@@ -186,7 +186,26 @@
 			**/registration/processor/biodedupe/*.java,
 
 
-			**/registration/processor/abis/**/*.java,
+			**/registration/processor/abis/config/*.java,
+			**/registration/processor/abis/controller/*.java,
+			**/registration/processor/abis/exception/*.java,
+			**/registration/processor/abis/messagequeue/*.java,
+			**/registration/processor/abis/service/*.java,
+			**/registration/processor/abis/service/impl/*.java,
+			
+			
+			**/registration/processor/abis/handler/*.java,
+			**/registration/processor/abis/handler/config/*.java,
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			**/registration/processor/packet/service/**/*.java,
 			**/registration/processor/packet/upload/**/*.java,
 
@@ -217,16 +236,23 @@
 			**/registration/processor/packet/receiver/stage/PacketReceiverStage.java,
 			**/registration/processor/camel/bridge/**/*.java,
 			**/registration/processor/stages/connector/stage/**/*.java,
-			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
 			**/registration/processor/stages/demodedupe/DemoDedupeStage.java,
-			**/registration/processor/print/stage/PrintStage.java,
-			
+
 			**/registration/processor/packet/storage/mapper/PacketInfoMapper.java,
 			**/registration/processor/packet/storage/dao/PacketInfoDao.java,
 			**/registration/processor/packet/uploader/constants/*.java,
 			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java,
 			**/registration/processor/packet/receiver/constants/*.java,
-			**/registration/processor/print/service/exception/*.java
+			**/registration/processor/print/service/exception/*.java,
+			**/registration/processor/print/exception/*.java,
+			**/registration/processor/packet/uploader/constants/*.java,
+			**/registration/processor/packet/uploader/decryptor/*.java,
+			**/registration/processor/core/abstractverticle/MosipRouter.java,
+			**/registration/processor/packet/uploader/decryptor/*.java,
+			
+			**/registration/processor/print/service/impl/PrintPostServiceImpl.java
+			
+			
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>

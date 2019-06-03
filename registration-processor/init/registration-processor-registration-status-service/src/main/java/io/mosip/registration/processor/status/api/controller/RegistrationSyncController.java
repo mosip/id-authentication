@@ -15,13 +15,11 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -137,7 +135,7 @@ public class RegistrationSyncController {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
-		List<SyncResponseDto> syncResponseList = new ArrayList<SyncResponseDto>();
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
 		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
 			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
 				syncResponseList.add(syncResponseDto);

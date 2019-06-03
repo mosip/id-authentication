@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
@@ -73,10 +72,6 @@ public class UMCValidator {
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
-	/** The adapter. */
-	@Autowired
-	private FileSystemAdapter adapter;
-
 	/** The primary languagecode. */
 	@Value("${primary.language}")
 	private String primaryLanguagecode;
@@ -114,7 +109,6 @@ public class UMCValidator {
 	 * @throws com.fasterxml.jackson.databind.JsonMappingException
 	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate)
 			throws ApisResourceAccessException, IOException {
 		boolean activeRegCenter = false;
@@ -176,7 +170,6 @@ public class UMCValidator {
 	 * @throws com.fasterxml.jackson.databind.JsonMappingException
 	 * @throws com.fasterxml.jackson.core.JsonParseException
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean isValidMachine(String machineId, String langCode, String effdatetimes)
 			throws ApisResourceAccessException, IOException {
 
@@ -252,7 +245,6 @@ public class UMCValidator {
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(machineId);
 		pathsegments.add(superviserId);
-		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto;
 		if (superviserId != null)
 			supervisorActive = validateMapping(pathsegments);
 
@@ -336,8 +328,7 @@ public class UMCValidator {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
@@ -401,7 +392,7 @@ public class UMCValidator {
 	 * @throws JsonParseException
 	 */
 	private RegistrationCenterMachineDto getCenterMachineDto(String registrationId)
-			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+			throws IOException {
 
 		identity = osiUtils.getIdentity(registrationId);
 
@@ -553,7 +544,7 @@ public class UMCValidator {
 	 */
 
 	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto)
-			throws JsonProcessingException, IOException, ApisResourceAccessException {
+			throws IOException, ApisResourceAccessException {
 		boolean isDeviceActive = false;
 
 		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();

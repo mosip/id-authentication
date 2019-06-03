@@ -4,8 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +30,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * Implementation for {@link UserMachineMappingService}
@@ -55,7 +54,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 	 * 
 	 */
 	public ResponseDTO syncUserDetails() {
-		LOGGER.info("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"sync user details is started");
 		String systemMacId = null;
 		String machineId = null;
@@ -86,22 +85,36 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 					registrationCenterUserMachineMappingDto.setUsrId(userMachineMapping.getUserDetail().getId());
 					list.add(registrationCenterUserMachineMappingDto);
 				}
-				//regCenterMachineUserReqDto.setVersion("v1");
+
 				regCenterMachineUserReqDto.setRequest(list);
 
-				serviceDelegateUtil.post("user_machine_mapping", regCenterMachineUserReqDto,
-						RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-				successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
-				successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
-				successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				LinkedHashMap<String, Object> masterSyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+						.post("user_machine_mapping", regCenterMachineUserReqDto,
+								RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				if (null != masterSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+					LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME,
+							APPLICATION_ID, RegistrationConstants.SUCCESS);
+					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
+				} else {
+					LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME,
+							APPLICATION_ID,
+							masterSyncResponse.size() > 0
+									? ((List<LinkedHashMap<String, String>>) masterSyncResponse
+											.get(RegistrationConstants.ERRORS)).get(0)
+													.get(RegistrationConstants.ERROR_MSG)
+									: "sync user details Restful service error");
+					setErrorResponse(responseDTO, masterSyncResponse.size() > 0
+							? ((List<LinkedHashMap<String, String>>) masterSyncResponse
+									.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+							: "sync user details Restful service error", null);
+				}
 
 				LOGGER.info("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"sync user details is ended");
 			} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException
 					| RegBaseCheckedException | RegBaseUncheckedException exception) {
 				exception.printStackTrace();
-				LOGGER.error("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.error("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage());
 				responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
 						RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
@@ -131,7 +144,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 
 	@Override
 	public ResponseDTO isUserNewToMachine(String userId) {
-		LOGGER.debug("REGISTRATION-ONBOARDED-USER-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"Started to find whether the user to machine or not");
 		ResponseDTO responseDTO = new ResponseDTO();
 		boolean isExists = machineMappingDAO.isExists(userId);
