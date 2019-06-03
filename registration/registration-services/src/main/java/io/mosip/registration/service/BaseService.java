@@ -281,13 +281,13 @@ public class BaseService {
 	 * @return value
 	 */
 	public String getGlobalConfigValueOf(String key) {
-
 		if (applicationMap.isEmpty()) {
 
 			ApplicationContext.map().putAll(globalParamService.getGlobalParams());
 
 		}
-
+		applicationMap.putAll(ApplicationContext.map());
+		
 		return (String) applicationMap.get(key);
 	}
 
