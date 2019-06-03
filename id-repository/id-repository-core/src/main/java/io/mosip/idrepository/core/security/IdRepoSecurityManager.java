@@ -75,7 +75,7 @@ public class IdRepoSecurityManager {
 	 */
 	public String hashwithSalt(final byte[] data, final byte[] salt) {
 		// add salt in argument
-		return HMACUtils.digestAsPlainTextWithSalt(HMACUtils.generateHash(data), HMACUtils.generateHash(salt));
+		return HMACUtils.digestAsPlainTextWithSalt(data,salt);
 	}
 
 	/**
