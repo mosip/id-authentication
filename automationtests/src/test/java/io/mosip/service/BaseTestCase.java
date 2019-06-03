@@ -99,40 +99,33 @@ public class BaseTestCase{
 	
 	public void initialize()
 	{
-		try {
-			
-			BasicConfigurator.configure();
-			
-			/**
-			 * Make sure test-output is there 
-			 */
-			File testOutput = new File("test-output");
-			File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
-			oldReport.delete();
-			testOutput.mkdirs();
-			
-			getOSType();
-			logger.info("We have created a Config Manager. Beginning to read properties!");
-			prop = new Properties();
-			InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
-			prop.load(inputStream);
+		BasicConfigurator.configure();
+		
+		/**
+		 * Make sure test-output is there 
+		 */
+		File testOutput = new File("test-output");
+		File oldReport = new File(System.getProperty("user.dir")+"/test-output/emailable-report.html");
+		oldReport.delete();
+		testOutput.mkdirs();
+		
+		getOSType();
+/*	logger.info("We have created a Config Manager. Beginning to read properties!");
+		prop = new Properties();
+		InputStream inputStream = new FileInputStream("src"+BaseTestCase.SEPRATOR+"config"+BaseTestCase.SEPRATOR+"test.properties");
+		prop.load(inputStream);*/
 
-			logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
-			// ApplnURI = prop.getProperty("testEnvironment");
+		logger.info("Setting test configs/TestEnvironment from " + "src/config/test.properties");
+		// ApplnURI = prop.getProperty("testEnvironment");
 
-			environment = System.getProperty("env.user");
-			logger.info("Environemnt is  ==== :" + environment);
-			ApplnURI = System.getProperty("env.endpoint");
-			logger.info("Application URI ======" + ApplnURI);
-			testLevel = System.getProperty("env.testLevel");
-			logger.info("Test Level ======" + testLevel);
+		environment = System.getProperty("env.user");
+		logger.info("Environemnt is  ==== :" + environment);
+		ApplnURI = System.getProperty("env.endpoint");
+		logger.info("Application URI ======" + ApplnURI);
+		testLevel = System.getProperty("env.testLevel");
+		logger.info("Test Level ======" + testLevel);
 
-			logger.info("Configs from properties file are set.");
-			
-
-		} catch (IOException e) {
-			logger.error("Could not find the properties file.\n" + e);
-		}
+		logger.info("Configs from properties file are set.");
 		
 	
 	}
@@ -147,6 +140,7 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
+			
 			buildNumber=getBuildTag();
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
@@ -154,9 +148,9 @@ public class BaseTestCase{
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 
 
-			PreRegistrationLibrary pil=new PreRegistrationLibrary();
+			/*PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
-			AuthTestsUtil.wakeDemoApp();
+			AuthTestsUtil.wakeDemoApp();*/
 		
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
@@ -168,15 +162,7 @@ public class BaseTestCase{
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
 			TokenGeneration generateToken = new TokenGeneration();
-			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
-			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
-			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-			regProcAuthToken = generateToken.getToken(tokenEntity);
-			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
-			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
-			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
-
+			
 		
 		} // End suiteSetup
 

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -36,12 +38,16 @@ import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.ManualVerificationDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
+import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 public class Decision extends BaseTestCase implements ITest{
@@ -68,6 +74,17 @@ public class Decision extends BaseTestCase implements ITest{
 	static String apiName="DecisionApi";
 	static String moduleName="RegProc";
 	CommonLibrary common=new CommonLibrary();
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	StageValidationMethods apiRequest=new StageValidationMethods();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 	/**
 	 *This method is used for reading the test data based on the test case name passed
 	 *
@@ -120,7 +137,7 @@ public class Decision extends BaseTestCase implements ITest{
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.regProcAssignmentRequest(prop.getProperty("decisionApi"),actualRequest);
+			actualResponse = apiRequests.regProcPostRequest(prop.getProperty("decisionApi"),actualRequest,MediaType.APPLICATION_JSON,validToken);
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
@@ -235,7 +252,8 @@ public class Decision extends BaseTestCase implements ITest{
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+		validToken=getToken("getStatusTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}

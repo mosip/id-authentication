@@ -62,9 +62,10 @@ public class RegProcTransactionDb {
 			 packetTransactionStatus.put(TestData[1].toString(),TestData[2].toString());
 			 }
 		 	
-		 List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes).reversed()).collect(Collectors.toList());
-		 
-		 
+		 //List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes).reversed()).collect(Collectors.toList());
+		 List<TransactionStatusDTO> sortedregId=new ArrayList<TransactionStatusDTO>();
+		  listOfEntries.sort((d1,d2)->d2.getCr_dtimes().compareTo(d1.getCr_dtimes()));
+		 sortedregId.addAll(listOfEntries);
 		 Set<String> statusFromDb=new LinkedHashSet<String>();
 		 for(TransactionStatusDTO statusDto:sortedregId) {
 			 statusFromDb.add(statusDto.getStatus_code());

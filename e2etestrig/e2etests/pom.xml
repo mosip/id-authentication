@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.mosip.e2etestrig</groupId>
+    <artifactId>e2etestrig</artifactId>
+    <version>0.12.2</version>
+  </parent>
+  <artifactId>e2etests</artifactId>
+  <dependencies>
+
+<!-- 	<dependency>
+		<groupId>io.mosip.registration</groupId>
+		<artifactId>reg-client-automation</artifactId>
+		<version>0.12.2</version>
+	</dependency> -->
+	
+	<dependency>
+	<groupId>customlib</groupId>
+	<artifactId>preregistration</artifactId>
+	<version>0.12.2</version>
+	</dependency>
+	<dependency>
+	<groupId>io.mosip.e2etestrig</groupId>
+	 <artifactId>reg-proc-automation</artifactId>
+	 <version>0.12.2</version>
+	</dependency>
+	<dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>javax.mail-api</artifactId>
+    <version>1.6.0</version>
+</dependency>
+	<dependency>
+    <groupId>com.relevantcodes</groupId>
+    <artifactId>extentreports</artifactId>
+    <version>2.41.2</version>
+</dependency>
+
+	
+  </dependencies>
+  
+  	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+</project>

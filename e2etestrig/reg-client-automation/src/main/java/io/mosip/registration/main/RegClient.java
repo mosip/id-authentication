@@ -12,7 +12,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 public class RegClient {
 	public void createPacket() {
 		TestNG testng = new TestNG();
-        System.setProperty("spring.profiles.active", "qa");
+        System.setProperty("spring.profiles.active", "preqa");
         System.setProperty("mosip.dbpath","./reg");
         System.setProperty("mosip.registration.db.key", this.getClass().getResource("/keys.properties").getPath());
         List<String> suites = Lists.newArrayList();

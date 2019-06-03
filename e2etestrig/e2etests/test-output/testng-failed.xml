@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Mosip E2E Suite]">
+  <listeners>
+    <listener class-name="io.mosip.e2e.report.CustomTestNGReporter"/>
+  </listeners>
+  <test thread-count="5" name="E2E Tests(failed)">
+    <classes>
+      <class name="io.mosip.e2e.tests.RegistrationProcessor">
+        <methods>
+          <include name="uploadPacket"/>
+          <include name="setResultTestName"/>
+          <include name="syncPacket"/>
+        </methods>
+      </class> <!-- io.mosip.e2e.tests.RegistrationProcessor -->
+    </classes>
+  </test> <!-- E2E Tests(failed) -->
+</suite> <!-- Failed suite [Mosip E2E Suite] -->

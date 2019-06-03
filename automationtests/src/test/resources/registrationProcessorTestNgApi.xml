@@ -20,8 +20,9 @@
 	<test name="RegistrationProcessor Tests">
 
 		<classes>
+		<class name="io.mosip.registrationProcessor.tests.Sync" />
 			<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
-			<class name="io.mosip.registrationProcessor.tests.Sync" />
+			
 			<class name="io.mosip.registrationProcessor.tests.PacketStatus" />
 			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
 			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" />

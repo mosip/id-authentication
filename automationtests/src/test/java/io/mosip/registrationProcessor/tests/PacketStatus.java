@@ -41,12 +41,16 @@ import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.AuditRequestDto;
 import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.RegistrationStatusEntity;
+import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
+import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
@@ -81,6 +85,17 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	Properties prop =  new Properties();
 	static String moduleName="RegProc";
 	static String apiName="packetStatus";
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	StageValidationMethods apiRequest=new StageValidationMethods();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 	/**
 	 * This method is use for reading data for packet status based on test case name
 	 * @param context
@@ -131,7 +146,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			//generation of actual response
-			actualResponse = applicationLibrary.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest);
+			actualResponse = apiRequests.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest,validToken);
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
@@ -237,7 +252,8 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+		validToken=getToken("getStatusTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
