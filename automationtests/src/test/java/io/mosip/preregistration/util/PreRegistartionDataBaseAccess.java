@@ -1,6 +1,7 @@
 package io.mosip.preregistration.util;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -33,7 +34,13 @@ public class PreRegistartionDataBaseAccess {
 
 	@SuppressWarnings("unchecked")
 	public List<String> getDbData(String queryString, String dbName) {
-		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+		try {
+			return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+
+		} catch (IndexOutOfBoundsException e) {
+			logger.info("error while getting otp");
+			return null;
+		}
 
 	}
 	@SuppressWarnings("unchecked")
@@ -46,6 +53,11 @@ public class PreRegistartionDataBaseAccess {
 	public List<String> getConsumedStatus(String queryString, String dbName) {
 		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 	}
+	@SuppressWarnings("unchecked")
+	public Date getHoliday(String queryString, String dbName) {
+		return  (Date) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list().get(0);
+	}
+	
 	
 	@AfterClass(alwaysRun = true)
 	public void closingSession() {

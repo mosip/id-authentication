@@ -91,6 +91,9 @@ public class IdaKeywordUtil extends KeywordUtil{
 				String value = entry.getValue().replace("$", "");
 				String[] key = value.split(":");
 				returnMap.put(entry.getKey(), RunConfigUtil.getPartnerIDMispLKValue(key[1]));
+			} 
+			else if (entry.getValue().contains("$SPACE$") && !entry.getValue().contains("+") && entry.getValue().contains("$")) {
+				returnMap.put(entry.getKey(), " ");
 			} else if (entry.getValue().equals("$TIMESTAMP$")) {
 				if (!entry.getKey().startsWith("output."))
 					returnMap.put(entry.getKey(), generateCurrentTimeStampWithTimeZone());
@@ -129,7 +132,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 				else
 					val=currentTestData.get(fieldName).toString();
 				returnMap.put(entry.getKey(), val);
-			} else if (entry.getValue().contains("$") && entry.getValue().startsWith("$idrepo")
+			} else if (entry.getValue().contains("$") && !entry.getValue().startsWith("$idrepoVersion") && entry.getValue().startsWith("$idrepo")
 					&& !entry.getValue().contains("+")
 					&& !(entry.getValue().contains("DECODE:") || entry.getValue().contains("DECODEFILE:"))) {
 				String[] keys = entry.getValue().split("~");
@@ -197,7 +200,13 @@ public class IdaKeywordUtil extends KeywordUtil{
 				//tempMap.put("tspId", getValue[1]);
 				Map<String, String> tempOut = precondtionKeywords(tempMap);
 				String baseQuery = "select otp from kernel.otp_transaction where id like ";
-				String otpId = "%" + tempOut.get("uin")+ "%";
+				String otpId="";
+				if (tempOut.get("uin").length() != 16) {
+					otpId = "%" + tempOut.get("uin") + "%";
+				}
+				else if (tempOut.get("uin").length() == 16) {
+					otpId="%"+ RunConfigUtil.getUinForVid(tempOut.get("uin"))+"%";
+				}
 				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[1];
 				returnMap.put(entry.getKey(), OtpFindQuery);
 			} else if (entry.getValue().contains("$YYYYMMddHHmmss$")) {
@@ -227,13 +236,16 @@ public class IdaKeywordUtil extends KeywordUtil{
 			else if (entry.getValue().contains("$UIN") && !entry.getValue().contains("UIN-PIN")) {
 				returnMap.put(entry.getKey(), RunConfigUtil.getUinNumber(entry.getValue()));
 			} else if (entry.getValue().contains("$VID") && !entry.getValue().contains("VID-PIN")) {
-				if (entry.getValue().contains("WHERE") && entry.getValue().contains("WITH")
-						&& entry.getValue().contains("UIN")) {
-					String uinKeyword = entry.getValue().replace("VID:WHERE", "");
+				if (entry.getValue().contains("VID:WHERE:") && entry.getValue().contains("WHERE")
+						&& entry.getValue().contains("WITH") && entry.getValue().contains("UIN")) {
+					String uinKeyword = entry.getValue().replace("VID:WHERE:", "");
 					Map<String, String> tempIn = new HashMap<String, String>();
 					tempIn.put("uin", uinKeyword);
 					Map<String, String> tempOut = precondtionKeywords(tempIn);
 					returnMap.put(entry.getKey(), RunConfigUtil.getVidKey(tempOut.get("uin").toString()));
+				} else if (entry.getValue().contains("VID:WITH")) {
+					String vidKeyword = entry.getValue().replace("VID:WITH:", "").replace("$", "");
+					returnMap.put(entry.getKey(), RunConfigUtil.getVidForvidkey(vidKeyword));
 				} else
 					returnMap.put(entry.getKey(), getVidNumber());
 			} else if (entry.getValue().contains("UIN-PIN")) {
@@ -326,8 +338,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 		return dateFormatter.format(cal.getTime()) + "05:30";
 	}	
 	/**
-	 * The method generate timestamo with Z timezone
-	 * 
+E	 * 
 	 * @return string
 	 */
 	private String generateTimeStampWithZTimeZone() {

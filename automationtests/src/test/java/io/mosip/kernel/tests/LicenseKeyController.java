@@ -61,7 +61,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	private String requestKeyFile = "GenerateLicenceKeyInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private String folderPath1 = "kernel/LicenseKeyController/MapLicenseKeyPermission";
 	private String outputFile1= "MapLicenseKeyPermissionOutput.json";
 	private String requestKeyFile1 = "MapLicenseKeyPermissionInput.json";
@@ -83,16 +82,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "LicenseKeyGenerator")
 	public Object[][] readData1(ITestContext context) throws Exception {	 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+				return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-		
+
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -109,9 +101,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		// Calling the Post method 
 		 Response res = applicationLibrary.postRequest(actualRequest1, licKeyGenerator);
-		 
-		 //Storing the licence key and its corrosponding tspid
-
+		
+		//Storing the licence key and its corrosponding tspid
 		 if(testCaseName.equals("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
 			{
 			 tspId=((JSONObject)actualRequest1.get("request")).get("tspId").toString();
@@ -127,25 +118,19 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
-     if(status)
-     {
-    	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
-    	  {     
+     if(status){
+    	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey")){     
     		  int length=licenseKey.length();
-    		  if(length==16)
-    		  	{
+    		  if(length==16){
     			  finalStatus ="Pass";
     		  	}
-    		  else
-    		  	{
+    		  else{
 				finalStatus="fail";
     		  	}
     	   }
     	  else
 			finalStatus ="Pass";
-    	   
      }			
-			
 		else {
 			finalStatus="Fail";
 			logger.error(res);
@@ -163,16 +148,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "mapLicenseKey")
 	public Object[][] readData3(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, "smokeAndRegression");
+				return ReadFolder.readFolders(folderPath1, outputFile1, requestKeyFile1, testLevel);
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException
@@ -193,7 +170,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		List<String> innerKeys = new ArrayList<String>();
 		 outerKeys.add("responsetime");
 		 
-
 	    // adding the tspid and corresponding license key to the request and expected response od smok test case
 	    JSONObject request = (JSONObject) actualRequest_map.get("request");
 	    if(testCaseName.contains("Kernel_MapLicenseKeyPermission_smoke_MapLicenseKeyPermission"))
@@ -236,15 +212,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "fetchmapLicenseKey")
 	public Object[][] readData(ITestContext context) throws Exception {	 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, "smokeAndRegression");
+				return ReadFolder.readFolders(folderPath2, outputFile2, requestKeyFile2, testLevel);
 		}
-	}
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException

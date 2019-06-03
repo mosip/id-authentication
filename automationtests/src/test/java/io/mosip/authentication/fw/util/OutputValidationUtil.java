@@ -179,7 +179,7 @@ public class OutputValidationUtil extends AuthTestsUtil{
 					String content = actual.get(expEntry.getKey());
 					String expKeyword = keyword.substring(keyword.lastIndexOf("->") + 2, keyword.length());
 					String actKeyword = expKeyword.replace("expected", "actual");
-					FileUtil.createAndWriteFile(actKeyword, getDecodedData(content));
+					FileUtil.createAndWriteFile(actKeyword, EncryptDecrptUtil.getDecyptFromStr(content));
 					Map<String, List<OutputValidationDto>> ouputValid = doOutputValidation(
 							FileUtil.getFilePath(getTestFolder(), actKeyword).toString(),
 							FileUtil.getFilePath(getTestFolder(), expKeyword).toString());

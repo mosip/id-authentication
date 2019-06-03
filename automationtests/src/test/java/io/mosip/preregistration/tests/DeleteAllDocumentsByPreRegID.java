@@ -144,14 +144,10 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			
 			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+"Res:"+Actualresponse.asString());
 			
-			if((testCaseName.contains("EmptyValue"))||(testCaseName.contains("Spaces")))
-			{
-				outerKeys.add("timestamp");
-			}
-			else 
-			{
+			
+			
 				outerKeys.add("responsetime");
-			}
+			
 			
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);

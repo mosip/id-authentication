@@ -44,6 +44,14 @@ public class KernelAuthentication extends BaseTestCase{
 	private String registrationSupervisor_password=props.get("registrationSupervisor_password");
 	private String registrationSupervisor_userName=props.get("registrationSupervisor_userName");
 	
+	private String zonalAdmin_appid=props.get("zonalAdmin_appid");
+	private String zonalAdmin_password=props.get("zonalAdmin_password");
+	private String zonalAdmin_userName=props.get("zonalAdmin_userName");
+	
+	private String zonalApprover_appid=props.get("zonalApprover_appid");
+	private String zonalApprover_password=props.get("zonalApprover_password");
+	private String zonalApprover_userName=props.get("zonalApprover_userName");
+	
 	private String Authentication=props.get("Authentication");
 	private String testsuite="/Authorization";	
 	private ApplicationLibrary appl=new ApplicationLibrary();
@@ -145,6 +153,37 @@ public class KernelAuthentication extends BaseTestCase{
 		return cookie;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public String getAuthForZonalAdmin() {
+		KernelAuthentication auth=new KernelAuthentication();
+		JSONObject actualrequest = auth.getRequest(testsuite);
+		
+		JSONObject request=new JSONObject();
+		request.put("appId", zonalAdmin_appid);
+		request.put("password", zonalAdmin_password);
+		request.put("userName", zonalAdmin_userName);
+		actualrequest.put("request", request);
+	
+		Response reponse=appl.postRequest(actualrequest, Authentication);
+		cookie=reponse.getCookie("Authorization");
+		return cookie;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String getAuthForZonalApprover() {
+		KernelAuthentication auth=new KernelAuthentication();
+		JSONObject actualrequest = auth.getRequest(testsuite);
+		
+		JSONObject request=new JSONObject();
+		request.put("appId", zonalApprover_appid);
+		request.put("password", zonalApprover_password);
+		request.put("userName", zonalApprover_userName);
+		actualrequest.put("request", request);
+	
+		Response reponse=appl.postRequest(actualrequest, Authentication);
+		cookie=reponse.getCookie("Authorization");
+		return cookie;
+	}
 	//Reading the request file from folder
 	public JSONObject getRequest(String testSuite){
 		JSONObject Request=null;
@@ -159,7 +198,6 @@ public class KernelAuthentication extends BaseTestCase{
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-
 			}
 		}return Request;
 		
