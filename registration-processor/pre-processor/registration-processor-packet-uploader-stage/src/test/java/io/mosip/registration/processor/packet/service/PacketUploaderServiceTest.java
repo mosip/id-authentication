@@ -152,7 +152,7 @@ public class PacketUploaderServiceTest {
 		regEntity.setId("001");
 		regEntity.setLangCode("eng");
 		regEntity.setRegistrationId("0000");
-		regEntity.setRegistrationType("new");
+		regEntity.setRegistrationType("NEW");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 		regEntity.setPacketHashValue("abcd1234");
@@ -178,7 +178,6 @@ public class PacketUploaderServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void testvalidateAndUploadPacketSuccess() throws Exception {
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		ReflectionTestUtils.setField(packetuploaderservice, "maxRetryCount", 3);
