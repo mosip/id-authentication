@@ -9,5 +9,6 @@
 "BookAnAppointmentByPassingInvalidTimeSlotFrom_Alphabets":"",
 "BookAnAppointmentByPassingInvalidTimeSlotTo_Alphabets":"",
 "BookAnAppointmentByPassingInvalidRequestTime_InvalidValue":"",
+"BookAnAppointmentByPassingInvalidRequestTime_EmptyValue":"",
 "BookAnAppointmentByPassingInvalidAppointmentDate_DateLessThanToday":""
 }
