@@ -104,7 +104,6 @@ public class RegistrationSyncController {
 		tokenValidator.validate("Authorization=" + token, "sync");
 
 		try {
-			System.out.println("==========================Getting Request====================================");
 			List<SyncResponseDto> syncResponseList = new ArrayList<>();
 			RegistrationSyncRequestDTO registrationSyncRequestDTO = syncRegistrationService
 					.decryptAndGetSyncRequest(encryptedSyncMetaInfo, referenceId, timeStamp, syncResponseList);

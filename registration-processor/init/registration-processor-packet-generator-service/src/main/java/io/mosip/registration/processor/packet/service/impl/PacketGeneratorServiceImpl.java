@@ -124,9 +124,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")); 
 				String creationTime = ldt.toString()+".000Z";
 
-				/*filemanager.put(registrationDTO.getRegistrationId(), new ByteArrayInputStream(packetZipBytes),
-						DirectoryPathDto.PACKET_GENERATED_DECRYPTED);*/
-
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
 						creationTime, request.getRegistrationType(),packetZipBytes);
 				return packerGeneratorResDto;
@@ -146,14 +143,12 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if ((registrationType!=null || registrationType.isEmpty()) && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+		if (registrationType!=null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
 				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {
-
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 					"Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED", new Throwable());
-
 		}
 
 	}

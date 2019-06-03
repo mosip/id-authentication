@@ -64,8 +64,6 @@ import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseD
 @Service
 public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionService {
 
-	private static final String RECEIVED = "RECEIVED";
-
 	private static final String PACKET_RECEIVED = "PACKET_RECEIVED";
 
 	private static final String SUCCESS = "SUCCESS";
@@ -120,8 +118,6 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 		InputStream decryptedFileStream = null;
 		File enryptedUinZipFile = null;
 		try {
-			/*decryptedFileStream = new FileInputStream(
-					filemanager.getFile(DirectoryPathDto.PACKET_GENERATED_DECRYPTED, registartionId));*/
 			
 			decryptedFileStream = new ByteArrayInputStream(packetZipBytes);
 
@@ -155,7 +151,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 					if (uploadStatus.equalsIgnoreCase(RegistrationStatusCode.PROCESSING.toString())) {
 						packerGeneratorResDto.setStatus(UPLOADSTATUSCOMMENT);
 					} else if(uploadStatus.contains(PACKET_RECEIVED)){
-						packerGeneratorResDto.setStatus(RECEIVED);
+						packerGeneratorResDto.setStatus(SUCCESS);
 					}
 					packerGeneratorResDto.setMessage("Packet created and uploaded");
 					return packerGeneratorResDto;
