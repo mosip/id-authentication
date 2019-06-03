@@ -27,7 +27,7 @@ MOS-21757|New|Tech Story - Integrate with CBEFF to return photo in KYC Reponse
 MOS-15815|Integration|Tech Story - Authentication & Authorization
 MOS-24075|New|As the MOSIP system - IDA, I should be able to integrate with VID service
 MOS-23068|New|Integrate with Audit changes/OTP Request/auth changes
-MOS-24076|New|Integrate with BioAPI
+MOS-24076|New|Integrate with BioAPI, Integrate with IdObjectValidator
 
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
@@ -70,7 +70,7 @@ MOS-25385|DONE|Yes
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
 --------------|-----------|-----------|-------------
-MOS-24076|Integrate with IdObjectValidator|Sprint12|In Progress
+|||
 
 
 ### 1.8 DB Changes :
