@@ -276,7 +276,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException e) {
 				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage() + e.getErrorText());
+						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage() + e.getErrorText(), e);
 			}
 			storeKeyInDBStore(alias, masterAlias, keypair.getPublic().getEncoded(), encryptedPrivateKey);
 			storeKeyInAlias(applicationId, generationDateTime, referenceId, alias, expiryDateTime);
@@ -416,7 +416,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
 					| NullMethodException | InvalidKeySpecException | NoSuchAlgorithmException e) {
 				throw new CryptoException(KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorCode(),
-						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage());
+						KeymanagerErrorConstant.CRYPTO_EXCEPTION.getErrorMessage(), e);
 			}
 		}
 	}

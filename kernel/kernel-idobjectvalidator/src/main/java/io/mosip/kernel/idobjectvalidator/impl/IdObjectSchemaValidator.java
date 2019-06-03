@@ -43,7 +43,7 @@ import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 @Component("schema")
 @RefreshScope
 public class IdObjectSchemaValidator implements IdObjectValidator {
-	
+
 	/** The config server file storage URL. */
 	/*
 	 * Address of Spring cloud config server for getting the schema file
@@ -69,12 +69,14 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Load schema.
 	 *
-	 * @throws IdObjectSchemaIOException the id object schema IO exception
+	 * @throws IdObjectSchemaIOException
+	 *             the id object schema IO exception
 	 */
 	@PostConstruct
 	public void loadSchema() throws IdObjectSchemaIOException {
 		try {
-			if (IdObjectValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
+			if (IdObjectValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource()
+					.equals(propertySource)) {
 				schema = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			}
 		} catch (IOException e) {
@@ -82,25 +84,34 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					IdObjectValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * Validates a JSON object passed as string with the schema provided.
 	 *
-	 * @param idObject JSON as string that has to be Validated against the schema.
+	 * @param idObject
+	 *            JSON as string that has to be Validated against the schema.
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
-	 * @throws IdObjectValidationProcessingException JsonValidationProcessingException
-	 * @throws IdObjectIOException                   JsonIOException
-	 * @throws IdObjectSchemaIOException             JsonSchemaIOException
-	 * @throws FileIOException                   FileIOException
-	 * @throws HttpRequestException              HttpRequestException
-	 * @throws NullJsonNodeException             NullJsonNodeException
-	 * @throws UnidentifiedJsonException         UnidentifiedJsonException
-	 * @throws ConfigServerConnectionException   ConfigServerConnectionException
+	 * @throws IdObjectValidationProcessingException
+	 *             JsonValidationProcessingException
+	 * @throws IdObjectIOException
+	 *             JsonIOException
+	 * @throws IdObjectSchemaIOException
+	 *             JsonSchemaIOException
+	 * @throws FileIOException
+	 *             FileIOException
+	 * @throws HttpRequestException
+	 *             HttpRequestException
+	 * @throws NullJsonNodeException
+	 *             NullJsonNodeException
+	 * @throws UnidentifiedJsonException
+	 *             UnidentifiedJsonException
+	 * @throws ConfigServerConnectionException
+	 *             ConfigServerConnectionException
 	 */
 	@Override
-	public boolean validateIdObject(Object idObject)
-			throws IdObjectValidationProcessingException, IdObjectIOException, IdObjectSchemaIOException, FileIOException {
+	public boolean validateIdObject(Object idObject) throws IdObjectValidationProcessingException, IdObjectIOException,
+			IdObjectSchemaIOException, FileIOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonObjectNode = null;
 		JsonNode jsonSchemaNode = null;
@@ -128,7 +139,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		} catch (ProcessingException e) {
 			throw new IdObjectValidationProcessingException(
 					IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED.getErrorCode(),
-					IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED.getMessage());
+					IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED.getMessage(), e);
 		}
 
 		// iterating over report to get each processingMessage
@@ -138,8 +149,7 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			// messageLevel variable to store level of message (eg: warning or error)
 			String messageLevel = processingMessageAsJson.get(IdObjectValidatorConstant.LEVEL.getValue()).asText();
 			// messageBody variable storing actual message.
-			String messageBody = processingMessageAsJson.get(IdObjectValidatorConstant.MESSAGE.getValue())
-					.asText();
+			String messageBody = processingMessageAsJson.get(IdObjectValidatorConstant.MESSAGE.getValue()).asText();
 			if (messageLevel.equals(IdObjectValidatorConstant.WARNING.getValue())) {
 				reportWarnings.add(messageBody);
 			} else if (messageLevel.equals(IdObjectValidatorConstant.ERROR.getValue())) {
@@ -163,8 +173,10 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 * Gets the json schema node.
 	 *
 	 * @return the json schema node
-	 * @throws IdObjectSchemaIOException the id object schema IO exception
-	 * @throws FileIOException the file IO exception
+	 * @throws IdObjectSchemaIOException
+	 *             the id object schema IO exception
+	 * @throws FileIOException
+	 *             the file IO exception
 	 */
 	private JsonNode getJsonSchemaNode() throws IdObjectSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = null;
@@ -178,7 +190,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			} catch (Exception e) {
-				throw new IdObjectSchemaIOException(IdObjectValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
+				throw new IdObjectSchemaIOException(
+						IdObjectValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
 						IdObjectValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
 			}
 		}
@@ -192,7 +205,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				throw new FileIOException(IdObjectValidatorErrorConstant.FILE_IO_EXCEPTION.getErrorCode(),
 						IdObjectValidatorErrorConstant.FILE_IO_EXCEPTION.getMessage(), e.getCause());
 			}
-		} else if (IdObjectValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource().equals(propertySource)) {
+		} else if (IdObjectValidatorPropertySourceConstant.APPLICATION_CONTEXT.getPropertySource()
+				.equals(propertySource)) {
 			jsonSchemaNode = schema;
 		}
 		return jsonSchemaNode;

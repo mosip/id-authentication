@@ -88,7 +88,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
 				throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage());
+						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), e);
 			}
 			return otpGenerateResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -98,14 +98,14 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthNException(validationErrorsList);
 				} else {
-					throw new BadCredentialsException("Authentication failed from Internal token services");
+					throw new BadCredentialsException("Authentication failed from Internal token services", ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
 				} else {
-					throw new AccessDeniedException("Access denied from Internal token services");
+					throw new AccessDeniedException("Access denied from Internal token services", ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
