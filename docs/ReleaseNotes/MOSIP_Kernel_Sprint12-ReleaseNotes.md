@@ -38,14 +38,12 @@ Kernel|Master-Data Service|0.12.3|Required for Master-Data Validation in IdObjec
 
 ### 1.6 Prerequisites : <br><sub>Internal Services Dependencies</sub></br>
 Service|Dependencies|Description (If any)
--------|--------------|----------------|----------------
-All Services|kernel-auth-service|For Authentication and Validation
-kernel-auth-service| id-repository-identity-service</br> kernel-otpmanager-service</br> kernel-emailnotification-service</br> kernel-smsnotification-service| For UIN based login to sendOtp</br> For OTP generation and validation</br> For Sending Notification
-kernel-syncdata-service|kernel-keymanager-service</br> kernel-auth-service</br> kernel-syncjob-service|For public key</br> For  Role and User details</br> For Syncjob defination Details </br>
-kernel-cryptomanager-service|kernel-keymanager-service| For public key and private key decryption
-kernel-signature-service|kernel-keymanager-service|For public key and private key siginig
-
-
+----------|--------------|----------------
+All Services | kernel-auth-service | For Authentication and Validation
+kernel-auth-service | id-repository-identity-service <br> kernel-otpmanager-service <br> kernel-emailnotification-service <br> kernel-smsnotification-service | For UIN based login to sendOtp <br> For OTP generation and validation <br> For Sending Notification
+kernel-syncdata-service | kernel-keymanager-service <br> kernel-auth-service <br>  kernel-syncjob-service | For public key <br>  For  Role and User details <br> For Syncjob defination Details 
+kernel-cryptomanager-service | kernel-keymanager-service | For public key and private key decryption
+kernel-signature-service | kernel-keymanager-service | For public key and private key siginig
 
 
 
