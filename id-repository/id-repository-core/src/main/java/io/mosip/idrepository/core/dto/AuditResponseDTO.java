@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuditResponseDto {
+public class AuditResponseDTO {
 
 	/**
 	 * The boolean audit status
