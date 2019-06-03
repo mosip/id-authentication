@@ -119,6 +119,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
+	private static final int IRIS_COUNT = 2;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -379,7 +381,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateMultiIrisValue(AuthRequestDTO authRequestDTO, Errors errors) {
-		if (isDuplicateBioValue(authRequestDTO, BioAuthType.IRIS_IMG.getType())) {
+		if (isDuplicateBioValue(authRequestDTO, BioAuthType.IRIS_IMG.getType(), getMaxIrisCount())) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "Duplicate IRIS in request");
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
@@ -389,14 +391,14 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
-	private boolean isDuplicateBioValue(AuthRequestDTO authRequestDTO, String type) {
+	private boolean isDuplicateBioValue(AuthRequestDTO authRequestDTO, String type, int maxCount) {
 		Map<String, Long> countsMap = getBioValueCounts(authRequestDTO, type);
-		return hasDuplicate(countsMap);
+		return hasDuplicate(countsMap, maxCount);
 	}
 
-	private boolean hasDuplicate(Map<String, Long> countsMap) {
+	private boolean hasDuplicate(Map<String, Long> countsMap, int maxCount) {
 		return countsMap.entrySet().stream().anyMatch(
-				entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO) && entry.getValue() > getMaxFingerCount())
+				entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO) && entry.getValue() > maxCount)
 						|| (!entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO)
 								&& entry.getValue() > 1));
 	}
@@ -482,9 +484,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors, String bioType) {
 		Map<String, Long> fingerSubtypesCountsMap = getBioSubtypeCounts(authRequestDTO, bioType);
-		boolean anyInfoIsMoreThanOne = hasDuplicate(fingerSubtypesCountsMap);
+		boolean anyInfoIsMoreThanOne = hasDuplicate(fingerSubtypesCountsMap, getMaxFingerCount());
 		Map<String, Long> fingerValuesCountsMap = getBioValueCounts(authRequestDTO, bioType);
-		boolean anyValueIsMoreThanOne = hasDuplicate(fingerValuesCountsMap);
+		boolean anyValueIsMoreThanOne = hasDuplicate(fingerValuesCountsMap, getMaxFingerCount());
 
 		if (anyInfoIsMoreThanOne || anyValueIsMoreThanOne) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
@@ -1005,6 +1007,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
+	}
+	
+	protected int getMaxIrisCount() {
+		return IRIS_COUNT;
 	}
 
 }
