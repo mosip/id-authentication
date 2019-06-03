@@ -62,18 +62,6 @@ public class BaseService {
 	@Autowired
 	private UserOnboardDAO userOnboardDAO;
 
-	/**
-	 * Application context
-	 */
-	/*
-	 * private ApplicationContext applicationContext;
-	 * 
-	 *//**
-		 * Global Param Map as a Application Map
-		 *//*
-			 * private static Map<String, Object> applicationMap = new HashMap<>();
-			 */
-
 	@Autowired
 	private GlobalParamService globalParamService;
 
