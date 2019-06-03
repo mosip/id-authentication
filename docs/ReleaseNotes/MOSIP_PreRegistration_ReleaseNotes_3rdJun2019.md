@@ -7,7 +7,7 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Ravi C Balaji
-Date Raised | 03-MAY-2019
+Date Raised | 03-Jun-2019
 Jenkins Build #	|Min Version : 1996  [Any later version also]
 Objective & Scope of Release| Pre-registration module
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
@@ -37,8 +37,9 @@ https://github.com/mosip/mosip/wiki/Kernel-Dependencies
 
 #### 1.5 Deployment
 
-1. Please clean up all the database and re run the scripts again. </br>
-2. Deploy the kernel module.</br>
+1. The existing schemas must be dropped and recreated. Scripts are there in Getting started page. </br>
+2. Deploy the kernel module. 
+https://github.com/mosip/mosip/blob/0.12.0/docs/ReleaseNotes/MOSIP_Kernel_Sprint12-ReleaseNotes.md </br>
 3. In Kernel config server kubernetes yaml (deployment - confi-server-deployment-and-service.yml inside scripts/configuration), change git_url_env environment variable to the ssh URL of mosip-configuration repository that you have mirrored. <br/>
 4. Deploy the Pre-registration module. 
 
@@ -72,9 +73,28 @@ If you want to access rest apis, access token is required from authmanager.
 1.Authenticate through clientId/Secret or UserId/Password haveing respective roles assigned.
 2.After successful authentication access token will set as Autherization cookies.
 3.Access API through postman by passing the access token in cookies.
-NOTE: Swagger UI sends cookies automatically through browser.  
+NOTE: Swagger UI sends cookies automatically through browser.
 
-1. Individual Token
+1. Admin Token
+
+    url- https://dev.mosip.io/v1/authmanager/authenticate/useridPwd
+
+    ```
+    {
+    "id": "string",
+    "metadata": {},
+    "request": {
+        "appId": "admin",
+        "password": "preregadmin",
+        "userName": "preregadmin"
+    },
+    "requesttime": "2018-12-10T06:12:52.994Z",
+    "version": "string"
+    }
+    ```
+
+
+2. Individual Token
 
     i. Send otp 
     url -   https://dev.mosip.io/preregistration/v1/login/sendOtp
@@ -111,23 +131,7 @@ NOTE: Swagger UI sends cookies automatically through browser.
     After hitting validateOtp() api with proper request having otp and userid you will get the token in the header with the name Cookie.
 
         
- 2. Admin Token
-
-    url- https://dev.mosip.io/v1/authmanager/authenticate/useridPwd
-
-    ```
-    {
-    "id": "string",
-    "metadata": {},
-    "request": {
-        "appId": "admin",
-        "password": "preregadmin",
-        "userName": "preregadmin"
-    },
-    "requesttime": "2018-12-10T06:12:52.994Z",
-    "version": "string"
-    }
-    ```
+ 
 
 
 
