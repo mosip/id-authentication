@@ -8,11 +8,18 @@
     <classes>
       <class name="io.mosip.e2e.tests.RegistrationProcessor">
         <methods>
+          <include name="compareDbTransactions"/>
           <include name="uploadPacket"/>
           <include name="setResultTestName"/>
           <include name="syncPacket"/>
         </methods>
       </class> <!-- io.mosip.e2e.tests.RegistrationProcessor -->
+      <class name="io.mosip.e2e.tests.PreRegistrationTests">
+        <methods>
+          <include name="getPrids"/>
+          <include name="setResultTestName"/>
+        </methods>
+      </class> <!-- io.mosip.e2e.tests.PreRegistrationTests -->
     </classes>
   </test> <!-- E2E Tests(failed) -->
 </suite> <!-- Failed suite [Mosip E2E Suite] -->

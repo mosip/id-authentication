@@ -17,7 +17,7 @@ public class PreRegistrationTests implements ITest {
 	protected static String testCaseName = "";
 	GeneratePreIds generatePreIds = new GeneratePreIds();
 	
-	@Test
+	@Test(priority=1)
 	public void getPrids() {
 
 		JSONObject preIds = generatePreIds.getPreids();

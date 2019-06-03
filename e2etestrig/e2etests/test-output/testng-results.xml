@@ -1,43 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="2" ignored="0" total="5" passed="3">
+<testng-results skipped="0" failed="4" ignored="0" total="5" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Mosip E2E Suite" duration-ms="69939" started-at="2019-05-31T12:19:09Z" finished-at="2019-05-31T12:20:19Z">
+  <suite name="Mosip E2E Suite" duration-ms="89630" started-at="2019-06-03T08:50:25Z" finished-at="2019-06-03T08:51:55Z">
     <groups>
     </groups>
-    <test name="E2E Tests" duration-ms="69939" started-at="2019-05-31T12:19:09Z" finished-at="2019-05-31T12:20:19Z">
+    <test name="E2E Tests" duration-ms="89630" started-at="2019-06-03T08:50:25Z" finished-at="2019-06-03T08:51:55Z">
       <class name="io.mosip.e2e.tests.RegistrationProcessor">
-        <test-method status="PASS" signature="compareDbTransactions()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="E2E_RegistrationProcessor_compareDbTransactions" duration-ms="0" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- E2E_RegistrationProcessor_compareDbTransactions -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[[TestResult name="" status=SUCCESS method=RegistrationProcessor.compareDbTransactions()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f] output={null}]]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="getPackets()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="E2E_RegistrationProcessor_getPackets" duration-ms="1" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="PASS" signature="getPackets()[pri:2, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="E2E_RegistrationProcessor_getPackets" duration-ms="4" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_RegistrationProcessor_getPackets -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_RegistrationProcessor_compareDbTransactions status=SUCCESS method=RegistrationProcessor.getPackets()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f] output={null}]]]>
+                <![CDATA[[TestResult name="" status=SUCCESS method=RegistrationProcessor.getPackets()[pri:2, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="FAIL" signature="syncPacket()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="E2E_RegistrationProcessor_syncPacket" duration-ms="17" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="FAIL" signature="syncPacket()[pri:3, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="E2E_RegistrationProcessor_syncPacket" duration-ms="10" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <exception class="java.lang.NullPointerException">
             <full-stacktrace>
               <![CDATA[java.lang.NullPointerException
@@ -69,25 +54,27 @@ at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
 at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
 at org.testng.TestNG.runSuites(TestNG.java:1049)
 at org.testng.TestNG.run(TestNG.java:1017)
-at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:18)
+at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
 ]]>
             </full-stacktrace>
           </exception> <!-- java.lang.NullPointerException -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_RegistrationProcessor_syncPacket -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_RegistrationProcessor_getPackets status=FAILURE method=RegistrationProcessor.syncPacket()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_RegistrationProcessor_getPackets status=FAILURE method=RegistrationProcessor.syncPacket()[pri:3, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="FAIL" signature="uploadPacket()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="E2E_RegistrationProcessor_uploadPacket" duration-ms="92" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="FAIL" signature="uploadPacket()[pri:4, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="E2E_RegistrationProcessor_uploadPacket" duration-ms="167" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[expected [true] but found [false]]]>
@@ -121,18 +108,74 @@ at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
 at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
 at org.testng.TestNG.runSuites(TestNG.java:1049)
 at org.testng.TestNG.run(TestNG.java:1017)
-at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:18)
+at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
 ]]>
             </full-stacktrace>
           </exception> <!-- java.lang.AssertionError -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_RegistrationProcessor_uploadPacket -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f]" test-instance-name="E2E_RegistrationProcessor_uploadPacket" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_RegistrationProcessor_syncPacket status=FAILURE method=RegistrationProcessor.uploadPacket()[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@5c18298f] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_RegistrationProcessor_syncPacket status=FAILURE method=RegistrationProcessor.uploadPacket()[pri:4, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47] output={null}]]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="FAIL" signature="compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="E2E_RegistrationProcessor_compareDbTransactions" duration-ms="37503" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:55Z">
+          <exception class="java.lang.AssertionError">
+            <message>
+              <![CDATA[expected [true] but found [false]]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError: expected [true] but found [false]
+at org.testng.Assert.fail(Assert.java:96)
+at org.testng.Assert.failNotEquals(Assert.java:776)
+at org.testng.Assert.assertTrue(Assert.java:44)
+at org.testng.Assert.assertTrue(Assert.java:54)
+at io.mosip.e2e.tests.RegistrationProcessor.compareDbTransactions(RegistrationProcessor.java:52)
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+at java.lang.reflect.Method.invoke(Unknown Source)
+at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:124)
+at org.testng.internal.Invoker.invokeMethod(Invoker.java:583)
+at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:719)
+at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:989)
+at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+at org.testng.TestRunner.privateRun(TestRunner.java:648)
+at org.testng.TestRunner.run(TestRunner.java:505)
+at org.testng.SuiteRunner.runTest(SuiteRunner.java:455)
+at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:450)
+at org.testng.SuiteRunner.privateRun(SuiteRunner.java:415)
+at org.testng.SuiteRunner.run(SuiteRunner.java:364)
+at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:84)
+at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
+at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
+at org.testng.TestNG.runSuites(TestNG.java:1049)
+at org.testng.TestNG.run(TestNG.java:1017)
+at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- E2E_RegistrationProcessor_compareDbTransactions -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47]" test-instance-name="E2E_RegistrationProcessor_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-03T08:51:55Z" finished-at="2019-06-03T08:51:55Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=E2E_RegistrationProcessor_uploadPacket status=FAILURE method=RegistrationProcessor.compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.RegistrationProcessor@2cbb3d47] output={null}]]]>
               </value>
             </param>
           </params>
@@ -141,15 +184,47 @@ at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:18)
         </test-method> <!-- setResultTestName -->
       </class> <!-- io.mosip.e2e.tests.RegistrationProcessor -->
       <class name="io.mosip.e2e.tests.PreRegistrationTests">
-        <test-method status="PASS" signature="getPrids()[pri:0, instance:io.mosip.e2e.tests.PreRegistrationTests@27d415d9]" test-instance-name="E2E_PreRegistration_getPrids" name="E2E_PreRegistration_getPrids" duration-ms="69778" started-at="2019-05-31T12:19:09Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="FAIL" signature="getPrids()[pri:1, instance:io.mosip.e2e.tests.PreRegistrationTests@7fc229ab]" test-instance-name="E2E_PreRegistration_getPrids" name="E2E_PreRegistration_getPrids" duration-ms="51893" started-at="2019-06-03T08:50:25Z" finished-at="2019-06-03T08:51:17Z">
+          <exception class="java.lang.NullPointerException">
+            <full-stacktrace>
+              <![CDATA[java.lang.NullPointerException
+at io.mosip.e2e.tests.PreRegistrationTests.getPrids(PreRegistrationTests.java:24)
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+at java.lang.reflect.Method.invoke(Unknown Source)
+at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:124)
+at org.testng.internal.Invoker.invokeMethod(Invoker.java:583)
+at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:719)
+at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:989)
+at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+at org.testng.TestRunner.privateRun(TestRunner.java:648)
+at org.testng.TestRunner.run(TestRunner.java:505)
+at org.testng.SuiteRunner.runTest(SuiteRunner.java:455)
+at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:450)
+at org.testng.SuiteRunner.privateRun(SuiteRunner.java:415)
+at org.testng.SuiteRunner.run(SuiteRunner.java:364)
+at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:84)
+at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
+at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
+at org.testng.TestNG.runSuites(TestNG.java:1049)
+at org.testng.TestNG.run(TestNG.java:1017)
+at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
+at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.NullPointerException -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_PreRegistration_getPrids -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.PreRegistrationTests@27d415d9]" test-instance-name="E2E_PreRegistration_getPrids" name="setResultTestName" is-config="true" duration-ms="9" started-at="2019-05-31T12:20:19Z" finished-at="2019-05-31T12:20:19Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.PreRegistrationTests@7fc229ab]" test-instance-name="E2E_PreRegistration_getPrids" name="setResultTestName" is-config="true" duration-ms="3" started-at="2019-06-03T08:51:17Z" finished-at="2019-06-03T08:51:17Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name="" status=SUCCESS method=PreRegistrationTests.getPrids()[pri:0, instance:io.mosip.e2e.tests.PreRegistrationTests@27d415d9] output={null}]]]>
+                <![CDATA[[TestResult name="" status=FAILURE method=PreRegistrationTests.getPrids()[pri:1, instance:io.mosip.e2e.tests.PreRegistrationTests@7fc229ab] output={null}]]]>
               </value>
             </param>
           </params>

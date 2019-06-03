@@ -9,25 +9,27 @@
 <table>
 <tr><th>Test</th><th># Passed</th><th># Skipped</th><th># Failed</th><th>Time (ms)</th><th>Included Groups</th><th>Excluded Groups</th></tr>
 <tr><th colspan="7">Mosip E2E Suite</th></tr>
-<tr><td><a href="#t0">E2E Tests</a></td><td class="num">3</td><td class="num">0</td><td class="num attn">2</td><td class="num">69,939</td><td></td><td></td></tr>
+<tr><td><a href="#t0">E2E Tests</a></td><td class="num">1</td><td class="num">0</td><td class="num attn">4</td><td class="num">89,630</td><td></td><td></td></tr>
 </table>
-<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">Mosip E2E Suite</th></tr></tbody><tbody id="t0"><tr><th colspan="4">E2E Tests &#8212; failed</th></tr><tr class="failedeven"><td rowspan="2">io.mosip.e2e.tests.RegistrationProcessor</td><td><a href="#m0">E2E_RegistrationProcessor_syncPacket</a></td><td rowspan="1">1559305219750</td><td rowspan="1">17</td></tr><tr class="failedeven"><td><a href="#m1">E2E_RegistrationProcessor_uploadPacket</a></td><td rowspan="1">1559305219767</td><td rowspan="1">92</td></tr><tr><th colspan="4">E2E Tests &#8212; passed</th></tr><tr class="passedeven"><td rowspan="1">io.mosip.e2e.tests.PreRegistrationTests</td><td><a href="#m2">E2E_PreRegistration_getPrids</a></td><td rowspan="1">1559305149954</td><td rowspan="1">69778</td></tr><tr class="passedodd"><td rowspan="2">io.mosip.e2e.tests.RegistrationProcessor</td><td><a href="#m3">E2E_RegistrationProcessor_compareDbTransactions</a></td><td rowspan="1">1559305219745</td><td rowspan="1">0</td></tr><tr class="passedodd"><td><a href="#m4">E2E_RegistrationProcessor_getPackets</a></td><td rowspan="1">1559305219748</td><td rowspan="1">1</td></tr></tbody>
+<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">Mosip E2E Suite</th></tr></tbody><tbody id="t0"><tr><th colspan="4">E2E Tests &#8212; failed</th></tr><tr class="failedeven"><td rowspan="1">io.mosip.e2e.tests.PreRegistrationTests</td><td><a href="#m0">E2E_PreRegistration_getPrids</a></td><td rowspan="1">1559551825555</td><td rowspan="1">51893</td></tr><tr class="failedodd"><td rowspan="3">io.mosip.e2e.tests.RegistrationProcessor</td><td><a href="#m1">E2E_RegistrationProcessor_compareDbTransactions</a></td><td rowspan="1">1559551877648</td><td rowspan="1">37503</td></tr><tr class="failedodd"><td><a href="#m2">E2E_RegistrationProcessor_syncPacket</a></td><td rowspan="1">1559551877462</td><td rowspan="1">10</td></tr><tr class="failedodd"><td><a href="#m3">E2E_RegistrationProcessor_uploadPacket</a></td><td rowspan="1">1559551877477</td><td rowspan="1">167</td></tr><tr><th colspan="4">E2E Tests &#8212; passed</th></tr><tr class="passedeven"><td rowspan="1">io.mosip.e2e.tests.RegistrationProcessor</td><td><a href="#m4">E2E_RegistrationProcessor_getPackets</a></td><td rowspan="1">1559551877455</td><td rowspan="1">4</td></tr></tbody>
 </table>
-<h2>E2E Tests</h2><h3 id="m0">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_syncPacket</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.NullPointerException
+<h2>E2E Tests</h2><h3 id="m0">io.mosip.e2e.tests.PreRegistrationTests#E2E_PreRegistration_getPrids</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.NullPointerException
+	at io.mosip.e2e.tests.PreRegistrationTests.getPrids(PreRegistrationTests.java:24)
+... Removed 25 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m1">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_compareDbTransactions</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: expected [true] but found [false]
+	at io.mosip.e2e.tests.RegistrationProcessor.compareDbTransactions(RegistrationProcessor.java:52)
+... Removed 29 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m2">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_syncPacket</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.NullPointerException
 	at io.mosip.util.TokenGeneration.getToken(TokenGeneration.java:61)
 	at io.mosip.util.RegistrationProcessorRequests.getToken(RegistrationProcessorRequests.java:33)
 	at io.mosip.util.RegistrationProcessorRequests.syncRequest(RegistrationProcessorRequests.java:38)
 	at io.mosip.main.PacketUpload.syncPacket(PacketUpload.java:18)
 	at io.mosip.e2e.util.PacketFlowVerification.syncPacket(PacketFlowVerification.java:25)
 	at io.mosip.e2e.tests.RegistrationProcessor.syncPacket(RegistrationProcessor.java:35)
-	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:18)
-... Removed 22 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m1">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_uploadPacket</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: expected [true] but found [false]
+... Removed 25 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m3">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_uploadPacket</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: expected [true] but found [false]
 	at io.mosip.e2e.tests.RegistrationProcessor.uploadPacket(RegistrationProcessor.java:44)
-	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:18)
-... Removed 26 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m2">io.mosip.e2e.tests.PreRegistrationTests#E2E_PreRegistration_getPrids</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m3">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_compareDbTransactions</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+... Removed 29 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
 <h3 id="m4">io.mosip.e2e.tests.RegistrationProcessor#E2E_RegistrationProcessor_getPackets</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
 </body>
 </html>

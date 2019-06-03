@@ -2,7 +2,9 @@ package io.mosip.dbaccess;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -47,14 +49,14 @@ public class RegProcTransactionDb {
 			 TestData = (Object[]) obj;
 			 statusComment.add((String) TestData[1]);
 			 }
-		 	
+		 	List<TransactionStatusDTO> listOfEntries=new ArrayList<TransactionStatusDTO>();
 		 //List<TransactionStatusDTO> sortedregId=listOfEntries.stream().sorted(Comparator.comparing(TransactionStatusDTO :: getCr_dtimes).reversed()).collect(Collectors.toList());
 		 List<TransactionStatusDTO> sortedregId=new ArrayList<TransactionStatusDTO>();
 		  listOfEntries.sort((d1,d2)->d2.getCr_dtimes().compareTo(d1.getCr_dtimes()));
 		 sortedregId.addAll(listOfEntries);
 		 Set<String> statusFromDb=new LinkedHashSet<String>();
 		 for(TransactionStatusDTO statusDto:sortedregId) {
-			 statusFromDb.add(statusDto.getStatus_code());
+			 statusFromDb.add(statusDto.getStatus_Code());
 		 }
 	        t.commit();
 	        session.close();

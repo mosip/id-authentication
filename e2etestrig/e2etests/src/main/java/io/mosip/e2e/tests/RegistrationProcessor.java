@@ -20,7 +20,7 @@ public class RegistrationProcessor implements ITest {
 	PacketFlowVerification packetFlowVerification = new PacketFlowVerification();
 	List<File> packets = new ArrayList<File>();
 
-	@Test
+	@Test(priority=2)
 	public void getPackets() {
 		packets = packetFlowVerification.readPacket();
 		if (packets.equals(null)) {
@@ -29,7 +29,7 @@ public class RegistrationProcessor implements ITest {
 		Assert.assertTrue(true);
 	}
 	
-	@Test
+	@Test(priority=3)
 	public void syncPacket() {
 		for(File file: packets) {
 			boolean syncStatus=packetFlowVerification.syncPacket(file);
@@ -37,7 +37,7 @@ public class RegistrationProcessor implements ITest {
 		}
 	}
 	
-	@Test
+	@Test(priority=4)
 	public void uploadPacket() {
 		for(File file: packets) {
 			boolean uploadStatus=packetFlowVerification.uploadPacket(file);
@@ -45,7 +45,7 @@ public class RegistrationProcessor implements ITest {
 		}
 	}
 	
-	@Test
+	@Test(priority=5)
 	public void compareDbTransactions() {
 		for(File file: packets) {
 			boolean dbStatus=packetFlowVerification.compareDbStatus(file,"11111111");

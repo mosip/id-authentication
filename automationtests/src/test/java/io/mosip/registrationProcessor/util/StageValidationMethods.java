@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.dbentity.TransactionStatus;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
@@ -24,8 +25,11 @@ import io.mosip.dbaccess.RegProcTransactionDb;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 
 public class StageValidationMethods extends BaseTestCase {
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	StageValidationMethods apiRequest=new StageValidationMethods();
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
-	
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	RegProcTransactionDb packetTransaction = new RegProcTransactionDb();
 	String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	Properties prop =  new Properties();
@@ -34,6 +38,13 @@ public class StageValidationMethods extends BaseTestCase {
 	static public List<String> statusFromDb=new LinkedList<String>();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
 	EncryptData encryptData=new EncryptData();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
 	public String syncPacket(File packet) {
