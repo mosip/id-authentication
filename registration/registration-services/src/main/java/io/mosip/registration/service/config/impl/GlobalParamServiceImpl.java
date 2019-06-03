@@ -50,7 +50,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
 			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
-					"mosip.reg.db.current.version"));
+					"mosip.reg.db.current.version", "mosip.reg.services.version"));
 	/**
 	 * Instance of LOGGER
 	 */
@@ -306,7 +306,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private void updateApplicationMap(String code, String val) {
 		ApplicationContext.setGlobalConfigValueOf(code, val);
-		getBaseGlobalMap().put(code, val);
+//		getBaseGlobalMap().put(code, val);
 
 	}
 }

@@ -12,10 +12,10 @@
   <build>
     <resources>
       <resource>
-        <directory>/registration-libs/src/main/resources</directory>
-        <excludes>
-          <exclude>**/*.*</exclude>
-        </excludes>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.png</include>
+        </includes>
       </resource>
     </resources>
     <plugins>

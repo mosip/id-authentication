@@ -120,8 +120,10 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the identify req list by transaction id.
 	 *
-	 * @param transactionId the transaction id
-	 * @param requestType the request type
+	 * @param transactionId
+	 *            the transaction id
+	 * @param requestType
+	 *            the request type
 	 * @return the identify req list by transaction id
 	 */
 	public List<AbisRequestDto> getIdentifyReqListByTransactionId(String transactionId, String requestType);
@@ -156,7 +158,8 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Gets the reference id by batch id.
 	 *
-	 * @param batchId the batch id
+	 * @param batchId
+	 *            the batch id
 	 * @return the reference id by batch id
 	 */
 	public List<String> getReferenceIdByBatchId(String batchId);
@@ -321,14 +324,21 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the abis requests by bio ref id
 	 */
 	public List<AbisRequestDto> getAbisRequestsByBioRefId(String bioRefId);
-	
+
 	/**
 	 * Gets the abis processed requests app code by bio ref id.
 	 *
-	 * @param bioRefId the bio ref id
-	 * @param requestType the request type
-	 * @param processed the processed
+	 * @param bioRefId
+	 *            the bio ref id
+	 * @param requestType
+	 *            the request type
+	 * @param processed
+	 *            the processed
 	 * @return the abis processed requests app code by bio ref id
 	 */
-	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId,String requestType,String processed);
+	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(String bioRefId, String requestType,
+			String processed);
+
+	public void saveRegLostUinDet(String regId, String latestRegId);
+
 }

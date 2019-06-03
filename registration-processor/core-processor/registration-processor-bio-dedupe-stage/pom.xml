@@ -72,6 +72,11 @@
 			<version>${packet.bio.dedupe.service.impl.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-packet-manager</artifactId>
+			<version>${packet.manager.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>

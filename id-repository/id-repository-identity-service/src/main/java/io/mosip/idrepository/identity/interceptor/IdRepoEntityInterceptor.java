@@ -1,10 +1,10 @@
 package io.mosip.idrepository.identity.interceptor;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.codec.binary.StringUtils;
-import org.assertj.core.util.Arrays;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +57,30 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				Uin uinEntity = (Uin) entity;
 				byte[] encryptedData = securityManager.encrypt(uinEntity.getUinData());
 				uinEntity.setUinData(encryptedData);
+
+				List<String> uinList = Arrays.asList(uinEntity.getUin().split("_"));
+				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
+						CryptoUtil.decodeBase64(uinList.get(2)));
+				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				uinEntity.setUin(encryptedUinWithSalt);
+				
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = encryptedData;
+				int indexOfUin = propertyNamesList.indexOf("uin");
+				state[indexOfUin] = encryptedUinWithSalt;
 				return super.onSave(uinEntity, id, state, propertyNames, types);
 			}
 			if (entity instanceof UinHistory) {
 				UinHistory uinHEntity = (UinHistory) entity;
 				uinHEntity.setUinData(securityManager.encrypt(uinHEntity.getUinData()));
+				
+				List<String> uinList = Arrays.asList(uinHEntity.getUin().split("_"));
+				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
+						CryptoUtil.decodeBase64(uinList.get(2)));
+				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				uinHEntity.setUin(encryptedUinWithSalt);
+				
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {

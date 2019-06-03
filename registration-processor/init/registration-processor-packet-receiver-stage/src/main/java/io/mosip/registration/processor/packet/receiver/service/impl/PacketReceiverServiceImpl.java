@@ -58,6 +58,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+
 /**
  * The Class PacketReceiverServiceImpl.
  *
@@ -153,11 +154,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
-
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithSync();
+				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 				validateHashCode(new ByteArrayInputStream(encryptedByteArray));
 				validatePacketFormat(fileOriginalName);
 				validatePacketSize(file.length());
@@ -166,7 +167,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
 				storePacket(stageName);
-				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");
@@ -448,12 +448,13 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {
-				InputStream decryptedData = packetReceiverDecryptor.decrypt(new ByteArrayInputStream(encryptedByteArray),
-						registrationId);
+				InputStream decryptedData = packetReceiverDecryptor
+						.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
 				scanningFlag = scanFile(decryptedData);
 			}
 			if (scanningFlag) {
-				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray), DirectoryPathDto.LANDING_ZONE);
+				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray),
+						DirectoryPathDto.LANDING_ZONE);
 				dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				dto.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_LANDING_ZONE);
 				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());

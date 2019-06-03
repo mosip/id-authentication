@@ -232,7 +232,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		List<String> val = new LinkedList<>();
 
 		// Sync the TPM Public with Server, if it is initial set-up and TPM is available
-		String keyIndex = RegistrationConstants.EMPTY;
+		String keyIndex = null;
 		final boolean isInitialSetUp = RegistrationConstants.ENABLE
 				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)));
 

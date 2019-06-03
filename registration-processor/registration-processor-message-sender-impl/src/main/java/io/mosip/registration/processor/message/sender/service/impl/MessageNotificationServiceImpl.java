@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -18,16 +17,16 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -110,9 +109,6 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private Utilities utility;
 
-	@Autowired
-	private ABISHandlerUtil abisHandlerUtil;
-
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -120,8 +116,6 @@ public class MessageNotificationServiceImpl
 	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
-
-
 
 	/** The email id. */
 	private String emailId;
@@ -222,7 +216,7 @@ public class MessageNotificationServiceImpl
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
-		}catch(ApisResourceAccessException e) {
+		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -274,8 +268,8 @@ public class MessageNotificationServiceImpl
 
 		params.add("attachments", attachment);
 
-		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),MediaType.MULTIPART_FORM_DATA, params,
-				ResponseWrapper.class);
+		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),
+				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class);
 		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
 
 		return responseDto;
@@ -304,7 +298,7 @@ public class MessageNotificationServiceImpl
 		Long uin = null;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
 			JSONObject jsonObject = utility.retrieveUIN(id);
-			uin=JsonUtil.getJSONValue(jsonObject, UIN);
+			uin = JsonUtil.getJSONValue(jsonObject, UIN);
 			attributes.put("RID", id);
 			attributes.put("UIN", uin);
 		} else {
@@ -321,7 +315,7 @@ public class MessageNotificationServiceImpl
 				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
 				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
-		} else{
+		} else {
 			setAttributes(demographicInfo, attributes, regType);
 		}
 
@@ -362,8 +356,9 @@ public class MessageNotificationServiceImpl
 			setAttributes(jsonString, attributes, regType);
 
 		} catch (ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),Long.toString(uin),
-					 PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + ExceptionUtils.getStackTrace(e));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					Long.toString(uin),
+					PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + ExceptionUtils.getStackTrace(e));
 			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
 
