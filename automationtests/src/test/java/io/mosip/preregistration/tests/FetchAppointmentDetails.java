@@ -157,7 +157,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 
 		else {
 
-			if (testCase.contains("FetchAppointmentDetailsByPassingInvalidStatusCode")) {
+			if (testCase.contains("prereg_FetchAppointmentDetails_statusCode")) {
 
 				String statusCode = actualRequest.get("statusCode").toString();
 				preRegLib.updateStatusCode(statusCode, preId);
@@ -166,8 +166,8 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
 		
-			preReg_URI = preReg_URI + preId;
-			Actualresponse = applicationLibrary.getRequestWithoutBody(preReg_URI);
+			String fetchAppPreRegURI = preReg_URI + preId;
+			Actualresponse = applicationLibrary.getRequestWithoutBody(fetchAppPreRegURI);
 			logger.info("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
 			
 			//outer and inner keys which are dynamic in the actual response

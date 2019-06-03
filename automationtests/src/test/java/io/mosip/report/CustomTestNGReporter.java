@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -42,10 +43,11 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	private static final Logger CustomTestNGReporterLog = Logger.getLogger(CustomTestNGReporter.class);
 	private static final String defaultTestNgEmailableReport="./target/surefire-reports/emailable-report.html";
 	private static final String extendtReport="./extent-report.html";
-	// This is the customize emailable report template file path.
 	private static final String emailableReportTemplateFile = new File(
 			"./src/test/resources/customize-emailable-report-template.html").getAbsolutePath();
 	private static String customReportTemplateStr;
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
+	private static final String reportProfixFileName = "Mosip_AutomationTest_Report";
 	// PieChart
 	private int passTestCount = 0;
 	private int skipTestCount = 0;
@@ -76,12 +78,13 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					customTestMethodSummary);
 			customReportTemplateStr = updatePieChart(customReportTemplateStr);
 
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$detailedReport\\$",
+			/*customReportTemplateStr = customReportTemplateStr.replaceAll("\\$detailedReport\\$",
 					'"' + encodeDefaultTestngReportFile() + '"');
 			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$extentReport\\$",
-					'"' + encodeExtentReportFile() + '"');			
+					'"' + encodeExtentReportFile() + '"');	*/		
 			// Write replaced test report content to custom-emailable-report.html.
-			File targetFile = new File(outputDirectory + "/custom-emailable-report.html");
+			removeOldCustomMosipReport(outputDirectory);
+			File targetFile = new File(outputDirectory + "/"+reportProfixFileName/*getCurrentTimestampForReport()*/+".html");
 			FileWriter fw = new FileWriter(targetFile);
 			fw.write(customReportTemplateStr);
 			fw.flush();
@@ -585,5 +588,20 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 			return "SomeThing went wrong with Extent Report";
 		}
 	}
-
+	
+	private String getCurrentTimestampForReport() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp).toString();
+	}
+	
+	private void removeOldCustomMosipReport(String outputDirectory) {
+		File folder = new File(outputDirectory);
+		for (int i = 0; i < folder.listFiles().length; i++) {
+			if (folder.listFiles()[i].getName().contains(reportProfixFileName)) {
+				if (folder.listFiles()[i].delete()) {
+					CustomTestNGReporterLog.info("Old Report has been removed from directory successfuly..!");
+				}
+			}
+		}
+	}
 }

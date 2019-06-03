@@ -53,10 +53,9 @@ public class AuthPartnerAuthentication extends AuthTestsUtil implements ITest {
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
 	public void setTestType(String testType) {
-		this.testType = testType;
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**
@@ -201,4 +200,3 @@ public class AuthPartnerAuthentication extends AuthTestsUtil implements ITest {
 		}
 	}
 }
-

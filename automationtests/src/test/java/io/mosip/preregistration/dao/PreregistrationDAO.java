@@ -24,7 +24,7 @@ public class PreregistrationDAO
 	{
 		String hql = "SELECT preRegistrationId,statusCode FROM DemographicEntity E WHERE E.preRegistrationId = '"+preRegId+"'";
 		
-		List<? extends Object> result = PreregDB.validateDB(hql);
+		List<? extends Object> result = PreregDB.validateDBVal(hql, "prereg");
 		//List<? extends Object> result = dbAccess.updateDbData(hql, "prereg");
 		return result;
 		
@@ -91,6 +91,12 @@ public class PreregistrationDAO
 		String documentId = preId_status.get(0).toString();
 		return documentId;
 	}
+	public Date getHolidayDate() {
+		String queryString = "SELECT c.holiday_date FROM master.loc_holiday c";
+		Date date = dbAccess.getHoliday(queryString, "masterdata");
+		return date;
+		 
+	}
 	public void makeregistartionCenterActive(String registartionCenter)
 	{
 		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where id='"+registartionCenter+"'";
@@ -107,27 +113,23 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, 1); 
+		c.add(Calendar.DATE, 2); 
 		String date = sdf.format(c.getTime());
 		try {
 			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String sDate1="2019-05-30";  
-	    Date date3 = null;
-		try {
-			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}  
+		
+			Date date3 = getHolidayDate();
+		  
 		String queryString="update master.loc_holiday set holiday_date= '"+date1+ "' where holiday_date='"+date3+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 		return date1;
 	}
 	public void updateHoliday(Date date)
 	{
-		String sDate1="2019-05-30";  
+		String sDate1="2019-05-01";  
 	    Date date3 = null;
 		try {
 			date3 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);

@@ -85,7 +85,7 @@ public class OTP extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
 	/**
@@ -97,18 +97,8 @@ public class OTP extends BaseTestCase implements ITest {
 	@DataProvider(name = "FetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName,testLevel);
 		}
-
-	}
-
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -160,7 +150,8 @@ public class OTP extends BaseTestCase implements ITest {
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -220,8 +211,8 @@ public class OTP extends BaseTestCase implements ITest {
 				}
 				
 				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
-
-
+				//This method is for checking the authentication is pass or fail in rest services
+				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
 				logger.info("Expected Response:" + responseObject.toJSONString());
 				status = assertions.assertKernel( response, responseObject, listOfElementToRemove);

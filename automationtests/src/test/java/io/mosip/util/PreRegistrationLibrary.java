@@ -217,7 +217,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 
 				try {
 					fileReader = new FileReader(f.getPath());
-					request = (JSONObject) new JSONParser().parse(fileReader);
+					translitrationRequest = (JSONObject) new JSONParser().parse(fileReader);
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				} finally {
@@ -274,7 +274,11 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		testSuite = "generateOTP/generateOTP_smoke";
 		request = otpRequest(testSuite);
 		Response generateOTPResponse = generateOTP(request);
-		otp = dao.getOTP(userId).get(0);
+		try {
+			otp = dao.getOTP(userId).get(0);
+		} catch (IndexOutOfBoundsException e) {
+			logger.info("send otp failed");
+		}
 		testSuite = "validateOTP/validateOTP_smoke";
 		request = validateOTPRequest(testSuite);
 		Response validateOTPRes = validateOTP(request);
@@ -1460,8 +1464,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		parm.put("from_date", fromDate.toString());
 		parm.put("to_date", toDate);
 		String preReg_RetriveBookedPreIdsByRegIdURI = preReg_RetriveBookedPreIdsByRegId + regCenterId;
-		
-		response = applnLib.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
+		logger.info("preReg_RetriveBookedPreIdsByRegIdURI:"+preReg_RetriveBookedPreIdsByRegIdURI);
+		response = applnLib.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreIdsByRegIdURI, parm);
 
 
 		return response;

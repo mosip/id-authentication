@@ -97,18 +97,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	 * @return test case name as object
 	 */
 	@DataProvider(name = "fetchData")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException { 
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+	public Object[][] readData(ITestContext context)throws JsonParseException, JsonMappingException, IOException, ParseException { 
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**
@@ -160,7 +150,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 			// generating the tokenId with the generation logic
 			String tokenId = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("tokenID").toString();

@@ -72,17 +72,8 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINStatusCheck")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "status");
 	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -98,30 +89,27 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
     {
 		//Getting all UIN from Database whose status is UNUSED
 		String query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
-
-
 		List<String>list=dbConnection.getDbData( query,"kernel");
-
-		
 
 		// Calling the GET method with no parameters 
 		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+		
 		//Getting the UIN from response
 		String uin_number = res.jsonPath().getMap("response").get("uin").toString();
+		
 		//Getting the status of the UIN 
-
-		String query1="select uin_status from kernel.uin where uin='"+uin_number+"'";
-
-		List<String> status_list = dbConnection.getDbData( query1,"kernel");
-
+		String status_query="select uin_status from kernel.uin where uin='"+uin_number+"'";
+		List<String> status_list = dbConnection.getDbData( status_query,"kernel");
 		String status=status_list.get(0);
+		
 		//Checking the UIN's status is Unused before calling the get method and and Issued after calling the Get method
 		for(String uin:list)
 		{
 			if(uin.equals(uin_number))
-
-			{
-				finalStatus="Pass";
+			{logger.info("status--------------"+status);
 				if(status.equals("ISSUED"))
 				{
 					finalStatus="Pass";
@@ -130,7 +118,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 					finalStatus="Fail";
 					logger.info("UIN status is not in Issued status");
 				}
-
+				break;
 			}else {
 				finalStatus="Fail";
 			}
@@ -153,16 +141,15 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		} 
 		
 		@AfterMethod(alwaysRun = true)
-		public void setResultTestName(ITestResult result) {
-			
-	try {
-				Field method = TestResult.class.getDeclaredField("m_method");
-				method.setAccessible(true);
-				method.set(result, result.getMethod().clone());
-				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-				f.setAccessible(true);
-				f.set(baseTestMethod, UINStatusCheck.testCaseName);	
+		public void setResultTestName(ITestResult result) {	
+	    try {
+			Field method = TestResult.class.getDeclaredField("m_method");
+			method.setAccessible(true);
+			method.set(result, result.getMethod().clone());
+			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
+			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(baseTestMethod, UINStatusCheck.testCaseName);	
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
