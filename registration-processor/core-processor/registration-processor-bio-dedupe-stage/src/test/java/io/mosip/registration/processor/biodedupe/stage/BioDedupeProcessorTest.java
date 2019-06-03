@@ -19,7 +19,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -50,6 +49,7 @@ import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
@@ -98,6 +98,9 @@ public class BioDedupeProcessorTest {
 	/** The packet info dao. */
 	@Mock
 	private PacketInfoDao packetInfoDao;
+
+	@Mock
+	private IdRepoService idRepoService;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -513,7 +516,6 @@ public class BioDedupeProcessorTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void testLostPacketValidationMultipleMatchedRegId() throws Exception {
 
 		registrationStatusDto.setRegistrationId("reg1234");
@@ -534,7 +536,7 @@ public class BioDedupeProcessorTest {
 		map.put("value", "aaa");
 		JSONObject j1 = new JSONObject(map);
 
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo(any())).thenReturn(j1);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo(any(), any())).thenReturn(j1);
 
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
@@ -549,7 +551,6 @@ public class BioDedupeProcessorTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void testLostPacketValidationSingleDemoMatch() throws Exception {
 
 		registrationStatusDto.setRegistrationId("reg1234");
@@ -570,8 +571,8 @@ public class BioDedupeProcessorTest {
 
 		JSONObject obj2 = new JSONObject();
 		obj2.put("dateOfBirth", "2016/01/02");
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo("27847657360002520190320095010")).thenReturn(obj1);
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo("27847657360002520190320095011")).thenReturn(obj2);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo("27847657360002520190320095010", IDENTITY)).thenReturn(obj1);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo("27847657360002520190320095011", IDENTITY)).thenReturn(obj2);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getInternalError());
@@ -579,7 +580,6 @@ public class BioDedupeProcessorTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore
 	public void testLostPacketValidationMultipleDemoMatch() throws Exception {
 
 		registrationStatusDto.setRegistrationId("reg1234");
@@ -601,9 +601,9 @@ public class BioDedupeProcessorTest {
 
 		JSONObject obj2 = new JSONObject();
 		obj2.put("dateOfBirth", "2016/01/02");
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo("27847657360002520190320095010")).thenReturn(obj1);
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo("27847657360002520190320095011")).thenReturn(obj2);
-		// Mockito.when(abisHandlerUtil.getIdJsonFromIDRepo("27847657360002520190320095012")).thenReturn(obj1);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo("27847657360002520190320095010", IDENTITY)).thenReturn(obj1);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo("27847657360002520190320095011", IDENTITY)).thenReturn(obj2);
+		Mockito.when(idRepoService.getIdJsonFromIDRepo("27847657360002520190320095012", IDENTITY)).thenReturn(obj1);
 		MessageDTO messageDto = bioDedupeProcessor.process(dto, stageName);
 
 		assertFalse(messageDto.getInternalError());
