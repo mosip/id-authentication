@@ -33,12 +33,16 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
+import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
@@ -69,6 +73,17 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	RegProcTokenGenerate tokenGenearte=new RegProcTokenGenerate();
 	String token="";
 	Properties prop =  new Properties();
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	StageValidationMethods apiRequest=new StageValidationMethods();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 
 	/**
 	 * This method is used for reading the test data based on the test case name passed
@@ -150,7 +165,7 @@ public void getToken() {
 
 
 			//generation of actual response
-			actualResponse = applicationLibrary.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"));
+			actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
@@ -225,7 +240,8 @@ public void getToken() {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
+	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
+		validToken=getToken("syncTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
 String apiName="packetReceiver";
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();

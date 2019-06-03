@@ -1,9 +1,0 @@
-[
-  {
-    "registrationId": "Test1234",
-    "status": "FAILURE",
-    "message": "RegistrationId Length Must Be 29",
-    "parentRegistrationId": null,
-    "errorCode": "RPR-RGS-009"
-  }
-]

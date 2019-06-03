@@ -55,5 +55,31 @@ public class RegProcApiRequests extends BaseTestCase {
 
 		return postResponse;
 	}
+	
+	public Response regProcPostRequest(String url, HashMap<String, String> valueMap, String contentHeader,String token) {
+		logger.info("REST:ASSURED:Sending a post request to" + url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", token);
+
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(valueMap)
+				.contentType(contentHeader).log().all().when().post(url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
+	
+	public Response postRequest(String url, Object body, String contentHeader, String acceptHeader) {
+
+		logger.info("URL IS  :: "+ ApplnURI+url);
+
+		Response postResponse = given().relaxedHTTPSValidation().body(body)
+				.contentType(contentHeader).accept(acceptHeader).log().all().when().post(ApplnURI+url).then().log().all()
+				.extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		logger.info("REST-ASSURED:454545445 The response Time is: " + postResponse.asString());
+		return postResponse;
+	}
 
 }
