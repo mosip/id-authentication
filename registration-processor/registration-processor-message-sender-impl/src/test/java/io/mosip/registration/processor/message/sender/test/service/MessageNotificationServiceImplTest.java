@@ -104,7 +104,6 @@ public class MessageNotificationServiceImplTest {
 	@Mock
 	private Environment env;
 
-
 	@Mock
 	private ObjectMapper mapper;
 
@@ -397,8 +396,8 @@ public class MessageNotificationServiceImplTest {
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
 				IdType.UIN, attributes, RegistrationType.DEACTIVATED.name());
 	}
-	
-	@Test(expected=IDRepoResponseNull.class)
+
+	@Test(expected = IDRepoResponseNull.class)
 	public void testApisResourceAccessException() throws Exception {
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
@@ -407,10 +406,20 @@ public class MessageNotificationServiceImplTest {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(uin);
 		Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(1234567);
-		ApisResourceAccessException exp= new ApisResourceAccessException("Error Message");
+		ApisResourceAccessException exp = new ApisResourceAccessException("Error Message");
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any(Class.class))).thenThrow(exp);
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "27847657360002520181208094056",
 				IdType.UIN, attributes, RegistrationType.DEACTIVATED.name());
+	}
+
+	@Test(expected = ApisResourceAccessException.class)
+	public void testApiResourceException() throws Exception {
+		ApisResourceAccessException exp = new ApisResourceAccessException();
+		Mockito.when(restApiClient.postApi(any(), any(), any(), any())).thenThrow(exp);
+
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.RID, attributes,
+				mailCc, subject, null, RegistrationType.NEW.name());
+
 	}
 
 }
