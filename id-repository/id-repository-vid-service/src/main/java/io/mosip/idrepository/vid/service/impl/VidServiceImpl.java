@@ -1,5 +1,6 @@
 package io.mosip.idrepository.vid.service.impl;
 
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -285,9 +286,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
 		String decryptedUin = new String(securityManager.decryptWithSalt(CryptoUtil.decodeBase64(encryptedUin),
 				CryptoUtil.decodeBase64(decryptSalt)));
-		String uinHash = String.valueOf(uinDetails.get(0)) + "_"
-				+ securityManager.hashwithSalt(String.valueOf(decryptedUin).getBytes(), hashSalt.getBytes());
-		if (uinHash.equals(vidObject.getUinHash())) {
+		String uinHash = uinDetails.get(0) + "_"
+				+ securityManager.hashwithSalt(decryptedUin.getBytes(), hashSalt.getBytes());
+		if (MessageDigest.isEqual(uinHash.getBytes(), vidObject.getUinHash().getBytes())) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 		}
 		return uinDetails.get(0) + "_" + decryptedUin + "_" + decryptSalt;
