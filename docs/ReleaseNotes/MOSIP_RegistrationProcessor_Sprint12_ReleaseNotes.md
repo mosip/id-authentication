@@ -27,7 +27,9 @@ MOS-22023|New|Tech Story - As Registration Processor, I should be able to Authen
 MOS-24251|New|Tech Story - Trigger VID generation post UIN generation.
 MOS-24252|New|Tech Story - Validate Sync List Data with Packet Meta Data in Packet Validator and Implement Changes in Manual Verification.
 MOS-22026|New|As Registration Processor, I should be able to Authenticate Officer and Supervisor using their RID
-MOS-21718|New|As Registration Processor, I should be able to Perform Parent or Guardian (Introducer) Bio-metric Validation for a Child 
+MOS-21718|New|As Registration Processor, I should be able to Perform Parent or Guardian (Introducer) Bio-metric Validation for a Child
+MOS-24649|Change|Tech Story - Unit Testiing  for Update Flow Packet
+MOS-1084|New|Tech Story - As the MOSIP system, I should be able to evaluate the Quality Score of Finger Print, Iris and Face Image
 
 
 #### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>

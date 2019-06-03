@@ -28,8 +28,8 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 * @param regId
 	 * @return the Uin 
 	 */
-	@Query("select uin from Uin where regId = :regId")
-	String getUinByRid(@Param("regId") String regId);
+	@Query("select uinHash from Uin where regId = :regId")
+	String getUinHashByRid(@Param("regId") String regId);
 
 	/**
 	 * Find by uin.
@@ -63,4 +63,22 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 */
 	@Query("select statusCode from Uin where uin = :uin")
 	String getStatusByUin(@Param("uin") String uin);
+	
+	/**
+	 * Find by uin.
+	 *
+	 * @param uin the uin
+	 * @return the uin
+	 */
+	@Query("select u from Uin u where uinHash = :uinHash")
+	Uin getUinHash(@Param("uinHash") String uinHash);
+	
+	
+	/**
+	 * Exists by uinHash.
+	 *
+	 * @param uinHash the uin Hash.
+	 * @return true, if successful.
+	 */
+	boolean existsByUinHash(String uinHash);
 }

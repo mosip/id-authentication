@@ -138,7 +138,7 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       this.activeUsers = this.registration.getUsers();
-    }
+     }
   }
 
   /**
@@ -467,7 +467,7 @@ export class FileUploadComponent implements OnInit {
       },
       error => {},
       () => {
-        this.fileName = fileMeta.docName;
+         this.fileName = fileMeta.docName;
         let i = 0;
         for (let x of this.users[0].files.documentsMetaData) {
           if (this.fileName === x.docName) {
@@ -475,8 +475,8 @@ export class FileUploadComponent implements OnInit {
           }
           i++;
         }
-        this.fileIndex = i;
-        this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
+         this.fileIndex = i;
+       this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         if (this.fileByteArray) {
           switch (fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1)) {
             case 'pdf':
@@ -550,7 +550,7 @@ export class FileUploadComponent implements OnInit {
             this.setJsonString(event);
             this.sendFile(event);
           } else {
-            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg1);
+            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg4);
             this.disableNavigation = false;
           }
         } else {
@@ -560,7 +560,7 @@ export class FileUploadComponent implements OnInit {
       }
     }
     if (!allowedFileUploaded) {
-      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg3);
+      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg6);
       this.disableNavigation = false;
     }
   }
@@ -677,7 +677,7 @@ export class FileUploadComponent implements OnInit {
     this.userFile[0].prereg_id = this.users[0].preRegId;
 
     for (let file of this.users[0].files.documentsMetaData) {
-      if (file.docCatCode == this.userFile[0].docCatCode || file.docCatCode == null) {
+      if (file.docCatCode == this.userFile[0].docCatCode) {
         this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
         break;
       }
@@ -885,3 +885,4 @@ export interface DemographicMetaData {
   fullname: FullName[];
   proofOfAddress: ProofOfAddress;
 }
+

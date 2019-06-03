@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.4</version>
+		<version>0.12.5</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -192,20 +192,20 @@
 			**/registration/processor/abis/messagequeue/*.java,
 			**/registration/processor/abis/service/*.java,
 			**/registration/processor/abis/service/impl/*.java,
-			
-			
+
+
 			**/registration/processor/abis/handler/*.java,
 			**/registration/processor/abis/handler/config/*.java,
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
+
+
+
+
 			**/registration/processor/packet/service/**/*.java,
 			**/registration/processor/packet/upload/**/*.java,
 
@@ -249,10 +249,10 @@
 			**/registration/processor/packet/uploader/decryptor/*.java,
 			**/registration/processor/core/abstractverticle/MosipRouter.java,
 			**/registration/processor/packet/uploader/decryptor/*.java,
-			
+
 			**/registration/processor/print/service/impl/PrintPostServiceImpl.java
-			
-			
+
+
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>

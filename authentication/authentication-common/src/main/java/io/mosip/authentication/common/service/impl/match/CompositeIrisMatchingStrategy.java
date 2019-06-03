@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -24,8 +23,7 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 			Object object = props.get(IdaIdMapping.IRIS.getIdname());
 			if (object instanceof BiFunctionWithBusinessException) {
 				BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = (BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double>) object;
-				Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
-				return (int) func.apply(reqInfoMap, (Map<String, String>) entityInfo).doubleValue();
+				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.BIO_MISMATCH.getErrorMessage(),

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
@@ -20,7 +20,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit {
+export class TimeSelectionComponent implements OnInit, OnDestroy {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
   registrationCenter: String;
@@ -196,7 +196,24 @@ export class TimeSelectionComponent implements OnInit {
       this.activeTab = selection;
     }
   }
-
+  
+  displayMessage(title: string, message: string) {
+    this.disableContinueButton = false;
+    const messageObj = {
+      case: 'MESSAGE',
+      title: title,
+      message: message
+    };
+    this.openDialog(messageObj, '250px');
+  }
+  openDialog(data, width) {
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: width,
+      data: data
+    });
+    return dialogRef;
+  }
+  
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -261,45 +278,26 @@ export class TimeSelectionComponent implements OnInit {
     );
   }
 
-  // showError() {
-  //   this.disableContinueButton = false;
-  //   const data = {
-  //     case: 'MESSAGE',
-  //     title: this.secondaryLanguagelabels.title_failure,
-  //     message: this.secondaryLanguagelabels.msg_failure
-  //   };
-  //   const dialogRef = this.dialog.open(DialougComponent, {
-  //     width: '350px',
-  //     data: data
-  //   });
-  // }
-  displayMessage(title: string, message: string) {
-    this.disableContinueButton = false;
-    const messageObj = {
-      case: 'MESSAGE',
-      title: title,
-      message: message
-    };
-    this.openDialog(messageObj, '250px');
-  }
-  openDialog(data, width) {
-    const dialogRef = this.dialog.open(DialougComponent, {
-      width: width,
-      data: data
-    });
-    return dialogRef;
-  }
-
   navigateDashboard() {
     this.router.navigate(['dashboard']);
   }
 
-  navigateBack() {
+  reloadData() {
     this.bookingService.flushNameList();
     this.temp.forEach(name => {
       this.bookingService.addNameList(name);
     });
+  }
+
+  navigateBack() {
+    this.reloadData();
     const url = Utils.getURL(this.router.url, 'pick-center');
     this.router.navigateByUrl(url);
+  }
+
+  ngOnDestroy() {
+    if (!this.bookingService.getSendNotification()) {
+      this.reloadData();
+    }
   }
 }

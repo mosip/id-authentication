@@ -44,12 +44,6 @@ hibernate.generate_statistics=false
 #property name is case sensitive and required for interceptors configuration
 #hibernate.ejb.interceptor=io.mosip.kernel.masterdata.config.MasterDataInterceptor
 
-#hikari.maximumPoolSize=100
-#hikari.validationTimeout:3000
-#hikari.connectionTimeout=30000
-#hikari.idleTimeout=200000
-#hikari.minimumIdle=0
-
 ```
 
 ##Usage Sample
