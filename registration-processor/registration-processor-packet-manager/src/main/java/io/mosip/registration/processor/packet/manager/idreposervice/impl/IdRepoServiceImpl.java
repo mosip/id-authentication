@@ -53,4 +53,30 @@ public class IdRepoServiceImpl implements IdRepoService {
 		return uin;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject getIdJsonFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)
+			throws IOException, ApisResourceAccessException {
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("rid");
+		pathSegments.add(machedRegId);
+		JSONObject demographicJsonObj = null;
+
+		@SuppressWarnings("unchecked")
+		ResponseWrapper<IdResponseDTO> response;
+
+		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
+				ResponseWrapper.class);
+
+		if (response.getResponse() != null) {
+			Gson gsonObj = new Gson();
+			String jsonString = gsonObj.toJson(response.getResponse());
+			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
+			demographicJsonObj = JsonUtil.getJSONObject(identityJson, regProcessorDemographicIdentity);
+
+		}
+
+		return demographicJsonObj;
+	}
+
 }
