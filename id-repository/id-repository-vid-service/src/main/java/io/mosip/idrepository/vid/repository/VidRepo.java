@@ -1,5 +1,6 @@
 package io.mosip.idrepository.vid.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +24,7 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	 */
 	Vid findByVid(String vid);
 	
-	List<Vid> findByUinHashAndStatusCodeAndVidTypeCode(String uinHash, String statusCode, String vidTypeCode);
+	List<Vid> findByUinHashAndStatusCodeAndVidTypeCodeAndExpiryDTimesAfter(String uinHash, String statusCode, String vidTypeCode, LocalDateTime currentTime);
 	
 	/**
 	 * The Query to retrieve Uin by passing vid as parameter.

@@ -3,6 +3,11 @@ package io.mosip.idrepository.vid.controller;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +26,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
@@ -240,4 +250,24 @@ public class VidControllerTest {
 			assertEquals("IDR-IDC-002 --> Invalid Input Parameter - vid", e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testData() throws JsonParseException, JsonMappingException, IOException {
+		String s ="{\"ara\":[\"MDDR\",\"أكدال\",\"منَسرَ \",\"QRHS\",\"حي الرياض\",\"HARD\",\"علال التازي\",\"مڭرن\",\"العصام\",\"سيدي الطيبي\",\"مدينة العرفان\",\"ASSM\",\"اولاد اوجيه\",\"ELYF\",\"SDTB\",\"SOUS\",\"OLOJ\",\"بن منصور\",\"مدينة\",\"اليوسفية\",\"مهدية\",\"MOGR\",\"السويسي\",\"BNMR\",\"MEHD\",\"AGDL\",\"SATZ\",\"MNAS\",\"حي حسان\",\"MADI\"],\"fra\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"Médina de Rabat\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\"],\"eng\":[\"Mograne\",\"MDDR\",\"Mnasra\",\"Assam\",\"EL YOUSSOUFIA\",\"Sidi Allal Tazi\",\"Souissi\",\"QRHS\",\"HARD\",\"Agdal\",\"Quartier Hassan\",\"ASSM\",\"ELYF\",\"SDTB\",\"Ouled Oujih\",\"SOUS\",\"OLOJ\",\"MOGR\",\"Mehdia\",\"BNMR\",\"Hay Riad\",\"MEHD\",\"AGDL\",\"SATZ\",\"Sidi Taibi\",\"MNAS\",\"Ben Mansour\",\"MADI\",\"Madinat Al Irfane\",\"Medina de Rabat\"]}";
+		Map<String, Set<String>> locationDetails = new ObjectMapper().readValue(s, new TypeReference<Map<String, Set<String>>>() {
+		});
+		String req = "منسر ";
+		
+		for(Entry<String, Set<String>> location : locationDetails.entrySet()) {
+			Set<String> set= location.getValue();
+			/*for(String str : set) {
+				if(str.equals(req)) {
+					System.out.println(true);
+				}
+			}*/
+			System.err.println(set.contains(req));
+		}
+		
+	}
 }
+

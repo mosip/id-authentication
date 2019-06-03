@@ -36,14 +36,24 @@ ID Repository|ID Repository Identity Service|0.12.3|Required for UIN based login
 Kernel|Cbeff Utilily|0.12.3|Required for BioAPI-provider
 Kernel|Master-Data Service|0.12.3|Required for Master-Data Validation in IdObjectValidator
 
+### 1.6 Prerequisites : <br><sub>Internal Services Dependencies</sub></br>
+Service|Dependencies|Description (If any)
+----------|--------------|----------------
+All Services | kernel-auth-service | For Authentication and Validation
+kernel-auth-service | id-repository-identity-service <br> kernel-otpmanager-service <br> kernel-emailnotification-service <br> kernel-smsnotification-service | For UIN based login to sendOtp <br> For OTP generation and validation <br> For Sending Notification
+kernel-syncdata-service | kernel-keymanager-service <br> kernel-auth-service <br>  kernel-syncjob-service | For public key <br>  For  Role and User details <br> For Syncjob defination Details 
+kernel-cryptomanager-service | kernel-keymanager-service | For public key and private key decryption
+kernel-signature-service | kernel-keymanager-service | For public key and private key siginig
 
-### 1.6 Prerequisites : <br><sub>Dependent DB/External applications and services</sub></br>
+
+
+### 1.7 Prerequisites : <br><sub>Dependent DB/External applications and services</sub></br>
 Dependency|Component|Tag/Version|Description (If any)
 -----|--------------|----------------|----------------
 DB|mosip_iam|0.12.3|Required for kernel-auth-service.
 DB|mosip_master|0.12.3|Required for kernel-masterdata-service.
 DB|mosip_audit|0.12.3|Required for kernel-audit-service.
-DB|mosip_kernel/script|0.12.3|Required for all other kernel services.
+DB|mosip_kernel|0.12.3|Required for all other kernel services.
 LDAP|ApaacheDS|NA|Required for kernel-auth-service.[External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)
 KeyStore|SoftHsm|NA|Required for kernel-keymanager-softhsm. [External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)
 DFS|HDFS|NA|Required for kernel-fsadaptor-hdfs. [External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)

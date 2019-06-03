@@ -49,6 +49,7 @@ import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
 /**
  * Class for implementing login service
@@ -112,6 +113,8 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	
 	@Autowired
 	private UserSaltDetailsService userSaltDetailsService;
+	@Autowired
+	private TPMPublicKeySyncService tpmPublicKeySyncService;
 	
 	
 	/*
@@ -216,11 +219,35 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.login.LoginService#initialSync()
+	 */
 	@Override
 	public List<String> initialSync() {
 		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Started Initial sync");
+
 		List<String> val = new LinkedList<>();
+
+		// Sync the TPM Public with Server, if it is initial set-up and TPM is available
+		String keyIndex = null;
+		final boolean isInitialSetUp = RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)));
+
+		if (isInitialSetUp && RegistrationConstants.ENABLE
+				.equals(String.valueOf(ApplicationContext.map().get(RegistrationConstants.TPM_AVAILABILITY)))) {
+			try {
+				keyIndex = tpmPublicKeySyncService.syncTPMPublicKey();
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"Exception while sync'ing the TPM public key to server");
+				val.add(RegistrationConstants.FAILURE);
+				return val;
+			}
+		}
+
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
@@ -228,9 +255,15 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
 			val.add(RegistrationConstants.RESTART);
 		}
-		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-				RegistrationConstants.OPT_TO_REG_MDS_J00001,
-				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		ResponseDTO masterResponseDTO = null;
+		if (isInitialSetUp) {
+			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
+		} else {
+			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		}
 		
 		if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {

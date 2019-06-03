@@ -75,7 +75,7 @@
 																						<HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
 																							<children>
 																								<Button fx:id="fetchBtn" mnemonicParsing="true" onAction="#fetchPreRegistration" styleClass="demoGraphicPaneContentButton" text="%fetch" />
-																								<Button fx:id="scanQr" mnemonicParsing="true" styleClass="demoGraphicPaneContentButton" text="%scanqr">
+																								<Button fx:id="scanQr" mnemonicParsing="true" styleClass="demoGraphicPaneContentButton" text="%scanqr" visible="false">
 																									<graphic>
 																										<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 																											<image>
