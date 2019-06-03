@@ -18,6 +18,6 @@ public interface UinHistoryRepo extends JpaRepository<UinHistory, String> {
 	 * @param regId
 	 * @return the Uin 
 	 */
-	@Query("select uin from UinHistory where regId = :regId")
-	String getUinByRid(@Param("regId") String regId);
+	@Query("select uinHash from UinHistory where regId = :regId")
+	String getUinHashByRid(@Param("regId") String regId);
 }
