@@ -182,7 +182,7 @@ public class JsonPrecondtion{
 	private List<String> pathList;
     private String json;
     public JsonPrecondtion() {}
-    public JsonPrecondtion(String json) throws JSONException {
+    public JsonPrecondtion(String json) {
         this.json = json;
         this.pathList = new ArrayList<String>();
         setJsonPaths(this.json);
@@ -202,9 +202,8 @@ public class JsonPrecondtion{
      * Set Json Path from Json Content
      * 
      * @param json
-     * @throws JSONException 
      */
-    private void setJsonPaths(String json) throws JSONException {
+    private void setJsonPaths(String json) {
         this.pathList = new ArrayList<String>();
         JSONObject object = new JSONObject(json);
         String jsonPath = "$";
@@ -218,9 +217,8 @@ public class JsonPrecondtion{
      * 
      * @param Json object
      * @param jsonPath
-     * @throws JSONException 
      */
-	private void readObject(JSONObject object, String jsonPath) throws JSONException {
+	private void readObject(JSONObject object, String jsonPath) {
 		Iterator<String> keysItr = object.keys();
 		String parentPath = jsonPath;
 		while (keysItr.hasNext()) {
@@ -242,9 +240,8 @@ public class JsonPrecondtion{
 	 * 
 	 * @param Json array
 	 * @param jsonPath
-	 * @throws JSONException 
 	 */
-    private void readArray(JSONArray array, String jsonPath) throws JSONException {   
+    private void readArray(JSONArray array, String jsonPath) {   
         String parentPath = jsonPath;
         for(int i = 0; i < array.length(); i++) {
             Object value = array.get(i);    
@@ -352,6 +349,38 @@ public class JsonPrecondtion{
 	 */
 	public static String convertJsonContentToXml(String content) {
 		return XMLPREFIX + XMLROOT + ">" + XML.toString(new JSONObject(content)) + "</" + XMLROOT + ">";
+	}
+	
+	public static String parseAndReturnJsonContent(String inputContent,String inputValueToSet, String mapping) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			Object jsonObj = mapper.readValue(inputContent, Object.class);
+				if (inputValueToSet.contains("LONG:")) {
+					String value = inputValueToSet.replace("LONG:", "");
+					PropertyUtils.setProperty(jsonObj, mapping,
+							Long.parseLong(value));
+				} else if (inputValueToSet.contains("DOUBLE:")) {
+					String value = inputValueToSet.replace("DOUBLE:", "");
+					PropertyUtils.setProperty(jsonObj, mapping,
+							Double.parseDouble(value));
+				} else if (inputValueToSet.contains("BOOLEAN:")) {
+					String value = inputValueToSet;
+					if (value.contains("true"))
+						PropertyUtils.setProperty(jsonObj,
+								mapping, true);
+					if (value.contains("false"))
+						PropertyUtils.setProperty(jsonObj,
+								mapping, false);
+				} else
+					PropertyUtils.setProperty(jsonObj, mapping,
+							inputValueToSet);
+		    return mapper.writeValueAsString(jsonObj);
+			//return jsonObj.toString();
+		} catch (Exception e) {
+			JSONPRECONDATION_LOGGER.error("Exception Occured in message precondtion: " + e.getMessage());
+			Reporter.log("Exception Occured in message precondtion: " + e.getMessage());
+			return e.getMessage();
+		}
 	}
 	
 }

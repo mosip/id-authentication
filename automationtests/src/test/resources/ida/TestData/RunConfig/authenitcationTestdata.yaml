@@ -7,10 +7,20 @@ id_otp_invalid:
 id_auth_invalid:
       - mosip.auth.identity
       - auth.mosip.identity
+id_CreateVid_valid:
+      - mosip.vid.create
+id_UpdateVid_valid:
+      - mosip.vid.update
 indvId_Uin_valid:
       - UIN
 indvId_Vid_valid:
       - VID
+indvId_userid_valid:
+      - USERID
+userid_invalid:
+      - 12345
+      - 34567
+      - yu679
 indvId_invalid:
       - VI
       - UI
@@ -31,7 +41,7 @@ txnID_Invalid:
       - 6789056
       - Ar678Hj
       - 123456789^
-      - $123789009  
+      - 123789009  
 timestamp_invalid:
       - 2019-04-01T11:48:59.059+0530    
       - 2019/04/01T11:48:59.059+05:30
@@ -49,9 +59,8 @@ expired_vid_invalid:
       - 9835845389149251
 vid_invalid:
       - 9835845389149
-      - 983584538Q149251
-      - ASUUYUHLIDIYDVUY
-      - _&%$@!()**&&^*^S
+      - 983584538149251
+      - 983584538149251
 otpChannel_invalid:
       - tree
       - flse
@@ -60,6 +69,7 @@ otpChannel_invalid:
       - "false"
       - tr^e
       - fa%ls
+#idrepo
 name_valid:
       - Vignesh Ravi
       - Mary Rose
@@ -174,20 +184,27 @@ addressLine3_valid:
       - Pacific Ocean
       - Kuwait
       - Taramanai
-location1_valid:
-      - SYRIA
-      - CHENNAI
-      - DELHI
-      - PORT BLAIR
-      - KOCHI
-      - TRIVANDRUM
-      - AGRA
-      - GOA
-      - LONDON
-      - KUWAIT CITY
-      - DUBAI
-      - MOROCCO
-      - AFRICA
+localAdministrativeAuthority_fra_valid:
+      - Mograne
+localAdministrativeAuthority_eng_valid:
+      - Mograne
+localAdministrativeAuthority_ara_valid:
+      - بن منصور
+city_eng_valid:
+      - Kenitra
+      - Rabat
+city_fra_valid:
+      - Kénitra
+      - Rabat
+city_ara_valid:
+      - القنيطرة
+      - الرباط  
+region_eng_valid:
+      - Rabat Sale Kenitra  
+region_fra_valid:      
+      - Rabat-Salé-Kénitra
+region_ara_valid:      
+      - جهة الرباط سلا القنيطرة
 location2_valid:
       - AbuDhabi
       - Taramani
@@ -195,13 +212,15 @@ location2_valid:
       - Brigade Road
       - Kazhakuttam
       - Navalur
-location3_valid:
-      - AbuDhabi
-      - Taramani
-      - krishnarajapuram
-      - Brigade Road
-      - Kazhakuttam
-      - Navalur
+province_eng_valid:
+      - Kenitra
+      - Rabat
+province_fra_valid:
+      - Kénitra
+      - Rabat
+province_ara_valid:
+      - القنيطرة
+      - الرباط
 phone_valid:
       - 9003356540
       - 9333356541
@@ -214,12 +233,12 @@ phone_valid:
       - 9103356548
       - 9113356549
 postalcode_valid:
-      - 600031
-      - 600041
-      - 600051
-      - 600061
-      - 600071
-      - 600081
+      - 14022
+      - 14053
+      - 14023
+      - 14000
+      - 14110
+      - 14080
 CNIENumber_valid:
       - 6789545678909
       - 6789545678910
@@ -245,6 +264,7 @@ email_Mismatch:
       - athilabanu@gmail.com
 phone_Mismatch:
       - 9446933347
+#bio
 bio_face_subType:
       - FACE
       - UNKNOWN
@@ -257,6 +277,33 @@ bio_iris_right_subType:
 bio_finger_LeftIndex_subType:
       - LEFT_INDEX
       - UNKNOWN
+bio_finger_LeftLittle_subType:
+      - LEFT_LITTLE
+      - UNKNOWN
+bio_finger_RightLittle_subType:
+      - RIGHT_LITTLE
+      - UNKNOWN
+bio_finger_RightIndex_subType:
+      - RIGHT_INDEX
+      - UNKNOWN
+bio_finger_LeftMiddle_subType:
+      - LEFT_MIDDLE
+      - UNKNOWN
+bio_finger_RightMiddle_subType:
+      - RIGHT_MIDDLE
+      - UNKNOWN
+bio_finger_LeftRing_subType:
+      - LEFT_RING
+      - UNKNOWN
+bio_finger_RightRing_subType:
+      - RIGHT_RING
+      - UNKNOWN
+bio_finger_LeftThumb_subType:
+      - LEFT_THUMB
+      - UNKNOWN
+bio_finger_RightThumb_subType:
+      - RIGHT_THUMB
+      - UNKNOWN
 bio_face_type:
       - FID
 bio_finger_type:
@@ -266,6 +313,10 @@ bio_iris_type:
 bio_face_deviceCode:
       - cogent
 bio_face_deviceProviderID:
+      - cogent
+bio_iris_deviceCode:
+      - cogent
+bio_iris_deviceProviderID:
       - cogent
 boolean_true:
       - BOOLEAN:true
@@ -278,14 +329,14 @@ invalid:
       - DFR
       - FTY
 primary_lang_code:
-      - fra
+      - eng
 secondary_lang_code:
       - ara
 #Auth_transaction
 auth_transaction_IRIS_authTypeCode:
       - IRIS-AUTH
 auth_transaction_FINGER_authTypeCode:
-      - FINGER-AUTH
+      - FINGERPRINT-AUTH
 auth_transaction_FACE_authTypeCode:
       - FACE-AUTH
 auth_transaction_success_statusCode:
@@ -310,45 +361,53 @@ auth_transaction_VID_idType:
       - VID
 auth_transaction_DEMO_authTypeCode:
       - DEMO-AUTH
+auth_transaction_EKYC_authTypeCode:
+      - KYC-AUTH
 auth_transaction_DEMO_success_statusComment:
       - $REGEXP:.*Demo.*Authentication.*Success.*$
 auth_transaction_DEMO_fail_statusComment:
       - $REGEXP:.*Demo.*Authentication.*Failed.*$
+auth_transaction_EKYC_success_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Success.*$
+auth_transaction_EKYC_fail_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Failed.*$
 #Audit_log
 audit_log_eventId:
-      - $REGEXP:.*IDA-EVT.*$
+      - $REGEXP:.*IDA.*$
 audit_log_auth_eventName:
-      - AUTH_REQUEST_RESPONSE
+      - Authentication Request
+audit_log_ekyc_eventName:
+      - eKYC Request
 audit_log_ida_appId:
       - IDA
 audit_log_ida_appName:
       - ID-Authentication
 audit_log_ekyc_moduleName:
-      - EKYC_AUTH
+      - eKYC Authenticator
 audit_log_iris_moduleName:
-      - IRIS_AUTH
+      - Iris Authenticator
 audit_log_finger_moduleName:
-      - FINGERPRINT_AUTH
+      - Fingerprint Authenticator
 audit_log_face_moduleName:
-      - FACE_AUTH
+      - Face Authenticator
 audit_log_UIN_refIdType:
       - UIN
 audit_log_demo_moduleName:
-      - DEMO_AUTH
+      - Demographic Authenticator
 audit_log_VID_refIdType:
       - VID
 #Demo-Name Normalisation
-name_tittle_UnMarriedfemale_english_lang:
-      - Miss.
-name_tittle_female_english_lang:
-      - Mrs.
-name_tittle_male_english_lang:
-      - Mr.
 name_tittle_UnMarriedfemale_primary_lang:
-      - Mademoiselle.
+      - Miss.
 name_tittle_female_primary_lang:
-      - Madame.
+      - Mrs.
 name_tittle_male_primary_lang:
+      - Mr.
+name_tittle_UnMarriedfemale_fra_lang:
+      - Mademoiselle.
+name_tittle_female_fra_lang:
+      - Madame.
+name_tittle_male_fra_lang:
       - Monsieur.
 name_tittle_UnMarriedfemale_secondary_lang:
       - 'آنسة '
@@ -361,3 +420,11 @@ otpChannel_EMAIL:
       - EMAIL
 otpChannel_MOBILE:
       - PHONE
+#VID
+valid_VID_Type:
+      - Temporary
+      - Perpetual
+valid_VID_T_Type:
+      - Temporary
+valid_VID_P_Type:
+      - Perpetual

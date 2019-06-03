@@ -57,7 +57,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
 	private final String syncConf = props.get("syncConf");
 	private String folderPath = "kernel/SyncConfigurations";
-	private String outputFile = "SyncConfigurationsrOutput.json";
+	private String outputFile = "SyncConfigurationsOutput.json";
 	private String requestKeyFile = "SyncConfigurationsInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
@@ -75,22 +75,14 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncConfigurations")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+				return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * syncConfigurations
 	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin send
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -104,6 +96,9 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestNoParameter(syncConf,cookie);
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+				
 		String lastSyncTime=res.jsonPath().get("response.lastSyncTime").toString();
 		logger.info("lastsync--------"+lastSyncTime);
 		JSONObject expectedres = (JSONObject) Expectedresponse.get("response");
@@ -136,9 +131,8 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/	
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

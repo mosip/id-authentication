@@ -171,6 +171,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			if (messageDTO.getIsValid()) {
 				responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
 				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
+				this.sendMessage(messageDTO);
 			}
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

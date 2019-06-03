@@ -52,8 +52,6 @@ import io.restassured.response.Response;
 	 *
 	 */
 	public class SyncPublicKeyToRegClient extends BaseTestCase implements ITest{
-	       
-	
 	       SyncPublicKeyToRegClient() {
 	              super();
 	       }
@@ -102,18 +100,10 @@ import io.restassured.response.Response;
 	       @DataProvider(name = "fetchData")
 	       public Object[][] readData(ITestContext context)
 	                     throws JsonParseException, JsonMappingException, IOException, ParseException {
-	              switch (testLevel) {
-	              case "smoke":
-	                     return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-	
-	              case "regression":
-	                     return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-	              default:
-	                     return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+	            
+	                     return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 	              }
-	
-	       }
-	
+
 	       /**
 	       * This fetch the value of the data provider and run for each test case
 	       * 
@@ -172,6 +162,9 @@ import io.restassured.response.Response;
 	              int statusCode=response.statusCode();
 	              logger.info("Status Code is : " +statusCode);
 	              
+	              //This method is for checking the authentication is pass or fail in rest services
+	      		  new CommonLibrary().responseAuthValidation(response);
+	      		  
 	              ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 	              listOfElementToRemove.add("responsetime");
 	              listOfElementToRemove.add("timestamp");

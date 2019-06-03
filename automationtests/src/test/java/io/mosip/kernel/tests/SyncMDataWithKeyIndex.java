@@ -53,7 +53,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	private final String requestJsonName = "SyncMDataWithKeyIndexRequest";
 	private final String outputJsonName = "SyncMDataWithKeyIndexOutput";
 	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String syncMdatawithKeyIndex = props.get("syncMdatawithRegCentIdKeyIndex").toString();
+	private final String syncMdatawithKeyIndex = props.get("syncMdatawithKeyIndex").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -91,17 +91,9 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+		
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case
@@ -110,7 +102,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchApplication(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -142,23 +134,21 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-					response = applicationLibrary.getRequestPathPara(syncMdatawithKeyIndex, objectData,cookie);
+					response = applicationLibrary.getRequestAsQueryParam(syncMdatawithKeyIndex, objectData,cookie);
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
 			}
 		}
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+				new CommonLibrary().responseAuthValidation(response);
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		
-
 		if (status) {
 			finalStatus = "Pass";
 		} else {

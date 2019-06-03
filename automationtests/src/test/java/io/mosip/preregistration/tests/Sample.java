@@ -69,9 +69,7 @@ public class Sample extends BaseTestCase implements ITest {
 
 	@BeforeClass
 	public void readPropertiesFile() {
-		initialize();
-		authToken = lib.getToken();
-	}
+		initialize();}
 
 	/**
 	 * Batch job service for expired application
@@ -84,11 +82,11 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test
 	public void validateWithoutGeneratingOtp(){
 		
-		String validateTestSuite = "validateOTP/validateOTP_smoke";
-		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "9804605101", "385140");
-		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
-		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "User Detail doesn't exist");
-		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "KER-ATH-003");
+		dao.makeregistartionCenterActive("10006");
+		dao.makeregistartionCenterActive("10012");
+
+		
+		lib.syncAvailability();
 	}
 
 	@BeforeMethod(alwaysRun = true)
@@ -104,6 +102,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		//lib.logOut();
+		lib.logOut();
 	}
 }

@@ -85,7 +85,6 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 		cookie=auth.getAuthForIndividual();
-
 	}
 
 	/**
@@ -97,18 +96,9 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+	
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
-
 	/**
 	 * This fetch the value of the data provider and run for each test case
 	 * 
@@ -116,7 +106,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchApplication(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
@@ -147,19 +137,24 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-
-					response = applicationLibrary.getRequestPathPara(syncMdatawithRegCentIdKeyIndex, objectData,cookie);
+				String regcenterId = objectData.get("regcenterId").toString();
+				HashMap regId = new HashMap();
+				regId.put("regcenterId", regcenterId);
+				objectData.remove("regcenterId");
+					response = applicationLibrary.getRequestPathQueryPara(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
 				
 			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
 			}
 		}
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
-			// add parameters to remove in response before comparison like time stamp
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
+		
+		// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);

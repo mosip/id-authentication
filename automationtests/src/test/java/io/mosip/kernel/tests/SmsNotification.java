@@ -94,17 +94,8 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "FetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case
@@ -149,7 +140,8 @@ public class SmsNotification extends BaseTestCase implements ITest {
 		}
 
 		logger.info("Expected Response:" + responseObject.toJSONString());
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -158,31 +150,13 @@ public class SmsNotification extends BaseTestCase implements ITest {
 		if (status) {
 			int statusCode = response.statusCode();
 			logger.info("Status Code is : " + statusCode);
-
-			if (statusCode == 201) {
-				// varible part
-				String id = (response.jsonPath().get("id")).toString();
-				logger.info("id is : " + id);
-				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-
-				boolean valid = new KernelDataBaseAccess().validateDataInDb(queryStr,"masterdata");
-
-				if (valid) {
-					finalStatus = "Pass";
-				} else {
-					finalStatus = "Fail";
-				}
-
-			}
 			finalStatus = "Pass";
 		}
-
 		else {
 			finalStatus = "Fail";
 		}
 
 		object.put("status", finalStatus);
-
 		arr.add(object);
 		boolean setFinalStatus = false;
 		if (finalStatus.equals("Fail")) {

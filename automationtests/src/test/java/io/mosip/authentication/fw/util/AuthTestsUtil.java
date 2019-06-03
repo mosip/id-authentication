@@ -36,7 +36,7 @@ import com.ibm.icu.text.Transliterator;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
  
@@ -685,7 +685,7 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @param otpMappingFieldName
 	 * @return String , OTP Value
 	 */
-	public String getOtpValue(String inputFilePath, String mappingFileName, String otpMappingFieldName) {
+		public String getOtpValue(String inputFilePath, String mappingFileName, String otpMappingFieldName) {
 		String value = JsonPrecondtion.getValueFromJson(inputFilePath, mappingFileName, otpMappingFieldName);
 		if (value.contains(":")) {
 			String[] otpKeyword = value.split(":");
@@ -926,18 +926,16 @@ public class AuthTestsUtil extends BaseTestCase {
 				content = '"' + javaHome + "/bin/java" + '"'
 						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
 						+ '"' + demoAppJarPath.toString() + '"';
-			} else if (getOSType().toString().equals("OTHERS")) {				 
-				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv("M2_HOME"));
-				String mavenPath = System.getenv("M2_HOME");					 
+			} else if (getOSType().toString().equals("OTHERS")) {
+				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey()));
+			    String mavenPath = System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey());
 				String settingXmlPath = mavenPath + "/conf/settings.xml";
-				
 				String repoPath = XmlPrecondtion.getValueFromXmlFile(settingXmlPath, "//localRepository");
 				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"
 						+ getDemoAppVersion() + "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar")
 								.getAbsolutePath();
-				RunConfigUtil.getRunConfigObject("ida");				 
-
-			RunConfigUtil.objRunConfig.setUserDirectory();
+				RunConfigUtil.getRunConfigObject("ida");
+				RunConfigUtil.objRunConfig.setUserDirectory();
 				demoAppBatchFilePath = new File(RunConfigUtil.objRunConfig.getUserDirectory() + "src/test/resources/demoApp.sh");
 				content = "nohup java -Dspring.cloud.config.label=QA_IDA -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Djava.net.useSystemProxies=true -jar "
 						+ '"' + demoAppJarPath.toString() + '"' +" &";
@@ -993,7 +991,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
-			Thread.sleep(60000);
+			//Thread.sleep(60000);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Execption in launching demoApp application: " + e.getMessage());
 		}
@@ -1155,6 +1153,16 @@ public class AuthTestsUtil extends BaseTestCase {
 			return e.toString();
 		}
 	}
+	protected String postStrContentRequestWithCookie(String content, String url,String cookieName, String cookieValue) {
+		try {
+			return RestClient
+					.postRequestWithCookie(url, content, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,cookieName,cookieValue)
+					.asString();
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
 	
 	protected static String getCookieRequestFilePath() {
 		return RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath()
@@ -1204,9 +1212,29 @@ public class AuthTestsUtil extends BaseTestCase {
 	public static String getVidRequestContent() {
 		try {
 			return getContentFromFile(new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
-					+ RunConfigUtil.objRunConfig.getModuleFolderName() + "/TestData/VIDGeneration/input/vid-request.json"));
+					+ "ida/VIDData/VIDGeneration/VIDGenerate/vid-request.json"));
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception Occured in getting the VID request file" + e.getMessage());
+			return e.getMessage();
+		}
+	}
+	
+	/**
+	 * The method will post request and generate output file for VID generation
+	 * 
+	 * @param listOfFiles
+	 * @param urlPath
+	 * @param keywordToFind
+	 * @param generateOutputFileKeyword
+	 * @param code
+	 * @return true or false
+	 */
+	protected String postRequestAndGetResponseForVIDGeneration(String content, String urlPath, String cookieName,
+			String cookieValue) {
+		try {
+			return postStrContentRequestWithCookie(content, urlPath, cookieName, cookieValue);
+		} catch (Exception e) {
+			IDASCRIPT_LOGGER.error("Exception " + e);
 			return e.getMessage();
 		}
 	}

@@ -37,12 +37,16 @@ public class AssertKernel {
 	 * @throws ParseException
 	 */
 	public boolean assertKernel(Response expectedResponse, JSONObject actualResponse,
-			ArrayList<String> listOfElementToRemove) throws JsonProcessingException, IOException, ParseException {
-		JSONObject expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
+			ArrayList<String> listOfElementToRemove){
+		JSONObject expectedResponseBody = null;
 		JSONObject actualResponseBody = actualResponse;
-		
+		try {
+			expectedResponseBody = (JSONObject) new JSONParser().parse(expectedResponse.asString());
 			expectedResponseBody = AssertKernel.removeElementFromBody(expectedResponseBody, listOfElementToRemove);
 			actualResponseBody = AssertKernel.removeElementFromBody(actualResponse, listOfElementToRemove);
+			} catch (ParseException e) {
+				logger.info(e.getMessage());
+			}
 		
 		return jsonComparison(expectedResponseBody, actualResponseBody);
 
@@ -88,7 +92,7 @@ public class AssertKernel {
 			JsonNode responseJson = mapper.readTree(resObj.toString());
 			JsonNode diffJson = JsonDiff.asJson(requestJson, responseJson);
 
-			logger.error("======" + diffJson + "==========");
+			//logger.error("======" + diffJson + "==========");
 			if (diffJson.toString().equals("[]")) {
 				logger.info("equal");
 				return true;

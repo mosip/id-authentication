@@ -100,7 +100,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 	}
-	@Test
+	/*@Test
 	public void changeHolidayToNormalDay() {
 		Date date = dao.MakeDayAsHoliday();
 		Response syncAvailabilityResponse = lib.syncAvailability();
@@ -110,7 +110,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 		Response avilibityResponse = lib.FetchCentre("10009");
 	}
-
+*/
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

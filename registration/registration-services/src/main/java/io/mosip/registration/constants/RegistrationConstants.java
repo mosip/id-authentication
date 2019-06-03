@@ -1377,7 +1377,6 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	
 	public static final String IDA_REFERENCE_ID = "PARTNER";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
 	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
@@ -1409,5 +1408,18 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_IRIS_ID="IIR";
 	public static final String ON_BOARD_FINGER_ID="FMR";
 	public static final String ON_BOARD_COGENT="cogent";
+
+	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
 	
+
+
+	// TPM Public Key Sync
+	public static final String RESPONSE = "response";
+	public static final String ERROR_CODE = "errorCode";
+	public static final String MESSAGE_CODE = "message";
+	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
+	public static final String TPM_AVAILABILITY = "is_tpm_available";
+	public static final String SERIAL_NUMBER = "serialnumber";
+
+
 }

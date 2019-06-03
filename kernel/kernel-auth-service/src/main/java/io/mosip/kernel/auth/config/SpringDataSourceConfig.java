@@ -24,15 +24,15 @@ public class SpringDataSourceConfig {
 	@Autowired
 	private Environment env;
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${spring.datasource.hikari.maximumPoolSize:100}")
 	private int maximumPoolSize;
-	@Value("${hikari.validationTimeout:3000}")
+	@Value("${spring.datasource.hikari.validationTimeout:3000}")
 	private int validationTimeout;
-	@Value("${hikari.connectionTimeout:60000}")
+	@Value("${spring.datasource.hikari.connectionTimeout:60000}")
 	private int connectionTimeout;
-	@Value("${hikari.idleTimeout:200000}")
+	@Value("${spring.datasource.hikari.idleTimeout:200000}")
 	private int idleTimeout;
-	@Value("${hikari.minimumIdle:0}")
+	@Value("${spring.datasource.hikari.minimumIdle:0}")
 	private int minimumIdle;
 
 	@Bean

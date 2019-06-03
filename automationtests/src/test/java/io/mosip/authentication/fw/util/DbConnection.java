@@ -82,6 +82,7 @@ public class DbConnection {
 	 * @param moduleName
 	 * @return otp record
 	 */
+	
 	public static Map<String, String> getDataForQuery(String query, String moduleName) {
 		Statement stmt = null;
 		try {

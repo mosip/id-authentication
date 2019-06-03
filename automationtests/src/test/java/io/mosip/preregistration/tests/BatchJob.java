@@ -89,7 +89,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 	 */
 	@Test
 	public void batchJobForConsumedApplication() {
-		lib.syncAvailability();
 		List preRegistrationId = new ArrayList();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -118,8 +117,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 		authToken=lib.getToken();
 		testCaseName="preReg_BatchJob_" + method.getName();
 	}
-
-
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {
 		try {
