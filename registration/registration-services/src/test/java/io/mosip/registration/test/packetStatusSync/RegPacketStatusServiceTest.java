@@ -49,7 +49,7 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, HMACUtils.class })
+@PrepareForTest({  HMACUtils.class })
 public class RegPacketStatusServiceTest {
 
 	@Rule
@@ -75,8 +75,8 @@ public class RegPacketStatusServiceTest {
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		applicationMap.put("PRIMARY_LANGUAGE", "ENG");
 
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
-		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+		ApplicationContext.setApplicationMap(applicationMap);
+	//	PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		// when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 		SessionContext.getInstance();
 

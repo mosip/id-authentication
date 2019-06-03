@@ -9,7 +9,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
-import io.mosip.registration.service.BaseService;
 
 /**
  * The Class ApplicationContext.
@@ -316,9 +315,9 @@ public class ApplicationContext {
 	 * @param applicationMap            
 	 * 				the applicationMap to set
 	 */
-	public void setApplicationMap(Map<String, Object> applicationMap) {
-		this.applicationMap.putAll(applicationMap);
-		BaseService.setBaseGlobalMap(applicationMap);
+	public static void setApplicationMap(Map<String, Object> applicationMap) {
+		ApplicationContext.applicationMap.putAll(applicationMap);
+		//BaseService.setBaseGlobalMap(applicationMap);
 	}
 
 	/**
