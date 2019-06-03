@@ -232,17 +232,17 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				validateBioType(bioData, errors, allowedAuthType);
 
 				validateBioData(bioData, errors);
-
-				if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
-					validateFinger(authRequestDTO, bioData, errors);
+				if (!errors.hasErrors()) {
+					if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
+						validateFinger(authRequestDTO, bioData, errors);
+					}
+					if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
+						validateIris(authRequestDTO, bioData, errors);
+					}
+					if (isMatchtypeEnabled(BioMatchType.FACE)) {
+						validateFace(authRequestDTO, bioData, errors);
+					}
 				}
-				if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
-					validateIris(authRequestDTO, bioData, errors);
-				}
-				if (isMatchtypeEnabled(BioMatchType.FACE)) {
-					validateFace(authRequestDTO, bioData, errors);
-				}
-
 			}
 		}
 
@@ -255,7 +255,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		filterdBioData.forEach(bioInfo -> {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "for bioType - " + bioInfo.getBioType() + " " + "& bioSubType - "
+					new Object[] { "bioValue for bioType - " + bioInfo.getBioType() + " " + "& bioSubType - "
 							+ bioInfo.getBioSubType() },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		});
