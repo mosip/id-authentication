@@ -292,7 +292,7 @@ public class CommonLibrary extends BaseTestCase{
           Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParameters(path_value).queryParams(query_value)
                       .log().all().when().get(url).then().log().all().extract().response();
           // log then response
-          logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+          //logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
           logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
           return getResponse;
     } // end GET_REQUEST
@@ -310,7 +310,7 @@ public class CommonLibrary extends BaseTestCase{
       	 Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(valueMap)
                              .log().all().when().get(url).then().log().all().extract().response();
            // log then response
-           //logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+          // logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
            logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
            return getResponse;
      } // end GET_REQUEST
@@ -374,6 +374,16 @@ public class CommonLibrary extends BaseTestCase{
          logger.info("REST-ASSURED: Sending a GET request to " + url);
          Cookie.Builder builder = new Cookie.Builder("Authorization",cookie);
          Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation()
+                     .log().all().when().get(url).then().log().all().extract().response();
+         // log then response
+         logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+         logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+         return getResponse;
+   } // end GET_REQUEST
+     
+     public Response getConfigProperties(String url) {
+         logger.info("REST-ASSURED: Sending a GET request to " + url);
+         Response getResponse = given().relaxedHTTPSValidation()
                      .log().all().when().get(url).then().log().all().extract().response();
          // log then response
          logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
@@ -479,32 +489,33 @@ Cookie.Builder builder = new Cookie.Builder("Authorization",cookie);
  	       }
 
 
- 	  /*     public void retrivePreRegistrationDataForCancelAppointment() {
+ 	    /*   public void retrivePreRegistrationDataForCancelAppointment() {
  	    	  CommonLibrary commonLibrary=new CommonLibrary();
  	              Map<String, String> configParamMap = new HashMap<>();
- 	              HashMap<String, String> map = commonLibrary.readConfigProperty("http://104.211.212.28:51000/pre-registration/qa/0.10.0/application-qa.properties", configParamMap);
+ 	              HashMap<String, String> map = CommonLibrary.readConfigProperty("http://104.211.212.28:51000/pre-registration/qa/0.10.0/application-qa.properties", configParamMap);
  	              map = commonLibrary.readConfigProperty("http://104.211.212.28:51000/pre-registration/qa/0.10.0/pre-registration-qa.properties", map);
  	              System.out.println(map);
  	       }*/
 
- 	 	 	
  	 	 	/**
  	 	 	 * @param response
  	 	 	 * This method is for checking the authentication is pass or fail in rest services
  	 	 	 */
  	 	 	public void responseAuthValidation(Response response){
+ 	 	 	// fetching json array of objects from response
  	 	 		JSONArray errors = null;
 				try {
 					errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
 				} catch (ParseException e) {
-					Assert.assertTrue(false, "Response from the service is not able to parse ");
+					Assert.assertTrue(false, "Response from the service is not able to parse :-"+e.getMessage());
+				}catch (NullPointerException npe) {
+					Assert.assertTrue(false, "Not able to find the errors from response :-"+npe.getMessage());
 				}
- 				// fetching json array of objects from response
  	 	 		if(errors != null) {
  	 	 			String errorCode = ((JSONObject) errors.get(0)).get("errorCode").toString();
  	 	 			String errorMessage = ((JSONObject)errors.get(0)).get("message").toString();
  	 	 			if(errorCode.contains("ATH")) {
- 	 	 				Assert.assertTrue(false, "Failed due to Authentication failure. Error message is='"+errorMessage+"'");
+ 	 	 				Assert.assertTrue(false, "Failed due to Authentication failure. Error message ='"+errorMessage+"'");
  	 	 			}
  	 	 		}
  	 	 	}

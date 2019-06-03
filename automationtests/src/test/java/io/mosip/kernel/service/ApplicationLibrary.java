@@ -59,7 +59,11 @@ public class ApplicationLibrary extends BaseTestCase {
 		return commonLibrary.getRequestWithoutParameters(ApplnURI + Resource_URI, cookie);
 
 	}
+	
+	public Response getConfigProperties(String Resource_URI) {
+		return commonLibrary.getConfigProperties(Resource_URI);
 
+	}
 	public Response putRequestWithBody(String Resource_URI, JSONObject object,String cookie) {
 		return commonLibrary.putRequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, object, cookie);

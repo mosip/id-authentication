@@ -9,7 +9,6 @@ import java.util.Date;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 

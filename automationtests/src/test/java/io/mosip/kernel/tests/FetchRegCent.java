@@ -105,7 +105,7 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object)
+	public void fetchRegCent(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);

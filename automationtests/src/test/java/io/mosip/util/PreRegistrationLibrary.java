@@ -801,6 +801,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		request = getRequest(testSuite);
 		request.put("requesttime", getCurrentDate());	
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
+		
 		return response;
 	}
 
@@ -1019,8 +1020,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	
 	public Response FetchCentre() {
 
-		String regCenterId = randomRegistrationCenterId();		
-		//String regCenterId = "10014";
+		//String regCenterId = randomRegistrationCenterId();		
+		String regCenterId = "10007";
 		String preRegFetchCenterIDURI=preReg_FetchCenterIDURI+regCenterId;
 		response = applnLib.getRequestWithoutParm(preRegFetchCenterIDURI);
 		

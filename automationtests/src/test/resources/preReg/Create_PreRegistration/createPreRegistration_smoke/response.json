@@ -1,10 +1,10 @@
 {
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0",
-    "responsetime": "2019-05-29T07:02:02.961Z",
+    "responsetime": "2019-06-03T10:38:41.273Z",
     "response": {
-        "preRegistrationId": "48250492659703",
-        "createdDateTime": "2019-05-29T07:02:02.813Z",
+        "preRegistrationId": "65795726870513",
+        "createdDateTime": "2019-06-03T10:38:41.099Z",
         "statusCode": "Pending_Appointment",
         "langCode": "fra",
         "demographicDetails": {
@@ -66,7 +66,7 @@
                 "addressLine1": [
                     {
                         "language": "fra",
-                        "value": "mindtree phase 2, global village"
+                        "value": ""
                     },
                     {
                         "language": "ara",

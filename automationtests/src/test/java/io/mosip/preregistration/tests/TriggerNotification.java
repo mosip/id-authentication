@@ -55,7 +55,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	String preId = "";
 	SoftAssert softAssert = new SoftAssert();
 	static String testCaseName = "";
-	Logger logger = Logger.getLogger(FetchAllApplicationCreatedByUser.class);
+	Logger logger = Logger.getLogger(TriggerNotification.class);
 	boolean status = false;
 	boolean statuOfSmokeTest = false;
 	String finalStatus = "";
@@ -185,6 +185,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 				}
 			}
 
+			logger.info("Request:"+actualRequest);
 			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
 					value);
 

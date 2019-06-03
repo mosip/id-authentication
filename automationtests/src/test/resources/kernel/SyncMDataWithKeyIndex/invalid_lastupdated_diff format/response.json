@@ -1,13 +1,13 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-05-22T08:01:11.211Z",
-  "metadata": null,
-  "response": null,
-  "errors": [
-    {
-      "errorCode": "KER_SNC-100",
-      "message": "Text '2019-01-20' could not be parsed at index 10"
-    }
-  ]
+    "id": null,
+    "version": null,
+    "responsetime": "2019-06-01T08:39:08.929Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER_SNC-100",
+            "message": "Text '2019-05-20' could not be parsed at index 10"
+        }
+    ]
 }
