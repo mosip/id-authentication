@@ -52,6 +52,15 @@ public class UinGenerationStatusTest {
 
 	@Value("${mosip.admin.packetstatus.api}")
 	private String url;
+	
+	@Value("${mosip.admin.packetstatus.api.version}")
+	private String version;
+	
+	@Value("${mosip.admin.packetstatus.api.statuscode}")
+	private String statusCode;
+	
+	@Value("${mosip.admin.packetstatus.api.packetId}")
+	private String packetId;
 
 
 	@Before
@@ -67,14 +76,14 @@ public class UinGenerationStatusTest {
 	public void testGetUinGenerationStatus() throws Exception {
 
 		ResponseWrapper<List<UinGenerationStatusDto>> response = new ResponseWrapper<>();
-		response.setId("mosip.registration.status");
-		response.setVersion("1.0");
+		response.setId(packetId);
+		response.setVersion(version);
 		response.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String rid = "01006768480002820190122190830";
 		List<UinGenerationStatusDto> uingen = new ArrayList<>();
 		UinGenerationStatusDto uinDetailResponseDto = new UinGenerationStatusDto();
 		uinDetailResponseDto.setRegistrationId(rid);
-		uinDetailResponseDto.setStatusCode("PROCESSING");
+		uinDetailResponseDto.setStatusCode(statusCode);
 		uingen.add(uinDetailResponseDto);
 
 		response.setResponse(uingen);
@@ -91,14 +100,14 @@ public class UinGenerationStatusTest {
 	public void testGetUinGenerationStatusException() throws Exception {
 
 		ResponseWrapper<List<UinGenerationStatusDto>> response = new ResponseWrapper<>();
-		response.setId("mosip.registration.status");
-		response.setVersion("1.0");
+		response.setId(packetId);
+		response.setVersion(version);
 		response.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
 		String rid = "01006768480002820190122190830";
 		List<UinGenerationStatusDto> uingen = new ArrayList<>();
 		UinGenerationStatusDto uinDetailResponseDto = new UinGenerationStatusDto();
 		uinDetailResponseDto.setRegistrationId(rid);
-		uinDetailResponseDto.setStatusCode("PROCESSING");
+		uinDetailResponseDto.setStatusCode(statusCode);
 		uingen.add(uinDetailResponseDto);
 
 		response.setResponse(uingen);
