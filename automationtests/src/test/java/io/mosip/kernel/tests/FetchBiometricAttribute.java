@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -74,7 +75,8 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun = true)
-	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx)
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		String object = (String) testdata[0];
 		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
 		cookie = auth.getAuthForRegistrationAdmin();
@@ -101,7 +103,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) throws ParseException {
+	public void fetchBiometricAttribute(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -112,21 +114,25 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		// sending get request
 		response = applicationLibrary.getRequestPathPara(FetchBiometricAttribute_URI, objectData, cookie);
-		
-		//This method is for checking the authentication is pass or fail in rest services
+
+		// This method is for checking the authentication is pass or fail in rest
+		// services
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
+			if (responseJson == null || !responseJson.containsKey("biometricattributes"))
+				Assert.assertTrue(false, "Response does not contain biometricattributes");
 
 			String query = "select count(*) from master.biometric_attribute where lang_code = '"
 					+ objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
-					.get("response");
 			// fetching json array of objects from response
 			JSONArray dataFromGet = (JSONArray) responseJson.get("biometricattributes");
+
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + dataFromGet.size());
 
 			// validating number of objects obtained form db and from get request

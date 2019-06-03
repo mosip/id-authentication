@@ -109,7 +109,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) throws ParseException{
+	public void fetchApplication(String testcaseName, JSONObject object) throws ParseException{
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 

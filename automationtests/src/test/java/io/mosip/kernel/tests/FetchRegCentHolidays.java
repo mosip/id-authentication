@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -106,7 +107,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object)
+	public void fetchRegCentHolidays(String testcaseName, JSONObject object)
 			throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
@@ -122,7 +123,10 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
-
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			if (responseJson == null || !responseJson.containsKey("holidays"))
+				Assert.assertTrue(false, "Response does not contain holidays");
 			String query = "select count(*) from master.loc_holiday where location_code = "
 					+ "(select holiday_loc_code from master.registration_center where id = '" 
 			+ objectData.get("registrationcenterid")
@@ -132,8 +136,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 					+ objectData.get("langcode") + "'";
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+
 			// fetching json array of objects from response
 			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("holidays");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
@@ -142,13 +145,13 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 			if (responseArrayFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("id");
 				attributesToValidateExistance.add("holidayName");
 				attributesToValidateExistance.add("holidayDate");
 				attributesToValidateExistance.add("isActive");
 
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 
 				status = AssertKernel.validator(responseArrayFromGet, attributesToValidateExistance,
 						passedAttributesToFetch);

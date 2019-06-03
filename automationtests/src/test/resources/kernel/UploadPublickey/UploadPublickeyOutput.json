@@ -1,1 +1,1 @@
-[{"Jira ID":"MOS-23713","Test case Name":"allValid_smoke","publicKey":"valid","machineName":"valid","status":"Fail"},{"Jira ID":"MOS-23713","Test case Name":"allValid_smoke_duplicate publicKey","publicKey":"valid","machineName":"valid","status":"Fail"}]
+[{"Jira ID":"MOS-23713","publicKey":"valid","testCaseName":"allValid_smoke","machineName":"valid","status":"Pass"},{"Jira ID":"MOS-23713","publicKey":"valid","testCaseName":"allValid_smoke_duplicate publicKey","machineName":"valid","status":"Pass"}]

@@ -46,8 +46,7 @@ import io.restassured.response.Response;
  * @author Ravi Kant
  *
  */
-public class FetchGenderType extends BaseTestCase implements ITest{
-	
+public class FetchGenderType extends BaseTestCase implements ITest {
 
 	FetchGenderType() {
 		super();
@@ -71,9 +70,8 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
-
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -82,11 +80,11 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
+	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForIDA();
 	}
 
 	/**
@@ -97,7 +95,7 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {	
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
@@ -110,8 +108,7 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object)
-			throws ParseException {
+	public void fetchGenderType(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -120,52 +117,52 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-					if(objectData!=null)
-					response = applicationLibrary.getRequestPathPara(FetchGenderType_id_lang_URI, objectData,cookie);
-					else
-					{	objectData = new JSONObject();
-					response = applicationLibrary.getRequestPathPara(FetchGenderType_URI, objectData,cookie);
-					objectData = null;
-					}
-				// DB validation
+		if (objectData != null)
+			response = applicationLibrary.getRequestPathPara(FetchGenderType_id_lang_URI, objectData, cookie);
+		else {
+			objectData = new JSONObject();
+			response = applicationLibrary.getRequestPathPara(FetchGenderType_URI, objectData, cookie);
+			objectData = null;
+		}
+		// DB validation
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
+			if (responseJson == null || !responseJson.containsKey("genderType"))
+				Assert.assertTrue(false, "Response does not contain genderType");
 			String queryPart = "select count(*) from master.gender where is_active = true";
 			String query = queryPart;
 			if (objectData != null) {
-		query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
+				query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 
 			}
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
-			JSONArray genderTypeFromGet=new JSONArray();;
-			try {
-				genderTypeFromGet = (JSONArray) responseJson.get("genderType");
-			} catch (NullPointerException e) {
-				Assert.assertTrue(status, "Not able to get the Gender type from ");
-			}
+			JSONArray genderTypeFromGet = (JSONArray) responseJson.get("genderType");
+
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + genderTypeFromGet.size());
 
 			// validating number of objects obtained form db and from get request
 			if (genderTypeFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("code");
 				attributesToValidateExistance.add("genderName");
 				attributesToValidateExistance.add("isActive");
 
 				// key value of the attributes passed to fetch the data (should be same in all
 				// obtained objects)
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
-						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
-				status = AssertKernel.validator(genderTypeFromGet, attributesToValidateExistance, passedAttributesToFetch);
+				status = AssertKernel.validator(genderTypeFromGet, attributesToValidateExistance,
+						passedAttributesToFetch);
 			} else
 				status = false;
 
@@ -215,13 +212,10 @@ public class FetchGenderType extends BaseTestCase implements ITest{
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
 		}
 	}
 }
-
-

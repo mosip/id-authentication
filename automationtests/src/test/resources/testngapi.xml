@@ -18,9 +18,9 @@
                                                  
 
 
-			<!-- <test name="Kernel Tests">
+			 <test name="Kernel Tests">
 						 <classes>
-                           <class name="io.mosip.kernel.tests.AuditLog" />   
+                            <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -77,7 +77,7 @@
                  </classes>
 				</test>   
 
-  -->
+  
 
 
 		 <test name="PreReg Tests">
@@ -116,7 +116,7 @@
 		</classes>
 	</test> 
 
-	 <!--    <test name="AuthenticationTest">
+	   <test name="AuthenticationTest">
 		<parameter name="testType" value="smoke" />
 		<classes>
 		<class name="io.mosip.authentication.tests.OtpGeneration" />
@@ -143,6 +143,7 @@
 	</test>  
 
 
+
  	 <test name="RegistrationProcessor Tests">
 		<classes>
 					<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
@@ -161,6 +162,6 @@
 
 		</classes>
 
-	</test>    -->
+	</test>    
 
 </suite>
