@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -36,9 +37,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -286,9 +292,22 @@ public class ClientJarDecryption extends Application {
 	private void showDialog() {
 
 		StackPane stackPane = new StackPane();
-		stackPane.setAlignment(Pos.CENTER);
-		stackPane.getChildren().add(progressBar);
-		Scene scene = new Scene(stackPane, 200, 100);
+		VBox vBox = new VBox();
+		HBox hBox = new HBox();
+		InputStream ins = this.getClass().getResourceAsStream("/img/logo-final.png");
+		ImageView imageView = new ImageView(new Image(ins));
+		imageView.setFitHeight(150);
+		imageView.setFitWidth(150);
+		hBox.setMinSize(200, 400);
+		hBox.getChildren().add(imageView);
+		Label downloadLabel = new Label("Downloading..");
+		vBox.setAlignment(Pos.CENTER_LEFT);
+		vBox.getChildren().add(downloadLabel);
+		vBox.getChildren().add(progressBar);
+		hBox.getChildren().add(vBox);
+		hBox.setAlignment(Pos.CENTER_LEFT);
+		stackPane.getChildren().add(hBox);
+		Scene scene = new Scene(stackPane, 255, 150);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
 	}

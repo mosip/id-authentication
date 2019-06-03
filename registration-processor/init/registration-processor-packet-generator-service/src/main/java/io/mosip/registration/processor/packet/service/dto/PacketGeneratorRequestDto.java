@@ -5,6 +5,7 @@ import java.io.Serializable;
 import io.mosip.registration.processor.core.common.rest.dto.BaseRestRequestDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /*
  * (non-Javadoc)
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class PacketGeneratorRequestDto extends BaseRestRequestDTO implements Serializable {
 
 	/**
