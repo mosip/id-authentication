@@ -25,6 +25,9 @@ MOS-22010 |New|EoD Process : Add column for Registration Date.
 MOS-24382|New|Implementing BA feedback comments
 MOS-23904|New|Stub--As MOSIP registration client, for New registration and UIN Update of Child, allow face photo as an acceptable biometric for the Parent/Guardian when they do not have all fingerprints and both irises
 MOS-21928|New|Renamed 'Re-register' to 'Notification for Re-registration
+MOS-22012|New|Upload packet 1: Add column for Registration Date
+MOS-24124|New|Signing the request and sync using TPM public key
+
 
 
 
@@ -85,6 +88,7 @@ MOS-24234|FIXED|YES
 MOS-24377|FIXED|YES
 MOS-24373|FIXED|YES
 MOS-24442|FIXED|YES
+MOS-14575 |FIXED|YES
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
