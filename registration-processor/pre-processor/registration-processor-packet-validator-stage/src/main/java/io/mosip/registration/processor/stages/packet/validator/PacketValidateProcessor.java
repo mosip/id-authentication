@@ -62,10 +62,10 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
-import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -76,7 +76,6 @@ import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -125,9 +124,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
-	@Autowired
-	ABISHandlerUtil handlerUtil;
-
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
@@ -147,6 +143,9 @@ public class PacketValidateProcessor {
 	@Autowired
 	ApplicantTypeDocument applicantTypeDocument;
 
+	@Autowired
+	private IdRepoService idRepoService;
+
 	/** The registration id. */
 	private String registrationId = "";
 
@@ -157,11 +156,11 @@ public class PacketValidateProcessor {
 	private String code;
 
 	private JSONObject demographicIdentity;
-	
-	String packetValidaionFailure="";
-	
+
+	String packetValidaionFailure = "";
+
 	private static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
-	
+
 	private static final String VALUE = "value";
 
 	private static final String VALIDATESCHEMA = "registration.processor.validateSchema";
@@ -240,13 +239,12 @@ public class PacketValidateProcessor {
 				int retryCount = registrationStatusDto.getRetryCount() != null
 						? registrationStatusDto.getRetryCount() + 1
 						: 1;
-				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated+ ")"
-						+ "/Applicant Document Validation(" + isApplicantDocumentValidation+ ")"
-						+ "/Schema Validation(" + isSchemaValidated+ ")"
-						+ "/Master Data Validation(" + isMasterDataValidation + ")"
-						+ "/MandatoryField Validation(" + isMandatoryValidation +")"
-						+ "/isRidAndType Sync Validation(" + isRIdAndTypeSynched +")"
-						+ " failed for registrationId "+ registrationId;
+				description = "File validation(" + isFilesValidated + ")/Checksum validation(" + isCheckSumValidated
+						+ ")" + "/Applicant Document Validation(" + isApplicantDocumentValidation + ")"
+						+ "/Schema Validation(" + isSchemaValidated + ")" + "/Master Data Validation("
+						+ isMasterDataValidation + ")" + "/MandatoryField Validation(" + isMandatoryValidation + ")"
+						+ "/isRidAndType Sync Validation(" + isRIdAndTypeSynched + ")" + " failed for registrationId "
+						+ registrationId;
 				isTransactionSuccessful = false;
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -430,7 +428,7 @@ public class PacketValidateProcessor {
 
 		if (!checkSumValidation(identity, registrationStatusDto))
 			return false;
-		
+
 		if (!individualBiometricsValidation())
 			return false;
 
@@ -451,16 +449,16 @@ public class PacketValidateProcessor {
 
 		if (!regTypeCheck) {
 			if (!applicantDocumentValidation(jsonString)) {
-				packetValidaionFailure=" applicant document validation failed ";
+				packetValidaionFailure = " applicant document validation failed ";
 				return false;
-			}	
+			}
 			if (!masterDataValidation(jsonString)) {
-				packetValidaionFailure=" master data validation failed ";
+				packetValidaionFailure = " master data validation failed ";
 				return false;
-			}	
+			}
 
-		}else {
-			if(!activateDeactivatePacketValidation()) {
+		} else {
+			if (!activateDeactivatePacketValidation()) {
 				packetValidaionFailure = "activate/deactivate packet validation failed ";
 				return false;
 			}
@@ -491,10 +489,11 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean ifUinIDRepo(String regId) throws ApisResourceAccessException, IOException {
-		if (handlerUtil.getUinFromIDRepo(regId)== null)
+		if (idRepoService.getUinFromIDRepo(regId, utility.getGetRegProcessorDemographicIdentity()) == null)
 			return false;
 		return true;
 	}
+
 	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
 		String regId = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONID);
 		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
@@ -502,7 +501,7 @@ public class PacketValidateProcessor {
 				regType.toUpperCase());
 
 		if (syncRecordList != null && !syncRecordList.isEmpty()) {
-			isRIdAndTypeSynched=true;
+			isRIdAndTypeSynched = true;
 			return isRIdAndTypeSynched;
 		}
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
@@ -516,7 +515,7 @@ public class PacketValidateProcessor {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
 		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
-		 isMandatoryValidation = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
+		isMandatoryValidation = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 		return isMandatoryValidation;
 	}
 
@@ -531,8 +530,8 @@ public class PacketValidateProcessor {
 
 		if (validationReport.isValid()) {
 			isSchemaValidated = true;
-		}else {
-			packetValidaionFailure=" Schema validation failed ";
+		} else {
+			packetValidaionFailure = " Schema validation failed ";
 
 		}
 
@@ -547,8 +546,8 @@ public class PacketValidateProcessor {
 		}
 		FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 		isFilesValidated = filesValidation.filesValidation(registrationId, identity);
-		if(!isFilesValidated)
-			packetValidaionFailure=" fileValidation failed ";
+		if (!isFilesValidated)
+			packetValidaionFailure = " fileValidation failed ";
 		return isFilesValidated;
 
 	}
@@ -561,21 +560,21 @@ public class PacketValidateProcessor {
 		}
 		CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
 		isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, identity);
-		if(!isCheckSumValidated)
-			packetValidaionFailure=" ChecksumValidation falied ";
+		if (!isCheckSumValidated)
+			packetValidaionFailure = " ChecksumValidation falied ";
 
 		return isCheckSumValidated;
 
 	}
-	
-	private boolean activateDeactivatePacketValidation() throws ApisResourceAccessException, RegistrationProcessorCheckedException {
+
+	private boolean activateDeactivatePacketValidation()
+			throws ApisResourceAccessException, RegistrationProcessorCheckedException {
 		String[] activateDeactivate = "UIN,IDSchemaVersion".split(",");
 		return CollectionUtils.isEqualCollection(demographicIdentity.keySet(), Arrays.asList(activateDeactivate));
-		
+
 	}
-	
-	private boolean individualBiometricsValidation()
-			throws RegistrationProcessorCheckedException {
+
+	private boolean individualBiometricsValidation() throws RegistrationProcessorCheckedException {
 		try {
 			demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
 
@@ -615,8 +614,7 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean masterDataValidation(String jsonString)
-			throws ApisResourceAccessException, IOException {
+	private boolean masterDataValidation(String jsonString) throws ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEMASTERDATA).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isMasterDataValidation = true;
 			return isMasterDataValidation;

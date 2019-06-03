@@ -58,6 +58,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
@@ -97,6 +98,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	private Environment env;
+
+	@Autowired
+	private IdRepoService idRepoService;
 
 	private static final String VID_CREATE_ID = "registration.processor.id.repo.generate";
 
@@ -984,7 +988,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			throws ApisResourceAccessException, IOException {
 
 		IdResponseDTO idResponse = null;
-		Number number = aBISHandlerUtil.getUinFromIDRepo(matchedRegId);
+		Number number = idRepoService.getUinFromIDRepo(matchedRegId, utility.getGetRegProcessorDemographicIdentity());
+
 		Long uinFieldValue = number != null ? number.longValue() : null;
 		RequestDto requestDto = new RequestDto();
 		String statusComment = "";
