@@ -9,10 +9,14 @@ import lombok.NoArgsConstructor;
  *
  * @author Manoj SP
  */
+
+/**
+ * Instantiates a new documents.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentDTO {
+public class Documents {
 
 	/** The doc type. */
 	private String category;

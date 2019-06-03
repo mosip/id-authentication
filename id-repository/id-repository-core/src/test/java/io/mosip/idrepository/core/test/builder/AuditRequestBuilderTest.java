@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
-import io.mosip.idrepository.core.dto.AuditRequestDTO;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -47,10 +47,10 @@ public class AuditRequestBuilderTest {
 
 	@Test
 	public void testBuildRequest() {
-		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDto> actualRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 		actualRequest.getRequest().setActionTimeStamp(null);
-		AuditRequestDTO expectedRequest = new AuditRequestDTO();
+		AuditRequestDto expectedRequest = new AuditRequestDto();
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 

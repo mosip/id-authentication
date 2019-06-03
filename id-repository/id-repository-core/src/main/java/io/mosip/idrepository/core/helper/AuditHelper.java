@@ -8,8 +8,8 @@ import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
-import io.mosip.idrepository.core.dto.AuditRequestDTO;
-import io.mosip.idrepository.core.dto.AuditResponseDTO;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
+import io.mosip.idrepository.core.dto.AuditResponseDto;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -45,9 +45,9 @@ public class AuditHelper {
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, String desc)
 			throws IdRepoDataValidationException {
-		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(module, event, id, desc);
+		RequestWrapper<AuditRequestDto> auditRequest = auditBuilder.buildRequest(module, event, id, desc);
 		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDTO.class);
+				AuditResponseDto.class);
 		restHelper.requestAsync(restRequest);
 	}
 

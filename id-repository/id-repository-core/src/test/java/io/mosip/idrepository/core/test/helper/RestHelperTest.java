@@ -2,6 +2,7 @@ package io.mosip.idrepository.core.test.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -59,7 +60,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
-import io.mosip.idrepository.core.dto.AuditRequestDTO;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
+import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
@@ -590,8 +592,8 @@ public class RestHelperTest {
 			assertTrue(ReflectionTestUtils
 					.invokeMethod(restHelper, "handleStatusError",
 							new WebClientResponseException("message", 400, "failed", null,
-									mapper.writeValueAsBytes(new AuditRequestDTO()), null),
-							AuditRequestDTO.class)
+									mapper.writeValueAsBytes(new AuditRequestDto()), null),
+							AuditRequestDto.class)
 					.getClass().equals(RestServiceException.class));
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
@@ -610,8 +612,8 @@ public class RestHelperTest {
 			assertTrue(ReflectionTestUtils
 					.invokeMethod(restHelper, "handleStatusError",
 							new WebClientResponseException("message", 500, "failed", null,
-									mapper.writeValueAsBytes(new AuditRequestDTO()), null),
-							AuditRequestDTO.class)
+									mapper.writeValueAsBytes(new AuditRequestDto()), null),
+							AuditRequestDto.class)
 					.getClass().equals(RestServiceException.class));
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
@@ -624,7 +626,7 @@ public class RestHelperTest {
 			assertTrue(ReflectionTestUtils
 					.invokeMethod(restHelper, "handleStatusError",
 							new WebClientResponseException("message", 500, "failed", null,
-									mapper.writeValueAsBytes(new AuditRequestDTO()), null),
+									mapper.writeValueAsBytes(new AuditRequestDto()), null),
 							RestRequestDTO.class)
 					.getClass().equals(RestServiceException.class));
 		} catch (UndeclaredThrowableException e) {

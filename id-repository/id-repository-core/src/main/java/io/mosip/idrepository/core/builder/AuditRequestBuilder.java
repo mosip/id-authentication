@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
-import io.mosip.idrepository.core.dto.AuditRequestDTO;
+import io.mosip.idrepository.core.dto.AuditRequestDto;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -44,10 +44,10 @@ public class AuditRequestBuilder {
 	 * @param desc   the desc
 	 * @return the audit request dto
 	 */
-	public RequestWrapper<AuditRequestDTO> buildRequest(AuditModules module, AuditEvents event, String id,
+	public RequestWrapper<AuditRequestDto> buildRequest(AuditModules module, AuditEvents event, String id,
 			String desc) {
-		RequestWrapper<AuditRequestDTO> request = new RequestWrapper<>();
-		AuditRequestDTO auditRequest = new AuditRequestDTO();
+		RequestWrapper<AuditRequestDto> request = new RequestWrapper<>();
+		AuditRequestDto auditRequest = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
 
