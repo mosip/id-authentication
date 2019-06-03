@@ -49,8 +49,8 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
 
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
-			Arrays.asList("mosip.registration.machinecenterchanged" + "mosip.registration.initial_setup"
-					+ "mosip.reg.db.current.version"));
+			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
+					"mosip.reg.db.current.version"));
 	/**
 	 * Instance of LOGGER
 	 */
