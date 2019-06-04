@@ -13,14 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
-import org.apache.commons.collections4.SetValuedMap;
-import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -28,7 +23,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,16 +34,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
-
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorDocumentMapping;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
@@ -57,7 +43,6 @@ import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
-import io.mosip.kernel.idobjectvalidator.impl.IdObjectMasterDataValidator;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -96,10 +81,7 @@ public class DocumentServiceUtil {
 	 * Reference for ${max.file.size} from property file
 	 */
 	@Value("${max.file.size}")
-	private int maxFileSize;
-
-	@Autowired
-	private IdObjectMasterDataValidator idObjectMasterDataValidator;
+	private int maxFileSize;	
 
 	/**
 	 * Reference for ${file.extension} from property file
@@ -109,34 +91,6 @@ public class DocumentServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-
-	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.rest.uri}")
-	private String documentCategoryUri;
-
-	@Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
-	private String documentTypeUri;
-
-	/** The doc cat map. */
-	private SetValuedMap<String, String> docCatMap;
-
-	/** The doc type map. */
-	private SetValuedMap<String, String> docTypeMap;
-
-	private static final String DOCUMENTS = "documents";
-
-	private static final String DOCUMENTCATEGORIES = "documentcategories";
-
-	private static final String IS_ACTIVE = "isActive";
-
-	private static final String LANG_CODE = "langCode";
-
-	private static final String CODE = "code";
-
-	private static final String NAME = "name";
-
-	/** The Constant READ_OPTIONS. */
-	private static final Configuration READ_OPTIONS = Configuration.defaultConfiguration()
-			.addOptions(Option.SUPPRESS_EXCEPTIONS);
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
@@ -154,9 +108,6 @@ public class DocumentServiceUtil {
 
 	@Autowired
 	private FileSystemAdapter fs;
-
-	@Autowired
-	private Environment env;
 
 	/**
 	 * Logger configuration for DocumentServiceUtil
@@ -186,7 +137,6 @@ public class DocumentServiceUtil {
 		MainRequestDTO<DocumentRequestDTO> uploadReqDto = new MainRequestDTO<>();
 		JSONObject documentData = new JSONObject(documentJsonString);
 		JSONObject docDTOData = (JSONObject) documentData.get("request");
-		validateDocuments(documentJsonString, new ArrayList<>());
 		DocumentRequestDTO documentDto = (DocumentRequestDTO) JsonUtils.jsonStringToJavaObject(DocumentRequestDTO.class,
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
@@ -445,79 +395,4 @@ public class DocumentServiceUtil {
 		return true;
 	}
 
-	private void loadDocCategories() {
-		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-				.getForObject(documentCategoryUri, ResponseWrapper.class);
-		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTCATEGORIES);
-			docCatMap = new HashSetValuedHashMap<>(response.size());
-			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-					.forEach(index -> docCatMap.put(String.valueOf(response.get(index).get(LANG_CODE)),
-							String.valueOf(response.get(index).get(CODE))));
-		}
-		System.out.println("docCatMap: "+docCatMap);
-	}
-
-	@SuppressWarnings("unchecked")
-	void loadDocTypes() {
-		docTypeMap = new HashSetValuedHashMap<>();
-		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
-			docCatMap.keySet().stream().forEach(langCode -> docCatMap.get(langCode).stream().forEach(docCat -> {
-				String uri = UriComponentsBuilder.fromUriString(documentTypeUri).buildAndExpand(docCat, langCode)
-						.toUriString();
-				ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-						.getForObject(uri, ResponseWrapper.class);
-				if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-					ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-					IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-							.forEach(index -> {
-								docTypeMap.put(docCat, String.valueOf(response.get(index).get(NAME)));
-								docTypeMap.put(docCat, String.valueOf(response.get(index).get("code")));
-							});
-				}
-			}));
-		}
-		System.out.println("docTypeMap: "+docTypeMap);
-	}
-
-	/**
-	 * Convert to path.
-	 *
-	 * @param jsonPath
-	 *            the json path
-	 * @return the string
-	 */
-	private String convertToPath(String jsonPath) {
-		String path = String.valueOf(jsonPath.replaceAll("[$']", ""));
-		return path.substring(1, path.length() - 1).replace("][", "/");
-	}
-
-	/**
-	 * Validate documents.
-	 *
-	 * @param identityString
-	 *            the identity string
-	 * @param errorList
-	 *            the error list
-	 */
-	public void validateDocuments(String identityString, List<ServiceError> errorList) {
-		loadDocCategories();
-		loadDocTypes();
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
-				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
-					// JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() +
-					// ".type");
-					System.out.println("entry: " + entry.getValue());
-					JsonPath jsonPath = JsonPath.compile(entry.getValue());
-					Object value = jsonPath.read(identityString, READ_OPTIONS);
-					System.out.println("value: " + value);
-					if (Objects.nonNull(value) && !docTypeMap.get(entry.getKey()).contains(value)) {
-						errorList.add(
-								new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
-										String.format(
-												IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
-												convertToPath(jsonPath.getPath()))));
-					}
-				});
-	}
 }
