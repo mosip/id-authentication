@@ -50,6 +50,30 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 	}
 	
 	/**
+	 * The method get internal auth encrypted json for identity request
+	 * 
+	 * @param filename
+	 * @return Map - key,data,hmac and its value
+	 */ 
+	public static Map<String, String> getInternalEncryptSessionKeyValue(String filename) {
+		Map<String, String> ecryptData = new HashMap<String, String>();
+		try {
+			String json = getIntenalEncryption(filename);
+			JSONParser parser = new JSONParser();
+			JSONObject jsonobj = (JSONObject) parser.parse(json);
+			Reporter.log("<b> <u>Encryption of identity request</u> </b>");
+			Reporter.log("<pre>" + ReportUtil.getTextAreaJsonMsgHtml(json) + "</pre>");
+			ecryptData.put("key", jsonobj.get(key).toString());
+			ecryptData.put("data", jsonobj.get(data).toString());
+			ecryptData.put("hmac", jsonobj.get(hmac).toString());
+			return ecryptData;
+		} catch (Exception e) {
+			ENCRYPTION_DECRYPTION_LOGGER.error(e);
+			return null;
+		}
+	}
+	
+	/**
 	 * The method get encrypted json for identity request
 	 * 
 	 * @param filename
@@ -66,7 +90,26 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
 			return e.toString();
 		}
-	}	
+	}
+	
+	/**
+	 * The method get encrypted json for identity request
+	 * 
+	 * @param filename
+	 * @return String , Ecrypted JSON
+	 */
+	private static String getIntenalEncryption(String filename) {
+		try {
+			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
+			Reporter.log("<b><u> Identity request:</u></b>");
+			Reporter.log("<pre>" + ReportUtil.getTextAreaJsonMsgHtml(objectData.toString())+"</pre>");
+			return RestClient.postRequest(RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl()+RunConfigUtil.objRunConfig.getInternalEncryptionPath(), objectData.toJSONString(), MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON).asString();
+		} catch (Exception e) {
+			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
+			return e.toString();
+		}
+	}
 
 	/**
 	 * The method will get encoded data from json content in file

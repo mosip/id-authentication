@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>customlib</groupId>
-	<artifactId>automationtests</artifactId>
+	<artifactId>automationtests-vignesh</artifactId>
 
 	<packaging>jar</packaging>
 
@@ -366,7 +366,14 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>0.12.4</version>
-		</dependency> 
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.wink/wink-json4j-provider -->
+		<dependency>
+			<groupId>org.apache.wink</groupId>
+			<artifactId>wink-json4j-provider</artifactId>
+			<version>1.1.2-incubating</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

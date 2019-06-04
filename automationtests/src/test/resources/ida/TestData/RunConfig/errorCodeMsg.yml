@@ -200,7 +200,7 @@ errors:
     errorMessage: Missing Input Parameter - bioType
   MissingBioValue:
     errorCode: IDA-MLC-006
-    errorMessage: Missing Input Parameter - bioValue
+    errorMessage: $REGEXP:.*Missing Input Parameter - bioValue.*$
   MissingBioDeviceCode:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - deviceCode
@@ -284,10 +284,8 @@ errors:
   Demo_NameMismatch_SecLang:
     errorCode: IDA-DEA-001
     errorMessage: Demographic data name in ara did not match
-    actionMessage: Please re-enter your gender in ara
   Demo_NameMismatch_PriLang:
     errorCode: IDA-DEA-001
-    errorMessage: Demographic data name in fra did not match
-    actionMessage: Please re-enter your gender in fra
+    errorMessage: Demographic data name in eng did not match
   
   

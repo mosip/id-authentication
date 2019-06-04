@@ -870,4 +870,16 @@ public class IdRepoRunConfig extends RunConfig{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getInternalEncryptionPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setInternalEncryptionPath(String internalEncryptionPath) {
+		// TODO Auto-generated method stub
+		
+	}
 }

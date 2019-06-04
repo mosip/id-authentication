@@ -369,8 +369,8 @@ testdata:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:InvalidOTPChannel:errorMessage$
-      output.1.n.res.errorCode: $errors:InvalidOTPChannel:errorCode$
+      output.1.n.res.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.n.res.errorCode: $errors:InvalidRequest:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$
     
   Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg:
@@ -708,8 +708,8 @@ testdata:
       output.1.y.res.resTime: $TIMESTAMP$
       output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
       #output.1.y.res.ver: $version$
-      output.1.n.res.errorMessage: $errors:InvalidRequest:errorMessage$
-      output.1.n.res.errorCode: $errors:InvalidRequest:errorCode$
+      output.1.n.res.errorMessage: $errors:NoOTPChannel:errorMessage$
+      output.1.n.res.errorCode: $errors:NoOTPChannel:errorCode$
       #output.1.y.res.status: $TestData:auth_Fail_status$
   
   Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg:

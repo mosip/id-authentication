@@ -133,6 +133,7 @@ public class AuthTestsUtil extends BaseTestCase {
 						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
 					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
 							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
+					responseJson=JsonPrecondtion.toPrettyFormat(responseJson);
 					fos.write(responseJson.getBytes());
 					fos.flush();
 					fos.close();
@@ -590,7 +591,14 @@ public class AuthTestsUtil extends BaseTestCase {
 	 */
 	@SuppressWarnings("deprecation")
 	public static String getContentFromFile(File file) throws IOException {
+		try {
 		return FileUtils.readFileToString(file.getAbsoluteFile());
+		}
+		catch(Exception e)
+		{
+			IDASCRIPT_LOGGER.error("Exception: "+e.getMessage());
+			return e.getMessage();
+		}
 	}
 	
 	/**
@@ -628,6 +636,22 @@ public class AuthTestsUtil extends BaseTestCase {
 		for (int j = 0; j < listOfFiles.length; j++) {
 			if (listOfFiles[j].getName().contains(keywordToFind)) {
 				return EncryptDecrptUtil.getEncryptSessionKeyValue(listOfFiles[j].getAbsolutePath());
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * The method get internal encryptedsessionkey, request and hmac value
+	 * 
+	 * @param listOfFiles
+	 * @param keywordToFind
+	 * @return map
+	 */
+	protected Map<String, String> getInternalEncryptKeyvalue(File[] listOfFiles, String keywordToFind) {
+		for (int j = 0; j < listOfFiles.length; j++) {
+			if (listOfFiles[j].getName().contains(keywordToFind)) {
+				return EncryptDecrptUtil.getInternalEncryptSessionKeyValue(listOfFiles[j].getAbsolutePath());
 			}
 		}
 		return null;

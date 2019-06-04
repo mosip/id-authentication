@@ -18,12 +18,15 @@ import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.apache.wink.json4j.OrderedJSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Reporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
@@ -83,6 +86,7 @@ public class Precondtion {
 					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
+			mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
 			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
 			// Replacing the version in request
@@ -92,6 +96,7 @@ public class Precondtion {
 			outputJson = outputJson.replaceAll("$idrepoVersion$", RunConfigUtil.objRunConfig.getIdRepoVersion());
 			if (outputJson.contains("$REMOVE$"))
 				outputJson = removeObject(new JSONObject(outputJson));
+			outputJson=JsonPrecondtion.toPrettyFormat(outputJson);
 			FileUtil.writeFile(outputFilePath, outputJson);
 			PRECON_LOGGER.info("Updated json file content: " + JsonPrecondtion.toPrettyFormat(outputJson.toString()));
 			return fieldvalue;
