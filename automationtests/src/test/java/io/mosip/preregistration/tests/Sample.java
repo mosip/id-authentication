@@ -69,7 +69,8 @@ public class Sample extends BaseTestCase implements ITest {
 
 	@BeforeClass
 	public void readPropertiesFile() {
-		initialize();}
+		initialize();
+		}
 
 	/**
 	 * Batch job service for expired application
@@ -82,8 +83,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@Test
 	public void validateWithoutGeneratingOtp(){
 		
-		dao.makeregistartionCenterActive("10006");
-		dao.makeregistartionCenterActive("10012");
+		dao.makeregistartionCenterDeActive("10012");
 
 		
 		lib.syncAvailability();
@@ -102,6 +102,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		lib.logOut();
+		//lib.logOut();
 	}
 }
