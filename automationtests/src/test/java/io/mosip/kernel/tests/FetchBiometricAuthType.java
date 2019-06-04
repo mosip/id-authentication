@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -31,7 +32,6 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
-
 
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
@@ -64,8 +64,8 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private KernelAuthentication auth=new KernelAuthentication();
-	private String cookie=null;
+	private KernelAuthentication auth = new KernelAuthentication();
+	private String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -74,11 +74,11 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
-	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+	@BeforeMethod(alwaysRun = true)
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForZonalAdmin();
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForZonalAdmin();
 	}
 
 	/**
@@ -91,45 +91,46 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
-		}
+	}
 
-		/**
-		 * This fetch the value of the data provider and run for each test case
-		 * 
-		 * @param fileName
-		 * @param object
-		 * @throws ParseException 
-		 * 
-		 */
-		@SuppressWarnings("unchecked")
-		@Test(dataProvider = "fetchData", alwaysRun = true)
-		public void auditLog(String testcaseName, JSONObject object)
-				throws ParseException{
-			logger.info("Test Case Name:" + testcaseName);
-			object.put("Jira ID", jiraID);
+	/**
+	 * This fetch the value of the data provider and run for each test case
+	 * 
+	 * @param fileName
+	 * @param object
+	 * @throws ParseException
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(dataProvider = "fetchData", alwaysRun = true)
+	public void fetchBiometricAuthType(String testcaseName, JSONObject object) throws ParseException {
+		logger.info("Test Case Name:" + testcaseName);
+		object.put("Jira ID", jiraID);
 
-			// getting request and expected response jsondata from json files.
-			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-			JSONObject objectData = objectDataArray[0];
-			responseObject = objectDataArray[1];
-			// sending get request
-				response = applicationLibrary.getRequestPathPara(FetchBiometricAuthType_URI, objectData,cookie);
-				// DB validation
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		// sending get request
+		response = applicationLibrary.getRequestPathPara(FetchBiometricAuthType_URI, objectData, cookie);
+		// DB validation
 
-		//This method is for checking the authentication is pass or fail in rest services
+		// This method is for checking the authentication is pass or fail in rest
+		// services
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
-
-			String query = "select count(*) from master.biometric_type where lang_code = '" + objectData.get("langcode") + "'";
-			
-
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
-
-			
 			// fetching json object from response
 
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
+			if (responseJson == null || !responseJson.containsKey("biometrictypes"))
+				Assert.assertTrue(false, "Response does not contain biometrictypes");
+
+			String query = "select count(*) from master.biometric_type where lang_code = '" + objectData.get("langcode")
+					+ "'";
+
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
 			// fetching json array of objects from response
 			JSONArray dataFromGet = (JSONArray) responseJson.get("biometrictypes");
@@ -149,7 +150,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 				// obtained objects)
 				HashMap<String, String> passedAttributesToFetch = new HashMap();
 				if (objectData != null) {
-						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
+					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
 
 				status = AssertKernel.validator(dataFromGet, attributesToValidateExistance, passedAttributesToFetch);
@@ -212,4 +213,3 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		}
 	}
 }
-

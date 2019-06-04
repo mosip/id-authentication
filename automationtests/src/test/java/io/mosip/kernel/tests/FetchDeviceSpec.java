@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -107,7 +108,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) throws ParseException {
+	public void fetchDeviceSpec(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -127,6 +128,11 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
+			if (responseJson == null || !responseJson.containsKey("devicespecifications"))
+				Assert.assertTrue(false, "Response does not contain devicespecifications");
 			String queryPart = "select count(*) from master.device_spec";
 
 			String query = queryPart;
@@ -139,9 +145,6 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
-					.get("response");
 			// fetching json array of objects from response
 			JSONArray deviceSpecFromGet = (JSONArray) responseJson.get("devicespecifications");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + deviceSpecFromGet.size());

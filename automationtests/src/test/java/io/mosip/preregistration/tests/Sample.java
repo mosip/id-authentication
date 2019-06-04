@@ -70,7 +70,8 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		}
+		//authToken=lib.getToken();
+	}
 
 	/**
 	 * Batch job service for expired application
@@ -81,16 +82,21 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 
 	@Test
-	public void validateWithoutGeneratingOtp(){
+	public void makeRegistartionCenterInactive() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		try {
+			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		} catch (NullPointerException e) {
+			Reporter.log("create application failed");
+		}
 		
-		dao.makeregistartionCenterDeActive("10012");
-
-		
-		lib.syncAvailability();
 	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
+		//authToken = lib.getToken();
 
 	}
 
@@ -102,6 +108,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		//lib.logOut();
+		lib.logOut();
 	}
 }

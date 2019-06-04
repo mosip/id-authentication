@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,7 +12,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -35,12 +32,12 @@ import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
 public class UploadPublickey extends BaseTestCase implements ITest {
@@ -93,53 +90,29 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
-		}
-	/**
-	 * This fetch the value of the data provider and run for each test case
-	 * 
-	 * @param fileName
-	 * @param object
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void storePublicKeyInMachine(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		logger.info("Test Case Name:" + testcaseName);
-
-		object.put("Test case Name", testcaseName);
-		object.put("Jira ID", jiraID);
-
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
-
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 		}
 
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
+		/**
+		 * This fetch the value of the data provider and run for each test case
+		 * 
+		 * @param fileName
+		 * @param object
+		 * 
+		 */
+		@SuppressWarnings("unchecked")
+		@Test(dataProvider = "fetchData", alwaysRun = true)
+		public void uploadPublickey(String testcaseName, JSONObject object){
+			logger.info("Test Case Name:" + testcaseName);
+			object.put("Jira ID", jiraID);
 
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
+			// getting request and expected response jsondata from json files.
+			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
+
+			JSONObject objectData = objectDataArray[0];
+			responseObject = objectDataArray[1];
 				response = applicationLibrary.postRequest(objectData.toJSONString(), uploadpublickey,cookie);
 				
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
-
-		logger.info("Expected Response:" + responseObject.toJSONString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
@@ -165,21 +138,17 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 				softAssert.assertTrue(validKeyIndex, "keyIndex is not same in DB and response");
 				status = validPubKey && validKeyIndex;
 		} 
-		finalStatus = (status) ? "Pass":"Fail";
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

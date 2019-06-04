@@ -342,11 +342,17 @@
 			<version>1.6.2</version>
 		</dependency>
 		<!-- Encryption Decryption Util Jar -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-partnerdemo-service</artifactId>
 			<version>0.12.4</version>
-		</dependency>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>0.12.4</version>
+		</dependency>  
 
 
 

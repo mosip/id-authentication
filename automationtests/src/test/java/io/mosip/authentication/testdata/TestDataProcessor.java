@@ -7,13 +7,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
-import io.mosip.authentication.fw.util.RunConfig;
-import io.mosip.authentication.tests.BiometricAuthentication;
 import io.mosip.testDataDTO.YamlDTO;
 
 /**

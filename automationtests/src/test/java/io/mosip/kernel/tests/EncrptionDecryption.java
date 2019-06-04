@@ -111,7 +111,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) throws ParseException {
+	public void encrptionDecryption(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
 
@@ -136,8 +136,6 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		logger.info("Json Request Is : " + objectData.toJSONString());
 
 		response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI, cookie);
-
-		logger.info("Expected Response:" + responseObject.toJSONString());
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
