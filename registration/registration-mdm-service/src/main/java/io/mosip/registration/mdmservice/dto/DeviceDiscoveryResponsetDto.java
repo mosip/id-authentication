@@ -1,4 +1,4 @@
-package io.mosip.registration.mdm.dto;
+package io.mosip.registration.mdmservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;

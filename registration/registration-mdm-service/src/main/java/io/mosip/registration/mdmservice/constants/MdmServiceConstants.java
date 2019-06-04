@@ -1,4 +1,4 @@
-package io.mosip.registration.mdm.constants;
+package io.mosip.registration.mdmservice.constants;
 
 public class MdmServiceConstants {
 

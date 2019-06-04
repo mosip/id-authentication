@@ -1,4 +1,4 @@
-package io.mosip.registration.mdm.controller;
+package io.mosip.registration.mdmservice.controller;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
-import io.mosip.registration.mdm.dto.CaptureResponseData;
-import io.mosip.registration.mdm.dto.MosipBioCaptureRequestDto;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponse;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
-import io.mosip.registration.mdm.dto.MosipBioRequest;
+import io.mosip.registration.mdmservice.constants.MosipBioDeviceConstants;
+import io.mosip.registration.mdmservice.dto.CaptureResponseData;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureRequestDto;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureResponse;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureResponseDto;
+import io.mosip.registration.mdmservice.dto.MosipBioRequest;
 
 /**
  * @author Taleev Aalam The Class is the controller for device capture rest call
