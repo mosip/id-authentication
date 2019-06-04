@@ -27,7 +27,7 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smoke'
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smokeAndRegression'
 			  
   }
   
@@ -43,7 +43,7 @@ stage ('---------- mvn-clean-test ---------------') {
 }
           recipients = "$env.AUTOMATION_TEST_RECIPIENT_LIST"
 emailext ( 
-	    attachmentsPattern:'**/surefire-reports/custom-emailable-report.html',
+	    attachmentsPattern:'**/surefire-reports/MOSIP_ModuleLevelAutoRun_TestNGReport.html',
 	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER'",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
 	    to: "$recipients",
