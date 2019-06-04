@@ -381,14 +381,16 @@ export class DemographicComponent implements OnInit {
     this.transUserForm = new FormGroup({
       [this.formControlNames.fullNameSecondary]: new FormControl(this.formControlValues.fullNameSecondary.trim(), [
         Validators.required,
+        Validators.pattern(this.FULLNAME_PATTERN),
         this.noWhitespaceValidator
       ]),
       [this.formControlNames.addressLine1Secondary]: new FormControl(this.formControlValues.addressLine1Secondary, [
         Validators.required,
+        Validators.pattern(this.ADDRESS_PATTERN),
         this.noWhitespaceValidator
       ]),
-      [this.formControlNames.addressLine2Secondary]: new FormControl(this.formControlValues.addressLine2Secondary),
-      [this.formControlNames.addressLine3Secondary]: new FormControl(this.formControlValues.addressLine3Secondary)
+      [this.formControlNames.addressLine2Secondary]: new FormControl(this.formControlValues.addressLine2Secondary,Validators.pattern(this.ADDRESS_PATTERN),),
+      [this.formControlNames.addressLine3Secondary]: new FormControl(this.formControlValues.addressLine3Secondary,Validators.pattern(this.ADDRESS_PATTERN),)
     });
 
     this.setLocations();
@@ -802,6 +804,7 @@ export class DemographicComponent implements OnInit {
         );
         this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
       } else {
+        this.oldAge = age;
         this.userForm.controls[this.formControlNames.date].patchValue('');
         this.userForm.controls[this.formControlNames.month].patchValue('');
         this.userForm.controls[this.formControlNames.year].patchValue('');
