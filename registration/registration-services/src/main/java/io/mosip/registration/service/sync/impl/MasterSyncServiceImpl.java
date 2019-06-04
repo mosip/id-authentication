@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -114,15 +113,9 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 */
 	@Override
 	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Initiating the Master Sync");
 
-		ResponseDTO responseDTO = new ResponseDTO();
-		try {
-			responseDTO = syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
-		} catch (RegBaseCheckedException checkedException) {
-			setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
-		}
-
-		return responseDTO;
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
 	}
 
 	/*
@@ -134,14 +127,10 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 */
 	@Override
 	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex) {
-		ResponseDTO responseDTO = new ResponseDTO();
-		try {
-			responseDTO = syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
-		} catch (RegBaseCheckedException checkedException) {
-			setErrorResponse(responseDTO, RegistrationConstants.MASTER_SYNC_FAILURE_MSG, null);
-		}
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+				"Initiating the Master Sync for initial setup");
 
-		return responseDTO;
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
 	}
 
 	private synchronized ResponseDTO syncMasterData(String masterSyncDtls, String triggerPoint,
@@ -313,38 +302,34 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return masterSyncResponse;
 	}
 
-	private Map<String, String> getRequestParams(String masterSyncDtls, String keyIndex) throws RegBaseCheckedException {
-		try {
-			Map<String, String> requestParamMap = new HashMap<>();
+	private Map<String, String> getRequestParams(String masterSyncDtls, String keyIndex) {
+		Map<String, String> requestParamMap = new HashMap<>();
 
-			// Add Mac Address
-			requestParamMap.put(RegistrationConstants.MAC_ADDRESS, RegistrationSystemPropertiesChecker.getMachineId());
+		// Add Mac Address
+		String macId = RegistrationSystemPropertiesChecker.getMachineId();
+		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, macId);
 
-			// Get KeyIndex
-			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(
-					String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)))) {
-				keyIndex = machineMappingDAO.getMachineByName(InetAddress.getLocalHost().getHostName().toLowerCase()).getKeyIndex();
-			}
-
-			// Add the Key Index
-			if (null != keyIndex) {
-				requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
-			}
-
-			// getting Last Sync date from Data from sync table
-			SyncControl masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
-
-			// Add the Last Updated Date
-			if (masterSyncDetails != null) {
-				requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE,
-						DateUtils.formatToISOString(LocalDateTime
-								.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(), ZoneOffset.ofHours(0))));
-			}
-
-			return requestParamMap;
-		} catch (Exception exception) {
-			throw new RegBaseCheckedException("ERROR", "ERROR", exception);
+		// Get KeyIndex
+		if (!RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)))) {
+			keyIndex = machineMappingDAO.getKeyIndexByMacId(macId);
 		}
+
+		// Add the Key Index
+		if (null != keyIndex) {
+			requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
+		}
+
+		// getting Last Sync date from Data from sync table
+		SyncControl masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
+
+		// Add the Last Updated Date
+		if (masterSyncDetails != null) {
+			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, DateUtils.formatToISOString(
+					LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(), ZoneOffset.ofHours(0))));
+		}
+
+		return requestParamMap;
 	}
 
 	/*

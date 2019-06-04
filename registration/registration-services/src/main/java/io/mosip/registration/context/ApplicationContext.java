@@ -133,15 +133,7 @@ public class ApplicationContext {
 		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations");
 	}
 
-	/**
-	 * Sets the application languagevalidation bundle.
-	 *
-	 * @param applicationLanguagevalidationBundle
-	 *            the new application languagevalidation bundle
-	 */
-	public void setApplicationLanguagevalidationBundle(ResourceBundle applicationLanguagevalidationBundle) {
-		this.applicationLanguagevalidationBundle = applicationLanguagevalidationBundle;
-	}
+
 
 	/**
 	 * Gets the single instance of ApplicationContext.
@@ -326,12 +318,7 @@ public class ApplicationContext {
 		return applicationLanguageBundle;
 	}
 
-	/**
-	 * Sets the application language bundle.
-	 */
-	public void setApplicationLanguageBundle() {
-		applicationLanguageBundle = ResourceBundle.getBundle("labels", new Locale("eng"));
-	}
+
 
 	/**
 	 * Get application language.
@@ -362,10 +349,10 @@ public class ApplicationContext {
 
 	/**
 	 * Sets the local language property.
-	 */
+	 *//*
 	public void setLocalLanguageProperty() {
 		localLanguageBundle = ResourceBundle.getBundle("labels", new Locale("ara"));
-	}
+	}*/
 
 	/**
 	 * Gets the application messages bundle.
@@ -376,12 +363,7 @@ public class ApplicationContext {
 		return applicationMessagesBundle;
 	}
 
-	/**
-	 * Sets the application messages bundle.
-	 */
-	public void setApplicationMessagesBundle() {
-		applicationMessagesBundle = ResourceBundle.getBundle("messages", new Locale("eng"));
-	}
+
 
 	/**
 	 * Gets the local messages bundle.
@@ -392,12 +374,7 @@ public class ApplicationContext {
 		return localMessagesBundle;
 	}
 
-	/**
-	 * Sets the local messages bundle.
-	 */
-	public void setLocalMessagesBundle() {
-		localMessagesBundle = ResourceBundle.getBundle("messages", new Locale("ara"));
-	}
+
 
 	/**
 	 * Sets the global config value of.

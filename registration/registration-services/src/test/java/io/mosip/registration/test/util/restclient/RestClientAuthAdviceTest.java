@@ -211,7 +211,7 @@ public class RestClientAuthAdviceTest {
 		MachineMaster machineMaster = Mockito.mock(MachineMaster.class);
 		String signedData = "signedData";
 
-		PowerMockito.when(machineMappingDAO.getMachineByName(Mockito.anyString())).thenReturn(machineMaster);
+		PowerMockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString())).thenReturn("keyIndex");
 		PowerMockito.when(machineMaster.getKeyIndex()).thenReturn(signedData);
 
 		ReflectionTestUtils.invokeMethod(restClientAuthAdvice, "addRequestSignature", httpHeaders, signedData);
@@ -253,4 +253,101 @@ public class RestClientAuthAdviceTest {
 		Assert.assertNotNull(restClientAuthAdvice.addAuthZToken(proceedingJoinPoint));
 	}
 
+	@Test
+	public void getNewAuthZTokenTest1() {
+		PowerMockito.mockStatic(TPMUtil.class, JsonUtils.class, ApplicationContext.class);
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setTriggerPoint("User");
+		
+		LoginUserDTO loginUserDTO = new LoginUserDTO();
+		loginUserDTO.setUserId("110024");
+		loginUserDTO.setPassword("mosip");
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.USER_DTO, loginUserDTO);
+
+		Mockito.when(SessionContext.isSessionContextAvailable()).thenReturn(true);
+		
+	}
+
+	@Test(expected=Throwable.class)
+	public void addAuthZTokenException1() throws Throwable {
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setAuthRequired(false);
+		requestHTTPDTO.setAuthZHeader("Authorization:AUTH");
+		requestHTTPDTO.setClazz(Object.class);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		requestHTTPDTO.setHttpHeaders(httpHeaders);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		requestHTTPDTO.setTriggerPoint(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		Object[] args = new Object[1];
+		args[0] = requestHTTPDTO;
+	
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.USER_DTO, null);
+		PowerMockito.when(ApplicationContext.map()).thenReturn(applicationContext);
+		
+		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
+		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
+		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		Mockito.when(SessionContext.isSessionContextAvailable()).thenReturn(false);
+
+
+		restClientAuthAdvice.addAuthZToken(proceedingJoinPoint);
+	}
+	
+	@Test(expected=Throwable.class)
+	public void addAuthZTokenException2() throws Throwable {
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setAuthRequired(false);
+		requestHTTPDTO.setAuthZHeader("Authorization:AUTH");
+		requestHTTPDTO.setClazz(Object.class);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		requestHTTPDTO.setHttpHeaders(httpHeaders);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		requestHTTPDTO.setTriggerPoint(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		Object[] args = new Object[1];
+		args[0] = requestHTTPDTO;
+		
+		LoginUserDTO loginUserDTO = new LoginUserDTO();
+		loginUserDTO.setUserId("110024");
+		loginUserDTO.setPassword("mosip");
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.USER_DTO, loginUserDTO);
+		
+		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
+		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
+		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		PowerMockito.when(ApplicationContext.map()).thenReturn(applicationContext);
+		Mockito.when(SessionContext.isSessionContextAvailable()).thenReturn(false);
+
+		restClientAuthAdvice.addAuthZToken(proceedingJoinPoint);
+	}
+	
+	@Test(expected=Throwable.class)
+	public void addAuthZTokenException3() throws Throwable {
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
+		requestHTTPDTO.setAuthRequired(false);
+		requestHTTPDTO.setAuthZHeader("Authorization:AUTH");
+		requestHTTPDTO.setTriggerPoint("System");
+		requestHTTPDTO.setClazz(Object.class);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		requestHTTPDTO.setHttpHeaders(httpHeaders);
+		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
+		Object[] args = new Object[1];
+		args[0] = requestHTTPDTO;
+		
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.USER_DTO, null);
+		
+		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
+		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
+		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		PowerMockito.when(ApplicationContext.map()).thenReturn(applicationContext);
+		Mockito.when(SessionContext.isSessionContextAvailable()).thenReturn(false);
+
+		restClientAuthAdvice.addAuthZToken(proceedingJoinPoint);
+	}
 }

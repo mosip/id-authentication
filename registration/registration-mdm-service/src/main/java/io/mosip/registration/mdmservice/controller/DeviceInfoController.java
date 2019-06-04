@@ -1,4 +1,4 @@
-package io.mosip.registration.mdm.controller;
+package io.mosip.registration.mdmservice.controller;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
-import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
-import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
+import io.mosip.registration.mdmservice.constants.MosipBioDeviceConstants;
+import io.mosip.registration.mdmservice.dto.DeviceDiscoveryRequestDto;
+import io.mosip.registration.mdmservice.dto.DeviceInfoResponseData;
 
 @RestController
 public class DeviceInfoController {

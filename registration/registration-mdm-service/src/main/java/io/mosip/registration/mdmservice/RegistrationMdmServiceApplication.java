@@ -1,4 +1,4 @@
-package io.mosip.registration.mdm;
+package io.mosip.registration.mdmservice;
 
 import java.io.File;
 import java.io.FileInputStream;

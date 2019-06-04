@@ -1,9 +1,10 @@
-package io.mosip.registration.mdm.controller;
+package io.mosip.registration.mdmservice.controller;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -11,12 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
-import io.mosip.registration.mdm.dto.CaptureResponseData;
-import io.mosip.registration.mdm.dto.MosipBioCaptureRequestDto;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponse;
-import io.mosip.registration.mdm.dto.MosipBioCaptureResponseDto;
-import io.mosip.registration.mdm.dto.MosipBioRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.registration.mdmservice.constants.MosipBioDeviceConstants;
+import io.mosip.registration.mdmservice.dto.CaptureResponseData;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureRequestDto;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureResponse;
+import io.mosip.registration.mdmservice.dto.MosipBioCaptureResponseDto;
+import io.mosip.registration.mdmservice.dto.MosipBioRequest;
 
 /**
  * @author Taleev Aalam The Class is the controller for device capture rest call
@@ -128,11 +132,14 @@ public class DeviceCaptureController {
 			try {
 				isoTemplateBytes = IOUtils.resourceToByteArray(folderPath.concat(MosipBioDeviceConstants.ISO_FILE));
 
-				captureResponseSegmentedData.setBioExtract(isoTemplateBytes);
+				/* Base64 encoded data */
+				captureResponseSegmentedData.setBioExtract(Base64.getEncoder().encode(isoTemplateBytes));
 
 				isoImageBytes = IOUtils.resourceToByteArray(folderPath.concat(MosipBioDeviceConstants.ISO_IMAGE_FILE));
 
-				captureResponseSegmentedData.setBioValue(isoImageBytes);
+				/* Basse64 encoded data */
+				captureResponseSegmentedData.setBioValue(Base64.getEncoder().encode(isoImageBytes));
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -148,8 +155,8 @@ public class DeviceCaptureController {
 			captureResponseSegmentedData.setTransactionID("");
 			captureResponseSegmentedData.setBioSegmentedType(imageFileName[3]);
 
-			mosipBioCaptureResponseSegmented.setCaptureResponseData(captureResponseSegmentedData);
-			mosipBioCaptureResponses.add(mosipBioCaptureResponseSegmented);
+			setEncodedCapturedResponse(mosipBioCaptureResponses, mosipBioCaptureResponseSegmented,
+					captureResponseSegmentedData);
 
 		}
 	}
@@ -166,7 +173,7 @@ public class DeviceCaptureController {
 
 		MosipBioCaptureResponse mosipBioCaptureResponse = new MosipBioCaptureResponse();
 		CaptureResponseData captureResponseData = new CaptureResponseData();
-		mosipBioCaptureResponse.setCaptureResponseData(captureResponseData);
+
 		captureResponseData.setBioSubType(mosipBioRequest.getDeviceSubId());
 		captureResponseData.setBioType(mosipBioRequest.getDeviceId());
 		captureResponseData.setBioValue(getCapturedByte(bioType));
@@ -178,7 +185,27 @@ public class DeviceCaptureController {
 		captureResponseData.setRequestedScore(mosipBioRequest.getRequestedScore());
 		captureResponseData.setTimestamp(new Timestamp(System.currentTimeMillis()) + "");
 		captureResponseData.setTransactionID("");
+
+		setEncodedCapturedResponse(mosipBioCaptureResponses, mosipBioCaptureResponse, captureResponseData);
+	}
+
+	protected void setEncodedCapturedResponse(List<MosipBioCaptureResponse> mosipBioCaptureResponses,
+			MosipBioCaptureResponse mosipBioCaptureResponse, CaptureResponseData captureResponseData) {
+		mosipBioCaptureResponse.setCaptureBioData(getBase64EncodedJson(captureResponseData));
+		mosipBioCaptureResponse.setHash("sha256");
+		mosipBioCaptureResponse.setSessionKey("123");
+		mosipBioCaptureResponse.setSignature("base 64 data sample");
 		mosipBioCaptureResponses.add(mosipBioCaptureResponse);
+	}
+
+	protected String getBase64EncodedJson(CaptureResponseData captureResponseData) {
+		try {
+			return Base64.getEncoder()
+					.encodeToString(new ObjectMapper().writeValueAsString(captureResponseData).getBytes());
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -196,7 +223,8 @@ public class DeviceCaptureController {
 		}
 		byte[] scannedBytes = null;
 		try {
-			scannedBytes = IOUtils.toByteArray(this.getClass().getResourceAsStream("/images/" + imageType + imgFormat));
+			scannedBytes = Base64.getEncoder().encode(
+					IOUtils.toByteArray(this.getClass().getResourceAsStream("/images/" + imageType + imgFormat)));
 		} catch (IOException exceptoin) {
 			exceptoin.printStackTrace();
 		}
