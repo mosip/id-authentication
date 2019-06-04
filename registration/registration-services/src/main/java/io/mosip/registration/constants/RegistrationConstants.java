@@ -2,8 +2,10 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -1377,11 +1379,11 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	public static final String IDA_REFERENCE_ID = "PARTNER";
+	public static final String IDA_REFERENCE_ID = "INTERNAL";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
 	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
 	public static final String ID = "id";
-	public static final String IDENTITY  = "mosip.identity.auth";
+	public static final String IDENTITY  = "mosip.identity.auth.internal";
 	public static final String VERSION  = "version";
 	public static final String REQUEST_TIME = "requestTime";
 	public static final String TRANSACTION_ID = "transactionID";
@@ -1418,5 +1420,26 @@ public class RegistrationConstants {
 	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
 	public static final String TPM_AVAILABILITY = "is_tpm_available";
 	public static final String SERIAL_NUMBER = "serialnumber";
+	
+	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
+
+		{
+			put("leftIndex", "LEFT_INDEX");
+			put("leftLittle", "LEFT_LITTLE");
+			put("leftMiddle", "LEFT_MIDDLE");
+			put("leftRing", "LEFT_RING");
+			put("leftThumb", "LEFT_THUMB");
+			put("rightIndex", "RIGHT_INDEX");
+			put("rightLittle", "RIGHT_LITTLE");
+			put("rightMiddle", "RIGHT_MIDDLE");
+			put("rightRing", "RIGHT_RING");
+			put("rightThumb", "RIGHT_THUMB");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+		}
+
+	};
+	
+	public static final String RESPONSE_SIGNATURE="response-signature";
 
 }
