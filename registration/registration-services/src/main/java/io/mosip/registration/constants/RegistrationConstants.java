@@ -72,7 +72,8 @@ public class RegistrationConstants {
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
-	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
+	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
+	public static final String IRIS_IMAGE_LOCAL_RIGHT="/images/rightEye.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -1441,5 +1442,6 @@ public class RegistrationConstants {
 	};
 	
 	public static final String RESPONSE_SIGNATURE="response-signature";
+	public static final String ON_BOARD_FACE="FACE";
 
 }
