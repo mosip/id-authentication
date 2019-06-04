@@ -218,7 +218,7 @@ public class UinGeneratorStageTest {
 				.thenReturn("27847657360002520181210094052");
 		demographicIdentity.put("UIN", Long.parseLong("9403107397"));
 		Number uin = new Long("9403107397");
-		Mockito.when(idRepoService.getUinFromIDRepo(anyString(), anyString())).thenReturn(uin);
+		Mockito.when(idRepoService.getUinByRid(anyString(), anyString())).thenReturn(uin);
 
 	}
 

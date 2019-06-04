@@ -988,7 +988,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			throws ApisResourceAccessException, IOException {
 
 		IdResponseDTO idResponse = null;
-		Number number = idRepoService.getUinFromIDRepo(matchedRegId, utility.getGetRegProcessorDemographicIdentity());
+		Number number = idRepoService.getUinByRid(matchedRegId, utility.getGetRegProcessorDemographicIdentity());
 
 		Long uinFieldValue = number != null ? number.longValue() : null;
 		RequestDto requestDto = new RequestDto();
