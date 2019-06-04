@@ -1,0 +1,10 @@
+{
+	"id":"string",
+	"eff_dtimes":"string",
+	"firstUpdateDate":"string",
+	"futureDate":"string",
+	"secondUpdateDate":"string",
+	"timeformat_2":"string",
+	"timeformat_3":"string",
+	"validating_request":"string"
+}

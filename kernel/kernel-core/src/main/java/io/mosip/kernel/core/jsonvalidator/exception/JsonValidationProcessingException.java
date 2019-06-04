@@ -17,10 +17,23 @@ public class JsonValidationProcessingException extends BaseCheckedException {
 	private static final long serialVersionUID = -3849227719514230853L;
 
 	/**
+	 * @param errorCode
+	 *            the error code of the exception.
+	 * @param errorMessage
+	 *            the error message associated with the exception.
+	 * @param rootCause cause of the error occurred.
+	 */
+	public JsonValidationProcessingException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
+
+	/**
 	 * Constructor for JsonValidationProcessingException class.
 	 * 
-	 * @param errorCode    the error code of the exception.
-	 * @param errorMessage the error message associated with the exception.
+	 * @param errorCode
+	 *            the error code of the exception.
+	 * @param errorMessage
+	 *            the error message associated with the exception.
 	 */
 	public JsonValidationProcessingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

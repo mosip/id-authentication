@@ -1,7 +1,11 @@
 package io.mosip.report;
 
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+
+import java.io.File;
 import java.io.FileReader;
+
+import javax.mail.Folder;
 
 import org.apache.log4j.Logger;
 import org.apache.maven.model.Model;

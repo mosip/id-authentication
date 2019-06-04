@@ -265,10 +265,6 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		}
 		
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {
-		}
-
 		ResponseDTO userResponseDTO = userDetailService
 				.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
