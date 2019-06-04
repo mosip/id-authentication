@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.PersistenceException;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +43,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.model.SignatureResponse;
@@ -110,6 +107,7 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.AppAuthenticationMethodRepository;
 import io.mosip.kernel.syncdata.repository.AppDetailRepository;
 import io.mosip.kernel.syncdata.repository.AppRolePriorityRepository;
@@ -172,7 +170,6 @@ public class SyncDataIntegrationTest {
 	private ObjectMapper objectMapper;
 
 	private Machine machine;
-
 	private List<Application> applications;
 	private List<Machine> machines;
 	private List<MachineSpecification> machineSpecification;
@@ -1426,12 +1423,10 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
 		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenThrow(
-				new DataAccessLayerException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
-						MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage(), null));
+				new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
+						MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage()));
 		MvcResult mvcResult = mockMvc
 				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
-		//when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenThrow(new PersistenceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(), null));
-		//MvcResult mvcResult=mockMvc.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isInternalServerError()).andReturn();
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
 				ResponseWrapper.class);

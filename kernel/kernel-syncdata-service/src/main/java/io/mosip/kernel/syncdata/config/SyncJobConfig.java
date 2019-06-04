@@ -15,8 +15,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Configuration
-@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.syncjob.repository", entityManagerFactoryRef = "syncJobEntityManager", transactionManagerRef = "syncJobTransactionManager")
+//@Configuration
+//@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.syncjob.repository", entityManagerFactoryRef = "syncJobEntityManager", transactionManagerRef = "syncJobTransactionManager")
 public class SyncJobConfig {
 
 	@Autowired

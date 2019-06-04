@@ -415,7 +415,8 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	@Override
-	@Transactional("syncDataTransactionManager")
+	//@Transactional("syncDataTransactionManager")
+	@Transactional
 	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
 		final byte[] publicKey = CryptoUtil.decodeBase64(uploadPublicKeyRequestDto.getPublicKey());
 		final String keyIndex = CryptoUtil.computeFingerPrint(publicKey, null);
