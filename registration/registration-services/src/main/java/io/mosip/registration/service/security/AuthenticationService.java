@@ -2,6 +2,7 @@ package io.mosip.registration.service.security;
 
 import java.util.List;
 
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
@@ -14,6 +15,15 @@ public interface AuthenticationService {
 	 * @return Boolean returning whether it is matched or not
 	 */
 	Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO);
+	
+	/**
+	 * Common Validator for all the Authentications
+	 * @param validatorType The type of validator
+	 * @param userId The userId
+	 * @param otp otp entered
+	 * @return {@link AuthTokenDTO} returning authtokendto
+	 */
+	AuthTokenDTO authValidator(String validatorType, String userId, String otp);
 
 	/**
 	 * This method is used to set the Authentication validators

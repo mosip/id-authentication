@@ -26,7 +26,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.reg.RegistrationController;
-import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -145,10 +144,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/** The finger print capture service impl. */
 	@Autowired
 	private AuthenticationService authenticationService;
-
-	/** The finger print facade. */
-	@Autowired
-	private FingerprintFacade fingerPrintFacade;
 
 	/** The iris facade. */
 	@Autowired
@@ -716,9 +711,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Fingerdeduplication check.
 	 *
-	 * @param segmentedFingerprintDetailsDTOs the segmented fingerprint details
-	 *                                        DTO's
-	 * @param isValid                         the isvalid flag
 	 * @param fingerprintDetailsDTOs          the fingerprint details DT os
 	 * @return true, if successful
 	 */
@@ -768,7 +760,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Validated the dedupecheck of the captured fingers");
 
-		return true;
+		return isValid;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -27,7 +26,6 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
@@ -48,7 +46,6 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
 /**
@@ -298,8 +295,13 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				: RegistrationConstants.PARAM_ZERO;
 
 		Timestamp loginTime = userDTO.getUserlockTillDtimes();
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Comparing timestamps in case of invalid login attempts");
 
-		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
+		if (loginCount >= invalidLoginCount
+				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
+						- loginTime.getTime()) > invalidLoginTime) {
 
 			loginCount = RegistrationConstants.PARAM_ZERO;
 			userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -346,30 +348,6 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	}
 
 	/**
-	 * Validating login time and count
-	 * 
-	 * @param loginCount
-	 *            number of invalid attempts
-	 * @param invalidLoginCount
-	 *            count from global param
-	 * @param loginTime
-	 *            login time from table
-	 * @param invalidLoginTime
-	 *            login time from global param
-	 * @return boolean
-	 */
-	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
-			int invalidLoginTime) {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Comparing timestamps in case of invalid login attempts");
-
-		return (loginCount >= invalidLoginCount
-				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
-						- loginTime.getTime()) > invalidLoginTime);
-	}
-
-	/**
 	 * Validating user
 	 * 
 	 * @param userId
@@ -411,17 +389,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 							|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
 						setErrorResponse(responseDTO, RegistrationConstants.ROLES_EMPTY_ERROR, null);
 					} else {
-						Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
-
 						ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
 								centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-						boolean status = getCenterMachineStatus(userDTO);
-						sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
-						sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-						Map<String, Object> params = new LinkedHashMap<>();
+						Map<String,Object> params = new LinkedHashMap<>();
+
 						params.put(RegistrationConstants.ROLES_LIST, roleList);
-						params.put(RegistrationConstants.UPLOAD_STATUS, status);
 						setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, params);
 					}
 				}
@@ -430,30 +403,5 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			}
 		}
 		return responseDTO;
-	}
-
-	/**
-	 * Fetching and Validating machine and center id
-	 * 
-	 * @param userDetail
-	 *            the userDetail
-	 * @return boolean
-	 * @throws RegBaseCheckedException
-	 */
-	private boolean getCenterMachineStatus(UserDTO userDTO) {
-		List<String> machineList = new ArrayList<>();
-		List<String> centerList = new ArrayList<>();
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating User machine and center mapping");
-
-		userDTO.getUserMachineMapping().forEach(machineMapping -> {
-			if (machineMapping.isActive()) {
-				machineList.add(machineMapping.getMachineMaster().getMacAddress());
-				centerList.add(machineMapping.getCentreID());
-			}
-		});
-		return machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
-				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId());
 	}
 }
