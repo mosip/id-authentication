@@ -602,6 +602,7 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $IGNORE$
       
   AuthPartner_Invalid_VID_Neg_36:
     endpoint.url:
@@ -707,7 +708,7 @@ testdata:
       AuthReq.individualIdType: VID
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.version: 0.8
+      AuthReq.version: 0.!
     input.identity-encrypt-demo-data:
       identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
       identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
@@ -754,8 +755,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
       output.1.response.y.responseTime:  $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MissingVID:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       
   AuthPartner_Missing_txnID_For VID_Neg_43:
     endpoint.url:

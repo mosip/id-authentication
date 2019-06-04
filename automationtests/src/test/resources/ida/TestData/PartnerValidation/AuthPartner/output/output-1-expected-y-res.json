@@ -4,6 +4,6 @@
   "version": "$version$",
   "response": {
     "authStatus": true,
-    "staticToken": "268136900528415268556238967072619184"
+    "staticToken": "$IGNORE$"
   }
 }
