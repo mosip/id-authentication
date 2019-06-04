@@ -1,8 +1,5 @@
 package io.mosip.registration.util.advice;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,6 +24,7 @@ import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.tpm.spi.TPMUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -153,7 +151,7 @@ public class RestClientAuthAdvice {
 		// Get the AuthZ Token from AuthZ Web-Service only if Job is triggered by User
 		// and existing AuthZ Token had expired
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
-			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO().getCookie()) {
+			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO() && null != SessionContext.authTokenDTO().getCookie()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
 			} else {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
@@ -221,11 +219,11 @@ public class RestClientAuthAdvice {
 				"Adding request signature to request header");
 
 		try {
-			httpHeaders.add("request-signature", String.format("Authorization:%s",
-					CryptoUtil.encodeBase64(TPMUtil.signData(JsonUtils.javaObjectToJsonString(requestBody).getBytes()))));
-			httpHeaders.add(RegistrationConstants.KEY_INDEX, CryptoUtil.encodeBase64String(machineMappingDAO
-					.getMachineByName(InetAddress.getLocalHost().getHostName().toLowerCase()).getKeyIndex().getBytes()));
-		} catch (UnknownHostException | JsonProcessingException jsonProcessingException) {
+			httpHeaders.add("request-signature", String.format("Authorization:%s", CryptoUtil
+					.encodeBase64(TPMUtil.signData(JsonUtils.javaObjectToJsonString(requestBody).getBytes()))));
+			httpHeaders.add(RegistrationConstants.KEY_INDEX, CryptoUtil.encodeBase64String(String.valueOf(machineMappingDAO
+					.getKeyIndexByMacId(RegistrationSystemPropertiesChecker.getMachineId())).getBytes()));
+		} catch (JsonProcessingException jsonProcessingException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorMessage(),
 					jsonProcessingException);

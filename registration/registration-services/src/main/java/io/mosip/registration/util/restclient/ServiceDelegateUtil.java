@@ -486,7 +486,7 @@ public class ServiceDelegateUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
+	public AuthTokenDTO getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Auth Token based on Login Mode");
@@ -557,9 +557,17 @@ public class ServiceDelegateUtil {
 			if (loginMode.equals(LoginMode.CLIENTID)) {
 				ApplicationContext.setAuthTokenDTO(authTokenDTO);
 			} else {
-				SessionContext.setAuthTokenDTO(authTokenDTO);
+				if(null != SessionContext.getInstance()) {
+					SessionContext.setAuthTokenDTO(authTokenDTO);
+				} else {
+					return authTokenDTO;
+				}
 			}
-
+			
+			LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+					"Completed fetching Auth Token based on Login Mode");
+			
+			return authTokenDTO;
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| IOException restException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
@@ -568,9 +576,6 @@ public class ServiceDelegateUtil {
 			throw new RegBaseUncheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 					RegistrationConstants.REST_OAUTH_ERROR_MSG, runtimeException);
 		}
-
-		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
-				"Completed fetching Auth Token based on Login Mode");
 	}
 
 	private String getEnvironmentProperty(String serviceName, String serviceComponent) {

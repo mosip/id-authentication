@@ -83,7 +83,10 @@ public enum ErrorCodes {
 	PRG_PAM_APP_016("PRG_PAM_APP_016"),
 
 	/* ErrorCode for INVALID_PREID_FOR_USER */
-	PRG_PAM_APP_017("PRG_PAM_APP_017");
+	PRG_PAM_APP_017("PRG_PAM_APP_017"),
+
+	/* ErrorCode for UBALE_TO_READ_IDENTITY_JSON */
+	PRG_PAM_APP_018("PRG_PAM_APP_018");
 
 	private ErrorCodes(String code) {
 		this.code = code;

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.DeviceType;
 
 /**
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.DeviceType;
  *
  */
 @Repository
-public interface DeviceTypeRepository extends BaseRepository<DeviceType, String> {
+public interface DeviceTypeRepository extends JpaRepository<DeviceType, String> {
 	/**
 	 * Method to find what are the device type the devices which are mapped to a
 	 * machine.

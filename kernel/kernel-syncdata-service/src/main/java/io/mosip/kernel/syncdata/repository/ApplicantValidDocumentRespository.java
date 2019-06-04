@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.ApplicantValidDocument;
 import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
 
@@ -18,7 +18,7 @@ import io.mosip.kernel.syncdata.entity.id.ApplicantValidDocumentID;
  */
 @Repository
 public interface ApplicantValidDocumentRespository
-		extends BaseRepository<ApplicantValidDocument, ApplicantValidDocumentID> {
+		extends JpaRepository<ApplicantValidDocument, ApplicantValidDocumentID> {
 
 	@Query("FROM ApplicantValidDocument avd WHERE (createdDateTime > ?1 AND createdDateTime <=?2) OR (updatedDateTime > ?1 AND updatedDateTime<=?2)  OR (deletedDateTime > ?1 AND deletedDateTime <=?2) ")
 	public List<ApplicantValidDocument> findAllByTimeStamp(LocalDateTime lastUpdatedTime,

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.Machine;
 
 /**
@@ -18,7 +18,7 @@ import io.mosip.kernel.syncdata.entity.Machine;
  */
 
 @Repository
-public interface MachineRepository extends BaseRepository<Machine, String> {
+public interface MachineRepository extends JpaRepository<Machine, String> {
 	/**
 	 * Method to Machine details if the machine details is recently
 	 * created,updated,deleted after lastUpdated timeStamp.

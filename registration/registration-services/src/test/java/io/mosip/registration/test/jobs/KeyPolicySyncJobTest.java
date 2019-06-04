@@ -7,11 +7,15 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -33,6 +37,8 @@ import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.KeyPolicySyncJob;
 import io.mosip.registration.service.sync.PolicySyncService;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class KeyPolicySyncJobTest {
 
 	@InjectMocks
@@ -78,7 +84,7 @@ public class KeyPolicySyncJobTest {
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
 	@Before
-	public void intiate() {
+	public void intiate() throws Exception{
 		syncJobList = new LinkedList<>();
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1234");
@@ -94,7 +100,10 @@ public class KeyPolicySyncJobTest {
 
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("CNTR123");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
 
 	}
 

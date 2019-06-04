@@ -28,11 +28,13 @@ public enum RequestCodes {
 
 	/* Full name */
 	FULLNAME("fullName"),
-	
-	/*postalCode*/
-	POSTAL_CODE("postalCode");
-	
-	
+
+	/* postalCode */
+	POSTAL_CODE("postalCode"),
+
+	/* POA */
+	POA("POA");
+
 	/**
 	 * @param code
 	 */
