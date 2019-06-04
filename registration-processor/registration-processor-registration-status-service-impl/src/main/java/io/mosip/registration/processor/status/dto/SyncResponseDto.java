@@ -14,6 +14,7 @@ public class SyncResponseDto implements Serializable {
 
 	/** The status. */
 	private String status;
+	private String registrationId;
 
 	/**
 	 * Instantiates a new sync response dto.
@@ -39,6 +40,14 @@ public class SyncResponseDto implements Serializable {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getRegistrationId() {
+		return registrationId;
+	}
+
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
 
 }

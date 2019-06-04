@@ -80,21 +80,14 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINStatusUpdate")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+		return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);	
 	}
 	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
-	 * getRegCenterByID_Timestamp
+	 * updateUINStatusUpdate
 	 * Given input Json as per defined folders When GET request is sent to /uingenerator/v1.0/uin
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
@@ -102,7 +95,6 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	@Test(dataProvider="UINStatusUpdate")
 	public void updateUINStatusUpdate(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
@@ -115,22 +107,21 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		innerKeys.add("uin");
 		innerKeys.add("status");
 		
-		
-		switch(testCaseName)
+		//Fetching UIN which status is unused
+		res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res1);
+	switch(testCaseName)
 		{
-
 		case "Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused": 
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin=res1.jsonPath().get("response.uin");
 			JSONObject request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin);
 			response=(JSONObject) Expectedresponse.get("response");
 			response.put("uin", uin);
 			break;
-			
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued" : 
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
@@ -138,10 +129,8 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			actualRequest.put("request", request);
 			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
 			break;
-			
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
@@ -149,28 +138,29 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
 			request.put("status", "UNASSIGNED");
 			break;
-			
 
 		case "Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned" :
-			res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
 			uin1=res1.jsonPath().get("response.uin");
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			response=(JSONObject) Expectedresponse.get("response");
 			response.put("uin", uin1);
 			break;
-			
-			
+	
 		default : break;
 		}
 		
 		res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
+		
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-						finalStatus ="Pass";
+				finalStatus ="Pass";
       }
 		else {
 			finalStatus="Fail";
@@ -194,7 +184,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {		
-	try {
+		 try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
 				method.set(result, result.getMethod().clone());
@@ -215,5 +205,4 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 				logger.info("Successfully updated Results to UINStatusUpdateOutput.json file.......................!!");
 			}
 		}
-	
 }

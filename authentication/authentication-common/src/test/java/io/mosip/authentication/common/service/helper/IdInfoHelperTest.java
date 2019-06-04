@@ -114,7 +114,7 @@ public class IdInfoHelperTest {
 		bioIdentity.put("documents.individualBiometrics", identityList);
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put("FINGER_Left IndexFinger_2", new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map);
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
 	}
 
 	@Test
@@ -123,12 +123,12 @@ public class IdInfoHelperTest {
 		String key = "FINGER_Left IndexFinger_2";
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		map.put(key, new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map);
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map, BioMatchType.FGRMIN_LEFT_INDEX);
 
 		List<IdentityInfoDTO> identityList1 = null;
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map1 = new HashMap<>();
 		map1.put(key, new SimpleEntry<>("leftIndex", identityList1));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map1);
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, "ara", map1, BioMatchType.FGRMIN_LEFT_INDEX);
 
 	}
 
@@ -139,7 +139,7 @@ public class IdInfoHelperTest {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> map = new HashMap<>();
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		map.put("FINGER_Left IndexFinger_2", new SimpleEntry<>("leftIndex", identityList));
-		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, language, map);
+		ReflectionTestUtils.invokeMethod(idInfoHelper, "getIdentityValueFromMap", key, language, map, BioMatchType.FGRMIN_LEFT_INDEX);
 	}
 
 	@Test

@@ -19,7 +19,7 @@ public enum IdAuthenticationErrorConstants {
 	OTP_GENERATION_FAILED("IDA-OTA-002", "Could not generate/send OTP"),
 	EXPIRED_OTP("IDA-OTA-003", "OTP has expired", "Please regenerate OTP and try again after sometime"),
 	INVALID_OTP("IDA-OTA-004", "OTP is invalid", "Please provide correct OTP value"),
-	INVALID_TXN_ID("IDA-OTA-005", "“Input transactionID does not match transactionID of OTP Request"),
+	INVALID_TXN_ID("IDA-OTA-005", "Input transactionID does not match transactionID of OTP Request"),
 	BLOCKED_OTP_GENERATE("IDA-OTA-006", "UIN is locked for OTP generation. Please try again later"),
 	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
 	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),

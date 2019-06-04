@@ -73,7 +73,8 @@ public enum IdRepoConstants {
 	
 	VID_REGENERATE_ALLOWED_STATUS("mosip.idrepo.vid.regenerate.allowed-status"),
 	
-	VID_REGENERATE_ACTIVE_STATUS("INVALIDATED");
+	VID_REGENERATE_ACTIVE_STATUS("INVALIDATED"),
+	MODULO_VALUE("mosip.idrepo.modulo-value");
 	
 	/** The value. */
 	private final String value;

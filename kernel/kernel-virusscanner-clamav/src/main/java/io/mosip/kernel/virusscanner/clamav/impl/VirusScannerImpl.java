@@ -79,7 +79,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 		try {
 			is = new FileInputStream(file);
 		} catch (FileNotFoundException e1) {
-			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT);
+			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT, e1);
 		}
 		try {
 			ScanResult scanResult = this.clamavClient.scan(is);
@@ -91,19 +91,20 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 			}
 		} catch (ClamavException e) {
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, e);
 		}
 
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see
-	 * io.mosip.kernel.core.virusscanner.spi.VirusScanner#scanFile(java.io.InputStream)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.virusscanner.spi.VirusScanner#scanFile(java.io.
+	 * InputStream)
 	 */
 	@Override
-	public Boolean scanFile(InputStream is)
-	{
+	public Boolean scanFile(InputStream is) {
 		Boolean result = Boolean.FALSE;
 		createConnection();
 		try {
@@ -112,11 +113,11 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 				result = Boolean.TRUE;
 			} else {
 				Map<String, Collection<String>> listOfVirus = scanResult.getFoundViruses();
-				LOGGER.warn("Virus Found in file : "+listOfVirus);
+				LOGGER.warn("Virus Found in file : " + listOfVirus);
 			}
 		} catch (ClamavException e) {
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, e);
 		}
 		return result;
 	}
@@ -143,21 +144,25 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 					break;
 				}
 			} catch (FileNotFoundException e) {
-				throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT);
+				throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT,
+						e);
 			} catch (ClamavException e) {
 				throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-						ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+						ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, e);
 			}
 		}
 		return result;
 	}
+
 	/**
 	 * This Method is used to scan byte array
 	 * 
-	 * @param docArray array
+	 * @param docArray
+	 *            array
 	 * 
 	 * @return a true if file is virus free and false if file is infected
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 
 	@Override
@@ -178,7 +183,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 		} catch (ClamavException e) {
 			LOGGER.error(LOGDISPLAY, e.getMessage());
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, e);
 		} finally {
 
 			docInputStream.close();
@@ -190,10 +195,12 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 	/**
 	 * This Method is used to scan File
 	 * 
-	 * @param doc object
+	 * @param doc
+	 *            object
 	 * 
 	 * @return a true if file is virus free and false if file is infected
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Override
 	public Boolean scanDocument(File doc) throws IOException {
@@ -212,7 +219,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, InputStream> {
 		} catch (ClamavException e) {
 			LOGGER.error(LOGDISPLAY, e.getMessage());
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE, e);
 		}
 
 		return result;

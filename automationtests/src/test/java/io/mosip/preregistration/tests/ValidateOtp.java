@@ -93,8 +93,8 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "9804605101", "385140");
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
-		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "Authentication failed");
-		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "PRG_AUTH_002");
+		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "User Detail doesn't exist");
+		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "KER-ATH-003");
 	}
 	
 	@Test
@@ -142,7 +142,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "Ashish", otp);
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
 		String message = validateOTP.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(message, "Authentication failed");
+		lib.compareValues(message, "User Detail doesn't exist");
 	}
 	@Override
 	public String getTestName() {

@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,7 +11,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -38,15 +35,15 @@ import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.GetHeader;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
  * @author Ravi Kant
  *
  */
-public class FetchRegCent extends BaseTestCase implements ITest{
-	
+public class FetchRegCent extends BaseTestCase implements ITest {
+
 	FetchRegCent() {
 		super();
 	}
@@ -63,18 +60,16 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	private final String FetchRegCent_loc_lang_URI = props.get("FetchRegCent_loc_lang_URI").toString();
 	private final String FetchRegCent_hir_name_lang_URI = props.get("FetchRegCent_hir_name_lang_URI").toString();
 	private final String FetchRegCent_prox_lang_URI = props.get("FetchRegCent_prox_lang_URI").toString();
-	
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -83,11 +78,11 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
+	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForIndividual();
 	}
 
 	/**
@@ -97,18 +92,8 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	 * @return test case name as object
 	 */
 	@DataProvider(name = "fetchData")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+	public Object[][] readData(ITestContext context){
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -122,98 +107,59 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchRegCent(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		if (objectData != null) {
+			if (objectData.containsKey("locationcode"))
+				response = applicationLibrary.getRequestPathPara(FetchRegCent_loc_lang_URI, objectData, cookie);
+
+			else if (objectData.containsKey("id"))
+				response = applicationLibrary.getRequestPathPara(FetchRegCent_id_lang_URI, objectData, cookie);
+
+			else if (objectData.containsKey("hierarchylevel") && objectData.containsKey("name"))
+				response = applicationLibrary.getRequestPathPara(FetchRegCent_hir_name_lang_URI, objectData, cookie);
+
+			else if (objectData.containsKey("proximitydistance"))
+				response = applicationLibrary.getRequestPathPara(FetchRegCent_prox_lang_URI, objectData, cookie);
+
+			else {
+				String URI = FetchRegCent_URI + "/" + objectData.get("langcode") + "/"
+						+ objectData.get("hierarchylevel") + "/names";
+				objectData.remove("langcode");
+				objectData.remove("hierarchylevel");
+				Object str = objectData.get("names");
+				objectData = (JSONObject) str;
+				response = applicationLibrary.getRequest(URI, GetHeader.getHeader(objectData), cookie);
+			}
 		}
 
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-				if(objectData.containsKey("locationcode"))
-					response = applicationLibrary.getRequestPathPara(FetchRegCent_loc_lang_URI, objectData,cookie);
-				
-				else if(objectData.containsKey("id"))
-						response = applicationLibrary.getRequestPathPara(FetchRegCent_id_lang_URI, objectData,cookie);
-				
-				else if(objectData.containsKey("hierarchylevel")&&objectData.containsKey("name"))
-					response = applicationLibrary.getRequestPathPara(FetchRegCent_hir_name_lang_URI, objectData,cookie);
-				
-				else if(objectData.containsKey("proximitydistance"))
-					response = applicationLibrary.getRequestPathPara(FetchRegCent_prox_lang_URI, objectData,cookie);
-				
-				else {
-					String URI = FetchRegCent_URI+"/"+objectData.get("langcode")+"/"+objectData.get("hierarchylevel")+"/names";
-					objectData.remove("langcode");
-					objectData.remove("hierarchylevel");
-					Object str = objectData.get("names");
-					objectData = (JSONObject)str;
-					response = applicationLibrary.getRequest(URI, GetHeader.getHeader(objectData),cookie);
-				}
-					
-					
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
-		logger.info("Expected Response:" + responseObject.toJSONString());
-		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		listOfElementToRemove.add("timestamp");
-
-		 objectData = new JSONObject();
-		if(response==null)
-			response = applicationLibrary.getRequestPathPara(FetchRegCent_URI, objectData,cookie);
-		
+		if (response == null) {
+			objectData = new JSONObject();
+			response = applicationLibrary.getRequestPathPara(FetchRegCent_URI, objectData, cookie);
+		}
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
-
-		
-			finalStatus = "Pass";
-		}
-
-		else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
@@ -239,8 +185,7 @@ public class FetchRegCent extends BaseTestCase implements ITest{
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + outputJsonName + ".json";
+		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");

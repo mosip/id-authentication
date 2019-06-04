@@ -68,26 +68,15 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		
 		testCaseName = object.get("testCaseName").toString();
-		
 		cookie=auth.getAuthForRegistrationAdmin();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetListOfRoles")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smoke");
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -104,21 +93,17 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getRequestNoParameter(getRoles,cookie);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		outerKeys.add("responsetime");
 		innerKeys.add("lastSyncTime");
-		
-		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("$response.lastSyncTime");
-		listOfElementToRemove.add("responsetime");
 
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
 		
@@ -134,8 +119,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

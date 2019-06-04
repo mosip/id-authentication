@@ -1,12 +1,13 @@
 {
-   "id": "mosip.pre-registration.appointment.fetch",
-   "version" : "1.0",
-   "responsetime": "2019-01-16T17:31:04.021Z",
-   "response": null,
-   "errors":[ 
-         {
-            "errorCode": "PRG_BOOK_RCI_013",
-            "message": "Booking data not found"
-         }
+    "id": null,
+    "version": null,
+    "responsetime": "2019-05-31T04:59:57.936Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_CORE_REQ_016",
+            "message": "Request method 'GET' not supported"
+        }
     ]
 }

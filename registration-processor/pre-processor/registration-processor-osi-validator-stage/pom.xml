@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>pre-processor</artifactId>
-		<version>0.12.5</version>
+		<version>0.12.6</version>
 	</parent>
 	<artifactId>registration-processor-osi-validator-stage</artifactId>
 	<properties>
@@ -98,6 +98,11 @@
 			<artifactId>powermock-api-mockito</artifactId>
 			<version>${powermock.api.mockito.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-packet-manager</artifactId>
+			<version>${packet.manager.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
