@@ -10,6 +10,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -17,6 +18,7 @@ import java.util.zip.ZipOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +56,7 @@ import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FileUtils.class })
+@PrepareForTest({ FileUtils.class, SessionContext.class })
 public class PreRegZipHandlingServiceTest {
 
 	@Rule
@@ -78,9 +80,13 @@ public class PreRegZipHandlingServiceTest {
 
 	static MosipSecurityMethod mosipSecurityMethod;
 
+	@Before
+	public void init() throws Exception {
+		createRegistrationDTOObject();
+	}
+	
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
-		createRegistrationDTOObject();
 		URL url = PreRegZipHandlingServiceTest.class.getResource("/preRegSample.zip");
 		File packetZipFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
@@ -247,8 +253,10 @@ public class PreRegZipHandlingServiceTest {
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
-		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+		PowerMockito.mockStatic(SessionContext.class);
+		Map<String,Object> regMap = new LinkedHashMap<>();
+		regMap.put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+		PowerMockito.when(SessionContext.map()).thenReturn(regMap);
 	}
 
 	private static BiometricInfoDTO createBiometricInfoDTO() {

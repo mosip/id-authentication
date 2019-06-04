@@ -21,13 +21,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -45,8 +49,15 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.entity.MachineMaster;
+import io.mosip.registration.entity.RegCenterUser;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.entity.UserMachineMapping;
+import io.mosip.registration.entity.UserRole;
+import io.mosip.registration.entity.id.RegCenterUserId;
+import io.mosip.registration.entity.id.UserMachineMappingID;
+import io.mosip.registration.entity.id.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
@@ -61,6 +72,8 @@ import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class LoginServiceTest {
 
 	@Mock
@@ -115,7 +128,7 @@ public class LoginServiceTest {
 	private UserSaltDetailsService userSaltDetailsService;
 	@Mock
 	private TPMPublicKeySyncService tpmPublicKeySyncService;
-
+	
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
@@ -146,7 +159,7 @@ public class LoginServiceTest {
 		assertEquals(modes, loginServiceImpl.getModesOfLogin("LOGIN", roleSet));
 	}
 
-	// @Test
+	@Test
 	public void getUserDetailTest() {
 
 		UserDetail userDetail = new UserDetail();
@@ -196,7 +209,7 @@ public class LoginServiceTest {
 
 	}
 
-	// @Test
+	@Test
 	public void updateLoginParamsTest() {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
@@ -343,5 +356,288 @@ public class LoginServiceTest {
 
 
 		Assert.assertTrue(loginServiceImpl.initialSync().contains(RegistrationConstants.FAILURE));
+	}
+	
+	
+	@Test
+	public void validateUserFailureTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		UserDTO userDTO = null;
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		Mockito.when(loginServiceImpl.getUserDetail("")).thenReturn(userDTO);
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		
+		assertNotNull(loginServiceImpl.validateUser("").getErrorResponseDTOs());
+		
+	}
+	@Test
+	public void validateUserTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		RegCenterUser regCenterUser = new RegCenterUser();
+		RegCenterUserId regCenterUserId = new RegCenterUserId();
+		regCenterUserId.setRegcntrId("10011");
+		regCenterUser.setRegCenterUserId(regCenterUserId);
+		userDetail.setRegCenterUser(regCenterUser);
+		userDetail.setStatusCode("ACTIVE");
+		Set<UserMachineMapping> userMachineMappings = new HashSet<>();
+		UserMachineMapping userMachineMapping = new UserMachineMapping();
+		MachineMaster machineMaster = new MachineMaster();
+		machineMaster.setSerialNum("12345");
+		userMachineMapping.setMachineMaster(machineMaster);
+		UserMachineMappingID userMachineMappingId = new UserMachineMappingID();
+		userMachineMapping.setUserMachineMappingId(userMachineMappingId);
+		userMachineMapping.setIsActive(true);
+		userMachineMappings.add(userMachineMapping);
+		userDetail.setUserMachineMapping(userMachineMappings);
+		Set<UserRole> userRoles = new HashSet<>();
+		UserRole userRole = new UserRole();
+		UserRoleID userRoleID = new UserRoleID();
+		userRoleID.setRoleCode("REGISTRATION_OFFICER");
+		userRoleID.setUsrId("mosip");
+		userRole.setUserRoleID(userRoleID);
+		userRole.setIsActive(true);
+		userRoles.add(userRole);
+		userDetail.setUserRole(userRoles);
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		
+		loginServiceImpl.getUserDetail("mosip");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		map.put(RegistrationConstants.USER_STATION_ID,"10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.USER_CENTER_ID, "11011");
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(sessionMap).when(ApplicationContext.class, "map");
+		
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+		successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		assertNotNull(loginServiceImpl.validateUser("mosip").getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void validateUserStatusTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		RegCenterUser regCenterUser = new RegCenterUser();
+		RegCenterUserId regCenterUserId = new RegCenterUserId();
+		regCenterUserId.setRegcntrId("10011");
+		regCenterUser.setRegCenterUserId(regCenterUserId);
+		userDetail.setRegCenterUser(regCenterUser);
+		userDetail.setStatusCode("BLOCKED");
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		
+		loginServiceImpl.getUserDetail("mosip");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.USER_CENTER_ID, "11011");
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(sessionMap).when(ApplicationContext.class, "map");
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.BLOCKED_USER_ERROR);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		assertNotNull(loginServiceImpl.validateUser("mosip").getErrorResponseDTOs());
+	}
+	
+	@Test
+	public void validateUserCenterTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		RegCenterUser regCenterUser = new RegCenterUser();
+		RegCenterUserId regCenterUserId = new RegCenterUserId();
+		regCenterUserId.setRegcntrId("11234");
+		regCenterUser.setRegCenterUserId(regCenterUserId);
+		userDetail.setRegCenterUser(regCenterUser);
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		
+		loginServiceImpl.getUserDetail("mosip");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		assertNotNull(loginServiceImpl.validateUser("mosip").getErrorResponseDTOs());
+	}
+	
+	@Test
+	public void validateRoleTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		RegCenterUser regCenterUser = new RegCenterUser();
+		RegCenterUserId regCenterUserId = new RegCenterUserId();
+		regCenterUserId.setRegcntrId("10011");
+		regCenterUser.setRegCenterUserId(regCenterUserId);
+		userDetail.setRegCenterUser(regCenterUser);
+		userDetail.setStatusCode("ACTIVE");
+		Set<UserMachineMapping> userMachineMappings = new HashSet<>();
+		UserMachineMapping userMachineMapping = new UserMachineMapping();
+		MachineMaster machineMaster = new MachineMaster();
+		machineMaster.setSerialNum("12345");
+		userMachineMapping.setMachineMaster(machineMaster);
+		UserMachineMappingID userMachineMappingId = new UserMachineMappingID();
+		userMachineMapping.setUserMachineMappingId(userMachineMappingId);
+		userMachineMapping.setIsActive(true);
+		userMachineMappings.add(userMachineMapping);
+		userDetail.setUserMachineMapping(userMachineMappings);
+		Set<UserRole> userRoles = new HashSet<>();
+		UserRole userRole = new UserRole();
+		UserRoleID userRoleID = new UserRoleID();
+		userRoleID.setRoleCode("OFFICER");
+		userRoleID.setUsrId("mosip");
+		userRole.setUserRoleID(userRoleID);
+		userRole.setIsActive(true);
+		userRoles.add(userRole);
+		userDetail.setUserRole(userRoles);
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		
+		loginServiceImpl.getUserDetail("mosip");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		map.put(RegistrationConstants.USER_STATION_ID,"10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.USER_CENTER_ID, "11011");
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(sessionMap).when(ApplicationContext.class, "map");
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.ROLES_EMPTY_ERROR);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		assertNotNull(loginServiceImpl.validateUser("mosip").getErrorResponseDTOs());
+	}
+	
+	@Test
+	public void validateRoleActiveTest() throws Exception {
+		ResponseDTO responseDTO = new ResponseDTO();
+		UserDetail userDetail = new UserDetail();
+		RegCenterUser regCenterUser = new RegCenterUser();
+		RegCenterUserId regCenterUserId = new RegCenterUserId();
+		regCenterUserId.setRegcntrId("10011");
+		regCenterUser.setRegCenterUserId(regCenterUserId);
+		userDetail.setRegCenterUser(regCenterUser);
+		userDetail.setStatusCode("ACTIVE");
+		Set<UserMachineMapping> userMachineMappings = new HashSet<>();
+		UserMachineMapping userMachineMapping = new UserMachineMapping();
+		MachineMaster machineMaster = new MachineMaster();
+		machineMaster.setSerialNum("12345");
+		userMachineMapping.setMachineMaster(machineMaster);
+		UserMachineMappingID userMachineMappingId = new UserMachineMappingID();
+		userMachineMapping.setUserMachineMappingId(userMachineMappingId);
+		userMachineMapping.setIsActive(true);
+		userMachineMappings.add(userMachineMapping);
+		userDetail.setUserMachineMapping(userMachineMappings);
+		Set<UserRole> userRoles = new HashSet<>();
+		UserRole userRole = new UserRole();
+		UserRoleID userRoleID = new UserRoleID();
+		userRoleID.setRoleCode("OFFICER");
+		userRoleID.setUsrId("mosip");
+		userRole.setUserRoleID(userRoleID);
+		userRole.setIsActive(false);
+		userRoles.add(userRole);
+		userDetail.setUserRole(userRoles);
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+		
+		loginServiceImpl.getUserDetail("mosip");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put(RegistrationConstants.USER_CENTER_ID, "10011");
+		map.put(RegistrationConstants.USER_STATION_ID,"10011");
+		Mockito.when(userOnboardService.getMachineCenterId()).thenReturn(map);
+		
+		HashMap<String, Object> sessionMap = new HashMap<>();
+		sessionMap.put(RegistrationConstants.USER_CENTER_ID, "11011");
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.doReturn(sessionMap).when(ApplicationContext.class, "map");
+		
+		List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
+		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		errorResponseDTO.setMessage(RegistrationConstants.ROLES_EMPTY_ERROR);
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		assertNotNull(loginServiceImpl.validateUser("mosip").getErrorResponseDTOs());
+	}
+	
+	@Test
+	public void validateInvalidLoginTest() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId("mosip");
+		userDTO.setUnsuccessfulLoginCount(2);
+		userDTO.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginMethod("PWD");		
+		
+		UserDetail userDetail = new UserDetail();
+		
+		Mockito.when(userDetailDAO.getUserDetail("mosip")).thenReturn(userDetail);
+		
+		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
+		
+		assertEquals("true", loginServiceImpl.validateInvalidLogin(userDTO, "", 1, -1));
+	}
+	
+	@Test
+	public void validateInvalidLoginTest2() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId("mosip");
+		userDTO.setUnsuccessfulLoginCount(3);
+		userDTO.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginMethod("PWD");		
+		
+		UserDetail userDetail = new UserDetail();
+		
+		Mockito.when(userDetailDAO.getUserDetail("mosip")).thenReturn(userDetail);
+		
+		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
+		
+		assertEquals("ERROR", loginServiceImpl.validateInvalidLogin(userDTO, "sample", 1, 3));
+	}
+	
+	@Test
+	public void validateInvalidLoginTest3() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId("mosip");
+		userDTO.setUnsuccessfulLoginCount(1);
+		userDTO.setUserlockTillDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		userDTO.setLastLoginMethod("PWD");		
+		
+		UserDetail userDetail = new UserDetail();
+		
+		Mockito.when(userDetailDAO.getUserDetail("mosip")).thenReturn(userDetail);
+		
+		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
+		
+		assertEquals("sample", loginServiceImpl.validateInvalidLogin(userDTO, "sample", 3, 3));
 	}
 }
