@@ -141,15 +141,20 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.dao.MachineMappingDAO#getMachineByName(java.lang.
+	 * @see
+	 * io.mosip.registration.dao.MachineMappingDAO#getKeyIndexByMacId(java.lang.
 	 * String)
 	 */
 	@Override
-	public MachineMaster getMachineByName(String name) {
+	public String getKeyIndexByMacId(String macId) {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching Machine Master details based on name");
+				"Fetching Key Index of Machine based on MAC Id");
 
-		return machineMasterRepository.findByIsActiveTrueAndName(name);
+		MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macId);
+
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed fetching Key Index of Machine based on MAC Id");
+		return machineMaster == null ? null : machineMaster.getKeyIndex();
 	}
 
 }

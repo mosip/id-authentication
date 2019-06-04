@@ -26,36 +26,32 @@ public class SystemFileIOException extends BaseUncheckedException {
 	private MainResponseDTO<?> mainResposneDTO;
 
 	/**
-	 * @param msg  pass the error message
+	 * @param msg
+	 *            pass the error message
 	 */
 	public SystemFileIOException(String msg) {
 		super("", msg);
 	}
 
 	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
+	 * @param errCode
+	 *            pass the error code
+	 * @param msg
+	 *            pass the error message
 	 */
 	public SystemFileIOException(String errCode, String msg) {
 		super(errCode, msg);
 	}
-	
-	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
-	 */
-	public SystemFileIOException(String errCode, String msg,MainResponseDTO<?> response) {
-		super(errCode, msg);
-		this.mainResposneDTO=response;
-	}
 
 	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
-	 * @param cause  pass the error cause
+	 * @param errCode
+	 *            pass the error code
+	 * @param msg
+	 *            pass the error message
 	 */
-	public SystemFileIOException(String errCode, String msg, Throwable cause) {
-		super(errCode, msg, cause);
+	public SystemFileIOException(String errCode, String msg, MainResponseDTO<?> response) {
+		super(errCode, msg);
+		this.mainResposneDTO = response;
 	}
 
 }

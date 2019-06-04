@@ -2,7 +2,6 @@ package io.mosip.registration.test.service.packet;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +35,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
@@ -52,7 +52,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, SessionContext.class })
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
@@ -92,27 +92,27 @@ public class PreRegistrationDataSyncServiceTest {
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
-
-		SessionContext.getInstance();
-		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
-		registrationCenterDetailDTO.setRegistrationCenterId("10031");
-		SessionContext.userContext().setRegistrationCenterDetailDTO(registrationCenterDetailDTO);
 	}
 
 	@Before
-	public void initiate() {
+	public void initiate() throws Exception{
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
 		applicationMap.put(RegistrationConstants.PRE_REG_DAYS_LIMIT, "5");
-//
-//		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-//		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+
 		Map<String, Object> map = new HashMap<>();
 		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "5");
 
-		// Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
-
 		io.mosip.registration.context.ApplicationContext.setApplicationMap(applicationMap);
+		
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		RegistrationCenterDetailDTO registrationCenterDetailDTO=new RegistrationCenterDetailDTO();
+		registrationCenterDetailDTO.setRegistrationCenterId("10031");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(registrationCenterDetailDTO);
+		PowerMockito.when(SessionContext.isSessionContextAvailable()).thenReturn(true);
+		PowerMockito.when(SessionContext.userId()).thenReturn("mosip");
 
 	}
 

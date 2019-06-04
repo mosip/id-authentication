@@ -8,7 +8,10 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 
 public interface IdRepoService {
 
-	Number getUinFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)
+	Number getUinByRid(String machedRegId, String regProcessorDemographicIdentity)
+			throws IOException, ApisResourceAccessException;
+	
+	public Number findUinFromIdrepo(String uin, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException;
 
 	JSONObject getIdJsonFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)

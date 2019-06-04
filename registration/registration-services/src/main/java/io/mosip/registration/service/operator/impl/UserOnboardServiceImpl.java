@@ -93,7 +93,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		idaRequestMap.put(RegistrationConstants.REQUEST_AUTH, tempMap);
 		idaRequestMap.put(RegistrationConstants.CONSENT_OBTAINED, true);
 		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID,
-				SessionContext.getInstance().getUserContext().getUserId());
+				SessionContext.userContext().getUserId());
 		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID_TYPE, "USERID");
 		idaRequestMap.put(RegistrationConstants.KEY_INDEX, "");
 
