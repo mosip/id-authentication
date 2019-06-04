@@ -359,6 +359,12 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 						"throwing NO_RECORD_FOUND_VID");
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
+			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
+			if (policy.getAutoRestoreAllowed()) {
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, REGENERATE_VID,
+						"throwing Vid Regeneration Failed");
+				throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
+			}
 			checkRegenerateStatus(vidObject.getStatusCode());
 
 			if (vidObject.getStatusCode()
