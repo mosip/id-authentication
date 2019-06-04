@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -177,6 +180,33 @@ public class MachineController {
 
 		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.deleteMachine(id));
+		return responseWrapper;
+	}
+
+	/**
+	 * 
+	 * Function to fetch machine detail those are mapped with given registration Id
+	 * 
+	 * @param regCenterId
+	 *            pass registration Id as String
+	 * 
+	 * @return MachineResponseDto all machines details those are mapped with given
+	 *         registration Id {@link MachineResponseDto}
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
+	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Machine Details retrieved from database for the given Registration Center Id"),
+			@ApiResponse(code = 404, message = "When No Machine Details not mapped with the Given Registation Center ID"),
+			@ApiResponse(code = 500, message = "While retrieving Machine Detail any error occured") })
+	public ResponseWrapper<PageDto<MachineRegistrationCenterDto>> getMachinesByRegistrationCenter(
+			@PathVariable("regCenterId") String regCenterId, @RequestParam("page") int page, @RequestParam("size") int size,
+			@RequestParam("orderBy") String orderBy, @RequestParam("direction") String direction) {
+
+		ResponseWrapper<PageDto<MachineRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.getMachinesByRegistrationCenter(regCenterId, page, size, orderBy,direction));
 		return responseWrapper;
 	}
 

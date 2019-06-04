@@ -4,12 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
+import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
@@ -274,6 +280,50 @@ public class MachineServiceImpl implements MachineService {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(id);
 		return idResponseDto;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#
+	 * getRegistrationCenterMachineMapping1(java.lang.String)
+	 */
+	@Override
+	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction) {
+		PageDto<MachineRegistrationCenterDto> pageDto = new PageDto<>();
+		List<MachineRegistrationCenterDto> machineRegistrationCenterDtoList = null;
+		Page<Machine> pageEntity = null;
+
+		try {
+			pageEntity = machineRepository.findMachineByRegCenterId(regCenterId,
+					PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
+					MachineErrorCode.REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (pageEntity != null && !pageEntity.getContent().isEmpty()) {
+			machineRegistrationCenterDtoList = MapperUtils.mapAll(pageEntity.getContent(),
+					MachineRegistrationCenterDto.class);
+			for (MachineRegistrationCenterDto machineRegistrationCenterDto1 : machineRegistrationCenterDtoList) {
+				machineRegistrationCenterDto1.setRegCentId(regCenterId);
+			}
+		} else {
+			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		
+		pageDto.setPageNo(pageEntity.getNumber());
+		pageDto.setPageSize(pageEntity.getSize());
+		pageDto.setSort(pageEntity.getSort());
+		pageDto.setTotalItems(pageEntity.getTotalElements());
+		pageDto.setTotalPages(pageEntity.getTotalPages());
+		pageDto.setData(machineRegistrationCenterDtoList);
+		
+		return pageDto;
 
 	}
 }
