@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.MachineHistory;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.entity.MachineHistory;
  *
  */
 @Repository
-public interface MachineHistoryRepository extends BaseRepository<MachineHistory, String> {
+public interface MachineHistoryRepository extends JpaRepository<MachineHistory, String> {
 
 	/**
 	 * This method trigger query to fetch Machine History Details based on Machine

@@ -8,11 +8,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
-import javax.transaction.Transactional;
+import javax.persistence.PersistenceException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -87,6 +88,7 @@ import io.mosip.kernel.syncdata.utils.SyncMasterDataServiceHelper;
  * Masterdata sync handler service impl
  * 
  * @author Abhishek Kumar
+ * @author Bal Vikash Sharma
  * @author Srinivasan
  * @author Urvil Joshi
  * @since 1.0.0
@@ -413,7 +415,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional("syncDataTransactionManager")
 	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
 		final byte[] publicKey = CryptoUtil.decodeBase64(uploadPublicKeyRequestDto.getPublicKey());
 		final String keyIndex = CryptoUtil.computeFingerPrint(publicKey, null);
@@ -439,17 +441,16 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				MachineHistory machineHistory = MapperUtils.map(machine, MachineHistory.class);
 				machineHistory.setEffectDateTime(machine.getUpdatedDateTime());
 				MapperUtils.mapBaseFieldValue(machine, machineHistory);
-				machineRepo.update(machine);
-				machineHistoryRepo.create(machineHistory);
+				machineRepo.save(machine);
+				machineHistoryRepo.save(machineHistory);
 			} else {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException ex) {
-
+		} catch (IllegalArgumentException | PersistenceException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(ex));
+							+ ExceptionUtils.parseException(e));
 		}
 		return new UploadPublicKeyResponseDto(keyIndex);
 	}

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1428,6 +1430,8 @@ public class SyncDataIntegrationTest {
 						MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage(), null));
 		MvcResult mvcResult = mockMvc
 				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		//when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenThrow(new PersistenceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(), null));
+		//MvcResult mvcResult=mockMvc.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isInternalServerError()).andReturn();
 		ResponseWrapper<?> responseWrapper = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
 				ResponseWrapper.class);
