@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -27,13 +28,12 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
@@ -59,7 +59,6 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private String folderPath = "kernel/SyncConfigurations";
 	private String outputFile = "SyncConfigurationsOutput.json";
 	private String requestKeyFile = "SyncConfigurationsInput.json";
-	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
@@ -91,28 +90,36 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	@Test(dataProvider="SyncConfigurations")
 	public void syncConfigurations(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		// Getting configurations from the server
+		Response expectedobject=applicationLibrary.getConfigProperties("http://104.211.212.28:51000/registration/"+environment+"/0.12.0/");
+		//Getting the registrationConfiguration
+		JSONObject regConfig=(JSONObject) ((JSONObject)((JSONArray)((JSONObject) new JSONParser().parse(expectedobject.asString())).get("propertySources")).get(0)).get("source");
+		//Getting the globalConfig
+		JSONObject globalConfig=(JSONObject) ((JSONObject)((JSONArray)((JSONObject) new JSONParser().parse(expectedobject.asString())).get("propertySources")).get(1)).get("source");
+		//Creating a JSONObject and adding both registrationConfiguration and globalConfig
+		JSONObject configDetail= new JSONObject();
+		configDetail.put("registrationConfiguration", regConfig);
+		configDetail.put("globalConfiguration", globalConfig);
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getWithoutParams(syncConf,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
-				
-		String lastSyncTime=res.jsonPath().get("response.lastSyncTime").toString();
-		logger.info("lastsync--------"+lastSyncTime);
-		JSONObject expectedres = (JSONObject) Expectedresponse.get("response");
-		expectedres.put("lastSyncTime", lastSyncTime);
-
+		//Getting only configDetails from actual response
+		JSONObject actualresponse = (JSONObject) ((JSONObject)((JSONObject) new JSONParser().parse(res.asString())).get("response")).get("configDetail");
+		String consent_ara=((JSONObject)actualresponse.get("registrationConfiguration")).get("mosip.registration.consent_ara").toString();
+		String consent_fra=((JSONObject)actualresponse.get("registrationConfiguration")).get("mosip.registration.consent_fra").toString();
+		//adding the unstable elements from actual response to expected response
+		regConfig.put("mosip.registration.consent_ara", consent_ara);
+		regConfig.put("mosip.registration.consent_fra", consent_fra);
+		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
-		listOfElementToRemove.add("timestamp");
 		listOfElementToRemove.add("responsetime");
 
-		listOfElementToRemove.add("response.lastsynctimestamp");
-
 		// Comparing expected and actual response
-		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
+		status = assertKernel.assertKernelWithJsonObject(actualresponse, configDetail,listOfElementToRemove);
       if (status) {
 	            
 				finalStatus = "Pass";

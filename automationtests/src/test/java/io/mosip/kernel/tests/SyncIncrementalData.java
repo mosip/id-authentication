@@ -148,7 +148,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDatarOutput.json";
+			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDataOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
 				logger.info("Successfully updated Results to AdminSyncIncrementalDataOutput.json file.......................!!");

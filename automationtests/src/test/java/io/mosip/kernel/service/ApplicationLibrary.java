@@ -118,4 +118,9 @@ public class ApplicationLibrary extends BaseTestCase {
 			HashMap<String, String> queryParams, String cookie) {
 		return commonLibrary.deleteWithPathQueryParams(ApplnURI + endpoint, pathParams, queryParams, cookie);
 	}
+	// get congig properties
+	public Response getConfigProperties(String Resource_URI) {
+		return commonLibrary.getConfigProperties(Resource_URI);
+	}
+	
 }

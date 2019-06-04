@@ -145,13 +145,13 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 			if (responseArrayFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("id");
 				attributesToValidateExistance.add("holidayName");
 				attributesToValidateExistance.add("holidayDate");
 				attributesToValidateExistance.add("isActive");
 
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 
 				status = AssertKernel.validator(responseArrayFromGet, attributesToValidateExistance,
 						passedAttributesToFetch);

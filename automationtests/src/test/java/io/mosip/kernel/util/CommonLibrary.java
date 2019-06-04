@@ -662,7 +662,7 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response from the request is: " + putResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + putResponse.time());
 		return putResponse;
-	}
+	} 
 
 	/**
 	 * @param url
@@ -751,8 +751,6 @@ public class CommonLibrary extends BaseTestCase {
 		return putResponse;
 	}
 
-	// Delete Requests:
-
 	/**
 	 * @param url
 	 * @param pathParams
@@ -805,4 +803,15 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
 		return getResponse;
 	}
+	
+	// config property reader
+    
+    public Response getConfigProperties(String url) {
+        logger.info("REST-ASSURED: Sending a GET request to " + url);
+        Response getResponse = given().relaxedHTTPSValidation()
+                    .log().all().when().get(url).then().log().all().extract().response();
+        // log then response
+        logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+  } 
 }

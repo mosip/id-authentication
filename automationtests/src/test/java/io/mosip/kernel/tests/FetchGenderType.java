@@ -84,7 +84,7 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
-		cookie = auth.getAuthForIndividual();
+		cookie = auth.getAuthForIDA();
 	}
 
 	/**
@@ -149,14 +149,14 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 			if (genderTypeFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("code");
 				attributesToValidateExistance.add("genderName");
 				attributesToValidateExistance.add("isActive");
 
 				// key value of the attributes passed to fetch the data (should be same in all
 				// obtained objects)
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
 					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
