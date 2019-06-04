@@ -20,11 +20,15 @@ import javax.crypto.spec.SecretKeySpec;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
@@ -49,6 +53,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ FileUtils.class })
 public class PreRegZipHandlingServiceTest {
 
 	@Rule
@@ -131,13 +137,13 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test
-	public void encryptAndSavePreRegPacketTest() throws RegBaseCheckedException {
+	public void encryptAndSavePreRegPacketTest() throws RegBaseCheckedException, IOException {
 
 		PreRegistrationDTO preRegistrationDTO = encryptPacket();
 		assertNotNull(preRegistrationDTO);
 	}
 
-	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException {
+	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException, IOException {
 
 		mockSecretKey();
 
@@ -146,8 +152,32 @@ public class PreRegZipHandlingServiceTest {
 		return preRegistrationDTO;
 	}
 
+	@Test(expected = RegBaseCheckedException.class)
+	public void encryptAndSavePreRegPacketIoExceptionTest() throws RegBaseCheckedException, IOException {
+		mockExceptions();
+		encryptPacket();
+	}
+
+	@Test(expected = RegBaseUncheckedException.class)
+	public void encryptAndSavePreRegPacketRuntimeExceptionTest() throws RegBaseCheckedException, IOException {
+		mockRuntimeExceptions();
+		encryptPacket();
+	}
+	
+	protected void mockExceptions() throws IOException {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.doThrow(new io.mosip.kernel.core.exception.IOException("", "")).when(FileUtils.class);
+		FileUtils.copyToFile(Mockito.any(), Mockito.any());
+	}
+	
+	protected void mockRuntimeExceptions() throws IOException {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.doThrow(new RuntimeException()).when(FileUtils.class);
+		FileUtils.copyToFile(Mockito.any(), Mockito.any());
+	}
+
 	@Test
-	public void decryptPreRegPacketTest() throws RegBaseCheckedException {
+	public void decryptPreRegPacketTest() throws RegBaseCheckedException, IOException {
 
 		final byte[] decrypted = preRegZipHandlingServiceImpl.decryptPreRegPacket("0E8BAAEB3CED73CBC9BF4964F321824A",
 				encryptPacket().getEncryptedPacket());
