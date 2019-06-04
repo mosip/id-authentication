@@ -227,15 +227,32 @@ public class ClientJarDecryption extends Application {
 
 							String clientJar = tempPath + SLASH + UUID.randomUUID();
 							System.out.println("clientJar ---> " + clientJar);
+
+							// Decrypt Client Jar
 							FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
 
 							System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
 							byte[] decryptedRegServiceBytes = aesDecrypt
 									.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar), decryptedKey);
 
+							// Decrypt Services ka
 							FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
 									decryptedRegServiceBytes);
+						} catch (RuntimeException | IOException runtimeException) {
 
+							try {
+								FileUtils.deleteDirectory(new File(tempPath));
+								FileUtils.forceDelete(new File("MANIFEST.MF"));
+								new SoftwareInstallationHandler();
+							} catch (IOException ioException) {
+								ioException.printStackTrace();
+							}
+
+							// EXIT
+							System.exit(0);
+						}
+
+						try {
 							String libPath = new File("lib").getAbsolutePath();
 							String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
 									+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath=" + properties.getProperty("mosip.dbpath")
@@ -254,20 +271,11 @@ public class ClientJarDecryption extends Application {
 
 								process.destroyForcibly();
 
-								FileUtils.deleteDirectory(new File(tempPath));
+								FileUtils.forceDelete(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException | RuntimeException exception) {
-							// TODO Auto-generated catch block
-							exception.printStackTrace();
-
-							try {
-								FileUtils.forceDelete(new File("MANIFEST.MF"));
-								new SoftwareInstallationHandler();
-							} catch (IOException ioException) {
-								ioException.printStackTrace();
-							}
-
+						} catch (RuntimeException | InterruptedException | IOException runtimeException) {
+							runtimeException.printStackTrace();
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");
