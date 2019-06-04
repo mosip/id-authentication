@@ -30,6 +30,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -53,6 +54,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> nullDataException(HttpServletRequest httpServletRequest,
 			final NullDataException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -60,6 +62,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> invalidKeyException(HttpServletRequest httpServletRequest,
 			final InvalidKeyException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -67,6 +70,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(NoSuchAlgorithmException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> noSuchAlgorithmException(HttpServletRequest httpServletRequest,
 			final NoSuchAlgorithmException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -84,6 +88,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(SocketException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> socketException(HttpServletRequest httpServletRequest,
 			final SocketException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest,
 				CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(),
 				CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage(),
@@ -104,6 +109,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(DateTimeParseException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> dateTimeParseException(HttpServletRequest httpServletRequest,
 			final DateTimeParseException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage() + CryptomanagerConstant.WHITESPACE
@@ -124,6 +130,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(ConnectException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> connectException(HttpServletRequest httpServletRequest,
 			final ConnectException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest,
 				CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(),
 				CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage(),
@@ -143,6 +150,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(HttpServerErrorException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> httpServerErrorException(HttpServletRequest httpServletRequest,
 			final HttpServerErrorException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest,
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + CryptomanagerConstant.WHITESPACE
@@ -193,6 +201,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(ParseResponseException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> parseResponseException(HttpServletRequest httpServletRequest,
 			final ParseResponseException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -200,6 +209,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(CryptoManagerSerivceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServieException(HttpServletRequest httpServletRequest,
 			final CryptoManagerSerivceException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -207,6 +217,7 @@ public class CryptomanagerExceptionHandler {
 	@ExceptionHandler(KeymanagerServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> keymanagerServiceException(
 			HttpServletRequest httpServletRequest, final KeymanagerServiceException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

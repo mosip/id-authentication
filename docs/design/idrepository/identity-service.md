@@ -62,7 +62,7 @@ The key solution considerations are
 
 ***2.2.1.	Create Identity***     
 
-MOSIP Mosules can use ID Repo API spec available here - [Create ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#create-id) - to create Identity of an Individual    
+MOSIP Modules can use ID Repo API spec available here - [Create ID API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API#create-id) - to create Identity of an Individual    
 
 1. 	Receive RID, ID JSON, CBEFFs and associated documents of proofs
 2. 	Integrate with kernel-idvalidator-uin, kernel-idvalidator-rid to validate incoming UIN and RID

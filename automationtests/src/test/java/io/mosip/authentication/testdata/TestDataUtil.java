@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.FileUtil;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * TestDataUtil will generate the request and response file for all the test
@@ -177,10 +179,22 @@ public class TestDataUtil {
 						fieldValue = new HashMap<String, String>();
 						for (Entry<String, Object> fieldvalMap : jsonFile.getValue().entrySet()) {
 							fieldValue.put(fieldvalMap.getKey(), fieldvalMap.getValue().toString());
-						}
+						}	
 						fieldValue = Precondtion.parseAndWritePropertyFile(auditMappingPath, fieldValue,
 								new File("./"+ TestDataConfig.getSrcPath() + scenarioPath + "/"
 										+ getTestCaseName() + "/" + jsonFileName + ".properties").getAbsolutePath());
+						//Hashing UIN- kernel dependency	
+						for (Entry<String, String> tempMap : fieldValue.entrySet()) {
+							String value = "";
+							if (tempMap.getKey().equals("ref_id") && jsonFile.getKey().contains("auth_transaction"))
+								value = HMACUtils.digestAsPlainText(
+										HMACUtils.generateHash(tempMap.getValue().toString().getBytes()));
+							else
+								value = tempMap.getValue().toString();
+							fieldValue.put(tempMap.getKey(), value);
+						}
+						AuthTestsUtil.generateMappingDic(new File("./"+ TestDataConfig.getSrcPath() + scenarioPath + "/"
+										+ getTestCaseName() + "/" + jsonFileName + ".properties").getAbsolutePath(), fieldValue);
 						flag = false;
 					}
 					else if (type.equalsIgnoreCase("email")) {

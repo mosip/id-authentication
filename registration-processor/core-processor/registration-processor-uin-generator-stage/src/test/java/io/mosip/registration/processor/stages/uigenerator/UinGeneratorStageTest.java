@@ -218,7 +218,7 @@ public class UinGeneratorStageTest {
 				.thenReturn("27847657360002520181210094052");
 		demographicIdentity.put("UIN", Long.parseLong("9403107397"));
 		Number uin = new Long("9403107397");
-		Mockito.when(idRepoService.getUinFromIDRepo(anyString(), anyString())).thenReturn(uin);
+		Mockito.when(idRepoService.getUinByRid(anyString(), anyString())).thenReturn(uin);
 
 	}
 
@@ -337,8 +337,7 @@ public class UinGeneratorStageTest {
 		VidResponseDto vidResponseDto = new VidResponseDto();
 		vidResponseDto.setVID("123456");
 		vidResponseDto.setVidStatus("ACTIVE");
-		vidResponseDto.setUpdatedVid(null);
-		vidResponseDto.setUpdatedVidStatus(null);
+		vidResponseDto.setRestoredVid(null);
 		vidResponseDto.setUIN(null);
 		responseVid.setResponse(vidResponseDto);
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))

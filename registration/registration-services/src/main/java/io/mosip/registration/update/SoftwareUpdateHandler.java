@@ -61,8 +61,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		try {
 			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-			
-			
+
 			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
@@ -199,7 +198,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	/**
 	 * update the binaries
 	 * 
-	 * @throws Exception - IOException
+	 * @throws Exception
+	 *             - IOException
 	 */
 	public void update() throws Exception {
 
@@ -430,7 +430,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Checking of checksum completed for jar :" + jarFile.getName());
-			return manifestCheckSum.equals(checkSum);
+			return checkSum.equals(manifestCheckSum);
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -527,11 +527,10 @@ public class SoftwareUpdateHandler extends BaseService {
 						runSqlFile(rollBackFile);
 					}
 				} catch (RuntimeException | IOException exception) {
-					
+
 					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-					
 				}
 				// Prepare Error Response
 				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
@@ -622,7 +621,6 @@ public class SoftwareUpdateHandler extends BaseService {
 					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-				
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 				}
 				break;
@@ -656,14 +654,15 @@ public class SoftwareUpdateHandler extends BaseService {
 			try {
 				manifest = getLocalManifest();
 
-				if (manifest != null) {
-					checksum = (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
-				}
 			} catch (IOException exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			}
+		}
+
+		if (manifest != null) {
+			checksum = (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
 		}
 
 		// checksum (content-type)

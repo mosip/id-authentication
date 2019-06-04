@@ -1,55 +1,40 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-04-25T10:01:40.514Z",
+  "responsetime": "2019-05-16T12:32:41.991Z",
   "metadata": null,
   "response": {
-    "lastSyncTime": "2019-04-25T10:01:39.478Z",
+    "lastSyncTime": "2019-05-16T12:32:40.939Z",
     "userDetails": [
       {
         "isDeleted": null,
         "langCode": null,
         "isActive": null,
         "userName": "110001",
-        "mail": "hortense.dauenhauer@xyz.com",
-        "mobile": "975366148",
-        "userPassword": "e1NTSEEyNTZ9VHFiRk1zcTMvUGdMaU1zejRRWmJDSUR4WmkyMnZKMFMya3ZKa1krWTkxNXpVcllnU3pUd2tRPT0=",
-        "name": "Hortense Dauenhauer",
+        "mail": "sravya.surampalli@mindtree.com",
+        "mobile": "9989636932",
+        "userPassword": "3066C39623ED9F03FA149CC3D89F93A274DF1D8AE3F6DB9823C89A4957D95996",
+        "name": "test",
         "roles": [
           "REGISTRATION_ADMIN",
           "REGISTRATION_OFFICER",
           "REGISTRATION_SUPERVISOR"
-        ]
+        ],
+        "rid": null
       },
       {
         "isDeleted": null,
         "langCode": null,
         "isActive": null,
         "userName": "110030",
-        "mail": "jane.smith@xyz.com",
-        "mobile": "818876432",
-        "userPassword": "e1NTSEEyNTZ9ajgzdVNqSEpVaVkyYTZUTENZVWt4ZlFjbjFWU25PcDMrOERndXcrYmlBY1NWUkhZVzNRcDZRPT0=",
-        "name": "Jane Smith",
+        "mail": "sagar.mahapatra2@mindtree.com",
+        "mobile": "7504871938",
+        "userPassword": "A7373822E5ABD0DB6A43D17B8AFBBF4F694A9F17",
+        "name": "ridtest",
         "roles": [
-          "REGISTRATION_ADMIN",
-          "REGISTRATION_OFFICER",
-          "REGISTRATION_SUPERVISOR"
-        ]
-      },
-      {
-        "isDeleted": null,
-        "langCode": null,
-        "isActive": null,
-        "userName": "110031",
-        "mail": "john.doe@xyz.com",
-        "mobile": "818876431",
-        "userPassword": "e1NTSEEyNTZ9T0NlSklocWs5WmNWb2VJc2Rha0hYZmZKaGozNys4U1k4UjY0UmhLYUQ3aENGb0tUditkcENRPT0=",
-        "name": "John Doe",
-        "roles": [
-          "REGISTRATION_ADMIN",
-          "REGISTRATION_OFFICER",
-          "REGISTRATION_SUPERVISOR"
-        ]
+          ""
+        ],
+        "rid": null
       }
     ]
   },

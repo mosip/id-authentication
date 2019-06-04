@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.auth.adapter.handler.AuthHandler;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -109,8 +110,8 @@ public class UinServiceRouter {
 	}
 
 	private void configureHealthCheckEndpoint(Vertx vertx, Router router, final String servletPath) {
-		UinServiceHealthCheckerhandler healthCheckHandler = new UinServiceHealthCheckerhandler(vertx, null, objectMapper,
-				environment);
+		UinServiceHealthCheckerhandler healthCheckHandler = new UinServiceHealthCheckerhandler(vertx, null,
+				objectMapper, environment);
 		router.get(servletPath + UinGeneratorConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
 		healthCheckHandler.register("db", healthCheckHandler::databaseHealthChecker);
 		healthCheckHandler.register("diskspace", healthCheckHandler::dispSpaceHealthChecker);
@@ -145,12 +146,15 @@ public class UinServiceRouter {
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			setError(routingContext, error);
 		} catch (SignatureUtilClientException e1) {
+			ExceptionUtils.logRootCause(e1);
 			setError(routingContext, e1.getList().get(0));
 		} catch (SignatureUtilException e1) {
+			ExceptionUtils.logRootCause(e1);
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					e1.toString());
 			setError(routingContext, error);
 		} catch (Exception e) {
+			ExceptionUtils.logRootCause(e);
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					e.getMessage());
 			setError(routingContext, error);
@@ -195,6 +199,7 @@ public class UinServiceRouter {
 			routingContext.response().putHeader("content-type", UinGeneratorConstant.APPLICATION_JSON)
 					.setStatusCode(200).end(objectMapper.writeValueAsString(reswrp));
 		} catch (UinNotFoundException e) {
+			ExceptionUtils.logRootCause(e);
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode(),
 					UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
 			setError(routingContext, error, reqwrp);
@@ -207,6 +212,7 @@ public class UinServiceRouter {
 					UinGeneratorErrorCode.UIN_NOT_ISSUED.getErrorMessage());
 			setError(routingContext, error, reqwrp);
 		} catch (Exception e) {
+			ExceptionUtils.logRootCause(e);
 			ServiceError error = new ServiceError(UinGeneratorErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(),
 					e.getMessage());
 			setError(routingContext, error, reqwrp);

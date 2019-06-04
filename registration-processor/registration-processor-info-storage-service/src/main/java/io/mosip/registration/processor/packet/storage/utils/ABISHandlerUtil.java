@@ -158,7 +158,7 @@ public class ABISHandlerUtil {
 
 		for (String machedRegId : matchedRegistrationIds) {
 
-			Number matchedUin = idRepoService.getUinFromIDRepo(machedRegId,
+			Number matchedUin = idRepoService.getUinByRid(machedRegId,
 					utilities.getGetRegProcessorDemographicIdentity());
 
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {

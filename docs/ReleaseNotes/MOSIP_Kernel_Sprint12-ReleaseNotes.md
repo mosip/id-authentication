@@ -12,7 +12,7 @@ Date Raised | 29-MAY-2019
 Impact of Release|NA
 Implementation Start Date |20-MAY-2019
 Implementation end date	|7-JUNE-2019
-Jenkins Build #	|Min Version : 0.12.2.2206  / KeyManager: 0.12.2.2208
+Jenkins Build #	|Min Version : 0.12.6 
 Objective & Scope of Release| Sprint12
 Acceptance Criteria	| Unit Testing and Code Coverage > 89%
 Role/Job Title|Technical Lead
@@ -32,9 +32,9 @@ MOS-23506|New|As the MOSIP system, I should be able to support validations on Id
 ### 1.5 Prerequisites : <br><sub>Dependent module/component with their respective versions</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-ID Repository|ID Repository Identity Service|0.12.3|Required for UIN based login to sendOtp
-Kernel|Cbeff Utilily|0.12.3|Required for BioAPI-provider
-Kernel|Master-Data Service|0.12.3|Required for Master-Data Validation in IdObjectValidator
+ID Repository|ID Repository Identity Service|0.12.6|Required for UIN based login to sendOtp
+Kernel|Cbeff Utilily|0.12.6|Required for BioAPI-provider
+Kernel|Master-Data Service|0.12.6|Required for Master-Data Validation in IdObjectValidator
 
 ### 1.6 Prerequisites : <br><sub>Internal Services Dependencies</sub></br>
 Service|Dependencies|Description (If any)
@@ -50,10 +50,10 @@ kernel-signature-service | kernel-keymanager-service | For public key and privat
 ### 1.7 Prerequisites : <br><sub>Dependent DB/External applications and services</sub></br>
 Dependency|Component|Tag/Version|Description (If any)
 -----|--------------|----------------|----------------
-DB|mosip_iam|0.12.3|Required for kernel-auth-service.
-DB|mosip_master|0.12.3|Required for kernel-masterdata-service.
-DB|mosip_audit|0.12.3|Required for kernel-audit-service.
-DB|mosip_kernel|0.12.3|Required for all other kernel services.
+DB|mosip_iam|0.12.6|Required for kernel-auth-service.
+DB|mosip_master|0.12.6|Required for kernel-masterdata-service.
+DB|mosip_audit|0.12.6|Required for kernel-audit-service.
+DB|mosip_kernel|0.12.6|Required for all other kernel services.
 LDAP|ApaacheDS|NA|Required for kernel-auth-service.[External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)
 KeyStore|SoftHsm|NA|Required for kernel-keymanager-softhsm. [External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)
 DFS|HDFS|NA|Required for kernel-fsadaptor-hdfs. [External Dependency Setup](https://github.com/mosip/mosip/wiki/Getting-Started#6-installing-external-dependencies-)

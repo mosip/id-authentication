@@ -167,13 +167,24 @@ public class UserClientMachineMappingDAOTest {
 	}
 
 	@Test
-	public void getMachineByNameTest() {
+	public void getKeyIndexByMacIdTest() {
 		MachineMaster machineMaster = PowerMockito.mock(MachineMaster.class);
+		machineMaster.setKeyIndex("keyIndex");
 
-		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndName(Mockito.anyString()))
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
 				.thenReturn(machineMaster);
 
-		Assert.assertEquals(machineMaster, machineMappingDAOImpl.getMachineByName("name"));
+		Assert.assertEquals(machineMaster.getKeyIndex(), machineMappingDAOImpl.getKeyIndexByMacId("name"));
+
+	}
+
+	@Test
+	public void getKeyIndexByMacIdNullTest() {
+
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+				.thenReturn(null);
+
+		Assert.assertNull(machineMappingDAOImpl.getKeyIndexByMacId("name"));
 
 	}
 

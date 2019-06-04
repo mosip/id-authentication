@@ -138,12 +138,10 @@ public class OTPManagerTest {
 		valueMap.put("namePri", "Name in PrimaryLang");
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
-		otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
 		}
-		catch(IdAuthenticationBusinessException ex) {
-			  assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
-		  }
-		  
 
 	}
 
@@ -161,8 +159,8 @@ public class OTPManagerTest {
 		response.setErrors(errors);
 
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
-		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(restRequestDTO);
+		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
@@ -173,10 +171,9 @@ public class OTPManagerTest {
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
-			}
-			catch(IdAuthenticationBusinessException ex) {
-				  assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
-			  }
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
+		}
 
 	}
 
@@ -206,10 +203,9 @@ public class OTPManagerTest {
 		valueMap.put("nameSec", "Name in SecondaryLang");
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", valueMap);
-			}
-			catch(IdAuthenticationBusinessException ex) {
-				  assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
-			  }
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.PHONE_EMAIL_NOT_REGISTERED.getErrorCode(), ex.getErrorCode());
+		}
 	}
 
 	private OtpGeneratorRequestDto getOtpGeneratorRequestDto() {
@@ -269,14 +265,13 @@ public class OTPManagerTest {
 		valuesMap.put("secondayLang", environment.getProperty(IdAuthConfigKeyConstants.MOSIP_SECONDARY_LANGUAGE));
 		valuesMap.put("namePri", "Name in PrimaryLang");
 		valuesMap.put("nameSec", "Name in SecondaryLang");
-	  try {	
-		otpManager.sendOtp(otpRequestDTO, "123456", valuesMap);
-	  }
-	  catch(IdAuthenticationBusinessException ex) {
-		  assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorCode(), ex.getErrorCode());
-		   assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorMessage(), ex.getErrorText());
-	  }
-	  
+		try {
+			otpManager.sendOtp(otpRequestDTO, "123456", valuesMap);
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_GENERATE.getErrorMessage(), ex.getErrorText());
+		}
+
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -288,7 +283,6 @@ public class OTPManagerTest {
 		Map<String, Object> response1 = new HashMap<>();
 		response1.put("response", response);
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -311,7 +305,6 @@ public class OTPManagerTest {
 		Map<String, Object> response1 = new HashMap<>();
 		response1.put("response", response);
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -324,7 +317,6 @@ public class OTPManagerTest {
 	public void TestOtpAuthFailure()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
@@ -345,7 +337,6 @@ public class OTPManagerTest {
 		valueMap.put("message", "VALIDATION_UNSUCCESSFUL");
 		response.put("response", valueMap);
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -366,7 +357,6 @@ public class OTPManagerTest {
 		valueMap.put("message", "VALIDATION_UNSUCCESSFUL");
 		response.put("response", valueMap);
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -382,7 +372,6 @@ public class OTPManagerTest {
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException,
 			com.fasterxml.jackson.core.JsonProcessingException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> responseMap = new HashMap<>();
 		Map<String, Object> response = new HashMap<>();
@@ -402,7 +391,6 @@ public class OTPManagerTest {
 	public void TestRestServiceExceptionwithInvalidWithoutStatusWithOTPNOTGENERATEDError()
 			throws RestServiceException, IdAuthenticationBusinessException, JsonProcessingException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		Map<String, Object> valuemap = new HashMap<>();
 		valuemap.put("status", "failure");
 		valuemap.put("message", "VALIDATION_UNSUCCESSFUL");
@@ -427,7 +415,6 @@ public class OTPManagerTest {
 		response.put("message", "VALIDATION_UNSUCCESSFUL");
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", response);
-		otpGeneratorRequestDto.setKey("Invalid");
 		String output = "{\"errors\":[{\"errorCode\":\"KER-SOME-OTHER-001\",\"errorMessage\":\"Some other error.\"}]}";
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
@@ -502,7 +489,6 @@ public class OTPManagerTest {
 		valueMap.put("response", response);
 
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("Invalid");
 		ObjectMapper mapper = new ObjectMapper();
 		String output = mapper.writeValueAsString(response);
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
@@ -546,11 +532,10 @@ public class OTPManagerTest {
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
 			otpManager.validateOtp("Test123", "123456");
-			}
-			catch(IdAuthenticationBusinessException ex) {
-				   assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), ex.getErrorCode());
-				   assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorMessage(), ex.getErrorText());
-			   }
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.BLOCKED_OTP_VALIDATE.getErrorMessage(), ex.getErrorText());
+		}
 	}
 
 	@Test
@@ -566,12 +551,11 @@ public class OTPManagerTest {
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
-		otpManager.validateOtp("Test123", "123456");
+			otpManager.validateOtp("Test123", "123456");
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(), ex.getErrorText());
 		}
-		catch(IdAuthenticationBusinessException ex) {
-			   assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorCode(), ex.getErrorCode());
-			   assertEquals(IdAuthenticationErrorConstants.EXPIRED_OTP.getErrorMessage(), ex.getErrorText());
-		   }
 	}
 
 	@Test
@@ -589,11 +573,10 @@ public class OTPManagerTest {
 				IdAuthenticationErrorConstants.INVALID_REST_SERVICE, responseMap.toString(), (Object) responseMap));
 		try {
 			otpManager.validateOtp("Test123", "123456");
-			}
-			catch(IdAuthenticationBusinessException ex) {
-				   assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), ex.getErrorCode());
-				   assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage(), ex.getErrorText());
-			   }
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage(), ex.getErrorText());
+		}
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

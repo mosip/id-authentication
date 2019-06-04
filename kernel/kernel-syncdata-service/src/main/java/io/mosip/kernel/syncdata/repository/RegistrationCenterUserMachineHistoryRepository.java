@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserHistoryID;
 
@@ -19,7 +19,7 @@ import io.mosip.kernel.syncdata.entity.id.RegistrationCenterMachineUserHistoryID
  */
 @Repository
 public interface RegistrationCenterUserMachineHistoryRepository
-		extends BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserHistoryID> {
+		extends JpaRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserHistoryID> {
 
 	/**
 	 * 

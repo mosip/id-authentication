@@ -139,17 +139,17 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Check language type.
 	 *
-	 * @param languageForMatchType the language for match type
-	 * @param languageFromReq      the language from req
+	 * @param languageFromInput the language for match type
+	 * @param languageFromEntity      the language from req
 	 * @return true, if successful
 	 */
-	public boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
-		if (languageForMatchType == null || languageFromReq == null || languageFromReq.isEmpty()
-				|| languageFromReq.equalsIgnoreCase("null")) {
-			return languageForMatchType == null
-					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
+	public boolean checkLanguageType(String languageFromInput, String languageFromEntity) {
+		if (languageFromInput == null || languageFromEntity == null || languageFromEntity.isEmpty()
+				|| languageFromEntity.equalsIgnoreCase("null")) {
+			return languageFromInput == null
+					|| getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageFromInput);
 		} else {
-			return languageForMatchType.equalsIgnoreCase(languageFromReq);
+			return languageFromInput.equalsIgnoreCase(languageFromEntity);
 		}
 	}
 

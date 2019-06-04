@@ -539,7 +539,7 @@ public class OSIValidator {
 
 				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
 
-					introducerUinNumber = idRepoService.getUinFromIDRepo(introducerRID,
+					introducerUinNumber = idRepoService.getUinByRid(introducerRID,
 							utility.getGetRegProcessorDemographicIdentity());
 					introducerUIN = numberToString(introducerUinNumber);
 					if (introducerUIN == null) {
