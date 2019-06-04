@@ -1,5 +1,6 @@
 package io.mosip.authentication.fw.util;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -379,6 +380,6 @@ public class RunConfigUtil {
 	}
 	
 	public static String getLinuxMavenEnvVariableKey() {
-		return AuthTestsUtil.getPropertyValue("linuxMavenEnvVarKey");
+		return AuthTestsUtil.getPropertyFromFilePath(new File("./src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath()).get("linuxMavenEnvVarKey").toString();
 	}
 }
