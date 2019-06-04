@@ -804,7 +804,7 @@ export class DemographicComponent implements OnInit {
         );
         this.userForm.controls[this.formControlNames.dateOfBirth].setErrors(null);
       } else {
-        
+        this.oldAge = age;
         this.userForm.controls[this.formControlNames.date].patchValue('');
         this.userForm.controls[this.formControlNames.month].patchValue('');
         this.userForm.controls[this.formControlNames.year].patchValue('');
