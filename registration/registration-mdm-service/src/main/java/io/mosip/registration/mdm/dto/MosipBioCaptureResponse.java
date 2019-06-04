@@ -10,7 +10,7 @@ import lombok.Setter;
 public class MosipBioCaptureResponse {
 
 	@JsonProperty("data")
-	private CaptureResponseData captureResponseData;
+	private String captureBioData;
 
 	private String hash;
 	private String sessionKey;
