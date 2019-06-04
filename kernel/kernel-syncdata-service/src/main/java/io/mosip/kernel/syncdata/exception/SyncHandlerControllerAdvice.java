@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
@@ -44,6 +45,7 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(final SyncDataServiceException e,
 			final HttpServletRequest httpServletRequest) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getServiceErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
@@ -62,6 +64,7 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(final DataNotFoundException e,
 			final HttpServletRequest httpServletRequest) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -81,6 +84,7 @@ public class SyncHandlerControllerAdvice {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError(MasterDataErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -95,6 +99,7 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncInvalidArgumentException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> syncInvalidArgumentException(
 			HttpServletRequest httpServletRequest, final SyncInvalidArgumentException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,6 +108,7 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(CryptoManagerServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServiceException(
 			HttpServletRequest httpServletRequest, final CryptoManagerServiceException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,6 +117,7 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SignatureUtilClientException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> signatureUtilClientException(
 			HttpServletRequest httpServletRequest, final SignatureUtilClientException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

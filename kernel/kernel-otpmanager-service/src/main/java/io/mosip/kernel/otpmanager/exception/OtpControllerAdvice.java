@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -81,6 +82,7 @@ public class OtpControllerAdvice {
 	public ResponseEntity<ResponseWrapper<ServiceError>> otpValidationArgumentValidity(
 			final HttpServletRequest httpServletRequest, final OtpInvalidArgumentException exception)
 			throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
@@ -102,6 +104,7 @@ public class OtpControllerAdvice {
 	public ResponseEntity<ResponseWrapper<ServiceError>> otpValidationKeyNullValidity(
 			final HttpServletRequest httpServletRequest, final RequiredKeyNotFoundException exception)
 			throws IOException {
+		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
@@ -123,6 +126,7 @@ public class OtpControllerAdvice {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(OtpErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
