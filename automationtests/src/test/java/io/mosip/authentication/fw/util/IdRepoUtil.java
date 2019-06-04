@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
+import java.util.Map.Entry;
+
 import org.apache.log4j.Logger;
 
 import io.mosip.authentication.fw.dto.VidDto;
@@ -58,7 +60,11 @@ public class IdRepoUtil extends AuthTestsUtil {
 				mappingTopass=mapping;
 			if (uinNumber.length() == 16) {
 				RunConfigUtil.getVidPropertyValue(RunConfigUtil.getVidPropertyPath());
-				uinNumber = VidDto.getVid().get(uinNumber);
+				for (Entry<String, String> entry : VidDto.getVid().entrySet()) {
+					if (entry.getValue().contains(uinNumber)) {
+						uinNumber = entry.getKey();
+					}
+				}
 			}
 			if (retrieveIdRepo(uinNumber)) {
 				String value = XmlPrecondtion.getValueFromXmlUsingMapping(
@@ -67,7 +73,7 @@ public class IdRepoUtil extends AuthTestsUtil {
 										.getAbsolutePath())
 								.toString(),
 						new File("./" + RunConfigUtil.objRunConfig.getSrcPath()
-								+ RunConfigUtil.objRunConfig.getStoreUINDataPath() + "/mapping.properties")
+								+ RunConfigUtil.objRunConfig.getUinIdentityMapper() + "/mapping.properties")
 										.getAbsolutePath(),
 										mappingTopass);
 				if (mapping.contains("dateOfBirth") && mapping.contains("input")) {
@@ -83,11 +89,11 @@ public class IdRepoUtil extends AuthTestsUtil {
 					if (mapping.contains("PLUS"))
 						value = String.valueOf(Integer.parseInt(calculateAge(Integer.parseInt(year.format(valuedate)),
 								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate))))
-								+ Integer.parseInt(AuthTestsUtil.randomize(1)));
+								+ Integer.parseInt(AuthTestsUtil.randomize(2)));
 					else if (mapping.contains("MINUS"))
 						value = String.valueOf(Integer.parseInt(calculateAge(Integer.parseInt(year.format(valuedate)),
 								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate))))
-								+ Integer.parseInt(AuthTestsUtil.randomize(1)));
+								+ Integer.parseInt(AuthTestsUtil.randomize(2)));
 					else
 						value = calculateAge(Integer.parseInt(year.format(valuedate)),
 								Integer.parseInt(month.format(valuedate)), Integer.parseInt(date.format(valuedate)));

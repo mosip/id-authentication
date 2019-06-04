@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.applicanttype.api.constant.ApplicantTypeErrorCode;
 import io.mosip.kernel.core.applicanttype.exception.InvalidApplicantArgumentException;
 import io.mosip.kernel.core.applicanttype.spi.ApplicantType;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 
 /**
  * Implementation for Applicant Type.
@@ -107,7 +108,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 			LOGGER.error("Error while claculating age");
 			throw new InvalidApplicantArgumentException(
 					ApplicantTypeErrorCode.INVALID_DATE_STRING_EXCEPTION.getErrorCode(),
-					ApplicantTypeErrorCode.INVALID_DATE_STRING_EXCEPTION.getErrorMessage());
+					ApplicantTypeErrorCode.INVALID_DATE_STRING_EXCEPTION.getErrorMessage(), e);
 		}
 
 		String ageCode = null;
@@ -122,7 +123,7 @@ public class ApplicantTypeImpl implements ApplicantType {
 		} catch (NumberFormatException e) {
 			LOGGER.error("Error while setting age code");
 			throw new InvalidApplicantArgumentException(ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorCode(),
-					ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage());
+					ApplicantTypeErrorCode.INVALID_QUERY_EXCEPTION.getErrorMessage(), e);
 		}
 
 		// check and return the applicant id

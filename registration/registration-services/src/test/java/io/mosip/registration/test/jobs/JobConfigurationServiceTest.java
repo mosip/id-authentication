@@ -53,7 +53,7 @@ import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, io.mosip.registration.jobs.BaseJob.class })
+@PrepareForTest({  io.mosip.registration.jobs.BaseJob.class })
 public class JobConfigurationServiceTest {
 
 	@Mock
@@ -136,18 +136,17 @@ public class JobConfigurationServiceTest {
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		applicationMap.put(RegistrationConstants.SYNC_DATA_FREQ, "0 0 11 * * ?");
 
-		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
-		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
-		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
-		Map<String, Object> map = new HashMap<>();
-		map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
+//		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+//		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
+//		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
+//		when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+//		Map<String, Object> map = new HashMap<>();
+//		map.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 
-		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
+//		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
 
-		jobConfigurationService.setBaseGlobalMap(applicationMap);
-		// context.setApplicationMap(applicationMap);
-	}
+		io.mosip.registration.context.ApplicationContext.setApplicationMap(applicationMap);
+			}
 
 	@Test
 	public void startJobs() throws SchedulerException {

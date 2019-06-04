@@ -102,9 +102,10 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+			
 		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		}
 	}
 

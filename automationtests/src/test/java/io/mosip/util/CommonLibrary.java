@@ -539,7 +539,30 @@ public class CommonLibrary extends BaseTestCase {
         return getResponse;
   } // end GET_REQUEST
   
+	public Response get_Request_pathAndMultipleQueryParam(String url, HashMap<String, String> map) {
+        logger.info("REST-ASSURED: Sending a Put request to " + url);
 
+        Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+        
+        Response getResponse = null;
+        
+        int i=0;
+               
+                     getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParam(map.keySet().toArray()[i].toString(), map.get(map.keySet().toArray()[i]).toString())
+                     .queryParam(map.keySet().toArray()[i+1].toString(), map.get(map.keySet().toArray()[i+1]).toString()).log()
+                     .all().when().get(url).then().log().all().extract().response();
+                     
+        
+        
+        
+        
+        
+        // log then response
+        logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+        logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+        return getResponse;
+  } // end GET_REQUEST
+  
 
 	public Response GET_REQUEST_withoutParameters(String url) {
 		logger.info("REST-ASSURED: Sending a GET request to " + url);
@@ -926,6 +949,15 @@ public class CommonLibrary extends BaseTestCase {
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.log().all().when().post(url).then().log().all().extract().response();
 		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
+	
+	public static Response postRequestToGetCookie(String url, Object body, String contentHeader, String acceptHeader) {
+		logger.info("REST-ASSURED: Sending a POST request to " + url);
+		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
+				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;

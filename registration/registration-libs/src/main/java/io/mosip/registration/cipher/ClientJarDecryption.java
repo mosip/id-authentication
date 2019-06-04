@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -32,7 +33,6 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -227,15 +227,32 @@ public class ClientJarDecryption extends Application {
 
 							String clientJar = tempPath + SLASH + UUID.randomUUID();
 							System.out.println("clientJar ---> " + clientJar);
+
+							// Decrypt Client Jar
 							FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
 
 							System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
 							byte[] decryptedRegServiceBytes = aesDecrypt
 									.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar), decryptedKey);
 
+							// Decrypt Services ka
 							FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
 									decryptedRegServiceBytes);
+						} catch (RuntimeException | IOException runtimeException) {
 
+							try {
+								FileUtils.deleteDirectory(new File(tempPath));
+								FileUtils.forceDelete(new File("MANIFEST.MF"));
+								new SoftwareInstallationHandler();
+							} catch (IOException ioException) {
+								ioException.printStackTrace();
+							}
+
+							// EXIT
+							System.exit(0);
+						}
+
+						try {
 							String libPath = new File("lib").getAbsolutePath();
 							String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
 									+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath=" + properties.getProperty("mosip.dbpath")
@@ -254,20 +271,11 @@ public class ClientJarDecryption extends Application {
 
 								process.destroyForcibly();
 
-								FileUtils.deleteDirectory(new File(tempPath));
+								FileUtils.forceDelete(new File(tempPath));
 
 							}
-						} catch (IOException | InterruptedException | RuntimeException exception) {
-							// TODO Auto-generated catch block
-							exception.printStackTrace();
-
-							try {
-								FileUtils.forceDelete(new File("MANIFEST.MF"));
-								new SoftwareInstallationHandler();
-							} catch (IOException ioException) {
-								ioException.printStackTrace();
-							}
-
+						} catch (RuntimeException | InterruptedException | IOException runtimeException) {
+							runtimeException.printStackTrace();
 						}
 					} else {
 						System.out.println("Not Downloaded Fully");
@@ -294,16 +302,14 @@ public class ClientJarDecryption extends Application {
 		StackPane stackPane = new StackPane();
 		VBox vBox = new VBox();
 		HBox hBox = new HBox();
-		File file = new File("logo-final.png");
-		ImageView imageView = new ImageView(new Image(file.toURI().toString()));
+		InputStream ins = this.getClass().getResourceAsStream("/img/logo-final.png");
+		ImageView imageView = new ImageView(new Image(ins));
 		imageView.setFitHeight(150);
-		imageView.setFitWidth(200);
-		hBox.setMinSize(200, 100);
+		imageView.setFitWidth(150);
+		hBox.setMinSize(200, 400);
 		hBox.getChildren().add(imageView);
 		Label downloadLabel = new Label("Downloading..");
-		vBox.setMinSize(150, 150);
 		vBox.setAlignment(Pos.CENTER_LEFT);
-		vBox.setPadding(new Insets(10.0));
 		vBox.getChildren().add(downloadLabel);
 		vBox.getChildren().add(progressBar);
 		hBox.getChildren().add(vBox);

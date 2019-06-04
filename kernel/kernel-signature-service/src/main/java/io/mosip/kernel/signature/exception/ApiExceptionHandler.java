@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
@@ -45,12 +46,14 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(
 			final HttpServletRequest httpServletRequest, final RequestException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(SignatureFailureException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> signatureFailureException(
 			final HttpServletRequest httpServletRequest, final SignatureFailureException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -59,18 +62,21 @@ public class ApiExceptionHandler {
 			final HttpServletRequest httpServletRequest, final SignatureUtilClientException e) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(httpServletRequest);
 		responseWrapper.getErrors().addAll(e.getList());
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(SignatureUtilException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> signatureUtilException(
 			final HttpServletRequest httpServletRequest, final SignatureUtilException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
 	@ExceptionHandler(ParseResponseException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> parseResponseException(
 			final HttpServletRequest httpServletRequest, final ParseResponseException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -102,6 +108,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
 		ServiceError error = new ServiceError(SignatureErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

@@ -407,7 +407,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
-		if (syncRegistrationEntity.getIsDeleted()) {
+		if (syncRegistrationEntity.getIsDeleted()!=null && syncRegistrationEntity.getIsDeleted()) {
 			syncRegistrationEntity.setDeletedDateTime(LocalDateTime.now());
 		} else {
 			syncRegistrationEntity.setDeletedDateTime(null);

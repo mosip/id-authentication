@@ -1,1 +1,1 @@
-[]
+[{"locationname":"valid","Kernel_ValidateLocationByName_response_time":"valid","jiraId":"MOS-1006","Kernel_ValidateLocationByName_localAuthority":"valid","testType":"smoke","testCaseName":"Kernel_ValidateLocationByName_smoke_country","Kernel_ValidateLocationByName_city":"valid","Kernel_ValidateLocationByName_province":"valid","Kernel_ValidateLocationByName_Region":"valid","status":"Pass"}]

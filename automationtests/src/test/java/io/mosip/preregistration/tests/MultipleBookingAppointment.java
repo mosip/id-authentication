@@ -135,7 +135,7 @@ public class MultipleBookingAppointment extends BaseTestCase implements ITest {
 		Response createApplicationResponse = preRegLib.CreatePreReg();
 		String preIDFirstUsr = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
-		/* Fetch availability[or]center details for  one*/
+		/* Fetch availability[or]center details for one*/
 		Response FetchCentreResponseOne = preRegLib.FetchCentre();
 		
 		/*Creating the Pre-Registration Application*/

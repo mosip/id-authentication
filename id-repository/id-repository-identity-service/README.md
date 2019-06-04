@@ -29,8 +29,8 @@ management.endpoint.restart.enabled=true
 mosip.idrepo.primary-lang=ARA
 mosip.idrepo.secondary-lang=FRE
 
-#Kernel-JsonValidator
-mosip.jsonvalidator.property-source=CONFIG_SERVER
+#Kernel-IdObjectValidator
+mosip.IdObjectValidator.property-source=CONFIG_SERVER
 mosip.idrepo.json-schema-fileName=mosip-identity-json-schema.json
 
 #changed datasources
@@ -68,6 +68,6 @@ mosip.cryptomanager.encrypt.url=https://host/cryptomanager/v1.0/encrypt
 mosip.cryptomanager.decrypt.url=https://host/cryptomanager/v1.0/decrypt
 application.id=ID_REPO
 application.version=1.0
-mosip.kernel.jsonvalidator.file-storage-uri=${spring.cloud.config.uri}/${spring.application.name}/${spring.profiles.active}/${spring.cloud.config.label}/
+mosip.kernel.IdObjectValidator.file-storage-uri=${spring.cloud.config.uri}/${spring.application.name}/${spring.profiles.active}/${spring.cloud.config.label}/
 
 ```

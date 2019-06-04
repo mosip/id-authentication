@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -29,17 +27,14 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
 
@@ -88,7 +83,6 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationProcessor();
-
 	}
 
 	/**
@@ -98,71 +92,34 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	 * @return test case name as object
 	 */
 	@DataProvider(name = "fetchData")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+	public Object[][] readData(ITestContext context){
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 		}
 
-	}
+		/**
+		 * This fetch the value of the data provider and run for each test case
+		 * 
+		 * @param fileName
+		 * @param object
+		 * @throws ParseException 
+		 * @throws NumberFormatException 
+		 * 
+		 */
+		@SuppressWarnings("unchecked")
+		@Test(dataProvider = "fetchData", alwaysRun = true)
+		public void ridGenerator(String testcaseName, JSONObject object) throws NumberFormatException, ParseException{
+			logger.info("Test Case Name:" + testcaseName);
+			object.put("Jira ID", jiraID);
 
-	/**
-	 * This fetch the value of the data provider and run for each test case
-	 * 
-	 * @param fileName
-	 * @param object
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void generateRID(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
+			// getting request and expected response jsondata from json files.
+			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
-		object.put("Jira ID", jiraID);
-
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
-
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-
+			JSONObject objectData = objectDataArray[0];
+			responseObject = objectDataArray[1];
 					response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData,cookie);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-		}
-
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String rid = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString();
@@ -206,23 +163,15 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 
 /**
@@ -31,11 +32,17 @@ public class KernelDataBaseAccess {
 		String dbConfigXml = dbName+env+".cfg.xml";
 		try {
 		factory = new Configuration().configure(dbConfigXml).buildSessionFactory();
-		} catch (HibernateException e) {
+		session = factory.getCurrentSession();
+		} 
+		catch (HibernateException e) {
 			logger.info("Exception in Database Connection with following message: ");
 			logger.info(e.getMessage());
+			Assert.assertTrue(false, "Exception in creating the sessionFactory");
 		}
-		session = factory.getCurrentSession();
+		
+		catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception in getting the session");
+		}
 		session.beginTransaction();
 		logger.info("==========session  begins=============");
 		return session;
@@ -44,7 +51,7 @@ public class KernelDataBaseAccess {
 	@SuppressWarnings("unchecked")
 	public List<String> getDbData(String queryString, String dbName) {
 
-		return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+		return  getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 
 	}
 	@SuppressWarnings("unchecked")
@@ -67,8 +74,8 @@ public class KernelDataBaseAccess {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String[]> getArrayData(String queryString, String dbName) {
-		return (List<String[]>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
+	public List<Object[]> getArrayData(String queryString, String dbName) {
+		return (List<Object[]>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 	}
 
 	@AfterClass(alwaysRun = true)

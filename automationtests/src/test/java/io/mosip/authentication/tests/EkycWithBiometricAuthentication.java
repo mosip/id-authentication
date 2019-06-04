@@ -54,10 +54,9 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
-	public void setTestType(String testType) {
-		this.testType = testType;
+	public void setTestType() {
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**
@@ -171,7 +170,7 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
 		logger.info("************* Modification of bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);
+		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "ekyc-request"), true);
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl + " *******");
 		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
@@ -203,4 +202,3 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 	}
 
 }
-

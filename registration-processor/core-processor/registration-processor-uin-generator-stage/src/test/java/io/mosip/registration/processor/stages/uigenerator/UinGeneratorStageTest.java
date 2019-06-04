@@ -337,8 +337,7 @@ public class UinGeneratorStageTest {
 		VidResponseDto vidResponseDto = new VidResponseDto();
 		vidResponseDto.setVID("123456");
 		vidResponseDto.setVidStatus("ACTIVE");
-		vidResponseDto.setUpdatedVid(null);
-		vidResponseDto.setUpdatedVidStatus(null);
+		vidResponseDto.setRestoredVid(null);
 		vidResponseDto.setUIN(null);
 		responseVid.setResponse(vidResponseDto);
 		Mockito.when(registrationProcessorRestClientService.postApi(any(), any(), any(), any(), any(Class.class)))

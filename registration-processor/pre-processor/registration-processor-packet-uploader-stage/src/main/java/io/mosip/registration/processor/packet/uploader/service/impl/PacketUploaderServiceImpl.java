@@ -189,8 +189,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		try {
 
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			dto = registrationStatusService.getRegistrationStatus(registrationId);
 			messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
+			dto = registrationStatusService.getRegistrationStatus(registrationId);
+
 			dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString());
 			dto.setRegistrationStageName(stageName);
 

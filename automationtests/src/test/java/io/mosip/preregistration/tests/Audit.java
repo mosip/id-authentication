@@ -165,25 +165,6 @@ public class Audit extends BaseTestCase implements ITest {
 	}
 
 	@Test
-	public void getAuditDataForBooking() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response fetchCenterResponse = lib.FetchCentre();
-		lib.BookAppointment(fetchCenterResponse, preID);
-		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
-		String userId = lib.userId;
-		JSONObject expectedRequest = lib.getRequest("Audit/AuditForBooking");
-		expectedRequest.put("session_user_id", userId);
-		expectedRequest.put("ref_id", regCenterId);
-		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 3);
-		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-		Assert.assertTrue(result, "object are not equal");
-	}
-
-	@Test
 	public void getAuditDataForCancelBooking() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);

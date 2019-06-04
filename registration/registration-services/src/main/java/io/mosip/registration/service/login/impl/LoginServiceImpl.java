@@ -232,7 +232,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		List<String> val = new LinkedList<>();
 
 		// Sync the TPM Public with Server, if it is initial set-up and TPM is available
-		String keyIndex = RegistrationConstants.EMPTY;
+		String keyIndex = null;
 		final boolean isInitialSetUp = RegistrationConstants.ENABLE
 				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)));
 
@@ -259,16 +259,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		ResponseDTO masterResponseDTO = null;
 		if (isInitialSetUp) {
 			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER);
+					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
 		} else {
 			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		}
 		
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {
-		}
-
 		ResponseDTO userResponseDTO = userDetailService
 				.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 

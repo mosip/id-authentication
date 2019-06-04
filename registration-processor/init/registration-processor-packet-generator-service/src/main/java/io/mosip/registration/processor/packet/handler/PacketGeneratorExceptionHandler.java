@@ -53,8 +53,8 @@ public class PacketGeneratorExceptionHandler {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
 
-	@Autowired
-	SignatureUtil signatureUtil;
+	/*@Autowired
+	SignatureUtil signatureUtil;*/
 
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 

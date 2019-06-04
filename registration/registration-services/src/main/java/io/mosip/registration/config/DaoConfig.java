@@ -66,14 +66,15 @@ public class DaoConfig extends HibernateDaoConfig {
 
 			String dbConnectionURL = URL + System.getProperty(DB_PATH_VAR) + DB_AUTHENITICATION;
 			
-			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)) {
-				driverManagerDataSource.setUrl(dbConnectionURL + new String(Base64
-						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes())));
-				ApplicationContext.map().put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.DISABLE);
-			} else {
+			if (keys.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)
+					&& RegistrationConstants.ENABLE.equalsIgnoreCase(keys.getProperty(MOSIP_CLIENT_TPM_AVAILABILITY))) {
 				driverManagerDataSource.setUrl(dbConnectionURL + new String(TPMUtil.asymmetricDecrypt(Base64
 						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes()))));
 				ApplicationContext.map().put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
+			} else {
+				driverManagerDataSource.setUrl(dbConnectionURL + new String(Base64
+						.decodeBase64(keys.getProperty(RegistrationConstants.MOSIP_REGISTRATION_DB_KEY).getBytes())));
+				ApplicationContext.map().put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.DISABLE);
 			}
 
 			dataSource = driverManagerDataSource;

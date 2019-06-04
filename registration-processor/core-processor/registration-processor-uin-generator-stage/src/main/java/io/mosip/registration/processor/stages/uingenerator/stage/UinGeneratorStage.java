@@ -655,17 +655,17 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 			} else {
 
-				requestDto.setRegistrationId(regId);
-				requestDto.setStatus(RegistrationType.ACTIVATED.toString());
-				requestDto.setBiometricReferenceId(Long.toString(uin));
-
-				idRequestDTO.setId(idRepoUpdate);
-				idRequestDTO.setRequest(requestDto);
-				idRequestDTO.setMetadata(null);
-				idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-				idRequestDTO.setVersion(idRepoApiVersion);
-				Gson gson = new GsonBuilder().create();
-				String idReq = gson.toJson(idResponseDTO);
+					requestDto.setRegistrationId(regId);
+					requestDto.setStatus(RegistrationType.ACTIVATED.toString());
+					requestDto.setBiometricReferenceId(Long.toString(uin));
+					requestDto.setIdentity(demographicIdentity);
+					idRequestDTO.setId(idRepoUpdate);
+					idRequestDTO.setRequest(requestDto);
+					idRequestDTO.setMetadata(null);
+					idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+					idRequestDTO.setVersion(idRepoApiVersion);
+					Gson gson = new GsonBuilder().create();
+					String idReq = gson.toJson(idResponseDTO);
 
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString() + regId, "Update Request to IdRepo API",
@@ -741,16 +741,16 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			object.setIsValid(Boolean.FALSE);
 			return idResponseDto;
 
-		} else {
-			requestDto.setRegistrationId(regId);
-			requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
-
-			requestDto.setBiometricReferenceId(Long.toString(uin));
-			idRequestDTO.setId(idRepoUpdate);
-			idRequestDTO.setMetadata(null);
-			idRequestDTO.setRequest(requestDto);
-			idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
-			idRequestDTO.setVersion(idRepoApiVersion);
+			} else {
+				requestDto.setRegistrationId(regId);
+				requestDto.setStatus(RegistrationType.DEACTIVATED.toString());
+				requestDto.setIdentity(demographicIdentity);
+				requestDto.setBiometricReferenceId(Long.toString(uin));
+				idRequestDTO.setId(idRepoUpdate);
+				idRequestDTO.setMetadata(null);
+				idRequestDTO.setRequest(requestDto);
+				idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+				idRequestDTO.setVersion(idRepoApiVersion);
 
 			idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 					pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
@@ -943,6 +943,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 
 			vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), VidResponseDto.class);
+			Gson gson = new GsonBuilder().create();
+			String vidRes = gson.toJson(vidResponseDto);
+
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString() + UIN, "create vid response",
+				"is : " + vidRes);
 
 			if (!response.getErrors().isEmpty()) {
 				throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),

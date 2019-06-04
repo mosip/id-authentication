@@ -25,9 +25,6 @@ public class VidResponseDTO {
 	private String vidStatus;
 	
 	/** The Value to hold updatedVid */
-	private Long updatedVid;
+	private VidResponseDTO restoredVid;
 	
-	/**  The Value to hold UpdatedVidStatus */
-	private String updatedVidStatus;
-
 }
