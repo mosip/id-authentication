@@ -7,7 +7,7 @@
     <artifactId>core-processor</artifactId>
     <version>0.12.5</version>
   </parent>
-  <artifactId>registartion-processor-abis-middleware-stage</artifactId>
+  <artifactId>registration-processor-abis-middleware-stage</artifactId>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
