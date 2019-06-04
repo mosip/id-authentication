@@ -28,15 +28,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import ch.qos.logback.core.status.Status;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.digital.signature.dto.SignResponseDto;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -57,6 +54,7 @@ import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
+import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
 
 /**
  * The Class RegistrationStatusControllerTest.
@@ -71,103 +69,105 @@ import io.mosip.registration.processor.status.validator.RegistrationStatusReques
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 public class RegistrationStatusAndSyncControllerTest {
 
-    /** The registration status controller. */
-    @InjectMocks
-    RegistrationStatusController registrationStatusController = new RegistrationStatusController();
-    
-    @InjectMocks
-    RegistrationSyncController registrationSyncController = new RegistrationSyncController();
+	/** The registration status controller. */
+	@InjectMocks
+	RegistrationStatusController registrationStatusController = new RegistrationStatusController();
 
-    /** The registration status service. */
-    @MockBean
-    RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	@InjectMocks
+	RegistrationSyncController registrationSyncController = new RegistrationSyncController();
 
-    /** The sync registration service. */
-    @MockBean
-    SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
+	/** The registration status service. */
+	@MockBean
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-    /** The sync registration dto. */
-    @MockBean
-    SyncRegistrationDto syncRegistrationDto;
+	/** The sync registration service. */
+	@MockBean
+	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
-    RegistrationStatusRequestDTO registrationStatusRequestDTO;
-    /** The mock mvc. */
-    @Autowired
-    private MockMvc mockMvc;
+	/** The sync registration dto. */
+	@MockBean
+	SyncRegistrationDto syncRegistrationDto;
 
-    /** The registration dto list. */
-    private List<InternalRegistrationStatusDto> registrationDtoList;
+	RegistrationStatusRequestDTO registrationStatusRequestDTO;
+	/** The mock mvc. */
+	@Autowired
+	private MockMvc mockMvc;
 
-    /** The array to json. */
-    private String regStatusToJson;
-    @MockBean
-    private RegistrationProcessorRestClientService<Object> reprcrestclient;
+	/** The registration dto list. */
+	private List<InternalRegistrationStatusDto> registrationDtoList;
 
-    private ResponseWrapper dto=new ResponseWrapper() ;
+	/** The array to json. */
+	private String regStatusToJson;
+	@MockBean
+	private RegistrationProcessorRestClientService<Object> reprcrestclient;
 
+	private ResponseWrapper dto = new ResponseWrapper();
 
-    private SignResponseDto signresponse=new SignResponseDto() ;
-    RegistrationSyncRequestDTO registrationSyncRequestDTO;
+	private SignResponseDto signresponse = new SignResponseDto();
+	RegistrationSyncRequestDTO registrationSyncRequestDTO;
 
-    @Mock
-    private Environment env;
+	@Mock
+	private Environment env;
 
-    @MockBean(name="tokenValidator")
-    private TokenValidator tokenValidator;
+	@MockBean(name = "tokenValidator")
+	private TokenValidator tokenValidator;
 
-    @MockBean
-    RegistrationStatusRequestValidator registrationStatusRequestValidator;
+	@MockBean
+	RegistrationStatusRequestValidator registrationStatusRequestValidator;
 
-    Gson gson = new GsonBuilder().serializeNulls().create();
-    private List<SyncResponseDto> syncResponseDtoList;
-    private List<SyncRegistrationDto> list;
-    SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
+	@MockBean
+	private RegistrationSyncRequestValidator syncrequestvalidator;
 
-    /**
-     * Sets the up.
-     *
-     * @throws JsonProcessingException
-     * @throws ApisResourceAccessException
-     */
-    @Before
-    public void setUp() throws JsonProcessingException, ApisResourceAccessException {
-        when(env.getProperty("mosip.registration.processor.registration.status.id"))
-                .thenReturn("mosip.registration.status");
-        when(env.getProperty("mosip.registration.processor.datetime.pattern"))
-                .thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
-        List<RegistrationStatusSubRequestDto> request = new ArrayList<>();
-        RegistrationStatusSubRequestDto regitrationid1 = new RegistrationStatusSubRequestDto();
-        RegistrationStatusSubRequestDto regitrationid2 = new RegistrationStatusSubRequestDto();
-        regitrationid1.setRegistrationId("1001");
-        regitrationid2.setRegistrationId("1002");
-        request.add(regitrationid1);
-        request.add(regitrationid2);
-        registrationStatusRequestDTO = new RegistrationStatusRequestDTO();
-        registrationStatusRequestDTO.setRequest(request);
-        registrationStatusRequestDTO.setId("mosip.registration.status");
-        registrationStatusRequestDTO.setVersion("1.0");
-        registrationStatusRequestDTO
-                .setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-        regStatusToJson = gson.toJson(registrationStatusRequestDTO);
-        registrationDtoList = new ArrayList<>();
-        InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
-        registrationStatusDto1.setRegistrationId("1001");
-        registrationStatusDto1.setRegistrationType("NEW");
-        registrationStatusDto1.setLangCode("EN");
-        registrationStatusDto1.setIsActive(true);
-        registrationStatusDto1.setCreatedBy("MOSIP_SYSTEM");
+	Gson gson = new GsonBuilder().serializeNulls().create();
+	private List<SyncResponseDto> syncResponseDtoList;
+	private List<SyncRegistrationDto> list;
+	SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 
-        InternalRegistrationStatusDto registrationStatusDto2 = new InternalRegistrationStatusDto();
-        registrationStatusDto2.setRegistrationId("1002");
-        registrationStatusDto2.setRegistrationType("NEW");
-        registrationStatusDto2.setLangCode("EN");
-        registrationStatusDto2.setIsActive(true);
-        registrationStatusDto2.setCreatedBy("MOSIP_SYSTEM");
+	/**
+	 * Sets the up.
+	 *
+	 * @throws JsonProcessingException
+	 * @throws ApisResourceAccessException
+	 */
+	@Before
+	public void setUp() throws JsonProcessingException, ApisResourceAccessException {
+		when(env.getProperty("mosip.registration.processor.registration.status.id"))
+				.thenReturn("mosip.registration.status");
+		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
+				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
+		List<RegistrationStatusSubRequestDto> request = new ArrayList<>();
+		RegistrationStatusSubRequestDto regitrationid1 = new RegistrationStatusSubRequestDto();
+		RegistrationStatusSubRequestDto regitrationid2 = new RegistrationStatusSubRequestDto();
+		regitrationid1.setRegistrationId("1001");
+		regitrationid2.setRegistrationId("1002");
+		request.add(regitrationid1);
+		request.add(regitrationid2);
+		registrationStatusRequestDTO = new RegistrationStatusRequestDTO();
+		registrationStatusRequestDTO.setRequest(request);
+		registrationStatusRequestDTO.setId("mosip.registration.status");
+		registrationStatusRequestDTO.setVersion("1.0");
+		registrationStatusRequestDTO
+				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		regStatusToJson = gson.toJson(registrationStatusRequestDTO);
+		registrationDtoList = new ArrayList<>();
+		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
+		registrationStatusDto1.setRegistrationId("1001");
+		registrationStatusDto1.setRegistrationType("NEW");
+		registrationStatusDto1.setLangCode("EN");
+		registrationStatusDto1.setIsActive(true);
+		registrationStatusDto1.setCreatedBy("MOSIP_SYSTEM");
 
-        registrationDtoList.add(registrationStatusDto1);
-        registrationDtoList.add(registrationStatusDto2);
-        SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
+		InternalRegistrationStatusDto registrationStatusDto2 = new InternalRegistrationStatusDto();
+		registrationStatusDto2.setRegistrationId("1002");
+		registrationStatusDto2.setRegistrationType("NEW");
+		registrationStatusDto2.setLangCode("EN");
+		registrationStatusDto2.setIsActive(true);
+		registrationStatusDto2.setCreatedBy("MOSIP_SYSTEM");
+
+		registrationDtoList.add(registrationStatusDto1);
+		registrationDtoList.add(registrationStatusDto2);
+		SyncResponseSuccessDto syncResponseDto = new SyncResponseSuccessDto();
 		SyncResponseFailureDto syncResponseFailureDto = new SyncResponseFailureDto();
 		syncResponseDto.setRegistrationId("1001");
 
@@ -194,58 +194,64 @@ public class RegistrationStatusAndSyncControllerTest {
 		registrationSyncRequestDTO
 				.setRequesttime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
-        Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
-        Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-        signresponse.setSignature("abcd");
-        dto.setResponse(signresponse);
-        Mockito.when(reprcrestclient.postApi(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(dto);
-        Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
+		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
+		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		signresponse.setSignature("abcd");
+		dto.setResponse(signresponse);
+		Mockito.when(reprcrestclient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(),
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dto);
+		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
+		Mockito.when(
+				syncrequestvalidator.validate(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(Boolean.TRUE);
 
-    }
+	}
 
-    /**
-     * Search success test.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void searchSuccessTest() throws Exception {
-        doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
-                "mosip.registration.status");
+	/**
+	 * Search success test.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
+	public void searchSuccessTest() throws Exception {
+		doNothing().when(registrationStatusRequestValidator).validate((registrationStatusRequestDTO),
+				"mosip.registration.status");
 
-        this.mockMvc.perform(post("/search").accept(MediaType.APPLICATION_JSON_VALUE)
-                .cookie(new Cookie("Authorization", regStatusToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(regStatusToJson.getBytes())
-                .header("timestamp", "2019-05-07T05:13:55.704Z")).andExpect(status().isOk());
-    }
+		this.mockMvc.perform(post("/search").accept(MediaType.APPLICATION_JSON_VALUE)
+				.cookie(new Cookie("Authorization", regStatusToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(regStatusToJson.getBytes()).header("timestamp", "2019-05-07T05:13:55.704Z"))
+				.andExpect(status().isOk());
+	}
 
-    @Test
-    public void searchRegstatusException() throws Exception {
+	@Test
+	public void searchRegstatusException() throws Exception {
 
-        Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
-                .validate(ArgumentMatchers.any(), ArgumentMatchers.any());
-        this.mockMvc.perform(post("/search").accept(MediaType.APPLICATION_JSON_VALUE)
-                .cookie(new Cookie("Authorization", regStatusToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(regStatusToJson.getBytes())
-                .header("timestamp", "2019-05-07T05:13:55.704Z")).andExpect(status().isOk());
-    }
-    @Test
-    public void testSyncController() throws Exception
-    {
-    	Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
+		Mockito.doThrow(new RegStatusAppException()).when(registrationStatusRequestValidator)
+				.validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		this.mockMvc.perform(post("/search").accept(MediaType.APPLICATION_JSON_VALUE)
+				.cookie(new Cookie("Authorization", regStatusToJson)).contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(regStatusToJson.getBytes()).header("timestamp", "2019-05-07T05:13:55.704Z"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testSyncController() throws Exception {
+		Mockito.when(syncRegistrationService.decryptAndGetSyncRequest(ArgumentMatchers.any(), ArgumentMatchers.any(),
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(registrationSyncRequestDTO);
-    	this.mockMvc.perform(post("/sync").accept(MediaType.APPLICATION_JSON_VALUE).header("timestamp", "2019-05-07T05:13:55.704Z").header("Center-Machine-RefId", "abcd")
-    			.contentType(MediaType.APPLICATION_JSON_VALUE).content(regStatusToJson.getBytes()).cookie(new Cookie("Authorization", regStatusToJson)))
-    	.andExpect(status().isOk());
-    }
-    @Test
-    public void testBuildRegistrationSyncResponse() throws JsonProcessingException
-    {
-    	List<SyncResponseDto> syncResponseDtoList=new ArrayList<>();
-    	syncResponseFailureDto.setStatus("SUCCESS");
-    	syncResponseDtoList.add(syncResponseFailureDto);
-    	registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);
-    	
-    }
+		this.mockMvc.perform(
+				post("/sync").accept(MediaType.APPLICATION_JSON_VALUE).header("timestamp", "2019-05-07T05:13:55.704Z")
+						.header("Center-Machine-RefId", "abcd").contentType(MediaType.APPLICATION_JSON_VALUE)
+						.content(regStatusToJson.getBytes()).cookie(new Cookie("Authorization", regStatusToJson)))
+				.andExpect(status().isOk());
+	}
 
+	@Test
+	public void testBuildRegistrationSyncResponse() throws JsonProcessingException {
+		List<SyncResponseDto> syncResponseDtoList = new ArrayList<>();
+		syncResponseFailureDto.setStatus("SUCCESS");
+		syncResponseDtoList.add(syncResponseFailureDto);
+		registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);
+
+	}
 }
