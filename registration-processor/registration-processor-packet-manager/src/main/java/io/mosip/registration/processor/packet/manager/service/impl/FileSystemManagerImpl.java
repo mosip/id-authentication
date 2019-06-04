@@ -176,4 +176,11 @@ public class FileSystemManagerImpl implements FileSystemManager {
 		return decryptedData;
 	}
 
+	@Override
+	public boolean isPacketPresent(String id) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
+				"HdfsFileSystemManagerImpl::isPacketPresent({},{})::entry" + id );
+		return fileSystemAdapter.isPacketPresent(id);
+	}
+
 }

@@ -103,4 +103,12 @@ public interface FileSystemManager {
 	 * @return True If the packet is stored successfully
 	 */
 	public boolean storePacket(String id, File filePath);
+	
+	/**
+	 * Checks if is packet present.
+	 *
+	 * @param id the id
+	 * @return true, if is packet present
+	 */
+	public boolean isPacketPresent(String id);
 }
