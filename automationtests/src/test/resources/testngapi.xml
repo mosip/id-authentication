@@ -21,7 +21,7 @@
 			 <test name="Kernel Tests">
 						 <classes>
                             <class name="io.mosip.kernel.tests.AuditLog" />   
-                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
+                   <!--        <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
@@ -73,7 +73,7 @@
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />   -->
                  </classes>
 				</test>   
 
@@ -84,7 +84,7 @@
 		<classes>
 		
 			 <class name="io.mosip.preregistration.tests.BatchJob" />		
-			<class name="io.mosip.preregistration.tests.Audit" />
+		<!--	<class name="io.mosip.preregistration.tests.Audit" />
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
@@ -112,7 +112,7 @@
 			<class name="io.mosip.preregistration.tests.TriggerNotification" />
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
-			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  
+			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
 		</classes>
 	</test> 
 
@@ -147,7 +147,7 @@
  	 <test name="RegistrationProcessor Tests">
 		<classes>
 					<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
-                    <class name="io.mosip.registrationProcessor.tests.Sync" />
+                 <!--   <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                     <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
                     <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
@@ -158,7 +158,7 @@
                     <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantDemographic" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantBiometric" />
-                    <class name="io.mosip.registrationProcessor.tests.PacketInfo" />
+                    <class name="io.mosip.registrationProcessor.tests.PacketInfo" /> -->
 
 		</classes>
 
