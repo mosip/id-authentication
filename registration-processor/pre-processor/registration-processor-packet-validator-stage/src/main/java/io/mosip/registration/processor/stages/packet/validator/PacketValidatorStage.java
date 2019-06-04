@@ -14,6 +14,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.constant.RegistrationType;
+import io.vertx.core.Future;
 
 /**
  * The Class PacketValidatorStage.
@@ -49,14 +50,8 @@ public class PacketValidatorStage extends MosipVerticleAPIManager {
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-//		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN,
-//				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("10011100110008520190604044649");
-		dto.setReg_type(RegistrationType.DEACTIVATED);
-		MessageDTO obj = this.process(dto);
-		this.send(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_OUT, dto);
-		
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN,
+				MessageBusAddress.PACKET_VALIDATOR_BUS_OUT);
 	}
 
 	@Override
