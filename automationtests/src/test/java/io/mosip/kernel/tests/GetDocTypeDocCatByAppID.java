@@ -71,8 +71,8 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = "Kernel_"+"GetDocType_DocCatByAppID_"+object.get("testCaseName").toString();
-		 cookie=auth.getAuthForZonalApprover();
+		testCaseName = object.get("testCaseName").toString();
+		 cookie=auth.getAuthForIndividual();
 	} 
 	
 	// Data Providers to read the input json files from the folders
@@ -105,13 +105,13 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		pathPar.put("applicantId", applicantId);
 		
 		//Adding list of languages as quary parameters 
-		HashMap<String, List<String>> queryPar=new HashMap<>();
-		queryPar.put("languages",languages);
+		HashMap<String, List<String>> queryParam=new HashMap<>();
+		queryParam.put("languages",languages);
 				
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method
-		Response res=applicationLibrary.getWithPathParamQueryParamList(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
+		Response res=applicationLibrary.getWithPathParamQueryParamList(getDocType_DocCatByAppID, pathPar,queryParam,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response

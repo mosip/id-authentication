@@ -41,7 +41,7 @@ import io.mosip.authentication.idrepo.fw.util.RidGenerator;
 import io.mosip.authentication.idrepo.fw.util.TestDataGenerator;
 import io.mosip.authentication.testdata.Precondtion;
 import io.mosip.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;

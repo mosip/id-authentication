@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -31,8 +30,7 @@ import com.google.common.base.Verify;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
-
-import io.mosip.service.AssertResponses;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -63,7 +61,8 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
-
+	private AssertKernel assertKernel = new AssertKernel();
+	
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
@@ -95,14 +94,14 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		Response res=applicationLibrary.getWithoutParams(getRoles,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
+		
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
-		innerKeys.add("lastSyncTime");
-
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
+		listOfElementToRemove.add("lastSyncTime");
+				
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status =  assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 				finalStatus = "Pass";
 			}	

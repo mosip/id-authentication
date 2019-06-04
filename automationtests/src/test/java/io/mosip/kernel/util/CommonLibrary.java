@@ -19,8 +19,6 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -36,8 +34,8 @@ import io.restassured.response.Response;
 public class CommonLibrary extends BaseTestCase {
 
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
-	// PreRegistrationLibrary lib=new PreRegistrationLibrary();
-
+	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	
 	public static void configFileWriter(String folderPath, String requestKeyFile, String generationType,
 			String baseFileName) throws Exception {
 		String splitRegex = Pattern.quote(System.getProperty("file.separator"));
@@ -263,19 +261,40 @@ public class CommonLibrary extends BaseTestCase {
 	 	 */
 	 	public void responseAuthValidation(Response response){
 	 		JSONArray errors = null;
+	 		String errorCode = null;
+			String errorMessage = null;
+	 	// fetching json array of objects from response
 		try {
 			errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
-		} catch (ParseException e) {
-			Assert.assertTrue(false, "Response from the service is not able to parse ");
+		} catch (ParseException pe) {
+			Assert.assertTrue(false, "Response from the service is not able to parse and exception is"+pe.getClass());
+		}catch (NullPointerException npe) {
+			Assert.assertTrue(false, "Errors in the response is not null and exception is "+npe.getClass());
 		}
-			// fetching json array of objects from response
 	 		if(errors != null) {
-	 			String errorCode = ((JSONObject) errors.get(0)).get("errorCode").toString();
-	 			String errorMessage = ((JSONObject)errors.get(0)).get("message").toString();
+				try {
+	 				 errorCode = ((JSONObject) errors.get(0)).get("errorCode").toString();
+		 			 errorMessage = ((JSONObject)errors.get(0)).get("message").toString();
+				} catch (IndexOutOfBoundsException aibe) {
+					Assert.assertTrue(false, "Not able to find the errorCode or errorMessage from errors array and exception is "+aibe.getClass());
+				}
+	 			
 	 			if(errorCode.contains("ATH")) {
 	 				Assert.assertTrue(false, "Failed due to Authentication failure. Error message is='"+errorMessage+"'");
 	 			}
 	 		}
+	 	}
+	 	
+	 	/**
+	 	 * This method is for generating the random alphanumeric string of required length
+	 	 */
+	 	public String randomAlphaNumeric(int lengthOfString) {
+	 	StringBuilder builder = new StringBuilder();
+	 	while (lengthOfString-- != 0) {
+	 	int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+	 	builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+	 	}
+	 	return builder.toString();
 	 	}
 	 	
 	 	/**

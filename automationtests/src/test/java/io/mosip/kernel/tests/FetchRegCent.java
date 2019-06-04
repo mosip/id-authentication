@@ -34,7 +34,6 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.GetHeader;
 import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 

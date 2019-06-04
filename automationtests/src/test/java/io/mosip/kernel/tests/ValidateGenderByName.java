@@ -28,9 +28,9 @@ import org.testng.internal.TestResult;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -74,7 +74,6 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateGenderByName")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
 	}
 	

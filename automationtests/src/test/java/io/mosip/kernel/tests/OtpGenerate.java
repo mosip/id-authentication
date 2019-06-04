@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -31,10 +30,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -66,8 +65,9 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	private Response res=null;
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
+	private AssertKernel assertKernel = new AssertKernel();
 	
-	// Getting test case names and also auth cookie based on roles
+    // Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
@@ -91,26 +91,28 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "otpGenerate")
-	public void otpGenerate(String testSuite, Integer i, JSONObject object)throws JsonParseException, JsonMappingException, IOException, ParseException {
+	public void otpGenerate(String testSuite, Integer i, JSONObject object)
+			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-			
+		
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
-		outerKeys.add("timestamp");
-		innerKeys.add("otp");
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
+		listOfElementToRemove.add("timestamp");
+		listOfElementToRemove.add("otp");
 		
 	    //making key as frozen key        
     	  if(testCaseName.equalsIgnoreCase("Kernel_otpGenerate_key_frozen"))
     	  {
+    		String key=new CommonLibrary().randomAlphaNumeric(5);
+    		//adding random string to the request
+    		 JSONObject requestArray = (JSONObject)actualRequest.get("request");
+    		  requestArray.put("key", key);
     		// Calling the post method 
     		  res=applicationLibrary.postWithJson(OTPGeneration, actualRequest, cookie);
     		  HashMap<String, String> otp=new HashMap<>();
-    		  JSONObject requestArray = (JSONObject)actualRequest.get("request");
-    		  String key = requestArray.get("key").toString();
     		  otp.put("key", key);
     		  otp.put("otp", "123456");
     		  for(int k=0;k<10;k++)
@@ -130,7 +132,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		new CommonLibrary().responseAuthValidation(res);
     	
 		// Comparing expected and actual response
-    	 status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);	
+    	 status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);	
 		
     	  if(status)
     		  finalStatus="Pass";

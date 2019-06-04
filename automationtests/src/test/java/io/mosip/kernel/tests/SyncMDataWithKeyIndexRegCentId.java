@@ -115,7 +115,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 				objectData.remove("regcenterId");
 					response = applicationLibrary.getWithPathQueryParam(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
 
-		
+		logger.info("response----"+response.asString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		

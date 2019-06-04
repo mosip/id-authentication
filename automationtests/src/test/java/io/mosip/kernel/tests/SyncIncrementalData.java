@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,14 +21,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -48,7 +46,6 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncIncrementalData.class);
 	protected static String testCaseName = "";
-	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
@@ -61,6 +58,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
+	private AssertKernel assertKernel = new AssertKernel();
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -100,13 +98,11 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		new CommonLibrary().responseAuthValidation(res);
 		
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
-		innerKeys.add("responsetime");
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
 				finalStatus = "Pass";

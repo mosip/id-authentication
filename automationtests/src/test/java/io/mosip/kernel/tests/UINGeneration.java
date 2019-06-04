@@ -133,7 +133,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		else
 			finalStatus="Fail";
         		  
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

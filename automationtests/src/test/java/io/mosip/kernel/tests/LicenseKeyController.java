@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -28,9 +27,9 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
+import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -71,6 +70,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	private Response res_map=null;
 	private String licenseKey="";
 	private String tspId="";
+	private AssertKernel assertKernel = new AssertKernel();
 	 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -110,14 +110,12 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 			
 			}
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-	    outerKeys.add("responsetime");
-		outerKeys.add("licenseKey");
-		innerKeys.add("licenseKey");
+		 ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		 listOfElementToRemove.add("responsetime");
+		 listOfElementToRemove.add("licenseKey");
 		
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
      if(status){
     	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey")){     
     		  int length=licenseKey.length();
@@ -165,10 +163,9 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
     {
 		JSONObject actualRequest_map = ResponseRequestMapper.mapRequest(testSuite, object);
 		
-		//Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		 outerKeys.add("responsetime");
+		// Removing of unstable attributes from response
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		 
 	    // adding the tspid and corresponding license key to the request and expected response od smok test case
 	    JSONObject request = (JSONObject) actualRequest_map.get("request");
@@ -188,7 +185,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 			 res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
 	    }
 	  // Comparing expected and actual response
-		status = AssertResponses.assertResponses(res_map, Expectedresponse, outerKeys, innerKeys);
+	    assertKernel.assertKernel(res_map, Expectedresponse,listOfElementToRemove);
       if (status) {
 	                
 				finalStatus = "Pass";
@@ -197,8 +194,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		else {
 			finalStatus="Fail";
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -227,9 +222,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public void fetchMapLicenceKeyPermissions(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
   
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		//adding the tspid and corrosponding license key to the smoke request
@@ -244,7 +238,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Response response=applicationLibrary.getWithQueryParam(fetchmapLicenseKey, actualRequest, "");
 				
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
+		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
       if (status) {	            
 				finalStatus = "Pass";
 			}	
@@ -252,8 +246,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		else {
 			finalStatus="Fail";
 			}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -272,7 +264,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {
-			
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
