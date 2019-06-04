@@ -47,11 +47,11 @@ public class RegProcApiRequests extends BaseTestCase {
 		return getResponse;
 	}
 	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader,String token) {
-		logger.info("REST:ASSURED:Sending a data packet to" + url);
+		logger.info("REST:ASSURED:Sending a data packet to" + ApplnURI+url);
 		logger.info("REST ASSURRED :: Request To Encrypt Is "+ body);
 		Cookie.Builder builder = new Cookie.Builder("Authorization",token);
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
-				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+				.accept(acceptHeader).log().all().when().post(ApplnURI+url).then().log().all().extract().response();
 
 		return postResponse;
 	}

@@ -27,7 +27,7 @@ import io.mosip.dbdto.RegistrationPacketSyncDTO;
 public class StageValidationMethods extends BaseTestCase {
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	StageValidationMethods apiRequest=new StageValidationMethods();
+	//StageValidationMethods apiRequest=new StageValidationMethods();
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
 	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	RegProcTransactionDb packetTransaction = new RegProcTransactionDb();

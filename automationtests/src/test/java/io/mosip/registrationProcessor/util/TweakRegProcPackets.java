@@ -357,7 +357,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 			if (f.getName().contains(".zip")) {
 				centerId = f.getName().substring(0, 5);
 				machineId = f.getName().substring(5, 10);
-				String regId = generateRegId(centerId, machineId);
+				//String regId = generateRegId(centerId, machineId);
+				String regId = f.getName().substring(0, f.getName().lastIndexOf("."));
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 

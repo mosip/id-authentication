@@ -34,7 +34,7 @@ import io.mosip.util.TokenGeneration;
 public class StageValidationTests extends BaseTestCase implements ITest {
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	StageValidationMethods apiRequest=new StageValidationMethods();
+	//StageValidationMethods apiRequest=new StageValidationMethods();
 	protected static String testCaseName = "";
 	StageValidationMethods scenario = new StageValidationMethods();
 	SetStageStatusCode codeList = new SetStageStatusCode();
@@ -81,11 +81,11 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
-		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
 		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
 		try {
 			reader.close();
