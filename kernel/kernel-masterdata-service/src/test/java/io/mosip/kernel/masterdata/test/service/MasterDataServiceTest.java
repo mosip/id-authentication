@@ -223,6 +223,7 @@ public class MasterDataServiceTest {
 	LocationService locationHierarchyService;
 
 	List<Location> locationHierarchies = null;
+	List<Location> locationHierarchyList = null;
 	List<Object[]> locObjList = null;
 	LocationCodeResponseDto locationCodeResponseDto = null;
 	Location locationHierarchy = null;
@@ -230,7 +231,7 @@ public class MasterDataServiceTest {
 	LocationDto locationDtos = null;
 	Location locationHierarchy2 = null;
 	Location locationHierarchy3 = null;
-	List<Location> locationHierarchyList = null;
+	
 
 	RequestWrapper<LocationDto> requestLocationDto = null;
 	RequestWrapper<LocationDto> requestLocationDto1 = null;
@@ -389,17 +390,6 @@ public class MasterDataServiceTest {
 		requestLocationDto.setRequest(locationDto);
 
 		locationHierarchyList = new ArrayList<>();
-		locationHierarchy2 = new Location();
-		locationHierarchy2.setCode("IND");
-		locationHierarchy2.setName("INDIA");
-		locationHierarchy2.setHierarchyLevel((short) 0);
-		locationHierarchy2.setHierarchyName("country");
-		locationHierarchy2.setParentLocCode(null);
-		locationHierarchy2.setLangCode("HIN");
-		locationHierarchy2.setCreatedBy("dfs");
-		locationHierarchy2.setUpdatedBy("sdfsd");
-		locationHierarchy2.setIsActive(false);
-		locationHierarchyList.add(locationHierarchy2);
 		locationHierarchy3 = new Location();
 		locationHierarchy3.setCode("KAR");
 		locationHierarchy3.setName("KARNATAKA");
@@ -419,9 +409,9 @@ public class MasterDataServiceTest {
 		locationDto1.setHierarchyName("CONTRY");
 		locationDto1.setLangCode("HIN");
 		locationDto1.setParentLocCode(null);
-		locationDto.setIsActive(false);
+		locationDto1.setIsActive(false);
 		requestLocationDto1 = new RequestWrapper<>();
-		requestLocationDto1.setRequest(locationDto);
+		requestLocationDto1.setRequest(locationDto1);
 
 	}
 

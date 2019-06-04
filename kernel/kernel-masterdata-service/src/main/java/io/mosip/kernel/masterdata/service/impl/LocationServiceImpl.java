@@ -52,6 +52,7 @@ public class LocationServiceImpl implements LocationService {
 	private LocationRepository locationRepository;
 
 	private List<Location> childHierarchyList = null;
+	private List<Location> hierarchyList = null;
 	private List<Location> parentHierarchyList = null;
 
 	/**
@@ -94,8 +95,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return LocationHierarchyResponseDto-
 	 */
 	/*
@@ -190,7 +193,7 @@ public class LocationServiceImpl implements LocationService {
 		CodeAndLanguageCodeID locationId = new CodeAndLanguageCodeID();
 		locationId.setCode(locationDto.getCode());
 		locationId.setLangCode(locationDto.getLangCode());
-		childHierarchyList = new ArrayList<>();
+
 		try {
 			Location location = locationRepository.findById(Location.class, locationId);
 
@@ -315,8 +318,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -328,8 +333,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -342,8 +349,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierarchy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
@@ -353,6 +362,7 @@ public class LocationServiceImpl implements LocationService {
 			childHierarchyList.addAll(childLocHierList);
 			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
 					.map(entity -> getChildList(entity.getCode(), langCode)).collect(Collectors.toList());
+
 		}
 
 		return childHierarchyList;
@@ -362,8 +372,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierarchy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -425,27 +437,80 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return statusResponseDto;
 	}
-	
+
 	/**
-	 * This method to find, is there any child of given Location isActive is true then
-	 * return true and break the loop. Otherwise if all children of the given
+	 * This method to find, is there any child of given Location isActive is true
+	 * then return true and break the loop. Otherwise if all children of the given
 	 * location are false the return false.
 	 * 
 	 * @param location
-	 * @return boolean 
-	 *           return true or false
+	 * @return boolean return true or false
 	 */
 	public boolean findIsActiveInHierarchy(Location location) {
-		getChildList(location.getCode(), location.getLangCode());
 		boolean flag = false;
-		for (Location location1 : childHierarchyList) {
-			if (location1.getIsActive()) {
+		String locCode = location.getCode();
+		String langCode = location.getLangCode();
+		
+		List<Location> childList = new ArrayList<>();
+		hierarchyList = new ArrayList<>();
+		childList = getIsActiveChildList(locCode, langCode);
+		System.out.println("===children===="+childList.size());
+		for(Location child1 : childList) {
+			System.out.println("===children===="+child1);
+		}
+		/*for(Location child1 : childList) {
+			System.out.println("===children===="+child1);
+		}
+		boolean flag = false;
+		for (Location child : childList) {
+			System.out.println("child is active===="+child.getIsActive());
+			if (child.getIsActive()) {
 				flag = true;
 				break;
 			}
-		}
+		}*/
 		return flag;
 	}
+	/**
+	 * This method fetches child hierarchy details of the location based on location
+	 * code, here child isActive can true or false
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
+	 * @return List<Location>
+	 */
+	private List<Location> getIsActiveChildList(String locCode, String langCode) {
 
+		if (locCode != null && !locCode.isEmpty()) {
+			List<Location> childLocHierList = getIsActiveLocationChildHierarchyList(locCode, langCode);
+			hierarchyList.addAll(childLocHierList);
+			if(childLocHierList!=null && !childLocHierList.isEmpty())
+			childLocHierList.parallelStream().filter(entity -> entity.getCode() != null && !entity.getCode().isEmpty())
+					.map(entity -> getIsActiveChildList(entity.getCode(), langCode)).collect(Collectors.toList());
+			}
+		return hierarchyList;
+		
+	}
+	/**
+	 * fetches location hierarchy details from database based on parent location
+	 * code and language code, children's isActive is either true or false 
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
+	 * @return List<LocationHierarchy>
+	 */
+	private List<Location> getIsActiveLocationChildHierarchyList(String locCode, String langCode) {
+
+		return locationRepository.findDistinctByparentLocCode(locCode, langCode);
+
+	}
+	
+	
+	
+	
 
 }
