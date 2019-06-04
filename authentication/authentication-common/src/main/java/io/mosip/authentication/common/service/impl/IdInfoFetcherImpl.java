@@ -36,8 +36,9 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
+ * Helper class to fetch identity values from request
+ * 
  * @author Dinesh Karuppiah.T
- *
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
@@ -137,8 +138,8 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/**
 	 * Check language type.
 	 *
-	 * @param languageFromInput the language for match type
-	 * @param languageFromEntity      the language from req
+	 * @param languageFromInput  the language for match type
+	 * @param languageFromEntity the language from req
 	 * @return true, if successful
 	 */
 	public boolean checkLanguageType(String languageFromInput, String languageFromEntity) {

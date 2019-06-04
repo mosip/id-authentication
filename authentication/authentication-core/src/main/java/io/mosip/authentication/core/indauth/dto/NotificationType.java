@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ * General-purpose of {@code NotificationType} class used to provide
+ * Notification type
  * 
  * @author Dinesh Karuppiah.T
  */
@@ -13,7 +15,7 @@ public enum NotificationType {
 	 * Enum for Email
 	 */
 	EMAIL("email", "EMAIL"),
-	
+
 	/**
 	 * Enum for SMS
 	 */
@@ -36,22 +38,22 @@ public enum NotificationType {
 		this.channel = channel;
 		apiChannel = channel;
 	}
-	
+
 	NotificationType(String name, String channel, String apiChannel) {
 		this.name = name;
 		this.channel = channel;
 		this.apiChannel = apiChannel;
-		
+
 	}
 
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getChannel() {
 		return channel;
 	}
-	
+
 	public String getApiChannel() {
 		return apiChannel;
 	}

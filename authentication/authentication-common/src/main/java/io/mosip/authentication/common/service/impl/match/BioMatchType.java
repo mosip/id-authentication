@@ -31,9 +31,11 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;;
 
 /**
  * 
- *
+ * Match type for Bio Entity
+ * 
  * @author Rakesh Roshan
  * @author Dinesh Karuppiah.T
+ *
  */
 public enum BioMatchType implements MatchType {
 
@@ -91,7 +93,7 @@ public enum BioMatchType implements MatchType {
 	// FIXME get Bio ID info of all fingers and return the map
 	FGRMIN_COMPOSITE(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FMR, null,
 			null),
-	
+
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL), CbeffDocType.FMR, null,
 			null),
 
@@ -118,7 +120,7 @@ public enum BioMatchType implements MatchType {
 
 	/** The identity info function. */
 	private Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
-	
+
 	/** The id mapping. */
 	private IdMapping idMapping;
 
@@ -134,11 +136,11 @@ public enum BioMatchType implements MatchType {
 	/**
 	 * Instantiates a new bio match type.
 	 *
-	 * @param idMapping the id mapping
+	 * @param idMapping               the id mapping
 	 * @param allowedMatchingStrategy the allowed matching strategy
-	 * @param cbeffDocType the cbeff doc type
-	 * @param subType the sub type
-	 * @param singleAnySubtype the single any subtype
+	 * @param cbeffDocType            the cbeff doc type
+	 * @param subType                 the sub type
+	 * @param singleAnySubtype        the single any subtype
 	 */
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype) {
@@ -154,10 +156,10 @@ public enum BioMatchType implements MatchType {
 	/**
 	 * Instantiates a new bio match type for UNKNOWN scenarios
 	 *
-	 * @param idMapping the id mapping
-	 * @param cbeffDocType the cbeff doc type
-	 * @param subType the sub type
-	 * @param singleAnySubtype the single any subtype
+	 * @param idMapping               the id mapping
+	 * @param cbeffDocType            the cbeff doc type
+	 * @param subType                 the sub type
+	 * @param singleAnySubtype        the single any subtype
 	 * @param allowedMatchingStrategy the allowed matching strategy
 	 */
 
@@ -167,16 +169,15 @@ public enum BioMatchType implements MatchType {
 		this.identityInfoFunction = requestDto -> getIdInfoFromBioIdInfo(requestDto.getBiometrics());
 	}
 
-	
 	/**
 	 * Instantiates a new bio match type.
 	 *
-	 * @param idMapping the id mapping
+	 * @param idMapping               the id mapping
 	 * @param allowedMatchingStrategy the allowed matching strategy
-	 * @param cbeffDocType the cbeff doc type
-	 * @param subType the sub type
-	 * @param singleAnySubtype the single any subtype
-	 * @param identityInfoFunction the identity info function
+	 * @param cbeffDocType            the cbeff doc type
+	 * @param subType                 the sub type
+	 * @param singleAnySubtype        the single any subtype
+	 * @param identityInfoFunction    the identity info function
 	 */
 	private BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy, CbeffDocType cbeffDocType,
 			SingleAnySubtypeType subType, SingleAnySubtypeType singleAnySubtype,
@@ -213,11 +214,10 @@ public enum BioMatchType implements MatchType {
 				}, value -> value));
 	}
 
-	
 	/**
 	 * Gets the id info from sub id mappings.
 	 *
-	 * @param identityDto the identity dto
+	 * @param identityDto   the identity dto
 	 * @param subIdMappings the sub id mappings
 	 * @return the id info from sub id mappings
 	 */
@@ -261,22 +261,29 @@ public enum BioMatchType implements MatchType {
 		return Function.identity();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getIdMapping()
 	 */
 	public IdMapping getIdMapping() {
 		return idMapping;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getIdentityInfoFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#
+	 * getIdentityInfoFunction()
 	 */
 	@Override
 	public Function<RequestDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getCategory()
 	 */
 	@Override
@@ -284,8 +291,12 @@ public enum BioMatchType implements MatchType {
 		return Category.BIO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#mapEntityInfo(java.util.Map, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.MatchType#mapEntityInfo(java.
+	 * util.Map, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
 	 */
 	@Override
 	public Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(Map<String, List<IdentityInfoDTO>> idEntity,
@@ -306,7 +317,7 @@ public enum BioMatchType implements MatchType {
 	/**
 	 * Gets the id values map.
 	 *
-	 * @param identityDto the identity dto
+	 * @param identityDto   the identity dto
 	 * @param bioMatchTypes the bio match types
 	 * @return the id values map
 	 */

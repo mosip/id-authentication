@@ -32,7 +32,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "Please retry with correct VID"),
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "Please regenerate VID and try again"),
+	EXPIRED_VID("IDA-MLC-005", "%s", "Please regenerate VID and try again"),
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008", "No authentication type selected"),

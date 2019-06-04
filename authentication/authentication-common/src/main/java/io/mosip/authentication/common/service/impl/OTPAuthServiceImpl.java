@@ -81,8 +81,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId(),
-					authRequestDTO.getIndividualIdType(), authRequestDTO.getRequestTime());
+			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId());
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -159,8 +158,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @throws ParseException
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String idvid, String idType, String reqTime)
-			throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId, String idvid) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
 		String hashedIdvid = HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvid.getBytes()));
 		Optional<AutnTxn> authTxn = autntxnrepository
