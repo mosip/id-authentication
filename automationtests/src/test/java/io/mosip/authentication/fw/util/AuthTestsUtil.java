@@ -694,6 +694,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			RunConfigUtil.objRunConfig.setUserDirectory();
 			input = new FileInputStream(new File(RunConfigUtil.objRunConfig.getUserDirectory()+"src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath());
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -783,6 +784,8 @@ public class AuthTestsUtil extends BaseTestCase {
 				prop.setProperty(entry.getKey(), entry.getValue());
 			}
 			prop.store(output, null);
+			output.close();
+			output.flush();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Excpetion in storing the data in propertyFile" + e.getMessage());
 		}
@@ -806,6 +809,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			}
 			props.store(out, null);
 			out.close();
+			out.flush();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception in updating the property file" + e.getMessage());
 		}
@@ -849,6 +853,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(filepath);
 			prop.load(input);
+			input.close();
 			return prop.getProperty(key).toString();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -868,6 +873,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(filepath);
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -886,6 +892,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + path).getAbsolutePath());
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception occured in fetching data property file " + e.getMessage());
@@ -908,6 +915,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			for (String key : prop.stringPropertyNames()) {
 				map.put(key, prop.getProperty(key));
 			}
+			input.close();
 			return map;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());

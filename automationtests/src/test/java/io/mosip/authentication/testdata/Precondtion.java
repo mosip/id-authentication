@@ -192,6 +192,8 @@ public class Precondtion {
 				prop.setProperty(entry.getKey(), entry.getValue());
 			}
 			prop.store(output, null);
+			output.close();
+			output.flush();
 			return fieldvalue;
 		} catch (Exception e) {
 			PRECON_LOGGER.error("Exception Occured: " + e.getMessage());
