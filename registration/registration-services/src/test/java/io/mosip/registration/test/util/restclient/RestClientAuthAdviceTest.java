@@ -131,7 +131,8 @@ public class RestClientAuthAdviceTest {
 		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
 		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenReturn(new Object());
 		Mockito.when(serviceDelegateUtil.isAuthTokenValid(Mockito.anyString())).thenReturn(false);
-		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
+		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
 		
 		Assert.assertNotNull(restClientAuthAdvice.addAuthZToken(proceedingJoinPoint));
 	}
@@ -171,7 +172,8 @@ public class RestClientAuthAdviceTest {
 		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
 		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenReturn(new Object());
 		Mockito.when(serviceDelegateUtil.isAuthTokenValid(Mockito.anyString())).thenReturn(false);
-		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
+		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
 		
 		Assert.assertNotNull(restClientAuthAdvice.addAuthZToken(proceedingJoinPoint));
 	}
@@ -192,7 +194,8 @@ public class RestClientAuthAdviceTest {
 		Mockito.when(proceedingJoinPoint.getArgs()).thenReturn(args);
 		Mockito.when(proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs())).thenReturn(new Object());
 		Mockito.when(serviceDelegateUtil.isAuthTokenValid(Mockito.anyString())).thenReturn(false);
-		Mockito.doNothing().when(serviceDelegateUtil).getAuthToken(Mockito.any(LoginMode.class));
+		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
+		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
 		PowerMockito.when(SessionContext.isSessionContextAvailable()).thenReturn(false);
 		Map<String, Object> value = new HashMap<>();
 		LoginUserDTO loginUserDTO = new LoginUserDTO();

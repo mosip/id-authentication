@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +19,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.UserDetailDAOImpl;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
@@ -53,13 +51,6 @@ public class UserDetailDAOTest {
 	/** The userDetail repository. */
 	@Mock
 	private UserRoleRepository userRoleRepository;
-
-	@BeforeClass
-	public static void init() {
-
-		SessionContext.getInstance().userContext().setUserId("mosip");
-
-	}
 
 	@Test
 	public void getUserDetailSuccessTest() {

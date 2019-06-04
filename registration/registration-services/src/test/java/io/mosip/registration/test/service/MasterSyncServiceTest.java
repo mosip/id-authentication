@@ -45,6 +45,7 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.UserOnboardDAO;
@@ -83,7 +84,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class, ApplicationContext.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class, ApplicationContext.class, SessionContext.class })
 public class MasterSyncServiceTest {
 //java test
 	@Rule
@@ -129,13 +130,16 @@ public class MasterSyncServiceTest {
 	private MachineMappingDAO machineMappingDAO;
 
 	@Before
-	public void beforeClass() throws URISyntaxException {
+	public void beforeClass() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+		PowerMockito.mockStatic(SessionContext.class);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);		
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
 		
 		PowerMockito.mockStatic(ApplicationContext.class);
 	}
