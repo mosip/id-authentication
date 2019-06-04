@@ -1,12 +1,12 @@
-package io.mosip.registration.mdm.service;
+package io.mosip.registration.mdmservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.mdm.dto.DeviceInfo;
-import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
+import io.mosip.registration.mdmservice.dto.DeviceInfo;
+import io.mosip.registration.mdmservice.dto.DeviceInfoResponseData;
 
 @Service
 public class DeviceInfoService {
