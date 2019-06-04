@@ -121,7 +121,7 @@
 		<classes>
 		<class name="io.mosip.authentication.tests.OtpGeneration" />
 		
-		  <class name="io.mosip.authentication.tests.CreateUinRecord" />
+		 
 			<class name="io.mosip.authentication.tests.UpdateUinRecord" />
 			<class name="io.mosip.authentication.tests.OtpGeneration" />
 			 <class name="io.mosip.authentication.tests.CreateUinRecord" />
