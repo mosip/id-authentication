@@ -65,7 +65,7 @@ public class BookingExceptionCatcher {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
 					((InvalidRequestParameterException) ex).getErrorText(),mainResponseDTO);
 		} else if (ex instanceof DateTimeException || ex instanceof java.time.format.DateTimeParseException
-				|| ex instanceof InvalidDateTimeFormatException) {
+				|| ex instanceof InvalidDateTimeFormatException || ex instanceof java.text.ParseException) {
 			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
 					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString(),mainResponseDTO);
 		} else if (ex instanceof ParseException) {
