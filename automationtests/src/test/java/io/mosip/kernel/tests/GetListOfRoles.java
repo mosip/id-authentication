@@ -54,7 +54,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 	public static JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getRoles = props.get("getRoles");
 	private String folderPath = "kernel/GetListOfRoles";
 	private String outputFile = "GetListOfRolesOutput.json";
@@ -92,7 +92,7 @@ public class GetListOfRoles extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestNoParameter(getRoles,cookie);
+		Response res=applicationLibrary.getWithoutParams(getRoles,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response

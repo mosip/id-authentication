@@ -59,7 +59,7 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 	private final String apiName = "FetchTemplate";
 	private final String requestJsonName = "fetchTemplateRequest";
 	private final String outputJsonName = "fetchTemplateOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTemplate_URI = props.get("FetchTemplate_URI").toString();
 	private final String FetchTemplate_lang_URI = props.get("FetchTemplate_lang_URI").toString();
 	private final String FetchTemplate_id_lang_URI = props.get("FetchTemplate_id_lang_URI").toString();
@@ -123,15 +123,14 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		if(objectData != null) {
 				if(objectData.containsKey("templatetypecode"))
-					response = applicationLibrary.getRequestPathPara(FetchTemplate_id_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchTemplate_id_lang_URI, objectData,cookie);
 					else
-					response = applicationLibrary.getRequestPathPara(FetchTemplate_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchTemplate_lang_URI, objectData,cookie);
 
 		}
 		// sending request to get request without param
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchTemplate_URI, objectData,cookie);
+			response = applicationLibrary.getWithoutParams(FetchTemplate_URI, cookie);
 			objectData = null;
 		}
 		//This method is for checking the authentication is pass or fail in rest services

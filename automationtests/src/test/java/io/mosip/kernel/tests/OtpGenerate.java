@@ -60,7 +60,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 	private String requestKeyFile = "otpGenerateInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String OTPGeneration = props.get("OTPGeneration");
 	private final String OTPValidation = props.get("OTPValidation");
 	private Response res=null;
@@ -107,7 +107,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     	  if(testCaseName.equalsIgnoreCase("Kernel_otpGenerate_key_frozen"))
     	  {
     		// Calling the post method 
-    		  res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);
+    		  res=applicationLibrary.postWithJson(OTPGeneration, actualRequest, cookie);
     		  HashMap<String, String> otp=new HashMap<>();
     		  JSONObject requestArray = (JSONObject)actualRequest.get("request");
     		  String key = requestArray.get("key").toString();
@@ -116,15 +116,15 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     		  for(int k=0;k<10;k++)
     		  {
     			// Calling the get method and making key as frozen
-    			  applicationLibrary.getRequestAsQueryParam(OTPValidation, otp,cookie);
+    			  applicationLibrary.getWithQueryParam(OTPValidation, otp,cookie);
     		  }
     		// Calling the post method 
 
-    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);  
+    		   res=applicationLibrary.postWithJson(OTPGeneration, actualRequest, cookie);  
     	  }
     	  else
     		// Calling the post method 
-    		   res=applicationLibrary.postRequest(actualRequest, OTPGeneration,cookie);
+    		   res=applicationLibrary.postWithJson(OTPGeneration, actualRequest, cookie);
 
     	//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

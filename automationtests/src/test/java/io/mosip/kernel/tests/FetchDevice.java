@@ -58,7 +58,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	private final String apiName = "FetchDevice";
 	private final String requestJsonName = "fetchDeviceRequest";
 	private final String outputJsonName = "fetchDeviceOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDevice_lang_URI = props.get("FetchDevice_lang_URI").toString();
 	private final String FetchDevice_id_lang_URI = props.get("FetchDevice_id_lang_URI").toString();
 
@@ -119,9 +119,9 @@ public class FetchDevice extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		if (objectData.containsKey("deviceType"))
-			response = applicationLibrary.getRequestPathPara(FetchDevice_id_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDevice_id_lang_URI, objectData, cookie);
 		else
-			response = applicationLibrary.getRequestPathPara(FetchDevice_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDevice_lang_URI, objectData, cookie);
 		// DB Validation
 
 		// This method is for checking the authentication is pass or fail in rest

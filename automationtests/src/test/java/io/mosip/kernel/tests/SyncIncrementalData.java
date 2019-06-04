@@ -52,7 +52,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchIncrementalData =props.get("fetchIncrementalData");
 	private String folderPath = "kernel/AdminSyncIncrementalData";
 	private String outputFile = "AdminSyncIncrementalDataOutput.json";
@@ -94,7 +94,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestAsQueryParam(fetchIncrementalData, actualRequest,cookie);
+		Response res=applicationLibrary.getWithQueryParam(fetchIncrementalData, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

@@ -1,5 +1,6 @@
 package io.mosip.kernel.service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,72 +16,106 @@ public class ApplicationLibrary extends BaseTestCase {
 
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
-	public Response postRequest(Object body, String Resource_URI,String cookie) {
-		return commonLibrary.postRequest(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON,cookie);
-	}
-	
-	public Response postRequest(Object body, String Resource_URI) {
-		return commonLibrary.postRequest(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
+	// post requests
+	public Response postWithJson(String endpoint, Object body) {
+		return commonLibrary.postWithJson(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
 	}
-	
-	public Response getRequest(String Resource_URI, HashMap<String, String> valueMap,String cookie) {
-		return commonLibrary.getRequestQueryParam(ApplnURI + Resource_URI, valueMap,cookie);
+
+	public Response postWithJson(String endpoint, Object body, String cookie) {
+		return commonLibrary.postWithJson(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
 	}
 
-	public Response putRequest(Object body, String Resource_URI,String cookie) {
-		return commonLibrary.putRequest(ApplnURI + Resource_URI, body, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON,cookie);
+	public Response postWithPathParams(String endpoint, Object body, HashMap<String, String> pathParams,
+			String cookie) {
+		return commonLibrary.postWithPathParams(ApplnURI + endpoint, body, pathParams, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
 	}
 
-	public Response putRequest(String Resource_URI, HashMap<String, String> valueMap,String cookie) {
-		return commonLibrary.putRequest(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON, valueMap,cookie);
+	public Response postWithOnlyFile(String endpoint, File file, String fileKeyName, String cookie) {
+		return commonLibrary.postWithOnlyFile(ApplnURI + endpoint,  file, fileKeyName, cookie);
+	}
+	public Response postWithFile(String endpoint, Object body, File file, String fileKeyName, String cookie) {
+		return commonLibrary.postWithFile(ApplnURI + endpoint, body, file, fileKeyName, MediaType.APPLICATION_JSON, cookie);
 	}
 
-	public Response getRequestPathPara(String Resource_URI, HashMap<String, String> valueMap,String cookie) {
-		return commonLibrary.getRequestPathParameters(ApplnURI + Resource_URI, valueMap, cookie);
-
-	}
-	/**
-	 * Author Arjun
-	 * 
-	 * @param Resource_URI
-	 * @param valueMap
-	 * @return
-	 */
-	public Response getRequestAsQueryParam(String Resource_URI, HashMap<String, String> valueMap,String cookie) {
-		return commonLibrary.getRequestQueryParam(ApplnURI + Resource_URI, valueMap, cookie);
-
+	public Response postWithFileFormParams(String endpoint, HashMap<String, String> formParams, File file, String fileKeyName,
+			String cookie) {
+		return commonLibrary.postWithFileFormParams(ApplnURI + endpoint, formParams, file, fileKeyName,
+				MediaType.MULTIPART_FORM_DATA, cookie);
 	}
 
-	public Response getRequestNoParameter(String Resource_URI,String cookie) {
-		return commonLibrary.getRequestWithoutParameters(ApplnURI + Resource_URI, cookie);
-
+	public Response postWithFilePathParamsFormParams(String endpoint, HashMap<String, String> pathParams,
+			HashMap<String, String> formParams, File file, String fileKeyName, String cookie) {
+		return commonLibrary.postWithFilePathParamsFormParams(ApplnURI + endpoint, pathParams, formParams, file, fileKeyName,
+				MediaType.MULTIPART_FORM_DATA, cookie);
 	}
 
-	public Response putRequestWithBody(String Resource_URI, JSONObject object,String cookie) {
-		return commonLibrary.putRequestWithBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON, object, cookie);
+	public Response postWithQueryParams(String endpoint, HashMap<String, String> queryparams, Object body,
+			String cookie) {
+		return commonLibrary.postWithQueryParams(ApplnURI + endpoint, queryparams, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
 	}
-
-	public Response postRequestFormData(JSONObject jsonString, String serviceUri,String cookie) {
-		return commonLibrary.postRequestWithBodyAsMultipartFormData(jsonString, ApplnURI + serviceUri, cookie);
+	public Response postRequestEmailNotification(String endpoint, JSONObject jsonString, String cookie) {
+		return commonLibrary.postRequestEmailNotification(ApplnURI+endpoint, jsonString, cookie);
 	}
-
-	public Response putRequestWithoutBody(String Resource_URI,String cookie) {
-		return commonLibrary.putRequestWithoutBody(ApplnURI + Resource_URI, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON,cookie);
+	// patch request
+	public Response patchRequest(String endpoint, Object body,String cookie) {
+		return commonLibrary.patchRequest(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
 	}
-	
-	 public Response getRequestPathQueryPara(String Resource_URI, HashMap<String, String> path_value,HashMap<String, List<String>> query_value,String cookie) {
-	        return commonLibrary.getRequestPathQueryParam(ApplnURI + Resource_URI , path_value,query_value, cookie);
-	    } 
-	 public Response getRequestPathQueryParaString(String Resource_URI, HashMap<String, String> path_value,HashMap<String, String> query_value,String cookie) {
-	        return commonLibrary.getRequestPathQueryParamString(ApplnURI + Resource_URI , path_value,query_value,cookie);
-	    } 
-	  
-
-
+	// get requests
+	public Response getWithoutParams(String endpoint, String cookie) {
+		return commonLibrary.getWithoutParams(ApplnURI + endpoint, cookie);
+	}
+	public Response getWithPathParam(String endpoint, HashMap<String, String> patharams, String cookie) {
+		return commonLibrary.getWithPathParam(ApplnURI + endpoint, patharams, cookie);
+	}
+	public Response getWithQueryParam(String endpoint, HashMap<String, String> queryParams, String cookie) {
+		return commonLibrary.getWithQueryParam(ApplnURI + endpoint, queryParams, cookie);
+	}
+	public Response getWithQueryParamList(String endpoint, HashMap<String, List<String>> queryParams, String cookie) {
+		return commonLibrary.getWithQueryParamList(ApplnURI + endpoint, queryParams, cookie);
+	}
+	public Response getWithPathQueryParam(String endpoint, HashMap<String, String> pathParams,
+			HashMap<String, String> queryParams, String cookie) {
+		return commonLibrary.getWithPathQueryParam(ApplnURI + endpoint,pathParams, queryParams, cookie);
+	}
+	public Response getWithPathParamQueryParamList(String endpoint, HashMap<String, String> pathParams,
+			HashMap<String, List<String>> queryParams, String cookie) {
+		return commonLibrary.getWithPathParamQueryParamList(ApplnURI + endpoint, pathParams, queryParams, cookie);
+	}
+	// put requests
+	public Response putWithoutData(String endpoint, String cookie) {
+		return commonLibrary.putWithoutData(ApplnURI + endpoint, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response putWithJson(String endpoint, Object body, String cookie) {
+		return commonLibrary.putWithJson(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response putWithPathParams(String endpoint, HashMap<String, String> pathParams, String cookie) {
+		return commonLibrary.putWithPathParams(ApplnURI + endpoint, pathParams, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response putWithQueryParams(String endpoint, HashMap<String, String> queryParams, String cookie) {
+		return commonLibrary.putWithQueryParams(ApplnURI + endpoint, queryParams, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response putWithPathParamsBody(String endpoint, HashMap<String, String> pathParams, Object body, String cookie) {
+		return commonLibrary.putWithPathParamsBody(ApplnURI + endpoint, pathParams, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
+	// delete request
+	public Response deleteWithPathParams(String endpoint, HashMap<String, String> pathParams, String cookie) {
+		return commonLibrary.deleteWithPathParams(ApplnURI + endpoint, pathParams, cookie);
+	}
+	public Response deleteWithQueryParams(String endpoint, HashMap<String, String> queryParams, String cookie) {
+		return commonLibrary.deleteWithQueryParams(ApplnURI + endpoint, queryParams, cookie);
+	}
+	public Response deleteWithPathQueryParams(String endpoint, HashMap<String, String> pathParams,
+			HashMap<String, String> queryParams, String cookie) {
+		return commonLibrary.deleteWithPathQueryParams(ApplnURI + endpoint, pathParams, queryParams, cookie);
+	}
 }

@@ -53,7 +53,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	private final String apiName = "fetchBiometricAttribute";
 	private final String requestJsonName = "fetchBiometricAttributeRequest";
 	private final String outputJsonName = "fetchBiometricAttributeOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBiometricAttribute_URI = props.get("FetchBiometricAttribute_URI").toString();
 
 	protected String testCaseName = "";
@@ -113,7 +113,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		// sending get request
-		response = applicationLibrary.getRequestPathPara(FetchBiometricAttribute_URI, objectData, cookie);
+		response = applicationLibrary.getWithPathParam(FetchBiometricAttribute_URI, objectData, cookie);
 
 		// This method is for checking the authentication is pass or fail in rest
 		// services

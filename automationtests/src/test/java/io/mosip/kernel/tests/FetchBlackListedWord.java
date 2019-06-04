@@ -53,7 +53,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	private final String apiName = "fetchBlackListedWord";
 	private final String requestJsonName = "fetchBlackListedWordRequest";
 	private final String outputJsonName = "fetchBlackListedWordOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBlackListedWord_URI = props.get("FetchBlackListedWord_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -111,7 +111,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchBlackListedWord_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchBlackListedWord_URI,objectData,cookie);
 		
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();

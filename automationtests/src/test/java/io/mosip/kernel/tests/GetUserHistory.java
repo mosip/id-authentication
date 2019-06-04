@@ -51,7 +51,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getUserHistory = props.get("getUserHistory");
 	private String folderPath = "kernel/GetUserHistory";
 	private String outputFile = "GetUserHistoryOutput.json";
@@ -91,7 +91,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getUserHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(getUserHistory, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

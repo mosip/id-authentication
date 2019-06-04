@@ -55,13 +55,13 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String CentetMachineUserMappingToMasterData_uri = props.get("CentetMachineUserMappingToMasterData_uri").toString();
 	private String folderPath = "kernel/CentetMachineUserMappingToMasterData";
 	private String outputFile = "CentetMachineUserMappingToMasterDataOutput.json";
 	private String requestKeyFile = "CentetMachineUserMappingToMasterDataInput.json";
 	private AssertKernel assertKernel = new AssertKernel();
-	private JSONObject Expectedresponse = null;
+	private JSONObject expectedresponse = null;
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
@@ -92,10 +92,10 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public void centetMachineUserMappingToMasterData(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
 	{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		//  Calling the put method 
-		  Response response = applicationLibrary.putRequest(actualRequest, CentetMachineUserMappingToMasterData_uri,cookie);
+		  Response response = applicationLibrary.putWithJson(CentetMachineUserMappingToMasterData_uri, actualRequest, cookie);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
@@ -104,7 +104,7 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		// Comparing expected and actual response
-		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
+		status = assertKernel.assertKernel(response, expectedresponse,listOfElementToRemove);
 	            
 	if(status)	{
 			finalStatus ="Pass";

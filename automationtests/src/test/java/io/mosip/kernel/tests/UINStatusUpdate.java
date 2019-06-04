@@ -54,7 +54,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uingenerator =props.get("uingenerator");
 	private String folderPath = "kernel/UINStatusUpdate";
 	private String outputFile = "UINStatusUpdateOutput.json";
@@ -108,7 +108,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		innerKeys.add("status");
 		
 		//Fetching UIN which status is unused
-		res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		res1=applicationLibrary.getWithoutParams(uingenerator,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 	switch(testCaseName)
@@ -127,7 +127,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
 			actualRequest.put("request", request);
-			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+			res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 			break;
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":
@@ -135,7 +135,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
-			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+			res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 			request.put("status", "UNASSIGNED");
 			break;
 
@@ -150,7 +150,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		default : break;
 		}
 		
-		res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+		res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

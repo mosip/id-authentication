@@ -55,7 +55,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchAllTemplate = props.get("fetchAllTemplate");
 	private String folderPath = "kernel/GetAllTemplateByTemplateTypeCode";
 	private String outputFile = "GetAllTemplateByTemplateTypeCodeOutput.json";
@@ -96,7 +96,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 	    // Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchAllTemplate, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchAllTemplate, actualRequest,cookie);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();

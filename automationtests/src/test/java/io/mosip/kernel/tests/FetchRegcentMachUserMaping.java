@@ -61,7 +61,7 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegcentMachUserMaping";
 	private final String requestJsonName = "FetchRegcentMachUserMapingRequest";
 	private final String outputJsonName = "FetchRegcentMachUserMapingOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegcentMachUserMaping_URI = props.get("FetchRegcentMachUserMaping_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -126,7 +126,7 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 		String time = sdf.format(calender.getTime());
 		time = time.replace(' ', 'T')+"Z";
 		objectData.put("effdtimes", time);
-				response = applicationLibrary.getRequestPathPara(FetchRegcentMachUserMaping_URI, objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegcentMachUserMaping_URI, objectData,cookie);
 
 		// DB Validation
 

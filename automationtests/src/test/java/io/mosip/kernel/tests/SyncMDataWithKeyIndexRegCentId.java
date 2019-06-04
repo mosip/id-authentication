@@ -50,7 +50,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	private final String apiName = "SyncMDataWithKeyIndexRegCentId";
 	private final String requestJsonName = "SyncMDataWithKeyIndexRegCentIdRequest";
 	private final String outputJsonName = "SyncMDataWithKeyIndexRegCentIdOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncMdatawithRegCentIdKeyIndex = props.get("syncMdatawithRegCentIdKeyIndex").toString();
 
 	protected String testCaseName = "";
@@ -113,7 +113,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 				HashMap<String, String> regId = new HashMap<String, String>();
 				regId.put("regcenterId", regcenterId);
 				objectData.remove("regcenterId");
-					response = applicationLibrary.getRequestPathQueryPara(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
+					response = applicationLibrary.getWithPathQueryParam(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
 
 		
 		//This method is for checking the authentication is pass or fail in rest services

@@ -57,7 +57,7 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getDocType_DocCatByAppID = props.get("getDocType_DocCatByAppID");
 	private String folderPath = "kernel/GetDocType_DocCatByAppID";
 	private String outputFile = "GetDocType_DocCatByAppIDOutput.json";
@@ -111,7 +111,7 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method
-		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
+		Response res=applicationLibrary.getWithPathParamQueryParamList(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response

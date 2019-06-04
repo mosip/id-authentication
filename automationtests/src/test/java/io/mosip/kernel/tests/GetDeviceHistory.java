@@ -53,7 +53,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchDeviceHistory = props.get("fetchDeviceHistory");
 	private String folderPath = "kernel/GetDeviceHistory";
 	private String outputFile = "GetDeviceHistoryOutput.json";
@@ -94,7 +94,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling GET method with path parameters
-		Response res=applicationLibrary.getRequestPathPara(fetchDeviceHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchDeviceHistory, actualRequest,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		//  Removing of unstable attributes from response

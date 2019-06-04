@@ -59,7 +59,7 @@ public class FetchRegCentHistory extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegCentHistory";
 	private final String requestJsonName = "FetchRegCentHistoryRequest";
 	private final String outputJsonName = "FetchRegCentHistoryOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegCentHistory_URI = props.get("FetchRegCentHistory_URI").toString();
 
 	protected String testCaseName = "";
@@ -124,7 +124,7 @@ public class FetchRegCentHistory extends BaseTestCase implements ITest {
 		String time = sdf.format(calender.getTime());
 		time = time.replace(' ', 'T') + "Z";
 		objectData.put("effectiveDate", time);
-		response = applicationLibrary.getRequestPathPara(FetchRegCentHistory_URI, objectData, cookie);
+		response = applicationLibrary.getWithPathParam(FetchRegCentHistory_URI, objectData, cookie);
 
 		// DB Validation
 

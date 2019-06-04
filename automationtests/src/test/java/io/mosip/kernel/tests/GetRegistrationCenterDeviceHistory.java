@@ -53,7 +53,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchRegistrationCenterDeviceHistory = props.get("fetchRegistrationCenterDeviceHistory");
 	private String folderPath = "kernel/GetRegistrationCenterDeviceHistory";
 	private String outputFile = "GetRegistrationCenterDeviceHistoryOutput.json";
@@ -93,7 +93,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchRegistrationCenterDeviceHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchRegistrationCenterDeviceHistory, actualRequest,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response

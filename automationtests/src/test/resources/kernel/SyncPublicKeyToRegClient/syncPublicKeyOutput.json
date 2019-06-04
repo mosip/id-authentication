@@ -1,1 +1,1 @@
-[{"timeStamp":"valid","Jira ID":"MOS-997","testCaseName":"invalid_applicationId_non-existing","applicationId":"invalid","referenceId":"valid","status":"Pass"},{"timeStamp":"invalid","Jira ID":"MOS-997","testCaseName":"invalid_timeStamp_format","applicationId":"valid","referenceId":"valid","status":"Pass"}]
+[{"timeStamp":"valid","Jira ID":"MOS-997","testCaseName":"allValid_smoke","applicationId":"valid","referenceId":"valid","status":"Pass"}]

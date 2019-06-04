@@ -49,7 +49,7 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	private final String apiName = "fetchTitle";
 	private final String requestJsonName = "fetchTitleRequest";
 	private final String outputJsonName = "fetchTitleOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTitle_URI = props.get("FetchTitle_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -105,7 +105,7 @@ public class FetchTitle extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchTitle_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchTitle_URI,objectData,cookie);
 
 
 		//This method is for checking the authentication is pass or fail in rest services

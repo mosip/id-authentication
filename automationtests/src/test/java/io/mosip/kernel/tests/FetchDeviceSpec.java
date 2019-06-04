@@ -58,7 +58,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 	private final String apiName = "FetchDeviceSpec";
 	private final String requestJsonName = "FetchDeviceSpecRequest";
 	private final String outputJsonName = "FetchDeviceSpecOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDeviceSpec_lang_URI = props.get("FetchDeviceSpec_lang_URI").toString();
 	private final String FetchDeviceSpec_id_lang_URI = props.get("FetchDeviceSpec_id_lang_URI").toString();
 
@@ -118,9 +118,9 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		if (objectData.containsKey("devicetypecode"))
-			response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_id_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDeviceSpec_id_lang_URI, objectData, cookie);
 		else
-			response = applicationLibrary.getRequestPathPara(FetchDeviceSpec_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDeviceSpec_lang_URI, objectData, cookie);
 
 		// DB Validation
 

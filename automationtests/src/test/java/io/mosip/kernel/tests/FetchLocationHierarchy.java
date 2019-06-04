@@ -56,7 +56,7 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	private final String apiName = "fetchLocationHierarchy";
 	private final String requestJsonName = "fetchLocationHierarchyRequest";
 	private final String outputJsonName = "fetchLocationHierarchyOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchLocationHierarchy_URI_withlangCode = props.get("FetchLocationHierarchy_URI_withlangCode").toString();
 	private final String FetchLocationHierarchy_URI_locationcode = props.get("FetchLocationHierarchy_URI_locationcode").toString();
 	private final String FetchLocationHierarchy_URI_hierarchyname = props.get("FetchLocationHierarchy_URI_hierarchyname").toString();
@@ -117,11 +117,11 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 				if (objectData.containsKey("hierarchyname"))
-					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_hierarchyname, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchLocationHierarchy_URI_hierarchyname, objectData,cookie);
 				else if (objectData.containsKey("locationcode"))
-					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_locationcode, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchLocationHierarchy_URI_locationcode, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(FetchLocationHierarchy_URI_withlangCode, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchLocationHierarchy_URI_withlangCode, objectData,cookie);
 
 
 		// add parameters to remove in response before comparison like time stamp

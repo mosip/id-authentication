@@ -60,7 +60,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	private final String apiName = "FetchMachineHistory";
 	private final String requestJsonName = "FetchMachineHistoryRequest";
 	private final String outputJsonName = "FetchMachineHistoryOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchMachineHistory_URI = props.get("FetchMachineHistory_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -125,7 +125,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 		String time = sdf.format(calender.getTime());
 		time = time.replace(' ', 'T')+"Z";
 		objectData.put("effdatetimes", time);
-				response = applicationLibrary.getRequestPathPara(FetchMachineHistory_URI, objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchMachineHistory_URI, objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);

@@ -49,7 +49,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	private final String apiName = "SyncMDataWithKeyIndex";
 	private final String requestJsonName = "SyncMDataWithKeyIndexRequest";
 	private final String outputJsonName = "SyncMDataWithKeyIndexOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncMdatawithKeyIndex = props.get("syncMdatawithKeyIndex").toString();
 
 	protected String testCaseName = "";
@@ -108,7 +108,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 
 			JSONObject objectData = objectDataArray[0];
 			responseObject = objectDataArray[1];
-					response = applicationLibrary.getRequestAsQueryParam(syncMdatawithKeyIndex, objectData,cookie);
+					response = applicationLibrary.getWithQueryParam(syncMdatawithKeyIndex, objectData,cookie);
 		
 
 		//This method is for checking the authentication is pass or fail in rest services

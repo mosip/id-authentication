@@ -29,7 +29,7 @@ import org.testng.internal.TestResult;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
@@ -52,7 +52,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String licKeyGenerator = props.get("licKeyGenerator");
 	private final String mapLicenseKey = props.get("mapLicenseKey");
 	private final String fetchmapLicenseKey = props.get("fetchmapLicenseKey");
@@ -100,7 +100,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 actualRequest1 = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		// Calling the Post method 
-		 Response res = applicationLibrary.postRequest(actualRequest1, licKeyGenerator);
+		 Response res = applicationLibrary.postWithJson(licKeyGenerator, actualRequest1);
 		
 		//Storing the licence key and its corrosponding tspid
 		 if(testCaseName.equals("Kernel_GenerateLicenseKey_smoke_generateLicenceKey"))
@@ -179,13 +179,13 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	    	actualRequest_map.putAll(request);
 		    Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		   // Calling the Post method 
-		    res_map = applicationLibrary.postRequest(actualRequest_map, mapLicenseKey);
+		    res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
 	    }
 	    else
 	    {
 	    	Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	    	// Calling the Post method 
-			 res_map = applicationLibrary.postRequest(actualRequest_map, mapLicenseKey);
+			 res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
 	    }
 	  // Comparing expected and actual response
 		status = AssertResponses.assertResponses(res_map, Expectedresponse, outerKeys, innerKeys);
@@ -241,7 +241,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		}
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		// Calling the get method 
-		Response response=applicationLibrary.getRequestAsQueryParam(fetchmapLicenseKey, actualRequest);
+		Response response=applicationLibrary.getWithQueryParam(fetchmapLicenseKey, actualRequest, "");
 				
 		// Comparing expected and actual response
 		status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);

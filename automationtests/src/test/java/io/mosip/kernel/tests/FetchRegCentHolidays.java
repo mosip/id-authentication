@@ -58,7 +58,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegCentHolidays";
 	private final String requestJsonName = "FetchRegCentHolidaysRequest";
 	private final String outputJsonName = "FetchRegCentHolidaysOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegCentHolidays_URI = props.get("FetchRegCentHolidays_URI").toString();
 
 	protected String testCaseName = "";
@@ -118,7 +118,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 
-				response = applicationLibrary.getRequestPathPara(FetchRegCentHolidays_URI, objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCentHolidays_URI, objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);

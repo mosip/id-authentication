@@ -58,7 +58,7 @@ public class FetchMachine extends BaseTestCase implements ITest {
 	private final String apiName = "FetchMachine";
 	private final String requestJsonName = "FetchMachineRequest";
 	private final String outputJsonName = "FetchMachineOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchMachine_URI = props.get("FetchMachine_URI").toString();
 	private final String FetchMachine_lang_URI = props.get("FetchMachine_lang_URI").toString();
 	private final String FetchMachine_id_lang_URI = props.get("FetchMachine_id_lang_URI").toString();
@@ -120,16 +120,15 @@ public class FetchMachine extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		if(objectData != null) {
 				if (objectData.containsKey("id"))
-					response = applicationLibrary.getRequestPathPara(FetchMachine_id_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchMachine_id_lang_URI, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(FetchMachine_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchMachine_lang_URI, objectData,cookie);
 
 		}
 
 		// sending request to get request without param
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchMachine_URI, objectData,cookie);
+			response = applicationLibrary.getWithoutParams(FetchMachine_URI, cookie);
 			objectData = null;
 		}
 		// DB Validation
