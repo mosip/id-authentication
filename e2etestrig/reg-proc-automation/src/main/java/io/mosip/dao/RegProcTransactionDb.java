@@ -37,6 +37,11 @@ public class RegProcTransactionDb {
 	 session = factory.getCurrentSession();
 	 return session;
 	}
+	/**
+	 * 
+	 * @param regId
+	 * @return set of status of stages in reg proc
+	 */
 	public Set<String> readStatus(String regId) {
 		Session session=getCurrentSession();
 		 Transaction t=session.beginTransaction();

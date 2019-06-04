@@ -2,20 +2,20 @@
 <testng-results skipped="0" failed="1" ignored="0" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="Registration Client Integration Scenario" duration-ms="42285" started-at="2019-06-03T12:07:35Z" finished-at="2019-06-03T12:08:17Z">
+  <suite name="Registration Client Integration Scenario" duration-ms="48044" started-at="2019-06-04T04:44:43Z" finished-at="2019-06-04T04:45:31Z">
     <groups>
     </groups>
-    <test name="EmailNotificationServiceTest" duration-ms="42285" started-at="2019-06-03T12:07:35Z" finished-at="2019-06-03T12:08:17Z">
+    <test name="EmailNotificationServiceTest" duration-ms="48044" started-at="2019-06-04T04:44:43Z" finished-at="2019-06-04T04:45:31Z">
       <class name="io.mosip.registration.main.PacketCreation">
-        <test-method status="PASS" signature="springTestContextBeforeTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextBeforeTestClass" is-config="true" duration-ms="12" started-at="2019-06-03T12:07:35Z" finished-at="2019-06-03T12:07:35Z">
+        <test-method status="PASS" signature="springTestContextBeforeTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextBeforeTestClass" is-config="true" duration-ms="10" started-at="2019-06-04T04:44:43Z" finished-at="2019-06-04T04:44:43Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- springTestContextBeforeTestClass -->
-        <test-method status="PASS" signature="springTestContextPrepareTestInstance()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextPrepareTestInstance" is-config="true" duration-ms="23856" started-at="2019-06-03T12:07:35Z" depends-on-methods="org.springframework.test.context.testng.AbstractTestNGSpringContextTests.springTestContextBeforeTestClass" finished-at="2019-06-03T12:07:59Z">
+        <test-method status="PASS" signature="springTestContextPrepareTestInstance()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextPrepareTestInstance" is-config="true" duration-ms="20279" started-at="2019-06-04T04:44:43Z" depends-on-methods="org.springframework.test.context.testng.AbstractTestNGSpringContextTests.springTestContextBeforeTestClass" finished-at="2019-06-04T04:45:03Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- springTestContextPrepareTestInstance -->
-        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="3" started-at="2019-06-03T12:07:59Z" finished-at="2019-06-03T12:07:59Z">
+        <test-method status="PASS" signature="springTestContextBeforeTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextBeforeTestMethod" is-config="true" duration-ms="2" started-at="2019-06-04T04:45:03Z" finished-at="2019-06-04T04:45:03Z">
           <params>
             <param index="0">
               <value>
@@ -26,7 +26,7 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- springTestContextBeforeTestMethod -->
-        <test-method status="FAIL" signature="createPacket()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="createPacket" duration-ms="18394" started-at="2019-06-03T12:07:59Z" finished-at="2019-06-03T12:08:17Z">
+        <test-method status="FAIL" signature="createPacket()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="createPacket" duration-ms="27734" started-at="2019-06-04T04:45:03Z" finished-at="2019-06-04T04:45:31Z">
           <exception class="io.mosip.kernel.idgenerator.rid.exception.NullValueException">
             <message>
               <![CDATA[KER-RIG-001 --> Null value entered]]>
@@ -71,7 +71,7 @@ at io.mosip.registration.main.RegClient.main(RegClient.java:28)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- createPacket -->
-        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="1" started-at="2019-06-03T12:08:17Z" finished-at="2019-06-03T12:08:17Z">
+        <test-method status="PASS" signature="springTestContextAfterTestMethod(java.lang.reflect.Method)[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextAfterTestMethod" is-config="true" duration-ms="0" started-at="2019-06-04T04:45:31Z" finished-at="2019-06-04T04:45:31Z">
           <params>
             <param index="0">
               <value>
@@ -82,7 +82,7 @@ at io.mosip.registration.main.RegClient.main(RegClient.java:28)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- springTestContextAfterTestMethod -->
-        <test-method status="PASS" signature="springTestContextAfterTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextAfterTestClass" is-config="true" duration-ms="0" started-at="2019-06-03T12:08:17Z" finished-at="2019-06-03T12:08:17Z">
+        <test-method status="PASS" signature="springTestContextAfterTestClass()[pri:0, instance:io.mosip.registration.main.PacketCreation@49049a04]" name="springTestContextAfterTestClass" is-config="true" duration-ms="1" started-at="2019-06-04T04:45:31Z" finished-at="2019-06-04T04:45:31Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- springTestContextAfterTestClass -->

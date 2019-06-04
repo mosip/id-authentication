@@ -2,15 +2,18 @@ package io.mosip.e2e.tests;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.ITest;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
@@ -18,30 +21,42 @@ import org.testng.internal.TestResult;
 import io.mosip.dao.RegProcDBCleanUp;
 import io.mosip.e2e.util.GeneratePreIds;
 import io.mosip.e2e.util.PacketFlowVerification;
-
-public class RegistrationProcessor implements ITest {
+/**
+ * 
+ * @author M1047227
+ *
+ */
+public class EndToEndRun implements ITest {
 	protected static String testCaseName = "";
 	PacketFlowVerification packetFlowVerification = new PacketFlowVerification();
 	List<File> packets = new ArrayList<File>();
-	/*@AfterClass
+	/**
+	 * Db clean up of packets
+	 */
+	@AfterClass
 	public void dbCleanUp() {
 		RegProcDBCleanUp cleanUp=new RegProcDBCleanUp();
 		for(File file: packets) {
 			String regId=file.getName().substring(0,file.getName().lastIndexOf("."));
 			cleanUp.prepareQueryList(regId);
 		}
-	}*/
+	}
 	GeneratePreIds generatePreIds = new GeneratePreIds();
-	
+	/**
+	 * Test to generate and validate generated preIds
+	 */
 	@Test(priority=1)
 	public void getPrids() {
 
 		JSONObject preIds = generatePreIds.getPreids();
-	/*	if (preIds.equals(null)) {
+		if (preIds.equals(null)) {
 			Assert.assertTrue(false);
 		}
-		Assert.assertTrue(true);*/
+		Assert.assertTrue(true);
 	}
+	/**
+	 * Test to check whether packets have been generated
+	 */
 	@Test(priority=2)
 	public void getPackets() {
 		packets = packetFlowVerification.readPacket();
@@ -58,7 +73,9 @@ public class RegistrationProcessor implements ITest {
 			Assert.assertTrue(syncStatus);
 		}
 	}
-	
+	/**
+	 * Method to upload the packet and validate the response
+	 */
 	@Test(priority=4)
 	public void uploadPacket() {
 		for(File file: packets) {
@@ -67,6 +84,9 @@ public class RegistrationProcessor implements ITest {
 		}
 	}
 	
+	/**
+	 * Method to validate that all the stages have passed for a valid packet or not
+	 */
 	@Test(priority=5)
 	public void compareDbTransactions() {
 		for(File file: packets) {
@@ -80,12 +100,7 @@ public class RegistrationProcessor implements ITest {
 		return this.testCaseName;
 	}
 	
-/*	@BeforeMethod(alwaysRun=true)
-	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
-		
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName ="PreRegistration"+"_"+"Get Packets"+"_"+ object.get("testCaseName").toString();
-	}*/
+
 
 	/**
 	 * This method is used for generating report
@@ -104,7 +119,7 @@ public class RegistrationProcessor implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			testCaseName ="E2E_AdultPacket"+"_"+baseTestMethod.getMethodName();
-			f.set(baseTestMethod, RegistrationProcessor.testCaseName);
+			f.set(baseTestMethod, EndToEndRun.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			
 		}

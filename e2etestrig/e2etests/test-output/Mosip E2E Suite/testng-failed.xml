@@ -6,14 +6,18 @@
   </listeners>
   <test thread-count="5" name="E2E Tests(failed)">
     <classes>
-      <class name="io.mosip.e2e.tests.RegistrationProcessor">
+      <class name="io.mosip.e2e.tests.EndToEndRun">
         <methods>
           <include name="compareDbTransactions"/>
+          <include name="getPackets"/>
+          <include name="syncPacket"/>
+          <include name="getTestCaseName"/>
           <include name="uploadPacket"/>
-          <include name="setResultTestName"/>
           <include name="dbCleanUp"/>
+          <include name="getPrids"/>
+          <include name="setResultTestName"/>
         </methods>
-      </class> <!-- io.mosip.e2e.tests.RegistrationProcessor -->
+      </class> <!-- io.mosip.e2e.tests.EndToEndRun -->
     </classes>
   </test> <!-- E2E Tests(failed) -->
 </suite> <!-- Failed suite [Mosip E2E Suite] -->

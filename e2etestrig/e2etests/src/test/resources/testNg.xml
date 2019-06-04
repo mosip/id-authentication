@@ -15,8 +15,8 @@
 	<test name="E2E Tests">
 
 		<classes>
-	 <class name="io.mosip.e2e.tests.PreRegistrationTests" /> 
-			 <class name="io.mosip.e2e.tests.RegistrationProcessor" /> 
+	 
+			 <class name="io.mosip.e2e.tests.EndToEndRun" /> 
 			
 		
 		</classes>

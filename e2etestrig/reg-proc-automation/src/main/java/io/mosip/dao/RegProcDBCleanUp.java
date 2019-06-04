@@ -10,7 +10,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 
-
+/**
+ * 
+ * @author M1047227
+ *
+ */
 public class RegProcDBCleanUp {
 	SessionFactory factory;
 	Session session;
@@ -21,7 +25,12 @@ public class RegProcDBCleanUp {
 		factory=new Configuration().configure(registrationListConfigFile).buildSessionFactory();
 		return factory;
 	}
-	
+	/**
+	 * 
+	 * @param regID
+	 * @param queryString
+	 * Method To clear from db
+	 */
 	public void deleteFromRegProcTables(String regID,String queryString) {
 		
 		SessionFactory sessionFactory= getSessionFactory();
