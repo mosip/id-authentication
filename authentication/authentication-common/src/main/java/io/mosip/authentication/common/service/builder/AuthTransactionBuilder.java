@@ -1,9 +1,7 @@
 package io.mosip.authentication.common.service.builder;
 
-import java.nio.charset.Charset;
 import java.util.Date;
 
-import org.jose4j.lang.HashUtil;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 

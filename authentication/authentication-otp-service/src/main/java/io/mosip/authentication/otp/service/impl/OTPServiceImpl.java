@@ -247,19 +247,6 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	/**
-	 * Adds a number of minutes(positive/negative) to a date returning a new Date
-	 * object. Add positive, date increase in minutes. Add negative, date reduce in
-	 * minutes.
-	 *
-	 * @param date   the date
-	 * @param minute the minute
-	 * @return the date
-	 */
-	private Date addMinutes(Date date, int minute) {
-		return DateUtils.addMinutes(date, minute);
-	}
-
-	/**
 	 * Formate date.
 	 *
 	 * @param date   the date
