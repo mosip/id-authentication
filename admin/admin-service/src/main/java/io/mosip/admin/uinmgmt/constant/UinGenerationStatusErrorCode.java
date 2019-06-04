@@ -6,7 +6,8 @@ package io.mosip.admin.uinmgmt.constant;
  *
  */
 public enum UinGenerationStatusErrorCode {
-	UIN_GENERATION_STATUS_EXCEPTION("ADM-xxx-002","Error while fetching uin generation status"), PARSE_EXCEPTION("XX","error while parsing ");
+	UIN_GENERATION_STATUS_EXCEPTION("ADM-PKT-002","Unable to fetch Packet Status"), 
+	PARSE_EXCEPTION("ADM-PKT-003","Unable to parse the status");
 
 	
 	
