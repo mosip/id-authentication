@@ -1024,12 +1024,13 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId;
 				object.setIsValid(Boolean.TRUE);
-				statusComment = idResponse.getResponse().getEntity().toString();
-
+				
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, " UIN LINKED WITH " +matchedRegId,
+						"is : " + description );
 			} else {
 
-				statusComment = idResponse != null && idResponse.getErrors() != null
-						? idResponse.getErrors().get(0).getMessage()
+				statusComment = idResponse != null && idResponse.getErrors() != null && idResponse.getErrors().get(0)!=null ? idResponse.getErrors().get(0).getMessage()
 						: UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + "  " + NULL_IDREPO_RESPONSE
 								+ "for lostPacketRegId " + lostPacketRegId;
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
@@ -1041,6 +1042,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						&& idResponse.getErrors() != null ? idResponse.getErrors().get(0).getMessage()
 								: NULL_IDREPO_RESPONSE;
 				object.setIsValid(Boolean.FALSE);
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, " UIN NOT LINKED WITH " +matchedRegId,
+						"is : " + statusComment);
 			}
 
 		} else {
@@ -1052,8 +1056,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 			description = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + "  " + NULL_IDREPO_RESPONSE
 					+ " UIN not available for matchedRegId " + matchedRegId;
-
 			object.setIsValid(Boolean.FALSE);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, " UIN NOT LINKED WITH " +matchedRegId,
+					"is : " + statusComment);
 		}
 
 		return idResponse;
