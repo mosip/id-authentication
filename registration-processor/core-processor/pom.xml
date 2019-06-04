@@ -22,7 +22,7 @@
 		<module>registration-processor-retry-stage</module>
 		<module>registration-processor-reprocessor-stage</module>
         <module>registration-processor-abis-handler-stage</module>
-        <module>registartion-processor-abis-middleware-stage</module>
+        <module>registration-processor-abis-middleware-stage</module>
     	<module>registration-processor-biometric-authentication-stage</module>
   </modules>
 </project>
