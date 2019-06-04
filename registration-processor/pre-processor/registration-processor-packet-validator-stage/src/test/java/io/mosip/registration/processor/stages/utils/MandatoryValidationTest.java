@@ -20,7 +20,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -31,7 +33,7 @@ public class MandatoryValidationTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	@Mock
 	private Utilities utility;
@@ -70,7 +72,7 @@ public class MandatoryValidationTest {
 	}
 
 	@Test
-	public void mandatoryValidationSuccessTest() throws IOException, JSONException {
+	public void mandatoryValidationSuccessTest() throws IOException, JSONException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 
 		boolean result = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 		assertTrue("Test for mandate fields", result);

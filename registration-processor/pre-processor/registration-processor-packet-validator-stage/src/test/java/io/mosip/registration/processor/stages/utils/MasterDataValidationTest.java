@@ -167,7 +167,6 @@ public class MasterDataValidationTest {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(statusResponseDto);
 
-
 		when(env.getProperty(ATTRIBUTES)).thenReturn("province,city,postalcode");
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(responseWrapper);

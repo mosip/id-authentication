@@ -1,11 +1,14 @@
 package io.mosip.registration.processor.stages.utils;
 
+import java.io.IOException;
 import java.util.List;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -20,7 +23,7 @@ public class FilesValidation {
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
 
 	/** The adapter. */
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -33,7 +36,7 @@ public class FilesValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public FilesValidation(FileSystemAdapter adapter, InternalRegistrationStatusDto registrationStatusDto) {
+	public FilesValidation(FileSystemManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 	}
@@ -46,8 +49,11 @@ public class FilesValidation {
 	 * @param identity
 	 *            the identity
 	 * @return true, if successful
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public boolean filesValidation(String registrationId, Identity identity) {
+	public boolean filesValidation(String registrationId, Identity identity) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		boolean filesValidated = false;
 
 		List<FieldValueArray> hashSequence = identity.getHashSequence1();
@@ -68,8 +74,11 @@ public class FilesValidation {
 	 * @param hashSequence
 	 *            the hash sequence
 	 * @return true, if successful
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private boolean validateHashSequence(String registrationId, List<FieldValueArray> hashSequence) {
+	private boolean validateHashSequence(String registrationId, List<FieldValueArray> hashSequence) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		boolean isHashSequenceValidated = false;
 
 		for (FieldValueArray fieldValueArray : hashSequence) {
@@ -93,8 +102,11 @@ public class FilesValidation {
 	 * @param values
 	 *            the values
 	 * @return true, if successful
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private boolean validateDemographicSequence(String registrationId, List<String> values) {
+	private boolean validateDemographicSequence(String registrationId, List<String> values) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		boolean isDemographicSequenceValidated = false;
 		for (String applicantFile : values) {
 			String fileName = "";
@@ -119,8 +131,11 @@ public class FilesValidation {
 	 * @param applicant
 	 *            the applicant
 	 * @return true, if successful
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private boolean validateBiometric(String registrationId, List<String> applicant) {
+	private boolean validateBiometric(String registrationId, List<String> applicant) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		boolean isApplicantValidated = false;
 
 		for (String applicantFile : applicant) {

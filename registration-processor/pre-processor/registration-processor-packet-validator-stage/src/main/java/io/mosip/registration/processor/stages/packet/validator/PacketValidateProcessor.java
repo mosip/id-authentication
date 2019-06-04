@@ -22,7 +22,6 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -45,6 +44,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
@@ -58,6 +58,7 @@ import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainReque
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDataSyncRequestDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -96,9 +97,12 @@ public class PacketValidateProcessor {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidateProcessor.class);
 
-	/** The adapter. */
+//	/** The adapter. */
+//	@Autowired
+//	private FileSystemAdapter adapter;
+	
 	@Autowired
-	private FileSystemAdapter adapter;
+	private FileSystemManager fileSystemManager;
 
 	@Autowired
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
@@ -207,7 +211,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.VALIDATE_PACKET.toString());
 			registrationStatusDto.setRegistrationStageName(stageName);
-			InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+			InputStream packetMetaInfoStream = fileSystemManager.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			Boolean isValid = validate(registrationStatusDto, packetMetaInfo, object);
@@ -410,9 +414,9 @@ public class PacketValidateProcessor {
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
 			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
-			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException {
+			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
-		InputStream idJsonStream = adapter.getFile(registrationId,
+		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
 		String jsonString = new String(bytearray);
@@ -511,10 +515,10 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean mandatoryValidation(InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException, JSONException {
+			throws IOException, JSONException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(fileSystemManager, registrationStatusDto, utility);
 		isMandatoryValidation = mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 		return isMandatoryValidation;
 	}
@@ -539,12 +543,12 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
+	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isFilesValidated = true;
 			return isFilesValidated;
 		}
-		FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
+		FilesValidation filesValidation = new FilesValidation(fileSystemManager, registrationStatusDto);
 		isFilesValidated = filesValidation.filesValidation(registrationId, identity);
 		if (!isFilesValidated)
 			packetValidaionFailure = " fileValidation failed ";
@@ -553,12 +557,12 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean checkSumValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws IOException {
+			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		if (env.getProperty(VALIDATECHECKSUM).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isCheckSumValidated = true;
 			return isCheckSumValidated;
 		}
-		CheckSumValidation checkSumValidation = new CheckSumValidation(adapter, registrationStatusDto);
+		CheckSumValidation checkSumValidation = new CheckSumValidation(fileSystemManager, registrationStatusDto);
 		isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, identity);
 		if (!isCheckSumValidated)
 			packetValidaionFailure = " ChecksumValidation falied ";
@@ -585,13 +589,13 @@ public class PacketValidateProcessor {
 					packetValidaionFailure = " individualBiometricsValidation failed ";
 					return false;
 				}
-				InputStream idJsonStream = adapter.getFile(registrationId,
+				InputStream idJsonStream = fileSystemManager.getFile(registrationId,
 						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + cbefFile);
 				if (idJsonStream != null)
 					return true;
 
 			}
-		} catch (IOException e) {
+		} catch (IOException | PacketDecryptionFailureException | ApisResourceAccessException | io.mosip.kernel.core.exception.IOException e) {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
