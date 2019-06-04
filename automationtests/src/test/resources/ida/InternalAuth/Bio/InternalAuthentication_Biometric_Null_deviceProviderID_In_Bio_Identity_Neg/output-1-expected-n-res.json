@@ -1,0 +1,1 @@
+{"transactionID":"0600020454","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - deviceProviderID"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}

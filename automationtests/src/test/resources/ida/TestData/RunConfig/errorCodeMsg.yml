@@ -15,19 +15,6 @@ errors:
   ExpiredVID:
     errorCode: IDA-MLC-005
     errorMessage: Expired VID
-    actionMessage: Please regenerate VID and try again
-  RevokedVID:
-    errorCode: IDA-MLC-005
-    errorMessage: Revoked VID
-    actionMessage: Please regenerate VID and try again
-  DeactivatedVID:
-    errorCode: IDA-MLC-005
-    errorMessage: Deactivated VID
-    actionMessage: Please regenerate VID and try again
-  InactiveVID:
-    errorCode: IDA-MLC-005
-    errorMessage: Inactive VID
-    actionMessage: Please regenerate VID and try again
   RequestTimeGT24HR:
     errorCode: IDA-MLC-001
     errorMessage: Request to be received at MOSIP within 30 minutes
@@ -68,9 +55,6 @@ errors:
   InvalidIdentityTimestamp:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - request/timestamp  
-  InvalidIdentityBioTimestamp:
-    errorCode: IDA-MLC-009
-    errorMessage: Invalid Input Parameter - biometrics/timestamp
   MissingId:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - id 
@@ -83,9 +67,6 @@ errors:
   MissingIdentityTimestamp:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - request/timestamp  
-  MissingIdentityBioTimestamp:
-    errorCode: IDA-MLC-006
-    errorMessage: Missing Input Parameter - biometrics/timestamp  
   MissingtransactionID:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - transactionID 
@@ -163,35 +144,15 @@ errors:
     errorCode: IDA-BIA-006
     errorMessage: $REGEXP:Biometric data FID not available in database$
     actionMessage: Your Biometric data is not available in MOSIP
-  MisssingIrisBioInMosipDB:
-    errorCode: IDA-BIA-006
-    errorMessage: $REGEXP:Biometric data IIR not available in database$
-    actionMessage: Your Biometric data is not available in MOSIP
-  MisssingFingerBioInMosipDB:
-    errorCode: IDA-BIA-006
-    errorMessage: $REGEXP:Biometric data FMR not available in database$
-    actionMessage: Your Biometric data is not available in MOSIP
   InvalidBioSubtype:
     errorCode: IDA-MLC-009
     errorMessage: $REGEXP:Invalid Input Parameter - bioSubType - .* for bioType .*$
   FaceExceed1:
     errorCode: IDA-BIA-009
     errorMessage: Number of FID records should not exceed 1
-  FingerExceed2:
-    errorCode: IDA-BIA-003
-    errorMessage: Number of FMR should not exceed 2
-  IrisExceed2:
-    errorCode: IDA-BIA-007
-    errorMessage: Duplicate Irises in request
-  PolicyWithoutBioFinger:
-    errorCode: IDA-MPA-006
-    errorMessage: Finger-authentiation usage not allowed as per policy
   PolicyWithoutBioFace:
     errorCode: IDA-MPA-006
     errorMessage: Face-authentiation usage not allowed as per policy
-  PolicyWithoutBioIris:
-    errorCode: IDA-MPA-006
-    errorMessage: Iris-authentiation usage not allowed as per policy
   MissingBioSubtype:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - bioSubType
@@ -225,14 +186,6 @@ errors:
   BiometricFaceMismatch:
     errorCode: IDA-BIA-001
     errorMessage: Biometric data – FID did not match
-    actionMessage: Please give your biometrics again
-  BiometricIrisMismatch:
-    errorCode: IDA-BIA-001
-    errorMessage: Biometric data – IIR did not match
-    actionMessage: Please give your biometrics again
-  BiometricFingerMismatch:
-    errorCode: IDA-BIA-001
-    errorMessage: Biometric data – FMR did not match
     actionMessage: Please give your biometrics again
   Demo_GenderMismatch:
     errorCode: IDA-DEA-001
@@ -281,13 +234,5 @@ errors:
   InvalidUserId:
     errorCode: IDA-BIA-012
     errorMessage: Invalid userid of the individual
-  Demo_NameMismatch_SecLang:
-    errorCode: IDA-DEA-001
-    errorMessage: Demographic data name in ara did not match
-    actionMessage: Please re-enter your gender in ara
-  Demo_NameMismatch_PriLang:
-    errorCode: IDA-DEA-001
-    errorMessage: Demographic data name in fra did not match
-    actionMessage: Please re-enter your gender in fra
   
   

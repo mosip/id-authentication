@@ -1,0 +1,1 @@
+{"transactionID":"7660153642","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-BIA-001","errorMessage":"Biometric data – FID did not match","actionMessage":"Please give your biometrics again"}],"responseTime":"2019-05-23T12:09:51.731+05:30","response":{"kycStatus":false,"staticToken":"278651549046032872107477551963333779","identity":null}}

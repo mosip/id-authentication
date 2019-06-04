@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.DeviceSpecification;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.entity.DeviceSpecification;
  *
  */
 @Repository
-public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpecification, String> {
+public interface DeviceSpecificationRepository extends JpaRepository<DeviceSpecification, String> {
 
 	/**
 	 * Method to find what are the device specifications for the devices which are

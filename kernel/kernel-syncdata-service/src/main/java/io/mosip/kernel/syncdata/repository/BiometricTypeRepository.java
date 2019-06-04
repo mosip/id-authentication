@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.BiometricType;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.entity.BiometricType;
  */
 
 @Repository
-public interface BiometricTypeRepository extends BaseRepository<BiometricType, String> {
+public interface BiometricTypeRepository extends JpaRepository<BiometricType, String> {
 
 	/**
 	 * Method to find list of BiometricType created , updated or deleted time is

@@ -1,0 +1,91 @@
+testdata:
+  Iris_Auth_With_LeftAndRightEye_For_UIN_Pos:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN:WITH:EVEN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: Y
+      #output.1.response.y.usageData: '0x0000200000002000'
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      #output.1.response.y.ver: 0.8
+    audit.auth_transaction:
+      txnId: $input.bio-auth-request:bioAuthReq.txnID$
+      authTypeCode: IRIS-AUTH
+      statusCode: $output.output-1-expected-y-res:output.1.response.y.status$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $REGEXP:.*Iris.*Authentication.*Success.*$
+      idType: D
+    audit.audit_log:
+      refId: $input.bio-auth-request:bioAuthReq.idvId$
+      eventId: $REGEXP:.*IDA-EVT.*$
+      eventName: AUTH_REQUEST_RESPONSE
+      appId: IDA
+      appName: ID-Authentication
+      moduleName: IRIS_AUTH
+      refIdType: UIN  
+  
+      
+  Iris_Auth_With_Same_LeftAndRightEye_For_UIN_Neg_02:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $UIN$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.y.status: N
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.err.errorMessage: Duplicate Irises in request
+      output.1.response.y.err.errorCode: IDA-BIA-016
+      output.1.response.y.ver: 0.8
+      
+  Iris_Auth_With_LeftAndRightEye_For_VID_Pos:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $VID$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$ 
+      bioAuthReq.idvIdType: V 
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: $IGNORE$
+      output.1.response.y.usageData: $IGNORE$
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.reqTime: $input.bio-auth-request:bioAuthReq.reqTime$
+      output.1.response.y.txnID: $input.bio-auth-request:bioAuthReq.txnID$
+      output.1.response.y.idType: V
+      output.1.response.y.ver: 0.8    
+      
+  Iris_Auth_With_VID_Same_LeftAndRightEye_Neg_04:
+    input.bio-auth-request:
+      bioAuthReq.idvId: $VID$
+      bioAuthReq.tspID: REF01
+      bioAuthReq.reqTime: $TIMESTAMP$    
+      bioAuthReq.txnID: $RANDOM:N:10$  
+      bioAuthReq.idvIdType: V
+    input.identity-encrypt-data:
+      identityReq.valuerightEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.valueleftEye: $idrepo~$input.bio-auth-request:bioAuthReq.idvId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+      identityReq.tspID: $input.bio-auth-request:bioAuthReq.tspID$
+    output.output-1-expected-n-error-res:
+      output.1.response.y.status: N
+      output.1.response.y.resTime: $TIMESTAMP$
+      output.1.response.y.err.errorMessage: Duplicate Irises in request
+      output.1.response.y.err.errorCode: IDA-BIA-016
+      output.1.response.y.ver: 0.8
+      

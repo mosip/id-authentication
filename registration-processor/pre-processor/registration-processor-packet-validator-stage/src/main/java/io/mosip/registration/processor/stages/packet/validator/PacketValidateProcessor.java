@@ -470,13 +470,14 @@ public class PacketValidateProcessor {
 		// check if uin is in idrepisitory
 		if (RegistrationType.UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.RES_UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
+				||RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
-			if (!ifUinIDRepo(registrationStatusDto.getRegistrationId()))
+			String uin = identityIteratorUtil.getFieldValue(metadataList, "uin");
+			if (!ifUinIDRepo(uin))
 				return false;
 		}
-
+		
 		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
 				&& !mandatoryValidation(registrationStatusDto)) {
 			return false;
@@ -492,8 +493,8 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean ifUinIDRepo(String regId) throws ApisResourceAccessException, IOException {
-		if (idRepoService.getUinFromIDRepo(regId, utility.getGetRegProcessorDemographicIdentity()) == null)
+	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
+		if (idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null)
 			return false;
 		return true;
 	}

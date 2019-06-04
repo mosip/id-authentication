@@ -1,0 +1,1 @@
+{"transactionID":"3740245612","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MPA-009","errorMessage":"Partner is not registered"}],"responseTime":"2019-05-23T11:59:37.469+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}

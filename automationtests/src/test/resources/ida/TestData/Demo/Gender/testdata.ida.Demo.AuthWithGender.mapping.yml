@@ -17,25 +17,6 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_UIN_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$ 
   
   Authentication_Demographic_Gender_With arabic language_smoke_For IntegrationTest_UIN_Pos_02:
     endpoint.url:
@@ -55,25 +36,6 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_UIN_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$ 
   
   Authentication_Demographic_Gender_With french language_smoke_For IntegrationTest_UIN_Pos_03:
     endpoint.url:
@@ -93,25 +55,6 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_UIN_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$ 
          
   Authentication_Demographic_Gender_Invalid UIN_Neg_04:
     endpoint.url:
@@ -164,11 +107,11 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$HOUR+25
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender0:langcode:TestData:secondary_lang_code$
       identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
-      identityReq.timestamp: $TIMESTAMP$HOUR+25
+      identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
@@ -185,11 +128,11 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$HOUR-25
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender0:langcode:TestData:secondary_lang_code$
       identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
-      identityReq.timestamp: $TIMESTAMP$HOUR+25
+      identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
@@ -541,34 +484,14 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Demo_GenderMismatch:errorCode$
       output.1.response.n.err.actionMessage: $errors:Demo_GenderMismatch:actionMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_fail_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
-      idType: $TestData:auth_transaction_UIN_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$ 
       
   Authentication_Demographic_Gender_Gender mismatch for VID_Neg_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
-      AuthReq.individualId: $VID:WHERE:UIN:WITH:GenderFLE$
+      AuthReq.individualId: $UIN:WITH:GenderFLE$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
     input.identity-encrypt-data:
       identityReq.valuegender0: $TestData:male_gender_arabic_valid$
       identityReq.languagegender0: ara
@@ -583,25 +506,6 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Demo_GenderMismatch:errorCode$
       output.1.response.n.err.actionMessage: $errors:Demo_GenderMismatch:actionMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_fail_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$ 
       
   Authentication_Demographic_Gender_Deactivated UIN_Neg_25:
     endpoint.url:
@@ -643,25 +547,6 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$ 
   
   Authentication_Demographic_Gender_With arabic language_smoke_For VID_Pos_27:
     endpoint.url:
@@ -684,25 +569,6 @@ testdata:
       output.1.response.y.status: BOOLEAN:true
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$ 
   
   Authentication_Demographic_Gender_With french language_smoke_For VID_Pos_28:
     endpoint.url:
