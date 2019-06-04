@@ -4,10 +4,10 @@ import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 /**
+ * General-purpose of {@code CbeffDocType} class used to Cbeff Documents Type
  * 
  * @author Dinesh Karuppiah.T
  */
-
 public enum CbeffDocType {
 
 	/**

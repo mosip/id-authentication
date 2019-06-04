@@ -27,11 +27,10 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-/**
- * The Class MasterDataManager.
+/*
+ * MasterDataManager
  * 
  * @author Dinesh Karuppiah.T
- * @author Sanjay Murali
  */
 @Component
 public class MasterDataManager {
@@ -99,10 +98,10 @@ public class MasterDataManager {
 				buildRequest.setPathVariables(params);
 			}
 			Map<String, Object> response = restHelper.requestSync(buildRequest);
-			
+
 			Map<String, List<Map<String, Object>>> fetchResponse;
 			if (response.get("response") instanceof Map) {
-				fetchResponse =  (Map<String, List<Map<String, Object>>>) response.get("response");
+				fetchResponse = (Map<String, List<Map<String, Object>>>) response.get("response");
 			} else {
 				fetchResponse = Collections.emptyMap();
 			}
@@ -122,7 +121,8 @@ public class MasterDataManager {
 
 			return masterDataMap;
 		} catch (IDDataValidationException | RestServiceException e) {
-			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(), e.getErrorText());
+			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getErrorCode(),
+					e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 	}

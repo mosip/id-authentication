@@ -43,12 +43,14 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * @author Dinesh Karuppiah.T
+ * 
  *
+ * Facade to authentication KYC details
+ * 
+ * @author Dinesh Karuppiah.T
  */
 @Component
 public class KycFacadeImpl implements KycFacade {
-
 
 	/** The env. */
 	@Autowired
@@ -74,7 +76,7 @@ public class KycFacadeImpl implements KycFacade {
 
 	@Autowired
 	private IdService<AutnTxn> idAuthService;
-	
+
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
@@ -130,7 +132,7 @@ public class KycFacadeImpl implements KycFacade {
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(idResDTO);
 			KycResponseDTO response = new KycResponseDTO();
 			ResponseDTO authResponse = authResponseDTO.getResponse();
-			
+
 			if (Objects.nonNull(idResDTO) && Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				response = kycService.retrieveKycInfo(String.valueOf(uin), kycAuthRequestDTO.getAllowedKycAttributes(),
 						kycAuthRequestDTO.getSecondaryLangCode(), idInfo);
@@ -150,8 +152,7 @@ public class KycFacadeImpl implements KycFacade {
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
 					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId)
-					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus()).withUin(uin)
-					.build(idInfoFetcher, env);
+					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus()).withUin(uin).build(idInfoFetcher, env);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		return kycAuthResponseDTO;
