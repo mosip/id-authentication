@@ -3,6 +3,7 @@ package io.mosip.authentication.testdata;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +56,10 @@ public class TestDataProcessor {
 	 * @param testData
 	 * @param dataParam
 	 * @return testdata
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static String getYamlData(String modulename, String apiname, String testData, String dataParam) {
+	public static String getYamlData(String modulename, String apiname, String testData, String dataParam) throws IOException {
 		Yaml yaml = new Yaml();
 		String testdata = null;
 		InputStream inputStream;
@@ -66,6 +68,7 @@ public class TestDataProcessor {
 					"src/test/resources/" + modulename + "/" + apiname + "/" + testData + ".yaml");
 			YamlDTO obj = new YamlDTO();
 			obj.setYamlObject((Map<String, List<Object>>) yaml.load(inputStream));
+			inputStream.close();
 			List<Object> list = obj.getYamlObject().get(dataParam);
 			Random random = new Random();
 			testdata = (String) list.get(random.nextInt(list.size())).toString();
