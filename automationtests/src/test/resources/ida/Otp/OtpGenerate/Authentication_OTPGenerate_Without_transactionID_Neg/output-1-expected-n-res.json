@@ -1,1 +1,1 @@
-{"responseTime":"$TIMESTAMP$","response":null,"version":"1.0","errors":[{"errorMessage":"Missing Input Parameter - transactionID","errorCode":"IDA-MLC-006"}]}
+{"errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - transactionID"}],"response":null,"responseTime":"$TIMESTAMP$","transactionID":"$REMOVE$","version":"$version$"}

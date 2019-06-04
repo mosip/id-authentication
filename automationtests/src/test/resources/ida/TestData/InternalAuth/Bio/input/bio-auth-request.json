@@ -1,5 +1,5 @@
 {
-	"id": "mosip.identity.auth.internal",
+	"id": "mosip.identity.auth",
 	"consentObtained": true,
 	"individualId": "6521768301",
 	"individualIdType": "UIN",

@@ -1,0 +1,1 @@
+{"transactionID":"8782280242","version":"1.0","id":"mosip.identity.auth","responseTime":"$TIMESTAMP$","errors":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"response":{"authStatus":false,"staticToken":"$IGNORE$"}}

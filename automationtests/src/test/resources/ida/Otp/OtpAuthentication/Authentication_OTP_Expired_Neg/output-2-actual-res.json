@@ -1,0 +1,1 @@
+{"transactionID":"7086163282","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-OTA-004","errorMessage":"OTP has expired","actionMessage":"Please regenerate OTP and try again after sometime"}],"responseTime":"2019-05-23T12:24:10.748+05:30","response":{"authStatus":false,"staticToken":"362450271485137212621225705737660461"}}

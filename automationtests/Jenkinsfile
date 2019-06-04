@@ -37,7 +37,7 @@ stage ('---------- mvn-clean-test ---------------') {
    alwaysLinkToLastBuild: false, 
    keepAll: true, 
    reportDir: branch+"/"+projectToBuild+"/target/surefire-reports", 
-   reportFiles: 'custom-emailable-report.html', 
+   reportFiles: 'MOSIP_ModuleLevelAutoRun_TestNGReport.html', 
    reportName: 'HTML Report'
 ])
 }

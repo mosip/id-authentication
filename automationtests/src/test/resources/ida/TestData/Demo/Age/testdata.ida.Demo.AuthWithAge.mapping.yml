@@ -1,5 +1,5 @@
 testdata:
-  Authentication_Demographic_Age_smoke_For IntegrationTest_UIN_Pos:
+  Authentication_Demographic_Age_smoke_For IntegrationTest_UIN_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -13,7 +13,6 @@ testdata:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -32,43 +31,8 @@ testdata:
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
-  
-  Authentication_Demographic_Age_smoke_For VID_Pos:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $VID$
-      AuthReq.individualIdType: VID
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirth$
-      identityReq.timestamp: $TIMESTAMP$
-    output.output-1-expected-y-res:
-      output.1.response.y.status: $TestData:auth_Pass_status$ 
-      output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
-    #audit log
-    audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
-    audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$
        
-  Authentication_Demographic_Age_Invalid UIN_Neg:
+  Authentication_Demographic_Age_Invalid UIN_Neg_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -84,7 +48,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid reqTime_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid reqTime_For UIN_Neg_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -101,7 +65,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid_reqTime_greaterthan24hrs_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -118,7 +82,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid_reqTime_Lessthan24hrs_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid_reqTime_Lessthan24hrs_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -135,7 +99,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid individualIdType_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid individualIdType_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -153,7 +117,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid version_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid version_For UIN_Neg_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -171,7 +135,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid txnID_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid txnID_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -188,7 +152,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid UIN which is not as per defintion_Neg:
+  Authentication_Demographic_Age_Invalid UIN which is not as per defintion_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -204,7 +168,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid reqTime which is not as per defintion_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid reqTime which is not as per defintion_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -221,7 +185,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
           
-  Authentication_Demographic_Age_Invalid individualIdType which is not as per defintion_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid individualIdType which is not as per defintion_For UIN_Neg_11:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -239,7 +203,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid version which is not as per defintion_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid version which is not as per defintion_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -257,7 +221,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid txnID which is not as per defintion_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid txnID which is not as per defintion_For UIN_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -274,7 +238,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing UIN_Neg:
+  Authentication_Demographic_Age_Missing UIN_Neg_14:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -291,7 +255,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing reqTime_For UIN_Neg:
+  Authentication_Demographic_Age_Missing reqTime_For UIN_Neg_15:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -308,7 +272,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing individualIdType_For UIN_Neg:
+  Authentication_Demographic_Age_Missing individualIdType_For UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -326,7 +290,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing version_For UIN_Neg:
+  Authentication_Demographic_Age_Missing version_For UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -344,7 +308,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing txnID_For IntegrationTest_UIN_Neg:
+  Authentication_Demographic_Age_Missing txnID_For IntegrationTest_UIN_Neg_18:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -353,15 +317,31 @@ testdata:
       AuthReq.transactionID: $REMOVE$
     input.identity-encrypt-data:
       identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirth$
-      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $RANDOM:N:10$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+   
+  Authentication_Demographic_Age_smoke_For VID_Pos_19:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirth$
+      identityReq.timestamp: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: $TestData:auth_Pass_status$ 
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
        
-  Authentication_Demographic_Age_Invalid VID_Neg:
+  Authentication_Demographic_Age_Invalid VID_Neg_20:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -378,7 +358,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid reqTime_For VID_Neg:
+  Authentication_Demographic_Age_Invalid reqTime_For VID_Neg_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -396,7 +376,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid_reqTime_greaterthan24hrs_For VID_Neg:
+  Authentication_Demographic_Age_Invalid_reqTime_greaterthan24hrs_For VID_Neg_22:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -414,7 +394,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid_reqTime_Lessthan24hrs_For VID_Neg:
+  Authentication_Demographic_Age_Invalid_reqTime_Lessthan24hrs_For VID_Neg_23:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -432,7 +412,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid individualIdType_For VID_Neg:
+  Authentication_Demographic_Age_Invalid individualIdType_For VID_Neg_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -451,7 +431,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid version_For VID_Neg:
+  Authentication_Demographic_Age_Invalid version_For VID_Neg_25:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -470,7 +450,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid txnID_For VID_Neg:
+  Authentication_Demographic_Age_Invalid txnID_For VID_Neg_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -480,7 +460,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-data:
       identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirth$
-      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $RANDOM:N:10$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: false
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -488,7 +468,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid VID which is not as per defintion_Neg:
+  Authentication_Demographic_Age_Invalid VID which is not as per defintion_Neg_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -505,7 +485,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid reqTime which is not as per defintion_For VID_Neg:
+  Authentication_Demographic_Age_Invalid reqTime which is not as per defintion_For VID_Neg_28:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -523,7 +503,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
           
-  Authentication_Demographic_Age_Invalid individualIdType which is not as per defintion_For VID_Neg:
+  Authentication_Demographic_Age_Invalid individualIdType which is not as per defintion_For VID_Neg_29:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -542,7 +522,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid version which is not as per defintion_For VID_Neg:
+  Authentication_Demographic_Age_Invalid version which is not as per defintion_For VID_Neg_30:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -561,7 +541,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Invalid txnID which is not as per defintion_For VID_Neg:
+  Authentication_Demographic_Age_Invalid txnID which is not as per defintion_For VID_Neg_31:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -579,7 +559,7 @@ testdata:
       output.1.response.n.err.errorCode: $IGNORE$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing VID_Neg:
+  Authentication_Demographic_Age_Missing VID_Neg_32:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -591,13 +571,13 @@ testdata:
       #identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirth$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
-      output.1.response.n.err.status: $TestData:auth_Fail_status$
+      output.1.response.n.err.status: false
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MissingVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing reqTime_For VID_Neg:
+  Authentication_Demographic_Age_Missing reqTime_For VID_Neg_33:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -615,7 +595,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing individualIdType_For VID_Neg:
+  Authentication_Demographic_Age_Missing individualIdType_For VID_Neg_34:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -634,7 +614,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing version_For VID_Neg:
+  Authentication_Demographic_Age_Missing version_For VID_Neg_35:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -653,7 +633,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_Missing txnID_For VID_Neg:
+  Authentication_Demographic_Age_Missing txnID_For VID_Neg_36:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -671,7 +651,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$   
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
   
-  Authentication_Demographic_Age_Invalid Age_For UIN_Neg:
+  Authentication_Demographic_Age_Invalid Age_For UIN_Neg_37:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -687,9 +667,8 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:AgeMismatch:errorMessage$
       output.1.response.n.err.errorCode: $errors:AgeMismatch:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
       
-  Authentication_Demographic_Age_Invalid Age_For VID_Neg:
+  Authentication_Demographic_Age_Invalid Age_For VID_Neg_38:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -698,17 +677,16 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valueage: $idrepo~$input.demo-auth-request:AuthReq.individualId$~agedateOfBirthPLUS$
+      identityReq.valueage: 12
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:AgeMismatch:errorMessage$
-      output.1.response.n.err.errorCode: $errors:AgeMismatch:errorCode$
+      output.1.response.n.err.errorMessage: $errors:InvalidDOB:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidDOB:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$   
-      output.1.response.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
       
-  Authentication_Demographic_Age_No Authentication Type is Selected_For UIN_Neg:
+  Authentication_Demographic_Age_No Authentication Type is Selected_For UIN_Neg_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -726,7 +704,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Age_No Authentication Type is Selected_For VID_Neg:
+  Authentication_Demographic_Age_No Authentication Type is Selected_For VID_Neg_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -745,7 +723,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$   
       
-  Authentication_Demographic_Age_Deactivated UIN_Neg:
+  Authentication_Demographic_Age_Deactivated UIN_Neg_41:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:

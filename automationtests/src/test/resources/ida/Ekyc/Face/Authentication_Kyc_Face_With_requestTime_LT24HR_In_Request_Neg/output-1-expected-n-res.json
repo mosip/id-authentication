@@ -1,0 +1,1 @@
+{"transactionID":"2624823260","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-001","errorMessage":"Request to be received at MOSIP within 30 minutes","actionMessage":"Please send the request within 30 minutes"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}

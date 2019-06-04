@@ -1,0 +1,12 @@
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "8411520570",
+  "responseTime": "2019-06-04T20:35:32.292+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ]
+}

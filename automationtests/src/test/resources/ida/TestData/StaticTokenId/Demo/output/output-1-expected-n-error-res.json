@@ -1,0 +1,11 @@
+{
+  "status": "N",
+  "err": [
+    {
+      "errorCode": "IDA-IDV-003",
+      "errorMessage": "Missing Input Parameter - reqTime"
+    }
+  ],
+  "resTime": "2019-03-07T06:26:52.235Z",
+  "ver": "$version$"
+}

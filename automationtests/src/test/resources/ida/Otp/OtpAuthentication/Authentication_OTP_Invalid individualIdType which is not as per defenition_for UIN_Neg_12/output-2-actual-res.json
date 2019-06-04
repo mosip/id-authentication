@@ -1,0 +1,1 @@
+{"transactionID":"0678881142","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-003","errorMessage":"Unable to decrypt Request"}],"responseTime":"2019-05-23T12:25:01.763+05:30","response":{"authStatus":false,"staticToken":null}}

@@ -13,7 +13,7 @@ testdata:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+      output.1.response.y.staticToken: $IGNORE$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
@@ -340,25 +340,25 @@ testdata:
       output.1.response.y.status: $TestData:auth_Pass_status$ 
       output.1.response.y.responseTime: $TIMESTAMP$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+      output.1.response.y.staticToken: $IGNORE$
     #audit log
     audit.auth_transaction:
-      refId: $input.demo-auth-request:AuthReq.individualId$
-      txnId: $input.demo-auth-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_success_statusCode$
-      reqTime: $FETCH$
-      resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
-      idType: $TestData:auth_transaction_VID_idType$
+        refId: $input.demo-auth-request:AuthReq.individualId$
+        txnId: $input.demo-auth-request:AuthReq.transactionID$
+        authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+        statusCode: $TestData:auth_transaction_success_statusCode$
+        reqTime: $FETCH$
+        resTime: $FETCH$
+        statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+        idType: $TestData:auth_transaction_VID_idType$
     audit.audit_log:
-      refId:  $input.demo-auth-request:AuthReq.individualId$
-      eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
-      appId: $TestData:audit_log_ida_appId$
-      appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_demo_moduleName$
-      refIdType: $TestData:audit_log_VID_refIdType$ 
+        refId:  $input.demo-auth-request:AuthReq.individualId$
+        eventId: $TestData:audit_log_eventId$
+        eventName: $TestData:audit_log_auth_eventName$
+        appId: $TestData:audit_log_ida_appId$
+        appName: $TestData:audit_log_ida_appName$
+        moduleName: $TestData:audit_log_demo_moduleName$
+        refIdType: $TestData:audit_log_VID_refIdType$ 
           
   Authentication_Demographic_EmailId_Invalid VID_Neg_22:
     endpoint.url:
@@ -592,8 +592,8 @@ testdata:
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: false
       output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      output.1.response.n.err.errorMessage: $errors:MissingVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingVID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
   Authentication_Demographic_EmailId_Missing reqTime_For VID_Neg_35:
@@ -662,7 +662,7 @@ testdata:
       AuthReq.transactionID: $REMOVE$
     input.identity-encrypt-data:
       identityReq.valueemailId: $idrepo~$input.demo-auth-request:AuthReq.individualId$~email$
-      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $RANDOM:N:10$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: $TestData:auth_Fail_status$
       output.1.response.y.responseTime: $TIMESTAMP$
@@ -686,13 +686,12 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:EmailIdMismatch:errorMessage$
       output.1.response.n.err.errorCode: $errors:EmailIdMismatch:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
       txnId: $input.demo-auth-request:AuthReq.transactionID$
       authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_fail_statusCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
       reqTime: $FETCH$
       resTime: $FETCH$
       statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
@@ -723,13 +722,12 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:EmailIdMismatch:errorMessage$
       output.1.response.n.err.errorCode: $errors:EmailIdMismatch:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$   
-      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
     #audit log
     audit.auth_transaction:
       refId: $input.demo-auth-request:AuthReq.individualId$
       txnId: $input.demo-auth-request:AuthReq.transactionID$
       authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
-      statusCode: $TestData:auth_transaction_fail_statusCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
       reqTime: $FETCH$
       resTime: $FETCH$
       statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$

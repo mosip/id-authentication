@@ -1,0 +1,42 @@
+testdata:
+  Generate_VID_for UIN_Pos_01:
+    input.uin:
+      uin: $UIN$
+    output.output-1-expected-y-res:
+      output.1.response.y.vid: $IGNORE$
+      output.1.response.y.version: $version$
+      output.1.response.y.responseTime: $TIMESTAMPZ$
+      
+  Re-Generate_VID_for UIN_Pos_02:
+    input.uin:
+      uin: $input.uin:uin$
+    output.output-1-expected-n-res:
+      output.1.response.n.vid: $IGNORE$
+      output.1.response.n.version: $version$
+      output.1.response.n.responseTime: $TIMESTAMPZ$
+      output.1.response.n.errorCode: $errors:ReGenVIDForUIN:errorCode$
+      output.1.response.n.errorMessage: $errors:ReGenVIDForUIN:errorMessage$
+      
+  Invalid_UIN_neg_03: 
+    input.uin:
+      uin: $RANDOM:N:10$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.n.err.vid: $IGNORE$
+      output.1.response.n.err.responseTime: $TIMESTAMPZ$
+      output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
+      output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.1.response.n.version: $version$
+      
+  Invalid_Deactivated UIN neg_04: 
+    input.uin:
+      uin: $UIN:WITH:Deactivated$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.n.err.vid: $IGNORE$
+      output.1.response.n.err.responseTime: $TIMESTAMPZ$
+      output.1.response.n.err.actnCode: $IGNORE$
+      output.1.response.n.err.errorCode: $errors:GenVidForDeactivatedUIN:errorCode$
+      output.1.response.n.err.errorMessage: $errors:GenVidForDeactivatedUIN:errorMessage$
+      output.1.response.n.version: $version$
+  
