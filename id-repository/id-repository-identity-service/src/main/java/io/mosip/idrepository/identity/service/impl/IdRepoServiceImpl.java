@@ -136,8 +136,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/** The Constant DEMOGRAPHICS. */
 	private static final String DEMOGRAPHICS = "Demographics";
 
-	private static final String IDENTITY = "identity";
-
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -367,42 +365,34 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	private void addDemographicDocuments(String uinHash, String uinRefId, List<UinDocument> docList, Documents doc,
 			JsonNode docType) throws IdRepoAppException {
-		try {
-			String fileRefId = UUIDUtils
-					.getUUID(UUIDUtils.NAMESPACE_OID,
-							docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
-									.getUTCCurrentDateTime()
-									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-									.toInstant().toEpochMilli())
-					.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
+		String fileRefId = UUIDUtils
+				.getUUID(UUIDUtils.NAMESPACE_OID,
+						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
+								.getUTCCurrentDateTime()
+								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
+								.toInstant().toEpochMilli())
+				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
-			LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
-			byte[] data = CryptoUtil.decodeBase64(doc.getValue());
-			fsAdapter.storeFile(uinHash, DEMOGRAPHICS + SLASH + fileRefId,
-					new ByteArrayInputStream(securityManager.encrypt(data)));
-			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
-					"time taken to store file in millis: " + fileRefId + "  - "
-							+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
-							+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
+		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
+		byte[] data = CryptoUtil.decodeBase64(doc.getValue());
+		fsAdapter.storeFile(uinHash, DEMOGRAPHICS + SLASH + fileRefId,
+				new ByteArrayInputStream(securityManager.encrypt(data)));
+		mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "storeFiles",
+				"time taken to store file in millis: " + fileRefId + "  - "
+						+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
+						+ "Start time : " + startTime + "  " + "end time : " + DateUtils.getUTCCurrentDateTime());
 
-			docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
-					docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
+		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
+				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+				now(), false, now()));
 
-			uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
-					fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
-					docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-		} catch (NullPointerException e) {// FIXME
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							IDENTITY + " - " + doc.getCategory()));
-		}
+		uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
+				fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
+				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+				now(), false, now()));
 	}
 
 	/**
@@ -735,7 +725,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					try {
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId();
 						byte[] data = securityManager
-								.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUin(), fileName)));
+								.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUinHash(), fileName)));
 						if (StringUtils.equalsIgnoreCase(
 								identityMap.get(bio.getBiometricFileType())
 										.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
