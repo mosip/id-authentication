@@ -55,11 +55,10 @@ public class TestDataProcessor {
 	 * @param apiname
 	 * @param testData
 	 * @param dataParam
-	 * @return testdata
-	 * @throws IOException 
+	 * @return testdata 
 	 */
 	@SuppressWarnings("unchecked")
-	public static String getYamlData(String modulename, String apiname, String testData, String dataParam) throws IOException {
+	public static String getYamlData(String modulename, String apiname, String testData, String dataParam) {
 		Yaml yaml = new Yaml();
 		String testdata = null;
 		InputStream inputStream;
@@ -73,6 +72,8 @@ public class TestDataProcessor {
 			Random random = new Random();
 			testdata = (String) list.get(random.nextInt(list.size())).toString();
 		} catch (FileNotFoundException e) {
+			TESTDATAPROC_LOGGER.error("File is not available :" + e.getMessage());
+		} catch (IOException e) {
 			TESTDATAPROC_LOGGER.error("File is not available :" + e.getMessage());
 		}
 		return testdata;
