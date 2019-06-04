@@ -1838,7 +1838,7 @@ public class BookingServiceTest {
 		List<String> preids = new ArrayList<>();
 		preids.add("");
 		String fromDateStr = "2019-01-01";
-		String toDateStr = "2019-03-31";
+		String toDateStr = "2019-03-29";
 
 		LocalDate fromDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd"))
 				.toLocalDate();
