@@ -419,7 +419,7 @@ testdata:
       reqTime: $FETCH$
       resTime: $FETCH$
       statusComment: $TestData:auth_transaction_FINGER_success_statusComment$
-      idType: $TestData:auth_transaction_UIN_idType$
+      idType: $TestData:auth_transaction_VID_idType$
     audit.audit_log:
       refId:  $input.bio-auth-request:AuthReq.individualId$
       eventId: $TestData:audit_log_eventId$
@@ -427,7 +427,7 @@ testdata:
       appId: $TestData:audit_log_ida_appId$
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_finger_moduleName$
-      refIdType: $TestData:audit_log_UIN_refIdType$
+      refIdType: $TestData:audit_log_VID_refIdType$
       
   Authentication_Biometric_Finger_RightIndex_Smoke_VID_Pos:
     endpoint.url:
@@ -929,8 +929,7 @@ testdata:
     input.identity-encrypt-data:
       identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
       identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$HOUR+6
-      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$HOUR+6
       identityReq.deviceCode: $TestData:bio_face_deviceCode$
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
@@ -951,7 +950,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-exceed-2-finger-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
+      identityReq.bioSubType: $TestData:bio_finger_LeftIndexOnly_subType$
       identityReq.bioType: $TestData:bio_finger_type$
       identityReq.data.timestamp: $TIMESTAMP$
       identityReq.timestamp: $TIMESTAMP$
@@ -961,7 +960,7 @@ testdata:
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
       identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.bioSubType1: $TestData:bio_finger_RightIndex_subType$
+      identityReq.bioSubType1: $TestData:bio_finger_RightIndexOnly_subType$
       identityReq.bioType1: $TestData:bio_finger_type$
       identityReq.deviceCode1: $TestData:bio_face_deviceCode$
       identityReq.deviceProviderID1: $TestData:bio_face_deviceProviderID$
@@ -1077,8 +1076,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $IGNORE$
+      output.1.response.error.errorMessage: $IGNORE$
       
   Authentication_Biometric_Finger_With_requestedAuth_bio_otherThan_true_or_false_Neg:
     endpoint.url:
@@ -1252,8 +1251,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_Biometric_Finger_Without_consentObtained_Neg:
     endpoint.url:
@@ -2216,32 +2215,6 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InactiveVID:actionMessage$  
-      
-  Authentication_Biometric_Finger_With_Deactivated_VID_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $VID:WITH:DEACTIVATED$
-      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:DeactivatedVID:errorCode$
-      output.1.response.error.errorMessage: $errors:DeactivatedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:DeactivatedVID:actionMessage$   
+      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$      
   

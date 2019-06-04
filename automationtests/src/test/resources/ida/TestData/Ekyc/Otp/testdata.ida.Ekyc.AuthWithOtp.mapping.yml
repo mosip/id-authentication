@@ -1605,7 +1605,7 @@ testdata:
       output.2.response.err.responseTime: $TIMESTAMP$
       output.2.response.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.2.response.err.errorCode: $errors:MissingtransactionID:errorCode$
-      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.transactionID: $IGNORE$
       output.2.response.err.version: $version$
       #output.2.response.err.response.identity: null
       

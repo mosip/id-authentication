@@ -316,8 +316,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:OtherAuthTypeForInternal:errorCode$
-      output.1.response.error.errorMessage: $errors:OtherAuthTypeForInternal:errorMessage$
+      output.1.response.error.errorCode: $errors:UnSupportAuthType:errorCode$
+      output.1.response.error.errorMessage: $errors:UnSupportAuthType:errorMessage$
       
   InternalAuthentication_Biometric_With_requestedAuth_bio_otherThan_true_or_false_Neg:
     #endpoint.url:
@@ -1126,8 +1126,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   InternalAuthentication_Biometric_Null_consentObtained_Neg:
     #endpoint.url:
@@ -1419,8 +1419,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:DemoAuthTypeForInternal:errorCode$
-      output.1.response.error.errorMessage: $errors:DemoAuthTypeForInternal:errorMessage$
+      output.1.response.error.errorCode: $errors:UnSupportAuthType:errorCode$
+      output.1.response.error.errorMessage: $errors:UnSupportAuthType:errorMessage$
       
   InternalAuthentication_Biometric_Set_No_Bio_AuthType_Neg:
     #endpoint.url:

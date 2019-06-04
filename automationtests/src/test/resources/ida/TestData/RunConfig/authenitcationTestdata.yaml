@@ -290,8 +290,16 @@ bio_iris_left_subType:
 bio_iris_right_subType:
       - RIGHT
       - UNKNOWN
+bio_iris_rightOnly_subType:
+      - RIGHT
+bio_iris_leftOnly_subType:
+      - LEFT
+bio_iris_unknownOnly_subType:
+      - UNKNOWN
 bio_finger_LeftIndexOnly_subType:
       - LEFT_INDEX
+bio_finger_RightLittleOnly_subType:
+      - RIGHT_LITTLE
 bio_finger_LeftIndex_subType:
       - LEFT_INDEX
       - UNKNOWN

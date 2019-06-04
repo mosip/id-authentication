@@ -141,7 +141,7 @@ errors:
     errorCode: IDA-OTA-008
     errorMessage: OTP Notification Channel not provided
   OTPFlodding:
-    errorCode: IDA-OTA-002
+    errorCode: IDA-OTA-001
     errorMessage: Innumerous OTP requests received
   ReGenVIDForUIN:
     errorCode: IDA-MLC-011
@@ -287,5 +287,8 @@ errors:
   Demo_NameMismatch_PriLang:
     errorCode: IDA-DEA-001
     errorMessage: Demographic data name in fra did not match
+  UnSupportAuthType:
+    errorCode: IDA-MLC-011
+    errorMessgae: $REGEXP:Unsupported Authentication Type.*$
   
   

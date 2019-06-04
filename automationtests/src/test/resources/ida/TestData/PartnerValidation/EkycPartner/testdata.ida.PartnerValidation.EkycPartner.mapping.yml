@@ -832,6 +832,7 @@ testdata:
       AuthReq.individualId: $VID$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.demo: BOOLEAN:false
+      AuthReq.bio: BOOLEAN:true
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.secondaryLangCode: are

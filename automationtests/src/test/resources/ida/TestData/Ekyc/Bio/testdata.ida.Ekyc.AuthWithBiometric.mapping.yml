@@ -395,6 +395,7 @@ testdata:
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
       output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -788,8 +789,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_EKYC_Biometric_Without_consentObtained_Neg:
     endpoint.url:
@@ -1396,8 +1397,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_EKYC_Biometric_Null_consentObtained_Neg:
     endpoint.url:
@@ -1704,7 +1705,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
       output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:ExpiredVID:actionMessage$ 
       
   Authentication_EKYC_Biometric_With_Revoke_VID_Neg:
     endpoint.url:
@@ -1752,32 +1752,6 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InactiveVID:actionMessage$  
-      
-  Authentication_EKYC_Biometric_With_Deactivated_VID_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $VID:WITH:DEACTIVATED$
-      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:DeactivatedVID:errorCode$
-      output.1.response.error.errorMessage: $errors:DeactivatedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:DeactivatedVID:actionMessage$   
+      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$  
   
