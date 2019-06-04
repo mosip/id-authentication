@@ -23,10 +23,6 @@ public class AuthManagerException extends RuntimeException {
 		this.errorCode = errorCode;
 	}
 	
-	public AuthManagerException(String errorCode, String errorMessage, Throwable rootCause) {
-		super(errorMessage, rootCause);
-		this.errorCode = errorCode;
-	}
 
 	private static final long serialVersionUID = 4060346018688709387L;
 
