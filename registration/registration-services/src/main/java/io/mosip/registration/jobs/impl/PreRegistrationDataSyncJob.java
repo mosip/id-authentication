@@ -53,7 +53,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null && context != null) {
 				executeChildJob(jobId, jobMap);
-			} 
+			}
 
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 

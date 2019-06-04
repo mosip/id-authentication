@@ -47,6 +47,7 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
@@ -78,9 +79,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The Constant PIN. */
 	private static final String PIN = "PIN";
 
-	/** The Constant REQUEST_ADDITIONAL_FACTORS_TOTP. */
-	private static final String REQUEST_ADDITIONAL_FACTORS_TOTP = "request/additionalFactors/totp";
-
 	/** The Constant BIO_TYPE. */
 	private static final String BIO_TYPE = "bioType";
 
@@ -95,9 +93,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant face. */
 	private static final String FACE = "face";
-
-	/** The Constant IdentityInfoDTO. */
-	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
 
 	/** The id info helper. */
 	@Autowired
@@ -188,9 +183,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "Missing OTP value in the request");
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { REQUEST_ADDITIONAL_FACTORS_TOTP },
-						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+						new Object[] { Category.OTP.getType() },
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
 				try {
 					pinValidator.validatePin(otp.get());
@@ -225,8 +220,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "missing biometric request");
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorCode(),
-						IdAuthenticationErrorConstants.MISSING_BIOMETRICDATA.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+						new Object[] {Category.BIO.getType()},
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
 
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
@@ -280,7 +276,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
 			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-						IdAuthCommonConstants.VALIDATE, "Invalid bio type config");
+						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
 			}
 			return contains;
 		}).collect(Collectors.toSet());
@@ -293,10 +289,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), new Object[] { bioType },
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), new Object[] {MatchType.Category.BIO.getType() +"-"+bioType },
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			} else {
-				validateBioType(errors, availableAuthTypeInfos, bioInfo);
+				validateBioType(errors, allowedAuthTypesFromConfig, bioInfo);
 			}
 		}
 
@@ -313,8 +309,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		String bioType = bioInfo.getBioType();
 		if (!availableAuthTypeInfos.contains(bioType)) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(), new Object[] { bioType },
-					IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] { BIO_TYPE },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			String bioSubType = bioInfo.getBioSubType();
 			if (bioSubType != null && !bioSubType.isEmpty()) {
@@ -578,9 +574,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "Missing IdentityInfoDTO");
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDENTITY_INFO_DTO },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { Category.DEMO.getType() },
+					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		} else {
 			checkOtherValues(authRequest, errors, availableAuthTypeInfos);
 		}
@@ -598,9 +594,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "IdentityInfoDTO is invalid");
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { IDENTITY_INFO_DTO },
-						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+						new Object[] { Category.DEMO.getType() },
+						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			}
 
 		}
@@ -706,9 +702,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 					IdAuthCommonConstants.VALIDATE, "Ad and FAD are enabled");
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IDENTITY_INFO_DTO },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
+					new Object[] { Category.DEMO.getType() },
+					IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 		}
 	}
 
@@ -899,9 +895,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			validateAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 		} else {
 			errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-							IdAuthCommonConstants.REQUEST));
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+							IdAuthCommonConstants.REQUESTEDAUTH));
 		}
 
 	}
@@ -920,12 +916,12 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (authTypeDTO.isBio()) {
 			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
-				validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
+				  validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 			} else {
 				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						new Object[] { MatchType.Category.BIO.getType() },
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			}
 
 		}
@@ -946,24 +942,24 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 				checkDemoAuth(requestDTO, errors);
 			} else {
 				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 						new Object[] { MatchType.Category.DEMO.getType() },
-						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			}
 		}
 
 		if (authTypeDTO.isOtp() && !allowedAuthType.contains(MatchType.Category.OTP.getType())) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 					new Object[] { MatchType.Category.OTP.getType() },
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 		}
 
 		if (authTypeDTO.isPin() && !allowedAuthType.contains(MatchType.Category.SPIN.getType())) {
 			errors.rejectValue(IdAuthCommonConstants.REQUEST,
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
 					new Object[] { MatchType.Category.SPIN.getType() },
-					IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage());
+					IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 		}
 
 		if ((authTypeDTO.isPin() || authTypeDTO.isOtp()) && !errors.hasErrors()) {

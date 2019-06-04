@@ -389,7 +389,7 @@ public class BaseController {
 	 *
 	 */
 	protected void getGlobalParams() {
-		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
+		ApplicationContext.map().putAll(globalParamService.getGlobalParams());
 	}
 
 	/**

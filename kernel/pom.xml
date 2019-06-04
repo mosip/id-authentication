@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.4</version>
+		<version>0.12.5</version>
 	</parent>
 
 
@@ -144,7 +144,7 @@
 		<module>kernel-idvalidator-vid</module>
 		<module>kernel-idvalidator-mispid</module>
 		<module>kernel-datavalidator</module>
-		<module>kernel-jsonvalidator</module>
+		
 		<module>kernel-pinvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>

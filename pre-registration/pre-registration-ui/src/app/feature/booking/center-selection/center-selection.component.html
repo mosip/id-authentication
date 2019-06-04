@@ -59,13 +59,10 @@
       </ng-template>
 
       <div class="centers-list" *ngIf="REGISTRATION_CENTRES">
-          <span *ngIf="!showMessage && !searchClick && REGISTRATION_CENTRES.length !== 0" style="margin-left:24px;" class="center_selection-center-available-text">
+          <span *ngIf="showMessage && !searchClick" style="margin-left:24px;" class="center_selection-center-available-text">
             {{ 'centerSelection.text_found' | translate }}
             {{ REGISTRATION_CENTRES.length }}
             {{ 'centerSelection.text_centers' | translate }}
-          </span>
-          <span *ngIf="showMessage && !searchClick && REGISTRATION_CENTRES.length === 0" style="margin-left:24px;" class="center_selection-center-available-text">
-            {{ 'centerSelection.noResult_found' | translate }}
           </span>
         <ul>
           <li *ngFor="let center of REGISTRATION_CENTRES; let i = index;">

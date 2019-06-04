@@ -303,7 +303,7 @@ public class ValidatorTest {
 		authRequestDTO.setConsentObtained(false);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-014")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-012")));
 	}
 
 	@Test
@@ -314,7 +314,7 @@ public class ValidatorTest {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-011")));
 	}
 
 	@Test
@@ -323,7 +323,7 @@ public class ValidatorTest {
 		authRequestDTO.setRequestedAuth(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
 
 	@Test
@@ -359,9 +359,9 @@ public class ValidatorTest {
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-013")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("demo"))));
 	}
 
 	@Test
@@ -379,9 +379,9 @@ public class ValidatorTest {
 		Mockito.when(idInfoHelper.isMatchtypeEnabled(DemoMatchType.NAME)).thenReturn(Boolean.TRUE);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-009")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-013")));
 		errors.getAllErrors().stream().forEach(
-				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("IdentityInfoDTO"))));
+				err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("demo"))));
 	}
 
 	@Test
@@ -417,7 +417,7 @@ public class ValidatorTest {
 		requestDto.setBiometrics(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-010")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-013")));
 	}
 
 	@Test
@@ -454,7 +454,7 @@ public class ValidatorTest {
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-BIA-010")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-013")));
 	}
 
 	@Test
@@ -465,9 +465,9 @@ public class ValidatorTest {
 		authRequestDTO.setRequest(requestDto);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-011")));
 		errors.getAllErrors().stream()
-				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("XYZ"))));
+				.forEach(err -> assertTrue(Stream.of(err.getArguments()).anyMatch(error -> error.equals("bio-XYZ"))));
 	}
 
 	@Test
@@ -699,7 +699,7 @@ public class ValidatorTest {
 		authRequestDTO.setRequestedAuth(null);
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestValidator.validate(authRequestDTO, errors);
-		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MPA-006")));
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-006")));
 	}
 
 	@Test

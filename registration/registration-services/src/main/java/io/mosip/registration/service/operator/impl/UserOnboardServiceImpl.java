@@ -33,6 +33,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.dto.ResponseDTO;
@@ -91,8 +92,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		tempMap.put(RegistrationConstants.BIO, true);
 		idaRequestMap.put(RegistrationConstants.REQUEST_AUTH, tempMap);
 		idaRequestMap.put(RegistrationConstants.CONSENT_OBTAINED, true);
-		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID, "2951307152");
-		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID_TYPE, "UIN");
+		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID, SessionContext.getInstance().getUserContext().getUserId());
+		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID_TYPE, "USERID");
 		idaRequestMap.put(RegistrationConstants.KEY_INDEX, "");
 
 		List<Map<String, Object>> listOfBiometric = new ArrayList<>();
@@ -141,8 +142,10 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
+		/*requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
+				Base64.getEncoder().encodeToString(biometricDTO.getOperatorBiometricDTO().getFace().getFace()));*/
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-				Base64.getEncoder().encodeToString(biometricDTO.getOperatorBiometricDTO().getFace().getFace()));
+				RegistrationConstants.STUB_FACE);
 		biometricMap.put(RegistrationConstants.ON_BOARD_BIO_DATA, requestDataMap);
 		listOfBiometric.add(biometricMap);
 
@@ -192,7 +195,12 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 							.post(RegistrationConstants.ON_BOARD_IDA_VALIDATION, idaRequestMap,
 									RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
-					if (userOnBoardStatusFlag(onBoardResponse)) {
+					boolean onboardAuthFlag = userOnBoardStatusFlag(onBoardResponse);
+							
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+							"User Onboarded authentication flag... :"+onboardAuthFlag);
+					
+					if (true) {
 						responseDTO = save(biometricDTO);
 						LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 								RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);

@@ -89,7 +89,8 @@ public class ReprocessorStageTest {
 
 		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
 		registrationStatusDto.setRegistrationStageName("PacketValidatorStage");
-		registrationStatusDto.setReProcessRetryCount(0);
+	
+		registrationStatusDto.setRegistrationType("NEW");
 		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 		dtolist.add(registrationStatusDto);
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
@@ -97,6 +98,7 @@ public class ReprocessorStageTest {
 		registrationStatusDto1.setRegistrationId("2018701130000410092018110734");
 		registrationStatusDto1.setRegistrationStageName("PacketValidatorStage");
 		registrationStatusDto1.setReProcessRetryCount(1);
+		registrationStatusDto1.setRegistrationType("NEW");
 		registrationStatusDto1.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dtolist.add(registrationStatusDto1);
 		Mockito.when(registrationStatusService.getUnProcessedPacketsCount(anyLong(), anyInt(), anyList()))
