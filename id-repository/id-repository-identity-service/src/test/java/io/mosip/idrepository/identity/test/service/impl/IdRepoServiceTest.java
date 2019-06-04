@@ -263,7 +263,7 @@ public class IdRepoServiceTest {
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
@@ -285,7 +285,7 @@ public class IdRepoServiceTest {
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
@@ -1241,36 +1241,6 @@ public class IdRepoServiceTest {
 		uinObj.setDocuments(Lists.newArrayList(document));
 		uinObj.setUinData(("{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\""
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
-		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
-		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
-		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
-				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
-		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("value".getBytes());
-		proxyService.updateIdentity(request, "1234");
-	}
-
-	@Test(expected = IdRepoAppException.class)
-	public void testIdentityUpdateNewDemoDocumentsNPE() throws Exception {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
-		Uin uinObj = new Uin();
-		uinObj.setUin("1234");
-		uinObj.setUinRefId("1234");
-		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"proofOfRelationship\":{\"format\":\"pdf\",\"type\":\"1.0\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfRelationship\",\"value\":\"dGVzdA\"}]}"
-						.getBytes(),
-				RequestDTO.class);
-		request.setRequest(req);
-		UinDocument document = new UinDocument();
-		document.setDoccatCode("ProofOfIdentity");
-		document.setDocHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
-		document.setDocId("1234");
-		document.setDocName("name");
-		uinObj.setDocuments(Lists.newArrayList(document));
-		uinObj.setUinData(
-				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
-						.getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
