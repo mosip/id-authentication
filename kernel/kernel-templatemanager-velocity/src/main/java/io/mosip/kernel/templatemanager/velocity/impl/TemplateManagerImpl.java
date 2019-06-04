@@ -65,14 +65,14 @@ public class TemplateManagerImpl implements TemplateManager {
 		} catch (ResourceNotFoundException e) {
 			throw new TemplateResourceNotFoundException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage(), e);
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
 					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
-					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage(), e);
 		}
 		return null;
 	}
@@ -116,14 +116,14 @@ public class TemplateManagerImpl implements TemplateManager {
 		} catch (ResourceNotFoundException e) {
 			throw new TemplateResourceNotFoundException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage(), e);
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
 					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
-					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage(), e);
 		}
 		return isMerged;
 	}
