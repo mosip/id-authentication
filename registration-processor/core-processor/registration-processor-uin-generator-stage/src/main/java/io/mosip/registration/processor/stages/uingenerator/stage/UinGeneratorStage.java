@@ -943,6 +943,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 
 			vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), VidResponseDto.class);
+			Gson gson = new GsonBuilder().create();
+			String vidRes = gson.toJson(vidResponseDto);
+
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString() + UIN, "create vid response",
+				"is : " + vidRes);
 
 			if (!response.getErrors().isEmpty()) {
 				throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),
