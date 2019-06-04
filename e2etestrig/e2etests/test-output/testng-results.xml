@@ -1,182 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="1" ignored="0" total="5" passed="4">
+<testng-results skipped="0" failed="0" ignored="0" total="5" passed="5">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="250162" started-at="2019-06-04T04:40:15Z" finished-at="2019-06-04T04:44:25Z">
+  <suite name="Mosip E2E Suite" duration-ms="42696" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:08:16Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="250162" started-at="2019-06-04T04:40:15Z" finished-at="2019-06-04T04:44:25Z">
+    <test name="E2E Tests" duration-ms="42696" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:08:16Z">
       <class name="io.mosip.e2e.tests.EndToEndRun">
-        <test-method status="FAIL" signature="getPrids()[pri:1, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_getPrids" duration-ms="37088" started-at="2019-06-04T04:40:15Z" finished-at="2019-06-04T04:40:52Z">
-          <exception class="java.lang.NullPointerException">
-            <full-stacktrace>
-              <![CDATA[java.lang.NullPointerException
-at io.mosip.e2e.tests.EndToEndRun.getPrids(EndToEndRun.java:52)
-at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-at java.lang.reflect.Method.invoke(Unknown Source)
-at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:124)
-at org.testng.internal.Invoker.invokeMethod(Invoker.java:583)
-at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:719)
-at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:989)
-at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
-at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
-at org.testng.TestRunner.privateRun(TestRunner.java:648)
-at org.testng.TestRunner.run(TestRunner.java:505)
-at org.testng.SuiteRunner.runTest(SuiteRunner.java:455)
-at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:450)
-at org.testng.SuiteRunner.privateRun(SuiteRunner.java:415)
-at org.testng.SuiteRunner.run(SuiteRunner.java:364)
-at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:84)
-at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
-at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
-at org.testng.TestNG.runSuites(TestNG.java:1049)
-at org.testng.TestNG.run(TestNG.java:1017)
-at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
-at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.NullPointerException -->
+        <test-method status="PASS" signature="getPrids()[pri:1, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_getPrids" duration-ms="12" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:07:33Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_AdultPacket_getPrids -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="4" started-at="2019-06-04T04:40:52Z" finished-at="2019-06-04T04:40:52Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="4" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:07:33Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name="" status=FAILURE method=EndToEndRun.getPrids()[pri:1, instance:io.mosip.e2e.tests.EndToEndRun@157632c9] output={null}]]]>
+                <![CDATA[[TestResult name="" status=SUCCESS method=EndToEndRun.getPrids()[pri:1, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="getPackets()[pri:2, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_getPackets" duration-ms="6" started-at="2019-06-04T04:40:52Z" finished-at="2019-06-04T04:40:52Z">
+        <test-method status="PASS" signature="getPackets()[pri:2, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_getPackets" duration-ms="3" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:07:33Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_AdultPacket_getPackets -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-06-04T04:40:52Z" finished-at="2019-06-04T04:40:52Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:07:33Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_AdultPacket_getPrids status=SUCCESS method=EndToEndRun.getPackets()[pri:2, instance:io.mosip.e2e.tests.EndToEndRun@157632c9] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_AdultPacket_getPrids status=SUCCESS method=EndToEndRun.getPackets()[pri:2, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="syncPacket()[pri:3, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_syncPacket" duration-ms="9467" started-at="2019-06-04T04:40:52Z" finished-at="2019-06-04T04:41:01Z">
+        <test-method status="PASS" signature="syncPacket()[pri:3, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_syncPacket" duration-ms="6482" started-at="2019-06-04T05:07:33Z" finished-at="2019-06-04T05:07:40Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_AdultPacket_syncPacket -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-04T04:41:01Z" finished-at="2019-06-04T04:41:01Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-04T05:07:40Z" finished-at="2019-06-04T05:07:40Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_AdultPacket_getPackets status=SUCCESS method=EndToEndRun.syncPacket()[pri:3, instance:io.mosip.e2e.tests.EndToEndRun@157632c9] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_AdultPacket_getPackets status=SUCCESS method=EndToEndRun.syncPacket()[pri:3, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="uploadPacket()[pri:4, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_uploadPacket" duration-ms="2822" started-at="2019-06-04T04:41:01Z" finished-at="2019-06-04T04:41:04Z">
+        <test-method status="PASS" signature="uploadPacket()[pri:4, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_uploadPacket" duration-ms="2429" started-at="2019-06-04T05:07:40Z" finished-at="2019-06-04T05:07:42Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_AdultPacket_uploadPacket -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-06-04T04:41:04Z" finished-at="2019-06-04T04:41:04Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-04T05:07:42Z" finished-at="2019-06-04T05:07:42Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_AdultPacket_syncPacket status=SUCCESS method=EndToEndRun.uploadPacket()[pri:4, instance:io.mosip.e2e.tests.EndToEndRun@157632c9] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_AdultPacket_syncPacket status=SUCCESS method=EndToEndRun.uploadPacket()[pri:4, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_compareDbTransactions" duration-ms="34889" started-at="2019-06-04T04:41:04Z" finished-at="2019-06-04T04:41:39Z">
+        <test-method status="PASS" signature="compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="E2E_AdultPacket_compareDbTransactions" duration-ms="33725" started-at="2019-06-04T05:07:42Z" finished-at="2019-06-04T05:08:16Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- E2E_AdultPacket_compareDbTransactions -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-06-04T04:41:39Z" finished-at="2019-06-04T04:41:39Z">
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult)[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-06-04T05:08:16Z" finished-at="2019-06-04T05:08:16Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=E2E_AdultPacket_uploadPacket status=SUCCESS method=EndToEndRun.compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.EndToEndRun@157632c9] output={null}]]]>
+                <![CDATA[[TestResult name=E2E_AdultPacket_uploadPacket status=SUCCESS method=EndToEndRun.compareDbTransactions()[pri:5, instance:io.mosip.e2e.tests.EndToEndRun@6e75aa0d] output={null}]]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="FAIL" signature="dbCleanUp()[pri:0, instance:io.mosip.e2e.tests.EndToEndRun@157632c9]" test-instance-name="E2E_AdultPacket_compareDbTransactions" name="dbCleanUp" is-config="true" duration-ms="165831" started-at="2019-06-04T04:41:39Z" finished-at="2019-06-04T04:44:25Z">
-          <exception class="org.hibernate.exception.SQLGrammarException">
-            <message>
-              <![CDATA[could not execute statement]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.hibernate.exception.SQLGrammarException: could not execute statement
-at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:106)
-at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:42)
-at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
-at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
-at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:178)
-at org.hibernate.engine.query.spi.NativeSQLQueryPlan.performExecuteUpdate(NativeSQLQueryPlan.java:107)
-at org.hibernate.internal.SessionImpl.executeNativeUpdate(SessionImpl.java:1606)
-at org.hibernate.query.internal.NativeQueryImpl.doExecuteUpdate(NativeQueryImpl.java:295)
-at org.hibernate.query.internal.AbstractProducedQuery.executeUpdate(AbstractProducedQuery.java:1618)
-at io.mosip.dao.RegProcDBCleanUp.deleteFromRegProcTables(RegProcDBCleanUp.java:42)
-at io.mosip.dao.RegProcDBCleanUp.prepareQueryList(RegProcDBCleanUp.java:67)
-at io.mosip.e2e.tests.EndToEndRun.dbCleanUp(EndToEndRun.java:41)
-at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-at java.lang.reflect.Method.invoke(Unknown Source)
-at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:124)
-at org.testng.internal.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:59)
-at org.testng.internal.Invoker.invokeConfigurationMethod(Invoker.java:458)
-at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:222)
-at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:142)
-at org.testng.internal.TestMethodWorker.invokeAfterClassMethods(TestMethodWorker.java:214)
-at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
-at org.testng.TestRunner.privateRun(TestRunner.java:648)
-at org.testng.TestRunner.run(TestRunner.java:505)
-at org.testng.SuiteRunner.runTest(SuiteRunner.java:455)
-at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:450)
-at org.testng.SuiteRunner.privateRun(SuiteRunner.java:415)
-at org.testng.SuiteRunner.run(SuiteRunner.java:364)
-at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:84)
-at org.testng.TestNG.runSuitesSequentially(TestNG.java:1208)
-at org.testng.TestNG.runSuitesLocally(TestNG.java:1137)
-at org.testng.TestNG.runSuites(TestNG.java:1049)
-at org.testng.TestNG.run(TestNG.java:1017)
-at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
-at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:251)
-at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:77)
-Caused by: org.postgresql.util.PSQLException: ERROR: relation "regprc.reg_uin" does not exist
-  Position: 13
-at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2433)
-at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2178)
-at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:306)
-at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:441)
-at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:365)
-at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:155)
-at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:132)
-at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:175)
-... 33 more
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.hibernate.exception.SQLGrammarException -->
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- dbCleanUp -->
       </class> <!-- io.mosip.e2e.tests.EndToEndRun -->
-    </test> <!-- Default test -->
-  </suite> <!-- Default suite -->
+    </test> <!-- E2E Tests -->
+  </suite> <!-- Mosip E2E Suite -->
 </testng-results>

@@ -5,7 +5,6 @@
     <classes>
       <class name="io.mosip.e2e.tests.EndToEndRun">
         <methods>
-          <include name="dbCleanUp"/>
           <include name="getPrids"/>
           <include name="setResultTestName"/>
         </methods>
