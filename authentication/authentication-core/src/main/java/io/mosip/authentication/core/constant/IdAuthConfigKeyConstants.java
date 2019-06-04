@@ -73,7 +73,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
 	public static final String INTERNAL_AUTH_ALLOWED_IDTYPE = "request.idtypes.allowed.internalauth";
 	public static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.auth.types.allowed";
-	public static final String INTERNAL_APPLICATION_ID = "internal.application.id";
+	public static final String INTERNAL_REFERENCE_ID = "internal.reference.id";
 	public static final String SIGN_RESPONSE = "mosip.signed.response.header";
 	
 }

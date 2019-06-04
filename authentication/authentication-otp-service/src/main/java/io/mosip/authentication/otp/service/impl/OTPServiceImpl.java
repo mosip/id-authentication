@@ -168,7 +168,7 @@ public class OTPServiceImpl implements OTPService {
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
 				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId)
 				.withStatus(status).withUin(uin)
-				.build(idInfoFetcher, env);
+				.build(env);
 		idAuthService.saveAutnTxn(authTxn);
 	}
 

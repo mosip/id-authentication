@@ -23,8 +23,6 @@ import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
@@ -254,41 +252,6 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	@Override
 	public MasterDataFetcher getTitleFetcher() {
 		return masterDataManager::fetchTitles;
-	}
-
-	/**
-	 * Gets the uin or vid.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @return the uin or vid
-	 */
-	@Override
-	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO) {
-		String individualId = authRequestDTO.getIndividualId();
-		Optional<String> id = Optional.of(individualId);
-		if (id.isPresent()) {
-			return id;
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the uin or vid type.
-	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @return the uin or vid type
-	 */
-	@Override
-	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO) {
-		String individualIdType = authRequestDTO.getIndividualIdType();
-		if (individualIdType.equals(IdType.UIN.getType())) {
-			return IdType.UIN;
-		} else if (individualIdType.equals(IdType.VID.getType())) {
-			return IdType.VID;
-		} else if (individualIdType.equals(IdType.USER_ID.getType())) {
-			return IdType.USER_ID;
-		}
-		return null;
 	}
 
 	/*

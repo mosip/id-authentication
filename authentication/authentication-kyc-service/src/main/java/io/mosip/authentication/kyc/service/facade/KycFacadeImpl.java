@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,6 @@ import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.facade.KycFacade;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.kernel.core.util.DateUtils;
 
@@ -68,9 +66,6 @@ public class KycFacadeImpl implements KycFacade {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
-
-	@Autowired
-	private IdInfoFetcher idInfoFetcher;
 
 	@Autowired
 	private IdService<AutnTxn> idAuthService;
@@ -108,12 +103,8 @@ public class KycFacadeImpl implements KycFacade {
 		Map<String, Object> idResDTO = null;
 		String resTime = null;
 		if (kycAuthRequestDTO != null) {
-			String idvId = null;
-			Optional<String> idvIdOptional = idInfoFetcher.getUinOrVid(kycAuthRequestDTO);
-			if (idvIdOptional.isPresent()) {
-				idvId = idvIdOptional.get();
-			}
-			String idvIdtype = idInfoFetcher.getUinOrVidType(kycAuthRequestDTO).getType();
+			String idvId = kycAuthRequestDTO.getIndividualId();
+			String idvIdtype =kycAuthRequestDTO.getIndividualIdType();
 			idResDTO = idAuthService.processIdType(idvIdtype, idvId, true);
 			String uin = (String) idResDTO.get("uin");
 			String dateTimePattern = env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN);
@@ -123,7 +114,7 @@ public class KycFacadeImpl implements KycFacade {
 			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getRequestTime(), isoPattern);
 			ZoneId zone = zonedDateTime2.getZone();
 			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, uin,
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.EKYC_REQUEST_RESPONSE, idvId,
 					IdType.getIDTypeOrDefault(kycAuthRequestDTO.getIndividualIdType()),
 					AuditModules.EKYC_AUTH.getDesc());
 
@@ -151,7 +142,7 @@ public class KycFacadeImpl implements KycFacade {
 			AutnTxn authTxn = AuthTransactionBuilder.newInstance().withAuthRequest(kycAuthRequestDTO)
 					.withRequestType(RequestType.KYC_AUTH_REQUEST).withStaticToken(staticTokenId)
 					.withStatus(kycAuthResponseDTO.getResponse().isKycStatus()).withUin(uin)
-					.build(idInfoFetcher, env);
+					.build(env);
 			idAuthService.saveAutnTxn(authTxn);
 		}
 		return kycAuthResponseDTO;
