@@ -604,5 +604,4 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 			}
 		}
 	}
-
 }
