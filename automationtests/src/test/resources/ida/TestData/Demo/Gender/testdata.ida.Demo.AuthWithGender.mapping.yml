@@ -485,7 +485,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_english_valid$
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
       identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
@@ -528,7 +528,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
       identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
@@ -570,7 +570,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
       identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 

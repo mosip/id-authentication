@@ -286,6 +286,6 @@ errors:
     errorMessage: Demographic data name in ara did not match
   Demo_NameMismatch_PriLang:
     errorCode: IDA-DEA-001
-    errorMessage: Demographic data name in eng did not match
+    errorMessage: Demographic data name in fra did not match
   
   

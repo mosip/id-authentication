@@ -141,6 +141,22 @@ female_gender_arabic_valid:
       - أنثى
 other_gender_arabic_valid:
       - الآخرين
+female_gender_eng_valid:
+      - Female
+other_gender_eng_valid:
+      - Others
+male_gender_primary_valid:
+      - Mâle
+female_gender_primary_valid:
+      - Femelle
+other_gender_primary_valid:
+      - Dautres
+male_gender_secondary_valid:
+      - الذكر
+female_gender_secondary_valid:
+      - أنثى
+other_gender_arabic_valid:
+      - الآخرين
 addressLine1_valid:
       - Dubai Main Road
       - Annai Theresa Street
