@@ -45,7 +45,7 @@ public class StageValidationMethods extends BaseTestCase {
 		String token=generateToken.getToken(tokenEntity);
 		return token;
 		}
-	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
 	public String syncPacket(File packet) {
 		validToken=getToken("syncTokenGenerationFilePath");
@@ -59,7 +59,8 @@ public class StageValidationMethods extends BaseTestCase {
 		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
 		String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-		Response resp=applnMethods.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+		Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON,validToken);
 		String encryptedData = resp.jsonPath().get("response.data").toString();
 		LocalDateTime timeStamp=null;
 		try {
@@ -74,7 +75,7 @@ public class StageValidationMethods extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Response actualResponse = apiRequests.regProcSyncRequest(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
+		Response actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
 				timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
 		int status=actualResponse.statusCode();
 		if(status==200) {

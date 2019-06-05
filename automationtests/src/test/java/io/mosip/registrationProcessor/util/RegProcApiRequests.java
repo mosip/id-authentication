@@ -46,6 +46,17 @@ public class RegProcApiRequests extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	}
+	public Response regProcGetIdRepo(String url, String regProcAuthToken) {
+		logger.info("REST-ASSURED: Sending a GET request to " + ApplnURI+url);
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization", regProcAuthToken);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log()
+				.all().when().get(ApplnURI+url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+		return getResponse;
+	}
 	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader,String token) {
 		logger.info("REST:ASSURED:Sending a data packet to" + ApplnURI+url);
 		logger.info("REST ASSURRED :: Request To Encrypt Is "+ body);
