@@ -97,10 +97,6 @@ public class PacketValidateProcessor {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidateProcessor.class);
 
-//	/** The adapter. */
-//	@Autowired
-//	private FileSystemAdapter adapter;
-	
 	@Autowired
 	private FileSystemManager fileSystemManager;
 

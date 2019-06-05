@@ -7,13 +7,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 
@@ -22,7 +26,7 @@ public class OSIUtils {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 	
 	private IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 	
@@ -58,7 +62,7 @@ public class OSIUtils {
 
 	}
 	
-	public Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
+	public Identity getIdentity(String registrationId) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,PacketMetaInfo.class);
 		return packetMetaInfo.getIdentity();

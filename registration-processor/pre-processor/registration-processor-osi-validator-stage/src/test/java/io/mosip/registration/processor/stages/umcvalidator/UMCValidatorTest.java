@@ -3,7 +3,6 @@ package io.mosip.registration.processor.stages.umcvalidator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,12 +25,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -48,6 +47,7 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -72,7 +72,7 @@ public class UMCValidatorTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	/** The registration processor rest service. */
 	@Mock
@@ -94,12 +94,13 @@ public class UMCValidatorTest {
 
 	/**
 	 * Sets the up.
-	 *
-	 * @throws FileNotFoundException
-	 *             the file not found exception
+	 * @throws java.io.IOException 
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Before
-	public void setUp() throws FileNotFoundException {
+	public void setUp() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		rcmDto = new RegistrationCenterMachineDto();
@@ -170,10 +171,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+			IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
@@ -376,10 +378,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+			IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -446,10 +449,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void machineIdNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+			IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -512,10 +516,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void machineNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+			IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -578,10 +583,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
@@ -643,10 +649,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
 		rcmDto.setIsActive(true);
 		rcmDto.setLatitude("13.0049");
@@ -717,10 +724,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void registrationCenternotActiveTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(false);
@@ -783,10 +791,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -860,10 +869,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -938,10 +948,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -1029,11 +1040,12 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	@Ignore
 	public void validateDeviceMappedWithCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
@@ -1190,10 +1202,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void validateDeviceFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"Device History not found\"}]}"
@@ -1292,10 +1305,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void validateRegistrationCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
@@ -1456,10 +1470,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void validateMachineFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
@@ -1617,10 +1632,11 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void validateUMCmappingFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
+			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
