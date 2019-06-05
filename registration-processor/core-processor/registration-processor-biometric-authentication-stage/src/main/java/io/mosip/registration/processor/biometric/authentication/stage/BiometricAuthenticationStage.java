@@ -63,7 +63,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 	private static final String ADULT = "Adult";
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
-	
+
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 
@@ -97,54 +97,56 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 			int childAgeLimit = Integer.parseInt(ageLimit);
 			String applicantType = "ADULT";
 			if (applicantAge <= childAgeLimit && applicantAge > 0) {
-					 applicantType = "CHILD";
+				applicantType = "CHILD";
 			}
 			if ((registartionType.equalsIgnoreCase(RegistrationType.UPDATE.name())
 					|| registartionType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name()))
 					&& applicantType.equalsIgnoreCase(ADULT)) {
-				
+
 				JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
 				JSONObject individualBioMetricLabel = JsonUtil.getJSONObject(demographicIdentity, INDIVIDUALBIOMETRICS);
-				if(individualBioMetricLabel == null) {
+				if (individualBioMetricLabel == null) {
 					isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
-					description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage():PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
-				}
-				else {
+					description = isTransactionSuccessful
+							? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage()
+							: PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
+				} else {
 					String individualBioMetricValue = (String) individualBioMetricLabel.get(VALUE);
-					
+
 					if (individualBioMetricValue != null && !individualBioMetricValue.isEmpty()) {
-						
+
 						InputStream inputStream = adapter.getFile(registrationId,
 								PacketFiles.BIOMETRIC + FILE_SEPERATOR + individualBioMetricValue.toUpperCase());
-							
-						if(inputStream == null) {
+
+						if (inputStream == null) {
 							isTransactionSuccessful = false;
-						}
-						else {
+						} else {
 							isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
-							description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage():PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
+							description = isTransactionSuccessful
+									? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage()
+									: PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
 						}
-						
-						
+
 					} else {
 						isTransactionSuccessful = true;
 						description = PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage();
 					}
 				}
-				}
-				
+			}
+
 			else {
 				object.setIsValid(true);
 				object.setInternalError(false);
-				if("New".equalsIgnoreCase(registartionType)) {
-					description="The packet is New and adult packet for registration id" +registrationId;
-				}else
-				    description="The packet is child packet for registration id" +registrationId;
+				if ("New".equalsIgnoreCase(registartionType)) {
+					description = "The packet is New and adult packet for registration id" + registrationId;
+				} else
+					description = "The packet is child packet for registration id" + registrationId;
 			}
 
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getMessage());
+			registrationStatusDto
+					.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_IOEXCEPTION.getMessage());
 			object.setIsValid(false);
 			object.setInternalError(true);
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -155,7 +157,8 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 					description + e.getMessage() + ExceptionUtils.getStackTrace(e));
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION.getMessage());
+			registrationStatusDto.setStatusComment(
+					PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			code = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_API_RESOURCE_EXCEPTION.getCode();
@@ -176,15 +179,15 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 					description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
-		
-			
+
 		} finally {
 			if (isTransactionSuccessful) {
 				object.setIsValid(Boolean.TRUE);
 				object.setInternalError(Boolean.FALSE);
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage()
+			description = isTransactionSuccessful
+					? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage()
 					: description;
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
@@ -209,15 +212,15 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 
 	}
 
-	private boolean checkIndividualAuthentication(String registrationId, List<FieldValue> metadata)
-			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	private boolean checkIndividualAuthentication(String registrationId, List<FieldValue> metadata) throws IOException,
+			PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		IdentityIteratorUtil identityIterator = new IdentityIteratorUtil();
 		String individualAuthentication = identityIterator.getFieldValue(metadata, INDIVIDUALAUTHENTICATION);
 		if (individualAuthentication == null || individualAuthentication.isEmpty())
 			return false;
 		InputStream inputStream = adapter.getFile(registrationId,
 				PacketFiles.BIOMETRIC + FILE_SEPERATOR + individualAuthentication.toUpperCase());
-		if(inputStream == null) {
+		if (inputStream == null) {
 			return false;
 		}
 		Long uin = utility.getUIn(registrationId);

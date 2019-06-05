@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.quality.checker.stage.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 
 import java.io.File;
@@ -11,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +26,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.quality.checker.stage.QualityCheckerStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -61,7 +64,7 @@ public class QualityCheckerStageTest {
 	private Utilities utility;
 
 	@Mock
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	/** The cbeff util. */
 	@Mock
@@ -198,7 +201,7 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testParameterMissing() throws IOException {
+	public void testParameterMissing() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
 				+ "      \"language\" : \"eng\",\n" + "      \"value\" : \"Ragavendran V\"\n" + "    }, {\n"
 				+ "      \"language\" : \"ara\",\n" + "      \"value\" : \"قشلشرثىيقشى ر\"\n" + "    } ]\n" + "  }\n"
@@ -214,7 +217,7 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testFileNameMissing() throws IOException {
+	public void testFileNameMissing() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		String idJsonString = "{\n" + "  \"identity\" : {\n" + "    \"fullName\" : [ {\n"
 				+ "      \"language\" : \"eng\",\n" + "      \"value\" : \"Ragavendran V\"\n" + "    }, {\n"
 				+ "      \"language\" : \"ara\",\n" + "      \"value\" : \"قشلشرثىيقشى ر\"\n" + "    } ],\n"
@@ -231,7 +234,7 @@ public class QualityCheckerStageTest {
 	}
 
 	@Test
-	public void testFsAdapterException() {
+	public void testFsAdapterException() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		FSAdapterException exception = new FSAdapterException("", "");
 		Mockito.when(adapter.getFile(any(), any())).thenThrow(exception);
 		MessageDTO dto = new MessageDTO();

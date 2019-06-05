@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -44,12 +43,14 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -77,7 +78,7 @@ public class BiometricAuthenticationStageTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private FileSystemManager filesystemCephAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -237,7 +238,7 @@ public class BiometricAuthenticationStageTest {
 		Mockito.when(utility.getApplicantAge(any())).thenReturn(21);
 		HashMap<String,String> hashMap = new HashMap<String,String>();
 
-		hashMap.put("VALUE", "testFile");
+		hashMap.put("value", "testFile");
 		JSONObject jSONObject = new JSONObject(hashMap);
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
 		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(jSONObject);
@@ -291,7 +292,7 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void inputStreamNullTest() {
+	public void inputStreamNullTest() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(null);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertFalse(messageDto.getIsValid());
