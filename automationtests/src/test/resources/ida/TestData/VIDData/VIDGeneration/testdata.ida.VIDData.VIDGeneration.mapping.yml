@@ -1,4 +1,0 @@
-testdata:
-  VIDGenerate:
-    input.vid-request:
-      requesttime: $TIMESTAMPZ$

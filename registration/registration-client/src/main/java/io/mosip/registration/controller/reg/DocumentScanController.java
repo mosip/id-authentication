@@ -902,7 +902,8 @@ public class DocumentScanController extends BaseController {
 
 				documentPane.setVisible(false);
 			}
-			if (!detailMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY)) {
+			if (!detailMap.get(RegistrationConstants.IRIS_CAPTURE).get(RegistrationConstants.VISIBILITY) && !detailMap
+					.get(RegistrationConstants.FINGERPRINT_CAPTURE).get(RegistrationConstants.VISIBILITY)) {
 				exceptionPane.setVisible(false);
 			}
 
