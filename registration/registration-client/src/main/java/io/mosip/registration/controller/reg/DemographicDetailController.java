@@ -1691,12 +1691,12 @@ public class DemographicDetailController extends BaseController {
 			if (isChild) {
 
 				applicationUinIdPane.setDisable(false);
-				
+				applicationRidPane.setDisable(true);
 				applicationRidPane.setVisible(false);
 				applicationRidPane.setManaged(false);
 				ridOrUinToggle.setVisible(false);
 				ridOrUinToggle.setManaged(false);
-				
+				localRidPane.setDisable(true);
 				localRidPane.setVisible(false);
 				localRidPane.setManaged(false);
 				localRidOrUinToggle.setVisible(false);
