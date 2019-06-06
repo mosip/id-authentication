@@ -418,12 +418,12 @@ public class LdapDataStore implements DataStore {
 			authZResponseDto = new AuthZResponseDto();
 			authZResponseDto.setMessage("Successfully Unblocked");
 			authZResponseDto.setStatus("Sucesss");
-            closeContext(context);
+			closeContext(context);
 		} catch (NamingException e) {
-			 closeContext(context);
+			closeContext(context);
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getExplanation());
-		} 
+		}
 		return authZResponseDto;
 	}
 
@@ -540,7 +540,8 @@ public class LdapDataStore implements DataStore {
 		NamingEnumeration<SearchResult> searchResult = getUserDetail(mobileNumber);
 		UserNameDto userNameDto = new UserNameDto();
 		if (!searchResult.hasMore()) {
-			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
+			throw new AuthManagerException(AuthErrorCode.MOBILE_NOT_REGISTERED.getErrorCode(),
+					AuthErrorCode.MOBILE_NOT_REGISTERED.getErrorMessage());
 		}
 		while (searchResult.hasMore()) {
 			Attributes attributes = searchResult.next().getAttributes();
@@ -842,7 +843,7 @@ public class LdapDataStore implements DataStore {
 
 	private void closeContext(LdapContext context) {
 		try {
-			Objects.requireNonNull(context,"context not initialized");
+			Objects.requireNonNull(context, "context not initialized");
 			context.close();
 		} catch (NamingException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),

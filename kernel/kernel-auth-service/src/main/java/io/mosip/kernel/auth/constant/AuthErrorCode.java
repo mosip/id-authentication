@@ -92,9 +92,14 @@ public enum AuthErrorCode {
 	ROLLBACK_USER_EXCEPTION("KER-ATH-017","Exception occured while rolling back user"),
 	
 	INVALID_DN("KER-ATH-018","Exception occured while creating DN"), 
+	
 	INVALID_REQUEST("KER-ATH-019","should not be null or empty"),
+	
 	USER_NOT_FOUND("KER-ATH-020","User not found"),
-	IS_ACTIVE_FLAG_NOT_FOUND("KER-ATH-021","IsActive flag is not present for this user");
+	
+	IS_ACTIVE_FLAG_NOT_FOUND("KER-ATH-021","IsActive flag is not present for this user"),
+	
+	MOBILE_NOT_REGISTERED("KER-ATH-022","Mobile is registered/not present");
 	
 	
 
