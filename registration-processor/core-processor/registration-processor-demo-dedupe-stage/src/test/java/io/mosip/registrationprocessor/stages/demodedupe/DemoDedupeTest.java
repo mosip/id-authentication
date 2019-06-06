@@ -30,7 +30,6 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -75,10 +74,6 @@ public class DemoDedupeTest {
 	/** The env. */
 	@Mock
 	Environment env;
-
-	/** The biometric validation. */
-	@Mock
-	private BiometricValidation biometricValidation;
 
 	/** The demo dedupe. */
 	@InjectMocks
