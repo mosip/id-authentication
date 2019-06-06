@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ import io.mosip.registration.tpm.spi.TPMUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ System.class, TPMUtil.class, ApplicationContext.class })
+@PowerMockIgnore("javax.management.*")
 public class DaoConfigTest {
 
 	DaoConfig daoConfig;
