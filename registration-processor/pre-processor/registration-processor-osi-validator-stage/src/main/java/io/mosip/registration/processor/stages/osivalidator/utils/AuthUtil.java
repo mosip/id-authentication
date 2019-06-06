@@ -204,8 +204,6 @@ public class AuthUtil {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_LEFT));
 		} else if (bioSubType.equalsIgnoreCase(BioSubType.IRIS_RIGHT.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.IRIS_RIGHT));
-		} else if (bioSubType.equalsIgnoreCase("")) {
-			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
 		} else {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.FACE));
 		}
