@@ -229,8 +229,12 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
+    console.log('applicants', applicants);
+
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
+    const demographicMetadata = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.demographicMetadata];
+
     let primaryIndex = 0;
     let secondaryIndex = 1;
     //new dashboard api applicantResponse['demographicMetadata']
