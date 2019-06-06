@@ -298,14 +298,14 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				scanFingers(RegistrationConstants.RIGHTPALM,
-						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				scanFingers(RegistrationConstants.LEFTPALM,
-						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, popupStage, Double.parseDouble(
+						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
-				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD,
+				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS,
 						popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_IRIS)) {
