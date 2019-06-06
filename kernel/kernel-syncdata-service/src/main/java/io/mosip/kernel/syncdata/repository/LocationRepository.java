@@ -6,18 +6,18 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.Location;
 
 /**
  * This interface is JPA repository class which interacts with database and does
- * the CRUD function. It is extended from {@link BaseRepository}
+ * the CRUD function. It is extended from {@link JpaRepository}
  * 
  * @author Srinivasan
  *
  */
 @Repository
-public interface LocationRepository extends BaseRepository<Location, String> {
+public interface LocationRepository extends JpaRepository<Location, String> {
 
 	/**
 	 * Method to find list of Location created , updated or deleted time is greater

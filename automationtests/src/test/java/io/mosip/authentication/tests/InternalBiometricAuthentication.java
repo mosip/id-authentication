@@ -179,7 +179,7 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
+		Map<String, String> tempMap = getInternalEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
 		logger.info("************* Modification of internal bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);

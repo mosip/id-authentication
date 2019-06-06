@@ -1,16 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.mosip.idrepository</groupId>
 		<artifactId>id-repository-parent</artifactId>
-		<version>0.12.4</version>
+		<version>0.12.7</version>
 	</parent>
 
 	<artifactId>id-repository-identity-service</artifactId>
 	<name>identity-service</name>
 	<description>ID-Repository service</description>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
@@ -51,6 +52,11 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idobjectvalidator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

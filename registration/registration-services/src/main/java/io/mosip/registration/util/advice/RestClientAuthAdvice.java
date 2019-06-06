@@ -9,21 +9,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.tpm.spi.TPMUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -45,6 +46,8 @@ public class RestClientAuthAdvice {
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	@Autowired
+	private MachineMappingDAO machineMappingDAO;
 
 	/**
 	 * The {@link Around} advice method which be invoked for all web services. This
@@ -65,7 +68,8 @@ public class RestClientAuthAdvice {
 
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 			
-			if (requestHTTPDTO.isRequestSignRequired()) {
+			if (requestHTTPDTO.isRequestSignRequired() && RegistrationConstants.ENABLE
+					.equals(String.valueOf(ApplicationContext.map().get(RegistrationConstants.TPM_AVAILABILITY)))) {
 				addRequestSignature(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getRequestBody());
 			}
 			
@@ -147,7 +151,7 @@ public class RestClientAuthAdvice {
 		// Get the AuthZ Token from AuthZ Web-Service only if Job is triggered by User
 		// and existing AuthZ Token had expired
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
-			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO().getCookie()) {
+			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO() && null != SessionContext.authTokenDTO().getCookie()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
 			} else {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
@@ -215,8 +219,10 @@ public class RestClientAuthAdvice {
 				"Adding request signature to request header");
 
 		try {
-			httpHeaders.add("request-signature", String.format("Authorization:%s",
-					CryptoUtil.encodeBase64(TPMUtil.signData(new ObjectMapper().writeValueAsBytes(requestBody)))));
+			httpHeaders.add("request-signature", String.format("Authorization:%s", CryptoUtil
+					.encodeBase64(TPMUtil.signData(JsonUtils.javaObjectToJsonString(requestBody).getBytes()))));
+			httpHeaders.add(RegistrationConstants.KEY_INDEX, CryptoUtil.encodeBase64String(String.valueOf(machineMappingDAO
+					.getKeyIndexByMacId(RegistrationSystemPropertiesChecker.getMachineId())).getBytes()));
 		} catch (JsonProcessingException jsonProcessingException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorCode(),
 					RegistrationExceptionConstants.AUTHZ_ADDING_REQUEST_SIGN.getErrorMessage(),

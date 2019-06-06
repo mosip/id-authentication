@@ -17,6 +17,9 @@ public enum NotificationTemplateType {
 	DUPLICATE_UIN,
 
 	/** The technical issue. */
-	TECHNICAL_ISSUE
+	TECHNICAL_ISSUE,
+	
+	/** THe Lost UIN. */
+	LOST_UIN
 
 }

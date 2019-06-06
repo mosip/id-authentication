@@ -504,5 +504,8 @@ public abstract class RunConfig {
 	public abstract String getDecryptPath();
 	public abstract void setDecryptPath(String decryptPath);
 	public abstract void setUinIdentityMapper(String uinIdentityMapper);
-	public abstract String getUinIdentityMapper();	
+	public abstract String getUinIdentityMapper();
+	public abstract String getInternalEncryptionPath();
+	public abstract void setInternalEncryptionPath(String internalEncryptionPath);
+
 }

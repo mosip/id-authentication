@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.MachineType;
 
 /**
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.MachineType;
  *
  */
 @Repository
-public interface MachineTypeRepository extends BaseRepository<MachineType, String> {
+public interface MachineTypeRepository extends JpaRepository<MachineType, String> {
 	/**
 	 * Method to fetch the Machine Type by machine id.
 	 * 

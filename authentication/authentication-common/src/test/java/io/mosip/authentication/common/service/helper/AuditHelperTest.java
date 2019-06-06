@@ -1,10 +1,13 @@
 package io.mosip.authentication.common.service.helper;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -21,6 +24,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdType;
 
 /**
@@ -62,6 +66,13 @@ public class AuditHelperTest {
 	@Test
 	public void testAuditUtil() throws IDDataValidationException {
 		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+	}
+
+	@Test
+	public void TestgetUinorVid() {
+		Mockito.when(idFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.ofNullable("426789089018"));
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		auditHelper.getUinorVid(authRequestDTO);
 	}
 
 }

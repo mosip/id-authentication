@@ -132,7 +132,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
@@ -161,7 +161,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR', 'ID_AUTHENTICATION')")
 	@GetMapping(path = "/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByUin(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -185,7 +185,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN','REGISTRATION_SUPERVISOR','REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
 	@GetMapping(path = "/rid/{rid}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByRid(@PathVariable String rid,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
@@ -213,7 +213,7 @@ public class IdRepoController {
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','ID_AUTHENTICATION')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@PatchMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {

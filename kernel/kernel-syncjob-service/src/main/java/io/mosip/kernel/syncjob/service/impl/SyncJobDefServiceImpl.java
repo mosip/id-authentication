@@ -49,7 +49,7 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 					currentTimeStamp);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
-					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage());
+					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
 			syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);

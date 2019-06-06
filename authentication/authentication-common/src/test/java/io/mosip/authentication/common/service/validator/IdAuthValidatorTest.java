@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -156,6 +159,17 @@ public class IdAuthValidatorTest {
 		});
 	}
 
+	@Test
+	public void testNotConfiguredIdType() {
+		MockEnvironment mockEnv = new MockEnvironment();
+		mockEnv.merge((ConfigurableEnvironment) env);
+		mockEnv.setProperty("request.idtypes.allowed", "UIN");
+		ReflectionTestUtils.setField(validator, "env", mockEnv);
+		validator.validateIdvId("1234", "VID", errors, INDIVIDUAL_ID);
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-015")));
+	}
+
+	
 	/**
 	 * Test invalid UIN.
 	 */
@@ -249,7 +263,7 @@ public class IdAuthValidatorTest {
 		authRequestDTO.setConsentObtained(false);
 		Errors error = new BeanPropertyBindingResult(authReq, "IdAuthValidator");
 		validator.validateConsentReq(authRequestDTO, error);
-		assertTrue(error.hasErrors());
+		assertTrue(error.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-012")));
 	}
 
 	/**
@@ -283,6 +297,7 @@ public class IdAuthValidatorTest {
 		reqTime = Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")).toString();
 		validator.validateReqTime(reqTime, errors, REQUEST_TIME);
+		//assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 		assertTrue(errors.hasErrors());
 	}
 
@@ -292,6 +307,6 @@ public class IdAuthValidatorTest {
 	@Test
 	public void testFutureTime_Invalid() {
 		validator.validateReqTime(Instant.now().plus(Period.ofDays(1)).toString(), errors, REQUEST_TIME);
-		assertTrue(errors.hasErrors());
+		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals("IDA-MLC-001")));
 	}
 }
