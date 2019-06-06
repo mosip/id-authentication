@@ -1145,6 +1145,7 @@ public class DemographicDetailController extends BaseController {
 									parentDetailPane.setVisible(true);
 									parentDetailPane.setDisable(false);
 									parentName.clear();
+									parentNameLocalLanguage.clear();
 									parentRegId.clear();
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
@@ -1163,6 +1164,7 @@ public class DemographicDetailController extends BaseController {
 								isChild = false;
 								validation.setChild(isChild);
 								parentName.clear();
+								parentNameLocalLanguage.clear();
 								parentRegId.clear();
 								parentRegIdLocalLanguage.clear();
 								parentRegId.clear();
