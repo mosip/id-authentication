@@ -30,12 +30,12 @@ public class AuthTransactionBuilderTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(authTransactionBuilder, "otpRequestDTO", new OtpRequestDTO());
-		authTransactionBuilder.build(idInfoFetcher, env);
+		authTransactionBuilder.build(env);
 	}
 	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void buildTest2() throws IdAuthenticationBusinessException {
-		authTransactionBuilder.build(idInfoFetcher, env);
+		authTransactionBuilder.build(env);
 	}
 	
 	@Test

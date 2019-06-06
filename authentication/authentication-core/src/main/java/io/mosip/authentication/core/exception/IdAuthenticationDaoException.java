@@ -4,7 +4,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * The base exception for ID Authentication which is always associated with an error code.
+ * The exception for ID Authentication which is always associated with an error code.
  * This exception is thrown at DAO level, usually wrapped with root cause.
  *
  * @author Manoj SP

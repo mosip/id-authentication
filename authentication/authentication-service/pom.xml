@@ -126,13 +126,6 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 
-		<!-- External Fingerprint -->
-		<dependency>
-			<groupId>Mantra</groupId>
-			<artifactId>MFS100</artifactId>
-			<version>1.0</version>
-		</dependency>
-
 		<!-- Commons Lang -->
 		<dependency>
 			<groupId>commons-lang</groupId>

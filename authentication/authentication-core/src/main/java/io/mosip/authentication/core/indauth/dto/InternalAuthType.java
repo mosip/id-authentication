@@ -3,9 +3,9 @@ package io.mosip.authentication.core.indauth.dto;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-/**
- * The Enum InternalAuthType.
- *
+/*
+ * Auth type for Internal Authentication
+ * 
  * @author Dinesh Karuppiah.T
  */
 
@@ -26,8 +26,7 @@ public enum InternalAuthType {
 	/**
 	 * Instantiates a new internal auth type.
 	 *
-	 * @param type
-	 *            the type
+	 * @param type the type
 	 */
 	private InternalAuthType(String type) {
 		this.type = type;
@@ -45,8 +44,7 @@ public enum InternalAuthType {
 	/**
 	 * Get Internal Auth type.
 	 *
-	 * @param type
-	 *            the type
+	 * @param type the type
 	 * @return the internal auth type
 	 */
 	public static Optional<InternalAuthType> getInternalAuthType(String type) {

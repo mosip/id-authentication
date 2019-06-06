@@ -55,8 +55,8 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-//@Entity
-//@Table(schema = "kernel", name = "sync_job_def")
+@Entity
+@Table(schema = "kernel", name = "sync_job_def")
 public class SyncJobDef extends BaseEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

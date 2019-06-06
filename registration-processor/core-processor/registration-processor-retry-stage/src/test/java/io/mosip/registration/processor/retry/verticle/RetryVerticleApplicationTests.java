@@ -28,12 +28,6 @@ public class RetryVerticleApplicationTests {
 
 	private MessageDTO dto = new MessageDTO();
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	@Before
 	public void setup(TestContext context) {
 		retryStage.deployVerticle();
