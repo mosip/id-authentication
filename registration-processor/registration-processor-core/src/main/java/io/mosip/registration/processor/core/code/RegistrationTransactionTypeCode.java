@@ -36,6 +36,8 @@ public enum RegistrationTransactionTypeCode {
 	/** The reprocess. */
 	REPROCESS,
 	/** The Quality Check*/
-	QUALITY_CHECK
+	QUALITY_CHECK,
+	/** The biometric Authentication*/
+	BIOMETRIC_AUTHENTICATION
 
 }
