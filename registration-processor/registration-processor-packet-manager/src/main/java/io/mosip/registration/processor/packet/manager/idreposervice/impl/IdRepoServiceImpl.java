@@ -20,6 +20,11 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 
+/**
+ * The Class IdRepoServiceImpl.
+ * 
+ * @author Nagalakshmi
+ */
 @RefreshScope
 @Service
 public class IdRepoServiceImpl implements IdRepoService {
@@ -27,8 +32,14 @@ public class IdRepoServiceImpl implements IdRepoService {
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
-	
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService#
+	 * getUinByRid(java.lang.String, java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Number getUinByRid(String rid, String regProcessorDemographicIdentity)
@@ -38,11 +49,24 @@ public class IdRepoServiceImpl implements IdRepoService {
 		pathSegments.add(rid);
 		return getUin(pathSegments, regProcessorDemographicIdentity);
 
-		
 	}
-	
+
+	/**
+	 * Gets the uin.
+	 *
+	 * @param pathSegments
+	 *            the path segments
+	 * @param regProcessorDemographicIdentity
+	 *            the reg processor demographic identity
+	 * @return the uin
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@SuppressWarnings("unchecked")
-	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity) throws IOException, ApisResourceAccessException  {
+	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity)
+			throws IOException, ApisResourceAccessException {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response;
 
@@ -58,7 +82,14 @@ public class IdRepoServiceImpl implements IdRepoService {
 		}
 		return null;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService#
+	 * findUinFromIdrepo(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Number findUinFromIdrepo(String uin, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
@@ -68,6 +99,13 @@ public class IdRepoServiceImpl implements IdRepoService {
 		return getUin(pathSegments, regProcessorDemographicIdentity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService#
+	 * getIdJsonFromIDRepo(java.lang.String, java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getIdJsonFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)
