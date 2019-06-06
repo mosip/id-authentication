@@ -112,7 +112,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Label photoLabel;
 	@FXML
 	private Label pwdLabel;
-
+	@FXML
+	private Button getOTP;
+	
 	@Autowired
 	private PacketHandlerController packetHandlerController;
 
@@ -171,6 +173,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				// Enable submit button
 				// Generate alert to show OTP
+				getOTP.setVisible(false);
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
@@ -503,6 +506,9 @@ public class AuthenticationController extends BaseController implements Initiali
 				String authenticationType = String
 						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
+				if(authenticationType.equalsIgnoreCase(RegistrationConstants.OTP)) {
+					getOTP.setVisible(true);
+				}
 				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(
 						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
 						&& authenticationType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT))
