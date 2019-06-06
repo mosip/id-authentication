@@ -182,4 +182,15 @@ public interface MatchType {
 				.collect(Collectors.toMap(Entry::getKey, entry -> new SimpleEntry<>(entry.getKey(), entry.getValue())));
 	}
 
+	/**
+	 * Check if the mapped property is of multi-language type
+	 * 
+	 * @param propName mapped property name
+	 * @param cfg mapping
+	 * @return
+	 */
+	public default boolean isPropMultiLang(String propName, MappingConfig cfg) {
+		return false;
+	}
+
 }

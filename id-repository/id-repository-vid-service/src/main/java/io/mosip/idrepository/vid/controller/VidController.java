@@ -173,7 +173,7 @@ public class VidController {
 	
 	//TODO have to add roles
 //	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
-	@PostMapping(path = "/vid/{VID}/regenerate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/vid/{VID}/regenerate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> regenerateVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException{
 		try {

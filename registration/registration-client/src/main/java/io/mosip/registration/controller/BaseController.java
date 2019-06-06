@@ -129,7 +129,7 @@ public class BaseController {
 
 	@Autowired
 	private TemplateService templateService;
-	
+
 	@Autowired
 	private AuthenticationService authenticationService;
 
@@ -147,7 +147,7 @@ public class BaseController {
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
-	
+
 	@Autowired
 	private HeaderController headerController;
 
@@ -226,7 +226,7 @@ public class BaseController {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static <T> T load(URL url) throws IOException {		
+	public static <T> T load(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
@@ -317,7 +317,7 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if(!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
+		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
 			label.setText(context);
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
@@ -389,7 +389,7 @@ public class BaseController {
 	 *
 	 */
 	protected void getGlobalParams() {
-		ApplicationContext.map().putAll(globalParamService.getGlobalParams());
+		ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**
@@ -647,14 +647,15 @@ public class BaseController {
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			authenticationValidatorDTO.setUserId(username);
-			authenticationValidatorDTO.setPassword(password);
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(username);
+		authenticationValidatorDTO.setPassword(password);
 
-			if (authenticationService.validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
-				return RegistrationConstants.SUCCESS;
-			}
-			return RegistrationConstants.FAILURE;
+		if (authenticationService.validatePassword(authenticationValidatorDTO)
+				.equals(RegistrationConstants.PWD_MATCH)) {
+			return RegistrationConstants.SUCCESS;
+		}
+		return RegistrationConstants.FAILURE;
 	}
 
 	/**
@@ -923,9 +924,9 @@ public class BaseController {
 	 * processing accordingly.
 	 *
 	 * @return true, if is machine remap process started
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public boolean isMachineRemapProcessStarted()  {
+	public boolean isMachineRemapProcessStarted() {
 
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
@@ -939,11 +940,10 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
-			 
-			
-			 disableHomePage(true);
-			
-				service.restart();
+
+			disableHomePage(true);
+
+			service.restart();
 
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
@@ -951,7 +951,7 @@ public class BaseController {
 					service.reset();
 					disableHomePage(false);
 					packetHandlerController.getProgressIndicator().setVisible(false);
-					 
+
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
@@ -963,7 +963,7 @@ public class BaseController {
 
 				}
 			});
-			
+
 		}
 		return isRemapped;
 	}
@@ -974,12 +974,11 @@ public class BaseController {
 			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 		} catch (IOException ioException) {
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
 		}
 
 		HomePageRoot.setDisable(isDisabled);
-		
+
 	}
 
 	Service<String> service = new Service<String>() {
@@ -1091,7 +1090,7 @@ public class BaseController {
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
 		okButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(confirmButtonText));
 
-		if(alertType == Alert.AlertType.CONFIRMATION) {
+		if (alertType == Alert.AlertType.CONFIRMATION) {
 			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
 			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
 		}
@@ -1214,13 +1213,15 @@ public class BaseController {
 	/**
 	 * Exception fingers count.
 	 */
-	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount, int irisCount) {
-		
+	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount,
+			int irisCount) {
+
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 		} else {
@@ -1253,18 +1254,20 @@ public class BaseController {
 		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
 		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
 		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
-		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT, leftSlapCount+rightSlapCount+thumbCount+irisCount);
+		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
+				leftSlapCount + rightSlapCount + thumbCount + irisCount);
 
 		return exceptionCountMap;
 	}
-	
+
 	protected List<BiometricExceptionDTO> getIrisExceptions() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		}else if(getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
-		}else {
+		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.getBiometricExceptionDTO();
 		}
@@ -1273,14 +1276,15 @@ public class BaseController {
 	/**
 	 * Any iris exception.
 	 *
-	 * @param iris the iris
+	 * @param iris
+	 *            the iris
 	 * @return true, if successful
 	 */
 	protected boolean anyIrisException(String iris) {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
-	
+
 	/**
 	 * To get the current timestamp
 	 * 

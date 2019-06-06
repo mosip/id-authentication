@@ -386,6 +386,24 @@ public class PreregDB {
 		
 
 	}
+	
+	public static List<?> validateDBDataVal(String queryStr)
+	{
+		List<?> flag;
+		
+		//factory = new Configuration().configure("preregqa.cfg.xml")
+		//factory = new Configuration().configure("preregint.cfg.xml")
+		factory = new Configuration().configure("preregint.cfg.xml")
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdata(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
+
+	}
+	
 	public static int validateDBUpdate(String queryStr)
 	{
 		int flag;
@@ -416,6 +434,24 @@ public class PreregDB {
 		session = factory.getCurrentSession();
 		session.beginTransaction();
 		flag=validateDBdataUpdate(session, queryStr);
+		logger.info("flag is : " +flag);
+		return flag;
+		
+
+	}
+	
+	public static List<?> validateDBVal(String queryStr,String dbName)
+	{
+		List<?> flag;
+		String dbConfigXml = dbName+env+".cfg.xml";
+		//factory = new Configuration().configure("preregqa.cfg.xml")
+		//factory = new Configuration().configure("preregint.cfg.xml")
+		//factory = new Configuration().configure("preregint.cfg.xml")
+				factory = new Configuration().configure(dbConfigXml)
+	.addAnnotatedClass(DemographicEntity.class).buildSessionFactory();	
+		session = factory.getCurrentSession();
+		session.beginTransaction();
+		flag=validateDBdata(session, queryStr);
 		logger.info("flag is : " +flag);
 		return flag;
 		

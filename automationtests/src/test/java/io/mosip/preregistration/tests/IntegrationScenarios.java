@@ -46,7 +46,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 	PreRegistrationLibrary lib = new PreRegistrationLibrary();
 	public String testSuite;
 	public String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
-	public String docMissingMessage = "DOCUMENT_IS_MISSING";
+	public String docMissingMessage = "Documents is not found for the requested pre-registration id";
 	public String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
 	public String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
 	public String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
@@ -148,7 +148,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		response = lib.deleteAllDocumentByDocId(documentId, PrId);
 
 		actualMessage = response.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(actualMessage, "DOCUMENT_IS_MISSING");
+		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
 
 	}
 
@@ -180,7 +180,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		response = lib.getAllDocumentForPreId(preRegID);
 
 		actualMessage = response.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(actualMessage, "DOCUMENT_IS_MISSING");
+		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
@@ -244,7 +244,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 
 		// Cancel Appointment
 		response = lib.CancelBookingAppointment(preRegID);
-		lib.compareValues(response.jsonPath().get("response.message"), "Appointment cancelled successfully");
+		lib.compareValues(response.jsonPath().get("response.message"), "Appointment for the selected application has been successfully cancelled");
 		lib.compareValues(fetchCenterResponse.jsonPath().get("response").toString(),
 				lib.FetchCentre(regCenterId).jsonPath().get("response").toString());
 	}
@@ -449,7 +449,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
 		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
-				"Appointment cancelled successfully");
+				"Appointment for the selected application has been successfully cancelled");
 		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
 		Assert.assertEquals(fetchAllPreRegistrationCreatedByUserResponse.jsonPath()
 				.get("response.basicDetails[0].preRegistrationId").toString(), preID);
@@ -685,8 +685,8 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		response = lib.bookAppointmentInvalidDate(response, fetchCenterResponse, preRegID);
 		String errorCode = response.jsonPath().get("errors[0].errorCode").toString();
 		String message = response.jsonPath().get("errors[0].message").toString();
-		lib.compareValues(errorCode, "PRG_BOOK_RCI_009");
-		lib.compareValues(message, "INVALID_DATE_TIME_FORMAT");
+		lib.compareValues(errorCode, "PRG_BOOK_RCI_031");
+		message.contains("Invalid Booking Date Time found for preregistration id");
 
 	}
 
@@ -1170,26 +1170,6 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 	}
 
 	/**
-	 * @author Ashish Book an Appointment Delete all document then retrive
-	 *         PreRegistration data
-	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void retrivePreRegDataAfterDeletingDocument() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createPregResponse = lib.CreatePreReg(createPregRequest);
-		String PreID = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentUploadResponse = lib.documentUpload(createPregResponse);
-		Response fetchCentreResponse = lib.FetchCentre();
-		lib.BookAppointment(documentUploadResponse, fetchCentreResponse, PreID);
-		lib.deleteAllDocumentByPreId(PreID);
-		Response retrivePreRegistrationDataResponse = lib.retrivePreRegistrationData(PreID);
-		boolean status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataResponse, preID,
-				createPregResponse);
-		lib.compareValues(Boolean.toString(status), "true");
-	}
-
-	/**
 	 * @author Ashish Consumed multiple pre registration ids with some invalid PRID
 	 */
 	@Test(groups = { "IntegrationScenarios" })
@@ -1465,7 +1445,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 			Response discardApp = lib.discardApplication(preRegID);
 			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId, preRegID);
 			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");
-			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "DOCUMENT_IS_MISSING");
+			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "Documents is not found for the requested pre-registration id");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

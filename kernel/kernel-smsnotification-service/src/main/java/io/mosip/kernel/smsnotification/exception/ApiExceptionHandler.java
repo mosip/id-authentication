@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -106,6 +107,7 @@ public class ApiExceptionHandler {
 		ServiceError error = new ServiceError(SmsExceptionConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
 				e.getMessage());
 		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

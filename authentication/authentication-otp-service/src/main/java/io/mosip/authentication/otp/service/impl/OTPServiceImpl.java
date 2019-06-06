@@ -2,6 +2,8 @@ package io.mosip.authentication.otp.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import io.mosip.authentication.core.spi.otp.service.OTPService;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -77,7 +80,7 @@ public class OTPServiceImpl implements OTPService {
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
-	
+
 	/** The TokenId manager */
 	@Autowired
 	private TokenIdManager tokenIdManager;
@@ -98,9 +101,10 @@ public class OTPServiceImpl implements OTPService {
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto, String partnerId)
 			throws IdAuthenticationBusinessException {
 		String individualId = otpRequestDto.getIndividualId();
+		String hashedUin = HMACUtils.digestAsPlainText(HMACUtils.generateHash(individualId.getBytes()));
 		String requestTime = otpRequestDto.getRequestTime();
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
-		if (isOtpFlooded(individualId, requestTime)) {
+		if (isOtpFlooded(hashedUin, requestTime)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			String individualIdType = otpRequestDto.getIndividualIdType();
@@ -146,10 +150,9 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 
-		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE,
-				otpRequestDto.getId(),
+		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getId(),
 				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), AuditModules.OTP_REQUEST.getDesc());
-		
+
 		return otpResponseDTO;
 
 	}
@@ -158,16 +161,16 @@ public class OTPServiceImpl implements OTPService {
 	 * Audit txn.
 	 *
 	 * @param otpRequestDto the otp request dto
-	 * @param uin the uin
+	 * @param uin           the uin
 	 * @param staticTokenId the static token id
-	 * @param status the status
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @param status        the status
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void auditTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status)
 			throws IdAuthenticationBusinessException {
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
-				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId)
-				.withStatus(status).withUin(uin)
+				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId).withStatus(status).withUin(uin)
 				.build(idInfoFetcher, env);
 		idAuthService.saveAutnTxn(authTxn);
 	}
@@ -186,27 +189,25 @@ public class OTPServiceImpl implements OTPService {
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto
-	 *            the otp request dto
+	 * @param otpRequestDto the otp request dto
 	 * @return true, if is otp flooded
 	 * @throws IdAuthenticationBusinessException
 	 */
 	private boolean isOtpFlooded(String individualId, String requestTime) throws IdAuthenticationBusinessException {
 		boolean isOtpFlooded = false;
-		Date requestDateTime;
 		LocalDateTime reqTime;
 		try {
-			requestDateTime = DateUtils.parseToDate(requestTime,
-					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN));
-			reqTime = DateUtils.parseDateToLocalDateTime(requestDateTime);
+			String strUTCDate = DateUtils.getUTCTimeFromDate(
+					DateUtils.parseToDate(requestTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			reqTime = LocalDateTime.parse(strUTCDate, DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+
 		} catch (ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),
 					e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 		}
 		int addMinutes = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_DURATION));
-		Date addMinutesInOtpRequestDTime = addMinutes(requestDateTime, -addMinutes);
-		LocalDateTime addMinutesInOtpRequestDTimes = DateUtils.parseDateToLocalDateTime(addMinutesInOtpRequestDTime);
+		LocalDateTime addMinutesInOtpRequestDTimes = reqTime.minus(addMinutes, ChronoUnit.MINUTES);
 		int maxCount = Integer.parseInt(env.getProperty(IdAuthConfigKeyConstants.OTP_REQUEST_FLOODING_MAX_COUNT));
 		if (autntxnrepository.countRequestDTime(reqTime, addMinutesInOtpRequestDTimes, individualId) > maxCount) {
 			isOtpFlooded = true;
@@ -226,8 +227,7 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Get Mail.
 	 * 
-	 * @param idInfo
-	 *            List of IdentityInfoDTO
+	 * @param idInfo List of IdentityInfoDTO
 	 * @return mail
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -238,8 +238,7 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Get Mobile number.
 	 * 
-	 * @param idInfo
-	 *            List of IdentityInfoDTO
+	 * @param idInfo List of IdentityInfoDTO
 	 * @return Mobile number
 	 * @throws IdAuthenticationBusinessException
 	 */
@@ -252,10 +251,8 @@ public class OTPServiceImpl implements OTPService {
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
 	 *
-	 * @param date
-	 *            the date
-	 * @param minute
-	 *            the minute
+	 * @param date   the date
+	 * @param minute the minute
 	 * @return the date
 	 */
 	private Date addMinutes(Date date, int minute) {
@@ -265,10 +262,8 @@ public class OTPServiceImpl implements OTPService {
 	/**
 	 * Formate date.
 	 *
-	 * @param date
-	 *            the date
-	 * @param format
-	 *            the formate
+	 * @param date   the date
+	 * @param format the formate
 	 * @return the date
 	 */
 	private String formatDate(Date date, String format) {

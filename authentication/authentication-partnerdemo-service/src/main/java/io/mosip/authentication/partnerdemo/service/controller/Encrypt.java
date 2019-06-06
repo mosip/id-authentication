@@ -131,7 +131,7 @@ public class Encrypt {
 	@PostMapping(path = "/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
 	public EncryptionResponseDto encrypt(@RequestBody EncryptionRequestDto encryptionRequestDto,
-			@RequestParam(name="isInternal",required=false) @Nullable Boolean isInternal)
+			@RequestParam(name="isInternal",required=false) @Nullable boolean isInternal)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, KeyManagementException,
 			JSONException, InvalidKeyException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		return kernelEncrypt(encryptionRequestDto, isInternal);

@@ -3,7 +3,6 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.constants.DeviceTypes;
-import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -65,12 +64,12 @@ public interface MachineMappingDAO {
 	boolean isExists(String userId);
 
 	/**
-	 * Get the {@link MachineMaster} based on name
+	 * Get the key index of the Machine based on MAC Id
 	 * 
 	 * @param name
-	 *            the name of the machine
-	 * @return the {@link MachineMaster}
+	 *            the MAC Id of the machine
+	 * @return the key index of the machine
 	 */
-	MachineMaster getMachineByName(String name);
+	String getKeyIndexByMacId(String macId);
 
 }

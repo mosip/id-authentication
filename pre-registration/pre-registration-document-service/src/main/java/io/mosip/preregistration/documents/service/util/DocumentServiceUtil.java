@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -79,7 +81,7 @@ public class DocumentServiceUtil {
 	 * Reference for ${max.file.size} from property file
 	 */
 	@Value("${max.file.size}")
-	private int maxFileSize;
+	private int maxFileSize;	
 
 	/**
 	 * Reference for ${file.extension} from property file
@@ -89,12 +91,14 @@ public class DocumentServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
-
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
 	@Autowired
 	RestTemplate restTemplate;
+
+	@Autowired
+	ValidationUtil validationUtil;
 
 	/**
 	 * Reference for ${demographic.resource.url} from property file
@@ -137,12 +141,10 @@ public class DocumentServiceUtil {
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
-		if(!(documentData.get("requesttime")==null ||documentData.get("requesttime").toString().isEmpty())) {
+		if (!(documentData.get("requesttime") == null || documentData.get("requesttime").toString().isEmpty())) {
 			uploadReqDto.setRequesttime(
 					new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
-		}
-		else
-		{
+		} else {
 			uploadReqDto.setRequesttime(null);
 		}
 		uploadReqDto.setRequest(documentDto);

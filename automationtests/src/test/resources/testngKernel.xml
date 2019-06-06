@@ -1,327 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Mosip Kernel API Suite">
 
-<!--   Passing Group as parmeter unsing "testType"
-  Possible Groups are:
-  						smoke
-  						regression
-  						smokeAndRegression -->
-		
-  		  <test name="AuditLog">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.AuditLog" />
-			</classes>
-		</test> 
-		 
-		 <test name="CentetMachineUserMappingToMasterData">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" />
-			</classes>
-		</test>
-		
-		<test name="EmailNotification">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.EmailNotification" />
-		</classes>
-		</test>
-		
-		<test name="EncrptionDecryption">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.EncrptionDecryption" />
-			</classes>
-		</test>
-		
-	 	<test name="FetchApplication">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchApplication" />
-			</classes>
-		</test> 
-		
-		<test name="FetchBiometricAttribute">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
-		</classes>
-	</test>
-	
-		<test name="FetchBiometricAuthType">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
-		</classes>
-	</test>
-	
- 	<test name="FetchBlackListedWord">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchBlackListedWord" />
-		</classes>
-	</test>
-	
-	
-	 <test name="FetchDevice">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchDevice" />
-			</classes>
-		</test> 
+<suite name="Mosip API Suite" parallel="tests" thread-count="2">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.report.CustomTestNGReporter" />
+		<listener class-name="io.mosip.report.ExtentReportListener" />
+		<listener
+			class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
+	</listeners>
 
-	<test name="FetchDeviceSpec">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchDeviceSpec" />
-			</classes>
-		</test> 
-		
-		<test name="FetchDocumentCategories">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchDocumentCategories" />
-		</classes>
-	</test>
-	
-	<test name="FetchDocumentTypes">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchDocumentTypes" />
-		</classes>
-	</test>
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
 
-		<test name="FetchGenderType">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchGenderType" />
-		</classes>
-	</test>
-		
-			<test name="FetchHolidays">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchHolidays" />
-			</classes>
-		</test> 
-		
-		<test name="FetchIDlist">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchIDlist" />
-		</classes>
-	</test>
-	
-			
-	<test name="FetchLocationHierarchy">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
-		</classes>
-	</test>
-	
-	<test name="FetchMachine">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchMachine" />
-			</classes>
-		</test> 
-		
-		<test name="FetchMachineHistory">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchMachineHistory" />
-			</classes>
-		</test> 
-		
-		<test name="FetchRegCent">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchRegCent" />
-			</classes>
-		</test> 
-		
-		<test name="FetchRegCentHistory">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchRegCentHistory" />
-			</classes>
-		</test> 
-		
-		<test name="FetchRegCentHolidays">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchRegCentHolidays" />
-			</classes>
-		</test> 
-		
-		
-		<test name="FetchRegcentMachUserMaping">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchRegcentMachUserMaping" />
-			</classes>
-		</test>
-		
-	<test name="FetchRejectionReason">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchRejectionReason" />
-		</classes>
-	</test>
-	<test name="FetchTemplate">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.FetchTemplate" />
-			</classes>
-		</test> 
-	
-	<test name="FetchTitle">
-		<parameter name="testType" value="smokeandregression" />
-		<classes>
-			<class name="io.mosip.kernel.tests.FetchTitle" />
-		</classes>
-	</test>
-	
-		<test name="GetDeviceHistory">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetDeviceHistory" />
-			</classes>
-		</test>
-		
-		<test name="GetImmediateChildrenByLocCodeAndLangCode">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode" />
-			</classes>
-		</test>
-		
-		 <test name="GetListOfRoles">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetListOfRoles" />
-			</classes>
-		</test>
-		
-          <test name="GetRegCenterByIDTimestamp">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />
-			</classes>
-		</test>
-		
-         <test name="GetRegistrationCenterDeviceHistory">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory" />
-			</classes>
-		</test>
-				        
-		<test name="GetusersBasedOnRegCenter">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" />
-			</classes>
-		</test>
-		
-		<test name="LicenseKeyController">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.LicenseKeyController" />
-			</classes>
-		</test>  
-		
-		<test name="OTP">
-		   <parameter name="testType" value="smokeandregression" />
-		     <classes>
-			    <class name="io.mosip.kernel.tests.OTP" />
-		     </classes>
-	    </test>
-	
-		<test name="OtpGenerate">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.OtpGenerate" />
-			</classes>
-		</test> 
 
-	
-		<test name="OtpNotificationController">
-			<parameter name="testType" value="smokeandRegression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.OtpNotificationController" />
-			</classes>
-		 </test>
-		
-		<test name="SmsNotification">
-			<parameter name="testType" value="smokeandRegression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SmsNotification" />
-			</classes>
-		 </test>
-		
-		<test name="SyncConfigurations">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncConfigurations" />
-			</classes>
-		</test> 
-		
-		<test name="SyncMasterdataController">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncMasterdataController" />
-			</classes>
-		</test>  
-		
-		<test name="SyncMasterDataWithTimestamp">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncMasterDataWithTimestamp" />
-			</classes>
-		</test>  
-		
-		
-		<test name="SyncPublicKeyToRegClient">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
-			</classes>
-		</test> 	
-		
-		<test name="UINGeneration">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.UINGeneration" />
-			</classes>
+				<test name="Kernel Tests">
+						 <classes>
+                           <class name="io.mosip.kernel.tests.AuditLog" /> 
+                          <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
+                            <class name="io.mosip.kernel.tests.EmailNotification" />
+                           <class name="io.mosip.kernel.tests.EncrptionDecryption" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
+                           <class name="io.mosip.kernel.tests.FetchBlackListedWord" />
+                           <class name="io.mosip.kernel.tests.FetchDevice" />
+                           <class name="io.mosip.kernel.tests.FetchDeviceSpec" />
+                           <class name="io.mosip.kernel.tests.FetchDocumentCategories" />
+                           <class name="io.mosip.kernel.tests.FetchDocumentTypes" />
+                           <class name="io.mosip.kernel.tests.FetchGenderType" />
+                           <class name="io.mosip.kernel.tests.FetchHolidays" />
+                           <class name="io.mosip.kernel.tests.FetchIDlist" />
+                           <class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
+                           <class name="io.mosip.kernel.tests.FetchMachine" />
+                           <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
+                           <class name="io.mosip.kernel.tests.FetchRegCent" />                
+                           <class name="io.mosip.kernel.tests.FetchRegCentHistory" />
+                           <class name="io.mosip.kernel.tests.FetchRegCentHolidays" />       
+                           <class name="io.mosip.kernel.tests.FetchRegcentMachUserMaping" /> 
+                           <class name="io.mosip.kernel.tests.FetchRejectionReason" />
+                           <class name="io.mosip.kernel.tests.FetchTemplate" />        
+                           <class name="io.mosip.kernel.tests.FetchTitle" />   
+                           <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />   
+                           <class name="io.mosip.kernel.tests.GetApplicantType" /> 
+                            <class name="io.mosip.kernel.tests.GetDeviceHistory" />
+                           <class name="io.mosip.kernel.tests.GetDocTypeDocCatByLangCode" /> 
+                           <class name="io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode" />
+                           <class name="io.mosip.kernel.tests.GetIndividualType" />
+                           <class name="io.mosip.kernel.tests.GetListOfRoles" />
+                           <class name="io.mosip.kernel.tests.GetRegCenterByIDTimestamp" />       
+                           <class name="io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory" />  
+                           <class name="io.mosip.kernel.tests.GetusersBasedOnRegCenter" /> 
+                           <class name="io.mosip.kernel.tests.LicenseKeyController" />
+                           <class name="io.mosip.kernel.tests.OtpGenerate" />
+                           <class name="io.mosip.kernel.tests.OTP" />  
+                           <class name="io.mosip.kernel.tests.RIDGenerator" />   
+                           <class name="io.mosip.kernel.tests.SmsNotification" />
+                           <class name="io.mosip.kernel.tests.SyncConfigurations" />
+                           <class name="io.mosip.kernel.tests.SyncIncrementalData" />
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />    
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />                                                                                                                                                                                                                                                                                                                                     
+                           <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
+                           <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
+                           <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
+                           <class name="io.mosip.kernel.tests.TokenIdGenerator" />
+                           <class name="io.mosip.kernel.tests.UINGeneration" />
+                           <class name="io.mosip.kernel.tests.UINStatusCheck" /> 
+                           <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
+                           <class name="io.mosip.kernel.tests.UploadPublickey" /> 
+                           <class name="io.mosip.kernel.tests.ValidateGenderByName" />  
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />                    
 
-		</test>   
-
-		<test name="ValidateGenderByName">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.ValidateGenderByName" />
-			</classes>
-
-		</test>
-		
-		<test name="ValidateLocationByName">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.ValidateLocationByName" />
-			</classes>
-
-		</test>  
-		<test name="RIDGenerator">
-			<parameter name="testType" value="smokeandregression" />
-			<classes>
-				<class name="io.mosip.kernel.tests.RIDGenerator" />
-			</classes>
-		</test>
-		
-
-</suite> <!-- Suite -->
-
+               
+                 </classes>
+				</test>  
+</suite>

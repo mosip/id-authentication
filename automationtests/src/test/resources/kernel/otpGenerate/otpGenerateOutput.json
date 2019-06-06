@@ -1,1 +1,1 @@
-[]
+[{"Kernel_otpGenerate_response_time":"valid","Kernel_otpGenerate_invalid_otp_length":"valid","testType":"smoke","Kernel_otpGenerate_key_length_3":"valid","Kernel_otpGenerate_key_length_2":"valid","Kernel_otpGenerate_key_length_64":"valid","Kernel_otpGenerate_key_length_65":"valid","Kernel_otpGenerate_key_regenrate_otp":"valid","Kernel_otpGenerate_key_frozen":"valid","jiraId":"MOS-1010","testCaseName":"Kernel_otpGenerate_smoke","key":"valid","Kernel_otpGenerate_used_otp":"valid","status":"Pass"}]

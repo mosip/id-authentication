@@ -13,6 +13,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.tpm.initialize.TPMInitialization;
 
@@ -47,6 +48,7 @@ public class Initialization extends Application {
 			setPrimaryStage(primaryStage);
 			LoginController loginController = applicationContext.getBean(LoginController.class);
 			loginController.loadInitialScreen(primaryStage);
+			SessionContext.setApplicationContext(applicationContext);
 
 			LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 					APPLICATION_ID, "Login screen loaded"

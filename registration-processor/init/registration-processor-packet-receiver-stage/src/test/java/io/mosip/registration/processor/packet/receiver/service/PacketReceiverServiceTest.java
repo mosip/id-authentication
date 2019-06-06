@@ -314,7 +314,6 @@ public class PacketReceiverServiceTest {
 		root.addAppender(mockAppender);
 
 		Mockito.when(syncRegistrationService.isPresent(anyString())).thenReturn(false);
-
 		packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {

@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.ReasonCategory;
 
-public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory, String> {
+public interface ReasonCategoryRepository extends JpaRepository<ReasonCategory, String> {
 	/**
 	 * Method to find list of ReasonCategory created , updated or deleted time is
 	 * greater than lastUpdated timeStamp.

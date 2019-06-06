@@ -212,6 +212,8 @@ public class AbisServiceImpl implements AbisService {
 
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
 		identifyReqId = identifyRequest.getReferenceId();
+		if (storedRefId.size() < 1000)
+			storedRefId.add(identifyReqId);
 
 		Document doc;
 		try {
@@ -281,7 +283,7 @@ public class AbisServiceImpl implements AbisService {
 
 		CandidateListDto cd = new CandidateListDto();
 		CandidatesDto[] candidatesDto;
-		if (storedRefId.size() > 1) {
+		if (storedRefId.size() >= 1) {
 			for (String refId : storedRefId) {
 				if (!identifyRequest.getReferenceId().equals(refId)) {
 					actualStoredRefId.add(refId);

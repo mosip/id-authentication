@@ -6,7 +6,7 @@ package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
 
-import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import lombok.Getter;
@@ -33,10 +33,7 @@ public class DemographicViewDTO implements Serializable {
 	 * PreRegistration Id
 	 */
 	private String preRegistrationId;
-	/**
-	 * Full Name
-	 */
-	private JSONArray fullname;
+
 	/**
 	 * Status code
 	 */
@@ -44,9 +41,11 @@ public class DemographicViewDTO implements Serializable {
 	/**
 	 * BookingRegistrationDTO object
 	 */
-	private BookingRegistrationDTO bookingRegistrationDTO;
+	private BookingRegistrationDTO bookingMetadata;
+
 	/**
-	 * postalCode
+	 * Document response DTO
 	 */
-	private String postalCode;
+	private JSONObject demographicMetadata;
+
 }

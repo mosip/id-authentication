@@ -68,7 +68,7 @@ public enum IdRepoErrorConstants {
 	
 	UIN_RETRIEVAL_FAILED("IDR-VID-005", "Failed to retrieve uin data using Identity Service"),
 	
-	UIN_HASH_MISMATCH("IDR-IDS-006", "Uin hash does not match");
+	UIN_HASH_MISMATCH("IDR-VID-006", "Uin hash does not match");
 	
 
 	/** The error code. */

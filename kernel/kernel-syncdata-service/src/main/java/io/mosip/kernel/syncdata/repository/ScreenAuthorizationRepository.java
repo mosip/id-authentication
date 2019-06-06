@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.ScreenAuthorization;
 import io.mosip.kernel.syncdata.entity.id.ScreenAuthorizationID;
 
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.id.ScreenAuthorizationID;
  * @since 1.0.0
  */
 @Repository
-public interface ScreenAuthorizationRepository extends BaseRepository<ScreenAuthorization, ScreenAuthorizationID> {
+public interface ScreenAuthorizationRepository extends JpaRepository<ScreenAuthorization, ScreenAuthorizationID> {
 
 	/**
 	 * Find by last updated and current time stamp.

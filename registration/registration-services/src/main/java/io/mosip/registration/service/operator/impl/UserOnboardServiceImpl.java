@@ -92,7 +92,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		tempMap.put(RegistrationConstants.BIO, true);
 		idaRequestMap.put(RegistrationConstants.REQUEST_AUTH, tempMap);
 		idaRequestMap.put(RegistrationConstants.CONSENT_OBTAINED, true);
-		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID, SessionContext.getInstance().getUserContext().getUserId());
+		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID,
+				SessionContext.userContext().getUserId());
 		idaRequestMap.put(RegistrationConstants.INDIVIDUAL_ID_TYPE, "USERID");
 		idaRequestMap.put(RegistrationConstants.KEY_INDEX, "");
 
@@ -108,7 +109,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 				data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 				data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
 				data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FINGER_ID);
-				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, finger.getFingerType());
+				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+						RegistrationConstants.userOnBoardMap.get(finger.getFingerType()));
 				data.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
 						Base64.getEncoder().encodeToString(finger.getFingerPrint()));
 				data1.put(RegistrationConstants.ON_BOARD_BIO_DATA, data);
@@ -126,13 +128,14 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 			data.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 			data.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
 			data.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_IRIS_ID);
-			data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, iris.getIrisImageName());
+			data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
+					RegistrationConstants.userOnBoardMap.get(iris.getIrisImageName()));
 			data.put(RegistrationConstants.ON_BOARD_BIO_VALUE, Base64.getEncoder().encodeToString(iris.getIris()));
 			data1.put(RegistrationConstants.ON_BOARD_BIO_DATA, data);
 			listOfBiometric.add(data1);
 
 		});
-
+		
 		requestMap.put(RegistrationConstants.ON_BOARD_BIOMETRICS, listOfBiometric);
 
 		LinkedHashMap<String, Object> biometricMap = new LinkedHashMap<>();
@@ -141,11 +144,14 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 		requestDataMap.put(RegistrationConstants.TRANSACTION_ID, RegistrationConstants.TRANSACTION_ID_VALUE);
 		requestDataMap.put(RegistrationConstants.DEVICE_PROVIDER_ID, RegistrationConstants.ON_BOARD_COGENT);
 		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_TYPE, RegistrationConstants.ON_BOARD_FACE_ID);
-		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, "UNKNOWN");
-		/*requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-				Base64.getEncoder().encodeToString(biometricDTO.getOperatorBiometricDTO().getFace().getFace()));*/
-		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-				RegistrationConstants.STUB_FACE);
+		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE, RegistrationConstants.ON_BOARD_FACE);
+
+		/*if (RegistrationConstants.ENABLE.equalsIgnoreCase(RegistrationConstants.FACE_DISABLE_FLAG)) {
+			requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
+					Base64.getEncoder().encodeToString(biometricDTO.getOperatorBiometricDTO().getFace().getFace()));
+		}*/
+		 
+		requestDataMap.put(RegistrationConstants.ON_BOARD_BIO_VALUE, RegistrationConstants.STUB_FACE);
 		biometricMap.put(RegistrationConstants.ON_BOARD_BIO_DATA, requestDataMap);
 		listOfBiometric.add(biometricMap);
 
@@ -165,6 +171,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 						RegistrationConstants.PUBLIC_KEY_IDA_REST, requestParamMap, false,
 						RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
+				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Getting Public Key.....");
+
 				if (null != publicKeyResponse && !publicKeyResponse.getResponse().isEmpty()
 						&& publicKeyResponse.getResponse().size() > 0) {
 
@@ -172,34 +180,41 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 					PublicKey publicKey = PublicKeyGenerationUtil.generatePublicKey(publicKeyResponse.getResponse()
 							.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Getting Symmetric Key.....");
 					// Symmetric key alias session key
-					SecretKey myKey = keyGenerator.getSymmetricKey();
+					SecretKey symmentricKey = keyGenerator.getSymmetricKey();
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "preparing request.....");
 					// request
-					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST, CryptoUtil.encodeBase64(encryptor
-							.symmetricEncrypt(myKey, new ObjectMapper().writeValueAsString(requestMap).getBytes())));
+					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST,
+							CryptoUtil.encodeBase64(encryptor.symmetricEncrypt(symmentricKey,
+									new ObjectMapper().writeValueAsString(requestMap).getBytes())));
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "preparing request HMAC.....");
 					// requestHMAC
 					idaRequestMap
 							.put(RegistrationConstants.ON_BOARD_REQUEST_HMAC,
-									CryptoUtil.encodeBase64(encryptor.symmetricEncrypt(myKey,
+									CryptoUtil.encodeBase64(encryptor.symmetricEncrypt(symmentricKey,
 											HMACUtils.digestAsPlainText(HMACUtils.generateHash(
 													new ObjectMapper().writeValueAsString(requestMap).getBytes()))
 													.getBytes())));
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+							"preparing request Session Key.....");
 					// requestSession Key
-					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST_SESSION_KEY,
-							CryptoUtil.encodeBase64(encryptor.asymmetricPublicEncrypt(publicKey, myKey.getEncoded())));
+					idaRequestMap.put(RegistrationConstants.ON_BOARD_REQUEST_SESSION_KEY, CryptoUtil
+							.encodeBase64(encryptor.asymmetricPublicEncrypt(publicKey, symmentricKey.getEncoded())));
 
+					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Ida Auth rest calling.....");
 					LinkedHashMap<String, Object> onBoardResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 							.post(RegistrationConstants.ON_BOARD_IDA_VALIDATION, idaRequestMap,
 									RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 					boolean onboardAuthFlag = userOnBoardStatusFlag(onBoardResponse);
-							
+
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-							"User Onboarded authentication flag... :"+onboardAuthFlag);
-					
+							"User Onboarded authentication flag... :" + onboardAuthFlag);
+
 					if (true) {
 						responseDTO = save(biometricDTO);
 						LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,

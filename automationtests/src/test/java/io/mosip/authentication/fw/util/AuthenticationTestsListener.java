@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;
 
-import io.mosip.authentication.idRepositoty.fw.util.IdRepoTestsUtil;
+import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 
 /**
  * Authentication Tests Listener class
