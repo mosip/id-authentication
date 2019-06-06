@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -74,6 +77,9 @@ public class AuthServiceImpl implements AuthService {
 	UinService uinService;
 
 	@Autowired
+	private HttpServletRequest request;
+
+	@Autowired
 	MosipEnvironment mosipEnvironment;
 
 	/**
@@ -94,9 +100,9 @@ public class AuthServiceImpl implements AuthService {
 		// long currentTime = Instant.now().toEpochMilli();
 		MosipUserTokenDto mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
-		if(authToken==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		if (authToken == null) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 		/*
 		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
@@ -272,7 +278,7 @@ public class AuthServiceImpl implements AuthService {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
 				} else {
-					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
+					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(), auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
@@ -438,8 +444,13 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception {
-
+           KeycloakSecurityContext keCtx=getKeycloakSecurityContext();
+           System.out.println("realm---->"+keCtx.getRealm());
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedonMobileNumber(mobileNumber);
+	}
+
+	private KeycloakSecurityContext getKeycloakSecurityContext() {
+		return (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
 	}
 
 }
