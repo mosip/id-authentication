@@ -28,10 +28,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -54,7 +54,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String validateLocationByName = props.get("validateLocationByName");
 	private String folderPath = "kernel/ValidateLocationByName";
 	private String outputFile = "ValidateLocationByNameOutput.json";
@@ -95,7 +95,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		 // Calling GET method with path parameters
-		Response res=applicationLibrary.getRequestPathPara(validateLocationByName, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(validateLocationByName, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

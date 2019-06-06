@@ -59,7 +59,7 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	private final String apiName = "fetchDocumentCategories";
 	private final String requestJsonName = "fetchDocumentCategoriesRequest";
 	private final String outputJsonName = "fetchDocumentCategoriesOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDocumentCategories_URI = props.get("FetchDocumentCategories_URI").toString();
 	private final String FetchDocumentCategories_URI_withcodeAndLangCode = props.get("FetchDocumentCategories_URI_withcodeAndLangCode").toString();
 
@@ -122,9 +122,9 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		
 				if(objectData.containsKey("code"))
-				response = applicationLibrary.getRequestPathPara(FetchDocumentCategories_URI_withcodeAndLangCode,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchDocumentCategories_URI_withcodeAndLangCode,objectData,cookie);
 				else
-				response = applicationLibrary.getRequestPathPara(FetchDocumentCategories_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchDocumentCategories_URI,objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);

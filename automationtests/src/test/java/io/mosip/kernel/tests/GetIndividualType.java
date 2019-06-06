@@ -53,7 +53,7 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getIndividualType = props.get("getIndividualType");
 	private String folderPath = "kernel/GetIndividualType";
 	private String outputFile = "GetIndividualTypeOutput.json";
@@ -91,7 +91,7 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method with path parameters
-		Response res=applicationLibrary.getRequestNoParameter(getIndividualType,cookie);
+		Response res=applicationLibrary.getWithoutParams(getIndividualType,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
