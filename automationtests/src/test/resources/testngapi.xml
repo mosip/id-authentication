@@ -16,7 +16,7 @@
 		regression smokeAndRegression -->                                            
 
 
-		 <test name="Kernel Tests">
+		<!-- <test name="Kernel Tests">
 		 <classes>
                             <class name="io.mosip.kernel.tests.AuditLog" />   
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -139,14 +139,14 @@
 		</classes>
 
 
-	</test>    
+	</test>    -->
 
 
 
 	<test name="AuthenticationTest">
 		<classes>
 			 <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
-			<class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" />
+			<!--<class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" />
 			<class name="io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord" />		 
 		 <class name="io.mosip.authentication.idRepository.prerequiste.UpdateVID" />
 		 
