@@ -93,7 +93,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 

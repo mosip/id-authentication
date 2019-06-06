@@ -39,6 +39,8 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	@Transactional(rollbackOn=Exception.class)
 	@Test
 	public void makeRegistartionCenterInactive() {
+		dao.makeregistartionCenterActive("10009");
+		lib.syncAvailability();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
@@ -63,6 +65,8 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	}
 	@Test
 	public void makeRegCntrInactiveAndCheckAppointmentGettingCanceled() {
+		dao.makeregistartionCenterActive("10009");
+		lib.syncAvailability();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);

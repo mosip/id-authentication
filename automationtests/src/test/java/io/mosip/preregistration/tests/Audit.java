@@ -83,13 +83,12 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
-
 	@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		String preID =lib.getPreId(createResponse);
 		lib.discardApplication(preID);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicDiscard");

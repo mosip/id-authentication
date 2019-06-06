@@ -137,7 +137,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.docId").toString();
+		docId = preRegLib.getDocId(docUploadResponse);
 
 		if (testCaseName.contains("smoke")) {
 
@@ -156,7 +156,6 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			String preRegURL = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURL, parm);
-			logger.info("Get All Doc By Doc Id:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
 			
 			//outerKeys.add("responsetime");
@@ -169,7 +168,6 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			String preRegURI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURI, parm);
-			logger.info("Get All Doc By Doc Id PreId:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			//boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
 			
 			outerKeys.add("responsetime");

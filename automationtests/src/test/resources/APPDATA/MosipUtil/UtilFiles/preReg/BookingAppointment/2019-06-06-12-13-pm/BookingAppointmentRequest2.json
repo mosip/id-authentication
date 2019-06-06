@@ -1,0 +1,14 @@
+{
+"BookAnAppointmentByPassingInvalidId_Empty":" ",
+"BookAnAppointmentByPassingInvalidId_otherThanStandardValue":" ",
+"BookAnAppointmentByPassingInvalidVer_Empty":" ",
+"BookAnAppointmentByPassingInvalidVer_otherThanStandardValue":" ",
+"BookAnAppointmentByPassingInvalidPreRegistrationId_Alphabets":"",
+"BookAnAppointmentByPassingInvalidRegistrationCenterId_Alphabets":"",
+"BookAnAppointmentByPassingInvalidAppointmentDate_Alphabets":"",
+"BookAnAppointmentByPassingInvalidTimeSlotFrom_Alphabets":"",
+"BookAnAppointmentByPassingInvalidTimeSlotTo_Alphabets":"",
+"BookAnAppointmentByPassingInvalidRequestTime_InvalidValue":"",
+"BookAnAppointmentByPassingInvalidRequestTime_EmptyValue":"",
+"BookAnAppointmentByPassingInvalidAppointmentDate_DateLessThanToday":""
+}

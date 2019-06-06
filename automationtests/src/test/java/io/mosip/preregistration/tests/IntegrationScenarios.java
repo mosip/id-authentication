@@ -101,7 +101,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 		try {
 			response = lib.CreatePreReg();
-			preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+			preRegID = lib.getPreId(response);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
@@ -135,19 +135,19 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Upload document
 
 		response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.docId").toString();
+		String documentId = lib.getDocId(response);
 
 		// Delete document by document Id
 
 		response = lib.deleteAllDocumentByDocId(documentId, PrId);
 
-		String actualMessage = response.jsonPath().get("response.message").toString();
+		String actualMessage = lib.getErrorMessage(response);
 		lib.compareValues(actualMessage, "Document successfully deleted");
 
 		// Check if document is deleted successfully
 		response = lib.deleteAllDocumentByDocId(documentId, PrId);
 
-		actualMessage = response.jsonPath().get("errors[0].message").toString();
+		actualMessage =lib.getErrorCode(response);
 		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
 
 	}
@@ -158,15 +158,13 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
-		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+		preRegID = lib.getPreId(response);
 
 		// Upload document
 
 		response = lib.documentUpload(response);
 
-		String documentId = response.jsonPath().get("response.docId").toString();
-		logger.info("Document ID: " + documentId);
-
+		String documentId = lib.getDocId(response);
 		// Delete document by PreReg Id
 
 		response = lib.deleteAllDocumentByPreId(preRegID);
@@ -178,8 +176,12 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Check if document is deleted successfully
 
 		response = lib.getAllDocumentForPreId(preRegID);
-
-		actualMessage = response.jsonPath().get("errors[0].message").toString();
+		try {
+			actualMessage = response.jsonPath().get("errors[0].message").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting message from response");
+		}
+		
 		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
 	}
 
@@ -200,8 +202,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 
 		response = lib.documentUpload(response);
 
-		String errMessage = response.jsonPath().get("errors[0].message").toString();
-		logger.info("Error message: " + errMessage);
+		String errMessage = lib.getErrorMessage(response);
 		lib.compareValues(errMessage, "No data found for the requested pre-registration id");
 
 	}
@@ -233,8 +234,6 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		response = lib.documentUpload(response);
 
 		String documentId = response.jsonPath().get("response.docId").toString();
-		logger.info("Document ID: " + documentId);
-
 		// Fetch Center
 		Response fetchCenterResponse = lib.FetchCentre();
 		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();

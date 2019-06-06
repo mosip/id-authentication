@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -119,18 +120,22 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			// Creating the Pre-Registration Application
 			Response createApplicationResponse = preRegLib.CreatePreReg();
 
-			preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+			preId = preRegLib.getPreId(createApplicationResponse);
 
 			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 			// Get PreId from Document upload response
-			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			try {
+				preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+				
+			} catch (NullPointerException e) {
+				Assert.assertTrue(false, "Pre Registration Id is not present in document upload response");
+			}
+			
 
 			// Delete All Document by Pre-Registration Id
 			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
-
-			logger.info("Dele Doccument Response:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 

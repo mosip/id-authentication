@@ -115,7 +115,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 		// Creating the Pre-Registration Application
 		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		preId = preRegLib.getPreId(createApplicationResponse);
 
 		
 			Response fetchCenter = null;

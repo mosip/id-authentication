@@ -31,6 +31,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
@@ -67,10 +68,12 @@ public class Sample extends BaseTestCase implements ITest {
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 	PreregistrationDAO dao = new PreregistrationDAO();
 
+	SoftAssert soft = new SoftAssert();
+
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken=lib.getToken();
+		//authToken = lib.getToken();
 	}
 
 	/**
@@ -80,23 +83,13 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-
 	@Test
-	public void makeRegistartionCenterInactive() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		try {
-			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		} catch (NullPointerException e) {
-			Reporter.log("create application failed");
-		}
-		
+	public void getAuditDataForDemographicDiscard() {
+	dao.getAuditData("123");
 	}
-
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		//authToken = lib.getToken();
+		// authToken = lib.getToken();
 
 	}
 
@@ -108,6 +101,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		lib.logOut();
+		//lib.logOut();
 	}
 }
