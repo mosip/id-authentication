@@ -219,7 +219,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 						}
 					}
 				}
-				getUINByRegId(regId);
+				Long uin = getUINByRegId(regId);
 			}
 			
 			

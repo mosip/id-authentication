@@ -308,6 +308,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
+			System.out.println("encrypter request data : "+encryptedPacketString);
 			cryptographicRequest.put("referenceId", centerId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 			encryptRequest.put("id","");
