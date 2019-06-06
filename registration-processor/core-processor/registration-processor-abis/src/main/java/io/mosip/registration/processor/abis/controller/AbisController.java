@@ -89,7 +89,7 @@ public class AbisController {
 			@RequestBody(required = true) AbisIdentifyRequestDto identifyRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 
-		AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
+		AbisIdentifyResponseDto identifyResponseDto = abisService.identify(identifyRequestDto);
 
 		if (identifyRequestDto.getId().equalsIgnoreCase(ABIS_IDENTIFY)) {
 			return ResponseEntity.status(HttpStatus.OK).body(identifyResponseDto);
