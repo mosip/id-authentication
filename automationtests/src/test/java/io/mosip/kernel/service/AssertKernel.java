@@ -50,7 +50,7 @@ public class AssertKernel {
 				logger.info(e.getMessage());
 			}
 		
-		return jsonComparison(actualResponseBody, expectedResponseBody);
+		return jsonComparison1(actualResponseBody, expectedResponseBody);
 
 	}
 	
@@ -175,18 +175,16 @@ public class AssertKernel {
 				JsonNode operation = diffJson.get(i);
 				if (!operation.get("op").toString().equals("\"move\"")) {
 					logger.error("not equal");
-					Assert.assertTrue(false,"Response Data Mismatch Failure:-"+diffJson);
+					Assert.assertTrue(false,"Response Data Mismatch Failure:-"+diffJson.toString());
 					return false;
 				}
 			}
-			try {
+			
 				if (diffJson.toString().equals("[]")) {
 					logger.info("equal");
 					return true;
 				}
-		} catch (AssertionError e) {
-			Assert.assertTrue(false,"Response Data Mismatch Failure:-"+diffJson.toString());
-		}
+		
 		logger.info("equal");
 		return true;
 

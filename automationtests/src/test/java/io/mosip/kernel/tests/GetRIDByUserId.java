@@ -89,7 +89,8 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 
 		// Calling the get method 
 		Response res=applicationLibrary.getWithPathParam(getRIDByUserId, actualRequest,cookie);
-		if(testCaseName.contains("Kernel_GetRIDByUserId_smoke")) {
+		logger.info("res----"+res.asString());
+		if(testCaseName.equalsIgnoreCase("Kernel_GetRIDByUserId_smoke")) {
 			//This method is for checking the authentication is pass or fail in rest services
 			new CommonLibrary().responseAuthValidation(res);
 		}

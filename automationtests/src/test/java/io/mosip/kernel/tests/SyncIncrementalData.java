@@ -93,7 +93,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		
 		// Calling the get method 
 		Response res=applicationLibrary.getWithQueryParam(fetchIncrementalData, actualRequest,cookie);
-		
+		logger.info("resp---"+res.asString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		
@@ -114,11 +114,6 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		}
 		object.put("status", finalStatus);
 		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail"))
-			setFinalStatus=false;
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
 }
 		@SuppressWarnings("static-access")
 		@Override

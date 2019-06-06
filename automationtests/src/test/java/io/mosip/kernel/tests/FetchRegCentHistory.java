@@ -117,13 +117,16 @@ public class FetchRegCentHistory extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-		// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
-		Calendar calender = Calendar.getInstance();
-		calender.setTime(new Date());
-		String time = sdf.format(calender.getTime());
-		time = time.replace(' ', 'T') + "Z";
-		objectData.put("effectiveDate", time);
+		if(testcaseName.contains("smoke")| testcaseName.contains("invalid_langcode_unexisting in DB")|testcaseName.contains("invalid_registrationCenterId_unexisting")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T') + "Z";
+			objectData.put("effectiveDate", time);
+		}
+	
 		response = applicationLibrary.getWithPathParam(FetchRegCentHistory_URI, objectData, cookie);
 
 		// DB Validation

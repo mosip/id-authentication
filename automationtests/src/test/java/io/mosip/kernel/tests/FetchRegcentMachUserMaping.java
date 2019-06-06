@@ -119,15 +119,17 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-		// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
-		Calendar calender = Calendar.getInstance();
-		calender.setTime(new Date());
-		String time = sdf.format(calender.getTime());
-		time = time.replace(' ', 'T')+"Z";
-		objectData.put("effdtimes", time);
+		if(testcaseName.contains("smoke")|testcaseName.contains("unexisting")|testcaseName.contains("userid_existing")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			objectData.put("effdtimes", time);
+		}
+		
 				response = applicationLibrary.getWithPathParam(FetchRegcentMachUserMaping_URI, objectData,cookie);
-
 		// DB Validation
 
 		//This method is for checking the authentication is pass or fail in rest services
