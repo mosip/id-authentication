@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;

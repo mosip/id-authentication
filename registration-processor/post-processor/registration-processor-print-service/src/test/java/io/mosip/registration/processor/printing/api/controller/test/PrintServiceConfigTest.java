@@ -1,19 +1,19 @@
 package io.mosip.registration.processor.printing.api.controller.test;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-import io.mosip.kernel.core.idvalidator.spi.UinValidator;
-import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
-import io.mosip.registration.processor.core.token.validation.TokenValidator;
-import io.mosip.registration.processor.printing.config.PrintServiceBeanConfig;
-import io.mosip.registration.processor.rest.client.config.RestConfigBean;
-
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
+import io.mosip.registration.processor.printing.config.PrintServiceBeanConfig;
+import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 
 @Configuration
 @EnableWebMvc
@@ -22,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class PrintServiceConfigTest {
 
 	@MockBean
-	public FileSystemAdapter filesystemAdapter;
+	public FileSystemManager filesystemAdapter;
 
 	@MockBean
 	public ConnectionUtils connectionUtil;

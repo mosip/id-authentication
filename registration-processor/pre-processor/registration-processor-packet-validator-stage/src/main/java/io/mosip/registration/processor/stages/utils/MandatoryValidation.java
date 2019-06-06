@@ -14,7 +14,6 @@ import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
