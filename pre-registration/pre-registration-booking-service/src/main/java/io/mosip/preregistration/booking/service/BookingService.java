@@ -253,7 +253,10 @@ public class BookingService {
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
 		notification.setPreRegistrationId(registrationBookingEntity.getBookingPK().getPreregistrationId());
-		notification.setAppointmentTime(registrationBookingEntity.getSlotFromTime().toString());
+		String[] s=registrationBookingEntity.getSlotFromTime().toString().split(":");
+		int time= Integer.parseInt(s[0]);
+		String finalTime=(time>12)?registrationBookingEntity.getSlotFromTime().toString()+"P.M.":registrationBookingEntity.getSlotFromTime().toString()+"A.M.";
+		notification.setAppointmentTime(finalTime);
 		notification.setAdditionalRecipient(false);
 		notification.setBatch(true);
 		serviceUtil.emailNotification(notification, primaryLang);

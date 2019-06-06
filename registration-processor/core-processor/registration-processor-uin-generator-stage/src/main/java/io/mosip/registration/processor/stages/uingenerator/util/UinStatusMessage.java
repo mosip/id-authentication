@@ -36,6 +36,10 @@ public class UinStatusMessage {
 	
 	public static final String UIN_UPDATION_SUCCESS = "Data updated successfully for regId ";
 
+	/** The Constant PACKET_UIN_UPDATION_SUCCESS_MSG. */
+	public static final String PACKET_LOST_UIN_UPDATION_SUCCESS_MSG = "The Uin Updated Successfully For LOST Packet";
 
+	/** The Constant PACKET_UIN_UPDATION_FAILURE_MSG. */
+	public static final String PACKET_LOST_UIN_UPDATION_FAILURE_MSG = "The Uin Updation Failured For LOST Packet"; 
 
 }

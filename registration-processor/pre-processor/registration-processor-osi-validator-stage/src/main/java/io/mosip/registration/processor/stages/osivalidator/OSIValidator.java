@@ -61,6 +61,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -91,6 +92,9 @@ public class OSIValidator {
 
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
+
+	@Autowired
+	private IdRepoService idRepoService;
 
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -271,7 +275,8 @@ public class OSIValidator {
 		if (supervisorId != null && !supervisorId.isEmpty()) {
 			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate);
 			if (supervisorResponse.getErrors() == null) {
-				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0).getIsActive();
+				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0)
+						.getIsActive();
 				if (!wasSupervisorActiveDuringPCT) {
 					statusMessage = statusMessage + " " + StatusMessage.SUPERVISOR_NOT_ACTIVE;
 					this.registrationStatusDto.setStatusComment(statusMessage);
@@ -289,8 +294,7 @@ public class OSIValidator {
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private UserResponseDto isUserActive(String operatorId, String creationDate)
-			throws ApisResourceAccessException {
+	private UserResponseDto isUserActive(String operatorId, String creationDate) throws ApisResourceAccessException {
 		UserResponseDto userResponse;
 		List<String> pathSegments = new ArrayList<String>();
 		pathSegments.add(operatorId);
@@ -388,7 +392,7 @@ public class OSIValidator {
 		InputStream biometricStream = adapter.getFile(registrationId, fileName.toUpperCase());
 		byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
 		AuthResponseDTO response = authUtil.authByIdAuthentication(userId, INDIVIDUAL_TYPE_USERID, officerbiometric);
-		if(!response.getResponse().isAuthStatus()) {
+		if (!response.getResponse().isAuthStatus()) {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, StatusMessage.IDA_AUTHENTICATION_FAILURE + " " + response.getErrors().get(0));
 		}
@@ -470,7 +474,8 @@ public class OSIValidator {
 			}
 
 		} else
-			isValid = true; // either officer or supervisor information is mandatory. Supervisor id can be null
+			isValid = true; // either officer or supervisor information is mandatory. Supervisor id can be
+							// null
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidSupervisor()::exit");
 		return isValid;
@@ -534,7 +539,8 @@ public class OSIValidator {
 
 				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
 
-					introducerUinNumber = abisHandlerUtil.getUinFromIDRepo(introducerRID);
+					introducerUinNumber = idRepoService.getUinFromIDRepo(introducerRID,
+							utility.getGetRegProcessorDemographicIdentity());
 					introducerUIN = numberToString(introducerUinNumber);
 					if (introducerUIN == null) {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
@@ -565,7 +571,7 @@ public class OSIValidator {
 	private String numberToString(Number number) {
 		return number != null ? number.toString() : null;
 	}
-	
+
 	/**
 	 * Sets the finger biometric dto.
 	 *

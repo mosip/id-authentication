@@ -19,11 +19,25 @@ public class CryptoException extends BaseUncheckedException {
 	/**
 	 * Constructor the initialize Handler exception
 	 * 
-	 * @param errorCode    The errorcode for this exception
-	 * @param errorMessage The error message for this exception
+	 * @param errorCode
+	 *            The errorcode for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
 	 */
 	public CryptoException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
+	}
+
+	/**
+	 * @param errorCode
+	 *            The errorcode for this exception
+	 * @param errorMessage
+	 *            The error message for this exception
+	 * @param rootCause
+	 *            cause of the error occoured
+	 */
+	public CryptoException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 
 }

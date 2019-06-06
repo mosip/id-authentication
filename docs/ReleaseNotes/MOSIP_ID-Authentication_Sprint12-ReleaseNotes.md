@@ -7,11 +7,11 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
-Date Raised | 28-MAY-2019
+Date Raised | 06-JUNE-2019
 Impact of Release|NA
 Implementation Start Date |28-MAY-2019
 Implementation end date	|07-JUN-2019
-Jenkins Build #	|Min Version : 1467
+Jenkins Build #	|Min Version : 1520
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Technical Lead
@@ -27,7 +27,7 @@ MOS-21757|New|Tech Story - Integrate with CBEFF to return photo in KYC Reponse
 MOS-15815|Integration|Tech Story - Authentication & Authorization
 MOS-24075|New|As the MOSIP system - IDA, I should be able to integrate with VID service
 MOS-23068|New|Integrate with Audit changes/OTP Request/auth changes
-MOS-24076|New|Integrate with BioAPI
+MOS-24076|New|Integrate with BioAPI, Integrate with IdObjectValidator
 
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
@@ -58,12 +58,19 @@ Open Items|Description
 ### 1.6 Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
+MOS-25388|DONE|Yes
+MOS-25383|DONE|Yes
+MOS-25264|DONE|Yes
+MOS-24329|DONE|Yes
+MOS-24325|DONE|Yes
+MOS-24348|DONE|Yes
+MOS-25385|DONE|Yes
 
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
 --------------|-----------|-----------|-------------
-MOS-24076|Integrate with IdObjectValidator|Sprint12|In Progress
+|||
 
 
 ### 1.8 DB Changes :

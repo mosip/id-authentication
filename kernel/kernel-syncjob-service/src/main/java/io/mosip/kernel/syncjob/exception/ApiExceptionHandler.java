@@ -19,6 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ErrorResponse;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -40,6 +41,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(AdminServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(final AdminServiceException e,
 			HttpServletRequest httpServletException) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getServiceErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletException);
 	}
 
@@ -52,6 +54,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlRequestException(final RequestException e,
 			final HttpServletRequest httpServletRequest) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getServiceErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -90,6 +93,7 @@ public class ApiExceptionHandler {
 				e.getMessage());
 		errorResponse.getErrors().add(error);
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

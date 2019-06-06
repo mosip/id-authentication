@@ -1,10 +1,12 @@
 {
-  "err": [{
-    "errorCode": "KER-JVL-003",
-    "message": "ECMA 262 regex \"^[(?i)a-z]{3}$\" does not match input string \"ENG\" at \"/identity/gender/0/language\""
-  }
-  ],
-  "status": false,
-  "resTime": "2019-02-19T07:25:19.533Z",
-  "response": null
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "responsetime": "2019-06-03T08:15:58.563Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_CORE_REQ_014",
+            "message": "Lang code is invalid"
+        }
+    ]
 }

@@ -52,10 +52,9 @@ public class BiometricAuthentication extends AuthTestsUtil implements ITest {
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
-	public void setTestType(String testType) {
-		this.testType = testType;
+	public void setTestType() {
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**

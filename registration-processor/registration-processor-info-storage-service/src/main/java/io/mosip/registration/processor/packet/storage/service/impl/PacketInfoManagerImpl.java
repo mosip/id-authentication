@@ -51,6 +51,8 @@ import io.mosip.registration.processor.packet.storage.entity.ManualVerificationP
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetPKEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
@@ -112,6 +114,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The manual verfication repository. */
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
+	@Autowired
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
 
 	/** The event id. */
 	private String eventId = "";
@@ -910,6 +915,49 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
 		return packetInfoDao.getAbisResponseDetRecordsList(abisResponseDto);
+	}
+
+	@Override
+	public void saveRegLostUinDet(String regId, String latestRegId) {
+		boolean isTransactionSuccessful = false;
+		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+					"PacketInfoManagerImpl::saveRegLostUinDetData()::entry");
+			RegLostUinDetEntity regLostUinDetEntity = new RegLostUinDetEntity();
+			RegLostUinDetPKEntity regLostUinDetPKEntity = new RegLostUinDetPKEntity();
+			regLostUinDetPKEntity.setRegId(regId);
+
+			regLostUinDetEntity.setId(regLostUinDetPKEntity);
+			regLostUinDetEntity.setLatestRegId(latestRegId);
+			regLostUinDetEntity.setCrBy("SYSTEM");
+			regLostUinDetEntity.setIsDeleted(false);
+
+			regLostUinDetRepository.save(regLostUinDetEntity);
+			isTransactionSuccessful = true;
+			description = "Lost Uin detail data saved successfully";
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Lost Uin detail data for rid" + regId + "::"
+					+ e.getMessage();
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"PacketInfoManagerImpl::saveRegLostUinDetData()::exit");
+
 	}
 
 }

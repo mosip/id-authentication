@@ -228,7 +228,7 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		} catch (IOException | NullPointerException e) {
 			throw new SyncDataServiceException(SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorCode(),
-					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage());
+					SyncConfigDetailsErrorCode.SYNC_IO_EXCEPTION.getErrorMessage(), e);
 		}
 
 		return publicKeyResponseMapped.getResponse();

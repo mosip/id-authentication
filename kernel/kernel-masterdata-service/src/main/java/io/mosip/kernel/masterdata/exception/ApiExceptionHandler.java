@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -48,12 +49,14 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(
 			final HttpServletRequest httpServletRequest, final DataNotFoundException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -102,6 +105,7 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

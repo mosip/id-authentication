@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -17,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -38,9 +37,9 @@ import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
@@ -66,14 +65,13 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	KernelAuthentication auth = new KernelAuthentication();
+	String cookie = null;
 
 	/**
 	 * method to set the test case name to the report
@@ -82,12 +80,11 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	 * @param testdata
 	 * @param ctx
 	 */
-	@BeforeMethod(alwaysRun=true)
+	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie = auth.getAuthForIndividual();
-
+		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		cookie = auth.getAuthForZonalAdmin();
 	}
 
 	/**
@@ -99,16 +96,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -120,61 +108,41 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchHolidays(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
+	public void fetchHolidays(String testcaseName, JSONObject object) throws ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		if (objectData != null) {
+			if (objectData.containsKey("langcode"))
+				response = applicationLibrary.getRequestPathPara(FetchHolidays_id_lang_URI, objectData, cookie);
 			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-				if (objectData.containsKey("langcode"))
-					response = applicationLibrary.getRequestPathPara(FetchHolidays_id_lang_URI, objectData,cookie);
-				else
-					response = applicationLibrary.getRequestPathPara(FetchHolidays_id_URI, objectData,cookie);
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")
-					&& !testcaseName.toLowerCase().contains("smoke")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-
+				response = applicationLibrary.getRequestPathPara(FetchHolidays_id_URI, objectData, cookie);
 		}
 
 		// sending request to get request without param
 		if (response == null) {
 			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchHolidays_URI, objectData,cookie);
+			response = applicationLibrary.getRequestPathPara(FetchHolidays_URI, objectData, cookie);
 			objectData = null;
 		}
 
 		int statusCode = response.statusCode();
 		logger.info("Status Code is : " + statusCode);
-
+		// This method is for checking the authentication is pass or fail in rest
+		// services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString()))
+					.get("response");
+			if (responseJson == null || !responseJson.containsKey("holidays"))
+				Assert.assertTrue(false, "Response does not contain holidays");
 			String queryPart = "select count(*) from master.loc_holiday";
 
 			String query = queryPart;
@@ -185,10 +153,8 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 				else
 					query = queryPart + " where id = '" + objectData.get("holidayid") + "'";
 			}
-			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
+			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("holidays");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
@@ -229,23 +195,15 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override
@@ -280,4 +238,3 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 		}
 	}
 }
-

@@ -1,1 +1,0 @@
-{"responseTime":"$TIMESTAMP$","response":{"kycStatus":false},"id":"mosip.identity.kyc","version":"1.0","errors":[{"errorMessage":"Missing Input Parameter - transactionID","errorCode":"IDA-MLC-006"}]}

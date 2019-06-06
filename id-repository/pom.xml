@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.5</version>
+		<version>0.12.6</version>
 	</parent>
 
 	<groupId>io.mosip.idrepository</groupId>
@@ -17,6 +17,7 @@
 		<module>id-repository-core</module>
 		<module>id-repository-vid-service</module>
 		<module>id-repository-identity-service</module>
+		<module>id-repository-salt-generator</module>
 		
 	</modules>
 

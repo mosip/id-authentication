@@ -375,4 +375,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT abisReq.abisAppCode FROM AbisRequestEntity abisReq WHERE abisReq.bioRefId =:bioRefId and abisReq.requestType =:requestType and abisReq.statusCode =:statusCode")
 	public List<String> getAbisProcessedRequestsAppCodeByBioRefId(@Param("bioRefId") String bioRefId,
 			@Param("requestType") String requestType, @Param("statusCode") String statusCode);
+	
+	@Query("SELECT latestRegId FROM RegLostUinDetEntity lostUin WHERE lostUin.id.regId =:regId")
+	public String getLostUinMatchedRegId(@Param("regId") String regId);
 }
