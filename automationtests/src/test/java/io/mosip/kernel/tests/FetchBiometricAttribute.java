@@ -126,7 +126,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 				Assert.assertTrue(false, "Response does not contain biometricattributes");
 
 			String query = "select count(*) from master.biometric_attribute where lang_code = '"
-					+ objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
+					+ objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "' and is_active = true";
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 

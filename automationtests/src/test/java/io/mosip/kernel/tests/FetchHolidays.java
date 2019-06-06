@@ -142,15 +142,15 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 					.get("response");
 			if (responseJson == null || !responseJson.containsKey("holidays"))
 				Assert.assertTrue(false, "Response does not contain holidays");
-			String queryPart = "select count(*) from master.loc_holiday";
+			String queryPart = "select count(*) from master.loc_holiday where is_active = true";
 
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("langcode"))
-					query = query + " where id = '" + objectData.get("holidayid") + "' and lang_code = '"
+					query = query + " and id = '" + objectData.get("holidayid") + "' and lang_code = '"
 							+ objectData.get("langcode") + "'";
 				else
-					query = queryPart + " where id = '" + objectData.get("holidayid") + "'";
+					query = queryPart + " and id = '" + objectData.get("holidayid") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 

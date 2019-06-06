@@ -139,15 +139,15 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			if (responseJson == null || !responseJson.containsKey("templates"))
 				Assert.assertTrue(false, "Response does not contain templates");
-			String queryPart = "select count(*) from master.template";
+			String queryPart = "select count(*) from master.template where is_active = true";
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("templatetypecode"))
-					query = query + " where template_typ_code = '"
+					query = query + " and template_typ_code = '"
 							+ objectData.get("templatetypecode") + "' and lang_code = '" + objectData.get("langcode")
 							+ "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
