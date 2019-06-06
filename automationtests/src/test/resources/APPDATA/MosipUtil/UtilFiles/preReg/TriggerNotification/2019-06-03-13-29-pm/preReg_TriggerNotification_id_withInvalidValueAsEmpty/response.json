@@ -1,0 +1,10 @@
+{
+   "id": "",
+   "version": "1.0",
+   "responsetime": "2019-04-21T13:34:36.737Z",
+   "response": null,
+   "errors": [   {
+      "errorCode": "PRG_PAM_CORE_001",
+      "message": "Request id is invalid"
+   }]
+}
