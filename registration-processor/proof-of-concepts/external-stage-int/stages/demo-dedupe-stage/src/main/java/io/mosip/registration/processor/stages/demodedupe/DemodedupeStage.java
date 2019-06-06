@@ -63,14 +63,6 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 

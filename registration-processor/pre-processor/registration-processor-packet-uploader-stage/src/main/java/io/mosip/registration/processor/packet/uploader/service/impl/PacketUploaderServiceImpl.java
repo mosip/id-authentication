@@ -140,7 +140,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	private Decryptor packetUploaderDecryptor;
 
 	/** The max retry count. */
-	@Value("${registration.processor.uploader.max.retry.count}")
+	@Value("${registration.processor.max.retry}")
 	private int maxRetryCount;
 
 	/** The description. */

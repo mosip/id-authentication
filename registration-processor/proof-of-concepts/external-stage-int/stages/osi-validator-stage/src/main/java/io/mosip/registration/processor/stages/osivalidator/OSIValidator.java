@@ -332,30 +332,6 @@ public class OSIValidator {
 	}
 
 	/**
-	 * Sets the finger biometric.
-	 *
-	 * @param biometricData
-	 *            the biometric data
-	 * @param type
-	 *            the type
-	 */
-	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) {
-		String finger = null;
-		String[] fingerType = env.getProperty("registration.processor.fingerType").split(",");
-		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
-		finger = type;
-		Iterator<String> it = list.iterator();
-		while (it.hasNext()) {
-			String ftype = it.next();
-			if (ftype.equalsIgnoreCase(type)) {
-				finger = ftype;
-				break;
-			}
-		}
-		this.setFingerBiometricDto(identityDTO, finger, biometricData);
-	}
-
-	/**
 	 * Validate iris.
 	 *
 	 * @param uin
@@ -469,12 +445,6 @@ public class OSIValidator {
 		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); if
-		 * (authResponseDTO.getStatus().equalsIgnoreCase("y"))
-		 */
 		isValidPin = true;
 		return isValidPin;
 	}
@@ -494,13 +464,6 @@ public class OSIValidator {
 		authRequestDTO.setAuthType(authTypeDTO);
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); return authResponseDTO != null &&
-		 * authResponseDTO.getStatus() != null &&
-		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
-		 */
 		return true;
 	}
 
