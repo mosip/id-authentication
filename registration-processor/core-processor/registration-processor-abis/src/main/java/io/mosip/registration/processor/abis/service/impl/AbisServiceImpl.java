@@ -205,7 +205,7 @@ public class AbisServiceImpl implements AbisService {
 	}
 
 	@Override
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest) {
+	public AbisIdentifyResponseDto identify(AbisIdentifyRequestDto identifyRequest) {
 		boolean duplicate = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::performDedupe()::entry");
