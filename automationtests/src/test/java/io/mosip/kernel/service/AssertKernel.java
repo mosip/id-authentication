@@ -175,11 +175,11 @@ public class AssertKernel {
 				JsonNode operation = diffJson.get(i);
 				if (!operation.get("op").toString().equals("\"move\"")) {
 					logger.error("not equal");
+					Assert.assertTrue(false,"Response Data Mismatch Failure:-"+diffJson);
 					return false;
 				}
 			}
 			try {
-				Assert.assertEquals(diffJson.toString(), "[]");
 				if (diffJson.toString().equals("[]")) {
 					logger.info("equal");
 					return true;
