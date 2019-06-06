@@ -604,7 +604,7 @@ public class DemographicDetailController extends BaseController {
 	private ImageView addressLine3KeyboardImage;
 	@FXML
 	private ImageView parentNameKeyboardImage;
-
+	
 	@FXML
 	private VBox localFullName;
 	@FXML
@@ -653,6 +653,13 @@ public class DemographicDetailController extends BaseController {
 	private int minAge;
 	private int maxAge;
 
+	@FXML
+	private HBox parentDetailsHbox;
+	@FXML
+	private HBox localParentDetailsHbox;
+	@FXML
+	private AnchorPane ridOrUinToggle;
+	
 	@Autowired
 	private MasterSyncService masterSyncService;
 	@FXML
@@ -1681,6 +1688,23 @@ public class DemographicDetailController extends BaseController {
 				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
+			if (isChild) {
+
+				applicationUinIdPane.setDisable(false);
+				
+				applicationRidPane.setVisible(false);
+				applicationRidPane.setManaged(false);
+				ridOrUinToggle.setVisible(false);
+				ridOrUinToggle.setManaged(false);
+				
+				localRidPane.setVisible(false);
+				localRidPane.setManaged(false);
+				localRidOrUinToggle.setVisible(false);
+				localRidOrUinToggle.setManaged(false);
+				
+				parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+				localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+			}
 		}
 	}
 
