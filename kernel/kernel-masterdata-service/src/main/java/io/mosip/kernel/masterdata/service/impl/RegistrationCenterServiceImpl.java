@@ -15,6 +15,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -28,8 +32,10 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -353,7 +359,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongParseException));
 		}
 		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto, registrationCenterEntity.getClass());
+		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+				registrationCenterEntity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
 				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
 		registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
@@ -655,7 +662,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return locationNames;
 	}
-	
+
 	@Override
 	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
 			String sortBy, String orderBy) {

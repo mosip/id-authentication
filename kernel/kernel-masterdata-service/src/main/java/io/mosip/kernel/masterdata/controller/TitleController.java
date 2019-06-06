@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.TitleDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
@@ -127,6 +131,36 @@ public class TitleController {
 
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.deleteTitle(code));
+		return responseWrapper;
+	}
+
+	/**
+	 * This controller method provides with all titles.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param pageSize
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the titles.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/title/all")
+	@ApiOperation(value = "Retrieve all the title with additional metadata", notes = "Retrieve all the title with the additional metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving title") })
+	public ResponseWrapper<PageDto<TitleExtnDto>> getTitles(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.getTitles(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
 

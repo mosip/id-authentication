@@ -12,19 +12,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Document type controller with api to get list of valid document types based
@@ -45,8 +51,10 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode             input from user
-	 * @param documentCategoryCode input from user
+	 * @param langCode
+	 *            input from user
+	 * @param documentCategoryCode
+	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -68,7 +76,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
@@ -85,9 +94,10 @@ public class DocumentTypeController {
 	}
 
 	/**
-	 * Api to update document type.
-	 * .
-	 * @param types the DTO of document type.
+	 * Api to update document type. .
+	 * 
+	 * @param types
+	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
@@ -105,7 +115,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter
@@ -114,6 +125,37 @@ public class DocumentTypeController {
 	public ResponseWrapper<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentTypeService.deleteDocumentType(code));
+		return responseWrapper;
+	}
+
+	/**
+	 * This controller method provides with all document types.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param size
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the document types.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/documenttypes/all")
+	@ApiOperation(value = "Retrieve all the document types with additional metadata", notes = "Retrieve all the document types with additional metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of document types"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving document types") })
+	public ResponseWrapper<PageDto<DocumentTypeExtnDto>> getAllDocumentTypes(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(documentTypeService.getAllDocumentTypes(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
 }
