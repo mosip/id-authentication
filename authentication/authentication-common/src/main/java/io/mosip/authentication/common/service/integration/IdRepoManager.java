@@ -38,6 +38,10 @@ import io.mosip.kernel.core.util.DateUtils;
 @Component
 public class IdRepoManager {
 
+	private static final String UIN = "UIN";
+
+	private static final String USERID = "USERID";
+
 	private static final String VERSION = "v1";
 
 	private static final String MOSIP_VID_UPDATE = "mosip.vid.update";
@@ -47,7 +51,7 @@ public class IdRepoManager {
 	private static final String VID = "vid";
 
 	/** The Constant ERRORMESSAGE_VID. */
-	private static final String ERRORMESSAGE_VID = "message";
+	private static final String ERRORMESSAGE = "message";
 
 	private static final String ERROR_CODE = "errorCode";
 
@@ -55,12 +59,11 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 
-	/**
-	 * The Constant Id Repo Errors
-	 */
-	private static final List<String> ID_REPO_ERRORS_INVALID_ID = Arrays.asList(
-			IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(),
-			IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+
+	
+	//private static final String INVALID_INPUT_PARAMETER_IDREPO = IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode();	
+	
+	//private static final String NO_RECORD_FOUND_IDREPO = IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode();	
 
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
@@ -129,10 +132,16 @@ public class IdRepoManager {
 				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
 				if (idrepoMap.containsKey(ERRORS)) {
 					List<Map<String, Object>> idRepoerrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
-					if (!idRepoerrorList.isEmpty()
-							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey("errCode")
-									&& ID_REPO_ERRORS_INVALID_ID.contains(map.get("errCode")))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+					if (!idRepoerrorList.isEmpty()) {
+						if (idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+								&& IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+						} else if (idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+								&& IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+				                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),UIN));
+						}
+
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
@@ -172,7 +181,8 @@ public class IdRepoManager {
 					if (!idRepoerrorList.isEmpty()
 							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
 									&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_USERID);
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),USERID));
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
@@ -219,8 +229,9 @@ public class IdRepoManager {
 							.anyMatch(map -> map.containsKey(ERROR_CODE)
 									&& (IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode()
 											.equalsIgnoreCase((String) map.get(ERROR_CODE)))
-									|| ID_REPO_ERRORS_INVALID_ID.contains(map.get(ERROR_CODE)))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_USERID);
+									|| IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode().equalsIgnoreCase((String)map.get(ERROR_CODE)))) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+								                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),USERID));
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
@@ -248,36 +259,44 @@ public class IdRepoManager {
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
 			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get("errors");
 			if ((null == vidErrorList || vidErrorList.isEmpty()) && vidMap.get("response") instanceof Map) {
-				uin = (Long) ((Map<String, Object>) vidMap.get("response")).get("UIN");
+				uin = (Long) ((Map<String, Object>) vidMap.get("response")).get(UIN);
 			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
 			Optional<Object> responseBody = e.getResponseBody();
+			
 			if (responseBody.isPresent()) {
 				Map<String, Object> idrepoMap = (Map<String, Object>) responseBody.get();
 				if (idrepoMap.containsKey(ERRORS)) {
 					List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) idrepoMap.get(ERRORS);
 					if (vidErrorList.stream()
-							.anyMatch(map -> map.containsKey(ERRORMESSAGE_VID) && ((String) map.get(ERRORMESSAGE_VID))
+							.anyMatch(map -> map.containsKey(ERRORMESSAGE) && ((String) map.get(ERRORMESSAGE))
 									.equalsIgnoreCase(IdRepoErrorConstants.INVALID_VID.getErrorMessage()))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID);
 					}
+					
+					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
+							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode()))) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
+			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),"VID"));
+					}
 
-					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE_VID)
-							&& ((String) map.get(ERRORMESSAGE_VID)).equalsIgnoreCase(DEACTIVATEDUIN))) {
+					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE)
+							&& ((String) map.get(ERRORMESSAGE)).equalsIgnoreCase(DEACTIVATEDUIN))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
 					}
 
-					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE_VID)
-							&& (ID_REPO_ERRORS_INVALID_VID.contains((String) map.get(ERRORMESSAGE_VID))))) {
+					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE)
+							&& (ID_REPO_ERRORS_INVALID_VID.contains((String) map.get(ERRORMESSAGE))))) {
 						throw new IdAuthenticationBusinessException(
 								IdAuthenticationErrorConstants.EXPIRED_VID.getErrorCode(),
 								String.format(IdAuthenticationErrorConstants.EXPIRED_VID.getErrorMessage(),
-										(String) vidErrorList.get(0).get(ERRORMESSAGE_VID)));
+										(String) vidErrorList.get(0).get(ERRORMESSAGE)));
 					}
 
-				}
+			}	
+			 	
 			}
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		} catch (IDDataValidationException e) {

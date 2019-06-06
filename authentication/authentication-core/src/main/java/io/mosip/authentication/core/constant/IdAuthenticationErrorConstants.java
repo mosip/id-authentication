@@ -46,6 +46,8 @@ public enum IdAuthenticationErrorConstants {
 			"Please register your %s and try again"),
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-015", "Identity Type - %s not configured for the country"),
 	INVALID_TXNID_BIO("IDA-MLC-016", "Transaction ID parameters in the request does not match"),
+	INVALID_USERID( "IDA-MLC-017","Invalid UserID"),
+	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
@@ -67,7 +69,7 @@ public enum IdAuthenticationErrorConstants {
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
 	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
-	INVALID_USERID( "IDA-BIA-012","Invalid userid of the individual"),
+
 	
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
