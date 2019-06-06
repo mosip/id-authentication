@@ -1,32 +1,18 @@
 {
-	"authType": {
-		"address": false,
+	"id": "mosip.identity.auth",
+	"consentObtained": true,
+	"individualId": "6521768301",
+	"individualIdType": "UIN",
+	"request": "wB6n9jA-jZ0NPJQjkyPyugYWzk4fJvgHnP8OKVu4urfnjdrT1O3hycb9HncVXMmgrmgbXwBAX-01RgHyB-EJJN9Ahk_u0JZTKiZfXLnmQI6lBjpruG-L2dJyfR0vAMt3Yb0W8BcNd1i2wMpAcu8tpm-aXz79nnh68_a3HdSM84799kopLW26pFo_iQzqNT0VuOg1OBEjtkb92NsCt-391v20UjRyIr1hIETHReOjCjI",
+	"requestHMAC": "EF4F5925A684CE1CE6D8F6E5C3385C641B06800AAE213C9F55696015FF7D8CFC",
+	"requestTime": "2019-03-21T14:43:57.086+05:30",
+	"requestedAuth": {
 		"bio": true,
+		"demo": false,
 		"otp": false,
-		"personalIdentity": false,
 		"pin": false
 	},
-	"bioInfo": [
-		{
-			"bioType": "irisImg",
-			"deviceInfo": {
-				"deviceId": "123143",
-				"make": "morpho",
-				"model": "steel"
-			}
-		}
-	],
-	"id": "mosip.identity.auth",
-	"idvId": "739041980174",
-	"idvIdType": "D",
-	"tspID": "REF01",
-	"key": {
-		"publicKeyCert": "String",
-		"sessionKey": "LxcMYot0dUY73mwekPpekIgA9HWCNciJYmHsV7Pb53iLvUtvgTB97zG5OYcM6sw19n1Uq7a-DuUTs3RArhuv4Pc5VeqtmQdBfw76Aer1yxG-mc-s_4GFz2sQXjP7RODsHEo5XskBla24j-uxy_sWXht91J9Qet7ADLmWnKkN8oI-FO0RGLqYuxAI9rZqhTrhi3nDJbnftEtM4sqLwINyJ8Ck7iaRBvRFh_vEDkeL8DsRGWzm2MVI9wW1WlMO2YNv043g3GESvaTIA80M6blTNOl2smcz3J-htHQ2Lpux0ugW4Mab_8eBKuoiTKXsBSSN0gCvIeIkFu_syUPh3kKkug"
-	},
-	"muaCode": "7404012866",
-	"reqHmac": "string",
-	"reqTime": "2019-01-25T12:50:13.013+05:30",
-	"request": "2dmU1rUljDpLbbWPqw0XoySE1wtFWTtYEyqOF6xLee1uFIP-6Lim82xvIbzkwXsvxl9pUdunVvg4-ccTlxV7B-7lk7u5wWnLRcsyTAzfmWHibPJ-TOfI-8Ox-SX60YqxpwcUyyg355J-tEQf8gRbAVv_9haCjsiTb5L-DbIPB4lQKS_8sfr7oxB1c9WFE5do2yzmiJYkL_PWit4pwJxF6i22dVGKvhptngtaI-N1FFAWq4K6BXrUCF0XYxqLEvaKDU0FkxoyruUBFQuCCYtdg0A8kS34ZPZ_2JOtlbZxyUpSyVvDVPCsFMUQmTeFbRhRYORZi-4G8n-pR3sTn1vTuuMcSQ7DPhic0P5BKvhw3CBSSuNJdokm58DrPKB5UzVfnExcR2GFIbHr_0-q45lmV_U94KXqOqu3WDyg9hhUscopKERkykfyInR5-8fc0V0mndmaBYqdS4fWdolEyRlC1qVSAmepY4DWFlTlrmQ-zRX90rUGPlkPe3aXOKKsYc_luQJVFLuODxA8IS5bvSfPry-M8dlF2pkc7etdDtYWLZ_Y-7nDZC_RQZs7gh9L7K50GNjexox6R130z3LlxpN43T_fWS7OO80UKhyw4lQvg_PnsLa7lbjhxXJpDK7VdT2FDmpK9Pcr0WoUCqLZgVECQTi9japtDYPXoPGwc-268rOjqeWP0ToaaNRqeTpd-R-k1LduLtQpUy6B_CnlPJ9uhRa2ZMlzl8BGa-bRC1oVYqhMHm4RhDcgQkF1Ma4AimUlIhCuuxQqUTRwbVSqQOxlZjUz31cS6ujx79TyswcayIXtDgY-O-A-m3DA7VmClOb6d8H16aVMlZ8vdvZApPn-mq8tl24gZZ9SXltjGLse_OVRyuyUka83rCbFvKvIT2z7oyGIeNXOm8RMhiZehFWUG2IstQXZPFBTJcTlFR7cvroEMit3FpkBEaByHahVp4VGgKqFdU427MyNwGE_q_9_8J-4B4u1in0fmRcc6RGzXZY",
-	"txnID": "7404012866"
+	"requestSessionKey": "P08GxfMz0Gb4ucxGbHsmhZYSQuDQ6-AyWs7fbpeYhOyAeMlF7MTfvRydmoj_cWGYIEUgp0__mlmlymxYXgEAX2scU9L-kEJ4G05re0h3HFEhjkthhDMmZVWiIF1f7aihNMVbw-quFAvpeY7weIEqmGHT1Q9ZvK3DCn9EX4nCEA8RpLDVg729Af5AxRjQjpcegKy4fvJYNsyLoJ5Lh0Aty8dD1lrNPjSuxxZNGxACcVXtbkdoJZQxBe0TtsAOeRt7fndehBRWsz4k1HbtelzVt0OU1M9ZdA6A2VVpT551GcUGXAGjLk5iz2wfuZ-YdaYISUsXA4SkEtusEBf2Iep7ig",
+	"transactionID": "1234567890",
+	"version": "$version$"
 }

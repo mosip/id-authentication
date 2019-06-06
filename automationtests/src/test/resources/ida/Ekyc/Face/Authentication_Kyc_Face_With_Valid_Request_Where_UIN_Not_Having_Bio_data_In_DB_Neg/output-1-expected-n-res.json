@@ -1,1 +1,0 @@
-{"transactionID":"1528886606","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-BIA-006","errorMessage":"$REGEXP:Biometric data.*not available in database$"}],"responseTime":"$TIMESTAMP$","response":{"kycStatus":false}}
