@@ -98,4 +98,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 			countQuery = "SELECT count(*) FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.regcntr_id=?1", nativeQuery = true)
 	Page<Device> findDeviceByRegCenterId(String regCenterId, Pageable pageable);
 
+	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false)")
+	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(String id, String langCode);
+
 }
