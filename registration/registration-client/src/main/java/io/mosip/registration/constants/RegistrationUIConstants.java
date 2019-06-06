@@ -265,6 +265,7 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
 	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
 	public static final String USER_ONBOARD_ERROR = bundle.getString("USER_ONBOARD_ERROR");
+	public static final String NO_INTERNET = bundle.getString("NO_INTERNET");
 
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";

@@ -219,8 +219,6 @@ public class OSIValidatorTest {
 		regOsiDto.setIntroducerTyp("Parent");
 		demographicDedupeDtoList.add(demographicInfoDto);
 
-		Mockito.when(env.getProperty("registration.processor.fingerType")).thenReturn("LeftThumb");
-
 		Mockito.when(env.getProperty("mosip.kernel.applicant.type.age.limit")).thenReturn("5");
 
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
