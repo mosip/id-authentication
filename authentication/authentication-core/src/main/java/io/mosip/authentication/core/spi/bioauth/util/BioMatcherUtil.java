@@ -59,7 +59,6 @@ public class BioMatcherUtil {
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
-
 		Optional<BIR> reqBIR = Stream.of(reqInfoObj).map(this::getBir).filter(Objects::nonNull).findFirst();
 		BIR[] entityBIR = Stream.of(entityInfoObj).map(this::getBir).toArray(size -> new BIR[size]);
 		long internalScore = 0;
@@ -118,7 +117,6 @@ public class BioMatcherUtil {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 
 		}
-
 		return compositeScore.getInternalScore();
 	}
 
