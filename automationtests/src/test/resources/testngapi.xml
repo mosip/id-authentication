@@ -18,12 +18,8 @@
                                                  
 
 
-<<<<<<< HEAD
-	<!-- 		 <test name="Kernel Tests">
-=======
 	<!--		 <test name="Kernel Tests">
->>>>>>> 3a08023fe7cab0ed611989898062497805f0553c
-						 <classes>
+		 <classes>
                             <class name="io.mosip.kernel.tests.AuditLog" />   
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
@@ -144,21 +140,13 @@
 
 		</classes>
 
-<<<<<<< HEAD
+
 	</test>     -->
-=======
-	</test>    -->
->>>>>>> 3a08023fe7cab0ed611989898062497805f0553c
+
 
 
 	<test name="AuthenticationTest">
 		<classes>
-<<<<<<< HEAD
-		
-	
-=======
-				
->>>>>>> 3a08023fe7cab0ed611989898062497805f0553c
 			<!-- <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" /> -->
 			<!-- <class name="io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord" />
 		 <class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" />
