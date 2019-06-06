@@ -60,7 +60,7 @@ public enum IdRepoErrorConstants {
 	
 	INVALID_VID("IDR-VID-001","VID is %s"),
 	
-	VID_GENERATION_FAILED("IDR-VID-002","Failed to %s VID"),
+	VID_GENERATION_FAILED("IDR-VID-002","Failed to generate VID"),
 	
 	VID_POLICY_FAILED("IDR-VID-003","Could not generate/regenerate VID as per policy"),
 	
