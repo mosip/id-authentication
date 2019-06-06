@@ -19,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -28,6 +29,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
@@ -113,6 +116,29 @@ public class IdRepoExceptionHandlerTest {
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getMessage());
+		});
+	}
+	
+
+	/**
+	 * Test handle exception internal.
+	 */
+	@Test
+	public void testHandleExceptionInternal_HttpMessageNotReadableException() {
+		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
+		HttpMessageNotReadableException httpMessageNotReadableException = new HttpMessageNotReadableException("",
+				new InvalidFormatException(null, "", null, null));
+		Class<? extends Throwable> class1 = httpMessageNotReadableException.getCause().getClass();
+		class1.isAssignableFrom(InvalidFormatException.class);
+		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
+				"handleExceptionInternal",
+				httpMessageNotReadableException, null, null,
+				HttpStatus.EXPECTATION_FAILED, request);
+		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
+		List<ServiceError> errorCode = response.getErrors();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "requesttime"), e.getMessage());
 		});
 	}
 
