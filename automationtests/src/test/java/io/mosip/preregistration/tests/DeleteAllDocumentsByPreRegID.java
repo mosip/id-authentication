@@ -222,7 +222,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	{
 		authToken = preRegLib.getToken();
 	}
-	/**
+	/*
 	 * This method is used for generating output file with the test case result
 	 */
 	@AfterClass
