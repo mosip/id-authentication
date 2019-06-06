@@ -59,12 +59,6 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 
-
-	
-	//private static final String INVALID_INPUT_PARAMETER_IDREPO = IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode();	
-	
-	//private static final String NO_RECORD_FOUND_IDREPO = IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode();	
-
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
