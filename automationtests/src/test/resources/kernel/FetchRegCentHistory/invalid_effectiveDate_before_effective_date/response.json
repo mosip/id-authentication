@@ -7,7 +7,7 @@
   "errors": [
     {
       "errorCode": "KER-MSD-042",
-      "errorMessage": "Registration Center not found"
+      "message": "Registration Center not found"
     }
   ]
 }

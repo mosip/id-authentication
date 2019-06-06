@@ -57,7 +57,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	private final String apiName = "FetchApplication";
 	private final String requestJsonName = "FetchApplicationRequest";
 	private final String outputJsonName = "FetchApplicationOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchApplication_URI = props.get("FetchApplication_URI").toString();
 	private final String FetchApplication_lang_URI = props.get("FetchApplication_lang_URI").toString();
 	private final String FetchApplication_id_lang_URI = props.get("FetchApplication_id_lang_URI").toString();
@@ -119,29 +119,28 @@ public class FetchApplication extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 				if (objectData.containsKey("code"))
-					response = applicationLibrary.getRequestPathPara(FetchApplication_id_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchApplication_id_lang_URI, objectData,cookie);
 				else
-					response = applicationLibrary.getRequestPathPara(FetchApplication_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchApplication_lang_URI, objectData,cookie);
 
 
 		// sending request to get request without param
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchApplication_URI, objectData,cookie);
+			response = applicationLibrary.getWithoutParams(FetchApplication_URI,cookie);
 			objectData = null;
 		}
 
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
-			String queryPart = "select count(*) from master.appl_form_type";
+			String queryPart = "select count(*) from master.appl_form_type  where is_active = true";
 
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("code"))
-					query = query + " where code = '" + objectData.get("code") + "' and lang_code = '"
+					query = query + " and code = '" + objectData.get("code") + "' and lang_code = '"
 							+ objectData.get("langcode") + "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 

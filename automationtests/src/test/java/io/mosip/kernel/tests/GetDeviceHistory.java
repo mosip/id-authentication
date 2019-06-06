@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -48,12 +51,11 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetDeviceHistory.class);
-	protected static String testCaseName = "";
 	public SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchDeviceHistory = props.get("fetchDeviceHistory");
 	private String folderPath = "kernel/GetDeviceHistory";
 	private String outputFile = "GetDeviceHistoryOutput.json";
@@ -64,6 +66,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 	public KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
+	protected static String testCaseName = "";
 
 	//Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -93,8 +96,17 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
+		if(testCaseName.contains("smoke") | testCaseName.contains("response_time")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			actualRequest.put("effdatetimes", time);
+		}
 		// Calling GET method with path parameters
-		Response res=applicationLibrary.getRequestPathPara(fetchDeviceHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchDeviceHistory, actualRequest,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		//  Removing of unstable attributes from response

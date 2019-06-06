@@ -58,7 +58,7 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 	private final String apiName = "FetchGenderType";
 	private final String requestJsonName = "fetchGenderTypeRequest";
 	private final String outputJsonName = "fetchGenderTypeOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchGenderType_URI = props.get("FetchGenderType_URI").toString();
 	private final String FetchGenderType_id_lang_URI = props.get("FetchGenderType_id_lang_URI").toString();
 
@@ -118,10 +118,9 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		if (objectData != null)
-			response = applicationLibrary.getRequestPathPara(FetchGenderType_id_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchGenderType_id_lang_URI, objectData, cookie);
 		else {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchGenderType_URI, objectData, cookie);
+			response = applicationLibrary.getWithoutParams(FetchGenderType_URI, cookie);
 			objectData = null;
 		}
 		// DB validation
