@@ -1,7 +1,7 @@
 # MOSIP Release Notes
 ## 1. ID Authentication
 
-### 1.1 Introduction : <br><sub>This document highlights Sprint 11 features for ID Authentication that are released for QA phase.</sub></br>
+### 1.1 Introduction : <br><sub>This document highlights Sprint 12 features for ID Authentication that are released for QA phase.</sub></br>
 
 ### 1.2 Release Summary : 
 |         |          |
