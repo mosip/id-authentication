@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.packet.storage.config.PacketStorageBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
@@ -25,7 +25,7 @@ excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 public class BioDedupeConfigTest {
 
 	@MockBean
-	public FileSystemAdapter filesystemAdapter;
+	public FileSystemManager filesystemAdapter;
 
 	@MockBean
 	public ConnectionUtils connectionUtil;

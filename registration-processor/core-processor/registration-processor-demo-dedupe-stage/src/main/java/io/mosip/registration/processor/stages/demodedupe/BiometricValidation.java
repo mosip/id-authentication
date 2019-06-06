@@ -18,12 +18,13 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 //remove the class when auth is fixed
 @Component
@@ -31,7 +32,7 @@ public class BiometricValidation {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BiometricValidation.class);
@@ -42,7 +43,7 @@ public class BiometricValidation {
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = File.separator;
 
-	public boolean validateBiometric(String duplicateRid, String regId) throws ApisResourceAccessException, IOException, ParseException {
+	public boolean validateBiometric(String duplicateRid, String regId) throws ApisResourceAccessException, IOException, ParseException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		/*
 		 * authRequestDTO.setIdvId(duplicateUin);
 		 * authRequestDTO.setAuthType(authTypeDTO); request.setIdentity(identityDTO);
