@@ -1,5 +1,5 @@
 testdata: 
-  Authentication_Demographic_Address_With_fra and ara_IntegrationTest_smoke_pos_01:
+  Authentication_Demographic_Address_With_primary and secondary lang_smoke_pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -58,7 +58,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_Address_With_fra_IntegrationTest_smoke_pos_02:
+  Authentication_Demographic_Address_With_primary lang_smoke_pos_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -117,7 +117,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
        
-  Authentication_Demographic_Address_With_ara_IntegrationTest_smoke_pos_03:
+  Authentication_Demographic_Address_With_secondary lang_smoke_pos_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -276,7 +276,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Address_invalid reqTime lessthan24hrs_For IntegrationTest_UIN_07:
+  Authentication_Demographic_Address_invalid reqTime lessthan24hrs_For UIN_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1479,7 +1479,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Address_With_fra and ara_for VID_smoke_pos_38:
+  Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1539,7 +1539,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_Address_With_fra_For VID_smoke_pos_39:
+  Authentication_Demographic_Address_With_primary lang_For VID_smoke_pos_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1599,7 +1599,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
        
-  Authentication_Demographic_Address_With_ara_smoke_pos_40:
+  Authentication_Demographic_Address_With_secondary lang_smoke_pos_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1659,7 +1659,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_fullAddress_With_fra and ara_IntegrationTest_smoke_pos:
+  Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1669,7 +1669,7 @@ testdata:
     input.full-address-identity-encrypt-data:
       identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$
       identityReq.langauagefullAddress0: $TestData:primary_lang_code$
-      identityReq.valuefullAddress1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      identityReq.valuefullAddress1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       identityReq.langauagefullAddress1: $TestData:secondary_lang_code$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
@@ -1696,7 +1696,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_fullAddress_With_fra_IntegrationTest_smoke_pos:
+  Authentication_Demographic_fullAddress_With_primary lang_smoke_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1704,7 +1704,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.full-address-identity-encrypt-data:
-      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$
+      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
       identityReq.langauagefullAddress0: $TestData:primary_lang_code$
       identityReq.valuefullAddress1: $REMOVE$
       identityReq.langauagefullAddress1: $REMOVE$
@@ -1733,7 +1733,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
        
-  Authentication_Demographic_fullAddress_With_ara_IntegrationTest_smoke_pos:
+  Authentication_Demographic_fullAddress_With_secondary lang_smoke_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1743,7 +1743,7 @@ testdata:
     input.full-address-identity-encrypt-data:
       identityReq.valuefullAddress1: $REMOVE$
       identityReq.langauagefullAddress1: $REMOVE$
-      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       identityReq.langauagefullAddress0: $TestData:secondary_lang_code$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
@@ -1770,7 +1770,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_fullAddress_With_fra and ara_IntegrationTest_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1781,7 +1781,7 @@ testdata:
     input.full-address-identity-encrypt-data:
       identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$
       identityReq.langauagefullAddress0: $TestData:primary_lang_code$
-      identityReq.valuefullAddress1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      identityReq.valuefullAddress1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       identityReq.langauagefullAddress1: $TestData:secondary_lang_code$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:
@@ -1808,7 +1808,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_fullAddress_With_fra_IntegrationTest_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_primary lang_smoke_for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1846,7 +1846,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
        
-  Authentication_Demographic_fullAddress_With_ara_IntegrationTest_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_secondary lang_smoke_for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1857,7 +1857,7 @@ testdata:
     input.full-address-identity-encrypt-data:
       identityReq.valuefullAddress1: $REMOVE$
       identityReq.langauagefullAddress1: $REMOVE$
-      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      identityReq.valuefullAddress0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$+$SPACE$+$idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       identityReq.langauagefullAddress0: $TestData:secondary_lang_code$
       identityReq.timestamp: $TIMESTAMP$
     output.output-1-expected-y-res:

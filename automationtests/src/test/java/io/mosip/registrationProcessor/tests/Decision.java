@@ -231,13 +231,13 @@ public class Decision extends BaseTestCase implements ITest{
 			}else {
 				finalStatus="Fail";
 			}
-	/*		boolean setFinalStatus=false;
+			boolean setFinalStatus=false;
 	        if(finalStatus.equals("Fail"))
 	              setFinalStatus=false;
 	        else if(finalStatus.equals("Pass"))
 	              setFinalStatus=true;
 	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();*/
+	        softAssert.assertAll();
 	       
 		}catch(IOException | ParseException e){
 			logger.error("Exception occurred in Sync class in sync method "+e);

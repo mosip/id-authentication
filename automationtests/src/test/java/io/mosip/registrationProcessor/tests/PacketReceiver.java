@@ -220,13 +220,13 @@ public void getToken() {
 			}else{
 				finalStatus="Fail";
 			}
-			/*boolean setFinalStatus=false;
+			boolean setFinalStatus=false;
 	        if(finalStatus.equals("Fail"))
 	              setFinalStatus=false;
 	        else if(finalStatus.equals("Pass"))
 	              setFinalStatus=true;
 	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();*/
+	        softAssert.assertAll();
 
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);

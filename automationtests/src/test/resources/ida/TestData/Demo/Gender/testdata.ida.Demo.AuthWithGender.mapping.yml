@@ -1,5 +1,5 @@
 testdata:
-  Authentication_Demographic_Gender_With both language_smoke_For IntegrationTest_UIN_Pos_01:
+  Authentication_Demographic_Gender_With both language_smoke_For UIN_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -9,7 +9,7 @@ testdata:
     input.identity-encrypt-data:
       identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
       identityReq.languagegender0: $TestData:secondary_lang_code$
-      identityReq.valuegender1: $TestData:male_gender_french_valid$
+      identityReq.valuegender1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
       identityReq.languagegender1: $TestData:primary_lang_code$   
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
@@ -37,7 +37,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$ 
   
-  Authentication_Demographic_Gender_With arabic language_smoke_For IntegrationTest_UIN_Pos_02:
+  Authentication_Demographic_Gender_With arabic language_smoke_For UIN_Pos_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -75,7 +75,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$ 
   
-  Authentication_Demographic_Gender_With french language_smoke_For IntegrationTest_UIN_Pos_03:
+  Authentication_Demographic_Gender_With french language_smoke_For UIN_Pos_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -83,7 +83,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_french_valid$
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
       identityReq.languagegender0: $TestData:primary_lang_code$
       identityReq.valuegender1: $REMOVE$ 
       identityReq.languagegender1: $REMOVE$   
@@ -122,7 +122,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -272,7 +272,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -284,7 +284,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Gender_Invalid reqTime which is not as per defintion_For IntegrationTest_UIN_Neg_12:
+  Authentication_Demographic_Gender_Invalid reqTime which is not as per defintion_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -379,7 +379,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -485,8 +485,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$
@@ -507,8 +507,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$
@@ -528,8 +528,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$
@@ -570,8 +570,8 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$
@@ -611,8 +611,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$
@@ -734,7 +734,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -889,7 +889,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -1001,7 +1001,7 @@ testdata:
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
       identityReq.valuegender0: الذكر
-      identityReq.languagegender0: ara
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1: $REMOVE$  
       identityReq.timestamp: $TIMESTAMP$
@@ -1113,8 +1113,8 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_arabic_valid$
-      identityReq.languagegender0: ara
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
       identityReq.valuegender1: $REMOVE$
       identityReq.languagegender1:  $REMOVE$ 
       identityReq.timestamp: $TIMESTAMP$

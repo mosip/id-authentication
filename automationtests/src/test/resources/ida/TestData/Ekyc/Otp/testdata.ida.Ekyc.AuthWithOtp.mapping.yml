@@ -55,6 +55,7 @@ testdata:
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
       output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -117,8 +118,7 @@ testdata:
       output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
       output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
-      output.3.res.kyc.languagegender0: $IGNORE$
-      #output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
@@ -130,16 +130,14 @@ testdata:
       output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
-      output.3.res.kyc.valuegender0: $IGNORE$
-      #output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
       output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
-      output.3.res.kyc.languagegender1: $IGNORE$
-      #output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
@@ -149,8 +147,8 @@ testdata:
       output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
-      output.3.res.kyc.valuegender1: $IGNORE$
-      #output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -281,6 +279,7 @@ testdata:
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
       output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -344,8 +343,7 @@ testdata:
       output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
       output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
-      output.3.res.kyc.languagegender0: $IGNORE$
-      #output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
@@ -357,16 +355,14 @@ testdata:
       output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
-      output.3.res.kyc.valuegender0: $IGNORE$
-      #output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
       output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
-      output.3.res.kyc.languagegender1: $IGNORE$
-      #output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
@@ -376,8 +372,8 @@ testdata:
       output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
-      output.3.res.kyc.valuegender1: $IGNORE$
-      #output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -940,7 +936,7 @@ testdata:
       output.2.response.err.status: $TestData:auth_Fail_status$
       output.2.response.err.responseTime: $TIMESTAMP$
       output.2.response.err.errorMessage: $errors:MissingtransactionID:errorMessage$
-      output.2.response.err.errorCode: $errors:MissingtransactionIDerrorCode$
+      output.2.response.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.2.response.err.transactionID: $REMOVE$
       output.2.response.err.version: $version$
       #output.2.response.err.response.identity: null
@@ -1078,12 +1074,11 @@ testdata:
     input.identity-encrypt-data:
       identityReq.timestamp: $TIMESTAMP$
       #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
-      identityReq.individualIdType: $TestData:indvId_Vid_valid$
       identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
       #identityReq.otp: 7846
     input.ekyc-request:
-      AuthReq.individualId: $TestData:uin_invalid$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.individualId: $TestData:vid_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
     output.output-1-expected-otp-gen-res:
@@ -1116,13 +1111,12 @@ testdata:
       otpReq.transactionID: $RANDOM:N:10$
       otpReq.version: $version$
     input.ekyc-request:
-      AuthReq.individualId: $input.otp-generate:otpReq.individualId:$
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:12$
     input.identity-encrypt-data:
       identityReq.timestamp: $TIMESTAMP$
-      identityReq.individualIdType: $TestData:indvId_Vid_valid$
       identityReq.transactionID: $RANDOM:N:10$
       identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
       #identityReq.otp: 7846
@@ -1138,7 +1132,7 @@ testdata:
       output.2.response.err.responseTime: $TIMESTAMP$
       output.2.response.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
       output.2.response.err.errorCode: $errors:InvalidtransactionID:errorCode$
-      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.transactionID: $REMOVE$
       output.2.response.err.version: $version$
       #output.2.response.err.response.identity: null
       
@@ -1610,8 +1604,8 @@ testdata:
       output.2.response.err.status: $TestData:auth_Fail_status$
       output.2.response.err.responseTime: $TIMESTAMP$
       output.2.response.err.errorMessage: $errors:MissingtransactionID:errorMessage$
-      output.2.response.err.errorCode: $errors:MissingtransactionIDerrorCode$
-      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.errorCode: $errors:MissingtransactionID:errorCode$
+      output.2.response.err.transactionID: $IGNORE$
       output.2.response.err.version: $version$
       #output.2.response.err.response.identity: null
       

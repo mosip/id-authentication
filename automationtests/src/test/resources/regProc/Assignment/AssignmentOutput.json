@@ -1,1 +1,1 @@
-[]
+[{"idEmpty":"valid","matchTypeALL":"valid","matchTypeEmpty":"valid","versionInvalid":"valid","versionEmpty":"valid","testType":"regression","RecordUnavaible":"valid","matchTypeBIO":"valid","userIdInvalid":"invalid","idInvalid":"valid","matchTypeDEMO":"valid","userIdEmpty":"valid","requesttimeEmpty":"valid","jiraId":"MOS-1014","testCaseName":"regProc_Assignment_userIdInvalid","matchTypeInvalid":"valid","requesttimeInvalid":"valid","status":"Pass"}]

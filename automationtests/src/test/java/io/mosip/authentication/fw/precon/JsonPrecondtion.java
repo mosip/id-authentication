@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,12 +21,14 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.testng.Reporter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
  
 /**
@@ -75,6 +78,7 @@ public class JsonPrecondtion{
 					PropertyUtils.setProperty(jsonObj, getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
 							map.getValue());
 			}
+			mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
 			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
 			FileUtil.writeFile(outputFilePath, outputJson);
@@ -383,4 +387,54 @@ public class JsonPrecondtion{
 		}
 	}
 	
+	public static String getJsonInOrder(String jsonContent) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			Object jsonObj = mapper.readValue(jsonContent, Object.class);
+			mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+			return mapper.writeValueAsString(jsonObj);
+		} catch (Exception e) {
+			JSONPRECONDATION_LOGGER.error("Exception " + e.getMessage());
+			return e.getMessage();
+		}
+	}
+	
+	public static Map<String, Object> jsonToMap(JSONObject o) {
+		Map<String, Object> map = new LinkedHashMap<>();
+		// https://github.com/jwtk/jjwt/issues/380: use .keys() and *not* .keySet() for
+		// Android compatibility:
+		Iterator<String> iterator = o.keys();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			Object value = o.get(key);
+			value = convertIfNecessary(value);
+			map.put(key, value);
+		}
+		return map;
+	}
+	
+	private static Object convertIfNecessary(Object v) {
+        Object value = v;
+        if (JSONObject.NULL.equals(value)) {
+            value = null;
+        } else if (value instanceof JSONArray) {
+            value = jsonArrayToList((JSONArray) value);
+        } else if (value instanceof JSONObject) {
+            value = jsonToMap((JSONObject) value);
+        }
+        return value;
+    }
+	
+	private static List<Object> jsonArrayToList(JSONArray a) {
+        int length = a.length();
+        List<Object> list = new ArrayList<>(length);
+        // https://github.com/jwtk/jjwt/issues/380: use a.get(i) and *not* a.toList() for Android compatibility:
+        for( int i = 0; i < length; i++) {
+            Object value = a.get(i);
+            value = convertIfNecessary(value);
+            list.add(value);
+        }
+        return list;
+    }
+
 }

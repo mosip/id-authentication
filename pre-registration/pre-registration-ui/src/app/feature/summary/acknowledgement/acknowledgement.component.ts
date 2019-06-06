@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as html2pdf from 'html2pdf.js';
 import { MatDialog } from '@angular/material';
 import { BookingService } from '../../booking/booking.service';
@@ -15,24 +15,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
   templateUrl: './acknowledgement.component.html',
   styleUrls: ['./acknowledgement.component.css']
 })
-export class AcknowledgementComponent implements OnInit {
-  // usersInfo = [{
-  //   fullName: 'Agnitra Banerjee',
-  //   preRegId: '1234',
-  //   registrationCenter: {
-  //     id: '10001',
-  //     addressLine1: 'Mindtree Limited',
-  //     addressLine2: 'Global Village',
-  //     contactPhone: '1234567890'
-  //   },
-  //   bookingData: '7 Jan 2019, 2:30pm',
-  //   qrCodeBlob: Blob,
-  //   regDto: {
-  //     registration_center_id: '10001',
-  //     appointment_date: '2019-03-18',
-  //     time_slot_from: '09:00'
-  //   }
-  // }];
+export class AcknowledgementComponent implements OnInit, OnDestroy {
   secondaryLanguagelabels: any;
   secondaryLang = localStorage.getItem('secondaryLangCode');
   usersInfo = [];
@@ -43,9 +26,7 @@ export class AcknowledgementComponent implements OnInit {
   opt = {};
 
   fileBlob: Blob;
-  showSpinner : boolean = true;
-
-
+  showSpinner: boolean = true;
   notificationRequest = new FormData();
   bookingDataPrimary = '';
   bookingDataSecondary = '';
@@ -61,9 +42,9 @@ export class AcknowledgementComponent implements OnInit {
 
   async ngOnInit() {
     this.usersInfo = this.bookingService.getNameList();
-    setTimeout(() => {
-    this.showSpinner = false;
-        }, 1250);
+    // setTimeout(() => {
+    // this.showSpinner = false;
+    //     }, 1250);
 
     this.opt = {
       filename: this.usersInfo[0].preRegId + '.pdf',
@@ -105,6 +86,7 @@ export class AcknowledgementComponent implements OnInit {
         this.secondaryLanguagelabels = response['acknowledgement'];
       });
       await this.getTemplate();
+      this.showSpinner = false;
       resolve(true);
     });
   }
@@ -240,13 +222,15 @@ export class AcknowledgementComponent implements OnInit {
   }
 
   async generateQRCode(name) {
-    return new Promise((resolve, reject) => {
-      this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
-        const index = this.usersInfo.indexOf(name);
-        this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
-        resolve(true);
+    const index = this.usersInfo.indexOf(name);
+    if (!this.usersInfo[index].qrCodeBlob) {
+      return new Promise((resolve, reject) => {
+        this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
+          this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
+          resolve(true);
+        });
       });
-    });
+    }
   }
 
   async sendNotification(applicantNumber, additionalRecipient: boolean) {
@@ -268,6 +252,13 @@ export class AcknowledgementComponent implements OnInit {
       this.notificationRequest.append(appConstants.notificationDtoKeys.file, this.fileBlob, `${user.preRegId}.pdf`);
       this.dataStorageService.sendNotification(this.notificationRequest).subscribe(response => {});
       this.notificationRequest = new FormData();
+    });
+  }
+
+  ngOnDestroy() {
+    this.bookingService.flushNameList();
+    this.usersInfo.forEach(user => {
+      this.bookingService.addNameList(user);
     });
   }
 }

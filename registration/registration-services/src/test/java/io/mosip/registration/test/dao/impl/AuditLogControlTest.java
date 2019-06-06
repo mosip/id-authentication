@@ -12,20 +12,27 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.impl.AuditLogControlDAOImpl;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.repositories.AuditLogControlRepository;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class AuditLogControlTest {
 
 	@Rule
@@ -58,8 +65,12 @@ public class AuditLogControlTest {
 	}
 
 	@Test
-	public void testSave() {
+	public void testSave() throws Exception {
 		Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 		AuditLogControl expectedAuditLogControl = Builder.build(AuditLogControl.class)
 				.with(auditLogControl -> auditLogControl
 						.setAuditLogFromDateTime(Timestamp.valueOf(LocalDateTime.now().minusHours(3))))
@@ -69,7 +80,7 @@ public class AuditLogControlTest {
 				.with(auditLogControl -> auditLogControl.setAuditLogSyncDateTime(currentTimestamp))
 				.with(auditLogControl -> auditLogControl.setCrDtime(currentTimestamp))
 				.with(auditLogControl -> auditLogControl
-						.setCrBy(SessionContext.getInstance().getUserContext().getUserId()))
+						.setCrBy(SessionContext.userContext().getUserId()))
 				.get();
 		when(auditLogControlRepository.save(Mockito.any(AuditLogControl.class))).thenReturn(expectedAuditLogControl);
 

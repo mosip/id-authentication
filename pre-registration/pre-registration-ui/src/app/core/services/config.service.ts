@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
+  navigationType: string;
   configs = {};
 
   public setConfig(configJson: any) {

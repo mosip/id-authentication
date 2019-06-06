@@ -11,7 +11,7 @@ Date Raised | 24-MAY-2019
 Impact of Release|NA
 Implementation Start Date |20-MAY-2019
 Implementation end date	|07-JUNE-2019
-Jenkins Build #	|Min Version : 1667  [Any later version also]
+Jenkins Build #	|Min Version : 1826  [Any later version also]
 Objective & Scope of Release| Sprint11 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
@@ -30,6 +30,10 @@ MOS-22026|New|As Registration Processor, I should be able to Authenticate Office
 MOS-21718|New|As Registration Processor, I should be able to Perform Parent or Guardian (Introducer) Bio-metric Validation for a Child
 MOS-24649|Change|Tech Story - Unit Testiing  for Update Flow Packet
 MOS-1084|New|Tech Story - As the MOSIP system, I should be able to evaluate the Quality Score of Finger Print, Iris and Face Image
+MOS-17678|New|As the Registration Processor, I should be able to Process a Lost UIN Packet
+MOS-24252|Change|Tech Story - Validate Sync List Data with Packet Meta Data in Packet Validator and Implement Changes in Manual Verification
+MOS-24331|Change|Tech Story - Sync Meta API changes for Packet Generator Stage
+
 
 
 #### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>

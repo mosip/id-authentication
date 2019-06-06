@@ -133,6 +133,7 @@ public class AuthTestsUtil extends BaseTestCase {
 						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
 					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
 							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
+					responseJson=JsonPrecondtion.toPrettyFormat(responseJson);
 					fos.write(responseJson.getBytes());
 					fos.flush();
 					fos.close();
@@ -590,7 +591,14 @@ public class AuthTestsUtil extends BaseTestCase {
 	 */
 	@SuppressWarnings("deprecation")
 	public static String getContentFromFile(File file) throws IOException {
+		try {
 		return FileUtils.readFileToString(file.getAbsoluteFile());
+		}
+		catch(Exception e)
+		{
+			IDASCRIPT_LOGGER.error("Exception: "+e.getMessage());
+			return e.getMessage();
+		}
 	}
 	
 	/**
@@ -634,6 +642,22 @@ public class AuthTestsUtil extends BaseTestCase {
 	}
 	
 	/**
+	 * The method get internal encryptedsessionkey, request and hmac value
+	 * 
+	 * @param listOfFiles
+	 * @param keywordToFind
+	 * @return map
+	 */
+	protected Map<String, String> getInternalEncryptKeyvalue(File[] listOfFiles, String keywordToFind) {
+		for (int j = 0; j < listOfFiles.length; j++) {
+			if (listOfFiles[j].getName().contains(keywordToFind)) {
+				return EncryptDecrptUtil.getInternalEncryptSessionKeyValue(listOfFiles[j].getAbsolutePath());
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * To display current execution of test case log
 	 * 
 	 * @param testCaseName
@@ -670,6 +694,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			RunConfigUtil.objRunConfig.setUserDirectory();
 			input = new FileInputStream(new File(RunConfigUtil.objRunConfig.getUserDirectory()+"src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath());
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -759,6 +784,8 @@ public class AuthTestsUtil extends BaseTestCase {
 				prop.setProperty(entry.getKey(), entry.getValue());
 			}
 			prop.store(output, null);
+			output.close();
+			output.flush();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Excpetion in storing the data in propertyFile" + e.getMessage());
 		}
@@ -782,6 +809,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			}
 			props.store(out, null);
 			out.close();
+			out.flush();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception in updating the property file" + e.getMessage());
 		}
@@ -825,6 +853,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(filepath);
 			prop.load(input);
+			input.close();
 			return prop.getProperty(key).toString();
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -844,6 +873,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(filepath);
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -862,6 +892,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			input = new FileInputStream(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + path).getAbsolutePath());
 			prop.load(input);
+			input.close();
 			return prop;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception occured in fetching data property file " + e.getMessage());
@@ -884,6 +915,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			for (String key : prop.stringPropertyNames()) {
 				map.put(key, prop.getProperty(key));
 			}
+			input.close();
 			return map;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e.getMessage());
@@ -929,7 +961,7 @@ public class AuthTestsUtil extends BaseTestCase {
 			} else if (getOSType().toString().equals("OTHERS")) {
 				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey()));
 			    String mavenPath = System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey());
-				String settingXmlPath = mavenPath + "/conf/settings.xml";
+				String settingXmlPath = "/usr/local/maven" + "/conf/settings.xml";
 				String repoPath = XmlPrecondtion.getValueFromXmlFile(settingXmlPath, "//localRepository");
 				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"
 						+ getDemoAppVersion() + "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar")
