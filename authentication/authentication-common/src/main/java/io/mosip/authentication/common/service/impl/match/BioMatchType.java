@@ -103,7 +103,7 @@ public enum BioMatchType implements MatchType {
 	RIGHT_IRIS(IdaIdMapping.RIGHTIRIS, setOf(IrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS,
 			SingleAnySubtypeType.RIGHT, null),
 
-	LEFT_IRIS(IdaIdMapping.LEFTEYE, setOf(IrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, SingleAnySubtypeType.LEFT,
+	LEFT_IRIS(IdaIdMapping.LEFTIRIS, setOf(IrisMatchingStrategy.PARTIAL), CbeffDocType.IRIS, SingleAnySubtypeType.LEFT,
 			null),
 
 	// FIXME get Bio ID info of all eyes and return the map
