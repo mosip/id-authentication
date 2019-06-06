@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -15,7 +16,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
+import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.FileUtil;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * TestDataUtil will generate the request and response file for all the test
@@ -120,12 +123,17 @@ public class TestDataUtil {
 	 * @throws FileNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void loadTestData(File filePath) throws FileNotFoundException
-	{
-		Yaml yaml = new Yaml();
-		InputStream inputStream = new FileInputStream(filePath.getAbsoluteFile());		
-		TestDataDto.setTestdata((Map<String, Map<String, Map<String, Map<String, Object>>>>) yaml.load(inputStream));
-		setFilePathFromTestdataFileName(filePath);
+	public static void loadTestData(File filePath) throws FileNotFoundException {
+		try {
+			Yaml yaml = new Yaml();
+			InputStream inputStream = new FileInputStream(filePath.getAbsoluteFile());
+			TestDataDto
+					.setTestdata((Map<String, Map<String, Map<String, Map<String, Object>>>>) yaml.load(inputStream));
+			inputStream.close();
+			setFilePathFromTestdataFileName(filePath);
+		} catch (IOException e) {
+			TESTDATAUTILITY_LOGGER.error("Exception Occured in testdata processor : " + e.getMessage());
+		}
 	}	
 	/**
 	 * To set mapping file path and scenario path from the test data filename
@@ -177,10 +185,22 @@ public class TestDataUtil {
 						fieldValue = new HashMap<String, String>();
 						for (Entry<String, Object> fieldvalMap : jsonFile.getValue().entrySet()) {
 							fieldValue.put(fieldvalMap.getKey(), fieldvalMap.getValue().toString());
-						}
+						}	
 						fieldValue = Precondtion.parseAndWritePropertyFile(auditMappingPath, fieldValue,
 								new File("./"+ TestDataConfig.getSrcPath() + scenarioPath + "/"
 										+ getTestCaseName() + "/" + jsonFileName + ".properties").getAbsolutePath());
+						//Hashing UIN- kernel dependency	
+						for (Entry<String, String> tempMap : fieldValue.entrySet()) {
+							String value = "";
+							if (tempMap.getKey().equals("ref_id") && jsonFile.getKey().contains("auth_transaction"))
+								value = HMACUtils.digestAsPlainText(
+										HMACUtils.generateHash(tempMap.getValue().toString().getBytes()));
+							else
+								value = tempMap.getValue().toString();
+							fieldValue.put(tempMap.getKey(), value);
+						}
+						AuthTestsUtil.generateMappingDic(new File("./"+ TestDataConfig.getSrcPath() + scenarioPath + "/"
+										+ getTestCaseName() + "/" + jsonFileName + ".properties").getAbsolutePath(), fieldValue);
 						flag = false;
 					}
 					else if (type.equalsIgnoreCase("email")) {

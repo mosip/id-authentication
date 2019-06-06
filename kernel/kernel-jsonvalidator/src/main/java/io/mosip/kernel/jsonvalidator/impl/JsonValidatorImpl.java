@@ -105,7 +105,7 @@ public class JsonValidatorImpl implements JsonValidator {
 		} catch (ProcessingException e) {
 			throw new JsonValidationProcessingException(
 					JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getErrorCode(),
-					JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getMessage());
+					JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getMessage(), e);
 		}
 
 		// iterating over report to get each processingMessage

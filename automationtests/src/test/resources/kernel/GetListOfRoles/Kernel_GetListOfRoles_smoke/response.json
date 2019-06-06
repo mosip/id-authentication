@@ -1,10 +1,10 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-05-16T11:51:30.427Z",
+  "responsetime": "2019-05-29T12:01:46.995Z",
   "metadata": null,
   "response": {
-    "lastSyncTime": "2019-05-16T11:51:30.415Z",
+    "lastSyncTime": "2019-05-29T12:01:45.972Z",
     "roles": [
       {
         "roleId": "CENTRAL_APPROVER",
@@ -15,6 +15,11 @@
         "roleId": "MISP",
         "roleName": "MISP",
         "roleDescription": "Trusted Service Provider"
+      },
+      {
+        "roleId": "PREREG",
+        "roleName": "PREREG",
+        "roleDescription": "Pre Reg Client Id Secret Key Role for Audit"
       },
       {
         "roleId": "REGISTRATION_OPERATOR",

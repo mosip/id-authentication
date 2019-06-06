@@ -3,7 +3,7 @@
   <parent>
     <artifactId>registration-parent</artifactId>
     <groupId>io.mosip.registration</groupId>
-    <version>0.12.5</version>
+    <version>0.12.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>registration-libs</artifactId>
@@ -12,10 +12,10 @@
   <build>
     <resources>
       <resource>
-        <directory>/registration-libs/src/main/resources</directory>
-        <excludes>
-          <exclude>**/*.*</exclude>
-        </excludes>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.png</include>
+        </includes>
       </resource>
     </resources>
     <plugins>

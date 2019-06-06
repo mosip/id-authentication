@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>core-processor</artifactId>
-		<version>0.12.5</version>
+		<version>0.12.7</version>
 	</parent>
 	<artifactId>registration-processor-uin-generator-stage</artifactId>
 
@@ -71,6 +71,11 @@
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-rest-client</artifactId>
 			<version>${registration.processor.rest.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-packet-manager</artifactId>
+			<version>${packet.manager.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>

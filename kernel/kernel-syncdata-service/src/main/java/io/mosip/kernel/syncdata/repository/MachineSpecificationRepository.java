@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.MachineSpecification;
 
 @Repository
-public interface MachineSpecificationRepository extends BaseRepository<MachineSpecification, String> {
+public interface MachineSpecificationRepository extends JpaRepository<MachineSpecification, String> {
 
 	/**
 	 * Method to fetch the Machine Specification by machine id.

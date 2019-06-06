@@ -8,6 +8,7 @@ import jenkins.model.Jenkins;
 node {
  def mvnHome = tool name: 'M2_HOME', type: 'maven'
  def branch = env.NEXT_BRANCH_NAME
+ def mosip_config_branch="mosip_config_${branch}"
  def newVersion
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
@@ -24,6 +25,17 @@ node {
     extensions: scm.extensions + [[$class: 'CleanCheckout']],
     userRemoteConfigs: [
      [url: 'git@github.com:mosip/mosip.git', credentialsId: 'fd9c5f45-e6ac-45ea-b345-f6fbeb303044']
+    ]
+   ])
+  }
+  dir(mosip_config_branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    extensions: scm.extensions + [[$class: 'CleanCheckout']],
+    userRemoteConfigs: [
+     [url: 'git@github.com:mosip/mosip-configuration.git', credentialsId: 'aruna']
     ]
    ])
   }
@@ -105,10 +117,18 @@ node {
       }
  
   }
+	 dir(mosip_config_branch){
+     sh "git checkout ${branch}"
+     sh 'git status'
+     sh 'ls'
+     sh "git tag ${newVersion}"
+     sshagent(['aruna']) {
+      sh "git push origin ${newVersion}"
+      }
+    }
   // Clean the workspace to avoid GIT conflicts when next time this pipeline is triggered
   	cleanWs()
  } 
 }
-
 
 

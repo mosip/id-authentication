@@ -25,7 +25,10 @@ public enum RegistrationType {
 	ACTIVATED("activated"),
 
 	/** The deactivated. */
-	DEACTIVATED("deactivated");
+	DEACTIVATED("deactivated"),
+
+	/** The lost*/
+	LOST("lost");
 	
 	public String regType;
 	

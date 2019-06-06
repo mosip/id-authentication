@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,12 +25,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dao.impl.MasterSyncDaoImpl;
 import io.mosip.registration.dto.ApplicantValidDocumentDto;
@@ -164,7 +164,7 @@ import io.mosip.registration.util.mastersync.MetaDataUtils;
  * @since 1.0.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MetaDataUtils.class, RegBaseUncheckedException.class })
+@PrepareForTest({ MetaDataUtils.class, RegBaseUncheckedException.class, SessionContext.class })
 public class MasterSyncDaoImplTest {
 
 	// private MapperFacade mapperFacade = CustomObjectMapper.MAPPER_FACADE;
@@ -285,16 +285,17 @@ public class MasterSyncDaoImplTest {
 
 	@InjectMocks
 	private MasterSyncDaoImpl masterSyncDaoImpl;
-
-	private static ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	@Before
+	public void initialize() throws Exception {
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
+	}
 
 	@BeforeClass
 	public static void beforeClass() {
-
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		// applicationContext.setApplicationMessagesBundle();
-
-		SessionContext.getInstance().userContext().setUserId("mosip");
 
 		List<RegistrationCenterType> registrationCenterType = new ArrayList<>();
 		RegistrationCenterType MasterRegistrationCenterType = new RegistrationCenterType();

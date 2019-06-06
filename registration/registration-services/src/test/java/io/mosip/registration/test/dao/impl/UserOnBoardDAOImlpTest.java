@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doNothing;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,18 +14,24 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.UserOnboardDAOImpl;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -51,6 +56,8 @@ import io.mosip.registration.repositories.UserMachineMappingRepository;
  *
  * @since 1.0.0
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class UserOnBoardDAOImlpTest {
 
 	@Rule
@@ -70,11 +77,17 @@ public class UserOnBoardDAOImlpTest {
 
 	@InjectMocks
 	private UserOnboardDAOImpl userOnboardDAOImpl;
+	
+	@Before
+	public void initialize() throws Exception {
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
+	}
 
 	@BeforeClass
-	public static void beforeClass() throws URISyntaxException {
-
-		SessionContext.getInstance().getUserContext().setUserId("mosip");
+	public static void beforeClass() throws Exception {
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
@@ -183,8 +196,6 @@ public class UserOnBoardDAOImlpTest {
 
 		biometricDTO.setOperatorBiometricDTO(info);
 
-		UserMachineMapping user = new UserMachineMapping();
-
 		Mockito.when(userBiometricRepository.saveAll(bioMetricsList)).thenReturn(bioMetricsList);
 		doNothing().when(userBiometricRepository).deleteByUserBiometricIdUsrId(Mockito.anyString());
 
@@ -196,9 +207,10 @@ public class UserOnBoardDAOImlpTest {
 	public void savetest() {
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
-		Assert.assertSame(userOnboardDAOImpl.save(), RegistrationConstants.SUCCESS);
+		Assert.assertSame(RegistrationConstants.SUCCESS, userOnboardDAOImpl.save());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test(expected = RuntimeException.class)
 	public void saveFailuretest() {
 

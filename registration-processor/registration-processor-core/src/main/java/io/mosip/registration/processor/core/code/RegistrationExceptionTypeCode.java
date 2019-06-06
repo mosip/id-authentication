@@ -176,6 +176,8 @@ public enum RegistrationExceptionTypeCode {
 	/** The packet uin generation failed. */
 	PACKET_UIN_GENERATION_FAILED,
 
+	PACKET_UIN_GENERATION_ID_REPO_ERROR,
+
 	/** The invocation target exception. */
 	INVOCATION_TARGET_EXCEPTION,
 
@@ -187,12 +189,12 @@ public enum RegistrationExceptionTypeCode {
 
 	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED,
-	
+
 	/** The registration processor checked exception. */
 	REGISTRATIONPROCESSORCHECKEDEXCEPTION,
 
 	/** The adult cbeff not present exception. */
-	ADULT_CBEFF_NOT_PRESENT_EXCEPTION,
+	CBEFF_NOT_PRESENT_EXCEPTION,
 
 	/** The demo dedupe abis response error. */
 	DEMO_DEDUPE_ABIS_RESPONSE_ERROR,
@@ -236,10 +238,10 @@ public enum RegistrationExceptionTypeCode {
 	/** The ida authentication failure. */
 	IDA_AUTHENTICATION_FAILURE,
 
-    /** The password otp failure. */
-    PASSWORD_OTP_FAILURE,
+	/** The password otp failure. */
+	PASSWORD_OTP_FAILURE,
 
-    /** The biometric exception*/
+	/** The biometric exception */
 	BIOMETRIC_EXCEPTION
 
 }

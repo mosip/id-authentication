@@ -154,6 +154,7 @@ public class PacketUploaderServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 		regEntity.setPacketHashValue("abcd1234");
+		regEntity.setRegistrationType("NEW");
 		BigInteger size = new BigInteger("2291584");
 		regEntity.setPacketSize(size);
 		is = new FileInputStream(file);

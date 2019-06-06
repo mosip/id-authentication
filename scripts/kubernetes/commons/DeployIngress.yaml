@@ -170,7 +170,7 @@ spec:
         backend:
           serviceName: registration-processor-manual-verification-stage
           servicePort: 8084
-      - path: /eis
+      - path: /registrationprocessor/v1/eis
         backend:
           serviceName: registration-processor-external-integration-service
           servicePort: 8201

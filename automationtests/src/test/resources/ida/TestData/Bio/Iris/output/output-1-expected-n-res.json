@@ -1,28 +1,16 @@
 {
-	"status": "N",
-	"err": [
+	"transactionID": "8557676061",
+	"version": "1.0",
+	"id": "mosip.identity.auth",
+	"responseTime": "2019-04-09T15:54:54.476+05:30",
+	"errors": [
 		{
-			"errorCode": "IDA-IDV-003",
-			"errorMessage": "Missing Input Parameter - model"
+			"errorCode": "IDA-MLC-002",
+			"errorMessage": "Invalid UIN"
 		}
 	],
-	"txnID": "7404012866",
-	"resTime": "2019-01-25T12:52:13.900+05:30",
-	"info": {
-		"idType": "D",
-		"reqTime": "2019-01-25T12:50:13.013+05:30",
-		"matchInfos": [],
-		"bioInfos": [
-			{
-				"bioType": "irisImg",
-				"deviceInfo": {
-					"deviceId": "123143",
-					"make": "morpho",
-					"model": "steel"
-				}
-			}
-		],
-		"usageData": "0x0000200000000000"
-	},
-	"ver": "$version$"
+	"response": {
+		"authStatus": true,
+		"staticToken": "$IGNORE$"
+	}
 }

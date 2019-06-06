@@ -23,6 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
@@ -141,4 +142,8 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 
 	}
 
+	@Override
+	public AuthTokenDTO validate(String userId, String otp) {
+		return null;
+	}	
 }
