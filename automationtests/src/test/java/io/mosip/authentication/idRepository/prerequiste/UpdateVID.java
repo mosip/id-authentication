@@ -213,6 +213,8 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"ida/TestData/RunConfig/vid.properties", tempMap);
 			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"idRepository/TestData/RunConfig/vid.properties", tempMap);
 		}
+		else
+			Assert.assertEquals(false, true);
 	}
 
 }
