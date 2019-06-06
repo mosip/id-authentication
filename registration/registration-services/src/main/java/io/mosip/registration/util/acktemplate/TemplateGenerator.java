@@ -146,7 +146,7 @@ public class TemplateGenerator extends BaseService {
 
 			Map<String, Integer> exceptionCount = exceptionFingersCount(registration, leftSlapCount, rightSlapCount,
 					thumbCount, irisCount);
-			int excepCount = exceptionCount.get(RegistrationConstants.EXCEPTIONCOUNT);
+			int excepCount = exceptionCount.isEmpty() ? 0 : exceptionCount.get(RegistrationConstants.EXCEPTIONCOUNT);
 
 			if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag) && excepCount == 2)
 					|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag) && excepCount == 10)
@@ -1475,37 +1475,34 @@ public class TemplateGenerator extends BaseService {
 		if (registration.isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			biometricExceptionDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
-		} else {
-			biometricExceptionDTOs = registration.getBiometricDTO().getApplicantBiometricDTO()
-					.getBiometricExceptionDTO();
+			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+						&& biometricExceptionDTO.isMarkedAsException())
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+					leftSlapCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+						&& biometricExceptionDTO.isMarkedAsException())
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+					rightSlapCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& biometricExceptionDTO.isMarkedAsException())) {
+					thumbCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
+						&& biometricExceptionDTO.isMarkedAsException())) {
+					irisCount++;
+				}
+			}
+			exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
+			exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
+			exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
+			exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
+					leftSlapCount + rightSlapCount + thumbCount + irisCount);
 		}
-		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
-					&& biometricExceptionDTO.isMarkedAsException())
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				leftSlapCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
-					&& biometricExceptionDTO.isMarkedAsException())
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
-				rightSlapCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
-					&& biometricExceptionDTO.isMarkedAsException())) {
-				thumbCount++;
-			}
-			if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
-					&& biometricExceptionDTO.isMarkedAsException())) {
-				irisCount++;
-			}
-		}
-		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
-		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
-		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
-		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
-				leftSlapCount + rightSlapCount + thumbCount + irisCount);
 
 		return exceptionCountMap;
 	}
