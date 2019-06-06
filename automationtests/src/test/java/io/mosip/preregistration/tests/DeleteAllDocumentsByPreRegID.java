@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -193,8 +194,6 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		//Delete Document By PreregistrationId Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
 		
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
 
 	}
 
@@ -217,6 +216,11 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
+	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken = preRegLib.getToken();
 	}
 	/**
 	 * This method is used for generating output file with the test case result

@@ -1003,7 +1003,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			Assert.assertEquals(actual, expected);
 			logger.info("values are equal");
 		} catch (AssertionError e) {
-			Assert.assertTrue(false, "values are not equal expected values is : "+expected+" found is : "+actual);
+			Assert.assertTrue(false, "Response Data Mismatch Failure  : expected is : "+expected+" found is : "+actual);
 		}
 	}
 

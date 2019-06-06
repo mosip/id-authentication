@@ -42,7 +42,7 @@ public class AssertResponses {
 				Assert.assertTrue(obj1.equals(obj2));
 				logger.info("both object are equal");
 			} catch (AssertionError e) {
-				Assert.assertTrue(false, "Response Data Mismatch Failure  : difference is: "+com.google.common.collect.Maps.difference(firstMap, secondMap));
+				Assert.assertTrue(false, "Response Data Mismatch Failure  : "+com.google.common.collect.Maps.difference(firstMap, secondMap));
 				return false;
 			}
 			softAssert.assertAll();
@@ -135,6 +135,7 @@ public class AssertResponses {
 			}
 		}
 	}
+	
 
 	@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 	private static void recursiveArray(JSONArray parsebleArray, List innerKeys) {

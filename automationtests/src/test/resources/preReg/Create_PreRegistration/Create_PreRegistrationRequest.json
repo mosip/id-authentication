@@ -8,5 +8,8 @@
    "Pre Reg_Demographic_Create Pre Registration By passing invalid Language Code":"",
    "Pre Reg_Demographic_Create Pre Registration with invalid email format":"",
    "Pre Reg_Demographic_Create Pre Registration with invalid mobile no format":"",
-   "Pre Reg_Demographic_Create Pre Registration with other DOB format":""
+   "Pre Reg_Demographic_Create Pre Registration with other DOB format":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing name in request":"",
+   "Pre Reg_Demographic_Create Pre Registration by passing 51 charecter in name":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing DOB in request":""
 }

@@ -73,7 +73,7 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken = lib.getToken();
+		authToken = lib.getToken();
 	}
 
 	/**
@@ -83,10 +83,32 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-	@Test
-	public void getAuditDataForDemographicDiscard() {
-	dao.getAuditData("123");
+	@Test(groups = { "IntegrationScenarios" })
+	public void createAppUploadDocDeleteDocByDocId() {
+
+		// Create PreReg
+		response = lib.CreatePreReg();
+		String PrId = response.jsonPath().get("response.preRegistrationId").toString();
+		// Upload document
+
+		response = lib.documentUpload(response);
+		String documentId = lib.getDocId(response);
+
+		// Delete document by document Id
+
+		response = lib.deleteAllDocumentByDocId(documentId, PrId);
+
+		String actualMessage =response.jsonPath().get("response.message").toString();
+		lib.compareValues(actualMessage, "Document successfully deleted");
+
+		// Check if document is deleted successfully
+		response = lib.deleteAllDocumentByDocId(documentId, PrId);
+
+		actualMessage =lib.getErrorMessage(response);
+		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
+
 	}
+
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
 		// authToken = lib.getToken();

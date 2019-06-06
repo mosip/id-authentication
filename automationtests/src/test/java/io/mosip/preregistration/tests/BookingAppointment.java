@@ -19,6 +19,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -453,6 +454,11 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken = preRegLib.getToken();
+	}
 
 	/**
 	 * Declaring the Booking Appointment Resource URI and getting the test case
@@ -468,7 +474,7 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 		// Booking Appointment Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_BookingAppointmentURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		
 	}
 
 	@Override

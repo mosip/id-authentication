@@ -103,7 +103,7 @@ public class QRCode extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "QRCode")
 	public Object[][] readData(ITestContext context) throws Exception {
-		switch (testLevel) {
+		switch ("smoke") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":

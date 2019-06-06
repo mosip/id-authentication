@@ -110,7 +110,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Get PreReg Data
 		response = lib.getPreRegistrationData(preRegID);
 
-		lib.compareValues(response.jsonPath().get("response.preRegistrationId").toString(), preRegID);
+		lib.compareValues(lib.getPreId(response), preRegID);
 		// Update PreReg
 		try {
 			response = lib.updatePreReg(preRegID);
@@ -122,16 +122,16 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Get PreReg Data
 		response = lib.getPreRegistrationData(preRegID);
 
-		lib.compareValues(response.jsonPath().get("response.preRegistrationId").toString(), preRegID);
+		lib.compareValues(lib.getPreId(response), preRegID);
 
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUploadDocDeleteDocByDocId() {
-
+		String actualMessage=null;
 		// Create PreReg
 		response = lib.CreatePreReg();
-		String PrId = response.jsonPath().get("response.preRegistrationId").toString();
+		String PrId =lib.getPreId(response);
 		// Upload document
 
 		response = lib.documentUpload(response);
@@ -140,21 +140,23 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Delete document by document Id
 
 		response = lib.deleteAllDocumentByDocId(documentId, PrId);
-
-		String actualMessage = lib.getErrorMessage(response);
+		try {
+			 actualMessage =response.jsonPath().get("response.message").toString();
+		} catch (NullPointerException e) {
+		Assert.assertTrue(false,"Exception while getting message from deleteDocumentByDocId Response");
+		}
 		lib.compareValues(actualMessage, "Document successfully deleted");
 
 		// Check if document is deleted successfully
 		response = lib.deleteAllDocumentByDocId(documentId, PrId);
 
-		actualMessage =lib.getErrorCode(response);
+		actualMessage =lib.getErrorMessage(response);
 		lib.compareValues(actualMessage, "Documents is not found for the requested pre-registration id");
 
 	}
-
 	@Test(groups = { "IntegrationScenarios" })
 	public void createAppUploadDocDeleteDocByPreRegId() {
-
+		String actualMessage=null;
 		// Create PreReg
 
 		response = lib.CreatePreReg();
@@ -169,7 +171,11 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 
 		response = lib.deleteAllDocumentByPreId(preRegID);
 
-		String actualMessage = response.jsonPath().get("response.message").toString();
+		try {
+			 actualMessage =response.jsonPath().get("response.message").toString();
+		} catch (NullPointerException e) {
+		Assert.assertTrue(false,"Exception while getting message from deleteDocumentByPreRegId Response");
+		}
 		lib.compareValues(actualMessage,
 				"All documents assosiated with requested pre-registration id deleted sucessfully");
 
@@ -191,7 +197,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
-		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+		preRegID = lib.getPreId(response);
 
 		// Discard App
 		response = lib.discardApplication(preRegID);
@@ -212,13 +218,12 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
-		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+		preRegID =lib.getPreId(response);
 		// Update PreReg
-
 		response = lib.updatePreReg(preRegID);
 		// Discard App
 		response = lib.discardApplication(preRegID);
-		lib.compareValues(response.jsonPath().getString("response.preRegistrationId").toString(), preRegID);
+		lib.compareValues(lib.getPreId(response), preRegID);
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
@@ -227,7 +232,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 
 		response = lib.CreatePreReg();
-		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+		preRegID =lib.getPreId(response);
 
 		// Upload document
 

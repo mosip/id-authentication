@@ -92,7 +92,7 @@ public SoftAssert softAssert = new SoftAssert();
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		
-		switch ("smoke") {
+		switch ("smokeAndRegression") {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -200,8 +200,12 @@ public SoftAssert softAssert = new SoftAssert();
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
+		
+	}
+	@BeforeClass
+	public void getToken()
+	{
 		authToken = lib.getToken();
-
 	}
 
 	@Override
