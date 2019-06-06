@@ -115,7 +115,7 @@ public class UpdateUINController extends BaseController implements Initializable
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession()!= null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				SelectionListDTO selectionListDTO = getRegistrationDTOFromSession().getSelectionListDTO();
 
 				uinId.setText(selectionListDTO.getUinId());
