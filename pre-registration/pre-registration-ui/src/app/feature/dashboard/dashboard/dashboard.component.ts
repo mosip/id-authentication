@@ -229,18 +229,28 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
+    console.log('applicants', applicants);
+
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
+    const demographicMetadata = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.demographicMetadata];
+
     let primaryIndex = 0;
     let secondaryIndex = 1;
-    let lang = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
+    //new dashboard api applicantResponse['demographicMetadata']
+    let lang =
+      applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
     if (lang !== this.primaryLangCode) {
       primaryIndex = 1;
       secondaryIndex = 0;
     }
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
-      name: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex]['value'],
+      //new dashboard api ['demographicMetadata']
+      name:
+        applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex][
+          'value'
+        ],
       appointmentDateTime: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto]
         ? this.createAppointmentDateTime(applicantResponse)
         : '-',
@@ -252,9 +262,13 @@ export class DashBoardComponent implements OnInit {
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
       regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
+      //new dashboard api ['demographicMetadata']
       nameInSecondaryLanguage:
-        applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][secondaryIndex]['value'],
-      postalCode: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
+        applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][
+          secondaryIndex
+        ]['value'],
+      //new dashboard api ['demographicMetadata']
+      postalCode: applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
 
     return applicant;

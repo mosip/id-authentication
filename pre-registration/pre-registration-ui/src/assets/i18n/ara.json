@@ -486,7 +486,13 @@
       "title_success": "نجاح",
       "msg_success": "اكتملت عملية حجز الموعد بنجاح",
       "title_failure": "بالفشل",
-      "msg_failure": "فشل موعد الحجز"
+      "msg_failure": "فشل موعد الحجز",
+      "deletedApplicant1":[
+        "لم يتم تحديد المستخدم التالي في أي وقت",
+        "هل تريد متابعة الحجز؟"
+      ],
+      "yesButtonText":"نعم فعلا",
+      "noButtonText": "لا"
     }
   },
   "appointmentCentreSearch": {
