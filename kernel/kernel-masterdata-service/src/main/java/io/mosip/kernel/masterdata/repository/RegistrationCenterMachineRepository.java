@@ -32,5 +32,9 @@ public interface RegistrationCenterMachineRepository
 
 	@Query("FROM RegistrationCenterMachine rm where rm.registrationCenterMachinePk.regCenterId = ?1 AND (rm.isDeleted is null or rm.isDeleted=false) and rm.isActive = true")
 	List<RegistrationCenterMachine> findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(String regCenterId);
+	
+	@Query(value="SELECT rcm.regcntr_id, mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active,mm.validity_end_dtimes, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes FROM master.machine_master mm inner join master.reg_center_machine rcm on mm.id = rcm.machine_id where (rcm.is_deleted is null or rcm.is_deleted=false) and (mm.is_deleted is null or mm.is_deleted=false) and rcm.regcntr_id=?1", nativeQuery=true )
+	List<Object[]> findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNullMachine(String regCenterId);
+	
 
 }

@@ -26,6 +26,7 @@ public class LdapConstants {
 	public static final String ROLE_OCCUPANT = "roleOccupant";
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
+	public static final String UID="uid";
 
 	public static final String LDAP_INITAL_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
 	public static final String PWD_ACCOUNT_LOCKED_TIME_ATTRIBUTE = "pwdAccountLockedTime";

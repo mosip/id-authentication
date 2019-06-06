@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.Machine;
 
 @Repository
 public interface MachineRepository extends BaseRepository<Machine, String> {
+	// PagingAndSortingRepository<Machine, Integer>
 	/**
 	 * This method trigger query to fetch the all Machine details.
 	 * 
@@ -32,8 +35,10 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * id and language code.
 	 * 
 	 * 
-	 * @param id       Machine Id provided by user
-	 * @param langCode language code provided by user
+	 * @param id
+	 *            Machine Id provided by user
+	 * @param langCode
+	 *            language code provided by user
 	 * @return List MachineDetail fetched from database
 	 */
 
@@ -44,7 +49,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * This method trigger query to fetch the Machine detail for the given language
 	 * code.
 	 * 
-	 * @param langCode langCode provided by user
+	 * @param langCode
+	 *            langCode provided by user
 	 * 
 	 * @return List MachineDetail fetched from database
 	 */
@@ -54,7 +60,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
 	 * 
-	 * @param id machine Id provided by user
+	 * @param id
+	 *            machine Id provided by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
@@ -65,7 +72,8 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	/**
 	 * This method trigger query to fetch the Machine detail for the given id code.
 	 * 
-	 * @param machineSpecId machineSpecId provided by user
+	 * @param machineSpecId
+	 *            machineSpecId provided by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
@@ -77,13 +85,29 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	 * This method trigger query to fetch the Machine detail for the given id and
 	 * language code.
 	 * 
-	 * @param id       machine Id provided by user
-	 * @param langCode machine language code by user
+	 * @param id
+	 *            machine Id provided by user
+	 * @param langCode
+	 *            machine language code by user
 	 * 
 	 * @return MachineDetail fetched from database
 	 */
 
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false) AND m.isActive = true")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(String id, String langCode);
+
+	/**
+	 * This method trigger query to fetch the Machine detail those are mapped with
+	 * the given regCenterId
+	 * 
+	 * @param regCenterId
+	 *            regCenterId provided by user
+	 * @return Machine fetch the list of Machine details those are mapped with the
+	 *         given regCenterId
+	 */
+	@Query(value = "SELECT mm.id, mm.name, mm.mac_address, mm.serial_num, mm.ip_address, mm.mspec_id, mm.lang_code, mm.is_active,mm.validity_end_dtimes, mm.cr_by, mm.cr_dtimes, mm.upd_by, mm.upd_dtimes, mm.is_deleted, mm.del_dtimes FROM master.machine_master mm inner join master.reg_center_machine rcm on mm.id = rcm.machine_id where rcm.regcntr_id =?1", countQuery = "SELECT count(*) FROM  master.machine_master mm inner join master.reg_center_machine rcm on mm.id = rcm.machine_id where rcm.regcntr_id =?1", nativeQuery = true)
+	Page<Machine> findMachineByRegCenterId(String regCenterId, Pageable pageable);
+	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
+	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(String id, String langCode);
 
 }
