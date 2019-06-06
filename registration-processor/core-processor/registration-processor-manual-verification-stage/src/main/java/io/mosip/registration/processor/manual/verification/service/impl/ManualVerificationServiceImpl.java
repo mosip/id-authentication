@@ -281,7 +281,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setRegistrationStageName(stageName);
 
 			if (manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
-				if (messageDTO.getReg_type().toString().equalsIgnoreCase(RegistrationType.LOST.toString()))
+				if (manualVerificationDTO.getMatchedRefType().equalsIgnoreCase(RegistrationType.LOST.toString()))
 					packetInfoManager.saveRegLostUinDet(registrationId, manualVerificationDTO.getMatchedRefId());
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);

@@ -21,7 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -64,6 +63,7 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsRes
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
@@ -92,6 +92,9 @@ public class OSIValidatorTest {
 	/** The registration status service. */
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
+	@Mock
+	private IdRepoService idRepoService;
 
 	/** The adapter. */
 	@Mock
@@ -610,7 +613,6 @@ public class OSIValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testIntroducerUINNull() throws ApisResourceAccessException, IOException, Exception {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 
@@ -622,7 +624,7 @@ public class OSIValidatorTest {
 
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(12345);// .thenReturn(map);
 
-		// Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
+		Mockito.when(idRepoService.getUinByRid(any(), any())).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
 	}

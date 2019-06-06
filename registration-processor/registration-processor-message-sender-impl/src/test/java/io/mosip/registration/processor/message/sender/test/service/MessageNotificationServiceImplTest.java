@@ -18,7 +18,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -56,6 +55,7 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.service.impl.MessageNotificationServiceImpl;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -77,6 +77,9 @@ public class MessageNotificationServiceImplTest {
 	/** The adapter. */
 	@Mock
 	private FileSystemAdapter adapter;
+
+	@Mock
+	private IdRepoService idRepoService;
 
 	/** The template generator. */
 	@Mock
@@ -383,7 +386,6 @@ public class MessageNotificationServiceImplTest {
 	}
 
 	@Test(expected = IDRepoResponseNull.class)
-	@Ignore
 	public void testIDResponseNull() throws Exception {
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
