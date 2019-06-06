@@ -20,6 +20,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
@@ -40,8 +41,6 @@ public class IdRepoManager {
 
 	private static final String UIN = "UIN";
 
-	private static final String USERID = "USERID";
-
 	private static final String VERSION = "v1";
 
 	private static final String MOSIP_VID_UPDATE = "mosip.vid.update";
@@ -50,7 +49,6 @@ public class IdRepoManager {
 
 	private static final String VID = "vid";
 
-	/** The Constant ERRORMESSAGE_VID. */
 	private static final String ERRORMESSAGE = "message";
 
 	private static final String ERROR_CODE = "errorCode";
@@ -112,7 +110,7 @@ public class IdRepoManager {
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			if (environment.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()).equalsIgnoreCase(
-					(String) ((Map<String, Object>) response.get("response")).get(IdAuthCommonConstants.STATUS))) {
+					(String) ((Map<String, Object>) response.get(IdAuthCommonConstants.RESPONSE)).get(IdAuthCommonConstants.STATUS))) {
 				response.put("uin", uin);
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
@@ -133,7 +131,7 @@ public class IdRepoManager {
 						} else if (idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
 								&& IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode().equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-				                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),UIN));
+				                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.UIN.getType()));
 						}
 
 					} else {
@@ -163,7 +161,7 @@ public class IdRepoManager {
 
 			buildRequest.setPathVariables(params);
 			Map<String, Object> ridMap = restHelper.requestSync(buildRequest);
-			rid = (String) ((Map<String, Object>) ridMap.get("response")).get("rid");
+			rid = (String) ((Map<String, Object>) ridMap.get(IdAuthCommonConstants.RESPONSE)).get("rid");
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
 					e.getErrorText());
@@ -176,7 +174,7 @@ public class IdRepoManager {
 							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
 									&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),USERID));
+			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
@@ -225,7 +223,7 @@ public class IdRepoManager {
 											.equalsIgnoreCase((String) map.get(ERROR_CODE)))
 									|| IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode().equalsIgnoreCase((String)map.get(ERROR_CODE)))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-								                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),USERID));
+								                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
 					} else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
@@ -251,7 +249,7 @@ public class IdRepoManager {
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.VID_SERVICE, null, Map.class);
 			buildRequest.setPathVariables(params);
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
-			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get("errors");
+			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get(ERRORS);
 			if ((null == vidErrorList || vidErrorList.isEmpty()) && vidMap.get("response") instanceof Map) {
 				uin = (Long) ((Map<String, Object>) vidMap.get("response")).get(UIN);
 			}
@@ -273,7 +271,7 @@ public class IdRepoManager {
 					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERROR_CODE)
 							&& ((String) map.get(ERROR_CODE)).equalsIgnoreCase(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode()))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),"VID"));
+			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.VID.getType()));
 					}
 
 					else if (vidErrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE)
