@@ -542,11 +542,7 @@ public class LdapDataStore implements DataStore {
 		if (!searchResult.hasMore()) {
 			throw new AuthManagerException("ADMN-ACM-MOB-NOT-FOUND", "Mobile is registered/not present");
 		}
-		while (searchResult.hasMore()) {
-			Attributes attributes = searchResult.next().getAttributes();
-			Attribute uid = attributes.get("uid");
-			userNameDto.setUserName((String) uid.get());
-		}
+		
 
 		return userNameDto;
 	}
