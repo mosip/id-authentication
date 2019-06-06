@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -90,6 +93,15 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
+		if(testCaseName.contains("smoke") | testCaseName.contains("validating_request")|testCaseName.contains("firstUpdateDate")|testCaseName.contains("secondUpdateDate")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			actualRequest.put("eff_dtimes", time);
+		}
 		// Calling the get method 
 		Response res=applicationLibrary.getWithPathParam(getUserHistory, actualRequest,cookie);
 		

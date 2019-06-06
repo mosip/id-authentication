@@ -18,7 +18,7 @@
 		
 			<test name="Kernel Tests">
 						 <classes>
-                          <class name="io.mosip.kernel.tests.AuditLog" />   
+                           <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -75,7 +75,7 @@
                  </classes>
 				</test>   
 
-		  <test name="PreReg Tests">
+ 		  <test name="PreReg Tests">
 		<classes>
 		
 			 <class name="io.mosip.preregistration.tests.BatchJob" />		
@@ -167,7 +167,7 @@
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> 
 		</classes>
-	</test>
+	</test> 
 </suite>
 		
 	
