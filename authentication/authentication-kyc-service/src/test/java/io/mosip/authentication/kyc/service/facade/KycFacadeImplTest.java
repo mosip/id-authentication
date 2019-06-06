@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -108,7 +107,6 @@ public class KycFacadeImplTest {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "idAuthService", idAuthService);
 		ReflectionTestUtils.setField(kycFacade, "env", env);
-		ReflectionTestUtils.setField(authFacadeImpl, "idInfoFetcher", idInfoFetcher);
 		ReflectionTestUtils.setField(authFacadeImpl, "env", env);
 		ReflectionTestUtils.setField(authFacadeImpl, "bioAuthService", bioAuthService);
 	}
@@ -117,6 +115,8 @@ public class KycFacadeImplTest {
 	public void TestKycFacade() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -184,10 +184,6 @@ public class KycFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, "863537", idInfo, "123456")).thenReturn(authStatusInfo);
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
 		kycFacade.authenticateIndividual(authRequestDTO, true, "123456");
@@ -197,6 +193,7 @@ public class KycFacadeImplTest {
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVersion("1.1");
 		kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -255,12 +252,8 @@ public class KycFacadeImplTest {
 		authResponseDTO.setErrors(null);
 		authResponseDTO.setTransactionID("123456789");
 		authResponseDTO.setVersion("1.0");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(kycAuthRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
 		Mockito.when(kycService.retrieveKycInfo(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycResponseDTO);
-		Mockito.when(idInfoFetcher.getUinOrVidType(kycAuthRequestDTO)).thenReturn(values);
 		assertNotNull(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "123456"));
 
 	}

@@ -5,8 +5,9 @@ import java.util.Map;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
- * @author  Arun Bose
- * The Interface MatchingStrategy.
+ *
+ * The Interface MatchingStrategy adopts the various matching strategies across all authtypes and its corresponding attributes.
+ *  @author  Arun Bose
  */
 public interface MatchingStrategy {
 

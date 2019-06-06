@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +28,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.common.service.validator.IdAuthValidator;
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;

@@ -3,7 +3,7 @@ package io.mosip.authentication.common.service.policy.dto;
 import lombok.Data;
 
 /**
- *The Class KYCAttributes which has attributes for KYC type.
+ *The Class KYCAttributes has attributes for KYC type which is mapped in auth policy json.
  *@author Arun Bose S
  */
 @Data
