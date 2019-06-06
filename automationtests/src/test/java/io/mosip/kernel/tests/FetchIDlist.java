@@ -46,7 +46,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	private final String apiName = "fetchIDlist";
 	private final String requestJsonName = "fetchIDlistRequest";
 	private final String outputJsonName = "fetchIDlistOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchIDlist_URI = props.get("FetchIDlist_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -103,7 +103,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchIDlist_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchIDlist_URI,objectData,cookie);
 
 
 		// add parameters to remove in response before comparison like time stamp

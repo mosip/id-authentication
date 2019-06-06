@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -35,13 +33,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.kernel.service.AssertKernel;
-import io.mosip.service.BaseTestCase;
 import io.mosip.kernel.util.TestCaseReader;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 /**
@@ -59,7 +57,7 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 	private final String apiName = "FetchTemplate";
 	private final String requestJsonName = "fetchTemplateRequest";
 	private final String outputJsonName = "fetchTemplateOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTemplate_URI = props.get("FetchTemplate_URI").toString();
 	private final String FetchTemplate_lang_URI = props.get("FetchTemplate_lang_URI").toString();
 	private final String FetchTemplate_id_lang_URI = props.get("FetchTemplate_id_lang_URI").toString();
@@ -123,15 +121,14 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		if(objectData != null) {
 				if(objectData.containsKey("templatetypecode"))
-					response = applicationLibrary.getRequestPathPara(FetchTemplate_id_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchTemplate_id_lang_URI, objectData,cookie);
 					else
-					response = applicationLibrary.getRequestPathPara(FetchTemplate_lang_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(FetchTemplate_lang_URI, objectData,cookie);
 
 		}
 		// sending request to get request without param
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchTemplate_URI, objectData,cookie);
+			response = applicationLibrary.getWithoutParams(FetchTemplate_URI, cookie);
 			objectData = null;
 		}
 		//This method is for checking the authentication is pass or fail in rest services
@@ -142,15 +139,15 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			if (responseJson == null || !responseJson.containsKey("templates"))
 				Assert.assertTrue(false, "Response does not contain templates");
-			String queryPart = "select count(*) from master.template";
+			String queryPart = "select count(*) from master.template where is_active = true";
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("templatetypecode"))
-					query = query + " where template_typ_code = '"
+					query = query + " and template_typ_code = '"
 							+ objectData.get("templatetypecode") + "' and lang_code = '" + objectData.get("langcode")
 							+ "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 

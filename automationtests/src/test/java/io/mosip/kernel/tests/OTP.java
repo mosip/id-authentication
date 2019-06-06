@@ -54,7 +54,7 @@ public class OTP extends BaseTestCase implements ITest {
 	private final String apiName = "OTP";
 	private final String requestJsonName = "OTPRequest";
 	private final String outputJsonName = "OTPOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String OTPGeneration = props.get("OTPGeneration").toString();
 	private final String OTPValidation = props.get("OTPValidation").toString();
 
@@ -130,7 +130,7 @@ public class OTP extends BaseTestCase implements ITest {
 				}
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+				response = applicationLibrary.postWithJson(OTPGeneration, objectData.toJSONString(), cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
@@ -155,7 +155,7 @@ public class OTP extends BaseTestCase implements ITest {
 					int attempt = Integer.parseInt(props.get("attempt").toString());
 					for(int i=0;i<attempt;i++)
 					{
-						response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+						response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
 
 					}
 					break;
@@ -190,7 +190,7 @@ public class OTP extends BaseTestCase implements ITest {
 					reqJson.put("otp", otp);
 				}
 				
-				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+				response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
 				//This method is for checking the authentication is pass or fail in rest services
 				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
@@ -208,10 +208,10 @@ public class OTP extends BaseTestCase implements ITest {
 				int attempt = Integer.parseInt(props.get("attempt").toString());
 				for(int i=0;i<=attempt;i++)
 				{
-					response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+					response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
 				}
 				reqJson.remove("otp");
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+				response = applicationLibrary.postWithJson(OTPGeneration, objectData.toJSONString(),cookie);
 			}
 			listOfElementToRemove.add("otp");
 			logger.info("Obtained Response: " + response);

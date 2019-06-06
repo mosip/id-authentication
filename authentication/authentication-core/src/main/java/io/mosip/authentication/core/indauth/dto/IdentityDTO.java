@@ -6,10 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
+ * General-purpose of {@code IdentityDTO} class used to provide Identity info's
  * 
  * @author Dinesh Karuppiah.T
  */
-
 @Data
 public class IdentityDTO {
 

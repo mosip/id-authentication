@@ -3,12 +3,11 @@ package io.mosip.authentication.core.otp.dto;
 import lombok.Data;
 
 /**
- * 
+ * General-purpose of {@code MaskedResponseDTO} class used to provide
+ * MaskedResponse Info's
  * 
  * @author Dinesh Karuppiah.T
- * 
  */
-
 @Data
 public class MaskedResponseDTO {
 

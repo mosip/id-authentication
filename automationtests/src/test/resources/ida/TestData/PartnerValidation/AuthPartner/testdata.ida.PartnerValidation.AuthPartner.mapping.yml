@@ -1,0 +1,1330 @@
+testdata:
+  Authentication_AuthPartnerValidation_smoke_For UIN_Pos_01:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $IGNORE$
+      
+  AuthPartner_Invalid_UIN_Neg_02:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: 1234567890
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: sarasa
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
+     
+  AuthPartner_Invalid_reqTime_For UIN_Neg_03:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $INVALIDTIMESTAMPZ$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+   
+  AuthPartner_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+  
+  AuthPartner_Invalid_reqTime_lessthan24hrs_For UIN_Neg_05:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      
+  AuthPartner_Invalid_individualIdType_For UIN_Neg_06:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: ABC
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      
+  AuthPartner_Invalid_version_For UIN_Neg_07:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+   
+  AuthPartner_Invalid_txnID_For UIN_Neg_08:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$ 
+      output.1.response.n.err.errorCode:  $IGNORE$
+   
+  AuthPartner_Missing_UIN_For UIN_Neg_09:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: saira
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      
+  AuthPartner_Missing_txnID_For UIN_Neg_10:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
+  
+  AuthPartner_Missing_reqTime_For UIN_Neg_11:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.transactionID:  $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
+  
+  AuthPartner_Missing_version_For UIN_Neg_12:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID:  $RANDOM:N:10$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
+      
+  AuthPartner_Missing_individualIdType_For UIN_Neg_13:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
+  
+  AuthPartner_Invalid_UIN which is not as per data definition_Neg_14:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: ABD1234567
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: sarasa
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
+     
+  AuthPartner_Invalid_reqTime which is not as per definition_For UIN_Neg_15:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $INVALIDTIMESTAMPZ$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      
+  AuthPartner_Invalid_individualIdType which is not as per defenition_For UIN_Neg_16:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: 123456
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      
+  AuthPartner_Invalid_version which is not as per defenition_For UIN_Neg_17:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: abc
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+   
+  AuthPartner_Invalid_txnID which is not as per defenition_For UIN_Neg_18:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: abcdefg12
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$ 
+      output.1.response.n.err.errorCode:  $IGNORE$
+      
+  Authentication_AuthPartnerValidation_Invalid Parnter ID_For UIN_Neg_21:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InValidPID$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
+      
+  Authentication_AuthPartnerValidation_Invalid MSK Liscence Key_For UIN_Neg_22:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InValidMLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
+  
+  Authentication_AuthPartnerValidation_PIDMISP_NotMapped_For UIN_Neg_23:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:MISPPID_NotMapped$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
+    
+  Authentication_AuthPartnerValidation_Expired Liscence Key_For UIN_Neg_24:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ExpiredMSLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:ExpiredMSLK:errorMessage$
+      output.1.response.n.err.errorCode: $errors:ExpiredMSLK:errorCode$
+   
+  Authentication_AuthPartnerValidation_Inactive Liscence Key_For UIN_Neg_25:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InactiveMSLK$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InactiveMSLK:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InactiveMSLK:errorCode$  
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutGenderDemo_smoke_For UIN_Neg_26:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-gender-data:
+      identityReq.valuegender: $idrepo~$input.auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.languagegender: $idrepo~$input.auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutDOBDemo_smoke_For UIN_Neg_27:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-DOB-data:
+      identityReq.valuedateOfBirth: $idrepo~$input.auth-request:AuthReq.individualId$~inputdateOfBirth$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutEmail_Demo_smoke_For UIN_Neg_28:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-email-data:
+      identityReq.valueemail: $idrepo~$input.auth-request:AuthReq.individualId$~email$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutAge_Demo_smoke_For UIN_Neg_29:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-age-data:
+      identityReq.valueage: $idrepo~$input.auth-request:AuthReq.individualId$~agedateOfBirth$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutPhone_Demo_smoke_For UIN_Neg_30:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-phone-data:
+      identityReq.valuephone: $idrepo~$input.auth-request:AuthReq.individualId$~phone$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+    
+  Authentication_AuthPartnerValidation_PolicyWithoutFinger_Bio_smoke_For UIN_Neg_31:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Bio$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.bio: BOOLEAN:true
+    input.identity-encrypt-bio-data:
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutBioFinger:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutBioFinger:errorCode$
+      
+  Authentication_AuthPartnerValidation_No Authtype Selected_For UIN_Neg_32:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:valuedocuments0~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
+      output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutIris_Bio_smoke_For UIN_Neg_33:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Bio$
+    input.auth-request:
+      AuthReq.individualId: $UIN$     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.bio: BOOLEAN:true
+    input.identity-encrypt-bio-data:
+      identityReq.bioSubType: Right
+      identityReq.bioType: Iris
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutBioIris:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutBioIris:errorCode$
+      
+  Authentication_AuthPartnerValidation_MSLK not Registered to PID_For UIN_Neg_34:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:MLKNotRegToPID$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
+    
+  Authentication_AuthPartnerValidation_smoke_For VID_Pos_35:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $IGNORE$
+      
+  AuthPartner_Invalid_VID_Neg_36:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: 1234567890
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: sarasa
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
+     
+  AuthPartner_Invalid_reqTime_For VID_Neg_37:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $INVALIDTIMESTAMPZ$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+   
+  AuthPartner_Invalid_reqTime_greaterthan24hrs_For VID_Neg_38:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+  
+  AuthPartner_Invalid_reqTime_lessthan24hrs_For VID_Neg_39:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      
+  AuthPartner_Invalid_individualIdType_For VID_Neg_40:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: ABC
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      
+  AuthPartner_Invalid_version_For VID_Neg_40:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: 0.!
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+   
+  AuthPartner_Invalid_txnID_For VID_Neg_41:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$ 
+      output.1.response.n.err.errorCode:  $IGNORE$
+   
+  AuthPartner_Missing_VID_For VID_Neg_42:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: saira
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      
+  AuthPartner_Missing_txnID_For VID_Neg_43:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
+  
+  AuthPartner_Missing_reqTime_For VID_Neg_44:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.transactionID:  $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
+  
+  AuthPartner_Missing_version_For VID_Neg_45:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID:  $RANDOM:N:10$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
+      
+  AuthPartner_Missing_individualIdType_For VID_Neg_46:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: $REMOVE$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
+  
+  AuthPartner_Invalid_VID which is not as per data definition_Neg_47:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: ABD1234567
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: sarasa
+      identityReq.languagename: fra
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
+     
+  AuthPartner_Invalid_reqTime which is not as per definition_For VID_Neg_48:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $INVALIDTIMESTAMPZ$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      
+  AuthPartner_Invalid_individualIdType which is not as per defenition_For VID_Neg_49:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: 123456
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      
+  AuthPartner_Invalid_version which is not as per defenition_For VID_Neg_50:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: abc
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+   
+  AuthPartner_Invalid_txnID which is not as per defenition_For VID_Neg_51:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: abcdefg12
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$ 
+      output.1.response.n.err.errorCode:  $IGNORE$
+      
+  Authentication_AuthPartnerValidation_Invalid Parnter ID_For VID_Neg_54:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InValidPID$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
+      
+  Authentication_AuthPartnerValidation_Invalid MSK Liscence Key_For VID_Neg_55:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InValidMLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
+    
+  Authentication_AuthPartnerValidation_PIDMISP_NotMapped_For VID_Neg_56:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:MISPPID_NotMapped$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PIDMISPNotMapped:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PIDMISPNotMapped:errorCode$
+    
+  Authentication_AuthPartnerValidation_Expired Liscence Key_For VID_Neg_57:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ExpiredMSLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:ExpiredMSLK:errorMessage$
+      output.1.response.n.err.errorCode: $errors:ExpiredMSLK:errorCode$
+   
+  Authentication_AuthPartnerValidation_Inactive Liscence Key_For VID_Neg_58:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InactiveMSLK$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InactiveMSLK:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InactiveMSLK:errorCode$   
+  
+  Authentication_AuthPartnerValidation_PolicyWithoutDemo_For VID_Neg_59:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+    
+  Authentication_AuthPartnerValidation_PolicyWithoutGenderDemo_For VID_Neg_60:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-gender-data:
+      identityReq.valuegender: $idrepo~$input.auth-request:AuthReq.individualId$~valuegender$
+      identityReq.languagegender: $idrepo~$input.auth-request:AuthReq.individualId$~valuegender$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutDOBDemo_For VID_Neg_61:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-DOB-data:
+      identityReq.valuedateOfBirth: $idrepo~$input.auth-request:AuthReq.individualId$~inputdateOfBirth$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutEmail_Demo_For VID_Neg_62:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-email-data:
+      identityReq.valueemail: $idrepo~$input.auth-request:AuthReq.individualId$~email$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutAge_Demo_For VID_Neg_63:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-age-data:
+      identityReq.valueage: $idrepo~$input.auth-request:AuthReq.individualId$~agedateOfBirth$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutPhone_Demo_For VID_Neg_64:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-phone-data:
+      identityReq.valuephone: $idrepo~$input.auth-request:AuthReq.individualId$~phone$
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutDemo:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutDemo:errorCode$
+          
+  Authentication_AuthPartnerValidation_PolicyWithoutFinger_Bio_For VID_Neg_65:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Bio$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.bio: BOOLEAN:true
+    input.identity-encrypt-bio-data:
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutBioFinger:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutBioFinger:errorCode$
+      
+  Authentication_AuthPartnerValidation_No Authtype Selected_For VID_Neg_66:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Demo$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-bio-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
+      output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutIris_Bio_For VID_Neg_67:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_Bio$
+    input.auth-request:
+      AuthReq.individualId: $VID$     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.bio: BOOLEAN:true
+    input.identity-encrypt-bio-data:
+      identityReq.bioSubType: Right
+      identityReq.bioType: Iris
+      identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutBioIris:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutBioIris:errorCode$
+    
+  Authentication_AuthPartnerValidation_MSLK not Registered to PID_For VID_Neg_68:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:MLKNotRegToPID$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
+    
+  Authentication_AuthPartnerValidation_partnerID not registered_For UIN_Neg_70:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
+      
+  Authentication_AuthPartnerValidation_partnerID not registered_For VID_Neg_71:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
+      
+  Authentication_AuthPartnerValidation_partnerID is inactive_For UIN_Neg_72:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InactivePID$
+    input.auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PartnerIDDeactivated:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PartnerIDDeactivated:errorCode$
+      
+  Authentication_AuthPartnerValidation_partnerID is inactive_For VID_Neg_73:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:InactivePID$
+    input.auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-demo-data:
+      identityReq.valuename: $idrepo~$input.auth-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      identityReq.languagename: $idrepo~$input.auth-request:AuthReq.individualId$~languagefullName:langcode:TestData:primary_lang_code$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PartnerIDDeactivated:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PartnerIDDeactivated:errorCode$
+  
+  Authentication_AuthPartnerValidation_PolicyWithoutOtpAuth_For UIN_Neg_74:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_OTP$
+    input.auth-request:
+      AuthReq.individualId: 4851401954     
+      AuthReq.individualIdType: UIN
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.otp: BOOLEAN:true
+    input.identity-encrypt-age-data:
+      identityReq.otpValue: 818215
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutOTP:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutOTP:errorCode$
+      
+  Authentication_AuthPartnerValidation_PolicyWithoutOtpAuth_For VID_Neg_75:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK_Without_OTP$
+    input.auth-request:
+      AuthReq.individualId: 9670426813897408     
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.otp: BOOLEAN:true
+    input.identity-encrypt-age-data:
+      identityReq.otpValue: 818215
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:PolicyWithoutOTP:errorMessage$
+      output.1.response.n.err.errorCode: $errors:PolicyWithoutOTP:errorCode$

@@ -1,0 +1,456 @@
+#keyword: <array of data>
+id_otp_valid:
+      - mosip.identity.otp
+id_otp_invalid:
+      - mosip.otp.identity
+      - otp.mosip.identity
+id_auth_invalid:
+      - mosip.auth.identity
+      - auth.mosip.identity
+id_CreateVid_valid:
+      - mosip.vid.create
+id_UpdateVid_valid:
+      - mosip.vid.update
+indvId_Uin_valid:
+      - UIN
+indvId_Vid_valid:
+      - VID
+indvId_userid_valid:
+      - USERID
+userid_invalid:
+      - 12345
+      - 34567
+      - yu679
+indvId_invalid:
+      - VI
+      - UI
+      - A
+      - UVD
+      - 123
+      - ^UI
+id_version_invalid:
+      - 9.*
+      - A.0
+      - 8.D
+      - ^.*
+auth_Pass_status:
+      - BOOLEAN:true
+auth_Fail_status:
+      - BOOLEAN:false
+txnID_Invalid:
+      - 6789056
+      - Ar678Hj
+      - 123456789^
+      - 123789009  
+timestamp_invalid:
+      - 2019-04-01T11:48:59.059+0530    
+      - 2019/04/01T11:48:59.059+05:30
+      - 2019-04/01T11:48:59.059+05:30
+      - 2019-04-0111:48:59.059+05:30
+      - 2019-04-01^11:48:59.059+05:30
+uin_invalid:
+      - 1234567890
+      - 2344567&70
+      - 1234R45780
+      - 87657
+      - AYGUI
+      - 9*(_%$$@!
+expired_vid_invalid:
+      - 9835845389149251
+vid_invalid:
+      - 9835845389149
+      - 983584538149251
+      - 983584538149251
+otpChannel_invalid:
+      - tree
+      - flse
+      - 1234
+      - "true"
+      - "false"
+      - tr^e
+      - fa%ls
+#idrepo
+name_valid:
+      - Vignesh Ravi
+      - Mary Rose
+      - Bala CC
+      - Mindtree Mind
+      - Full Name
+      - Athila Banu
+      - Mosip Test
+      - Automation Test
+      - Arjun Chandra
+      - Dharini Chandra
+      - Yoga Lakshmi
+      - Ragav K
+      - Himaja H
+      - Chitti Robo
+      - Sravya S
+      - Arun Boss
+      - Dinesh Pudukottai
+      - Loga Lead
+      - Arthif Alan
+      - Mohammed Arshad
+      - Asif Jalaudeen
+french_lang_code_valid:
+      - fra
+arabic_lang_code_valid:
+      - ara
+english_lang_code_valid:
+      - eng
+dob_valid:
+      - 1965/04/11
+      - 1967/05/12
+      - 1970/06/13
+      - 1973/07/14
+      - 1976/08/15
+      - 1978/09/16
+      - 1982/10/17
+      - 1985/11/18
+      - 1990/12/19
+      - 1994/01/20
+      - 2001/02/11
+dob_Invalid:
+      - 1965-04-11
+      - 04-11-1965
+      - 06/13/1970
+      - 1973/07/14
+      - 09/1930/07
+
+male_gender_code_valid:
+      - MLE
+female_gender_code_valid:
+      - FLE
+other_gender_code_valid:
+      - OTH
+male_gender_english_valid:
+      - Male
+female_gender_english_valid:
+      - Female
+other_gender_english_valid:
+      - Others
+male_gender_french_valid:
+      - Mâle
+female_gender_french_valid:
+      - Femelle
+other_gender_french_valid:
+      - Dautres
+male_gender_arabic_valid:
+      - الذكر
+female_gender_arabic_valid:
+      - أنثى
+other_gender_arabic_valid:
+      - الآخرين
+female_gender_eng_valid:
+      - Female
+other_gender_eng_valid:
+      - Others
+male_gender_primary_valid:
+      - Mâle
+female_gender_primary_valid:
+      - Femelle
+other_gender_primary_valid:
+      - Dautres
+male_gender_secondary_valid:
+      - الذكر
+female_gender_secondary_valid:
+      - أنثى
+other_gender_arabic_valid:
+      - الآخرين
+addressLine1_valid:
+      - Dubai Main Road
+      - Annai Theresa Street
+      - Ramanujan IT Park
+      - MGR City
+      - Mount Read
+      - Magarpata City
+      - Bhaubali Street
+      - Vivek Street
+      - Mary Rose Street
+      - Sravya Street
+      - Chitti Robo Road
+      - Chitti Robo Street
+      - Chitti Robo Nagar
+addressLine2_valid:
+      - Dubai Cross Street
+      - Annai Illam
+      - Ramanjun House
+      - MGR City House
+      - Mount Read House
+      - Magarpata City House
+      - Bhaubali Street House
+      - Vivek Street House
+      - Mary Rose Street House
+      - Sravya Street House
+      - Chitti Robo Road House
+      - Chitti Robo Street House
+      - Chitti Robo Nagar House
+addressLine3_valid:
+      - Dubai-600063
+      - Chennai
+      - Bangalore
+      - Andaman
+      - Manali
+      - Antartica
+      - Everest
+      - Green Land
+      - Sentinal Island
+      - Havelock Island
+      - Ocean
+      - Pacific Ocean
+      - Kuwait
+      - Taramanai
+localAdministrativeAuthority_fra_valid:
+      - Mograne
+localAdministrativeAuthority_eng_valid:
+      - Mograne
+localAdministrativeAuthority_ara_valid:
+      - بن منصور
+city_eng_valid:
+      - Kenitra
+      - Rabat
+city_fra_valid:
+      - Kénitra
+      - Rabat
+city_ara_valid:
+      - القنيطرة
+      - الرباط  
+region_eng_valid:
+      - Rabat Sale Kenitra  
+region_fra_valid:      
+      - Rabat-Salé-Kénitra
+region_ara_valid:      
+      - جهة الرباط سلا القنيطرة
+location2_valid:
+      - AbuDhabi
+      - Taramani
+      - krishnarajapuram
+      - Brigade Road
+      - Kazhakuttam
+      - Navalur
+province_eng_valid:
+      - Kenitra
+      - Rabat
+province_fra_valid:
+      - Kénitra
+      - Rabat
+province_ara_valid:
+      - القنيطرة
+      - الرباط
+phone_valid:
+      - 9003356540
+      - 9333356541
+      - 9343356542
+      - 9353356543
+      - 9363356544
+      - 9373356545
+      - 9383356546
+      - 9393356547
+      - 9103356548
+      - 9113356549
+postalcode_valid:
+      - 14022
+      - 14053
+      - 14023
+      - 14000
+      - 14110
+      - 14080
+CNIENumber_valid:
+      - 6789545678909
+      - 6789545678910
+      - 6789545678911
+      - 6789545678912
+      - 6789545678913
+      - 6789545678914
+emailId_valid:
+      - vignesh.vijayakumar@mindtree.com
+      - athila.sirajudeen@mindtree.com
+      - Leonamary.Susairaja@mindtree.com
+age_valid:
+      - LONG:32
+      - LONG:25
+      - LONG:34
+      - LONG:19
+      - LONG:09
+      - LONG:18
+      - LONG:40
+      - LONG:23
+      - LONG:11
+email_Mismatch:
+      - athilabanu@gmail.com
+phone_Mismatch:
+      - 9446933347
+#bio
+bio_face_subType:
+      - FACE
+      - UNKNOWN
+bio_iris_left_subType:
+      - LEFT
+      - UNKNOWN
+bio_iris_right_subType:
+      - RIGHT
+      - UNKNOWN
+bio_iris_rightOnly_subType:
+      - RIGHT
+bio_iris_leftOnly_subType:
+      - LEFT
+bio_iris_unknownOnly_subType:
+      - UNKNOWN
+bio_finger_LeftIndexOnly_subType:
+      - LEFT_INDEX
+bio_finger_RightLittleOnly_subType:
+      - RIGHT_LITTLE
+bio_finger_LeftIndex_subType:
+      - LEFT_INDEX
+      - UNKNOWN
+bio_finger_LeftLittle_subType:
+      - LEFT_LITTLE
+      - UNKNOWN
+bio_finger_RightLittle_subType:
+      - RIGHT_LITTLE
+      - UNKNOWN
+bio_finger_RightIndex_subType:
+      - RIGHT_INDEX
+      - UNKNOWN
+bio_finger_LeftMiddle_subType:
+      - LEFT_MIDDLE
+      - UNKNOWN
+bio_finger_RightMiddle_subType:
+      - RIGHT_MIDDLE
+      - UNKNOWN
+bio_finger_LeftRing_subType:
+      - LEFT_RING
+      - UNKNOWN
+bio_finger_RightRing_subType:
+      - RIGHT_RING
+      - UNKNOWN
+bio_finger_LeftThumb_subType:
+      - LEFT_THUMB
+      - UNKNOWN
+bio_finger_RightThumb_subType:
+      - RIGHT_THUMB
+      - UNKNOWN
+bio_face_type:
+      - FID
+bio_finger_type:
+      - FMR
+bio_iris_type:
+      - IIR
+bio_face_deviceCode:
+      - cogent
+bio_face_deviceProviderID:
+      - cogent
+bio_iris_deviceCode:
+      - cogent
+bio_iris_deviceProviderID:
+      - cogent
+boolean_true:
+      - BOOLEAN:true
+boolean_false:
+      - BOOLEAN:false
+invalid:
+      - ytyw
+      - 762k
+      - dj87
+      - DFR
+      - FTY
+primary_lang_code:
+      - fra
+secondary_lang_code:
+      - ara
+#Auth_transaction
+auth_transaction_IRIS_authTypeCode:
+      - IRIS-AUTH
+auth_transaction_FINGER_authTypeCode:
+      - FINGERPRINT-AUTH
+auth_transaction_FACE_authTypeCode:
+      - FACE-AUTH
+auth_transaction_success_statusCode:
+      - Y
+auth_transaction_fail_statusCode:
+      - N
+auth_transaction_IRIS_success_statusComment:
+      - $REGEXP:.*Iris.*Authentication.*Success.*$
+auth_transaction_IRIS_fail_statusComment:
+      - $REGEXP:.*Iris.*Authentication.*Failed.*$
+auth_transaction_FINGER_success_statusComment:
+      - $REGEXP:.*Finger.*Authentication.*Success.*$
+auth_transaction_FINGER_fail_statusComment:
+      - $REGEXP:.*Finger.*Authentication.*Failed.*$
+auth_transaction_FACE_success_statusComment:
+      - $REGEXP:.*Face.*Authentication.*Success.*$
+auth_transaction_FACE_fail_statusComment:
+      - $REGEXP:.*Face.*Authentication.*Failed.*$
+auth_transaction_UIN_idType:
+      - UIN
+auth_transaction_VID_idType:
+      - VID
+auth_transaction_DEMO_authTypeCode:
+      - DEMO-AUTH
+auth_transaction_EKYC_authTypeCode:
+      - KYC-AUTH
+auth_transaction_DEMO_success_statusComment:
+      - $REGEXP:.*Demo.*Authentication.*Success.*$
+auth_transaction_DEMO_fail_statusComment:
+      - $REGEXP:.*Demo.*Authentication.*Failed.*$
+auth_transaction_EKYC_success_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Success.*$
+auth_transaction_EKYC_fail_statusComment:
+      - $REGEXP:.*KYC.*Authentication.*Failed.*$
+#Audit_log
+audit_log_eventId:
+      - $REGEXP:.*IDA.*$
+audit_log_auth_eventName:
+      - Authentication Request
+audit_log_ekyc_eventName:
+      - eKYC Request
+audit_log_ida_appId:
+      - IDA
+audit_log_ida_appName:
+      - ID-Authentication
+audit_log_ekyc_moduleName:
+      - eKYC Authenticator
+audit_log_iris_moduleName:
+      - Iris Authenticator
+audit_log_finger_moduleName:
+      - Fingerprint Authenticator
+audit_log_face_moduleName:
+      - Face Authenticator
+audit_log_UIN_refIdType:
+      - UIN
+audit_log_demo_moduleName:
+      - Demographic Authenticator
+audit_log_VID_refIdType:
+      - VID
+#Demo-Name Normalisation
+name_tittle_UnMarriedfemale_eng_lang:
+      - Miss.
+name_tittle_female_eng_lang:
+      - Mrs.
+name_tittle_male_eng_lang:
+      - Mr.
+name_tittle_UnMarriedfemale_primary_lang:
+      - Mademoiselle.
+name_tittle_female_primary_lang:
+      - Madame.
+name_tittle_male_primary_lang:
+      - Monsieur.
+name_tittle_UnMarriedfemale_secondary_lang:
+      - 'آنسة '
+name_tittle_female_secondary_lang:
+      - 'ست '
+name_tittle_male_secondary_lang:
+      - 'أستاذ'
+#otp
+otpChannel_EMAIL:
+      - EMAIL
+otpChannel_MOBILE:
+      - PHONE
+#VID
+valid_VID_Type:
+      - Temporary
+      - Perpetual
+valid_VID_T_Type:
+      - Temporary
+valid_VID_P_Type:
+      - Perpetual

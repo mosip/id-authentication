@@ -51,8 +51,8 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	private final String apiName = "EmailNotification";
 	private final String requestJsonName = "EmailNotificationRequest";
 	private final String outputJsonName = "EmailNotificationOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String EmailNotification_URI = props.get("EmailNotification_URI").toString();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
+	private final String emailNotification_URI = props.get("EmailNotification_URI").toString();
 
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -76,7 +76,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
-		cookie = auth.getAuthForRegistrationProcessor();
+		cookie = auth.getAuthForIDA();
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-		response = applicationLibrary.postRequestFormData(objectData, EmailNotification_URI, cookie);
+		response = applicationLibrary.postRequestEmailNotification(emailNotification_URI, objectData,  cookie);
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
