@@ -119,6 +119,9 @@ public interface MachineService {
 	/**
 	 * Fetch all Machines which are mapped with the given registration center
 	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 * 
 	 * @param regCenterId
 	 *            Registration center id as String
 	 * @return MachineRegistrationCenterDto response object which contain the list

@@ -200,8 +200,9 @@ public class MachineServiceImpl implements MachineService {
 	public IdAndLanguageCodeID updateMachine(MachineDto machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(
-					machine.getId(), machine.getLangCode());
+			Machine renmachine = machineRepository
+					.findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(
+							machine.getId(), machine.getLangCode());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine, renmachine, false);

@@ -116,6 +116,29 @@ public class MachineController {
 	}
 
 	/**
+	 * Post API to deleted a row of Machine data
+	 * 
+	 * @param id
+	 *            input from user Machine id
+	 * 
+	 * @return ResponseEntity Machine Id which is deleted successfully
+	 *         {@link ResponseEntity}
+	 */
+	@ResponseFilter
+	@DeleteMapping("/machines/{id}")
+	@ApiOperation(value = "Service to delete Machine ", notes = "Delete Machine  and return Machine  Id ")
+	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully deleted"),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Machine found"),
+			@ApiResponse(code = 500, message = "While deleting Machine any error occured") })
+	public ResponseWrapper<IdResponseDto> deleteMachine(@Valid @PathVariable("id") String id) {
+
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.deleteMachine(id));
+		return responseWrapper;
+	}
+
+	/**
 	 * Post API to insert a new row of Machine data
 	 * 
 	 * @param machine
@@ -125,6 +148,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
@@ -147,6 +171,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PutMapping("/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully udated"),
@@ -208,6 +233,7 @@ public class MachineController {
 		ResponseWrapper<PageDto<MachineRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.getMachinesByRegistrationCenter(regCenterId, page, size, orderBy,direction));
 		return responseWrapper;
+
 	}
 
 }

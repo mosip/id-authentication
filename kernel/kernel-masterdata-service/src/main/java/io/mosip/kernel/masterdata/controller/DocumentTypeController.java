@@ -45,8 +45,10 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode             input from user
-	 * @param documentCategoryCode input from user
+	 * @param langCode
+	 *            input from user
+	 * @param documentCategoryCode
+	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -68,11 +70,12 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
@@ -85,9 +88,10 @@ public class DocumentTypeController {
 	}
 
 	/**
-	 * Api to update document type.
-	 * .
-	 * @param types the DTO of document type.
+	 * Api to update document type. .
+	 * 
+	 * @param types
+	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
@@ -105,7 +109,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter
