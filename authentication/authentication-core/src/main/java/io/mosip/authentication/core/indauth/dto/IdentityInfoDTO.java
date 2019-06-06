@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * General-purpose of {@code IdentityInfoDTO} class used to provide Identity
+ * info's
  * 
  * @author Dinesh Karuppiah.T
- *
  */
 
 @Data

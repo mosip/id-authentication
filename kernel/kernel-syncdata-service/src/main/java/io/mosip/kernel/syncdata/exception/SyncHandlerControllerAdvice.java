@@ -24,9 +24,10 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.signatureutil.exception.SignatureUtilClientException;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.constant.SyncDataConstant;
-import io.mosip.kernel.syncdata.utils.EmptyCheckUtils;
+
 
 /**
  * synch handler controller advice

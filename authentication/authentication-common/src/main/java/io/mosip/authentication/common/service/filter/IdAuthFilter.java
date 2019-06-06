@@ -44,8 +44,10 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class IdAuthFilter extends BaseAuthFilter {
 
+	/** The Constant EKYC. */
 	private static final String EKYC = "ekyc";
 
+	/** The Constant BIO_TYPE. */
 	private static final String BIO_TYPE = "bioType";
 
 	/** The Constant UTF_8. */
@@ -72,10 +74,10 @@ public class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant EXPIRY_DT. */
 	private static final String EXPIRY_DT = "expiryDt";
 
-
 	/** The Constant KYC. */
 	private static final String KYC = null;
 
+	/** The Constant SESSION_KEY. */
 	private static final String SESSION_KEY = "requestSessionKey";
 
 	/*

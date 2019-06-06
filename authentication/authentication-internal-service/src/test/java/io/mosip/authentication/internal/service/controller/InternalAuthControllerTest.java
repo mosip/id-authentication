@@ -5,7 +5,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -239,8 +238,6 @@ public class InternalAuthControllerTest {
 		authResponseDTO.setErrors(new ArrayList<>());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.any()))
 				.thenReturn(authResponseDTO);
-		Mockito.when(idInfoFetcher.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
-		Mockito.when(idInfoFetcher.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		authController.authenticate(authRequestDTO, error);
 	}
 

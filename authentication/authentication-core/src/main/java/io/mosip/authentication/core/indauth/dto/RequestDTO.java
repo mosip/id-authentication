@@ -6,11 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
+ * General-purpose of {@code RequestDTO} class used to provide Request Info's
  * 
  * @author Dinesh Karuppiah.T
- * 
- *         RequestDto class
- * 
  */
 @Data
 public class RequestDTO {

@@ -15,8 +15,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-//@Configuration
-//@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.repository", entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
+@Configuration
+@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.repository", entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
 public class SyncDataConfig {
 
 	@Autowired
@@ -27,32 +27,27 @@ public class SyncDataConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(syncDataSource());
 		em.setPackagesToScan("io.mosip.kernel.syncdata.entity");
-
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
 		HashMap<String, Object> properties = new HashMap<>();
 		properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 		properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
 		em.setJpaPropertyMap(properties);
-
 		return em;
 	}
 
 	@Bean
 	public DataSource syncDataSource() {
-
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("javax.persistence.jdbc.driver"));
+		dataSource.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
 		dataSource.setUrl(env.getProperty("spring.master-datasource.jdbcUrl"));
 		dataSource.setUsername(env.getProperty("spring.master-datasource.username"));
 		dataSource.setPassword(env.getProperty("spring.master-datasource.password"));
-
 		return dataSource;
 	}
 
 	@Bean
 	public PlatformTransactionManager syncDataTransactionManager() {
-
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(syncDataEntityManager().getObject());
 		return transactionManager;

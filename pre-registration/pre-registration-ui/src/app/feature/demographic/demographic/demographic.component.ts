@@ -389,8 +389,14 @@ export class DemographicComponent implements OnInit {
         Validators.pattern(this.ADDRESS_PATTERN),
         this.noWhitespaceValidator
       ]),
-      [this.formControlNames.addressLine2Secondary]: new FormControl(this.formControlValues.addressLine2Secondary,Validators.pattern(this.ADDRESS_PATTERN),),
-      [this.formControlNames.addressLine3Secondary]: new FormControl(this.formControlValues.addressLine3Secondary,Validators.pattern(this.ADDRESS_PATTERN),)
+      [this.formControlNames.addressLine2Secondary]: new FormControl(
+        this.formControlValues.addressLine2Secondary,
+        Validators.pattern(this.ADDRESS_PATTERN)
+      ),
+      [this.formControlNames.addressLine3Secondary]: new FormControl(
+        this.formControlValues.addressLine3Secondary,
+        Validators.pattern(this.ADDRESS_PATTERN)
+      )
     });
 
     this.setLocations();
@@ -495,6 +501,8 @@ export class DemographicComponent implements OnInit {
     } else {
       let index = 0;
       let secondaryIndex = 1;
+      console.log('user', this.user);
+
       if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
         index = 1;
         secondaryIndex = 0;

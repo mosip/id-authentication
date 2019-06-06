@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.indauth.dto;
 
 /**
+ * General-purpose of {@code SenderType} class used to provide SenderType Info's
  * 
  * @author Dinesh Karuppiah.T
  */

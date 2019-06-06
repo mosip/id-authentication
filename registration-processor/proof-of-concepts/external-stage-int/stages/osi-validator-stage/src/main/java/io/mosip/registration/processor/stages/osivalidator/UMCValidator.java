@@ -46,7 +46,7 @@ public class UMCValidator {
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	/**

@@ -3,6 +3,7 @@
 	"request": {
 		"registrationId": "27847657360002520190205113333",
 		"identity": {
+		    "residenceStatus": "MOROCCO",
 			"IDSchemaVersion": 1.0,
 			"UIN": 6738521981,
 			"fullName": [

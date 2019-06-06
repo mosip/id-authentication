@@ -182,6 +182,7 @@ public class RegIdObjectMasterDataValidator {
 			genderMap = new HashSetValuedHashMap<>(genderList.size());
 			genderList.forEach(gender -> {
 				genderMap.put(gender.getLangCode(), gender.getGenderName());
+				genderMap.put(gender.getLangCode(), gender.getCode().trim());
 			});
 		}
 		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,

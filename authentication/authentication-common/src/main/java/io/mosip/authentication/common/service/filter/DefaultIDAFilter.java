@@ -21,6 +21,7 @@ public class DefaultIDAFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
+		//default implementation does nothing
 	}
 
 }

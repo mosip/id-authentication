@@ -68,9 +68,9 @@ public class MasterDataValidationTest {
 
 	MasterDataValidation masterDataValidation;
 
-	private static final String PRIMARY_LANGUAGE = "primary.language";
+	private static final String PRIMARY_LANGUAGE = "mosip.primary-language";
 
-	private static final String SECONDARY_LANGUAGE = "secondary.language";
+	private static final String SECONDARY_LANGUAGE = "mosip.secondary-language";
 
 	private static final String ATTRIBUTES = "registration.processor.masterdata.validation.attributes";
 

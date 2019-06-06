@@ -56,7 +56,7 @@ public class SyncPublicKeyToRegClient extends BaseTestCase implements ITest {
 	private final String apiName = "SyncPublicKeyToRegClient";
 	private final String requestJsonName = "syncPublicKeyRequest";
 	private final String outputJsonName = "syncPublicKeyOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String SyncPublicKeyToRegClient_URI = props.get("SyncPublicKeyToRegClient_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -121,7 +121,7 @@ public class SyncPublicKeyToRegClient extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		String applicationId = objectData.get("applicationId").toString();
 		objectData.remove("applicationId");
-		response = applicationLibrary.getRequest(SyncPublicKeyToRegClient_URI + applicationId,
+		response = applicationLibrary.getWithQueryParam(SyncPublicKeyToRegClient_URI + applicationId,
 				GetHeader.getHeader(objectData), cookie);
 
 		// This method is for checking the authentication is pass or fail in rest

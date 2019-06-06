@@ -59,7 +59,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	private final String apiName = "TokenIdGenerator";
 	private final String requestJsonName = "TokenIdGeneratorRequest";
 	private final String outputJsonName = "TokenIdGeneratorOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String tokenIdGenerator_URI = props.get("tokenIdGenerator_URI").toString();
 
 	protected String testCaseName = "";
@@ -118,7 +118,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 
 			JSONObject objectData = objectDataArray[0];
 			responseObject = objectDataArray[1];
-					response = applicationLibrary.getRequestPathPara(tokenIdGenerator_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(tokenIdGenerator_URI, objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);

@@ -484,7 +484,13 @@
       "title_success": "Success",
       "msg_success": "Appointment Booking Successfully Completed",
       "title_failure": "Failure",
-      "msg_failure": "Appointment Booking Failed"
+      "msg_failure": "Appointment Booking Failed",
+      "deletedApplicant1":[
+        "The Following User has not been selected any time slot",
+        "Do you want to continue Booking"
+      ],
+      "yesButtonText":"Yes",
+      "noButtonText": "No"
     }
   },
   "appointmentCentreSearch": {

@@ -58,7 +58,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegCentHolidays";
 	private final String requestJsonName = "FetchRegCentHolidaysRequest";
 	private final String outputJsonName = "FetchRegCentHolidaysOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegCentHolidays_URI = props.get("FetchRegCentHolidays_URI").toString();
 
 	protected String testCaseName = "";
@@ -118,7 +118,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 
-				response = applicationLibrary.getRequestPathPara(FetchRegCentHolidays_URI, objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCentHolidays_URI, objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
@@ -127,7 +127,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			if (responseJson == null || !responseJson.containsKey("holidays"))
 				Assert.assertTrue(false, "Response does not contain holidays");
-			String query = "select count(*) from master.loc_holiday where location_code = "
+			String query = "select count(*) from master.loc_holiday where is_active = true and location_code = "
 					+ "(select holiday_loc_code from master.registration_center where id = '" 
 			+ objectData.get("registrationcenterid")
 					+ "' and lang_code = '" + objectData.get("langcode") + "') and holiday_date between '"

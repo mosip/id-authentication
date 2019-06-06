@@ -15,8 +15,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-//@Configuration
-//@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.syncjob.repository", entityManagerFactoryRef = "syncJobEntityManager", transactionManagerRef = "syncJobTransactionManager")
+@Configuration
+@EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.syncjob.repository", entityManagerFactoryRef = "syncJobEntityManager", transactionManagerRef = "syncJobTransactionManager")
 public class SyncJobConfig {
 
 	@Autowired
@@ -27,7 +27,6 @@ public class SyncJobConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(syncJobDataSource());
 		em.setPackagesToScan("io.mosip.kernel.syncdata.entity");
-
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
 		HashMap<String, Object> properties = new HashMap<>();
@@ -40,19 +39,16 @@ public class SyncJobConfig {
 
 	@Bean
 	public DataSource syncJobDataSource() {
-
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("javax.persistence.jdbc.driver"));
+		dataSource.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
 		dataSource.setUrl(env.getProperty("spring.kernel-datasource.jdbcUrl"));
 		dataSource.setUsername(env.getProperty("spring.kernel-datasource.username"));
 		dataSource.setPassword(env.getProperty("spring.kernel-datasource.password"));
-
 		return dataSource;
 	}
 
 	@Bean
 	public PlatformTransactionManager syncJobTransactionManager() {
-
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(syncJobEntityManager().getObject());
 		return transactionManager;

@@ -57,7 +57,7 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 	private final String apiName = "FetchHolidays";
 	private final String requestJsonName = "FetchHolidaysRequest";
 	private final String outputJsonName = "FetchHolidaysOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchHolidays_URI = props.get("FetchHolidays_URI").toString();
 	private final String FetchHolidays_id_URI = props.get("FetchHolidays_id_URI").toString();
 	private final String FetchHolidays_id_lang_URI = props.get("FetchHolidays_id_lang_URI").toString();
@@ -119,15 +119,14 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		if (objectData != null) {
 			if (objectData.containsKey("langcode"))
-				response = applicationLibrary.getRequestPathPara(FetchHolidays_id_lang_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchHolidays_id_lang_URI, objectData, cookie);
 			else
-				response = applicationLibrary.getRequestPathPara(FetchHolidays_id_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchHolidays_id_URI, objectData, cookie);
 		}
 
 		// sending request to get request without param
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchHolidays_URI, objectData, cookie);
+			response = applicationLibrary.getWithoutParams(FetchHolidays_URI, cookie);
 			objectData = null;
 		}
 
@@ -143,15 +142,15 @@ public class FetchHolidays extends BaseTestCase implements ITest {
 					.get("response");
 			if (responseJson == null || !responseJson.containsKey("holidays"))
 				Assert.assertTrue(false, "Response does not contain holidays");
-			String queryPart = "select count(*) from master.loc_holiday";
+			String queryPart = "select count(*) from master.loc_holiday where is_active = true";
 
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("langcode"))
-					query = query + " where id = '" + objectData.get("holidayid") + "' and lang_code = '"
+					query = query + " and id = '" + objectData.get("holidayid") + "' and lang_code = '"
 							+ objectData.get("langcode") + "'";
 				else
-					query = queryPart + " where id = '" + objectData.get("holidayid") + "'";
+					query = queryPart + " and id = '" + objectData.get("holidayid") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
