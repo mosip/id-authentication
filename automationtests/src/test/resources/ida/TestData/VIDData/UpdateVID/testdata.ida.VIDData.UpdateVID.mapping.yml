@@ -11,19 +11,6 @@ testdata:
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
       output.1.res.id: $TestData:id_UpdateVid_valid$
-  
-  Authentication_UpdateVIDStatus_REVOKE_For Vid Type_Temporary:
-    input.create-request:
-      version: $idrepoVersion$
-      requesttime: $TIMESTAMPZ$
-      vidStatus: REVOKED
-      id: $TestData:id_UpdateVid_valid$
-    output.output-1-expected-y-res:
-      output.1.res.status: REVOKED
-      output.1.res.responsetime: $IGNORE$
-      output.1.res.version: $IGNORE$
-      output.1.res.VID: $IGNORE$
-      output.1.res.id: $TestData:id_UpdateVid_valid$
       
   Authentication_UpdateVIDStatus_REVOKE_For Vid Type_Perpetual:
     input.create-request:
@@ -37,32 +24,7 @@ testdata:
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
       output.1.res.id: $TestData:id_UpdateVid_valid$ 
-      
-  Authentication_UpdateVIDStatus_REVOKE_For Vid Type_Temporary:
-    input.create-request:
-      version: $idrepoVersion$
-      requesttime: $TIMESTAMPZ$
-      vidStatus: REVOKED
-      id: $TestData:id_UpdateVid_valid$
-    output.output-1-expected-y-res:
-      output.1.res.status: REVOKED
-      output.1.res.responsetime: $IGNORE$
-      output.1.res.version: $IGNORE$
-      output.1.res.VID: $IGNORE$
-      output.1.res.id: $TestData:id_UpdateVid_valid$
-    
-  Authentication_UpdateVIDStatus_INACTIVE_For Vid Type_Temporary:
-    input.create-request:
-      version: $idrepoVersion$
-      requesttime: $TIMESTAMPZ$
-      vidStatus: INACTIVE
-      id: $TestData:id_UpdateVid_valid$
-    output.output-1-expected-y-res:
-      output.1.res.status: INACTIVE
-      output.1.res.responsetime: $IGNORE$
-      output.1.res.version: $IGNORE$
-      output.1.res.VID: $IGNORE$
-      output.1.res.id: $TestData:id_UpdateVid_valid$
+
       
   Authentication_UpdateVIDStatus_INACTIVE_For Vid Type_Perpetual:
     input.create-request:
@@ -76,19 +38,7 @@ testdata:
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
       output.1.res.id: $TestData:id_UpdateVid_valid$ 
-      
-  Authentication_UpdateVIDStatus_EXPIRED_For Vid Type_Temporary:
-    input.create-request:
-      version: $idrepoVersion$
-      requesttime: $TIMESTAMPZ$
-      vidStatus: EXPIRED
-      id: $TestData:id_UpdateVid_valid$
-    output.output-1-expected-y-res:
-      output.1.res.status: EXPIRED
-      output.1.res.responsetime: $IGNORE$
-      output.1.res.version: $IGNORE$
-      output.1.res.VID: $IGNORE$
-      output.1.res.id: $TestData:id_UpdateVid_valid$
+     
       
   Authentication_UpdateVIDStatus_EXPIRED_For Vid Type_Perpetual:
     input.create-request:
