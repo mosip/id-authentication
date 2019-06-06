@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"1367131881","responseTime":"$TIMESTAMP$","response":{"maskedMobile":"$REGEXP:XX.*XX.*$","maskedEmail":"$REGEXP:XX.*XX.*$"}}

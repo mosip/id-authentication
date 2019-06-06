@@ -1,1 +1,0 @@
-{"transactionID":"4558521202","version":"1.0","id":"mosip.identity.kyc","errors":[{"errorCode":"IDA-MLC-006","errorMessage":"Missing Input Parameter - bioSubType"}],"responseTime":"2019-05-23T12:06:22.202+05:30","response":{"kycStatus":false,"staticToken":null,"identity":null}}
