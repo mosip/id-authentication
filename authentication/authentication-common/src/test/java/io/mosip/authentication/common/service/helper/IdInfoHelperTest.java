@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.AbstractMap.SimpleEntry;
@@ -39,7 +38,6 @@ import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
@@ -180,30 +178,6 @@ public class IdInfoHelperTest {
 	@Test
 	public void checkLanguageTypenull() {
 		ReflectionTestUtils.invokeMethod(idInfoFetcherImpl, "checkLanguageType", "null", "null");
-	}
-
-	@Test
-	public void TestgetUinType() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
-		IdType uinType = idInfoFetcherImpl.getUinOrVidType(authRequestDTO);
-		assertEquals(IdType.UIN, uinType);
-	}
-
-	@Test
-	public void TestgetVidType() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIndividualIdType(IdType.VID.getType());
-		IdType uinType = idInfoFetcherImpl.getUinOrVidType(authRequestDTO);
-		assertEquals(IdType.VID, uinType);
-	}
-
-	@Test
-	public void TestgetUinorVid() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		authRequestDTO.setIndividualId("274390482564");
-		Optional<String> uinOrVid = idInfoFetcherImpl.getUinOrVid(authRequestDTO);
-		assertNotEquals(Optional.empty(), uinOrVid.get());
 	}
 
 	@Test

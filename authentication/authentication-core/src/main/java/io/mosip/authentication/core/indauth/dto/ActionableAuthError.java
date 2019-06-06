@@ -5,9 +5,10 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 
+ * Actionable error class
+ * 
  * @author Dinesh Karuppiah.T
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ActionableAuthError extends AuthError {

@@ -13,7 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
+ * Mapping factory class to map Request and Entity Mapping JSON
+ *
  * @author Dinesh Karuppiah.T
+ *
  */
 public class IDAMappingFactory implements PropertySourceFactory {
 	/**
