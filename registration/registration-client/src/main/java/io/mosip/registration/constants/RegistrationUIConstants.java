@@ -84,8 +84,8 @@ public class RegistrationUIConstants {
 	// NOTIFICATIONS
 	public static final String EMAIL_NOTIFICATION_SUCCESS = bundle.getString("EMAIL_NOTIFICATION_SUCCESS");
 	public static final String SMS_NOTIFICATION_SUCCESS = bundle.getString("SMS_NOTIFICATION_SUCCESS");
-	public static final String NO_VALID_EMAIL = bundle.getString("NO_VALID_EMAIL");
-	public static final String NO_VALID_MOBILE = bundle.getString("NO_VALID_MOBILE");
+	public static final String INVALID_EMAIL = bundle.getString("INVALID_EMAIL");
+	public static final String INVALID_MOBILE = bundle.getString("INVALID_MOBILE");
 	public static final String NOTIFICATION_SUCCESS = bundle.getString("NOTIFICATION_SUCCESS");
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");

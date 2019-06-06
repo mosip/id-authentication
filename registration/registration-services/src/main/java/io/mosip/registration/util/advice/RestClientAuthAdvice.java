@@ -92,7 +92,7 @@ public class RestClientAuthAdvice {
 
 			if (handleInvalidTokenFromResponse(response, joinPoint)) {
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-						"Adding new authZ token to web service request header if present token was invalid");
+						"Adding new authZ token to web service request header if present token is invalid");
 				return joinPoint.proceed(joinPoint.getArgs());
 			}
 			
