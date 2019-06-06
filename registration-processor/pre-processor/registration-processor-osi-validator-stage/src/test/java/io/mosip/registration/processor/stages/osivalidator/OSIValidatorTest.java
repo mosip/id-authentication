@@ -66,8 +66,8 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemMan
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;

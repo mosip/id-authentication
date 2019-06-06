@@ -42,16 +42,16 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
+import io.mosip.registration.processor.core.spi.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
-import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.service.impl.PacketUploaderServiceImpl;
@@ -261,7 +261,7 @@ public class PacketUploaderServiceTest {
 
 	@Test
 	public void testPacketDecryptionException() throws PacketDecryptionFailureException, ApisResourceAccessException,
-			JschConnectionException, SftpFileOperationException {
+			JschConnectionException, SftpFileOperationException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		Mockito.when(fileManager.getFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(enrypteddata);
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
@@ -273,7 +273,7 @@ public class PacketUploaderServiceTest {
 
 	@Test
 	public void testIOException() throws SftpException, JschConnectionException, SftpFileOperationException,
-			IOException, PacketDecryptionFailureException, ApisResourceAccessException {
+			IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		ReflectionTestUtils.setField(packetuploaderservice, "maxRetryCount", 3);
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		Mockito.when(fileManager.getFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(enrypteddata);

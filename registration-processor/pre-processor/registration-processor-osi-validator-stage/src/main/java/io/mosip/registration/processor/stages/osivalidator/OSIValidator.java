@@ -65,8 +65,8 @@ import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;

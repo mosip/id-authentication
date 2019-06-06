@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
@@ -24,6 +25,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -38,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDt
 import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -93,7 +96,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private FileSystemManager filesystemCephAdapterImpl;
 
 	/** The identity iterator util. */
 	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
@@ -276,11 +279,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
 		byte[] file = null;
+		try {
 		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
 		PacketMetaInfo packetMetaInfo = null;
 		String applicantBiometricFileName = "";
-		try {
+
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 
@@ -297,9 +301,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		} catch (UnsupportedEncodingException exp) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + exp.getMessage());
-		} catch (IOException e) {
+		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+		} catch (Exception e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() +ExceptionUtils.getStackTrace(e));
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::exit");

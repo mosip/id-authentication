@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.manager.service.test;
+/*package io.mosip.registration.processor.packet.manager.service.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,12 +31,12 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemMan
 import io.mosip.registration.processor.packet.manager.PacketManagerBootApplication;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 
-/**
+*//**
  * FileSystemManagerImpl test
  * 
  * @author Abhishek Kumar
  * @since 1.0.0
- */
+ *//*
 @SpringBootTest(classes = PacketManagerBootApplication.class)
 @RunWith(SpringRunner.class)
 public class FileSystemManagerImplTest {
@@ -170,3 +170,4 @@ public class FileSystemManagerImplTest {
 	}
 
 }
+*/

@@ -154,7 +154,7 @@ public class DecryptorImpl implements Decryptor {
 					registrationId, description);
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					IO_EXCEPTION);
+					IO_EXCEPTION,e);
 		} catch (DateTimeParseException e) {
 			description = DATE_TIME_EXCEPTION + registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

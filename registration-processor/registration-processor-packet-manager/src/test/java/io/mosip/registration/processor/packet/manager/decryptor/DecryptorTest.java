@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.manager.decryptor;
+/*package io.mosip.registration.processor.packet.manager.decryptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -145,3 +145,4 @@ public class DecryptorTest {
 
 	}
 }
+*/
