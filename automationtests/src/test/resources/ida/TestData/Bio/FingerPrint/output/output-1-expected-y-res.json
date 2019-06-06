@@ -1,22 +1,10 @@
 {
-	"status": "Y",
-	"err": [],
-	"txnID": "7404012867",
-	"resTime": "2019-02-01T17:39:52.472+05:30",
-	"info": {
-		"idType": "D",
-		"reqTime": "2019-02-01T17:37:47.047+05:30",
-		"matchInfos": [],
-		"bioInfos": [
-			{
-				"bioType": "fgrMin",
-				"deviceInfo": {
-					"deviceId": "123143",
-					"make": "mantra",
-					"model": "steel"
-				}
-			}
-		]
-	},
-	"ver": "$version$"
+    "transactionID": "8557676061",
+    "version": "1.0",
+    "id": "mosip.identity.auth",
+    "responseTime": "2019-04-09T15:54:54.476+05:30",
+    "response": {
+        "authStatus": true,
+        "staticToken": "$IGNORE$"
+    }
 }

@@ -1,1 +1,0 @@
-{"response":{"authStatus":false},"errors":[{"errorCode":"IDA-DEA-001","errorMessage":"Demographic data emailId did not match"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"1602642046","id":"mosip.identity.auth"}
