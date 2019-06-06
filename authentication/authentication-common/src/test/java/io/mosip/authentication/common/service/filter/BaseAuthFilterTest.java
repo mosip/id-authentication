@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.filter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -35,10 +36,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.authentication.common.service.filter.BaseAuthFilter;
-import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.integration.KeyManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -256,9 +257,15 @@ public class BaseAuthFilterTest {
 		assertNull(baseAuthFilter.transformResponse(null));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void requesthmacTest() throws IdAuthenticationAppException {
-		baseAuthFilter.validateRequestHMAC("", "");
+	  try {	
+		baseAuthFilter.validateRequestHMAC("de3eiac3452", "reqData");
+	  }
+	  catch(IdAuthenticationAppException ex) {
+		  assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorCode(), ex.getErrorCode());
+		  assertEquals(IdAuthenticationErrorConstants.HMAC_VALIDATION_FAILED.getErrorMessage(),ex.getErrorText());
+	  }
 	}
 
 	@Test

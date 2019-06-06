@@ -2,8 +2,10 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -70,7 +72,8 @@ public class RegistrationConstants {
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
-	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
+	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
+	public static final String IRIS_IMAGE_LOCAL_RIGHT="/images/rightEye.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -1377,11 +1380,11 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	public static final String IDA_REFERENCE_ID = "PARTNER";
+	public static final String IDA_REFERENCE_ID = "INTERNAL";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
 	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
 	public static final String ID = "id";
-	public static final String IDENTITY  = "mosip.identity.auth";
+	public static final String IDENTITY  = "mosip.identity.auth.internal";
 	public static final String VERSION  = "version";
 	public static final String REQUEST_TIME = "requestTime";
 	public static final String TRANSACTION_ID = "transactionID";
@@ -1411,8 +1414,6 @@ public class RegistrationConstants {
 
 	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
 	
-
-
 	// TPM Public Key Sync
 	public static final String RESPONSE = "response";
 	public static final String ERROR_CODE = "errorCode";
@@ -1420,6 +1421,27 @@ public class RegistrationConstants {
 	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
 	public static final String TPM_AVAILABILITY = "is_tpm_available";
 	public static final String SERIAL_NUMBER = "serialnumber";
+	
+	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
 
+		{
+			put("leftIndex", "LEFT_INDEX");
+			put("leftLittle", "LEFT_LITTLE");
+			put("leftMiddle", "LEFT_MIDDLE");
+			put("leftRing", "LEFT_RING");
+			put("leftThumb", "LEFT_THUMB");
+			put("rightIndex", "RIGHT_INDEX");
+			put("rightLittle", "RIGHT_LITTLE");
+			put("rightMiddle", "RIGHT_MIDDLE");
+			put("rightRing", "RIGHT_RING");
+			put("rightThumb", "RIGHT_THUMB");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+		}
+
+	};
+	
+	public static final String RESPONSE_SIGNATURE="response-signature";
+	public static final String ON_BOARD_FACE="FACE";
 
 }

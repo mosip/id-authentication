@@ -1,6 +1,7 @@
 package io.mosip.registration.test.authentication;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -15,17 +16,22 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.Score;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -38,6 +44,8 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class FingerprintValidatorTest {
 
 	@Rule
@@ -53,7 +61,7 @@ public class FingerprintValidatorTest {
 	private BioService bioService;
 
 	@Mock
-	private BioApiImpl bioApiImpl;
+	private IBioApi bioApiImpl;
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 	private ApplicationContext applicationContext = ApplicationContext.getInstance();
@@ -85,8 +93,8 @@ public class FingerprintValidatorTest {
 		authenticationValidatorDTO.setFingerPrintDetails(fingerPrintDetails);
 	}
 
-	//@Test
-	public void validateSingleTest() {
+	@Test
+	public void validateSingleTest() throws BiometricException {
 		// FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
 		// fingerprintDetailsDTO.setFingerType("right index");
 		UserBiometric userBiometric = new UserBiometric();
@@ -116,8 +124,8 @@ public class FingerprintValidatorTest {
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
 	}
 
-	//@Test
-	public void validateMultipleTest() {
+	@Test
+	public void validateMultipleTest() throws BiometricException {
 		
 		authenticationValidatorDTO.setAuthValidationType("multiple");
 		FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
@@ -128,8 +136,8 @@ public class FingerprintValidatorTest {
 		List<UserBiometric> userBiometrics = new ArrayList<>();
 		userBiometrics.add(userBiometric);
 		
-		SessionContext sessionContext=SessionContext.getInstance();
-		sessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);	
+		PowerMockito.mockStatic(SessionContext.class);
+		SessionContext.map().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);	
 
 		when(userDetailDAO.getUserSpecificBioDetail("mosip", "FIN", "fingerType")).thenReturn(userBiometric);
 		when(bioService.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics))
@@ -155,5 +163,10 @@ public class FingerprintValidatorTest {
 	public void validateTest() {
 		authenticationValidatorDTO.setAuthValidationType("");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
+	}
+	
+	@Test
+	public void validateAuthTest() {
+		assertNull(fingerprintValidator.validate("mosip","123"));
 	}
 }

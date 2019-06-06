@@ -1,6 +1,7 @@
 package io.mosip.registration.cipher;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -54,11 +56,14 @@ public class ClientJarEncryption {
 	private static final String MOSIP_JRE = "jre";
 
 	private static final String MOSIP_RUN_BAT = "run.bat";
+	private static final String MOSIP_MDM_STSRT_BAT = "mdm_start.bat";
+	private static final String MOSIP_MDM_STOP_BAT = "mdm_stop.bat";
 
 	/**
 	 * Encrypt the bytes
 	 * 
-	 * @param Jar bytes
+	 * @param Jar
+	 *            bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public byte[] encyrpt(byte[] data, byte[] encodedString) {
@@ -118,8 +123,9 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MDM_FOLDER + SLASH + MDM_EXE_JAR, mdmExecutbale);
 
 					// Bat file run.bat
-					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9]).listFiles()[0]));
-
+					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9])));
+					fileNameByBytes.put(MOSIP_MDM_STSRT_BAT, FileUtils.readFileToByteArray(new File(args[12])));
+					fileNameByBytes.put(MOSIP_MDM_STOP_BAT, FileUtils.readFileToByteArray(new File(args[13])));
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
 					// Certificate file
@@ -130,6 +136,8 @@ public class ClientJarEncryption {
 								FileUtils.readFileToByteArray(mosipCertificateFile));
 					}
 
+					// Add mosip-Version to mosip-application.properties file
+					addProperties(new File(args[10]), args[2]);
 					fileNameByBytes.put(propertiesFile, FileUtils.readFileToByteArray(new File(args[10])));
 
 					// DB file
@@ -214,6 +222,19 @@ public class ClientJarEncryption {
 					System.out.println("Zip Creation ended with path :::" + zipFilename);
 				}
 			}
+		}
+	}
+
+	private static void addProperties(File file, String version) throws FileNotFoundException, IOException {
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(file));
+
+		properties.setProperty("mosip.version", version);
+
+		// Add mosip-Version to mosip-application.properties file
+		try (FileOutputStream outputStream = new FileOutputStream(file)) {
+
+			properties.store(outputStream, version);
 		}
 	}
 

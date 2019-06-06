@@ -1,12 +1,12 @@
 {
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0",
-    "responsetime": "2019-05-07T05:48:10.272Z",
+    "responsetime": "2019-06-03T08:10:42.290Z",
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_PAM_APP_014",
-            "message": "postalCode failed for the regex ^[(?i)A-Z0-9]{6}$"
+            "errorCode": "KER-IOV-004",
+            "message": "Invalid input parameter - identity/postalCode"
         }
     ]
 }

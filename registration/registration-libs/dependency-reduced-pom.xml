@@ -3,7 +3,7 @@
   <parent>
     <artifactId>registration-parent</artifactId>
     <groupId>io.mosip.registration</groupId>
-    <version>0.12.4</version>
+    <version>0.12.7</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>registration-libs</artifactId>
@@ -12,10 +12,10 @@
   <build>
     <resources>
       <resource>
-        <directory>/registration-libs/src/main/resources</directory>
-        <excludes>
-          <exclude>**/*.*</exclude>
-        </excludes>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.png</include>
+        </includes>
       </resource>
     </resources>
     <plugins>
@@ -51,9 +51,11 @@
                 <argument>${main.basedir}/registration-client/target/registration-client.jar</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/rxtx</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/jre</argument>
-                <argument>${main.basedir}/registration-libs/src/main/resources/batch</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/batch/run.bat</argument>
                 <argument>${main.basedir}/registration-libs/src/main/resources/props/mosip-application.properties</argument>
                 <argument>${main.basedir}/registration-mdm-service/target/registration-mdm-service.jar</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_start.bat</argument>
+                <argument>${main.basedir}/registration-libs/src/main/resources/batch/mdm_stop.bat</argument>
               </arguments>
             </configuration>
           </execution>

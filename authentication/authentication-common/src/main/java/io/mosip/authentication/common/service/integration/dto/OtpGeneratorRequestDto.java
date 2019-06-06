@@ -18,5 +18,4 @@ public class OtpGeneratorRequestDto {
 	private String useridtype;
 	private Map<String, Object> templateVariables;
 	private String context;
-	private String key;
 }

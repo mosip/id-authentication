@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 
 /**
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenter;
  *
  */
 @Repository
-public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, String> {
+public interface RegistrationCenterRepository extends JpaRepository<RegistrationCenter, String> {
 
 	/**
 	 * Method to fetch the registration center for which machine is mapped.

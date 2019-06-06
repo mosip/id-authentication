@@ -37,6 +37,8 @@ public enum IdRepoErrorConstants {
 	CONNECTION_TIMED_OUT("IDR-IDC-010", "Connection timed out"),
 	
 	AUTHORIZATION_FAILED("IDR-IDC-011", "Authorization Failed"),
+	
+	RECORD_EXISTS("IDR-IDC-012", "Record already exists in DB"),
 
 	// Identity Service
 	
@@ -45,17 +47,14 @@ public enum IdRepoErrorConstants {
 
 	DOCUMENT_HASH_MISMATCH("IDR-IDS-002", "Biometric/Document hash does not match"),
 
-	/** The record exists. */
-	RECORD_EXISTS("IDR-IDS-003", "Record already exists in DB"),
-
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-004", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
+	ENCRYPTION_DECRYPTION_FAILED("IDR-IDS-003", "Failed to encrypt/decrypt message using Kernel Crypto Manager"),
 
-	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-005", "Failed to store/retrieve files in DFS"),
+	FILE_STORAGE_ACCESS_ERROR("IDR-IDS-004", "Failed to store/retrieve files in DFS"),
 
-	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-006", "Failed to process Id Object using kernel Id Object validator"),
+	ID_OBJECT_PROCESSING_FAILED("IDR-IDS-005", "Failed to process Id Object using kernel Id Object validator"),
 
-	FILE_NOT_FOUND("IDR-IDS-007", "File(s) not found in DFS"),
+	FILE_NOT_FOUND("IDR-IDS-006", "File(s) not found in DFS"),
 	
 	// VID Service
 	
@@ -69,7 +68,7 @@ public enum IdRepoErrorConstants {
 	
 	UIN_RETRIEVAL_FAILED("IDR-VID-005", "Failed to retrieve uin data using Identity Service"),
 	
-	UIN_HASH_MISMATCH("IDR-IDS-006", "Uin hash does not match");
+	UIN_HASH_MISMATCH("IDR-VID-006", "Uin hash does not match");
 	
 
 	/** The error code. */

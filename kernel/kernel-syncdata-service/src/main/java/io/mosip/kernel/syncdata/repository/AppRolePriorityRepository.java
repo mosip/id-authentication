@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.AppRolePriority;
 import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
 
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.id.IdAndLanguageCodeID;
  * @since 1.0.0
  */
 @Repository
-public interface AppRolePriorityRepository extends BaseRepository<AppRolePriority, IdAndLanguageCodeID> {
+public interface AppRolePriorityRepository extends JpaRepository<AppRolePriority, IdAndLanguageCodeID> {
 
 	/**
 	 * Find by last updated and current time stamp.

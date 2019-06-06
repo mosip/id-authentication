@@ -181,7 +181,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdsByRegId = preReg_URI + registartionCenterId;
 
 			Actualresponse = applicationLibrary
-					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
+					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
 
 			logger.info("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
@@ -201,7 +201,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdByRegId = preReg_URI + regCenterId;
 
 			Actualresponse = applicationLibrary
-					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
+					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
@@ -222,7 +222,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			String preReg_RetriveBookedPreRegIdByRegId_InvTodate = preReg_URI + regCenterId;
 
 			Actualresponse = applicationLibrary
-					.put_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
+					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
 
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
@@ -271,6 +271,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		testCaseName = object.get("testCaseName").toString();
 		//Retrive All PreRegId by Registration Center Id Resource URI
+		
 		preReg_URI =preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
 		authToken = preRegLib.getToken();

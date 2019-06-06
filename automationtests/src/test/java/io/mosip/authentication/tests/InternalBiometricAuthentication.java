@@ -30,6 +30,8 @@ import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
+import io.mosip.util.Cookie;
+
 import org.testng.Reporter;
 
 /**
@@ -46,17 +48,24 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 	private String TESTDATA_FILENAME;
 	private String testType;
 	private int invocationCount = 0;
-	private String cookieValue;
+	private static String cookieValue;
+	private static String getCookieStartTime;
 
 	/**
 	 * Set Test Type - Smoke, Regression or Integration
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
-	public void setTestType(String testType) {
-		this.testType = testType;
+	public void setTestType() {
+		this.testType = RunConfigUtil.getTestLevel();
+	}
+	
+	public void setCookie() {
+		cookieValue = Cookie.getCookie(getCookieRequestFilePathForInternalAuth(),
+				RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey(),
+				AUTHORIZATHION_COOKIENAME);
+		getCookieStartTime = Cookie.getCookieCurrentDateTime();
 	}
 
 	/**
@@ -102,8 +111,7 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 				testCase = testParams.getTestCaseName();
 			}
 		}
-		this.testCaseName = String.format(testCase);
-		cookieValue=getAuthorizationCookie(getCookieRequestFilePathForInternalAuth(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
+		this.testCaseName = String.format(testCase);	
 	}
 
 	/**
@@ -112,10 +120,11 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 	 * @return object of data provider
 	 */
 	@DataProvider(name = "testcaselist")
-	public Object[][] getTestCaseList() {
+	public Object[][] getTestCaseList() {		
 		invocationCount++;
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
+		setCookie();
 		return DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), RunConfigUtil.objRunConfig.getTestType());
@@ -144,7 +153,6 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, InternalBiometricAuthentication.testCaseName);
-			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -160,6 +168,10 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 	@Test(dataProvider = "testcaselist")
 	public void internalBiometricAuthenticationTest(TestParameters objTestParameters, String testScenario,
 			String testcaseName) {
+		//if (Cookie.isTimeExpired(getCookieStartTime)) {
+			setCookie();
+		//}
+		System.out.println("InternlaBioCookie: "+cookieValue);
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -167,7 +179,7 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 		setTestCaseId(testCaseNumber);
 		setTestCaseName(testCaseName.getName());
 		String mapping = TestDataUtil.getMappingPath();
-		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
+		Map<String, String> tempMap = getInternalEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
 		logger.info("************* Modification of internal bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"), true);

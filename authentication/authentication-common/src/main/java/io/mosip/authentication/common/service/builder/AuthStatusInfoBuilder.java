@@ -28,6 +28,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
 
 public class AuthStatusInfoBuilder {
 
+	private static final String ADDRESS_LINE_ITEMS = "address line item(s)";
+
 	/** The built flag. */
 	private boolean built;
 
@@ -123,6 +125,8 @@ public class AuthStatusInfoBuilder {
 
 	private static void constructDemoError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder,
 			IDAMappingConfig idMappingConfig) {
+		boolean multiLanguage = matchOutput.getMatchType().isMultiLanguage();
+
 		Optional<AuthType> authTypeForMatchType;
 		AuthType[] authTypes;
 		authTypes = DemoAuthType.values();
@@ -132,13 +136,9 @@ public class AuthStatusInfoBuilder {
 			List<String> mappings = IdaIdMapping.FULLADDRESS.getMappingFunction().apply(idMappingConfig,
 					matchOutput.getMatchType());
 			IdMapping idMapping = matchOutput.getMatchType().getIdMapping();
-			String name = mappings.contains(idMapping.getIdname()) ? "address line item(s)" : idMapping.getIdname();
+			String name = mappings.contains(idMapping.getIdname()) ? ADDRESS_LINE_ITEMS : idMapping.getIdname();
 
-			if (name.equalsIgnoreCase(IdaIdMapping.PHONE.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.EMAIL.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.DOB.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.DOBTYPE.getIdname())
-					|| name.equalsIgnoreCase(IdaIdMapping.AGE.getIdname())) {
+			if (!multiLanguage) {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH, name);
 			} else {
 				errors = createActionableAuthError(IdAuthenticationErrorConstants.DEMOGRAPHIC_DATA_MISMATCH_LANG, name,

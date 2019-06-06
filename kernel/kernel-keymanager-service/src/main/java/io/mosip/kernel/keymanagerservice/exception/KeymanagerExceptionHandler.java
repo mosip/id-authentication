@@ -33,6 +33,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -56,6 +57,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> nullDataException(HttpServletRequest httpServletRequest,
 			final NullDataException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -63,6 +65,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> invalidKeyException(HttpServletRequest httpServletRequest,
 			final InvalidKeyException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -70,6 +73,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(NoSuchAlgorithmException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> noSuchAlgorithmException(HttpServletRequest httpServletRequest,
 			final NoSuchAlgorithmException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -99,6 +103,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> invalidDataException(HttpServletRequest httpServletRequest,
 			final InvalidDataException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -106,6 +111,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(NoUniqueAliasException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> noUniqueAliasException(HttpServletRequest httpServletRequest,
 			final NoUniqueAliasException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -113,6 +119,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(CryptoException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoException(HttpServletRequest httpServletRequest,
 			final CryptoException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
 				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -120,6 +127,7 @@ public class KeymanagerExceptionHandler {
 	@ExceptionHandler(InvalidApplicationIdException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> invalidApplicationIdException(
 			HttpServletRequest httpServletRequest, final InvalidApplicationIdException e) throws IOException {
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(
 				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
@@ -162,6 +170,7 @@ public class KeymanagerExceptionHandler {
 		ServiceError error = new ServiceError(KeymanagerErrorConstant.INTERNAL_SERVER_ERROR.getErrorCode(),
 				e.getMessage());
 		errorResponse.getErrors().add(error);
+		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

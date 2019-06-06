@@ -18,6 +18,9 @@ import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
@@ -53,10 +56,10 @@ public class AuthPartnerAuthentication extends AuthTestsUtil implements ITest {
 	 * 
 	 * @param testType
 	 */
-	@Parameters({ "testType" })
 	@BeforeClass
-	public void setTestType(String testType) {
-		this.testType = testType;
+
+	public void setTestType() {
+		this.testType = RunConfigUtil.getTestLevel();
 	}
 
 	/**
@@ -155,6 +158,11 @@ public class AuthPartnerAuthentication extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+<<<<<<< HEAD
+=======
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+>>>>>>> origin/0.12.0_AutomationTest_Authentication
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void authPartnerAuthenticationTest(TestParameters objTestParameters, String testScenario,
@@ -201,4 +209,3 @@ public class AuthPartnerAuthentication extends AuthTestsUtil implements ITest {
 		}
 	}
 }
-

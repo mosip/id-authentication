@@ -1,6 +1,7 @@
 package io.mosip.registration.test.authentication;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -59,5 +60,10 @@ public class IrisValidatorTest {
 	@Test
 	public void validateTest() {
 		assertThat(irsiValidatorImpl.validate(authenticationValidatorDTO), is(false));
+	}
+	
+	@Test
+	public void validateAuthTest() {
+		assertNull(irsiValidatorImpl.validate("mosip","123"));
 	}
 }

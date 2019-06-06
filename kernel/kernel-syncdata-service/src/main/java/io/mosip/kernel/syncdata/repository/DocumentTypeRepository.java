@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.DocumentType;
 
 /**
@@ -17,7 +17,7 @@ import io.mosip.kernel.syncdata.entity.DocumentType;
  *
  */
 @Repository
-public interface DocumentTypeRepository extends BaseRepository<DocumentType, String> {
+public interface DocumentTypeRepository extends JpaRepository<DocumentType, String> {
 	/**
 	 * Method to find list of DocumentType created , updated or deleted time is
 	 * greater than lastUpdated timeStamp.

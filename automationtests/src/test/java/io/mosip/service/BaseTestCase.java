@@ -147,10 +147,10 @@ public class BaseTestCase{
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 
 
-			/*PreRegistrationLibrary pil=new PreRegistrationLibrary();
+			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.wakeDemoApp();
-		*/
+
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
@@ -160,7 +160,7 @@ public class BaseTestCase{
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-			TokenGeneration generateToken = new TokenGeneration();
+			/*TokenGeneration generateToken = new TokenGeneration();
 			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
 			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
 			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
@@ -168,7 +168,7 @@ public class BaseTestCase{
 			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
 			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
+			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
 
 		
 		} // End suiteSetup

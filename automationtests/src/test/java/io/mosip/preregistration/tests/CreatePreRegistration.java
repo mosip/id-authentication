@@ -92,7 +92,7 @@ public SoftAssert softAssert = new SoftAssert();
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		
-		switch (testLevel) {
+		switch ("smokeAndRegression") {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");

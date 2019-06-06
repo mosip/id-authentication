@@ -23,11 +23,11 @@ import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.core.signatureutil.exception.ParseResponseException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.SyncJobDefDto;
 import io.mosip.kernel.syncdata.dto.response.SyncJobDefResponseDto;
-import io.mosip.kernel.syncdata.exception.ParseResponseException;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.exception.SyncServiceException;
 import io.mosip.kernel.syncdata.service.SyncJobDefService;
@@ -35,7 +35,7 @@ import io.mosip.kernel.syncdata.service.SyncJobDefService;
 /**
  * This class contains the business logic for CRUD opertaion.
  *
- * @author Srinivasan
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 @Service
@@ -97,8 +97,7 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 	/**
 	 * Gets the sync job def detail.
 	 *
-	 * @param responseBody
-	 *            the response body
+	 * @param responseBody the response body
 	 * @return the sync job def detail
 	 */
 	private List<SyncJobDefDto> getSyncJobDefDetail(String responseBody) {
@@ -127,5 +126,36 @@ public class SyncJobDefServiceImpl implements SyncJobDefService {
 
 		return syncJobDefDtos;
 	}
+
+//@Autowired
+//private SyncJobDefRepository syncJobDefRepository;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.syncdata.service.SyncJobDefService#getSyncJobDefDetails(java.
+	 * time.LocalDateTime, java.time.LocalDateTime)
+	 */
+//	@Override
+//	public List<SyncJobDefDto> getSyncJobDefDetails(LocalDateTime lastUpdatedTime, LocalDateTime currentTimeStamp) {
+//
+//		List<SyncJobDefDto> syncJobDefDtos = null;
+//		List<SyncJobDef> syncJobDefs = null;
+//		if (lastUpdatedTime == null) {
+//			lastUpdatedTime = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+//		}
+//		try {
+//			syncJobDefs = syncJobDefRepository.findLatestByLastUpdatedTimeAndCurrentTimeStamp(lastUpdatedTime,
+//					currentTimeStamp);
+//		} catch (DataAccessException | DataAccessLayerException e) {
+//			throw new AdminServiceException(AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorCode(),
+//					AdminServiceErrorCode.SYNC_JOB_DEF_FETCH_EXCEPTION.getErrorMessage());
+//		}
+//		if (syncJobDefs != null && !syncJobDefs.isEmpty()) {
+//			syncJobDefDtos = MapperUtils.mapAll(syncJobDefs, SyncJobDefDto.class);
+//		}
+//		return syncJobDefDtos;
+//	}
 
 }

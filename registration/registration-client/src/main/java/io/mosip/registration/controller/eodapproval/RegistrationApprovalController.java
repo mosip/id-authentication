@@ -573,8 +573,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			filterField.clear();
 			String fileData = table.getItems().stream()
 					.map(approvaldto -> approvaldto.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
-							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA)
-							.concat(approvaldto.getDate()).concat(RegistrationConstants.COMMA)
+							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA).concat("'")
+							.concat(approvaldto.getDate()).concat("'").concat(RegistrationConstants.COMMA)
 							.concat(approvaldto.getStatusComment()))
 					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
 			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)

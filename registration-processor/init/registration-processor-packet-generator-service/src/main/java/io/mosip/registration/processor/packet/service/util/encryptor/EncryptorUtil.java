@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.packet.service.util.encryptor;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
@@ -35,9 +33,8 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
-import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
@@ -74,11 +71,11 @@ public class EncryptorUtil {
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
 	/** The center id length. */
-	@Value("${mosip.kernel.rid.centerid-length}")
+	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
 	
 	/** The center id length. */
-	@Value("${mosip.kernel.rid.machineid-length}")
+	@Value("${mosip.kernel.machineid.length}")
 	private int machineIdLength;
 	
 	@Value("${registration.processor.rid.machineidsubstring}")
@@ -110,16 +107,11 @@ public class EncryptorUtil {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public void encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
+	public byte[] encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
 			ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, RegBaseCheckedException {
-		try (InputStream decryptedPacketStream = new BufferedInputStream(decryptedFile);
-				InputStream encryptPacketStream = encrypt(decryptedPacketStream, regId, creationTime)) {// close input
-																										// stream
-			byte[] bytes = IOUtils.toByteArray(encryptPacketStream);
-
-			filemanager.put(regId, new ByteArrayInputStream(bytes), DirectoryPathDto.PACKET_GENERATED_ENCRYPTED);
-
-		}
+		byte[] dataToEncrypt = IOUtils.toByteArray(decryptedFile);
+	byte[] encryptPacketByteArray = encrypt(dataToEncrypt, regId, creationTime).getBytes();
+	return encryptPacketByteArray;
 	}
 
 	/**
@@ -143,9 +135,8 @@ public class EncryptorUtil {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public InputStream encrypt(final InputStream streamToEncrypt, String regId, String creationTime)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
-			IOException, RegBaseCheckedException {
+	public String encrypt(byte[] dataToEncrypt, String regId, String creationTime) throws ApisResourceAccessException,
+		InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException, RegBaseCheckedException {
 
 		try {
 
@@ -153,7 +144,7 @@ public class EncryptorUtil {
 			String machineId = regId.substring(centerIdLength, machineIdSubStringLength);
 			String refId = centerId + "_" + machineId;
 
-			byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
+			//byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
 
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
@@ -163,9 +154,7 @@ public class EncryptorUtil {
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), refId, creationTime);
-			return new ByteArrayInputStream(CryptoUtil
-					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER))
-					.getBytes());
+			return CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER));
 
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ENCRYPTOR_INVLAID_DATA_EXCEPTION,
@@ -207,7 +196,6 @@ public class EncryptorUtil {
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(APPLICATION_ID);
-		String publicKeytest=null;
 		ResponseWrapper<?> responseWrapper;
 		PublicKeyResponseDto publicKeyResponsedto=null;
 
