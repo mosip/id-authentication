@@ -15,7 +15,7 @@
 
 		regression smokeAndRegression -->
 		
-			<test name="Kernel Tests">
+		<!--	<test name="Kernel Tests">
 						 <classes>
                            <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -133,7 +133,7 @@
                     <class name="io.mosip.registrationProcessor.tests.PacketInfo" /> 
 
 		</classes>
-	</test>     
+	</test>     -->
 
 
 
