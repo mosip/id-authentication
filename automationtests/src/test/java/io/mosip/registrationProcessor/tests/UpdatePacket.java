@@ -116,7 +116,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	@DataProvider(name = "updatePacketPacket")
 	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -219,29 +219,61 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 						}
 					}
 				}
-				String idRepoUrl = prop.getProperty("idRepoByRid") + regId + "?type=all" ;
-				Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
-				Long uin = null;
-				Map<String, Object> identity = null ;
-				Map<String,Map<String,Object>> idRepoResponseBody = idRepoResponse.jsonPath().get("response"); 
-				for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
-					if(entry.getKey().matches("identity")) {
-						identity = entry.getValue();
-						for(Map.Entry<String, Object> idObj : identity.entrySet()) {
-							if(idObj.getKey().matches("UIN")) {
-								uin = (Long) idObj.getValue();
-								logger.info("UIN : "+uin);
-							}
-						}
-					}
-				}
+				getUINByRegId(regId);
 			}
+			
+			
 
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
 			logger.error("Exception occurred in UpdatePacket class in updatePacket method "+e);
 
 		}
+	}
+
+	public Long getUINByRegId(String regId) {
+		Response idRepoResponse = getIDRepoResponse(regId);
+		Long uin = null;
+		Map<String, Object> identity = null ;
+		Map<String,Map<String,Object>> idRepoResponseBody = idRepoResponse.jsonPath().get("response"); 
+		for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
+			if(entry.getKey().matches("identity")) {
+				identity = entry.getValue();
+				for(Map.Entry<String, Object> idObj : identity.entrySet()) {
+					if(idObj.getKey().matches("UIN")) {
+						uin = (Long) idObj.getValue();
+						logger.info("UIN : "+uin);
+					}
+				}
+			}
+		}
+		return uin;
+	}
+
+	private Response getIDRepoResponse(String regId) {
+		String idRepoUrl = prop.getProperty("idRepoByRid") + regId + "?type=all" ;
+		Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
+		return idRepoResponse;
 	}  
+	
+	public boolean comapreIDResponse(String regId) {
+		Response idRepoResponse = getIDRepoResponse(regId);
+		Long uin = null;
+		Map<String, Object> identity = null ;
+		Map<String,Map<String,Object>> idRepoOldResponseBody = idRepoResponse.jsonPath().get("response"); 
+		/*for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
+			if(entry.getKey().matches("identity")) {
+				identity = entry.getValue();
+				for(Map.Entry<String, Object> idObj : identity.entrySet()) {
+					if(idObj.getKey().matches("UIN")) {
+						uin = (Long) idObj.getValue();
+						logger.info("UIN : "+uin);
+					}
+				}
+			}
+		}
+		return uin;*/
+		return status;
+	}
 
 
 	/**

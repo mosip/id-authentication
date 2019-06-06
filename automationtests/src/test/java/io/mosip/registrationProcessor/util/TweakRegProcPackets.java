@@ -25,6 +25,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.registrationProcessor.tests.UpdatePacket;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
@@ -404,6 +405,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
+							JSONArray updateType = updateRegType(metaData, regId);
+							//JSONArray updateUIN = updateUIN(metaData,"" );
 							logger.info("updatedData : " + updatedData);
 							metaInfoBio.put("identity", identityObject);
 							logger.info("metaInfoBio : " + metaInfoBio);
@@ -445,6 +448,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		}
 		
 	}
+
 
 
 	/**
@@ -711,6 +715,32 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
+	
+	private JSONArray updateRegType(JSONArray metaData, String update) {
+		for (int i = 0; i < metaData.size(); i++) {
+			JSONObject labels = (JSONObject) metaData.get(i);
+			if (labels.get("label").equals("registrationType")) {
+				labels.put("value", update);
+			}
+		}
+
+		return metaData;
+	}
+
+	
+	/*private JSONArray updateUIN(JSONArray metaData, String regId) {
+		UpdatePacket updatePacket  = new UpdatePacket();
+		Long uin = updatePacket.getUINByRegId(regId);
+		for (int i = 0; i < metaData.size(); i++) {
+			JSONObject labels = (JSONObject) metaData.get(i);
+			if (labels.get("label").equals("UIN")) {
+				labels.put("value", uin);
+			}
+		}
+
+		return metaData;
+	}
+*/
 
 	
 

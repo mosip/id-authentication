@@ -95,13 +95,13 @@ public class Assignment extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context) {
 
 		Object[][] readFolder = null;
-		String propertyFilePath = System.getProperty("user.dir") + "\\"
-				+ "src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath = System.getProperty("user.dir") + "/"
+				+ "src/config/RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
 			testLevel=System.getProperty("env.testLevel");
-			switch ("smoke") {
+			switch ("testLevel") {
 			case "smoke":
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 				break;

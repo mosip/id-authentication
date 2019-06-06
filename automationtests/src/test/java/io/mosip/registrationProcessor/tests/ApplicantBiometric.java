@@ -92,8 +92,8 @@ public class ApplicantBiometric extends BaseTestCase implements ITest {
 	@DataProvider(name = "applicantBiometric")
 	public Object[][] readData(ITestContext context) {
 		Object[][] readFolder = null;
-		String propertyFilePath = System.getProperty("user.dir") + "\\"
-				+ "src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath = System.getProperty("user.dir") + "/"
+				+ "src/config/RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");

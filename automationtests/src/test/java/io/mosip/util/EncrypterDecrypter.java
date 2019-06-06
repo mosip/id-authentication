@@ -144,6 +144,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		  File file1=new File(destinationPath+"/"+fileName+".zip");
 		  JSONObject decryptedFileBody=new JSONObject();
 		  decryptedFileBody=generateCryptographicDataEncryption(file1);
+		  logger.info("encrypt request packet  : "+decryptedFileBody);
 		  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,validToken);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
