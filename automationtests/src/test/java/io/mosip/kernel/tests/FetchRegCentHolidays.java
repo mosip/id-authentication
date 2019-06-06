@@ -127,7 +127,7 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			if (responseJson == null || !responseJson.containsKey("holidays"))
 				Assert.assertTrue(false, "Response does not contain holidays");
-			String query = "select count(*) from master.loc_holiday where location_code = "
+			String query = "select count(*) from master.loc_holiday where is_active = true and location_code = "
 					+ "(select holiday_loc_code from master.registration_center where id = '" 
 			+ objectData.get("registrationcenterid")
 					+ "' and lang_code = '" + objectData.get("langcode") + "') and holiday_date between '"

@@ -160,7 +160,7 @@ public class BaseTestCase{
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-			/*TokenGeneration generateToken = new TokenGeneration();
+			TokenGeneration generateToken = new TokenGeneration();
 			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
 			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
 			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
@@ -168,7 +168,7 @@ public class BaseTestCase{
 			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
 			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
 			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
+			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);
 
 		
 		} // End suiteSetup

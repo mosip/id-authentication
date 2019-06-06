@@ -132,15 +132,15 @@ public class FetchApplication extends BaseTestCase implements ITest {
 
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
-			String queryPart = "select count(*) from master.appl_form_type";
+			String queryPart = "select count(*) from master.appl_form_type  where is_active = true";
 
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("code"))
-					query = query + " where code = '" + objectData.get("code") + "' and lang_code = '"
+					query = query + " and code = '" + objectData.get("code") + "' and lang_code = '"
 							+ objectData.get("langcode") + "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 

@@ -825,6 +825,10 @@ public class CommonLibrary extends BaseTestCase {
 	
 	// config property reader
     
+    /**
+     * @param url (complete url)
+     * @return reads the config property
+     */
     public Response getConfigProperties(String url) {
         logger.info("REST-ASSURED: Sending a GET request to " + url);
         Response getResponse = given().relaxedHTTPSValidation()

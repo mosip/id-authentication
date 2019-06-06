@@ -1,1 +1,1 @@
-[{"Jira ID":"MOS-8246","langcode":"valid","testCaseName":"invalid_biometrictypecode","biometrictypecode":"invalid","status":"Pass"},{"Jira ID":"MOS-8246","langcode":"invalid","testCaseName":"invalid_langcode","biometrictypecode":"valid","status":"Pass"},{"Jira ID":"MOS-8246","langcode":"valid","testCaseName":"valid_smoke","biometrictypecode":"valid","status":"Pass"}]
+[{"Jira ID":"MOS-8246","langcode":"valid","testCaseName":"valid_smoke","biometrictypecode":"valid","status":"Pass"}]

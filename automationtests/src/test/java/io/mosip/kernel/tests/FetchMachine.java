@@ -140,15 +140,15 @@ public class FetchMachine extends BaseTestCase implements ITest {
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			if (responseJson == null || !responseJson.containsKey("machines"))
 				Assert.assertTrue(false, "Response does not contain machines");
-			String queryPart = "select count(*) from master.machine_master";
+			String queryPart = "select count(*) from master.machine_master where is_active = true";
 
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("id"))
-					query = query + " where id = '" + objectData.get("id") + "' and lang_code = '"
+					query = query + " and id = '" + objectData.get("id") + "' and lang_code = '"
 							+ objectData.get("langcode") + "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("langcode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("langcode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 

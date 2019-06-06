@@ -146,7 +146,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
 
 			// validating number of objects obtained form db and from get request
-			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+			if (responseArrayFromGet.size() <= obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
 				List<String> attributesToValidateExistance = new ArrayList();

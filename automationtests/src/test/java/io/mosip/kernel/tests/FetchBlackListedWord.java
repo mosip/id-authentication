@@ -130,7 +130,6 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

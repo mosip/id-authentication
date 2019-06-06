@@ -134,15 +134,15 @@ public class FetchDevice extends BaseTestCase implements ITest {
 					.get("response");
 			if (responseJson == null || !responseJson.containsKey("devices"))
 				Assert.assertTrue(false, "Response does not contain devices");
-			String queryPart = "select count(*) from master.device_master";
+			String queryPart = "select count(*) from master.device_master where is_active = true";
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("deviceType"))
-					query = query + " where dspec_id IN (select id from master.device_spec where dtyp_code = '"
+					query = query + " and dspec_id IN (select id from master.device_spec where dtyp_code = '"
 							+ objectData.get("deviceType") + "') and lang_code = '" + objectData.get("languagecode")
 							+ "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("languagecode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("languagecode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
