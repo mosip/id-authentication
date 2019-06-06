@@ -1,1 +1,0 @@
-{"transactionID":"3326412821","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-012","errorMessage":"Partner is deactivated"}],"responseTime":"2019-05-23T11:51:25.704+05:30","response":{"authStatus":false,"staticToken":null}}

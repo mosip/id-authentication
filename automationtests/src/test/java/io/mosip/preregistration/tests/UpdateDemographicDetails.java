@@ -1,5 +1,7 @@
 package io.mosip.preregistration.tests;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,10 +11,12 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.testng.ITest;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.internal.BaseTestMethod;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
@@ -110,7 +114,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		Response createPregResponse = lib.CreatePreReg(createRequest);
 		String pre_registration_id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentUploadResponse = lib.documentUpload(createPregResponse);
-		String expectedDocumentId = documentUploadResponse.jsonPath().get("response.documentId").toString();
+		String expectedDocumentId = documentUploadResponse.jsonPath().get("response.docId").toString();
 		Response fetchCentreResponse = lib.FetchCentre();
 		String expectedRegCenterId = fetchCentreResponse.jsonPath().get("response.regCenterId").toString();
 		lib.BookAppointment(documentUploadResponse, fetchCentreResponse, pre_registration_id);
@@ -121,9 +125,10 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
-		lib.compareValues(
-				updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),"No data found for the requested pre-registration id");
+		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),
+				"No data found for the requested pre-registration id");
 	}
+
 	@Test
 	public void updateDemographicDetailsOfDiscardedApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -135,23 +140,30 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
-		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(), "No data found for the requested pre-registration id");
+		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),
+				"No data found for the requested pre-registration id");
 	}
-@Test
+
+	@Test
 	public void updateDemographicDetailsWithInvalidPreRegistrationId() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		String pre_registration_id="7825432989162";
+		String pre_registration_id = "7825432989162";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		JSONObject updateRequest = lib.getRequest(updateSuite);
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
-		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),"No data found for the requested pre-registration id");
+		lib.compareValues(updateDemographicDetailsResponse.jsonPath().get("errors[0].message").toString(),
+				"No data found for the requested pre-registration id");
 	}
-	@BeforeMethod(alwaysRun=true)
-	public void getAuthToken()
+
+	@BeforeMethod(alwaysRun = true)
+	public void login( Method method)
 	{
+		testCaseName="preReg_Demogarphic_" + method.getName();
 		authToken=lib.getToken();
+		
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
@@ -159,10 +171,16 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 	}
 
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		logger.info("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Demogarphic_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
 		lib.logOut();
-		
 	}
 
 }

@@ -1,1 +1,0 @@
-{"transactionID":"8877822203","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-DEA-002","errorMessage":"Unsupported Language Code - request : $REMOVE$","actionMessage":"Please provide valid Language"}],"responseTime":"2019-05-23T06:26:47.313Z","response":{"authStatus":false,"staticToken":null}}

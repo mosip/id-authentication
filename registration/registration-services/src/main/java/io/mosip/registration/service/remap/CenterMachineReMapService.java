@@ -40,4 +40,6 @@ public interface CenterMachineReMapService {
 	 * @return Boolean - true if machine is remappped
 	 */
 	Boolean isMachineRemapped();
+
+	void startRemapProcess();
 }

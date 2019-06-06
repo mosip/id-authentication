@@ -19,9 +19,11 @@ public class CaptureResponsBioDataDto {
 	private String deviceServiceVersion;
 	private String bioType;
 	private String bioSubType;
+	private String bioSegmentedType;
 	private String mosipProcess;
 	private String env;
 	private byte[] bioValue;
+	private byte[] bioExtract;
 	private String transactionID;
 	private String timestamp;
 	private String requestedScore;

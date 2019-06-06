@@ -1,0 +1,9 @@
+{
+
+    "timestamp": "2019-05-26T13:47:13.252+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Required String parameter 'preRegistrationId' is not present",
+    "path": "/preregistration/v1/documents/preregistration/"
+
+}

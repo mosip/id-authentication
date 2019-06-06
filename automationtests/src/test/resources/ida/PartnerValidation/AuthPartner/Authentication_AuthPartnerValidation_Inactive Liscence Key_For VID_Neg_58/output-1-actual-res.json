@@ -1,1 +1,0 @@
-{"transactionID":"6326458143","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-017","errorMessage":"License key of MISP is blocked"}],"responseTime":"2019-05-23T11:50:31.355+05:30","response":{"authStatus":false,"staticToken":null}}

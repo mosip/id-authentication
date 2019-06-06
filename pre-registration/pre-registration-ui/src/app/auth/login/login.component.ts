@@ -69,7 +69,6 @@ export class LoginComponent implements OnInit {
   loadValidationMessages() {
     this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       this.validationMessages = response['login'];
-      console.log(this.validationMessages);
     });
   }
 
@@ -91,13 +90,11 @@ export class LoginComponent implements OnInit {
         this.errorMessage = this.validationMessages['invalidMobile'];
       }
     }
-    console.log('errorMessage', this.errorMessage);
   }
 
   loadConfigs() {
     this.dataService.getConfig().subscribe(
       response => {
-        console.log(response);
         this.configService.setConfig(response);
         this.setTimer();
         this.loadLanguagesWithConfig();
@@ -152,7 +149,6 @@ export class LoginComponent implements OnInit {
 
   setTimer() {
     const time = Number(this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_kernel_otp_expiry_time));
-    console.log('time', this.configService.getConfigByKey(appConstants.CONFIG_KEYS.mosip_kernel_otp_expiry_time));
     if (!isNaN(time)) {
       const minutes = time / 60;
       const seconds = time % 60;
@@ -209,6 +205,7 @@ export class LoginComponent implements OnInit {
   submit(): void {
     this.loginIdValidator();
     if ((this.showSendOTP || this.showResend) && this.errorMessage === undefined) {
+      this.inputOTP = '';
       this.showResend = true;
       this.showOTP = true;
       this.showSendOTP = false;
@@ -252,29 +249,24 @@ export class LoginComponent implements OnInit {
         this.timer = setInterval(timerFn, 1000);
       }
 
-      this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {
-        console.log(response);
-      });
+      this.dataService.sendOtp(this.inputContactDetails).subscribe(response => {});
 
       // dynamic update of button text for Resend and Verify
     } else if (this.showVerify && this.errorMessage === undefined) {
       this.dataService.verifyOtp(this.inputContactDetails, this.inputOTP).subscribe(
         response => {
-          console.log(response);
           if (!response['errors']) {
             clearInterval(this.timer);
             localStorage.setItem('loggedIn', 'true');
             this.authService.setToken();
-
             this.regService.setLoginId(this.inputContactDetails);
             this.router.navigate(['dashboard']);
           } else {
-            console.log(response['error']);
             this.showOtpMessage();
           }
         },
         error => {
-          this.showOtpMessage();
+          this.showErrorMessage();
         }
       );
     }

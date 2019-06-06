@@ -6,11 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +30,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.entity.VIDEntity;
 import io.mosip.authentication.common.service.factory.AuditRequestFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -98,12 +94,6 @@ public class IdAuthServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
 		idRepo.put("vid", "476567");
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-		vidEntity.setActive(true);
-		vidEntity.setUin("476567");
-		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString(), false);
@@ -116,12 +106,6 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-		vidEntity.setActive(true);
-		vidEntity.setUin("476567");
-		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
@@ -132,12 +116,6 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-		vidEntity.setActive(true);
-		vidEntity.setUin("476567");
-		Optional<VIDEntity> optVID = Optional.of(vidEntity);
-		//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
 		Mockito.when(idRepoManager.getIdenity(Mockito.any(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Map<String, Object> idResponseMap = (Map<String, Object>) ReflectionTestUtils.invokeMethod(idAuthServiceImpl,
 				"processIdType", idvIdType, idvId, false);
@@ -150,13 +128,8 @@ public class IdAuthServiceImplTest {
 		String idvId = "875948796";
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
-         
-		Mockito.when(idRepoManager.getIdenity(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenThrow(idBusinessException);
-		
 		Mockito.when(idRepoManager.getUINByVID(idvId))
-		.thenReturn(Mockito.anyString());
-
+		.thenThrow(idBusinessException);;
 		idAuthServiceImpl.processIdType(idvIdType, idvId, false);
 
 	}
@@ -292,15 +265,10 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			VIDEntity vidEntity = new VIDEntity();
-			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-			vidEntity.setActive(true);
-			vidEntity.setUin(vid);
-			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
@@ -318,17 +286,12 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			VIDEntity vidEntity = new VIDEntity();
-			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-			vidEntity.setActive(true);
-			vidEntity.setUin(vid);
-			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.INVALID_UIN);
 
 			
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);
@@ -346,17 +309,12 @@ public class IdAuthServiceImplTest {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
 			idRepo.put("uin", vid);
-			VIDEntity vidEntity = new VIDEntity();
-			vidEntity.setExpiryDate(LocalDateTime.of(2100, 12, 31, 6, 45));
-			vidEntity.setActive(true);
-			vidEntity.setUin(vid);
-			Optional<VIDEntity> optVID = Optional.of(vidEntity);
 			IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.VID_DEACTIVATED_UIN);
 
 			
 			Mockito.when(idRepoManager.getUINByVID(vid))
-			.thenReturn("12345");
+			.thenReturn(12345l);
 			Mockito.when(idRepoManager.getIdenity("12345", false))
 			.thenThrow(idBusinessException);
 			//Mockito.when(vidRepository.findUinByVid(Mockito.any())).thenReturn(optVID);

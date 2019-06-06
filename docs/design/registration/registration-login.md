@@ -1,4 +1,4 @@
-**Design -- Login**
+**Design - Login and Logout**
 
 [Username-Password / OTP/ Bio]
 

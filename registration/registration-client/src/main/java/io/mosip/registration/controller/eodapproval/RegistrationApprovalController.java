@@ -16,6 +16,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,11 +102,21 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private TableView<RegistrationApprovalVO> table;
 
+	/** Sl No column in the table. */
+
+	@FXML
+	private TableColumn<RegistrationApprovalVO, String> slno;
+	
 	/** Registration Id column in the table. */
 
 	@FXML
 	private TableColumn<RegistrationApprovalVO, String> id;
 
+	/** Date column in the table. */
+
+	@FXML
+	private TableColumn<RegistrationApprovalVO, String> date;
+	
 	/** status comment column in the table. */
 	@FXML
 	private TableColumn<RegistrationApprovalVO, String> statusComment;
@@ -163,7 +175,6 @@ public class RegistrationApprovalController extends BaseController implements In
 	private ObservableList<RegistrationApprovalVO> observableList;
 
 	private Map<String, Integer> packetIds = new HashMap<>();
-	private int rowNum;
 
 	/*
 	 * (non-Javadoc)
@@ -209,8 +220,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		rejectionBtn.setVisible(false);
 		imageAnchorPane.setVisible(false);
 
+		slno.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_SLNO));
 		id.setCellValueFactory(
 				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_ID));
+		date.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalVO, String>(RegistrationConstants.EOD_PROCESS_DATE));
 		statusComment.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
 				RegistrationConstants.EOD_PROCESS_STATUSCOMMENT));
 		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalVO, String>(
@@ -291,21 +306,27 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		if (!listData.isEmpty()) {
 
-			listData.forEach(approvalDTO -> registrationApprovalVO.add(new RegistrationApprovalVO(approvalDTO.getId(),
-					approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING)));
-			rowNum = 0;
-			listData.forEach(approvalDTO -> {
+			int count=1;
+			for (RegistrationApprovalDTO approvalDTO : listData) {
+				registrationApprovalVO.add(new RegistrationApprovalVO("    " + count++, approvalDTO.getId(), approvalDTO.getDate(),
+								approvalDTO.getAcknowledgementFormPath(), RegistrationUIConstants.PENDING));
+			}
+			int rowNum = 0;
+			for(RegistrationApprovalDTO approvalDTO : listData) {
 				packetIds.put(approvalDTO.getId(), rowNum++);
-			});
+			}
+			
 			// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 			observableList = FXCollections.observableArrayList(registrationApprovalVO);
 			wrapListAndAddFiltering(observableList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationUIConstants.PLACEHOLDER_LABEL));
-			observableList.clear();
+			if(observableList != null) {
+				observableList.clear();
+				wrapListAndAddFiltering(observableList);
+			}
 			filterField.clear();
-			wrapListAndAddFiltering(observableList);
 		}
 
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
@@ -315,9 +336,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		FilteredList<RegistrationApprovalVO> filteredData = new FilteredList<>(oList, p -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes.
-		filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filterData(newValue, filteredData);
-		});
+		filterField.textProperty().addListener((observable, oldValue, newValue) -> 	filterData(newValue, filteredData));
 		if (!filterField.getText().isEmpty()) {
 			filterData(filterField.getText(), filteredData);
 		}
@@ -389,7 +408,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			int row = packetIds.get(table.getSelectionModel().getSelectedItem().getId());
 			RegistrationApprovalVO approvalDTO = new RegistrationApprovalVO(
+					table.getSelectionModel().getSelectedItem().getSlno(),
 					table.getSelectionModel().getSelectedItem().getId(),
+					table.getSelectionModel().getSelectedItem().getDate(),
 					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 					RegistrationUIConstants.APPROVED);
 			observableList.set(row, approvalDTO);
@@ -397,7 +418,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			table.requestFocus();
 			table.getFocusModel().focus(focusedIndex);
 			table.getSelectionModel().select(focusedIndex);
-			// filterField.clear();
 
 		} else {
 			Stage primarystage = new Stage();
@@ -498,11 +518,11 @@ public class RegistrationApprovalController extends BaseController implements In
 			primaryStage.close();
 			reloadTableView();
 
-			if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
+			/*if (RegistrationAppHealthCheckUtil.isNetworkAvailable() && !regIds.isEmpty()) {
 
 				uploadPacketsInBackground(regIds);
 
-			}
+			}*/
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
@@ -541,6 +561,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Exporting Registration status details has been started");
 
+		String str = filterField.getText();
 		Stage stage = new Stage();
 		DirectoryChooser destinationSelector = new DirectoryChooser();
 		destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
@@ -550,14 +571,22 @@ public class RegistrationApprovalController extends BaseController implements In
 		File destinationPath = destinationSelector.showDialog(stage);
 		if (destinationPath != null) {
 
+			filterField.clear();
 			String fileData = table.getItems().stream()
-					.map(approvaldto -> approvaldto.getId().concat(RegistrationConstants.SPACE)
-							.concat(RegistrationConstants.HYPHEN).concat(RegistrationConstants.SPACE)
+					.map(approvaldto -> approvaldto.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
+							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA)
+							.concat(approvaldto.getDate()).concat(RegistrationConstants.COMMA)
 							.concat(approvaldto.getStatusComment()))
-					.collect(Collectors.joining("\n"));
-
+					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
+			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_REGISTRATIONID_LABEL).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_STATUS_LABEL).concat(RegistrationConstants.NEW_LINE);
+			fileData = headers + fileData;
+			filterField.setText(str);
 			try (Writer writer = new BufferedWriter(new FileWriter(destinationPath + "/"
-					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
+					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.UNDER_SCORE)
+							.concat(getcurrentTimeStamp()).concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
 				writer.write(fileData);
 
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
@@ -575,4 +604,16 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Exporting Registration status details has been ended");
 	}
+	
+	/**
+	 * This method gets the current timestamp in yyyymmddhhmmss format.
+	 * 
+	 * @return current timestamp in fourteen digits
+	 */
+	private String getcurrentTimeStamp() {
+		DateTimeFormatter format = DateTimeFormatter
+				.ofPattern(RegistrationConstants.EOD_PROCESS_DATE_FORMAT_FOR_FILE);
+		return LocalDateTime.now().format(format);
+	}
+
 }

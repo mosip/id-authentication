@@ -124,7 +124,7 @@ public class AuthRequestControllerTest {
 	@Test
 	public void authControllerTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
-		Mockito.when(encrypt.encrypt(Mockito.any())).thenReturn(encryptionResponse);
+		Mockito.when(encrypt.encrypt(Mockito.any(), Mockito.anyBoolean())).thenReturn(encryptionResponse);
 		String reqData="{\r\n" + 
 				"		\"biometrics\": [{\r\n" + 
 				"				\"data\": {\r\n" + 
@@ -154,7 +154,7 @@ public class AuthRequestControllerTest {
 				"	}";
 		Map<String,Object> reqMap=mapper.readValue(reqData.getBytes(StandardCharsets.UTF_8), Map.class);
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(newServletInputStream());
-		authReqController.createAuthRequest("1234567890", "UIN", false, null, null, reqMap)	;
+		authReqController.createAuthRequest("1234567890", "UIN", false, false, null, null, reqMap)	;
 		
 		
 	}
@@ -164,7 +164,7 @@ public class AuthRequestControllerTest {
 	@Test
 	public void kycControllerTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
-		Mockito.when(encrypt.encrypt(Mockito.any())).thenReturn(encryptionResponse);
+		Mockito.when(encrypt.encrypt(Mockito.any(), Mockito.anyBoolean())).thenReturn(encryptionResponse);
 		String reqData="{\r\n" + 
 				"		\"biometrics\": [{\r\n" + 
 				"				\"data\": {\r\n" + 
@@ -194,7 +194,7 @@ public class AuthRequestControllerTest {
 				"	}";
 		Map<String,Object> reqMap=mapper.readValue(reqData.getBytes(StandardCharsets.UTF_8), Map.class);
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(newServletInputStream());
-		authReqController.createAuthRequest("1234567890", "UIN", false, null, null, reqMap)	;
+		authReqController.createAuthRequest("1234567890", "UIN", false, false, null, null, reqMap)	;
 		
 		
 	}
@@ -208,7 +208,7 @@ public class AuthRequestControllerTest {
 	@Test
 	public void authControllerAuthTypeTest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
-		Mockito.when(encrypt.encrypt(Mockito.any())).thenReturn(encryptionResponse);
+		Mockito.when(encrypt.encrypt(Mockito.any(), Mockito.anyBoolean())).thenReturn(encryptionResponse);
 		String reqData="{\r\n" + 
 				"		\"biometrics\": [{\r\n" + 
 				"				\"data\": {\r\n" + 
@@ -238,7 +238,7 @@ public class AuthRequestControllerTest {
 				"	}";
 		Map<String,Object> reqMap=mapper.readValue(reqData.getBytes(StandardCharsets.UTF_8), Map.class);
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(newServletInputStream());
-		authReqController.createAuthRequest("1234567890", "UIN", true, "bio,otp,demo,pin", null, reqMap)	;
+		authReqController.createAuthRequest("1234567890", "UIN", true, false, "bio,otp,demo,pin", null, reqMap)	;
 	}
 	
 	
@@ -246,11 +246,11 @@ public class AuthRequestControllerTest {
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void noRequest() throws KeyManagementException, InvalidKeyException, IdAuthenticationAppException, IdAuthenticationBusinessException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException, JSONException {
 		EncryptionResponseDto encryptionResponse=new EncryptionResponseDto();
-		Mockito.when(encrypt.encrypt(Mockito.any())).thenReturn(encryptionResponse);
+		Mockito.when(encrypt.encrypt(Mockito.any(), Mockito.anyBoolean())).thenReturn(encryptionResponse);
 		String reqData="{}";
 		Map<String,Object> reqMap=mapper.readValue(reqData.getBytes(StandardCharsets.UTF_8), Map.class);
 		Mockito.when(templateManager.merge(Mockito.any(), Mockito.any())).thenReturn(newServletInputStream());
-		authReqController.createAuthRequest("1234567890", "UIN", false, "bio", null, reqMap)	;
+		authReqController.createAuthRequest("1234567890", "UIN", false, false, "bio", null, reqMap)	;
 	}
 	
 	

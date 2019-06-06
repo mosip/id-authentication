@@ -1,1 +1,0 @@
-{"id":"mosip.identity.otp","version":"1.0","transactionID":"5124010860","responseTime":"2019-05-23T11:04:54.245+05:30","errors":[{"errorCode":"IDA-MLC-003","errorMessage":"UIN has been deactivated","actionMessage":"Your UIN status is not active"}],"response":null}

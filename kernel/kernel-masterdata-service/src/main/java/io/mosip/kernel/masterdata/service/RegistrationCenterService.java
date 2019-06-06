@@ -3,10 +3,12 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -148,5 +150,13 @@ public interface RegistrationCenterService {
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			String languageCode, Short hierarchyLevel, List<String> names);
+			
+	/**
+	 * Function to fetch all registration centers list.
+	 * 
+	 * @return the list of all registration centers.
+	 */
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNo,int pageSize,String sortBy,String orderBy);
 
 }
+

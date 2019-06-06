@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
@@ -87,5 +88,13 @@ public interface MasterSyncService {
 	 * @return the individual type
 	 */
 	List<IndividualTypeDto> getIndividualType(String code,String langCode);
+	
+	/**
+	 * Gets the biometric type.
+	 *
+	 * @param langCode the lang code
+	 * @return the biometric type
+	 */
+	List<BiometricAttributeDto> getBiometricType(String langCode);
 
 }

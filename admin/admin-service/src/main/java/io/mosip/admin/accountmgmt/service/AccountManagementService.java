@@ -3,11 +3,12 @@ package io.mosip.admin.accountmgmt.service;
 import io.mosip.admin.accountmgmt.dto.PasswordDto;
 import io.mosip.admin.accountmgmt.dto.ResetPasswordDto;
 import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
-import io.mosip.admin.accountmgmt.dto.UserDetailDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailRestClientDto;
+import io.mosip.admin.accountmgmt.dto.UserDetailsDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
 import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface AccountManagementService.
  *
@@ -66,7 +67,17 @@ public interface AccountManagementService {
 	 * @param mobile the mobile
 	 * @return the user detail based on mobile number
 	 */
-	public UserDetailDto getUserDetailBasedOnMobileNumber(String mobile);
+	public UserDetailsDto getUserDetailBasedOnMobileNumber(String mobile);
+	
+	
+	
+	/**
+	 * Gets the user detail based on reg id.
+	 *
+	 * @param userId the user id
+	 * @return the user detail based on reg id
+	 */
+	public UserDetailRestClientDto getUserDetailBasedOnRegId(String userId);
 	
 	
 	/**

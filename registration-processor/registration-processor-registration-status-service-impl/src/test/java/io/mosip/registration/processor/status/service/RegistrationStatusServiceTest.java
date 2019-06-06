@@ -35,7 +35,7 @@ import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
-import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;;
+import io.mosip.registration.processor.status.utilities.RegistrationExternalStatusUtility;;
 
 @RunWith(MockitoJUnitRunner.class)
 @DataJpaTest
@@ -59,7 +59,7 @@ public class RegistrationStatusServiceTest {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Mock
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
+	private  RegistrationExternalStatusUtility regexternalstatusUtil;
 
 	List<RegistrationStatusDto> registrations = new ArrayList<>();
 
@@ -89,7 +89,7 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(registrationStatusDao.findById(any())).thenReturn(registrationStatusEntity);
 
 		TransactionEntity transactionEntity = new TransactionEntity();
-		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
+		transactionEntity.setStatusCode("PROCESSING");
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(any())).thenReturn(transactionEntity);
 		// Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
@@ -168,7 +168,7 @@ public class RegistrationStatusServiceTest {
 	public void testGetByIdsSuccess() {
 
 		Mockito.when(registrationStatusDao.getByIds(any())).thenReturn(entities);
-		Mockito.when(registrationStatusMapUtil.getExternalStatus(any()))
+		Mockito.when(regexternalstatusUtil.getExternalStatus(any()))
 				.thenReturn(RegistrationExternalStatusCode.PROCESSED);
 		RegistrationStatusSubRequestDto registrationId = new RegistrationStatusSubRequestDto();
 		registrationId.setRegistrationId("1001");

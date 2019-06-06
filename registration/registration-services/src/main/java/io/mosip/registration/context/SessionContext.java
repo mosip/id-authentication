@@ -1,5 +1,6 @@
 package io.mosip.registration.context;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.dto.UserDTO;
 
 /**
  * Class for SessionContext details
@@ -34,6 +36,7 @@ public class SessionContext {
 
 	private UUID id;
 	private static UserContext userContext;
+	private static SecurityContext securityContext;
 	private Date loginTime;
 	private long refreshedLoginTime;
 	private long timeoutInterval;
@@ -58,9 +61,37 @@ public class SessionContext {
 			return sessionContext;
 		}
 	}
+	
+	/**
+	 * making sessionContext as singleton
+	 * 
+	 * @param : userDTO
+	 * 
+	 * @return sessionContext
+	 */
+	public static SessionContext create(UserDTO  userDTO){
+		if (userDTO != null) {
+			List<String> roleList = new ArrayList<>();
+
+			userDTO.getUserRole().forEach(roleCode -> {
+				if (roleCode.isActive()) {
+					roleList.add(String.valueOf(roleCode.getRoleCode()));
+				}
+			});
+			
+			securityContext = sessionContext.new SecurityContext();
+			securityContext.setUserId(userDTO.getId());
+			securityContext.setRoles(roleList);
+			securityContext.setSecurityAuthenticationMap(new HashMap<>());
+			
+			return sessionContext;
+		} else {
+			return sessionContext;
+		}
+	}
 
 	/**
-	 * Reading map from sessioncontext
+	 * Reading map from sessionContext
 	 * 
 	 * @return map
 	 */
@@ -81,16 +112,25 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userContext from sessioncontext
+	 * Reading userContext from sessionContext
 	 * 
 	 * @return userContext
 	 */
 	public static UserContext userContext() {
 		return sessionContext.getUserContext();
 	}
+	
+	/**
+	 * Reading SecurityContext from sessioncontext
+	 * 
+	 * @return securityContext
+	 */
+	public static SecurityContext securityContext() {
+		return sessionContext.getSecurityContext();
+	}
 
 	/**
-	 * Reading userMap from sessioncontext
+	 * Reading userMap from sessionContext
 	 * 
 	 * @return userMap
 	 */
@@ -99,7 +139,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading refreshedLoginTime from sessioncontext
+	 * Reading refreshedLoginTime from sessionContext
 	 * 
 	 * @return refreshedLoginTime
 	 */
@@ -117,7 +157,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading timeoutInterval from sessioncontext
+	 * Reading timeoutInterval from sessionContext
 	 * 
 	 * @return timeoutInterval
 	 */
@@ -126,7 +166,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading idealTime from sessioncontext
+	 * Reading idealTime from sessionContext
 	 * 
 	 * @return idealTime
 	 */
@@ -141,11 +181,11 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		sessionContext.getInstance().authTokenDTO = authTokenDTO;
+		SessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**
-	 * Reading authTokenDTO from sessioncontext
+	 * Reading authTokenDTO from sessionContext
 	 * 
 	 * @return authTokenDTO
 	 */
@@ -154,7 +194,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userId from sessioncontext
+	 * Reading userId from sessionContext
 	 * 
 	 * @return userId
 	 */
@@ -167,7 +207,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userName from sessioncontext
+	 * Reading userName from sessionContext
 	 * 
 	 * @return userName
 	 */
@@ -180,7 +220,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading isSessionContextAvailable from sessioncontext
+	 * Reading isSessionContextAvailable from sessionContext
 	 * 
 	 * @return boolean
 	 */
@@ -214,6 +254,15 @@ public class SessionContext {
 	 */
 	public UserContext getUserContext() {
 		return userContext;
+	}
+	
+	/**
+	 * Getter for securityContext
+	 * 
+	 * @return securityContext
+	 */
+	public SecurityContext getSecurityContext() {
+		return securityContext;
 	}
 
 	/**
@@ -452,6 +501,85 @@ public class SessionContext {
 		 */
 		public void setUserMap(Map<String, Object> userMap) {
 			this.userMap = userMap;
+		}
+
+	}
+	
+	/**
+	 * class for User context
+	 *
+	 */
+	public class SecurityContext {
+		private String userId;
+		private List<String> roles;
+		private Map<String, Object> securityAuthenticationMap;
+
+		/**
+		 * Constructor for User context
+		 */
+		private SecurityContext() {
+
+		}
+
+		/**
+		 * Getter for userId
+		 * 
+		 * @return userId
+		 */
+		public String getUserId() {
+			if(userId==null) {
+				return RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
+			}
+			return userId;
+		}
+
+		/**
+		 * Setter for userId
+		 * 
+		 * @param userId
+		 *            id of the user
+		 */
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		/**
+		 * Getter for roles
+		 * 
+		 * @return list of roles
+		 */
+		public List<String> getRoles() {
+			return roles;
+		}
+
+		/**
+		 * Setter for roles
+		 * 
+		 * @param roles
+		 *            user roles
+		 */
+		public void setRoles(List<String> roles) {
+			this.roles = roles;
+		}
+
+
+		/**
+		 * Getter for userMap
+		 * 
+		 * @return userMap
+		 */
+		public Map<String, Object> getSecurityAuthenticationMap() {
+			return securityAuthenticationMap;
+		}
+
+		/**
+		 * Setter for userMap
+		 * 
+		 * @param userMap
+		 *            user map
+		 */
+		public void setSecurityAuthenticationMap(Map<String, Object> securityAuthenticationMap) {
+			this.securityAuthenticationMap = securityAuthenticationMap;
 		}
 
 	}

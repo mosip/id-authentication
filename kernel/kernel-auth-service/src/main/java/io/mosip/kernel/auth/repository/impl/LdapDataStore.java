@@ -4,13 +4,17 @@
 package io.mosip.kernel.auth.repository.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.naming.Context;
 import javax.naming.NameAlreadyBoundException;
@@ -60,6 +64,8 @@ import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.Role;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -72,6 +78,7 @@ import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
@@ -101,8 +108,6 @@ public class LdapDataStore implements DataStore {
 	MosipEnvironment environment;
 
 	private LdapConnection createAnonymousConnection() throws Exception {
-		// LdapNetworkConnection network = new
-		// LdapNetworkConnection(dataBaseConfig.getUrl(),Integer.valueOf(dataBaseConfig.getPort()));
 		LdapConnection connection = new LdapNetworkConnection(dataBaseConfig.getUrl(),
 				Integer.valueOf(dataBaseConfig.getPort()));
 		return connection;
@@ -143,13 +148,27 @@ public class LdapDataStore implements DataStore {
 
 	private MosipUserDto getOtpDetails(OtpUser otpUser) throws Exception {
 		LdapConnection connection = createAnonymousConnection();
-		Dn userdn = createUserDn(otpUser.getUserId());
+		MosipUserDto mosipUserDto = null;
+		Dn userdn = null;
+		try
+		{
+		userdn = createUserDn(otpUser.getUserId());
+		mosipUserDto = lookupUserDetails(userdn, connection);
 		if (!connection.exists(userdn)) {
 			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
 					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 
 		}
-		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
+		}
+		catch(Exception e)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
+		}
+		finally
+		{
+			connection.close();
+		}
 		return mosipUserDto;
 	}
 
@@ -167,9 +186,23 @@ public class LdapDataStore implements DataStore {
 	}
 
 	private MosipUserDto getMosipUser(String userId) throws Exception {
-		LdapConnection connection = createAnonymousConnection();
+		LdapConnection connection = null;
+		MosipUserDto mosipUserDto = null;
+		try
+		{
+		connection = createAnonymousConnection();
 		Dn userdn = createUserDn(userId);
-		MosipUserDto mosipUserDto = lookupUserDetails(userdn, connection);
+		mosipUserDto = lookupUserDetails(userdn, connection);
+		}
+		catch(Exception e)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
+		}
+		finally
+		{
+			connection.close();
+		}
 		return mosipUserDto;
 	}
 
@@ -187,19 +220,23 @@ public class LdapDataStore implements DataStore {
 	}
 
 	private MosipUserDto getClientSecretDetails(ClientSecret clientSecret) throws Exception {
-		LdapConnection connection = createAnonymousConnection();
-		Dn userdn = createUserDn(clientSecret.getClientId());
+		LdapConnection connection = null;
 		try {
+			connection = createAnonymousConnection();
+			Dn userdn = createUserDn(clientSecret.getClientId());
 			connection.bind(userdn, clientSecret.getSecretKey());
+			if (connection.isAuthenticated()) {
+				return lookupUserDetails(userdn, connection);
+			}
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(), ex);
 		}
-		if (connection.isAuthenticated()) {
-			return lookupUserDetails(userdn, connection);
+		finally
+		{
+			connection.unBind();
+			connection.close();
 		}
-		connection.unBind();
-		connection.close();
 		return null;
 	}
 	/*
@@ -211,19 +248,23 @@ public class LdapDataStore implements DataStore {
 	 */
 
 	public MosipUserDto getLoginDetails(LoginUser loginUser) throws Exception {
-		LdapConnection connection = createAnonymousConnection();
-		Dn userdn = createUserDn(loginUser.getUserName());
+		LdapConnection connection = null;
 		try {
+			connection = createAnonymousConnection();
+			Dn userdn = createUserDn(loginUser.getUserName());
 			connection.bind(userdn, loginUser.getPassword());
+			if (connection.isAuthenticated()) {
+				return lookupUserDetails(userdn, connection);
+			}
 		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(), ex);
 		}
-		if (connection.isAuthenticated()) {
-			return lookupUserDetails(userdn, connection);
+		finally
+		{
+			connection.unBind();
+			connection.close();
 		}
-		connection.unBind();
-		connection.close();
 		return null;
 	}
 
@@ -261,9 +302,9 @@ public class LdapDataStore implements DataStore {
 				mosipUserDto.setRole(rolesString);
 			}
 			return mosipUserDto;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_PARSE_REQUEST_ERROR.getErrorMessage(), ex);
 		}
 	}
 
@@ -281,9 +322,9 @@ public class LdapDataStore implements DataStore {
 
 			rolesData.close();
 			return roles;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), ex);
 		}
 	}
 
@@ -308,14 +349,15 @@ public class LdapDataStore implements DataStore {
 	@Override
 	public RolesListDto getAllRoles() {
 		RolesListDto rolesListDto = new RolesListDto();
-
+		EntryCursor rolesData = null;
+		LdapConnection connection = null;
 		try {
-			LdapConnection connection = createAnonymousConnection();
+			connection = createAnonymousConnection();
 			List<Role> roleDtos = new ArrayList<>();
 			Dn searchBase = new Dn("ou=roles,c=morocco");
 			String searchFilter = "(objectClass=organizationalRole)";
 
-			EntryCursor rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
+			rolesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
 
 			for (Entry entry : rolesData) {
 				Role roleDto = new Role();
@@ -325,23 +367,33 @@ public class LdapDataStore implements DataStore {
 				roleDtos.add(roleDto);
 			}
 			rolesListDto.setRoles(roleDtos);
-			rolesData.close();
-			connection.close();
+			
 
 			return rolesListDto;
 		} catch (Exception e) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), e);
+		}
+		finally
+		{
+			try {
+				rolesData.close();
+				connection.close();
+			} catch (IOException e) {
+				throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
+						LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(),e);
+			}	
 		}
 	}
 
 	@Override
 	public MosipUserListDto getListOfUsersDetails(List<String> users) throws Exception {
+		LdapConnection connection = null;
 		try {
 			MosipUserListDto userResponseDto = new MosipUserListDto();
 			List<MosipUserDto> mosipUserDtos = new ArrayList<>();
 
-			LdapConnection connection = createAnonymousConnection();
+			connection = createAnonymousConnection();
 
 			for (String user : users) {
 				Dn userdn = createUserDn(user);
@@ -350,12 +402,16 @@ public class LdapDataStore implements DataStore {
 					mosipUserDtos.add(data);
 			}
 
-			connection.close();
+			
 			userResponseDto.setMosipUserDtoList(mosipUserDtos);
 			return userResponseDto;
-		} catch (Exception err) {
+		} catch (Exception ex) {
 			throw new AuthManagerException(LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage());
+					LDAPErrorCode.LDAP_ROLES_REQUEST_ERROR.getErrorMessage(), ex);
+		}
+		finally
+		{
+			connection.close();
 		}
 	}
 
@@ -363,7 +419,10 @@ public class LdapDataStore implements DataStore {
 	public MosipUserSaltListDto getAllUserDetailsWithSalt() throws Exception {
 		MosipUserSaltListDto mosipUserSaltList = new MosipUserSaltListDto();
 		List<MosipUserSalt> mosipUserDtos = new ArrayList<>();
-		LdapConnection connection = createAnonymousConnection();
+		LdapConnection connection = null;
+		try
+		{
+		connection = createAnonymousConnection();
 		Dn searchBase = new Dn("ou=people,c=morocco");
 		String searchFilter = "(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson))";
 		EntryCursor peoplesData = connection.search(searchBase, searchFilter, SearchScope.ONELEVEL);
@@ -373,10 +432,20 @@ public class LdapDataStore implements DataStore {
 			if (entry.get("userPassword") != null) {
 				PasswordDetails password = PasswordUtil.splitCredentials(entry.get("userPassword").get().getBytes());
 				if (password.getSalt() != null) {
-					saltDetails.setSalt(HMACUtils.digestAsPlainText(password.getSalt()));
+					saltDetails.setSalt(CryptoUtil.encodeBase64(password.getSalt()));
 				}
 			}
 			mosipUserDtos.add(saltDetails);
+		}
+		}
+		catch(Exception e)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
+		}
+		finally
+		{
+			connection.close();
 		}
 		mosipUserSaltList.setMosipUserSaltList(mosipUserDtos);
 		return mosipUserSaltList;
@@ -385,22 +454,31 @@ public class LdapDataStore implements DataStore {
 	@Override
 	public RIdDto getRidFromUserId(String userId) throws Exception {
 		RIdDto ridDto = null;
-		LdapConnection ldapConnection = createAnonymousConnection();
-		Dn userdn = createUserDn(userId);
-		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
-		if (data == null) {
-			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
-					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+		LdapConnection ldapConnection = null;
+		try
+		{
+			ldapConnection = createAnonymousConnection();
+			Dn userdn = createUserDn(userId);
+			MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+			if (data == null) {
+				throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+						AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
+			}
+			if (data.getRId() != null) {
+				ridDto = new RIdDto();
+				ridDto.setRId(data.getRId());
+			}
+		}catch(Exception e)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
+		}finally
+		{
+			ldapConnection.close();
 		}
-		if (data.getRId() != null) {
-			ridDto = new RIdDto();
-			ridDto.setRId(data.getRId());
-		}
-		ldapConnection.close();
 		return ridDto;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public AuthZResponseDto unBlockAccount(String userId) throws Exception {
 
@@ -730,14 +808,26 @@ public class LdapDataStore implements DataStore {
 
 	@Override
 	public MosipUserDto getUserRoleByUserId(String username) throws Exception {
-		LdapConnection ldapConnection = createAnonymousConnection();
+		LdapConnection ldapConnection = null;
+		MosipUserDto data = null;
+		try
+		{
+		ldapConnection = createAnonymousConnection();
 		Dn userdn = createUserDn(username);
-		MosipUserDto data = lookupUserDetails(userdn, ldapConnection);
+		data = lookupUserDetails(userdn, ldapConnection);
 		if (data == null) {
 			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
 					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 		}
-		ldapConnection.close();
+		}catch(Exception e)
+		{
+			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
+					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
+		}
+		finally
+		{
+			ldapConnection.close();
+		}
 		return data;
 	}
 
@@ -751,17 +841,7 @@ public class LdapDataStore implements DataStore {
 			while (searchResult.hasMore()) {
 				Attributes attributes = searchResult.next().getAttributes();
 				mosipUserDto.setUserId((String) attributes.get("uid").get());
-				Dn searchBase = new Dn("ou=roles,c=morocco");
-				String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid="
-						+ (String) attributes.get("uid").get() + ",ou=people,c=morocco))";
-				NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
-						new SearchControls());
-				Set<String> roles = new HashSet<String>();
-				while (searchResultRoles.hasMore()) {
-					Attributes attributeRoles = searchResultRoles.next().getAttributes();
-					roles.add((String) attributeRoles.get("cn").get());
-				}
-				String rolesAsString = convertRolesToString(roles);
+				String rolesAsString = getRolesBasedOnUid((String) attributes.get("uid").get());
 				mosipUserDto.setMail((String) attributes.get("mail").get());
 				mosipUserDto.setMobile((String) attributes.get("mobile").get());
 				mosipUserDto.setName((String) attributes.get("cn").get());
@@ -773,7 +853,7 @@ public class LdapDataStore implements DataStore {
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
 		} catch (LdapInvalidDnException e) {
 			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
-					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + " " + e.getCause());
 		}
 
 		return mosipUserDto;
@@ -850,4 +930,154 @@ public class LdapDataStore implements DataStore {
 					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage());
 		}
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.auth.repository.DataStore#getUserDetailBasedOnUid(java.util.
+	 * List)
+	 */
+	@Override
+	public UserDetailsResponseDto getUserDetailBasedOnUid(List<String> userIds) {
+		UserDetailsDto userDetailsDto = null;
+		List<UserDetailsDto> userDetails = new ArrayList<>();
+		UserDetailsResponseDto userDetailsResponseDto = new UserDetailsResponseDto();
+		try {
+			for (String userId : userIds) {
+
+				NamingEnumeration<SearchResult> searchResult = getSearchResultBasedOnId(userId);
+				while (searchResult.hasMore()) {
+					SearchResult result = searchResult.next();
+					userDetailsDto = setUserDetail(result);
+					userDetailsDto.setUserId(userId);
+					String rolesAsString = getRolesBasedOnUid(userId);
+					userDetailsDto.setRole(rolesAsString);
+					userDetails.add(userDetailsDto);
+					break;
+				}
+			}
+		} catch (NamingException e) {
+			throw new AuthManagerException(AuthErrorCode.NAMING_EXCEPTION.getErrorCode(),
+					AuthErrorCode.NAMING_EXCEPTION.getErrorMessage() + "" + e.getCause());
+		} catch (LdapInvalidDnException e) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
+					AuthErrorCode.INVALID_DN.getErrorMessage() + " " + e.getCause());
+		}
+		userDetailsResponseDto.setUserDetails(userDetails);
+		return userDetailsResponseDto;
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 *            - userId
+	 * @return {@link NamingEnumeration}
+	 * @throws NamingException
+	 * @throws LdapInvalidDnException
+	 */
+	private NamingEnumeration<SearchResult> getSearchResultBasedOnId(String userId)
+			throws NamingException, LdapInvalidDnException {
+
+		LdapContext context = getContext();
+		Dn searchBase = new Dn("uid=" + userId + ",ou=people,c=morocco");
+		SearchControls searchControls = new SearchControls();
+		NamingEnumeration<SearchResult> searchResult = null;
+
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		searchResult = context.search(searchBase.getName(),
+				"(&(objectClass=organizationalPerson)(objectClass=inetOrgPerson)(objectClass=person))", searchControls);
+
+		context.close();
+		return searchResult;
+	}
+
+	/**
+	 * Sets the user detail.
+	 *
+	 * @param result
+	 *            the result
+	 * @return the user details dto
+	 * @throws NamingException
+	 *             the naming exception
+	 */
+	private UserDetailsDto setUserDetail(SearchResult result) throws NamingException {
+		UserDetailsDto userDetailsDto = new UserDetailsDto();
+
+		if (result.getAttributes().get(LdapConstants.USER_PASSWORD) != null) {
+			userDetailsDto.setUserPassword((byte[]) result.getAttributes().get(LdapConstants.USER_PASSWORD).get());
+		}
+		userDetailsDto.setMobile((String) result.getAttributes().get(LdapConstants.MOBILE).get());
+		userDetailsDto.setMail((String) result.getAttributes().get(LdapConstants.MAIL).get());
+		userDetailsDto.setName((String) result.getAttributes().get(LdapConstants.CN).get());
+		if (result.getAttributes().get(LdapConstants.FIRST_NAME) != null) {
+			userDetailsDto.setFirstName((String) result.getAttributes().get(LdapConstants.FIRST_NAME).get());
+		}
+		if (result.getAttributes().get(LdapConstants.LAST_NAME) != null) {
+			userDetailsDto.setLastName((String) result.getAttributes().get(LdapConstants.FIRST_NAME).get());
+		}
+		if (result.getAttributes().get(LdapConstants.GENDER_CODE) != null) {
+			userDetailsDto.setGender((String) result.getAttributes().get(LdapConstants.GENDER_CODE).get());
+		}
+		if (result.getAttributes().get(LdapConstants.IS_ACTIVE) != null) {
+			userDetailsDto
+					.setActive(Boolean.valueOf((String) result.getAttributes().get(LdapConstants.IS_ACTIVE).get()));
+		}
+		if (result.getAttributes().get(LdapConstants.DOB) != null) {
+			String dob = (String) result.getAttributes().get(LdapConstants.DOB).get();
+			LocalDate dobInLocalDate = LocalDate.parse(dob);
+			userDetailsDto.setDateOfBirth(dobInLocalDate);
+		}
+		if (result.getAttributes().get(LdapConstants.RID) != null) {
+			userDetailsDto.setRId((String) result.getAttributes().get(LdapConstants.RID).get());
+		}
+
+		return userDetailsDto;
+	}
+
+	/**
+	 * TBD pagenation
+	 * 
+	 * @param list
+	 * @param pageSize
+	 * @return
+	 */
+	public Map<Object, Object> getPagenatedMap(List<UserDetailsDto> list, int pageSize) {
+		return IntStream.iterate(0, i -> i + pageSize).limit((list.size() + pageSize - 1) / pageSize).boxed().collect(
+				Collectors.toMap(i -> i / pageSize, i -> list.subList(i, Math.min(i + pageSize, list.size()))));
+	}
+
+	/**
+	 * Gets the roles based on uid.
+	 *
+	 * @param uid
+	 *            the uid
+	 * @param context
+	 *            the context
+	 * @return the roles based on uid
+	 * @throws LdapInvalidDnException
+	 *             the ldap invalid dn exception
+	 * @throws NamingException
+	 *             the naming exception
+	 */
+	private String getRolesBasedOnUid(String uid) throws LdapInvalidDnException, NamingException {
+		LdapContext context = getContext();
+		Dn searchBase = new Dn("ou=roles,c=morocco");
+		String searchFilter = "(&(objectClass=organizationalRole)(roleOccupant=uid=" + uid + ",ou=people,c=morocco))";
+		NamingEnumeration<SearchResult> searchResultRoles = context.search(searchBase.getName(), searchFilter,
+				new SearchControls());
+		Set<String> roles = new HashSet<>();
+		while (searchResultRoles.hasMore()) {
+			Attributes attributeRoles = searchResultRoles.next().getAttributes();
+			roles.add((String) attributeRoles.get("cn").get());
+		}
+		context.close();
+		try {
+			return convertRolesToString(roles);
+		} catch (Exception e) {
+			throw new AuthManagerException(AuthErrorCode.RUNTIME_EXCEPTION.getErrorCode(),
+					AuthErrorCode.RUNTIME_EXCEPTION.getErrorMessage());
+		}
+	}
+
 }

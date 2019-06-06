@@ -61,11 +61,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
 	public PreregistrationDAO dao=new PreregistrationDAO();
 
-	@BeforeClass
-	public void readPropertiesFile() {
-		initialize();
-		authToken = lib.getToken();
-	}
+	
 	/**
 	 * Batch job service for expired application
 	 */
@@ -84,8 +80,10 @@ public class BatchJob extends BaseTestCase implements ITest {
 		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 		lib.compareValues(statusCode, "Expired");
+
 	
 	}
+
 	/**
 	 * Batch Job service Consumed Application
 	 */
@@ -108,20 +106,28 @@ public class BatchJob extends BaseTestCase implements ITest {
 		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
-	
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
 	@BeforeMethod(alwaysRun=true)
-	public void run()
+	public void login( Method method)
 	{
-		
+		authToken=lib.getToken();
+		testCaseName="preReg_BatchJob_" + method.getName();
 	}
 
+
 	@AfterMethod
-	public void afterMethod(ITestResult result) {
-		logger.info("method name:" + result.getMethod().getMethodName());
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_BatchJob_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
 	}
 }

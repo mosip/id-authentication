@@ -239,7 +239,7 @@ public class TemplateUtil {
 							OtpTemplateResponseDto.class);
 				} catch (Exception e) {
 					throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(),
-							AuthErrorCode.SERVER_ERROR.getErrorMessage()+e.getMessage());
+							AuthErrorCode.SERVER_ERROR.getErrorMessage(),e);
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public class TemplateUtil {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage()+ex.getMessage());
+						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
 			}
 		}
 		String templateText=null;

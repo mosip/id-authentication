@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -26,6 +27,10 @@ import javax.xml.transform.stream.StreamSource;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.exception.CbeffException;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
@@ -393,5 +398,57 @@ public class CbeffValidator {
 			}
 		}
 		return bdbMap;
+	}
+
+	public static List<BIR> convertBIRTypeToBIR(List<BIRType> birType) {
+		List<BIR> birTypeList = getBIRList(birType);
+		return birTypeList;
+	}
+
+	private static List<BIR> getBIRList(List<BIRType> birTypeList) {
+		List<BIR> birList = new ArrayList<>();
+		for(BIRType birType:birTypeList)
+		{
+			BIR bir = new BIR.BIRBuilder().withBdb(birType.getBDB()).withElement(birType.getAny())
+					.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(birType.getBIRInfo().isIntegrity()).build())
+					.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(birType.getBDBInfo().getFormatOwner()).withFormatType(birType.getBDBInfo().getFormatType())
+							.withQuality(birType.getBDBInfo().getQuality())
+							.withType(birType.getBDBInfo().getType())
+							.withSubtype(birType.getBDBInfo().getSubtype())
+							.withPurpose(birType.getBDBInfo().getPurpose())
+							.withLevel(birType.getBDBInfo().getLevel())
+							.withEncryption(birType.getBDBInfo().getEncryption())
+							.withCreationDate(birType.getBDBInfo().getCreationDate()).build())
+					.build();
+			birList.add(bir);
+		}
+		return birList;
+	}
+
+	public static List<BIRType> getBIRDataFromXMLType(byte[] xmlBytes, String type) throws Exception {
+		SingleType singleType = null;
+		List<BIRType> updatedBIRList = new ArrayList<>();
+		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		JAXBElement<BIRType> jaxBir = unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xmlBytes)),
+				BIRType.class);
+		BIRType bir = jaxBir.getValue();
+		for(BIRType birType : bir.getBIR())
+		{
+			if (type != null) {
+				singleType = getSingleType(type);
+				BDBInfoType bdbInfo = birType.getBDBInfo();
+				if(bdbInfo!=null)
+				{
+					List<SingleType> singleTypeList = bdbInfo.getType();
+					if(singleTypeList!=null && singleTypeList.contains(singleType))
+					{
+						System.out.println(singleType);
+						updatedBIRList.add(birType);
+					}
+				}
+			}
+		}
+		return updatedBIRList;
 	}
 }

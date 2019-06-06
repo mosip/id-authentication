@@ -116,8 +116,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Override
 	public CodeAndLanguageCodeID updateDocumentType(DocumentTypeDto documentTypeDto) {
 		try {
-			DocumentType documentType = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
-					documentTypeDto.getCode(), documentTypeDto.getLangCode());
+			DocumentType documentType = documentTypeRepository.findByCodeAndLangCode(documentTypeDto.getCode(),
+					documentTypeDto.getLangCode());
 			if (documentType != null) {
 				MetaDataUtils.setUpdateMetaData(documentTypeDto, documentType, false);
 			} else {

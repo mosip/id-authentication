@@ -8,7 +8,7 @@
 
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.url">jdbc:postgresql://104.211.202.203:9001/mosip_kernel</property>
+         <property name="connection.url">jdbc:postgresql://104.211.208.136:9001/mosip_kernel</property> 
         <property name="connection.username">kerneluser</property>
         <property name="connection.password">Mosip@dev123</property>
         <property name="hibernate.default_schema">kernel</property>

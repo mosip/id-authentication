@@ -1,1 +1,0 @@
-{"transactionID":"5688500267","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-004","errorMessage":"Invalid VID","actionMessage":"Please retry with correct VID"}],"responseTime":"2019-05-23T11:18:55.492+05:30","response":{"authStatus":false,"staticToken":null}}

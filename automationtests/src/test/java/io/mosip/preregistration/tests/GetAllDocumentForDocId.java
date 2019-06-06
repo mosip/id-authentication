@@ -94,9 +94,7 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "GetAllDocumentForDocId")
 	public Object[][] readData(ITestContext context) throws Exception {
-
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
-		switch (testParam) {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 		case "regression":
@@ -150,24 +148,30 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			innerKeys.add("document");
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 
-		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
-			docId = actualRequest.get("docId").toString();
+		} else if (testCaseName.contains("GetAllDocumentByDocIdByPassingInvalidDocumentId")) {
+			docId = actualRequest.get("documentId").toString();
 
 			parm.put("preRegistrationId", preId);
 
-			preReg_URI = preReg_URI + docId;
+			String preRegURL = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
-			outerKeys.add("responsetime");
+			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURL, parm);
+			logger.info("Get All Doc By Doc Id:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
+			boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
+			
+			//outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
-		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidPreRegistrationId")) {
-			preId = actualRequest.get("preRegistrationId").toString();
-			parm.put("preRegistrationId", preId);
+		} else if (testCaseName.contains("GetAllDocumentByDocIdByPassingInvalidPreRegistrationId")) {
+		String	preIdVal = actualRequest.get("preRegistrationId").toString();
+			parm.put("preRegistrationId", preIdVal);
 
-			preReg_URI = preReg_URI + docId;
+			String preRegURI = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preReg_URI, parm);
+			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURI, parm);
+			logger.info("Get All Doc By Doc Id PreId:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
+			//boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
+			
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
@@ -222,7 +226,8 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, GetAllDocumentForDocId.testCaseName);
+			//f.set(baseTestMethod, GetAllDocumentForDocId.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_GetAllDocumentForDocId_" +BookingAppointment.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

@@ -7,17 +7,16 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.common.service.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.PinAuthType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
-import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -34,6 +33,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.HMACUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -55,14 +55,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
-
-	/** The env. */
-	@Autowired
-	private Environment env;
-	
-	/** The MatchInputBuilder. */
-	@Autowired
-	private IdRepoManager idRepo;
 
 	/** The IdInfoHelper. */
 	@Autowired
@@ -92,20 +84,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			String vid = "";
-			if (IdType.VID.getType().equalsIgnoreCase(authRequestDTO.getIndividualIdType())) {
-				vid = authRequestDTO.getIndividualId();
-			} else {
-				//FIXME handle scenario of OTP sent using VID and then OTP auth invoked using UIN
-//				Optional<String> findVidByUin = vidrepository.findVIDByUIN(uin, PageRequest.of(0, 1)).stream()
-//						.findFirst();
-//				if (findVidByUin.isPresent()) {
-//					vid = findVidByUin.get().trim();
-//				}
-			}
-			
-
-			boolean isValidRequest = validateTxnId(txnId, uin, vid, authRequestDTO.getRequestTime());
+			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId(), authRequestDTO.getIndividualIdType(), authRequestDTO.getRequestTime());
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -114,11 +93,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 				return AuthStatusInfoBuilder.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values(), idaMappingConfig);
-			} else {
-				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "Inside Invalid Txn ID",
-						getClass().toString());
-				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "Key Invalid");
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {
 			IDDataValidationException idDataValidationException = new IDDataValidationException(
@@ -126,6 +100,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 					String.format(IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage(), "OTP"), null);
 			throw idDataValidationException;
 		}
+		return null;
 	}
 
 	/**
@@ -188,13 +163,28 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @throws ParseException
 	 */
 
-	public boolean validateTxnId(String txnId, String uin, String vid, String reqTime)
+	public boolean validateTxnAndIdvid(String txnId, String idvid, String idType, String reqTime)
 			throws IdAuthenticationBusinessException {
-		Optional<String> value = autntxnrepository
-				.findByUinorVid(txnId, uin, vid, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream()
+		 boolean validOtpAuth;
+		String hashedIdvid=HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvid.getBytes()));
+		Optional<AutnTxn> authTxn = autntxnrepository
+				.findByUinorVid(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream()
 				.findFirst();
-		return value.isPresent();
+		if(!authTxn.isPresent()) {
+			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "Invalid TransactionID");
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+		}
+		else {
+			    if(!authTxn.get().getRefId().equalsIgnoreCase(hashedIdvid)) {
+			    	mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE, "OTP id mismatch");
+			    	throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_ID_MISMATCH);
+			 }
+			    validOtpAuth=true;   
+		}
+		return validOtpAuth;
 	}
+
+
 
 	/**
 	 * Checks for Null or Empty.

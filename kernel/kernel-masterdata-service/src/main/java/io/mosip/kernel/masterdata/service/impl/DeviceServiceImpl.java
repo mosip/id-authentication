@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +16,8 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
@@ -163,7 +169,7 @@ public class DeviceServiceImpl implements DeviceService {
 		Device entity = null;
 		Device updatedDevice = null;
 		try {
-			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(
+			Device oldDevice = deviceRepository.findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(
 					deviceRequestDto.getId(), deviceRequestDto.getLangCode());
 
 			if (oldDevice != null) {
@@ -243,6 +249,49 @@ public class DeviceServiceImpl implements DeviceService {
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(id);
 		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineService#
+	 * getRegistrationCenterMachineMapping1(java.lang.String)
+	 */
+	@Override
+	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction) {
+		PageDto<DeviceRegistrationCenterDto> pageDto = new PageDto<>();
+		List<DeviceRegistrationCenterDto> deviceRegistrationCenterDtoList = null;
+		Page<Device> pageEntity = null;
+
+		try {
+			pageEntity = deviceRepository.findDeviceByRegCenterId(regCenterId,
+					PageRequest.of(page, size, Sort.by(Direction.fromString(direction), orderBy)));
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (pageEntity != null && !pageEntity.getContent().isEmpty()) {
+			deviceRegistrationCenterDtoList = MapperUtils.mapAll(pageEntity.getContent(),
+					DeviceRegistrationCenterDto.class);
+			for (DeviceRegistrationCenterDto deviceRegistrationCenterDto : deviceRegistrationCenterDtoList) {
+				deviceRegistrationCenterDto.setRegCentId(regCenterId);
+			}
+		} else {
+			throw new RequestException(DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
+		pageDto.setPageNo(pageEntity.getNumber());
+		pageDto.setPageSize(pageEntity.getSize());
+		pageDto.setSort(pageEntity.getSort());
+		pageDto.setTotalItems(pageEntity.getTotalElements());
+		pageDto.setTotalPages(pageEntity.getTotalPages());
+		pageDto.setData(deviceRegistrationCenterDtoList);
+
+		return pageDto;
+
 	}
 
 }

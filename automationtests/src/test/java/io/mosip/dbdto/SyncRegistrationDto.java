@@ -3,9 +3,9 @@
  */
 package io.mosip.dbdto;
 	
-import java.io.Serializable;
+import java.math.BigInteger;
 
-import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * The Class SyncRegistrationDto.
@@ -13,219 +13,56 @@ import io.swagger.annotations.ApiModelProperty;
  * @author M1047487
  * @author Girish Yarru
  */
-public class SyncRegistrationDto implements Serializable {
+@Data
+public class SyncRegistrationDto  {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -3922338139042373367L;
-
-	/** The registration id. */
-	private String registrationId;
-
-	/** The sync type dto. */
-	private String syncType = SyncTypeDto.NEW.getValue();
-
-	/** The parent registration id. */
-	private String parentRegistrationId;
-
-	/** The sync status dto. */
-	private SyncStatusDto syncStatus;
-
-	/** The status comment. */
-	private String statusComment;
-
-	/** The lang code. */
-	private String langCode;
-
-	/** The is active. */
-	@ApiModelProperty(hidden = true)
-	private Boolean isActive;
-
-	/** The is deleted. */
-	@ApiModelProperty(hidden = true)
-	private Boolean isDeleted;
-
-	/**
-	 * Instantiates a new sync registration dto.
-	 */
-	public SyncRegistrationDto() {
-		super();
-	}
-
-	/**
-	 * Instantiates a new sync registration dto.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param syncTypeDto
-	 *            the sync type dto
-	 * @param parentRegistrationId
-	 *            the parent registration id
-	 * @param syncStatusDto
-	 *            the sync status dto
-	 * @param statusComment
-	 *            the status comment
-	 * @param langCode
-	 *            the lang code
-	 */
-	public SyncRegistrationDto(String registrationId, String syncTypeDto, String parentRegistrationId,
-			SyncStatusDto syncStatusDto, String statusComment, String langCode) {
-		super();
-		this.registrationId = registrationId;
-		this.syncType = syncTypeDto;
-		this.parentRegistrationId = parentRegistrationId;
-		this.syncStatus = syncStatusDto;
-		this.statusComment = statusComment;
-		this.langCode = langCode;
-	}
-
-	/**
-	 * Gets the registration id.
-	 *
-	 * @return the registration id
-	 */
-	public String getRegistrationId() {
-		return registrationId;
-	}
-
-	/**
-	 * Sets the registration id.
-	 *
-	 * @param registrationId
-	 *            the new registration id
-	 */
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
-	}
-
-	/**
-	 * Gets the parent registration id.
-	 *
-	 * @return the parent registration id
-	 */
-	public String getParentRegistrationId() {
-		return parentRegistrationId;
-	}
-
-	/**
-	 * Sets the parent registration id.
-	 *
-	 * @param parentRegistrationId
-	 *            the new parent registration id
-	 */
-	public void setParentRegistrationId(String parentRegistrationId) {
-		this.parentRegistrationId = parentRegistrationId;
-	}
-
-	/**
-	 * Gets the status comment.
-	 *
-	 * @return the status comment
-	 */
-	public String getStatusComment() {
-		return statusComment;
-	}
-
-	/**
-	 * Sets the status comment.
-	 *
-	 * @param statusComment
-	 *            the new status comment
-	 */
-	public void setStatusComment(String statusComment) {
-		this.statusComment = statusComment;
-	}
-
-	/**
-	 * Gets the lang code.
-	 *
-	 * @return the lang code
-	 */
 	public String getLangCode() {
 		return langCode;
 	}
-
-	/**
-	 * Sets the lang code.
-	 *
-	 * @param langCode
-	 *            the new lang code
-	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-
-	/**
-	 * Gets the checks if is active.
-	 *
-	 * @return the checks if is active
-	 */
-	public Boolean getIsActive() {
-		return isActive;
+	public String getRegistrationId() {
+		return registrationId;
 	}
-
-	/**
-	 * Sets the checks if is active.
-	 *
-	 * @param isActive
-	 *            the new checks if is active
-	 */
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
-
-	/**
-	 * Gets the sync type dto.
-	 *
-	 * @return the sync type dto
-	 */
-	public String getSyncType() {
-		return syncType;
+	public String getRegistrationType() {
+		return registrationType;
 	}
-
-	/**
-	 * Sets the sync type dto.
-	 *
-	 * @param syncTypeDto the new sync type
-	 */
-	public void setSyncType(String syncTypeDto) {
-		this.syncType = syncTypeDto;
+	public void setRegistrationType(String registrationType) {
+		this.registrationType = registrationType;
 	}
-
-	/**
-	 * Gets the sync status dto.
-	 *
-	 * @return the sync status dto
-	 */
-	public SyncStatusDto getSyncStatus() {
-		return syncStatus;
+	public String getPacketHashValue() {
+		return packetHashValue;
 	}
-
-	/**
-	 * Sets the sync status dto.
-	 *
-	 * @param syncStatusDto
-	 *            the new sync status dto
-	 */
-	public void setSyncStatus(SyncStatusDto syncStatusDto) {
-		this.syncStatus = syncStatusDto;
+	public void setPacketHashValue(String packetHashValue) {
+		this.packetHashValue = packetHashValue;
 	}
-
-	/**
-	 * Gets the checks if is deleted.
-	 *
-	 * @return the checks if is deleted
-	 */
-	public Boolean getIsDeleted() {
-		return isDeleted;
+	public BigInteger getPacketSize() {
+		return packetSize;
 	}
-
-	/**
-	 * Sets the checks if is deleted.
-	 *
-	 * @param isDeleted
-	 *            the new checks if is deleted
-	 */
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
+	public void setPacketSize(BigInteger packetSize) {
+		this.packetSize = packetSize;
 	}
+	public String getSupervisorStatus() {
+		return supervisorStatus;
+	}
+	public void setSupervisorStatus(String supervisorStatus) {
+		this.supervisorStatus = supervisorStatus;
+	}
+	public String getSupervisorComment() {
+		return supervisorComment;
+	}
+	public void setSupervisorComment(String supervisorComment) {
+		this.supervisorComment = supervisorComment;
+	}
+	private String langCode;
+	private String registrationId;
+	private String registrationType;
+	private String packetHashValue;
+	private BigInteger packetSize;
+	private String supervisorStatus;
+	private String supervisorComment;
 }

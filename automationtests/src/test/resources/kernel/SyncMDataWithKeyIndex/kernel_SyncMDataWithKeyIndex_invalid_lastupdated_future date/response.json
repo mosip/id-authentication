@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-05-22T08:02:13.309Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-135",
+      "message": "Timestamp cannot be future date"
+    }
+  ]
+}

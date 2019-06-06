@@ -12,14 +12,6 @@ import io.mosip.kernel.signature.dto.ValidatorResponseDto;
 public interface SignatureService {
 
 	/**
-	 * Sign response.
-	 *
-	 * @param signResponseRequestDto the signResponseRequestDto
-	 * @return the SignatureResponse
-	 */
-	public SignatureResponse signResponse(SignRequestDto signResponseRequestDto);
-
-	/**
 	 * Validate with public key.
 	 *
 	 * @param validateWithPublicKeyRequestDto the ValidateWithPublicKeyRequestDto
@@ -30,6 +22,21 @@ public interface SignatureService {
 	public ValidatorResponseDto validateWithPublicKey(PublicKeyRequestDto publicKeyRequestDto)
 			throws InvalidKeySpecException, NoSuchAlgorithmException;
 
-	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto)
-			throws InvalidKeySpecException, NoSuchAlgorithmException;
+	/**
+	 * Validate signature
+	 * 
+	 * @param timestampRequestDto {@link TimestampRequestDto}
+	 * @return {@link ValidatorResponseDto}
+	 */
+	public ValidatorResponseDto validate(TimestampRequestDto timestampRequestDto);
+
+	/**
+	 * Sign Data.
+	 *
+	 * @param signRequestDto the signRequestDto
+	 * @return the SignatureResponse
+	 */
+
+	public SignatureResponse sign(SignRequestDto signRequestDto);
+
 }

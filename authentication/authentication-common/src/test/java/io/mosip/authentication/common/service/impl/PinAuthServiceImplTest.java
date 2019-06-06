@@ -25,7 +25,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.entity.StaticPin;
-import io.mosip.authentication.common.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelperImpl;
@@ -55,10 +54,6 @@ public class PinAuthServiceImplTest {
 	/** The environment. */
 	@Autowired
 	private Environment environment;
-
-	/** The BiometricProviderFactory value */
-	@Mock
-	private BiometricProviderFactory biometricProviderFactory;
 
 	/** The static pin repo. */
 	@Mock
@@ -91,7 +86,6 @@ public class PinAuthServiceImplTest {
 		ReflectionTestUtils.setField(pinAuthServiceImpl, "staticPinRepo", staticPinRepo);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
-		ReflectionTestUtils.setField(idInfoFetcherImpl, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 	}

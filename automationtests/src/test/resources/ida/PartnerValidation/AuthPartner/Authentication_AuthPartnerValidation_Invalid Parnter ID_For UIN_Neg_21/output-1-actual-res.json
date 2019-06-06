@@ -1,1 +1,0 @@
-{"transactionID":"6242070732","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MPA-010","errorMessage":"MISP and Partner not mapped"}],"responseTime":"2019-05-23T11:50:43.720+05:30","response":{"authStatus":false,"staticToken":null}}

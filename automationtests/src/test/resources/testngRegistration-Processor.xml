@@ -9,27 +9,34 @@
   						regression
   						smokeAndRegression -->
   						
-   <test name="RegistrationProcessor.PacketStatus">    						
+<test name="RegistrationProcessor.PacketStatus">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
-     <class name="io.mosip.regProc.tests.PacketStatus"/>          
+     <class name="io.mosip.registrationProcessor.tests.Sync"/>          
     </classes>
   </test> <!-- Test --> 
-   <test name="RegistrationProcessor.Sync">    						
+<!--   <test name="RegistrationProcessor.Sync">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
-     <class name="io.mosip.regProc.tests.Sync"/>          
+     <class name="io.mosip.registrationProcessor.tests.Sync"/>          
     </classes>
   </test>
-  <test name="RegistrationProcessor.PacketReceiver">    						
+ <test name="RegistrationProcessor.PacketReceiver">    						
    <parameter name="testType" value="smokeAndregression"/>
     <classes>
-     <class name="io.mosip.regProc.tests.PacketReceiver"/>          
+     <class name="io.mosip.registrationProcessor.tests.PacketReceiver"/>          
     </classes>
-  </test>
-   <test name="RegistrationProcessor.IntegrationScenarios">    						
+  </test>  
+  <test name="RegistrationProcessor.IntegrationScenarios">    						
     <classes>
-     <class name="io.mosip.regProc.tests.IntegrationScenarios"/>          
+     <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios"/>          
     </classes>
   </test> 
+    <test name="RegistrationProcessor.StageValidationTests">    						
+    <classes>
+     <class name="io.mosip.registrationProcessor.tests.StageValidationTests"/>  
+     <parameter name="testCaseName" value="ValidPacketSmoke"> </parameter>
+     <parameter name="fileName" value="StageBits.properties"> </parameter>        
+    </classes>
+  </test>  --><!-- Test -->
 </suite> <!-- Suite -->

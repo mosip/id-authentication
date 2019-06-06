@@ -106,7 +106,7 @@ public class EncryptTest {
 		//ReflectionTestUtils.invokeMethod(encryptMock, "split", testData);
 	 EncryptionRequestDto encryptionRequestDto=new EncryptionRequestDto();
 	 encryptionRequestDto.setIdentityRequest(new ObjectMapper().readValue(testData.getBytes(), Map.class));
-		encryptMock.encrypt(encryptionRequestDto);
+		encryptMock.encrypt(encryptionRequestDto, false);
 	}
 	
 	

@@ -27,6 +27,7 @@ import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
 import io.mosip.kernel.auth.dto.TimeToken;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
@@ -258,8 +259,8 @@ public class AuthServiceImpl implements AuthService {
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
 		if (mosipUser == null) {
-			throw new AuthManagerException(AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorCode(),
-					AuthErrorCode.REQUEST_VALIDATION_ERROR.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.USER_VALIDATION_ERROR.getErrorCode(),
+					AuthErrorCode.USER_VALIDATION_ERROR.getErrorMessage());
 		}
 		if (mosipUser != null) {
 			MosipUserTokenDto mosipToken = null;
@@ -273,7 +274,7 @@ public class AuthServiceImpl implements AuthService {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
 				} else {
-					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage());
+					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
@@ -446,6 +447,11 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public ValidationResponseDto validateUserName(String appId, String userName) {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).validateUserName(userName);
+	}
+
+	@Override
+	public UserDetailsResponseDto getUserDetailBasedOnUserId(String appId, List<String> userIds) {
+		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedOnUid(userIds);
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,8 +45,10 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode             input from user
-	 * @param documentCategoryCode input from user
+	 * @param langCode
+	 *            input from user
+	 * @param documentCategoryCode
+	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -67,10 +70,12 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
@@ -83,11 +88,13 @@ public class DocumentTypeController {
 	}
 
 	/**
-	 * Api to update document type.
+	 * Api to update document type. .
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
@@ -102,7 +109,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter

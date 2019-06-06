@@ -15,6 +15,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -26,10 +29,12 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -56,6 +61,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * This service class contains methods that provides registration centers
@@ -347,25 +353,25 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				Float.parseFloat(registrationCenterDto.getLatitude());
 				Float.parseFloat(registrationCenterDto.getLongitude());
 			}
-		} catch (NullPointerException | NumberFormatException latLongException) {
+		} catch (NullPointerException | NumberFormatException latLongParseException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(latLongException));
+							+ ExceptionUtils.parseException(latLongParseException));
 		}
-		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
+		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto, registrationCenterEntity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
 				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
+		registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+		registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
 		RegistrationCenter registrationCenter;
 		try {
-			registrationCenter = registrationCenterRepository.create(entity);
+			registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
 			registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(exception));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(registrationCenter.getId());
@@ -436,7 +442,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter updRegistrationCenter = null;
 		try {
 
-			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCode(
+			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
 					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
 			if (renRegistrationCenter != null) {
 				MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(), renRegistrationCenter, false);
@@ -572,7 +578,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
 		validateLocationName(levelToListOfLocationMap, hierarchyLevel, text);
-
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
@@ -655,6 +660,32 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return locationNames;
+	}
+	
+	@Override
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
+			String sortBy, String orderBy) {
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		PageDto<RegistrationCenterExtnDto> registrationCenterPages = null;
+		try {
+			Page<RegistrationCenter> pageData = registrationCenterRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(),0,null,pageData.getTotalPages(),
+						(int) pageData.getTotalElements(), registrationCenters);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return registrationCenterPages;
+
 	}
 
 }

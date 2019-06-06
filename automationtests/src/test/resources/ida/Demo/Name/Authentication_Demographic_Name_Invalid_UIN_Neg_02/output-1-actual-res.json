@@ -1,1 +1,0 @@
-{"transactionID":"5674411405","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-002","errorMessage":"Invalid UIN","actionMessage":"Please retry with the correct UIN"}],"responseTime":"2019-05-23T11:16:26.149+05:30","response":{"authStatus":false,"staticToken":null}}

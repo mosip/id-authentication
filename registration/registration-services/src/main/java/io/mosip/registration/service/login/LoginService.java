@@ -5,7 +5,8 @@ import java.util.Set;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.UserDTO;
 
 /**
  * Service Class for Login
@@ -33,9 +34,9 @@ public interface LoginService {
 	 * 
 	 * @param userId
 	 *            entered userId
-	 * @return UserDetail
+	 * @return UserDTO
 	 */
-	UserDetail getUserDetail(String userId);
+	UserDTO getUserDetail(String userId);
 
 	/**
 	 * fetching registration center details
@@ -60,9 +61,39 @@ public interface LoginService {
 	/**
 	 * updating login params on invalid login attempts
 	 * 
-	 * @param userDetail
-	 *            user details
+	 * @param userDTO
+	 *            user dto
 	 */
-	void updateLoginParams(UserDetail userDetail);
+	void updateLoginParams(UserDTO userDTO);
+	
+	/**
+	 * Execute initial sync
+	 * 
+	 * @return List of sync results
+	 */
+	List<String> initialSync();
+	
+	
+	/**
+	 * Validating login attempts
+	 * 
+	 * @param userDTO
+	 *            user details
+	 * @param errorMessage
+	 *            error message
+	 * @param invalidLoginCount
+	 *            invalid login count
+	 * @param invalidLoginTime
+	 *            invalid login time
+	 */
+	String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime);
+	
+	/**
+	 * Validating user
+	 * 
+	 * @param userId
+	 *            userid
+	 */
+	ResponseDTO validateUser(String userId);
 
 }

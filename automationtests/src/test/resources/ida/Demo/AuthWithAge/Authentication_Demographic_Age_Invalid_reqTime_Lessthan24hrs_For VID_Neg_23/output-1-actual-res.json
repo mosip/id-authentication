@@ -1,1 +1,0 @@
-{"transactionID":"5717577736","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-007","errorMessage":"Request could not be processed. Please try again"}],"responseTime":"2019-05-23T11:48:42.478+05:30","response":{"authStatus":false,"staticToken":null}}

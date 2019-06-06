@@ -2,6 +2,7 @@ package io.mosip.kernel.bioapi.impl;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,8 +13,8 @@ import io.mosip.kernel.core.bioapi.model.KeyValuePair;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 
 /**
  * The Class BioApiImpl.
@@ -27,9 +28,9 @@ public class BioApiImpl implements IBioApi{
 	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#checkQuality(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public QualityScore checkQuality(BIRType sample, KeyValuePair[] flags) {
+	public QualityScore checkQuality(BIR sample, KeyValuePair[] flags) {
 		QualityScore qualityScore = new QualityScore();
-		int major = Optional.ofNullable(sample.getBDBInfo()).map(BDBInfoType::getQuality).orElse(0);
+		int major = Optional.ofNullable(sample.getBdbInfo()).map(BDBInfo::getQuality).orElse(0);
 		qualityScore.setInternalScore(major);
 		return qualityScore;
 	}
@@ -38,13 +39,13 @@ public class BioApiImpl implements IBioApi{
 	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#match(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public Score[] match(BIRType sample, BIRType[] gallery, KeyValuePair[] flags) {
+	public Score[] match(BIR sample, BIR[] gallery, KeyValuePair[] flags) {
 		Score matchingScore[] = new Score[gallery.length];
 		int count =0;
-		for (BIRType recordedValue : gallery) {
+		for (BIR recordedValue : gallery) {
 			matchingScore[count] = new Score();
-			if(recordedValue != null && recordedValue.getBDB().length != 0 &&
-					Arrays.equals(recordedValue.getBDB(), sample.getBDB())) {
+			if(Objects.nonNull(recordedValue) && Objects.nonNull(recordedValue.getBdb()) && recordedValue.getBdb().length != 0 &&
+					Arrays.equals(recordedValue.getBdb(), sample.getBdb())) {
 				matchingScore[count].setInternalScore(90);
 			}else {
 				matchingScore[count].setInternalScore(ThreadLocalRandom.current().nextInt(10, 50));
@@ -58,11 +59,11 @@ public class BioApiImpl implements IBioApi{
 	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#compositeMatch(io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.BIR[], io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public CompositeScore compositeMatch(BIRType[] sampleList, BIRType[] recordList,
+	public CompositeScore compositeMatch(BIR[] sampleList, BIR[] recordList,
 			KeyValuePair[] flags) {
 		Score matchingScore[] = new Score[sampleList.length];
 		int count = 0;
-		for(BIRType sampleValue : sampleList) {
+		for(BIR sampleValue : sampleList) {
 			Score[] match = match(sampleValue, recordList, flags);
 			Optional<Score> max = Arrays.stream(match).max(Comparator.comparing(Score::getInternalScore));
 			if(max.isPresent()) {
@@ -81,7 +82,7 @@ public class BioApiImpl implements IBioApi{
 	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#extractTemplate(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public BIRType extractTemplate(BIRType sample, KeyValuePair[] flags) {
+	public BIR extractTemplate(BIR sample, KeyValuePair[] flags) {
 		return sample;
 	}
 
@@ -89,8 +90,8 @@ public class BioApiImpl implements IBioApi{
 	 * @see io.mosip.kernel.core.bioapi.spi.IBioApi#segment(io.mosip.kernel.core.bioapi.model.BIR, io.mosip.kernel.core.bioapi.model.KeyValuePair[])
 	 */
 	@Override
-	public BIRType[] segment(BIRType sample, KeyValuePair[] flags) {
-		BIRType[] bir = new BIRType[1];
+	public BIR[] segment(BIR sample, KeyValuePair[] flags) {
+		BIR[] bir = new BIR[1];
 		bir[0]= sample;
 		return bir;
 	}
