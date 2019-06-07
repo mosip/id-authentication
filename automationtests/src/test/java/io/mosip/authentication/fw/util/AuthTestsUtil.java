@@ -54,6 +54,9 @@ public class AuthTestsUtil extends BaseTestCase {
 	private static File testFolder;
 	private static File demoAppBatchFilePath;
 	public static final String AUTHORIZATHION_COOKIENAME="Authorization";
+	protected static String responseJsonToVerifyDigtalSignature;
+	protected static String responseDigitalSignatureValue;
+	protected static String responseDigitalSignatureKey="response-signature";
 	
 	/**
 	 * The method will get current test execution folder
@@ -126,11 +129,15 @@ public class AuthTestsUtil extends BaseTestCase {
 				if (listOfFiles[j].getName().contains(keywordToFind)) {
 					FileOutputStream fos = new FileOutputStream(
 							listOfFiles[j].getParentFile() + "/" + generateOutputFileKeyword + ".json");
+					Response response=null;
 					String responseJson = "";
 					if (code == 0)
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath);
+						response = postRequest(listOfFiles[j].getAbsolutePath(), urlPath);
 					else
-						responseJson = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+						response = postRequest(listOfFiles[j].getAbsolutePath(), urlPath, code);
+					responseJson=response.asString();
+					responseJsonToVerifyDigtalSignature=responseJson;
+					responseDigitalSignatureValue=response.getHeader(responseDigitalSignatureKey);
 					Reporter.log("<b><u>Actual Response Content: </u></b>(EndPointUrl: " + urlPath + ") <pre>"
 							+ ReportUtil.getTextAreaJsonMsgHtml(responseJson) + "</pre>");
 					responseJson=JsonPrecondtion.toPrettyFormat(responseJson);
@@ -325,15 +332,14 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @param url
 	 * @return String, response for request
 	 */
-	protected String postRequest(String filename, String url) {
+	protected Response postRequest(String filename, String url) {
 		try {
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
 			return RestClient
-					.postRequest(url, objectData.toJSONString(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON)
-					.asString();
+					.postRequest(url, objectData.toJSONString(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e);
-			return e.toString();
+			return null;
 		}
 	}
 	
@@ -415,7 +421,7 @@ public class AuthTestsUtil extends BaseTestCase {
 	 * @param expCode
 	 * @return String, Response for request
 	 */
-	protected String postRequest(String filename, String url, int expCode) {
+	protected Response postRequest(String filename, String url, int expCode) {
 		Response response=null;
 		try {
 			JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(filename));
@@ -427,10 +433,10 @@ public class AuthTestsUtil extends BaseTestCase {
 			objMap.put("Status Code", objList);
 			Reporter.log(ReportUtil.getOutputValiReport(objMap));
 			Verify.verify(OutputValidationUtil.publishOutputResult(objMap));
-			return response.asString();
+			return response;
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Exception: " + e);
-			return response.asString();
+			return response;
 		}
 	}
 	
@@ -1269,6 +1275,17 @@ public class AuthTestsUtil extends BaseTestCase {
 			IDASCRIPT_LOGGER.error("Exception " + e);
 			return e.getMessage();
 		}
+	}
+	
+	protected boolean verifyResponseUsingDigitalSignature(String resonseContent, String digitalSignature) {
+		String dgPath = RunConfigUtil.objRunConfig.getValidateSignaturePath().replace("$signature$", digitalSignature);
+		String signatureApiPath = RunConfigUtil.objRunConfig.getEncryptUtilBaseUrl() + dgPath;
+		Response response = RestClient.postRequest(signatureApiPath, resonseContent, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON);
+		if (response.asString().contains("success"))
+			return true;
+		else
+			return false;
 	}
 } 
 

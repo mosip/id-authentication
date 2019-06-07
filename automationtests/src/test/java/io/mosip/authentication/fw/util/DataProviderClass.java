@@ -42,8 +42,8 @@ public class DataProviderClass {
 					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
 					numberOfTestcase++;
 				}
-			} else if (testType.contains("smoke") && testType.contains("regression")) {
-				if (testcase.getName().contains("smoke") || testcase.getName().contains("regression")
+			} else if (testType.equalsIgnoreCase("smokeandregression")) {
+				if (testcase.getName().contains("smoke") || testcase.getName().contains("Smoke") || testcase.getName().contains("regression")
 						|| !testcase.getName().contains("regression")) {
 					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
 					numberOfTestcase++;

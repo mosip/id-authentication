@@ -217,6 +217,9 @@ public class OtpAuthentication extends AuthTestsUtil implements ITest {
 			Reporter.log(ReportUtil.getOutputValiReport(auditLogValidation));
 			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditLogValidation), true);
 		}
+		if (testcaseName.contains("_Pos") || testcaseName.contains("_pos"))
+			Assert.assertEquals(verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
+					responseDigitalSignatureValue), true);
 	}
 
 }

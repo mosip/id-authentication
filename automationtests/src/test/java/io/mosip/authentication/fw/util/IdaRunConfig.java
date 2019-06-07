@@ -72,7 +72,14 @@ public class IdaRunConfig extends RunConfig{
 	private String decryptPath;
 	private String uinIdentityMapper;
 	private String internalEncryptionPath;
+	private String validateSignaturePath;
 	
+	public String getValidateSignaturePath() {
+		return validateSignaturePath;
+	}
+	public void setValidateSignaturePath(String validateSignaturePath) {
+		this.validateSignaturePath = validateSignaturePath;
+	}
 	public String getInternalEncryptionPath() {
 		return internalEncryptionPath;
 	}
@@ -352,6 +359,7 @@ public class IdaRunConfig extends RunConfig{
 		setDecodePath(AuthTestsUtil.getPropertyValue("decodePath"));
 		setDecryptPath(AuthTestsUtil.getPropertyValue("decryptPath"));
 		setInternalEncryptionPath(AuthTestsUtil.getPropertyValue("internalEncryptionPath"));
+		setValidateSignaturePath(AuthTestsUtil.getPropertyValue("validateSignaturePath"));
 		setUserDirectory();
 		setTestDataPath(testDataPath);	
 		setIdRepoEndPointUrl(AuthTestsUtil.getPropertyValue("idRepoEndPointUrl"));

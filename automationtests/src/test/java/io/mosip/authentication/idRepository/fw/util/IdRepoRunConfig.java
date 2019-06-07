@@ -882,4 +882,16 @@ public class IdRepoRunConfig extends RunConfig{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getValidateSignaturePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValidateSignaturePath(String validateSignaturePath) {
+		// TODO Auto-generated method stub
+		
+	}
 }
