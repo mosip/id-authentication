@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Documents {
+public class DocumentsDTO {
 
 	/** The doc type. */
 	private String category;

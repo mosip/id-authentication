@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuditRequestDto {
+public class AuditRequestDTO {
 
 	/** The event id. */
 	@NotNull
