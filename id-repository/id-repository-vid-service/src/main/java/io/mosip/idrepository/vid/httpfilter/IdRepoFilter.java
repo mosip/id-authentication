@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.idrepository.core.filter.BaseIdRepoFilter;
+import io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter;
 
 /**
  * The Class IdRepoFilter.
