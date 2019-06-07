@@ -3,39 +3,48 @@ package io.mosip.registration.processor.packet.manager.systemexception.test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Matchers.any;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
+import io.mosip.registration.processor.packet.manager.service.impl.FileManagerImpl;
 
 /**
  * @author M1022006
  *
  */
-@RunWith(SpringRunner.class)
+@RefreshScope
+@RunWith(PowerMockRunner.class)
 public class UnexceptedExceptionTest {
 
-	@MockBean
-	private FileManager<DirectoryPathDto, File> fileManager;
+	@Mock
+	private Environment env;
 
-	private File file;
+	@InjectMocks
+	private FileManager<DirectoryPathDto, InputStream> fileManager = new FileManagerImpl();
+
+	private InputStream file;
 
 	@Test
 	public void TestUnexceptedException() throws IOException {
 		String fileName = "sample";
 		UnexpectedException ex = new UnexpectedException(
 				PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+		Mockito.when(env.getProperty(any())).thenThrow(ex);
 
 		try {
 			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
