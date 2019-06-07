@@ -848,10 +848,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 				}
 			} else {
 				biometricTypecombo.setVisible(true);
-				if (!bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
-					biometricBox.setVisible(true);
-				} else {
+				if (bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
 					biometricBox.setVisible(false);
+				} else {
+					biometricBox.setVisible(true);
 				}
 				thresholdBox.setVisible(true);
 				scanBtn.setText(RegistrationUIConstants.SCAN);
