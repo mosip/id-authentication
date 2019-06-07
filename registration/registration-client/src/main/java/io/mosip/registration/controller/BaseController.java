@@ -886,7 +886,7 @@ public class BaseController {
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Returning the corresponding next page based on given action");
+				"Returning the corresponding next page based on given action" + returnPage);
 
 		pageDetails.clear();
 		return returnPage;
@@ -1272,7 +1272,7 @@ public class BaseController {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
 		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
-				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) !=null && (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 		} else {

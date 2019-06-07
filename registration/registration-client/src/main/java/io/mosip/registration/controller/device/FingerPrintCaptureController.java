@@ -562,20 +562,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			continueBtn.setDisable(true);
 		}
 
-		long irisCountApplicant = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-				.getBiometricExceptionDTO().stream()
-				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
-		
-		long irisCountIntroducer = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-				.getBiometricExceptionDTO().stream()
-				.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
-	
+		long irisCountApplicant = 0;
+		long irisCountIntroducer = 0;
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null) {
+
+			irisCountApplicant = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+			irisCountIntroducer = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+		}
+
 		if (!RegistrationConstants.DISABLE
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
 				&& getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()
-				&& irisCountApplicant < 2 && irisCountIntroducer < 2) {
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && irisCountApplicant < 2
+				&& irisCountIntroducer < 2) {
 			continueBtn.setDisable(false);
 		}
 	}

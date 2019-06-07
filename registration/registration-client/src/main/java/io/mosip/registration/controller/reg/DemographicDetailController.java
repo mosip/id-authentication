@@ -1443,7 +1443,6 @@ public class DemographicDetailController extends BaseController {
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
 
-			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
 			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1625,6 +1624,10 @@ public class DemographicDetailController extends BaseController {
 	public void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
+			clearAllValues();
+			documentScanController.getBioExceptionToggleLabel1().setLayoutX(0);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,false);
+			
 			keyboardNode.setDisable(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
