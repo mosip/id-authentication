@@ -72,14 +72,14 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
                  </classes>
-				</test>   
+				</test>   -->
 
  		  <test name="PreReg Tests">
 		<classes>
 		
 			 <class name="io.mosip.preregistration.tests.BatchJob" />		
 
-			<class name="io.mosip.preregistration.tests.Audit" />
+		<!--	<class name="io.mosip.preregistration.tests.Audit" />
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
@@ -108,7 +108,7 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
 
-			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />   
+			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />   -->
 
 		</classes>
 	</test> 
@@ -119,7 +119,7 @@
 		<classes>
 					<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
 
-                   <class name="io.mosip.registrationProcessor.tests.Sync" />
+            <!--       <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                     <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
                     <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
@@ -130,10 +130,10 @@
                     <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantDemographic" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantBiometric" />
-                    <class name="io.mosip.registrationProcessor.tests.PacketInfo" /> 
+                    <class name="io.mosip.registrationProcessor.tests.PacketInfo" />  -->
 
 		</classes>
-	</test>     -->
+	</test>     
 
 
 
