@@ -2,7 +2,6 @@ package io.mosip.idrepository.vid.service.impl;
 
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +17,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
@@ -131,7 +128,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @see io.mosip.idrepository.core.spi.VidService#createVid(java.lang.Object)
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
 	public ResponseWrapper<VidResponseDTO> createVid(VidRequestDTO vidRequest) throws IdRepoAppException {
 		try {
 			String uin = vidRequest.getUin().toString();
@@ -172,12 +168,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		if (Objects.isNull(vidDetails) || vidDetails.isEmpty() || vidDetails.size() < policy.getAllowedInstances()) {
 			String vidRefId = UUIDUtils
 					.getUUID(UUIDUtils.NAMESPACE_OID,
-							uin + "_" + DateUtils.getUTCCurrentDateTime()
-									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-									.toInstant().toEpochMilli())
+							uin + "_" + DateUtils.getUTCCurrentDateTime())
 					.toString();
-			String generateId = vidGenerator.generateId();
-			return vidRepo.save(new Vid(vidRefId, generateId, uinHash, uinToEncrypt, vidType, currentTime,
+			return vidRepo.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
 					Objects.nonNull(policy.getValidForInMinutes())
 							? DateUtils.getUTCCurrentDateTime().plusMinutes(policy.getValidForInMinutes())
 							: LocalDateTime.MAX.withYear(9999),
@@ -242,14 +235,13 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		try {
 			Vid vidObject = retrieveVidEntity(vid);
 			if (vidObject != null) {
-				String decryptedUin = decryptUin(vidObject);
-				List<String> uinList = Arrays.stream(decryptedUin.split("_")).collect(Collectors.toList());
+				String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
+				List<String> uinList = Arrays.asList(decryptedUin.split("_"));
 				checkExpiry(vidObject.getExpiryDTimes());
 				checkStatus(vidObject.getStatusCode());
-				String uin = uinList.get(1);
-				checkUinStatus(uin);
+				checkUinStatus(uinList.get(1));
 				VidResponseDTO resDTO = new VidResponseDTO();
-				resDTO.setUin(Long.parseLong(uin));
+				resDTO.setUin(Long.parseLong(uinList.get(1)));
 				return buildResponse(resDTO, id.get("read"));
 			} else {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID,
@@ -269,31 +261,6 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		}
 	}
 
-	/**
-	 * This Method is used to decrypt the UIN stored in DB
-	 *
-	 * @param vidObject
-	 *            the vid object
-	 * @return
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private String decryptUin(Vid vidObject) throws IdRepoAppException {
-		String uin = vidObject.getUin();
-		List<String> uinDetails = Arrays.stream(uin.split("_")).collect(Collectors.toList());
-		String decryptSalt = uinEncryptSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
-		String hashSalt = uinHashSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
-		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
-		String decryptedUin = new String(securityManager.decryptWithSalt(CryptoUtil.decodeBase64(encryptedUin),
-				CryptoUtil.decodeBase64(decryptSalt)));
-		String uinHash = uinDetails.get(0) + "_"
-				+ securityManager.hashwithSalt(decryptedUin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
-		if (!MessageDigest.isEqual(uinHash.getBytes(), vidObject.getUinHash().getBytes())) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UIN_HASH_MISMATCH);
-		}
-		return uinDetails.get(0) + "_" + decryptedUin + "_" + decryptSalt;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -310,32 +277,11 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 						"throwing NO_RECORD_FOUND_VID");
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
-			String decryptedUin = decryptUin(vidObject);
-			List<String> uinList = Arrays.stream(decryptedUin.split("_")).collect(Collectors.toList());
-			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
 			checkStatus(vidObject.getStatusCode());
 			checkExpiry(vidObject.getExpiryDTimes());
-			if (!(vidStatus.equals(env.getProperty(IdRepoConstants.VID_UNLIMITED_TRANSACTION_STATUS.getValue()))
-					&& Objects.isNull(policy.getAllowedTransactions()))) {
-				vidObject.setStatusCode(vidStatus);
-				vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime()
-						.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-						.toLocalDateTime());
-				vidObject.setUin(decryptedUin);
-				vidRepo.saveAndFlush(vidObject);
-			}
-			VidResponseDTO response = new VidResponseDTO();
-			response.setVidStatus(vidObject.getStatusCode());
-			if (policy.getAutoRestoreAllowed() && policy.getRestoreOnAction().equals(vidStatus)) {
-				VidRequestDTO reqDTO = new VidRequestDTO();
-				reqDTO.setUin(Long.parseLong(uinList.get(1)));
-				reqDTO.setVidType(vidObject.getVidTypeCode());
-				Vid createVidResponse = generateVid(uinList.get(1), vidObject.getVidTypeCode());
-				VidResponseDTO restoredVidDTO = new VidResponseDTO();
-				restoredVidDTO.setVid(Long.valueOf(createVidResponse.getVid()));
-				restoredVidDTO.setVidStatus(createVidResponse.getStatusCode());
-				response.setRestoredVid(restoredVidDTO);
-			}
+			String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
+			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
+			VidResponseDTO response = updateVidStatus(vidStatus, vidObject, decryptedUin, policy);
 			return buildResponse(response, id.get("update"));
 		} catch (IdRepoAppUncheckedException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID,
@@ -348,6 +294,28 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			auditHelper.audit(AuditModules.UPDATE_VID, AuditEvents.UPDATE_VID_REQUEST_RESPONSE, vid,
 					"Update VID requested");
 		}
+	}
+
+	private VidResponseDTO updateVidStatus(String vidStatus, Vid vidObject, String decryptedUin, VidPolicy policy)
+			throws IdRepoAppException {
+		String uin = Arrays.asList(decryptedUin.split("_")).get(1);
+		if (!(vidStatus.equals(env.getProperty(IdRepoConstants.VID_UNLIMITED_TRANSACTION_STATUS.getValue()))
+				&& Objects.isNull(policy.getAllowedTransactions()))) {
+			vidObject.setStatusCode(vidStatus);
+			vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime());
+			vidObject.setUin(decryptedUin);
+			vidRepo.saveAndFlush(vidObject);
+		}
+		VidResponseDTO response = new VidResponseDTO();
+		response.setVidStatus(vidObject.getStatusCode());
+		if (policy.getAutoRestoreAllowed() && policy.getRestoreOnAction().equals(vidStatus)) {
+			Vid createVidResponse = generateVid(uin, vidObject.getVidTypeCode());
+			VidResponseDTO restoredVidDTO = new VidResponseDTO();
+			restoredVidDTO.setVid(Long.valueOf(createVidResponse.getVid()));
+			restoredVidDTO.setVidStatus(createVidResponse.getStatusCode());
+			response.setRestoredVid(restoredVidDTO);
+		}
+		return response;
 	}
 
 	@Override
@@ -366,15 +334,9 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 				throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
 			}
 			checkRegenerateStatus(vidObject.getStatusCode());
-
-			if (vidObject.getStatusCode().contentEquals(env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()))
-					&& !DateUtils.after(DateUtils.getUTCCurrentDateTime(), vidObject.getExpiryDTimes())) {
-				VidRequestDTO request = new VidRequestDTO();
-				request.setVidStatus(IdRepoConstants.VID_REGENERATE_ACTIVE_STATUS.getValue());
-				updateVid(vid, request);
-			}
-			String decryptedUin = decryptUin(vidObject);
-			List<String> uinList = Arrays.stream(decryptedUin.split("_")).collect(Collectors.toList());
+			String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
+			updateVidStatus(IdRepoConstants.VID_REGENERATE_ACTIVE_STATUS.getValue(), vidObject, decryptedUin, policy);
+			List<String> uinList = Arrays.asList(decryptedUin.split("_"));
 			VidResponseDTO response = new VidResponseDTO();
 			Vid generateVidObject = generateVid(uinList.get(1), vidObject.getVidTypeCode());
 			response.setVid(Long.parseLong(generateVidObject.getVid()));
@@ -425,9 +387,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 *             the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
-		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime();
-		if (!DateUtils.after(expiryDTimes, currentTime)) {
+		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkExpiry", "throwing Expired VID");
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), EXPIRED));
@@ -449,6 +409,31 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), statusCode));
 		}
+	}
+	
+
+	/**
+	 * This Method is used to decrypt the UIN stored in DB
+	 *
+	 * @param vidObject
+	 *            the vid object
+	 * @return
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private String decryptUin(String uin,String uinHash) throws IdRepoAppException {
+		List<String> uinDetails = Arrays.stream(uin.split("_")).collect(Collectors.toList());
+		String decryptSalt = uinEncryptSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
+		String hashSalt = uinHashSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
+		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
+		String decryptedUin = new String(securityManager.decryptWithSalt(CryptoUtil.decodeBase64(encryptedUin),
+				CryptoUtil.decodeBase64(decryptSalt)));
+		String uinHashWithSalt = uinDetails.get(0) + "_"
+				+ securityManager.hashwithSalt(decryptedUin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
+		if (!MessageDigest.isEqual(uinHashWithSalt.getBytes(), uinHash.getBytes())) {
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UIN_HASH_MISMATCH);
+		}
+		return uinDetails.get(0) + "_" + decryptedUin + "_" + decryptSalt;
 	}
 
 	/**
