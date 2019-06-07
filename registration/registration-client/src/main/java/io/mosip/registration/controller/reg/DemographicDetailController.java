@@ -1145,6 +1145,7 @@ public class DemographicDetailController extends BaseController {
 									parentDetailPane.setVisible(true);
 									parentDetailPane.setDisable(false);
 									parentName.clear();
+									parentNameLocalLanguage.clear();
 									parentRegId.clear();
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
@@ -1163,6 +1164,7 @@ public class DemographicDetailController extends BaseController {
 								isChild = false;
 								validation.setChild(isChild);
 								parentName.clear();
+								parentNameLocalLanguage.clear();
 								parentRegId.clear();
 								parentRegIdLocalLanguage.clear();
 								parentRegId.clear();
@@ -1225,11 +1227,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.populateLocalComboBox(parentFlowPane, localAdminAuthority, localAdminAuthorityLocalLanguage);
 
 			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
