@@ -2,7 +2,6 @@ package io.mosip.idrepository.vid.service.impl;
 
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -169,9 +168,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		if (Objects.isNull(vidDetails) || vidDetails.isEmpty() || vidDetails.size() < policy.getAllowedInstances()) {
 			String vidRefId = UUIDUtils
 					.getUUID(UUIDUtils.NAMESPACE_OID,
-							uin + "_" + DateUtils.getUTCCurrentDateTime()
-									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-									.toInstant().toEpochMilli())
+							uin + "_" + DateUtils.getUTCCurrentDateTime())
 					.toString();
 			return vidRepo.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
 					Objects.nonNull(policy.getValidForInMinutes())
@@ -390,9 +387,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 *             the id repo app exception
 	 */
 	private void checkExpiry(LocalDateTime expiryDTimes) throws IdRepoAppException {
-		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
-				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime();
-		if (!DateUtils.after(expiryDTimes, currentTime)) {
+		if (!DateUtils.after(expiryDTimes, DateUtils.getUTCCurrentDateTime())) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, "checkExpiry", "throwing Expired VID");
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_VID.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), EXPIRED));

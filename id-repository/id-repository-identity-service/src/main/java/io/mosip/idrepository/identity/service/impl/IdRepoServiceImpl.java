@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -198,11 +197,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
 	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
-			String uinRefId = UUIDUtils
-					.getUUID(UUIDUtils.NAMESPACE_OID,
-							uin + "_" + DateUtils.getUTCCurrentDateTime()
-									.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-									.toInstant().toEpochMilli())
+			String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
 					.toString();
 			byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
 
@@ -313,11 +308,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			JsonNode docType) throws IdRepoAppException {
 		byte[] data = null;
 		String fileRefId = UUIDUtils
-				.getUUID(UUIDUtils.NAMESPACE_OID, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText()
-						+ "_"
-						+ DateUtils.getUTCCurrentDateTime()
-								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-								.toInstant().toEpochMilli())
+				.getUUID(UUIDUtils.NAMESPACE_OID,
+						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_"
+								+ DateUtils.getUTCCurrentDateTime())
 				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
 		if (StringUtils.equalsIgnoreCase(docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(),
@@ -367,10 +360,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			JsonNode docType) throws IdRepoAppException {
 		String fileRefId = UUIDUtils
 				.getUUID(UUIDUtils.NAMESPACE_OID,
-						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_" + DateUtils
-								.getUTCCurrentDateTime()
-								.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
-								.toInstant().toEpochMilli())
+						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_"
+								+ DateUtils.getUTCCurrentDateTime())
 				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
 		LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
