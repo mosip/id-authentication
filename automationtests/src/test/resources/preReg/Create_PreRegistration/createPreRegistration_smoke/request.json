@@ -3,6 +3,17 @@
         "demographicDetails": {
             "identity": {
                 "CNIENumber": "2864123456765432",
+                "gender": [
+                    {
+                        "language": "fra",
+                        "value": "FLE"
+                    },
+                    {
+                        "language": "ara",
+                        "value": "FLE"
+
+                    }
+                ],
                 "city": [
                     {
                         "language": "fra",

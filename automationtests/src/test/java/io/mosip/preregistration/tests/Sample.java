@@ -83,11 +83,12 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void getPreRegistrationDataForBookedAppointment() {
-		lib.CreatePreReg();
-		
-	}
+
+		@Test(groups = { "IntegrationScenarios" })
+		public void fetchCanceledAppointmentCreatedByUser() {
+			authToken = lib.getToken();
+			authToken = lib.getToken();
+		}
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
