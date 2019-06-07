@@ -397,29 +397,30 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		if (null != biometricData && null != biometricData.getMosipBioDeviceDataResponses()
 				&& !biometricData.getMosipBioDeviceDataResponses().isEmpty()) {
-		}
-		for (CaptureResponseBioDto captureResponseBioDto : biometricData.getMosipBioDeviceDataResponses()) {
+			
+			for (CaptureResponseBioDto captureResponseBioDto : biometricData.getMosipBioDeviceDataResponses()) {
 
-			CaptureResponsBioDataDto bioData = captureResponseBioDto.getCaptureResponseData();
-			FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
+				CaptureResponsBioDataDto bioData = captureResponseBioDto.getCaptureResponseData();
+				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
 
-			byte[] isoTemplateBytes = bioData.getBioExtract();
-			segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+				byte[] isoTemplateBytes = bioData.getBioExtract();
+				segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
 
-			byte[] isoImageBytes = bioData.getBioValue();
-			segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+				byte[] isoImageBytes = bioData.getBioValue();
+				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
 
-			segmentedDetailsDTO.setFingerType(bioData.getBioSegmentedType());
-			segmentedDetailsDTO.setFingerprintImageName(bioData.getBioSegmentedType());
-			segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
-			segmentedDetailsDTO.setForceCaptured(false);
-			segmentedDetailsDTO.setQualityScore(90);
+				segmentedDetailsDTO.setFingerType(bioData.getBioSegmentedType());
+				segmentedDetailsDTO.setFingerprintImageName(bioData.getBioSegmentedType());
+				segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
+				segmentedDetailsDTO.setForceCaptured(false);
+				segmentedDetailsDTO.setQualityScore(90);
 
-			if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
-				List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
-				fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+				if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
+					List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
+					fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+				}
+				fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
 			}
-			fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
 		}
 	}
 
