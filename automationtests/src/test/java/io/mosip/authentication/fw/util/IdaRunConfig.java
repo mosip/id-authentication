@@ -73,7 +73,14 @@ public class IdaRunConfig extends RunConfig{
 	private String uinIdentityMapper;
 	private String internalEncryptionPath;
 	private String validateSignaturePath;
+	private String encryptionPort;
 	
+	public String getEncryptionPort() {
+		return encryptionPort;
+	}
+	public void setEncryptionPort(String encryptionPort) {
+		this.encryptionPort = encryptionPort;
+	}
 	public String getValidateSignaturePath() {
 		return validateSignaturePath;
 	}
@@ -154,6 +161,7 @@ public class IdaRunConfig extends RunConfig{
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 			String actualUrl = encryptUtilBaseUrl.replace("$hostname$", inetAddress.getHostName().toLowerCase());
+			actualUrl=actualUrl.replace("$port$", RunConfigUtil.objRunConfig.getEncryptionPort());
 			this.encryptUtilBaseUrl = actualUrl;
 		} catch (Exception e) {
 			logger.error("Execption in RunConfig " + e.getMessage());
@@ -353,6 +361,7 @@ public class IdaRunConfig extends RunConfig{
 		setAuthPath(AuthTestsUtil.getPropertyValue("authPath"));
 		setInternalAuthPath(AuthTestsUtil.getPropertyValue("internalAuthPath"));
 		setOtpPath(AuthTestsUtil.getPropertyValue("otpPath"));
+		setEncryptionPort(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".encryptionPort"));
 		setEncryptUtilBaseUrl(AuthTestsUtil.getPropertyValue("encryptUtilBaseUrl"));
 		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
 		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));

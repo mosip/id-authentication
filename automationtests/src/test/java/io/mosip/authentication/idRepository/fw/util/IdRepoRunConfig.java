@@ -894,4 +894,16 @@ public class IdRepoRunConfig extends RunConfig{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getEncryptionPort() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEncryptionPort(String encryptionPort) {
+		// TODO Auto-generated method stub
+		
+	}
 }
