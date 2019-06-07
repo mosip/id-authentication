@@ -238,7 +238,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		try {
 			Vid vidObject = retrieveVidEntity(vid);
 			if (vidObject != null) {
-				String decryptedUin = decryptUin(vidObject);
+				String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
 				List<String> uinList = Arrays.asList(decryptedUin.split("_"));
 				checkExpiry(vidObject.getExpiryDTimes());
 				checkStatus(vidObject.getStatusCode());
@@ -282,7 +282,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			}
 			checkStatus(vidObject.getStatusCode());
 			checkExpiry(vidObject.getExpiryDTimes());
-			String decryptedUin = decryptUin(vidObject);
+			String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
 			VidPolicy policy = policyProvider.getPolicy(vidObject.getVidTypeCode());
 			VidResponseDTO response = updateVidStatus(vidStatus, vidObject, decryptedUin, policy);
 			return buildResponse(response, id.get("update"));
@@ -337,7 +337,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 				throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
 			}
 			checkRegenerateStatus(vidObject.getStatusCode());
-			String decryptedUin = decryptUin(vidObject);
+			String decryptedUin = decryptUin(vidObject.getUin(),vidObject.getUinHash());
 			updateVidStatus(IdRepoConstants.VID_REGENERATE_ACTIVE_STATUS.getValue(), vidObject, decryptedUin, policy);
 			List<String> uinList = Arrays.asList(decryptedUin.split("_"));
 			VidResponseDTO response = new VidResponseDTO();
@@ -426,17 +426,16 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	private String decryptUin(Vid vidObject) throws IdRepoAppException {
-		String uin = vidObject.getUin();
+	private String decryptUin(String uin,String uinHash) throws IdRepoAppException {
 		List<String> uinDetails = Arrays.stream(uin.split("_")).collect(Collectors.toList());
 		String decryptSalt = uinEncryptSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
 		String decryptedUin = new String(securityManager.decryptWithSalt(CryptoUtil.decodeBase64(encryptedUin),
 				CryptoUtil.decodeBase64(decryptSalt)));
-		String uinHash = uinDetails.get(0) + "_"
+		String uinHashWithSalt = uinDetails.get(0) + "_"
 				+ securityManager.hashwithSalt(decryptedUin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
-		if (!MessageDigest.isEqual(uinHash.getBytes(), vidObject.getUinHash().getBytes())) {
+		if (!MessageDigest.isEqual(uinHashWithSalt.getBytes(), uinHash.getBytes())) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UIN_HASH_MISMATCH);
 		}
 		return uinDetails.get(0) + "_" + decryptedUin + "_" + decryptSalt;
