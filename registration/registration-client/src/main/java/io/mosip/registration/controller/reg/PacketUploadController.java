@@ -1,19 +1,28 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PACKET_UPLOAD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,6 +71,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -176,7 +186,7 @@ public class PacketUploadController extends BaseController implements Initializa
 						public void handle(WorkerStateEvent t) {
 							String status = service.getValue();
 							if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
-								generateAlert(RegistrationConstants.ERROR, status + " " + packetSyncStatus);
+								generateAlert(RegistrationConstants.ERROR, status + " " + RegistrationUIConstants.SYNC_FAILURE);
 							} else if (!status.equals(RegistrationConstants.EMPTY)) {
 								generateAlert(RegistrationConstants.ERROR, status);
 							}
@@ -565,11 +575,68 @@ public class PacketUploadController extends BaseController implements Initializa
 		});
 
 	}
+	
+	public void exportData() {
+		LOGGER.info(LOG_PACKET_UPLOAD, APPLICATION_NAME, APPLICATION_ID,
+				"Exporting the packet upload status details");
+		String str = filterField.getText();
+		Stage stage = new Stage();
+		DirectoryChooser destinationSelector = new DirectoryChooser();
+		destinationSelector.setTitle(RegistrationConstants.FILE_EXPLORER_NAME);
+		Path currentRelativePath = Paths.get("");
+		File defaultDirectory = new File(currentRelativePath.toAbsolutePath().toString());
+		destinationSelector.setInitialDirectory(defaultDirectory);
+		File destinationPath = destinationSelector.showDialog(stage);
+		if (destinationPath != null) {
+
+			filterField.clear();
+			String fileData = table.getItems().stream()
+					.map(packetVo -> packetVo.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
+							.concat(packetVo.getFileName()).concat("'").concat(RegistrationConstants.COMMA).concat("'")
+							.concat(packetVo.getCreatedTime()))
+					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
+			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS).concat(RegistrationConstants.NEW_LINE);
+			fileData = headers + fileData;
+			filterField.setText(str);
+			try (Writer writer = new BufferedWriter(new FileWriter(destinationPath + "/"
+					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.UNDER_SCORE)
+							.concat(getcurrentTimeStamp()).concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
+				writer.write(fileData);
+
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.EOD_DETAILS_EXPORT_SUCCESS);
+
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_PACKET_UPLOAD, APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.PACKET_STATUS_EXPORT);
+
+			}
+		}
+		LOGGER.info(LOG_PACKET_UPLOAD, APPLICATION_NAME, APPLICATION_ID,
+				"Exporting Packet Upload status details has been ended");
+	}
 
 	public void selectAllCheckBox(ActionEvent e) {
 		saveToDevice.setDisable(((CheckBox) e.getSource()).isSelected());
 		list.forEach(item -> {
 			item.setStatus(((CheckBox) e.getSource()).isSelected());
 		});
+	}
+	
+	/**
+	 * This method gets the current timestamp in yyyymmddhhmmss format.
+	 * 
+	 * @return current timestamp in fourteen digits
+	 */
+	private String getcurrentTimeStamp() {
+		DateTimeFormatter format = DateTimeFormatter
+				.ofPattern(RegistrationConstants.EOD_PROCESS_DATE_FORMAT_FOR_FILE);
+		return LocalDateTime.now().format(format);
 	}
 }
