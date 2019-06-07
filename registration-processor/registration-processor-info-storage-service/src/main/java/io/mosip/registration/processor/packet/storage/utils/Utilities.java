@@ -25,12 +25,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -40,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -71,7 +72,7 @@ public class Utilities {
 	private static final String NEW_PACKET = "New-packet";
 
 	@Autowired
-	private FileSystemAdapter adapter;
+	private FileSystemManager adapter;
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -142,8 +143,10 @@ public class Utilities {
 	 * @return
 	 * @throws IOException
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException {
+	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -265,8 +268,11 @@ public class Utilities {
 	 * @param registrationId
 	 * @return
 	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException {
+	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -290,8 +296,11 @@ public class Utilities {
 	 * @param registrationId
 	 * @return
 	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public Long getUIn(String registrationId) throws IOException {
+	public Long getUIn(String registrationId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
@@ -349,12 +358,12 @@ public class Utilities {
 	}
 
 
-    public PacketMetaInfo getPacketMetaInfo(String registrationId) throws UnsupportedEncodingException {
+    public PacketMetaInfo getPacketMetaInfo(String registrationId) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 		return (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 	}
 
-    public List<Documents> getAllDocumentsByRegId(String regId) throws IOException {
+    public List<Documents> getAllDocumentsByRegId(String regId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
 
  		idJson = getDemographicIdentityJSONObject(regId);
@@ -388,7 +397,7 @@ public class Utilities {
 		return applicantDocuments;
 	}
 
- 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException {
+ 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		Documents documentsInfoDto = new Documents();;
 		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));

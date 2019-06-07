@@ -550,9 +550,11 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 * @throws RegistrationProcessorCheckedException
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private IdResponseDTO uinUpdate(String regId, Long uin, MessageDTO object)
-			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException {
+			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		IdResponseDTO result;
 		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
 		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, uin, documentInfo);
