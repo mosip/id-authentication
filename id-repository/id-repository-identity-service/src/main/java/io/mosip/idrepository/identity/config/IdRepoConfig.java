@@ -120,7 +120,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 					mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
 							"Status error - returning RestServiceException - CLIENT_ERROR -- "
 									+ new String(super.getResponseBody(response)));
-					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.MASTERDATA_ERROR);
+					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.MASTERDATA_RETRIEVE_ERROR);
 				}
 			}
 		});

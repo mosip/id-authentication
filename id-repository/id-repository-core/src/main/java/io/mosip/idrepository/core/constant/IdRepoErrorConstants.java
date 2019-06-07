@@ -56,7 +56,7 @@ public enum IdRepoErrorConstants {
 
 	FILE_NOT_FOUND("IDR-IDS-006", "File(s) not found in DFS"),
 	
-	MASTERDATA_ERROR("IDR-IDS-007", "Failed to retrieve data from kernel Masterdata"),
+	MASTERDATA_RETRIEVE_ERROR("IDR-IDS-007", "Failed to retrieve data from kernel Masterdata"),
 	
 	// VID Service
 	
