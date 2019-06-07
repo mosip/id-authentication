@@ -146,7 +146,6 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 		}
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
-		
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		if (!status) {
 			logger.debug(response);

@@ -10,11 +10,9 @@
         <property name="connection.driver_class">org.postgresql.Driver</property>
 
         <property name="connection.url">jdbc:postgresql://104.211.208.136:9001/mosip_kernel</property>
-
         <property name="connection.username">kerneluser</property>
         <property name="connection.password">Mosip@dev123</property>
         <property name="hibernate.default_schema">kernel</property>
-
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">1</property>
 
