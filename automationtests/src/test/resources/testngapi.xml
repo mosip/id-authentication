@@ -15,7 +15,7 @@
 
 		regression smokeAndRegression -->
 		
-			<test name="Kernel Tests">
+			<!-- <test name="Kernel Tests">
 						 <classes>
                           <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -72,7 +72,7 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
                  </classes>
-				</test>   
+				</test>    -->
 
 		  <test name="PreReg Tests">
 		<classes>
@@ -116,7 +116,7 @@
 
 	
 
- 	 <test name="RegistrationProcessor Tests">
+ 	<!--  <test name="RegistrationProcessor Tests">
 		<classes>
 					<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
 
@@ -167,7 +167,7 @@
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> 
 		</classes>
-	</test>
+	</test> -->
 </suite>
 		
 	
