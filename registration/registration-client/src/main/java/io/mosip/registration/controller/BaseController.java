@@ -492,6 +492,14 @@ public class BaseController {
 
 		updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION,
 				(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
+		
+		updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+						.equalsIgnoreCase(RegistrationConstants.ENABLE));
+		
+		updatePageFlow(RegistrationConstants.IRIS_CAPTURE,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG))
+						.equalsIgnoreCase(RegistrationConstants.ENABLE));
 	}
 
 	/**

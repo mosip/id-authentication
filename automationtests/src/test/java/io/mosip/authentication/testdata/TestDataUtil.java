@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -122,12 +123,17 @@ public class TestDataUtil {
 	 * @throws FileNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public static void loadTestData(File filePath) throws FileNotFoundException
-	{
-		Yaml yaml = new Yaml();
-		InputStream inputStream = new FileInputStream(filePath.getAbsoluteFile());		
-		TestDataDto.setTestdata((Map<String, Map<String, Map<String, Map<String, Object>>>>) yaml.load(inputStream));
-		setFilePathFromTestdataFileName(filePath);
+	public static void loadTestData(File filePath) throws FileNotFoundException {
+		try {
+			Yaml yaml = new Yaml();
+			InputStream inputStream = new FileInputStream(filePath.getAbsoluteFile());
+			TestDataDto
+					.setTestdata((Map<String, Map<String, Map<String, Map<String, Object>>>>) yaml.load(inputStream));
+			inputStream.close();
+			setFilePathFromTestdataFileName(filePath);
+		} catch (IOException e) {
+			TESTDATAUTILITY_LOGGER.error("Exception Occured in testdata processor : " + e.getMessage());
+		}
 	}	
 	/**
 	 * To set mapping file path and scenario path from the test data filename

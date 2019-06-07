@@ -5,6 +5,11 @@ import java.util.function.Supplier;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.RestServiceException;
 
+/**
+ * This interface is used to for send/receive HTTP
+ * 
+ * @author Sanjay Murali
+ */
 public interface RestHelper {
 
 	/**

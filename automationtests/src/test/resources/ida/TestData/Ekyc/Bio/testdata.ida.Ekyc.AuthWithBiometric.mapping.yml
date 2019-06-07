@@ -43,6 +43,7 @@ testdata:
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
       output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -92,8 +93,7 @@ testdata:
       output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
       output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
-      output.3.res.kyc.languagegender0: $IGNORE$
-      #output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
       output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
@@ -105,16 +105,14 @@ testdata:
       output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
-      output.3.res.kyc.valuegender0: $IGNORE$
-      #output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
       output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
       output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
-      output.3.res.kyc.languagegender1: $IGNORE$
-      #output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
@@ -124,8 +122,8 @@ testdata:
       output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
       output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
       output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
-      output.3.res.kyc.valuegender1: $IGNORE$
-      #output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -148,7 +146,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.ekyc-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.secondaryLangCode: $REMOVE$
@@ -188,6 +186,7 @@ testdata:
       output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
       output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
       output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
@@ -205,6 +204,216 @@ testdata:
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
+      
+  Authentication_EKYC_Biometric_Finger_with_primary_lang_Smoke_With_VID_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.ekyc-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.secondaryLangCode: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
+      identityReq.bioType: $TestData:bio_finger_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
+    output.output-1-expected-y-res:
+      output.1.response.status: $TestData:auth_Pass_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.ekyc-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+      output.1.response.identity: '$DECODE$->output-2-expected-decoded-one-lang-kyc-res.json'
+    output.output-2-expected-decoded-one-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
+  Authentication_Biometric_EKYC_FACE_With_secondary_lang_smoke_With_VID_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.ekyc-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.secondaryLangCode: $TestData:secondary_lang_code$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_face_subType$
+      identityReq.bioType: $TestData:bio_face_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_face_deviceCode$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
+      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    output.output-1-expected-y-res:
+      output.1.response.status: $TestData:auth_Pass_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.ekyc-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+      output.1.response.identity: '$DECODE$->output-2-expected-decoded-two-lang-kyc-res.json'
+    output.output-2-expected-decoded-two-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
+  Authentication_EYC_Biometric_Iris_With_Left_primary_lang_Smoke_With_VID_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.ekyc-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.secondaryLangCode: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.bioSubType: $TestData:bio_iris_left_subType$
+      identityReq.bioType: $TestData:bio_iris_type$
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.data.timestamp: $TIMESTAMP$
+      identityReq.deviceCode: $TestData:bio_iris_deviceCode$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.deviceProviderID: $TestData:bio_iris_deviceProviderID$
+      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
+    output.output-1-expected-y-res:
+      output.1.response.status: $TestData:auth_Pass_status$
+      output.1.response.responseTime: $TIMESTAMP$
+      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.1.response.staticToken: $TOKENID~$input.ekyc-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+      output.1.response.identity: '$DECODE$->output-2-expected-decoded-one-lang-kyc-res.json'
+    output.output-2-expected-decoded-one-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
       
   Authentication_EKYC_Biometric_With_invalid_bioValue_VID_Neg:
     endpoint.url:
@@ -310,8 +519,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MisssingFingerBioInMosipDB:errorCode$
-      output.1.response.error.errorMessage: $errors:MisssingFingerBioInMosipDB:errorMessage$
+      output.1.response.error.errorCode: $errors:MisssingIrisBioInMosipDB:errorCode$
+      output.1.response.error.errorMessage: $errors:MisssingIrisBioInMosipDB:errorMessage$
       
   Authentication_EKYC_Biometric_With_Valid_BioType_FID_and_Invalid_BioSubType_Left_Index_Neg:
     endpoint.url:
@@ -359,41 +568,6 @@ testdata:
       output.1.response.error.errorCode: $errors:RequestTimeIsFuture:errorCode$
       output.1.response.error.errorMessage: $errors:RequestTimeIsFuture:errorMessage$
       output.1.response.error.actionMessage: $errors:RequestTimeIsFuture:actionMessage$
-      
-  Authentication_EKYC_Biometric_With_MoreThan_two_FingerRecord_In_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-exceed-2-finger-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.timestamp1: $TIMESTAMP$
-      identityReq.timestamp2: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-      identityReq.bioSubType1: $TestData:bio_finger_RightIndex_subType$
-      identityReq.bioType1: $TestData:bio_finger_type$
-      identityReq.deviceCode1: $TestData:bio_face_deviceCode$
-      identityReq.deviceProviderID1: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue1: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.bioSubType2: $TestData:bio_finger_RightLittle_subType$
-      identityReq.bioType2: $TestData:bio_finger_type$
-      identityReq.deviceCode2: $TestData:bio_face_deviceCode$
-      identityReq.deviceProviderID2: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue2: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Right LittleFinger']//following::BDB$  
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:FingerExceed2:errorCode$
-      output.1.response.error.errorMessage: $errors:FingerExceed2:errorMessage$
       
   Authentication_EKYC_Biometric_With_requestTime_LT24HR_In_Request_Neg:
     endpoint.url:
@@ -615,8 +789,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_EKYC_Biometric_Without_consentObtained_Neg:
     endpoint.url:
@@ -643,31 +817,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
-      
-  Authentication_EKYC_Biometric_Without_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $REMOVE$
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
       
   Authentication_EKYC_Biometric_Without_Id_In_Request_Neg:
     endpoint.url:
@@ -769,31 +918,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
-      
-  Authentication_EKYC_Biometric_Without_timestamp_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $REMOVE$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingIdentityBioTimestamp:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingIdentityBioTimestamp:errorMessage$
            
   Authentication_EKYC_Biometric_Without_bio_requestAuth_In_request_Neg:
     endpoint.url:
@@ -1150,31 +1274,6 @@ testdata:
       output.1.response.error.errorCode: $errors:InvalidrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:InvalidrequestTime:errorMessage$
       
-  Authentication_EKYC_Biometric_With_Invalid_timestamp_format_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TestData:timestamp_invalid$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidIdentityBioTimestamp:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidIdentityBioTimestamp:errorMessage$
-      
   Authentication_EKYC_Biometric_With_Invalid_transactionID_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1298,8 +1397,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_EKYC_Biometric_Null_consentObtained_Neg:
     endpoint.url:
@@ -1326,31 +1425,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
-      
-  Authentication_EKYC_Biometric_Null_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: ''
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
       
   Authentication_EKYC_Biometric_Null_Id_In_Request_Neg:
     endpoint.url:
@@ -1452,31 +1526,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:MissingrequestTime:errorCode$
       output.1.response.error.errorMessage: $errors:MissingrequestTime:errorMessage$
-      
-  Authentication_EKYC_Biometric_Null_timestamp_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $UIN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.timestamp: ''
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Left IndexFinger']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingIdentityBioTimestamp:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingIdentityBioTimestamp:errorMessage$
             
   Authentication_EKYC_Biometric_Null_bio_requestAuth_In_request_Neg:
     endpoint.url:
@@ -1618,11 +1667,11 @@ testdata:
     audit.auth_transaction:
       refId: $input.ekyc-request:AuthReq.individualId$
       txnId: $input.ekyc-request:AuthReq.transactionID$
-      authTypeCode: $TestData:auth_transaction_FACE_authTypeCode$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
       statusCode: $TestData:auth_transaction_success_statusCode$
       reqTime: $FETCH$
       resTime: $FETCH$
-      statusComment: $TestData:auth_transaction_FACE_success_statusComment$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
       idType: $TestData:auth_transaction_VID_idType$
     audit.audit_log:
       refId:  $input.ekyc-request:AuthReq.individualId$
@@ -1630,7 +1679,7 @@ testdata:
       eventName: $TestData:audit_log_auth_eventName$
       appId: $TestData:audit_log_ida_appId$
       appName: $TestData:audit_log_ida_appName$
-      moduleName: $TestData:audit_log_face_moduleName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
   Authentication_EKYC_Biometric_With_Expired_VID_Neg:
@@ -1656,7 +1705,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
       output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:ExpiredVID:actionMessage$ 
       
   Authentication_EKYC_Biometric_With_Revoke_VID_Neg:
     endpoint.url:
@@ -1704,32 +1752,6 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InactiveVID:actionMessage$  
-      
-  Authentication_EKYC_Biometric_With_Deactivated_VID_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.ekyc-request:
-      AuthReq.individualId: $VID:WITH:DEACTIVATED$
-      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_finger_LeftIndex_subType$
-      identityReq.bioType: $TestData:bio_finger_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_face_deviceCode$
-      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_face_deviceProviderID$
-      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:DeactivatedVID:errorCode$
-      output.1.response.error.errorMessage: $errors:DeactivatedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:DeactivatedVID:actionMessage$   
+      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$  
   

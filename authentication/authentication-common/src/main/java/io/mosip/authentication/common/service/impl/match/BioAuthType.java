@@ -58,6 +58,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
 					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE),
 			getFingerprint(), value -> value == 1) {
+		
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				BioMatcherUtil bioMatcherUtil, String language) {
@@ -103,6 +104,7 @@ public enum BioAuthType implements AuthType {
 	},
 	FGR_MIN_MULTI("FMR", AuthType.setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(),
 			value -> value >= 3 && value <= 10) {
+		
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
 				BioMatcherUtil bioMatcherUtil, String language) {

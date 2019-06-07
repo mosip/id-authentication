@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -116,14 +115,13 @@ public class KycControllerTest {
 	public void showProcessKycValidator()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		kycAuthReqDTO.setIndividualId("5134256294");
 		kycAuthReqDTO.setIndividualIdType(IdType.UIN.getType());
 		kycAuthReqDTO.setRequestTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
 		kycFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789");
-		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
-		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456", "123456");
 	}
 
@@ -196,8 +194,6 @@ public class KycControllerTest {
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(kycAuthResponseDTO);
-		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
-		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 //		Mockito.when(kycService.processKycAuth(kycAuthReqDTO, authResponseDTO, "123456789"))
 //				.thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
@@ -271,8 +267,6 @@ public class KycControllerTest {
 				.thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processKycAuth(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
-		Mockito.when(idInfoFetcherImpl.getUinOrVid(Mockito.any())).thenReturn(Optional.of("5134256294"));
-		Mockito.when(idInfoFetcherImpl.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 //		Mockito.when(kycFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO, "12346789"))
 //				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		kycAuthController.processKyc(kycAuthRequestDTO, errors, "12346789", "1234567");

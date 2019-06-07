@@ -84,8 +84,8 @@ public class RegistrationUIConstants {
 	// NOTIFICATIONS
 	public static final String EMAIL_NOTIFICATION_SUCCESS = bundle.getString("EMAIL_NOTIFICATION_SUCCESS");
 	public static final String SMS_NOTIFICATION_SUCCESS = bundle.getString("SMS_NOTIFICATION_SUCCESS");
-	public static final String NO_VALID_EMAIL = bundle.getString("NO_VALID_EMAIL");
-	public static final String NO_VALID_MOBILE = bundle.getString("NO_VALID_MOBILE");
+	public static final String INVALID_EMAIL = bundle.getString("INVALID_EMAIL");
+	public static final String INVALID_MOBILE = bundle.getString("INVALID_MOBILE");
 	public static final String NOTIFICATION_SUCCESS = bundle.getString("NOTIFICATION_SUCCESS");
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
@@ -265,6 +265,7 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
 	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
 	public static final String USER_ONBOARD_ERROR = bundle.getString("USER_ONBOARD_ERROR");
+	public static final String NO_INTERNET = bundle.getString("NO_INTERNET");
 
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";

@@ -7,7 +7,7 @@
   "errors": [
     {
       "errorCode": "KER-MSD-038",
-      "errorMessage": "Registration Center, Machine, User not found"
+      "message": "Registration Center, Machine, User not found"
     }
   ]
 }

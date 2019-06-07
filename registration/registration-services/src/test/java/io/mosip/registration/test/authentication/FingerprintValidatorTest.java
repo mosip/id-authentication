@@ -1,7 +1,7 @@
 package io.mosip.registration.test.authentication;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -167,6 +167,6 @@ public class FingerprintValidatorTest {
 	
 	@Test
 	public void validateAuthTest() {
-		assertFalse(fingerprintValidator.validate(authenticationValidatorDTO));
+		assertNull(fingerprintValidator.validate("mosip","123"));
 	}
 }

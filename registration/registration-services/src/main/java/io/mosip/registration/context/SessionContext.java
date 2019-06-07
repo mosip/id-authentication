@@ -102,6 +102,9 @@ public class SessionContext {
 	 */
 	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
 		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Entering into creating Session Context");
+		
 		LoginService loginService = applicationContext.getBean(LoginService.class);
 		
 		Set<String> roleList = new LinkedHashSet<>();
@@ -282,6 +285,9 @@ public class SessionContext {
 				updateSessionContext(userDTO, roleList);
 				
 				getCenterMachineStatus(userDTO);
+				
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"Creating Session Context is completed");
 			} else {
 				securityContext = null;
 			}
@@ -295,9 +301,6 @@ public class SessionContext {
 	 * Login
 	 */
 	private static void updateSessionContext(UserDTO userDTO, List<String> roleList) {
-		
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Setting values for session context and user context");
 		
 		long refreshedLoginTime = Long
 				.parseLong(String.valueOf(io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
@@ -619,6 +622,9 @@ public class SessionContext {
 		sessionContext = null;
 		authModes.clear();
 		validAuthModes.clear();
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Leaving Session Context");
 	}
 
 	/**

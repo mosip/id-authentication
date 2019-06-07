@@ -141,6 +141,22 @@ female_gender_arabic_valid:
       - أنثى
 other_gender_arabic_valid:
       - الآخرين
+female_gender_eng_valid:
+      - Female
+other_gender_eng_valid:
+      - Others
+male_gender_primary_valid:
+      - Mâle
+female_gender_primary_valid:
+      - Femelle
+other_gender_primary_valid:
+      - Dautres
+male_gender_secondary_valid:
+      - الذكر
+female_gender_secondary_valid:
+      - أنثى
+other_gender_arabic_valid:
+      - الآخرين
 addressLine1_valid:
       - Dubai Main Road
       - Annai Theresa Street
@@ -274,6 +290,16 @@ bio_iris_left_subType:
 bio_iris_right_subType:
       - RIGHT
       - UNKNOWN
+bio_iris_rightOnly_subType:
+      - RIGHT
+bio_iris_leftOnly_subType:
+      - LEFT
+bio_iris_unknownOnly_subType:
+      - UNKNOWN
+bio_finger_LeftIndexOnly_subType:
+      - LEFT_INDEX
+bio_finger_RightLittleOnly_subType:
+      - RIGHT_LITTLE
 bio_finger_LeftIndex_subType:
       - LEFT_INDEX
       - UNKNOWN
@@ -329,7 +355,7 @@ invalid:
       - DFR
       - FTY
 primary_lang_code:
-      - eng
+      - fra
 secondary_lang_code:
       - ara
 #Auth_transaction
@@ -397,17 +423,17 @@ audit_log_demo_moduleName:
 audit_log_VID_refIdType:
       - VID
 #Demo-Name Normalisation
-name_tittle_UnMarriedfemale_primary_lang:
+name_tittle_UnMarriedfemale_eng_lang:
       - Miss.
-name_tittle_female_primary_lang:
+name_tittle_female_eng_lang:
       - Mrs.
-name_tittle_male_primary_lang:
+name_tittle_male_eng_lang:
       - Mr.
-name_tittle_UnMarriedfemale_fra_lang:
+name_tittle_UnMarriedfemale_primary_lang:
       - Mademoiselle.
-name_tittle_female_fra_lang:
+name_tittle_female_primary_lang:
       - Madame.
-name_tittle_male_fra_lang:
+name_tittle_male_primary_lang:
       - Monsieur.
 name_tittle_UnMarriedfemale_secondary_lang:
       - 'آنسة '

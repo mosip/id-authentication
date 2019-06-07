@@ -1,6 +1,9 @@
 package io.mosip.authentication.fw.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files; 
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -13,8 +16,14 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.testng.Reporter;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Verify;
 
 import io.mosip.authentication.fw.dto.OutputValidationDto;
@@ -64,9 +73,11 @@ public class OutputValidationUtil extends AuthTestsUtil{
 	 * @param exp
 	 * @param actVsExp
 	 * @return map
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
 	public static Map<String, List<OutputValidationDto>> compareActuExpValue(Map<String, String> actual,
-			Map<String, String> exp, String actVsExp) {
+			Map<String, String> exp, String actVsExp){
 		Map<String, List<OutputValidationDto>> objMap = new HashMap<String, List<OutputValidationDto>>();
 		List<OutputValidationDto> objList = new ArrayList<OutputValidationDto>();
 		for (Entry<String, String> actualEntry : actual.entrySet()) {
@@ -178,13 +189,32 @@ public class OutputValidationUtil extends AuthTestsUtil{
 					String keyword = expEntry.getValue().toString();
 					String content = actual.get(expEntry.getKey());
 					String expKeyword = keyword.substring(keyword.lastIndexOf("->") + 2, keyword.length());
-					String actKeyword = expKeyword.replace("expected", "actual");
-					FileUtil.createAndWriteFile(actKeyword, EncryptDecrptUtil.getDecyptFromStr(content));
-					Map<String, List<OutputValidationDto>> ouputValid = doOutputValidation(
-							FileUtil.getFilePath(getTestFolder(), actKeyword).toString(),
-							FileUtil.getFilePath(getTestFolder(), expKeyword).toString());
-					Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-					Verify.verify(publishOutputResult(ouputValid));
+
+					String actKeyword = expKeyword.replace("expected", "actual");	
+					Map<String,Object> actualMap=JsonPrecondtion.jsonToMap(new JSONObject(JsonPrecondtion.getJsonInOrder(EncryptDecrptUtil.getDecyptFromStr(content))));
+					Map<String,Object> expMap=null;
+					try {
+						expMap=JsonPrecondtion.jsonToMap(new JSONObject(getContentFromFile(FileUtil.getFilePath(getTestFolder(), expKeyword))));
+					} catch (JSONException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					FileUtil.createAndWriteFile(actKeyword,JsonPrecondtion.getJsonInOrder(EncryptDecrptUtil.getDecyptFromStr(content)));
+					if(compareTwoKycMap(expMap,actualMap))
+					{
+						Reporter.log("Kyc verification passed");
+						OUTPUTVALIDATION_LOGGER.info("Kyc Verification Passed");
+						OUTPUTVALIDATION_LOGGER.info("Expected Kyc: "+expMap);
+						OUTPUTVALIDATION_LOGGER.info("Actual Kyc: "+actualMap);
+					}
+					else
+					{
+						Reporter.log("Kyc verification failed");
+						OUTPUTVALIDATION_LOGGER.error("Kyc Verification failed");
+						OUTPUTVALIDATION_LOGGER.error("Expected Kyc: "+expMap);
+						OUTPUTVALIDATION_LOGGER.error("Actual Kyc: "+actualMap);
+					}
+					Verify.verify(compareTwoKycMap(expMap,actualMap));
 				}
 			} else if (!expEntry.getValue().equals("$IGNORE$")) {
 				objOpDto.setFieldName(expEntry.getKey());
@@ -366,5 +396,27 @@ public class OutputValidationUtil extends AuthTestsUtil{
 			map.put(uin + "." + tspId, tokenId);
 			generateMappingDic(file.getAbsolutePath(), map);
 		}
+	}
+	
+	private static boolean compareTwoKycMap(Map<String, Object> expMap, Map<String, Object> actualMap) {
+		for (Entry<String, Object> entry : expMap.entrySet()) {
+			if (actualMap.containsKey(entry.getKey())) {
+				if (actualMap.get(entry.getKey()).toString().contains(",")
+						&& entry.getValue().toString().contains(",")) {
+					String value[] = entry.getValue().toString().split(Pattern.quote("}, {"));
+					for (int i = 0; i < value.length; i++) {
+						String normalise = value[i].toString().replace("{", "").replace("[", "").replace("}", "")
+								.replace("]", "");
+						if (!actualMap.get(entry.getKey()).toString().contains(normalise)) {
+							return false;
+						}
+					}
+				}
+				else if (!actualMap.get(entry.getKey()).equals(entry.getValue())) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

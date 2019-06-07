@@ -228,12 +228,13 @@ public class SendNotificationController extends BaseController implements Initia
 					contentsList.add(content);
 				}
 			}
-			if (contentsList.isEmpty()) {
+			if(contents.size() != contentsList.size()) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_EMAIL);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INVALID_EMAIL);
 				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_VALID_MOBILE);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INVALID_MOBILE);
 				}
+				contentsList = new LinkedList<>();
 			}
 		}
 

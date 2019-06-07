@@ -53,7 +53,7 @@ public class FetchDocumentTypes extends BaseTestCase implements ITest {
 	private final String apiName = "fetchDocumentTypes";
 	private final String requestJsonName = "fetchDocumentTypesRequest";
 	private final String outputJsonName = "fetchDocumentTypesOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDocumentTypes_URI = props.get("FetchDocumentTypes_URI").toString();
 
 	protected String testCaseName = "";
@@ -113,7 +113,7 @@ public class FetchDocumentTypes extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchDocumentTypes_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchDocumentTypes_URI,objectData,cookie);
 		
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
