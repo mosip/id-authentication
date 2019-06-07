@@ -16,14 +16,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.jcraft.jsch.Channel;
@@ -46,41 +44,31 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
  *
  * @author M1022006
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
 @RefreshScope
+@RunWith(PowerMockRunner.class)
+@SpringBootTest
 @ContextConfiguration(classes = PacketManagerConfigTest.class)
 public class FileManagerTest {
-
-	/** The file manager. */
-	@Autowired
-	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	/** The file. */
 	private File file;
 
 	/** The env. */
-	@MockBean
+	@Mock
 	private Environment env;
 
 	@Mock
-	private Environment env1;
-
 	private SftpJschConnectionDto sftpDto = new SftpJschConnectionDto();
 
-	/** The virus scan enc. */
-	@Value("${VIRUS_SCAN_ENC}")
-	private String virusScanEnc;
+	private String virusScanEnc = "src/test/resources/decrypted";
 
-	/** The virus scan dec. */
-	@Value("${VIRUS_SCAN_DEC}")
-	private String virusScanDec;
+	private String virusScanDec = "src/test/resources/encrypted";
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
 	@Mock
-	private ChannelSftp sftp = new ChannelSftp();
+	private ChannelSftp sftp; // = new ChannelSftp();
 
 	@Mock
 	private Session session;
@@ -90,7 +78,7 @@ public class FileManagerTest {
 	JSch jSch = new JSch();
 
 	@InjectMocks
-	private FileManagerImpl impl = new FileManagerImpl() {
+	private FileManager<DirectoryPathDto, InputStream> impl = new FileManagerImpl() {
 		@Override
 		public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
 			return sftp;
@@ -115,8 +103,6 @@ public class FileManagerTest {
 		is = new FileInputStream(file);
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
-		when(env1.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
-		when(env1.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
 		sftpDto.setHost("localhost");
 		sftpDto.setPort(8080);
 		sftpDto.setProtocal("http");
@@ -134,11 +120,11 @@ public class FileManagerTest {
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		impl.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
+		boolean exists = impl.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
 		assertTrue(exists);
-		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC);
-		boolean fileExists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
+		impl.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC);
+		boolean fileExists = impl.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
 		assertTrue(fileExists);
 	}
 
@@ -147,8 +133,8 @@ public class FileManagerTest {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		File f = fileManager.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		impl.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
+		File f = impl.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
 		assertEquals(f.getName(), newFile.getName());
 
 	}

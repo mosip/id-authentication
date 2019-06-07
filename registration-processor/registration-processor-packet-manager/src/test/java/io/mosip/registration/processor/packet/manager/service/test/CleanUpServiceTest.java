@@ -17,12 +17,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.packet.manager.config.PacketManagerConfigTest;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -34,7 +35,8 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
  * @author M1022006
  *
  */
-@RunWith(SpringRunner.class)
+@RefreshScope
+@RunWith(PowerMockRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = PacketManagerConfigTest.class)
 @TestPropertySource(locations = "classpath:application.properties")
@@ -50,17 +52,13 @@ public class CleanUpServiceTest {
 
 	private File file;
 
-	/** The virus scan enc. */
-	@Value("${VIRUS_SCAN_ENC}")
-	private String virusScanEnc;
+	private String virusScanEnc = "src/test/resources/encrypted";
 
-	/** The virus scan dec. */
-	@Value("${VIRUS_SCAN_DEC}")
-	private String virusScanDec;
+	private String virusScanDec = "src/test/resources/decrypted";
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
-	
+
 	@Mock
 	private Environment env;
 
@@ -209,7 +207,7 @@ public class CleanUpServiceTest {
 	public void getFileTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		File file = FileUtils.getFile(DirectoryPathDto.VIRUS_SCAN_ENC.toString(), fileName );
+		File file = FileUtils.getFile(DirectoryPathDto.VIRUS_SCAN_ENC.toString(), fileName);
 		File getFile = fileManager.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
 		assertEquals(file.getName().trim(), getFile.getName().trim());
 	}
