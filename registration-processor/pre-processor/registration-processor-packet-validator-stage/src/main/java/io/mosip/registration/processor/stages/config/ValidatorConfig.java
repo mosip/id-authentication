@@ -3,13 +3,13 @@ package io.mosip.registration.processor.stages.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
-import io.mosip.kernel.jsonvalidator.impl.JsonSchemaLoader;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidateProcessor;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
+import io.mosip.registration.processor.stages.utils.IdObjectsSchemaValidationOperationMapper;
 
 @Configuration
 public class ValidatorConfig {
@@ -30,13 +30,13 @@ public class ValidatorConfig {
 	}
 
 	@Bean
-	public JsonValidator getJsonValidator() {
-		return new JsonValidatorImpl();
+	public IdObjectsSchemaValidationOperationMapper getIdObjectsSchemaValidationOperationMapper() {
+		return new IdObjectsSchemaValidationOperationMapper();
 	}
 
 	@Bean
-	public JsonSchemaLoader getJsonSchemaLoader() {
-		return new JsonSchemaLoader();
+	public IdObjectValidator getIdObjectValidator() {
+		return new IdObjectSchemaValidator();
 	}
 
 	@Bean

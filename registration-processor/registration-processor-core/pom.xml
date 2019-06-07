@@ -132,6 +132,11 @@
 			<artifactId>kernel-cbeffutil-api</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-bioapi-provider</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

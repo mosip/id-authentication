@@ -24,13 +24,8 @@ import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
-import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
-import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -95,7 +90,7 @@ public class AuthUtil {
 
 	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
 
-	IBioApi bioAPi =  new BioApiImpl ();
+	
 
 	
 	
@@ -215,17 +210,16 @@ public class AuthUtil {
 	private List<BioInfo> getBioValue(byte[] cbefByteFile)
 			throws BiometricException, BioTypeException {
 		List<BIR> list;
-		CbeffUtil cbeffUtil = new CbeffImpl();
-		CbeffToBiometricUtil CbeffToBiometricUtil=new CbeffToBiometricUtil(cbeffUtil);
+		CbeffToBiometricUtil CbeffToBiometricUtil=new CbeffToBiometricUtil();
 
 		List<BioInfo> biometrics = new ArrayList<>();
 		try {
-			list = CbeffToBiometricUtil.convertBIRTYPEtoBIR(cbeffUtil.getBIRDataFromXML(cbefByteFile));
+			list = CbeffToBiometricUtil.convertBIRTYPEtoBIR(CbeffToBiometricUtil.getBIRDataFromXML(cbefByteFile));
 
 			for (BIR bir : list) {
 				BioInfo bioInfo = new BioInfo();
 				DataInfoDTO dataInfoDTO = new DataInfoDTO();
-				BIR birApiResponse = bioAPi.extractTemplate(bir, null);
+				BIR birApiResponse = CbeffToBiometricUtil.extractTemplate(bir, null);
 				
 				getBioType(dataInfoDTO, birApiResponse.getBdbInfo().getType().get(0).toString());
 
