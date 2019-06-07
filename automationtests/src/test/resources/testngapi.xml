@@ -83,7 +83,7 @@
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
 			<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
 			<class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
-		<!--	<class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
+			<class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
 			<class name="io.mosip.preregistration.tests.DiscardIndividual" />
 			<class name="io.mosip.preregistration.tests.DocumentUpload" />
 			<class
@@ -109,7 +109,7 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
 
-			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />   -->
+			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />   
 
 		</classes>
 	</test> 
