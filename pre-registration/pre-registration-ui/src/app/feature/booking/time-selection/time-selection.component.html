@@ -70,7 +70,7 @@
       <div *ngIf="availabilityData[selectedTile] !== undefined">
         <table class="time-selection__name-list">
           <tr class="time-selection__name-list-item" *ngFor="let item of availabilityData[selectedTile].timeSlots[selectedCard].names; let j = index;">
-            <td>{{item.fullName}}</td><td><mat-icon (click)="itemDelete(j)" class="name-delete-button">close</mat-icon></td>
+            <td>{{item.fullName}}</td><td><mat-icon (click)="itemDelete(j)" [ngClass]="disableAddButton ? 'name-delete-button disable_add' : 'name-delete-button'">close</mat-icon></td>
           </tr>
         </table>
       </div>

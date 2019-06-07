@@ -10,6 +10,11 @@
     margin: -15px 0 0 -25px;
 }
 
+.disable_add {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
 .time-selection__arrow-text {
     margin: 20px 10px 0 10px;
     color: #ccc;
