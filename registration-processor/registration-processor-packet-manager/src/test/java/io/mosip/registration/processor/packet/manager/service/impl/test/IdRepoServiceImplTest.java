@@ -26,16 +26,27 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.impl.IdRepoServiceImpl;
 
+/**
+ * The Class IdRepoServiceImplTest.
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Utilities.class, IOUtils.class, JsonUtil.class })
 public class IdRepoServiceImplTest {
 
+	/** The rest client service. */
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The id repo service. */
 	@InjectMocks
 	private IdRepoServiceImpl idRepoService;
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -59,6 +70,12 @@ public class IdRepoServiceImplTest {
 
 	}
 
+	/**
+	 * Testget id json from ID repo.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testgetIdJsonFromIDRepo() throws Exception {
 		JSONObject matchedDemographicIdentity = idRepoService.getIdJsonFromIDRepo("", "Identity");
@@ -66,6 +83,12 @@ public class IdRepoServiceImplTest {
 
 	}
 
+	/**
+	 * Testget UIN by RID.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testgetUINByRID() throws Exception {
 		JSONObject demoJson = new JSONObject();
@@ -78,6 +101,12 @@ public class IdRepoServiceImplTest {
 
 	}
 
+	/**
+	 * Testfind uin from idrepo.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testfindUinFromIdrepo() throws Exception {
 
