@@ -112,7 +112,7 @@
 			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />   
 
 		</classes>
-	</test> 
+	</test>  -->
 
 	
 
@@ -134,10 +134,10 @@
                     <class name="io.mosip.registrationProcessor.tests.PacketInfo" /> 
 
 		</classes>
-	</test>     -->
+	</test>     
 
 
-	<test name="AuthenticationTest">
+<!--	<test name="AuthenticationTest">
 		<classes>
 
 			<class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
@@ -165,7 +165,7 @@
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> -->
 		</classes>
-	</test>
+	</test> -->
 </suite>
 		
 	
