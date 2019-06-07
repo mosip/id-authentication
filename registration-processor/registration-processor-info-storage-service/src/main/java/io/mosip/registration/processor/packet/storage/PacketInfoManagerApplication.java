@@ -16,10 +16,10 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = { "io.mosip.registration.processor.packet.storage",
-		"io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.core",
+		"io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.core.config",
 		"io.mosip.registration.processor.auditmanager",
-		"io.mosip.registration.processor.rest.client" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				PacketStorageBeanConfig.class, RestConfigBean.class, CoreConfigBean.class, KernelConfig.class }))
+		"io.mosip.registration.processor.rest.client","io.mosip.registration.processor.status.config" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+				PacketStorageBeanConfig.class, RestConfigBean.class, KernelConfig.class }))
 
 public class PacketInfoManagerApplication {
 

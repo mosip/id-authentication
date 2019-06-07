@@ -23,6 +23,7 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileSystemMan
 public class PacketManagerConfig {
 	
 	@Bean
+	@Primary
 	public FileManager<DirectoryPathDto, InputStream> filemanager() {
 		return new FileManagerImpl();
 	}
@@ -33,11 +34,13 @@ public class PacketManagerConfig {
 		return new IdRepoServiceImpl();
 	}
     @Bean
+    @Primary
     public FileSystemManager getFileSystemManager() {
         return new FileSystemManagerImpl();
 
     }
     @Bean
+    @Primary
     public Decryptor getDecryptor() {
         return new DecryptorImpl();
     }

@@ -8,6 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
@@ -50,6 +51,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
 public class RegistrationStatusBeanConfig {
 
 	@Bean
+	@Primary
 	public RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> getRegistrationStatusService() {
 		return new RegistrationStatusServiceImpl();
 	}
@@ -59,10 +61,10 @@ public class RegistrationStatusBeanConfig {
 		return new AuditLogRequestBuilder();
 	}
 
-	@Bean
-	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
-		return new RegistrationProcessorRestClientServiceImpl();
-	}
+//	@Bean
+//	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
+//		return new RegistrationProcessorRestClientServiceImpl();
+//	}
 
 	@Bean
 	public SyncRegistrationDao getSyncRegistrationDao() {
@@ -80,6 +82,7 @@ public class RegistrationStatusBeanConfig {
 	}
 
 	@Bean
+	@Primary
 	public TransactionService<TransactionDto> getTransactionService() {
 		return new TransactionServiceImpl();
 	}
@@ -115,6 +118,7 @@ public class RegistrationStatusBeanConfig {
 	}
 
 	@Bean
+	@Primary
 	public RegistrationExternalStatusUtility getRegistrationExternalStatusUtility() {
 		return new RegistrationExternalStatusUtility();
 	}
