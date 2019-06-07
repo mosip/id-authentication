@@ -68,7 +68,7 @@ public class RegistrationAppHealthCheckUtil {
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Network Checker had been called.");
-		return checkServiceAvailability("https://www.mosip.io/");
+		return checkServiceAvailability("https://qa.mosip.io/v1/authmanager/actuator/health");
 	}
 
 	public static boolean checkServiceAvailability(String serviceUrl) {

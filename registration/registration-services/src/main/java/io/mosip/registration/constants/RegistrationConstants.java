@@ -1265,6 +1265,7 @@ public class RegistrationConstants {
 			.concat("addressLine2.[*].value");
 	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
 			.concat("addressLine3.[*].value");
+	public static final String AGE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("age");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static String CNI_MANDATORY = String.valueOf(false);
@@ -1443,5 +1444,7 @@ public class RegistrationConstants {
 	
 	public static final String RESPONSE_SIGNATURE="response-signature";
 	public static final String ON_BOARD_FACE="FACE";
+	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
+	
 
 }
