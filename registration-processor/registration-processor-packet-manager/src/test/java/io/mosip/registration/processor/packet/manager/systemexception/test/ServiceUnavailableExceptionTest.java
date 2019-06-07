@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,10 +36,10 @@ public class ServiceUnavailableExceptionTest {
 		String fileName = "sample";
 		ServiceUnavailableException ex = new ServiceUnavailableException(
 				PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+		doThrow(ex).when(fileManager).put(Mockito.any(), Mockito.any(), Mockito.any());
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 
 		} catch (ServiceUnavailableException e) {

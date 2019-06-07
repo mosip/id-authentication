@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,10 +32,10 @@ public class FileNotFoundInDestinationExceptionTest {
 
 		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(
 				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
-		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC,
-				fileName);
+		doThrow(ex).when(fileManager).cleanUpFile(Mockito.any(), Mockito.any(),
+				Mockito.any());
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileName);
 			fail();
 		} catch (FileNotFoundInDestinationException e) {
 			assertThat("Should throw File Not Found In Destination Exception with correct error codes", e.getErrorCode()
