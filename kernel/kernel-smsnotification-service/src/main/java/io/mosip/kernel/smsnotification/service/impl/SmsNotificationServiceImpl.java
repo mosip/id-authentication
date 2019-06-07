@@ -90,10 +90,11 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 		try {
 			responseEnt = restTemplate.getForEntity(sms.toUriString(), String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			System.out.println("HttpErrorException: " + e.getMessage());
 			System.out.println(e.getResponseBodyAsString());
 			// throw new RuntimeException(e.getResponseBodyAsString());
 		}
-		if (responseEnt == null || responseEnt.getStatusCode() != HttpStatus.OK) {
+		if (responseEnt != null && responseEnt.getStatusCode() != HttpStatus.OK) {
 			// throw new RuntimeException(responseEnt.getBody());
 			System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
 			System.out.println(responseEnt.getBody());
@@ -102,7 +103,11 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 		ObjectMapper mapper = new ObjectMapper();
 		SmsServerResponseDto response = null;
 		try {
-			response = mapper.readValue(responseEnt.getBody(), SmsServerResponseDto.class);
+			if (responseEnt != null) {
+				System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+				System.out.println(responseEnt.getBody());
+				response = mapper.readValue(responseEnt.getBody(), SmsServerResponseDto.class);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -110,7 +115,7 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 		if (response != null && response.getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty())) {
 			result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
 			result.setStatus(response.getType());
-		}else {
+		} else {
 			result.setMessage("SMS Request Failed");
 			result.setStatus("Failed");
 		}
