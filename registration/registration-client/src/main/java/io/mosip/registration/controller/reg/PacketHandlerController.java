@@ -71,6 +71,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -114,6 +115,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	public GridPane uinUpdateGridPane;
+	
+	@FXML
+	public HBox userOnboardMessage;
 
 	@Autowired
 	private AckReceiptController ackReceiptController;
@@ -177,6 +181,13 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	HeaderController headerController;
 
+	/**
+	 * @return the userOnboardMsg
+	 */
+	public HBox getUserOnboardMessage() {
+		return userOnboardMessage;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -218,9 +229,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
-			// vHolder.setManaged(false);
-		}
-
+			}
 	}
 
 	/**
