@@ -886,7 +886,7 @@ public class BaseController {
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Returning the corresponding next page based on given action");
+				"Returning the corresponding next page based on given action" + returnPage);
 
 		pageDetails.clear();
 		return returnPage;
