@@ -1272,7 +1272,7 @@ public class BaseController {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
 		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
-				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) !=null && (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 		} else {

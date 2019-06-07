@@ -1625,6 +1625,10 @@ public class DemographicDetailController extends BaseController {
 	public void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
+			clearAllValues();
+			documentScanController.getBioExceptionToggleLabel1().setLayoutX(0);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,false);
+			
 			keyboardNode.setDisable(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
