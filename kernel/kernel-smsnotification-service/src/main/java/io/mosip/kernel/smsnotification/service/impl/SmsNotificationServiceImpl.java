@@ -90,10 +90,13 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 		try {
 			responseEnt = restTemplate.getForEntity(sms.toUriString(), String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw new RuntimeException(e.getResponseBodyAsString());
+			System.out.println(e.getResponseBodyAsString());
+			// throw new RuntimeException(e.getResponseBodyAsString());
 		}
 		if (responseEnt == null || responseEnt.getStatusCode() != HttpStatus.OK) {
-			throw new RuntimeException(responseEnt.getBody());
+			// throw new RuntimeException(responseEnt.getBody());
+			System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+			System.out.println(responseEnt.getBody());
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
