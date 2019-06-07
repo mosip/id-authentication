@@ -2,10 +2,10 @@ package io.mosip.admin.configvalidator.constant;
 
 public enum ConfigValidatorErrorCode {
 
-	CONFIG_FILE_NOT_FOUND("ADM-xxx-002", "Process Flow Configuration not found"), CONFIG_NOT_SUCCESSFULLY_VALIDATED(
-			"ADM-xxx-004",
-			"Unable to validate Process Flow Configurations as they do not match"), REG_CLIENT_PROPERTY_NOT_FOUND("ADM-xxx-xxx",
-					"Reg client property not found"), REG_PROC_PROPERTY_NOT_FOUND("ADM-xxx-xxx", "Reg proc property not found");
+	CONFIG_FILE_NOT_FOUND("ADM-PFG-002", "Process Flow Configuration not found"), CONFIG_NOT_SUCCESSFULLY_VALIDATED(
+			"ADM-PKT-001", "Validation Failed"), REG_CLIENT_PROPERTY_NOT_FOUND("ADM-PEG-004",
+					"Document Upload property not found"), REG_PROC_PROPERTY_NOT_FOUND("ADM-PEG-003",
+							"Document Validation property not found");
 
 	private final String errorCode;
 	private final String errorMessage;

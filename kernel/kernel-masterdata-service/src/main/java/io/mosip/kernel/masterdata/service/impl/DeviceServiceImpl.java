@@ -140,6 +140,7 @@ public class DeviceServiceImpl implements DeviceService {
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 
 		try {
+			//device.setIsActive(false);
 
 			device = deviceRepository.create(entity);
 			deviceHistoryService.createDeviceHistory(entityHistory);

@@ -127,7 +127,7 @@ public class DeviceController {
 		return responseWrapper;
 		
 	}
-
+	
 	/**
 	 * API to update an existing row of Device data
 	 * 
