@@ -690,7 +690,7 @@
 											<children>
 												<GridPane fx:id="irisUserIdPane" GridPane.columnIndex="2">
 													<children>
-														<TextField fx:id="fpUserId" prefHeight="${irisUserIdPane.height}" prefWidth="${irisUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+														<TextField fx:id="irisUserId" prefHeight="${irisUserIdPane.height}" prefWidth="${irisUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
 													</children>
 													<columnConstraints>
 														<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -925,7 +925,7 @@
 											<children>
 												<GridPane fx:id="faceUserIdPane" GridPane.columnIndex="2">
 													<children>
-														<TextField fx:id="fpUserId" prefHeight="${faceUserIdPane.height}" prefWidth="${faceUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+														<TextField fx:id="faceUserId" prefHeight="${faceUserIdPane.height}" prefWidth="${faceUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
 													</children>
 													<columnConstraints>
 														<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
