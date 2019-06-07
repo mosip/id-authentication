@@ -206,7 +206,6 @@ public class ClientJarDecryption extends Application {
 					if (task.getValue()) {
 						System.out.println("  Inside Task thread--->>>>");
 						primaryStage.close();
-						System.out.println("Inside try statement1");
 
 						File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
 
