@@ -15,25 +15,41 @@ import org.springframework.context.annotation.DependsOn;
 
 import io.mosip.idrepository.saltgenerator.entity.SaltEntity;
 
+/**
+ * The Class IdRepoJobConfig - provides configuration for Salt generator Job.
+ *
+ * @author Manoj SP
+ */
 @Configuration
 @DependsOn("idRepoSaltGeneratorConfig")
 public class IdRepoJobConfig {
 
+	/** The job builder factory. */
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
 
+	/** The step builder factory. */
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 	
+	/** The listener. */
 	@Autowired
 	private JobExecutionListener listener;
 	
+	/** The reader. */
 	@Autowired
 	private ItemReader<SaltEntity> reader;
 	
+	/** The writer. */
 	@Autowired
 	private ItemWriter<SaltEntity> writer;
 	
+	/**
+	 * Job.
+	 *
+	 * @param step the step
+	 * @return the job
+	 */
 	@Bean
 	public Job job(Step step) {
 		return jobBuilderFactory
@@ -46,6 +62,11 @@ public class IdRepoJobConfig {
 	}
 	
 	
+	/**
+	 * Step.
+	 *
+	 * @return the step
+	 */
 	@Bean
 	public Step step() {
 		return stepBuilderFactory

@@ -1,4 +1,4 @@
-package io.mosip.idrepository.core.filter;
+package io.mosip.idrepository.core.httpfilter;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -20,7 +20,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 /**
- * 
+ *
+ * @author Manoj SP
  * @author Prem Kumar
  *
  */

@@ -6,13 +6,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @author Manoj SP
+ * The Class IdRepoSaltGeneratorBootApplication.
  *
+ * @author Manoj SP
  */
 @SpringBootApplication
 @EnableBatchProcessing
 public class IdRepoSaltGeneratorBootApplication {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		ApplicationContext applicationContext = SpringApplication.run(IdRepoSaltGeneratorBootApplication.class,
 				args);
