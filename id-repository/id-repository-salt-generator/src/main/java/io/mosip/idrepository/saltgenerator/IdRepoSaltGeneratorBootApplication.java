@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 /**
- * The Class IdRepoSaltGeneratorBootApplication.
+ * The Class IdRepoSaltGeneratorBootApplication - Salt generator Job is a
+ * one-time job which populates salts for hashing and encrypting UIN.
  *
  * @author Manoj SP
  */
