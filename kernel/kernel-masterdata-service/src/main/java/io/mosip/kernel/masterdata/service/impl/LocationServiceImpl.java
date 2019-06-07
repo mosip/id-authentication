@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +23,9 @@ import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
@@ -94,8 +100,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method will fetch location hierarchy based on location code and language
 	 * code Refers to {@link LocationRepository} for fetching location hierarchy
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return LocationHierarchyResponseDto-
 	 */
 	/*
@@ -310,8 +318,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on location code and
 	 * language code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
@@ -323,8 +333,10 @@ public class LocationServiceImpl implements LocationService {
 	 * fetches location hierarchy details from database based on parent location
 	 * code and language code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
@@ -337,8 +349,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches child hierarchy details of the location based on location
 	 * code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<Location>
 	 */
 	private List<Location> getChildList(String locCode, String langCode) {
@@ -357,8 +371,10 @@ public class LocationServiceImpl implements LocationService {
 	 * This method fetches parent hierarchy details of the location based on parent
 	 * Location code
 	 * 
-	 * @param locCode  - location code
-	 * @param langCode - language code
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
 	 * @return List<LocationHierarcy>
 	 */
 	private List<Location> getParentList(String locCode, String langCode) {
@@ -419,6 +435,34 @@ public class LocationServiceImpl implements LocationService {
 			statusResponseDto.setStatus(MasterDataConstant.VALID);
 		}
 		return statusResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.LocationService#getLocations(int,
+	 * int, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PageDto<LocationExtnDto> getLocations(int pageNumber, int pageSize, String sortBy, String orderBy) {
+		List<LocationExtnDto> locations = null;
+		PageDto<LocationExtnDto> pageDto = null;
+		try {
+			Page<Location> pageData = locationRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				locations = MapperUtils.mapAll(pageData.getContent(), LocationExtnDto.class);
+				pageDto = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
+						locations);
+			} else {
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return pageDto;
 	}
 
 }

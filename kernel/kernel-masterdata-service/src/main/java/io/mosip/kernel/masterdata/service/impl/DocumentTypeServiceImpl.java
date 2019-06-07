@@ -8,12 +8,18 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.DocumentTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -174,6 +180,37 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(code);
 		return responseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DocumentTypeService#getAllDocumentTypes(
+	 * int, int, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PageDto<DocumentTypeExtnDto> getAllDocumentTypes(int pageNumber, int pageSize, String sortBy,
+			String orderBy) {
+		List<DocumentTypeExtnDto> documentTypes = null;
+		PageDto<DocumentTypeExtnDto> pageDto = null;
+		try {
+			Page<DocumentType> pageData = documentTypeRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				documentTypes = MapperUtils.mapAll(pageData.getContent(), DocumentTypeExtnDto.class);
+				pageDto = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
+						documentTypes);
+			} else {
+				throw new DataNotFoundException(DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						DocumentTypeErrorCode.DOCUMENT_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
+					DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		return pageDto;
 	}
 
 }

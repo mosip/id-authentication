@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -61,7 +62,6 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import org.springframework.data.domain.Sort.Direction;
 
 /**
  * This service class contains methods that provides registration centers
@@ -359,7 +359,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(latLongParseException));
 		}
 		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto, registrationCenterEntity.getClass());
+		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+				registrationCenterEntity.getClass());
 		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
 				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
 		registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
@@ -661,7 +662,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return locationNames;
 	}
-	
+
 	@Override
 	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
 			String sortBy, String orderBy) {
@@ -672,8 +673,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(),0,null,pageData.getTotalPages(),
-						(int) pageData.getTotalElements(), registrationCenters);
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
