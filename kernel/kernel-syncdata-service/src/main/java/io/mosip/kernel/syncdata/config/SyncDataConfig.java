@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -15,12 +16,26 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 @Configuration
 @EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.repository", entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
 public class SyncDataConfig {
 
 	@Autowired
 	private Environment env;
+	
+	@Value("${hikari.maximumPoolSize:100}")
+	private int maximumPoolSize;
+	@Value("${hikari.validationTimeout:3000}")
+	private int validationTimeout;
+	@Value("${hikari.connectionTimeout:60000}")
+	private int connectionTimeout;
+	@Value("${hikari.idleTimeout:200000}")
+	private int idleTimeout;
+	@Value("${hikari.minimumIdle:0}")
+	private int minimumIdle;
 
 	@Bean
 	public LocalContainerEntityManagerFactoryBean syncDataEntityManager() {
@@ -37,12 +52,18 @@ public class SyncDataConfig {
 	}
 
 	@Bean
-	public DataSource syncDataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
-		dataSource.setUrl(env.getProperty("spring.master-datasource.jdbcUrl"));
-		dataSource.setUsername(env.getProperty("spring.master-datasource.username"));
-		dataSource.setPassword(env.getProperty("spring.master-datasource.password"));
+	public DataSource syncDataSource() {		
+		HikariConfig hikariConfig = new HikariConfig();
+		hikariConfig.setDriverClassName(env.getProperty("spring.datasource.driverClassName"));
+		hikariConfig.setJdbcUrl(env.getProperty("spring.master-datasource.jdbcUrl"));
+		hikariConfig.setUsername(env.getProperty("spring.master-datasource.username"));
+		hikariConfig.setPassword(env.getProperty("spring.master-datasource.password"));
+		hikariConfig.setMaximumPoolSize(maximumPoolSize);
+		hikariConfig.setValidationTimeout(validationTimeout);
+		hikariConfig.setConnectionTimeout(connectionTimeout);
+		hikariConfig.setIdleTimeout(idleTimeout);
+		hikariConfig.setMinimumIdle(minimumIdle);
+		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 		return dataSource;
 	}
 

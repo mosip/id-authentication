@@ -60,7 +60,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	private final String apiName = "FetchMachineHistory";
 	private final String requestJsonName = "FetchMachineHistoryRequest";
 	private final String outputJsonName = "FetchMachineHistoryOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchMachineHistory_URI = props.get("FetchMachineHistory_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -118,15 +118,19 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-		// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
-		Calendar calender = Calendar.getInstance();
-		calender.setTime(new Date());
-		String time = sdf.format(calender.getTime());
-		time = time.replace(' ', 'T')+"Z";
-		objectData.put("effdatetimes", time);
-				response = applicationLibrary.getRequestPathPara(FetchMachineHistory_URI, objectData,cookie);
-
+		
+		if(testcaseName.contains("smoke") | testcaseName.contains("invalid_id_unexisting") |testcaseName.contains("invalid_langcode_unexisting in DB")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			objectData.put("effdatetimes", time);
+		}
+		
+				response = applicationLibrary.getWithPathParam(FetchMachineHistory_URI, objectData,cookie);
+				logger.info("----"+response.asString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
@@ -146,10 +150,10 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
 
 			// validating number of objects obtained form db and from get request
-			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+			if (responseArrayFromGet.size() <= obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("id");
 				attributesToValidateExistance.add("name");
 				attributesToValidateExistance.add("macAddress");
@@ -160,7 +164,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 
 				// key value of the attributes passed to fetch the data, should be same in all
 				// obtained objects
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
 						passedAttributesToFetch.put("id", objectData.get("id").toString());
 						passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());

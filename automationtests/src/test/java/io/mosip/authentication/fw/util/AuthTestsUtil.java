@@ -960,7 +960,9 @@ public class AuthTestsUtil extends BaseTestCase {
 						+ '"' + demoAppJarPath.toString() + '"';
 			} else if (getOSType().toString().equals("OTHERS")) {
 				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey()));
+
 			    String mavenPath = System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey());
+
 				String settingXmlPath = "/usr/local/maven" + "/conf/settings.xml";
 				String repoPath = XmlPrecondtion.getValueFromXmlFile(settingXmlPath, "//localRepository");
 				demoAppJarPath = new File(repoPath + "/io/mosip/authentication/authentication-partnerdemo-service/"

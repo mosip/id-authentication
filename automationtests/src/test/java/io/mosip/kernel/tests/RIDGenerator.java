@@ -53,7 +53,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	private final String apiName = "RIDGenerator";
 	private final String requestJsonName = "RIDGeneratorRequest";
 	private final String outputJsonName = "RIDGeneratorOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String RIDGenerator_URI = props.get("RIDGenerator_URI").toString();
 	private final int ridGenerationCount = 5;
 
@@ -116,7 +116,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 
 			JSONObject objectData = objectDataArray[0];
 			responseObject = objectDataArray[1];
-					response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData,cookie);
+					response = applicationLibrary.getWithPathParam(RIDGenerator_URI, objectData,cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
@@ -136,7 +136,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 			for(int i =0; i<ridGenerationCount; i++)
 			{
 
-				response = applicationLibrary.getRequestPathPara(RIDGenerator_URI, objectData,cookie);
+				response = applicationLibrary.getWithPathParam(RIDGenerator_URI, objectData,cookie);
 
 				int intRidPost = Integer.parseInt(((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString().substring(10, 15));
 				if(intRidPost-intRidPre!=1)

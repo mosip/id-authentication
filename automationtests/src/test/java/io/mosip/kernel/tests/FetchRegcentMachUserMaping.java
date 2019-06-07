@@ -61,7 +61,7 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegcentMachUserMaping";
 	private final String requestJsonName = "FetchRegcentMachUserMapingRequest";
 	private final String outputJsonName = "FetchRegcentMachUserMapingOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegcentMachUserMaping_URI = props.get("FetchRegcentMachUserMaping_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -119,15 +119,17 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-		// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
-		Calendar calender = Calendar.getInstance();
-		calender.setTime(new Date());
-		String time = sdf.format(calender.getTime());
-		time = time.replace(' ', 'T')+"Z";
-		objectData.put("effdtimes", time);
-				response = applicationLibrary.getRequestPathPara(FetchRegcentMachUserMaping_URI, objectData,cookie);
-
+		if(testcaseName.contains("smoke")|testcaseName.contains("unexisting")|testcaseName.contains("userid_existing")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			objectData.put("effdtimes", time);
+		}
+		
+				response = applicationLibrary.getWithPathParam(FetchRegcentMachUserMaping_URI, objectData,cookie);
 		// DB Validation
 
 		//This method is for checking the authentication is pass or fail in rest services
@@ -152,7 +154,7 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
 
 			// validating number of objects obtained form db and from get request
-			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+			if (responseArrayFromGet.size() <= obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
 				List<String> attributesToValidateExistance = new ArrayList<String>();

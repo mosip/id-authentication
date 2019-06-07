@@ -143,7 +143,6 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, OtpGeneration.testCaseName);
-			test=extent.createTest(OtpGeneration.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

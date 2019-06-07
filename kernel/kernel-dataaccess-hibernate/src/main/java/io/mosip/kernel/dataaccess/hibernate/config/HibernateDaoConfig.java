@@ -25,9 +25,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-//import com.zaxxer.hikari.HikariConfig;
-//import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
@@ -78,23 +77,23 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
-		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
-		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+//		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+//		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+//		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 
-//		HikariConfig hikariConfig = new HikariConfig();
-//		hikariConfig.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-//		hikariConfig.setJdbcUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
-//		hikariConfig.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
-//		hikariConfig.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
-//		hikariConfig.setMaximumPoolSize(maximumPoolSize);
-//		hikariConfig.setValidationTimeout(validationTimeout);
-//		hikariConfig.setConnectionTimeout(connectionTimeout);
-//		hikariConfig.setIdleTimeout(idleTimeout);
-//		hikariConfig.setMinimumIdle(minimumIdle);
-//		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+		HikariConfig hikariConfig = new HikariConfig();
+		hikariConfig.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+		hikariConfig.setJdbcUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		hikariConfig.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+		hikariConfig.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+		hikariConfig.setMaximumPoolSize(maximumPoolSize);
+		hikariConfig.setValidationTimeout(validationTimeout);
+		hikariConfig.setConnectionTimeout(connectionTimeout);
+		hikariConfig.setIdleTimeout(idleTimeout);
+		hikariConfig.setMinimumIdle(minimumIdle);
+		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
 		return dataSource;
 	}

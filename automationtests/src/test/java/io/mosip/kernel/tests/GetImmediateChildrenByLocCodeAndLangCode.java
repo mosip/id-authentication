@@ -54,7 +54,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchImmediateChildLocation = props.get("fetchImmediateChildLocation");
 	private String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
 	private String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
@@ -94,7 +94,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchImmediateChildLocation, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchImmediateChildLocation, actualRequest,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
