@@ -112,13 +112,16 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 			e.printStackTrace();
 		}
 
-		if (response != null && response.getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty())) {
-			result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
-			result.setStatus(response.getType());
-		} else {
-			result.setMessage("SMS Request Failed");
-			result.setStatus("Failed");
-		}
+		// if (response != null &&
+		// response.getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty()))
+		// {
+		result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
+		// result.setStatus(response.getType());
+		result.setStatus("success");
+		// } else {
+		// result.setMessage("SMS Request Failed");
+		// result.setStatus("Failed");
+		// }
 		return result;
 
 	}
