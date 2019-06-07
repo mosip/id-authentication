@@ -1,17 +1,15 @@
-## id-repository-vid-service
+## id-repository-salt-generator
 
 
-[Background & Design](../../docs/design/idrepository/vid-service.md)
+[Background & Design](../../docs/design/idrepository/salt-generator.md)
 
 [Api Documentation]( https://github.com/mosip/mosip/wiki/ID-Repository-API)
 
 Default Port and Context Path
 
 ```
-server.port=8091
-server.servlet.path=/idrepository/v1
+server.port=8092
 ```
-localhost:8090/idrepository/v1/swagger-ui.html
 
 
 **Application Properties**
