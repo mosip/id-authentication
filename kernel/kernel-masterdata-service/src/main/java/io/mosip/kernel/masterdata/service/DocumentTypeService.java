@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
@@ -16,7 +18,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  *
  */
 public interface DocumentTypeService {
-	/**
+	/*
 	 * methods to fetch list of valid document types for given document category
 	 * code and language code
 	 * 
@@ -57,4 +59,20 @@ public interface DocumentTypeService {
 	 */
 	public CodeResponseDto deleteDocumentType(String code);
 
+	/**
+	 * This method provides with all document type
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param pageSize
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the document type
+	 */
+	public PageDto<DocumentTypeExtnDto> getAllDocumentTypes(int pageNumber, int pageSize, String sortBy,
+			String orderBy);
 }
