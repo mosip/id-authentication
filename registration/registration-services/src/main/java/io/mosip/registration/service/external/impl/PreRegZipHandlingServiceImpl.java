@@ -134,7 +134,6 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private void attachDocument(DocumentDetailsDTO documentDetailsDTO, ZipInputStream zipInputStream, String fileName,
 			String docCatgory) throws IOException {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
-		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 
 		IndividualIdentity individualIdentity = (IndividualIdentity) getRegistrationDtoContent().getDemographicDTO()
@@ -150,6 +149,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		 * language irrespective of pre reg language
 		 */
 		docTypeName = getDocTypeForPrimaryLanguage(docTypeName);
+		documentDetailsDTO.setType(docTypeName);
 		documentDetailsDTO.setValue(docCatgory.concat("_").concat(docTypeName));
 	}
 
