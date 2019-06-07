@@ -1,6 +1,6 @@
 node {
 
- def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.12.0_AutomationTest_RegProc'
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
   // Checkout only automation tests Module
