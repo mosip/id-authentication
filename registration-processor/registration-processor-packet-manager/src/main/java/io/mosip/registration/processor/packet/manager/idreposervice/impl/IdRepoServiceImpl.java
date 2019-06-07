@@ -24,6 +24,7 @@ import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoServic
  * The Class IdRepoServiceImpl.
  * 
  * @author Nagalakshmi
+ * @author Horteppa
  */
 @RefreshScope
 @Service

@@ -77,4 +77,17 @@ public class IdRepoServiceImplTest {
 		assertNull(matchedDemographicIdentity);
 
 	}
+
+	@Test
+	public void testfindUinFromIdrepo() throws Exception {
+
+		JSONObject demoJson = new JSONObject();
+		demoJson.put("UIN", "1");
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "objectMapperReadValue", any(), any()).thenReturn(demoJson);
+		PowerMockito.when(JsonUtil.class, "getJSONObject", any(), any()).thenReturn(demoJson);
+		Number matchedDemographicIdentity = idRepoService.findUinFromIdrepo("", "Identity");
+		assertNull(matchedDemographicIdentity);
+
+	}
 }
