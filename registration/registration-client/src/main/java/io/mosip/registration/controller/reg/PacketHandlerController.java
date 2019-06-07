@@ -637,7 +637,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			try {
 				// Deletes the pre registration Data after creation of registration Packet.
 				if (getRegistrationDTOFromSession().getPreRegistrationId() != null
-						&& !getRegistrationDTOFromSession().getPreRegistrationId().isEmpty()) {
+						&& !getRegistrationDTOFromSession().getPreRegistrationId().trim().isEmpty()) {
 
 					ResponseDTO responseDTO = new ResponseDTO();
 					List<PreRegistrationList> preRegistrationLists = new ArrayList<>();
@@ -680,6 +680,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+			}catch (RuntimeException runtimeException) {
+				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 
 			if (registrationDTO.getSelectionListDTO() == null) {
