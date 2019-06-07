@@ -27,6 +27,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 /**
  * 
+ * Builder class to match Inputs
+ *
  * @author Dinesh Karuppiah.T
  *
  */

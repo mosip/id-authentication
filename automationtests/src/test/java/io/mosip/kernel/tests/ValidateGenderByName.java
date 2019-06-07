@@ -28,9 +28,9 @@ import org.testng.internal.TestResult;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -53,7 +53,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String validateGenderByName = props.get("validateGenderByName");
 	private String folderPath = "kernel/ValidateGenderByName";
 	private String outputFile = "ValidateGenderByNameOutput.json";
@@ -74,7 +74,6 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateGenderByName")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
 	}
 	
@@ -95,7 +94,7 @@ public class ValidateGenderByName extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		//  Calling GET method with path parameters
-		Response res=applicationLibrary.getRequestPathPara(validateGenderByName, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(validateGenderByName, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

@@ -195,6 +195,14 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
+			
+			int otpExpirySeconds = Integer
+					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+			int minutes = otpExpirySeconds / 60;
+			String seconds = String.valueOf(otpExpirySeconds % 60);
+			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
+			otpValidity.setText(RegistrationUIConstants.OTP_VALIDITY + " " + minutes + ":" + seconds + " "
+					+ RegistrationUIConstants.MINUTES);
 		} catch (RuntimeException runtimeExceptionexception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeExceptionexception.getMessage() + ExceptionUtils.getStackTrace(runtimeExceptionexception));

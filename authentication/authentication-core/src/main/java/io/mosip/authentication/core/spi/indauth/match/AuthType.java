@@ -15,12 +15,10 @@ import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 
 /**
+ * Auth type interface
  * 
  * @author Dinesh Karuppiah.T
- */
-
-/**
- * Base interface for the Auth type.
+ *
  */
 public interface AuthType {
 

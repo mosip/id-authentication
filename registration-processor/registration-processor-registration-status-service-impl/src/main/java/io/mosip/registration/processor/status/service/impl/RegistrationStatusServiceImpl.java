@@ -40,10 +40,6 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
 public class RegistrationStatusServiceImpl
 implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
-	/** The threshold. */
-	@Value("${registration.processor.threshold}")
-	private int threshold;
-
 	/** The registration status dao. */
 	@Autowired
 	private RegistrationStatusDao registrationStatusDao;

@@ -8,7 +8,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 
 /**
- * The Interface KycFacade.
+ * This class used to integrate with kyc service
  * 
  * @author Sanjay Murali
  */

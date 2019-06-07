@@ -13,9 +13,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Pane;
 
 /**
@@ -55,13 +58,13 @@ public class DateValidation extends BaseController {
 	 *            the local field to be populated if input is valid.
 	 */
 	public void validateDate(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField) {
+			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField, Label dobMessage) {
 		if (maxAge == 0)
 			maxAge = Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE));
 		try {
 			fxUtils.validateOnType(parentPane, date, validation, localField, false);
 			date.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				populateAge(date, month, year, ageField, ageLocalField);
+				populateAge(date, month, year, ageField, ageLocalField, dobMessage);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -90,11 +93,11 @@ public class DateValidation extends BaseController {
 	 *            the local field to be populated if input is valid.
 	 */
 	public void validateMonth(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField) {
+			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField, Label dobMessage) {
 		try {
 			fxUtils.validateOnType(parentPane, month, validation, localField, false);
 			month.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				populateAge(date, month, year, ageField, ageLocalField);
+				populateAge(date, month, year, ageField, ageLocalField, dobMessage);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -123,11 +126,11 @@ public class DateValidation extends BaseController {
 	 *            the local field to be populated if input is valid.
 	 */
 	public void validateYear(Pane parentPane, TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField) {
+			FXUtils fxUtils, TextField localField, TextField ageField, TextField ageLocalField, Label dobMessage) {
 		try {
 			fxUtils.validateOnType(parentPane, year, validation, localField, false);
 			year.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				populateAge(date, month, year, ageField, ageLocalField);
+				populateAge(date, month, year, ageField, ageLocalField, dobMessage);
 			});
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -137,11 +140,12 @@ public class DateValidation extends BaseController {
 	}
 
 	private void populateAge(TextField date, TextField month, TextField year, TextField ageField,
-			TextField ageLocalField) {
+			TextField ageLocalField, Label dobMessage) {
 
 		if (date != null && month != null && year != null && !date.getText().isEmpty() && !month.getText().isEmpty()
 				&& !year.getText().isEmpty() && year.getText().matches(RegistrationConstants.FOUR_NUMBER_REGEX)) {
 			try {
+				System.out.println(dobMessage);
 				LocalDate givenDate = LocalDate.of(Integer.parseInt(year.getText()), Integer.parseInt(month.getText()),
 						Integer.parseInt(date.getText()));
 				LocalDate localDate = LocalDate.now();
@@ -151,9 +155,13 @@ public class DateValidation extends BaseController {
 					int age = Period.between(givenDate, localDate).getYears();
 					ageField.setText(age + "");
 					ageLocalField.setText(age + "");
+					dobMessage.setText("");
+					dobMessage.setVisible(false);
 				} else {
 					ageField.clear();
 					ageLocalField.clear();
+					dobMessage.setText(RegistrationUIConstants.FUTURE_DOB);
+					dobMessage.setVisible(true);
 				}
 			} catch (Exception exception) {
 

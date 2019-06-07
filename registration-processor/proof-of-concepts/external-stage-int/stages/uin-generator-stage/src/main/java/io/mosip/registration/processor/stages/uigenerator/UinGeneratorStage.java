@@ -71,14 +71,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;

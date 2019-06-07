@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +50,11 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	private static final String emailableReportTemplateFile = new File(
 			"./src/test/resources/customize-emailable-report-template.html").getAbsolutePath();
 	private static String customReportTemplateStr;
+
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
-	private static final String reportProfixFileName = "Mosip_AutomationTest_Report";
+
+	private static final String reportProfixFileName = "MOSIP_ModuleLevelAutoRun_TestNGReport";
+
 	// PieChart
 	private int passTestCount = 0;
 	private int skipTestCount = 0;
@@ -84,7 +91,8 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					'"' + encodeExtentReportFile() + '"');	*/		
 			// Write replaced test report content to custom-emailable-report.html.
 			removeOldCustomMosipReport(outputDirectory);
-			File targetFile = new File(outputDirectory + "/"+reportProfixFileName/*getCurrentTimestampForReport()*/+".html");
+
+			File targetFile = new File(outputDirectory + "/"+reportProfixFileName/*getCurrentDateForReport()*/+".html");
 			FileWriter fw = new FileWriter(targetFile);
 			fw.write(customReportTemplateStr);
 			fw.flush();
@@ -589,9 +597,16 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		}
 	}
 	
-	private String getCurrentTimestampForReport() {
+
+/*	private String getCurrentTimestampForReport() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		return sdf.format(timestamp).toString();
+		return sdf.format(timestamp).toString();*/	
+
+	private String getCurrentDateForReport() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyy"); 
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		return dtf.format(currentDateTime).toString();
+
 	}
 	
 	private void removeOldCustomMosipReport(String outputDirectory) {

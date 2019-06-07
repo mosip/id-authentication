@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest

@@ -1,5 +1,10 @@
 package io.mosip.authentication.core.constant;
 
+/**
+ * Error constants for OTP
+ * 
+ * @author Dinesh Karuppiah.T
+ */
 public enum OtpErrorConstants {
 
 	/**

@@ -13,8 +13,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
+ * 
+ * Matching Strategy for Fingerprint
+ * 
  * @author Dinesh Karuppiah.T
- *
  */
 public enum FingerPrintMatchingStrategy implements MatchingStrategy {
 

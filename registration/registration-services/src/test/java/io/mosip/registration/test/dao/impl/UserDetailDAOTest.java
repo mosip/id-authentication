@@ -135,5 +135,14 @@ public class UserDetailDAOTest {
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		userDetailDAOImpl.save(userDetailsResponse);
 	}
+	
+	@Test
+	public void getUserSpecificBioDetailTest() {
+		
+		UserBiometric userBiometric = new UserBiometric();
+	
+		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeAndUserBiometricIdBioAttributeCodeIgnoreCase("mosip","bio","sub")).thenReturn(userBiometric);
+		assertEquals(userBiometric, userDetailDAOImpl.getUserSpecificBioDetail("mosip","bio","sub"));
+	}
 
 }

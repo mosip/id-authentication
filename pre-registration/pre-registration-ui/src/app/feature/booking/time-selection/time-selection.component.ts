@@ -197,6 +197,17 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
     }
   }
 
+  getNames(): string {
+
+    const x = [];
+
+    this.deletedNames.forEach(name => {
+      x.push(name.fullName);
+    });
+
+    return x.join(', ');
+  }
+
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -224,6 +235,36 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       bookingRequest: this.bookingDataList
     };
     const request = new RequestModel(appConstants.IDS.booking, obj);
+    if(this.deletedNames.length!==0){
+      const data = {
+        case: 'CONFIRMATION',
+        title:'',
+        message: this.secondaryLanguagelabels.deletedApplicant1[0] + ' ' + this.getNames() + ' ' + this.secondaryLanguagelabels.deletedApplicant1[1] + '?',
+        yesButtonText: this.secondaryLanguagelabels.yesButtonText,
+        noButtonText:  this.secondaryLanguagelabels.noButtonText
+      };
+      const dialogRef = this.dialog
+      .open(DialougComponent, {
+        width: '350px',
+        data: data,
+        disableClose: true
+      })
+       dialogRef.afterClosed().subscribe(selectedOption => {
+        if (selectedOption) {
+          this.bookingOperation(request);
+        } else {
+          this.disableContinueButton = false;
+          return;
+        }
+      });
+    }
+    else {
+      this.bookingOperation(request);
+    }
+
+  }
+
+  bookingOperation(request){
     this.dataService.makeBooking(request).subscribe(
       response => {
         if (!response['errors']) {
@@ -260,7 +301,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       }
     );
   }
-  
+
   displayMessage(title: string, message: string) {
     this.disableContinueButton = false;
     const messageObj = {

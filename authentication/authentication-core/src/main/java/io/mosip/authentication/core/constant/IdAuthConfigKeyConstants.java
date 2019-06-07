@@ -19,15 +19,15 @@ public final class IdAuthConfigKeyConstants {
 	public static final String REST_HTTP_METHOD = ".rest.httpMethod";
 	public static final String REST_TIMEOUT = ".rest.timeout";
 	public static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
-	public static final String MOSIP_TSP_ORGANIZATION = "mosip.jws.certificate.organization";
-	public static final String MOSIP_JWS_CERTIFICATE_ALGM = "mosip.jws.certificate.algo";
+	public static final String MOSIP_TSP_ORGANIZATION = "ida.jws.certificate.organization";
+	public static final String MOSIP_JWS_CERTIFICATE_ALGM = "ida.jws.certificate.algo";
 	public static final String MOSIP_IDA_API_IDS = "mosip.ida.api.ids.";
 	public static final String POLICY = "policy.";
 	public static final String LICENSE_KEY = "licenseKey.";
 	public static final String MISP_PARTNER_MAPPING = "misp.partner.mapping.";
 	public static final String PARTNER_KEY = "partner.";
 	public static final String MOSIP_IDENTITY_VID = "mosip.identity.vid";
-	public static final String MOSIP_VID_VALIDITY_HOURS = "mosip.vid.validity.hours";
+	public static final String MOSIP_VID_VALIDITY_HOURS = "ida.vid.validity.hours";
 	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
@@ -36,13 +36,13 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
 	public static final String AUTHREQUEST_RECEIVED_TIME_ALLOWED_IN_MINUTES = "authrequest.received-time-allowed.minutes";
-	public static final String OTP_CONTENT_TEMPLATE = "mosip.otp.mail.content.template";
 	public static final String OTP_CONTEXT = "ida.otp.context";
-	public static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
-	public static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";
-	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "mosip.auth.mail.subject.template";
-	public static final String AUTH_EMAIL_CONTENT_TEMPLATE = "mosip.auth.mail.content.template";
-	public static final String OTP_SUBJECT_TEMPLATE = "mosip.otp.mail.subject.template";
+	public static final String AUTH_SMS_TEMPLATE = "ida.auth.sms.template";
+	public static final String OTP_SMS_TEMPLATE = "ida.otp.sms.template";
+	public static final String AUTH_EMAIL_SUBJECT_TEMPLATE = "ida.auth.mail.subject.template";
+	public static final String AUTH_EMAIL_CONTENT_TEMPLATE = "ida.auth.mail.content.template";
+	public static final String OTP_SUBJECT_TEMPLATE = "ida.otp.mail.subject.template";
+	public static final String OTP_CONTENT_TEMPLATE = "ida.otp.mail.content.template";
 	public static final String NOTIFICATION_DATE_FORMAT = "notification.date.format";
 	public static final String NOTIFICATION_TIME_FORMAT = "notification.time.format";
 	public static final String UIN_MASKING_CHARCOUNT = "notification.uin.masking.charcount";
@@ -54,7 +54,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String AUDIT_DEFAULT_HOST_NAME = "audit.defaultHostName";
 	public static final String AUDIT_DEFAULT_HOST_ADDRESS = "audit.defaultHostAddress";
 	public static final String APPLICATION_NAME = "application.name";
-	public static final String MOSIP_ERRORMESSAGES_DEFAULT_LANG = "mosip.errormessages.default-lang";
+	public static final String MOSIP_ERRORMESSAGES_DEFAULT_LANG = "ida.errormessages.default-lang";
 	public static final String USER_NAME = "user.name";
 	public static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 	public static final String DEFAULT_MATCH_VALUE = "demo.threshold";
@@ -74,6 +74,8 @@ public final class IdAuthConfigKeyConstants {
 	public static final String INTERNAL_AUTH_ALLOWED_IDTYPE = "request.idtypes.allowed.internalauth";
 	public static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.auth.types.allowed";
 	public static final String INTERNAL_APPLICATION_ID = "internal.application.id";
+	public static final String INTERNAL_REFERENCE_ID = "internal.reference.id";
 	public static final String SIGN_RESPONSE = "mosip.signed.response.header";
-	
+	public static final String MOSIP_IDA_API_ID = "ida.api.id.";
+	public static final String MOSIP_IDA_API_VERSION = "ida.api.version.";
 }

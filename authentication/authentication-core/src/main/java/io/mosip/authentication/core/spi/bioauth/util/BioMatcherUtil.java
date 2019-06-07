@@ -24,8 +24,10 @@ import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Enum BioAuthType.
- *
+ * 
+ * Util class to calculate Composite and Individual's Match score based on
+ * Request and Entity info's
+ * 
  * @author Dinesh Karuppiah.T
  */
 @Component
@@ -57,7 +59,6 @@ public class BioMatcherUtil {
 		Object[][] objArrays = matchValues(reqInfo, entityInfo);
 		Object[] reqInfoObj = objArrays[0];
 		Object[] entityInfoObj = objArrays[1];
-
 		Optional<BIR> reqBIR = Stream.of(reqInfoObj).map(this::getBir).filter(Objects::nonNull).findFirst();
 		BIR[] entityBIR = Stream.of(entityInfoObj).map(this::getBir).toArray(size -> new BIR[size]);
 		long internalScore = 0;
@@ -66,7 +67,7 @@ public class BioMatcherUtil {
 			try {
 				match = bioApi.match(reqBIR.get(), entityBIR, null);
 				internalScore = match.length == 1 ? match[0].getInternalScore()
-									: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
+						: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
 						"Threshold Value >>>" + internalScore);
 			} catch (BiometricException e) {
@@ -116,7 +117,6 @@ public class BioMatcherUtil {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 
 		}
-
 		return compositeScore.getInternalScore();
 	}
 

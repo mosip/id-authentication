@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -198,6 +197,8 @@ public class AuthFacadeImplTest {
 			InvocationTargetException, IOException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -272,10 +273,6 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456");
@@ -293,6 +290,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setOtp(false);
 		authRequestDTO.setRequestedAuth(authTypeDTO);
@@ -323,10 +322,6 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		List<AuthStatusInfo> authStatusList = ReflectionTestUtils.invokeMethod(authFacadeImpl, "processAuthType",
 				authRequestDTO, idInfo, "1233", true, "247334310780728918141754192454591343", "123456");
 
@@ -343,6 +338,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -387,11 +384,6 @@ public class AuthFacadeImplTest {
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
-
 		Mockito.when(otpAuthServiceImpl.authenticate(authRequestDTO, "1242", Collections.emptyMap(), "123456"))
 				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(true).build());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -408,6 +400,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processAuthTypeTestFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -420,10 +414,6 @@ public class AuthFacadeImplTest {
 		reqDTO.setOtp("456789");
 		authRequestDTO.setRequest(reqDTO);
 		authRequestDTO.setId("1234567");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(otpAuthServiceImpl.authenticate(authRequestDTO, "1242", Collections.emptyMap(), "123456"))
 				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(true).build());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -451,6 +441,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessBioAuthType() throws IdAuthenticationBusinessException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -525,10 +517,6 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, true, uin,
@@ -539,6 +527,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessBioAuthTypeFinImg() throws IdAuthenticationBusinessException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -613,10 +603,6 @@ public class AuthFacadeImplTest {
 		Mockito.when(idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Mockito.when(tokenIdManager.generateTokenId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn("247334310780728918141754192454591343");
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(bioAuthService.authenticate(authRequestDTO, uin, idInfo, "123456")).thenReturn(authStatusInfo);
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, true, uin,
@@ -626,6 +612,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessPinDetails_pinValidationStatusNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("mosip.identity.auth");
 		String uin = "794138547620";
 		authRequestDTO.setId("IDA");
@@ -658,13 +646,9 @@ public class AuthFacadeImplTest {
 		AuthStatusInfo pinValidationStatus = new AuthStatusInfo();
 		pinValidationStatus.setStatus(true);
 		pinValidationStatus.setErr(Collections.emptyList());
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
 				IdType.UIN, "247334310780728918141754192454591343", "123456");
 
 	}
@@ -672,6 +656,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessPinDetails_pinValidationStatusNotNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("274390482564");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("mosip.identity.auth");
 		String uin = "794138547620";
 		authRequestDTO.setId("IDA");
@@ -704,13 +690,9 @@ public class AuthFacadeImplTest {
 		AuthStatusInfo pinValidationStatus = new AuthStatusInfo();
 		pinValidationStatus.setStatus(true);
 		pinValidationStatus.setErr(Collections.emptyList());
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
 				IdType.UIN, "247334310780728918141754192454591343", "123456");
 
 	}
@@ -718,6 +700,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void testProcessPinDetails_pinValidationStatus_false() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("794138547620");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		authRequestDTO.setId("mosip.identity.auth");
 		String uin = "794138547620";
 		authRequestDTO.setId("IDA");
@@ -750,15 +734,11 @@ public class AuthFacadeImplTest {
 		AuthStatusInfo pinValidationStatus = new AuthStatusInfo();
 		pinValidationStatus.setStatus(true);
 		pinValidationStatus.setErr(Collections.emptyList());
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		pinValidationStatus.setStatus(false);
 		pinValidationStatus.setErr(Collections.emptyList());
 		Mockito.when(pinAuthService.authenticate(authRequestDTO, uin, Collections.emptyMap(), "123456"))
 				.thenReturn(pinValidationStatus);
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, true, authStatusList,
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processPinAuth", authRequestDTO, uin, authStatusList,
 				IdType.UIN, "247334310780728918141754192454591343", "123456");
 
 	}
@@ -766,6 +746,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void TestInvalidOTPviaAuth() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("794138547620");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setRequestedAuth(requestedAuth);
@@ -774,10 +756,6 @@ public class AuthFacadeImplTest {
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
-		Optional<String> value = Optional.of("12345678");
-		Mockito.when(idInfoFetcher.getUinOrVid(authRequestDTO)).thenReturn(value);
-		IdType values = IdType.UIN;
-		Mockito.when(idInfoFetcher.getUinOrVidType(authRequestDTO)).thenReturn(values);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 
@@ -786,6 +764,8 @@ public class AuthFacadeImplTest {
 	@Test
 	public void TestInvalidOTPviaAuthwithActionMessage() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIndividualId("794138547620");
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
 		AuthTypeDTO requestedAuth = new AuthTypeDTO();
 		requestedAuth.setOtp(true);
 		authRequestDTO.setIndividualId("426789089018");
@@ -797,8 +777,6 @@ public class AuthFacadeImplTest {
 		List<AuthStatusInfo> authStatusList = new ArrayList<>();
 		Mockito.when(otpAuthServiceImpl.authenticate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN));
-		Mockito.when(idInfoFetcher.getUinOrVid(Mockito.any())).thenReturn(Optional.of("426789089018"));
-		Mockito.when(idInfoFetcher.getUinOrVidType(Mockito.any())).thenReturn(IdType.UIN);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processOTPAuth", authRequestDTO, "863537", true,
 				authStatusList, IdType.UIN, "247334310780728918141754192454591343", "123456");
 

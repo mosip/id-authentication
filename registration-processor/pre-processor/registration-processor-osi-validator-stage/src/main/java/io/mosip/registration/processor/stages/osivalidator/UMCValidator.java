@@ -78,7 +78,7 @@ public class UMCValidator {
 	private FileSystemAdapter adapter;
 
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	/** The identity iterator util. */
