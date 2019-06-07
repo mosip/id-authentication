@@ -1,5 +1,7 @@
 package io.mosip.idrepository.saltgenerator.config;
 
+import static io.mosip.idrepository.saltgenerator.constant.IdRepoSaltGeneratorConstant.CHUNK_SIZE;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.Environment;
 
 import io.mosip.idrepository.saltgenerator.entity.SaltEntity;
 
@@ -23,6 +26,9 @@ import io.mosip.idrepository.saltgenerator.entity.SaltEntity;
 @Configuration
 @DependsOn("idRepoSaltGeneratorConfig")
 public class IdRepoJobConfig {
+	
+	@Autowired
+	private Environment env;
 
 	/** The job builder factory. */
 	@Autowired
@@ -71,7 +77,7 @@ public class IdRepoJobConfig {
 	public Step step() {
 		return stepBuilderFactory
 				.get("step")
-				.<SaltEntity, SaltEntity> chunk(10)
+				.<SaltEntity, SaltEntity> chunk(env.getProperty(CHUNK_SIZE.getValue(), Integer.class))
 				.reader(reader)
 				.writer(writer)
 				.build();
