@@ -315,6 +315,7 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String UPLOAD_COLUMN_HEADER_STATUS = bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS = bundle.getString("PACKET_UPLOAD_SUCCESS");
 	public static final String UPLOAD_FAILED = bundle.getString("UPLOAD_FAILED");
+	public static final String PACKET_STATUS_EXPORT = bundle.getString("PACKET_STATUS_EXPORT");
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");
