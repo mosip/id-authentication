@@ -1,6 +1,6 @@
 node {
 
- def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.12.0_automationtests_kernel'
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
   // Checkout only automation tests Module
@@ -27,7 +27,7 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smokeAndRegression'
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=qa -Denv.endpoint=https://qa.mosip.io -Denv.testLevel=smokeAndRegression'
 			  
   }
   
