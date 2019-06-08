@@ -1,6 +1,7 @@
 package io.mosip.registration.test.authentication;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -51,6 +52,11 @@ public class FaceValidatorTest {
 	@Test
 	public void validateTest() {
 		assertThat(faceValidatorImpl.validate(authenticationValidatorDTO), is(false));
+	}
+	
+	@Test
+	public void validateAuthTest() {
+		assertNull(faceValidatorImpl.validate("mosip","123"));
 	}
 
 }

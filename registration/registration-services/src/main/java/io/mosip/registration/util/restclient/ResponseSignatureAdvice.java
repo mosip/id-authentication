@@ -9,6 +9,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -17,6 +18,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -78,7 +80,8 @@ public class ResponseSignatureAdvice {
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 				"Entering into response signature method");
-
+		
+		HttpHeaders responseHeader = null;
 		Object[] requestHTTPDTO = joinPoint.getArgs();
 		RequestHTTPDTO requestDto = (RequestHTTPDTO) requestHTTPDTO[0];
 		LinkedHashMap<String, Object> restClientResponse = null;
@@ -115,11 +118,11 @@ public class ResponseSignatureAdvice {
 				LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 						"Getting public key");
 
-				Map<String, Object> responseMap = (Map<String, Object>) restClientResponse
+				 responseHeader =  (HttpHeaders) restClientResponse
 						.get(RegistrationConstants.REST_RESPONSE_HEADERS);
 
 				if (signatureUtil.validateWithPublicKey(
-						responseMap.get("response-signature").toString().replace("[", "").replace("]", ""),
+						responseHeader.get(RegistrationConstants.RESPONSE_SIGNATURE).get(0),
 						new ObjectMapper().writeValueAsString(responseBodyMap), publicKey)) {
 					LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 							"response signature is valid...");

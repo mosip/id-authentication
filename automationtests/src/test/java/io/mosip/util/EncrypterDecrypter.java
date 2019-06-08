@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -35,6 +37,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.dbdto.CryptomanagerDto;
 import io.mosip.dbdto.CryptomanagerRequestDto;
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
@@ -49,16 +53,26 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	private final String decrypterURL="https://qa.mosip.io/v1/cryptomanager/decrypt\r\n" + 
-			"";
-	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	private final String decrypterURL="/v1/cryptomanager/decrypt";
+	private final String encrypterURL="/v1/cryptomanager/encrypt";
 	private String applicationId="REGISTRATION";	
 	InputStream outstream = null;
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 	public void generateHash(byte[] fileByte) {
 		if (fileByte != null) {
 			HMACUtils.update(fileByte);
 		}	
 	}
+	
 	/**
 	 * 
 	 * @param file
@@ -74,7 +88,9 @@ public class EncrypterDecrypter extends BaseTestCase {
 		File folder=new File(destinationPath);
 		folder.mkdirs();
 		destinationPath=destinationPath+"//"+fileName;
-		Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
+		//Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
+		validToken = getToken("syncTokenGenerationFilePath");
+		Response response = apiRequests.postRequestToDecrypt(decrypterURL, decryptDto,MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, validToken);
 		JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 		JSONObject responseObject=(JSONObject) data.get("response");
 		byte[] decryptedPacket = CryptoUtil.decodeBase64(responseObject.get("data").toString());
@@ -104,11 +120,14 @@ public class EncrypterDecrypter extends BaseTestCase {
 		 ZipFile zipFile=null;
 		try {
 			zipFile = new ZipFile(destinationPath);
+			logger.info("Path : "+destinationPath);
+			logger.info("zip : "+zipFile.isValidZipFile());
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 try {
+			
 			zipFile.extractAll(destinationPath.substring(0, destinationPath.lastIndexOf('.')));
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block
@@ -125,7 +144,8 @@ public class EncrypterDecrypter extends BaseTestCase {
 		  File file1=new File(destinationPath+"/"+fileName+".zip");
 		  JSONObject decryptedFileBody=new JSONObject();
 		  decryptedFileBody=generateCryptographicDataEncryption(file1);
-		  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
+		  logger.info("encrypt request packet  : "+decryptedFileBody);
+		  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,validToken);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 			  JSONObject responseObject=(JSONObject) data.get("response");
@@ -288,6 +308,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
+			System.out.println("encrypter request data : "+encryptedPacketString);
 			cryptographicRequest.put("referenceId", centerId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 			encryptRequest.put("id","");
@@ -389,7 +410,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 		}
 	}
-		@SuppressWarnings("unchecked")
+		/*@SuppressWarnings("unchecked")
 		public JSONObject generateCryptographicDataEncryption(JSONObject requestJson) throws IOException {
 			JSONObject encryptRequest=new JSONObject();
 			CryptomanagerDto request=new CryptomanagerDto();
@@ -441,16 +462,17 @@ public class EncrypterDecrypter extends BaseTestCase {
 				e.printStackTrace();
 			}
 			return encryptRequest;
-		}
+		}*/
 		
-		public Map<String,Object> encryptJson(JSONObject  requestJson) throws IOException {
+		/*public Map<String,Object> encryptJson(JSONObject  requestJson) throws IOException {
 			String encryptedPacket =null;
 			String responseTime = null;
 			Map<String,Object> demo = new HashMap<>();
 			logger.info("requestJson : "+requestJson);
 			  JSONObject decryptedFileBody=new JSONObject();
 			  decryptedFileBody=generateCryptographicDataEncryption(requestJson);
-			  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
+			  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,
+					  MediaType.APPLICATION_JSON, validToken);
 			  try {
 				  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 				  JSONObject responseObject=(JSONObject) data.get("response");
@@ -468,7 +490,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 			return demo;
 			  
-		}
+		}*/
 	@Test
 	public void getpackts() throws IOException, ZipException, ParseException {
 		EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();

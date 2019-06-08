@@ -48,7 +48,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 	RegistrationPacketSyncDTO registrationPacketSyncDto=null;
 	JSONObject requestToEncrypt=null;
 	JSONObject getRequest=null;
-	private final String encrypterURL="https://qa.mosip.io/v1/cryptomanager/encrypt";
+	private final String encrypterURL="/v1/cryptomanager/encrypt";
 	File packet=null;
 	String regId="";
 	String centre_machine_refId="";
@@ -66,7 +66,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 	public void getValidPacketPath() {
 		validToken=getToken("syncTokenGenerationFilePath");
 		adminAuthToken=getToken("getStatusTokenGenerationFilePath");
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
 		FileReader apiReader=null;
 		Properties folderPath = new Properties();
 		try {

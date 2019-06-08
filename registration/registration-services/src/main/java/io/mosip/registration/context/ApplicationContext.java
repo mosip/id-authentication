@@ -135,6 +135,7 @@ public class ApplicationContext {
 		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations", applicationLanguageLocale);
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Sets the application languagevalidation bundle.
 	 *
@@ -145,6 +146,9 @@ public class ApplicationContext {
 		this.applicationLanguagevalidationBundle = applicationLanguagevalidationBundle;
 	}
 	
+=======
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	/**
 	 * Gets the single instance of ApplicationContext.
@@ -330,6 +334,7 @@ public class ApplicationContext {
 		return applicationLanguageBundle;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Sets the application language bundle.
 	 */
@@ -338,6 +343,10 @@ public class ApplicationContext {
 				new Locale("eng"));
 	}
 	
+=======
+
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	/**
 	 * Get application language.
 	 *
@@ -367,11 +376,16 @@ public class ApplicationContext {
 
 	/**
 	 * Sets the local language property.
-	 */
+	 *//*
 	public void setLocalLanguageProperty() {
+<<<<<<< HEAD
 		localLanguageBundle = ResourceBundle.getBundle("labels",
 				new Locale("ara"));
 	}
+=======
+		localLanguageBundle = ResourceBundle.getBundle("labels", new Locale("ara"));
+	}*/
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	/**
 	 * Gets the application messages bundle.
@@ -382,6 +396,7 @@ public class ApplicationContext {
 		return applicationMessagesBundle;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Sets the application messages bundle.
 	 */
@@ -389,6 +404,9 @@ public class ApplicationContext {
 		applicationMessagesBundle = ResourceBundle.getBundle("messages",
 				new Locale("eng"));
 	}
+=======
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	/**
 	 * Gets the local messages bundle.
@@ -399,6 +417,7 @@ public class ApplicationContext {
 		return localMessagesBundle;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Sets the local messages bundle.
 	 */
@@ -407,6 +426,10 @@ public class ApplicationContext {
 				new Locale("ara"));
 	}
 	
+=======
+
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	/**
 	 * Sets the global config value of.
 	 *

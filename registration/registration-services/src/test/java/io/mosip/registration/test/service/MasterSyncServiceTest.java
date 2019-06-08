@@ -38,6 +38,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+<<<<<<< HEAD
+=======
+import io.mosip.registration.context.SessionContext.UserContext;
+import io.mosip.registration.dao.MachineMappingDAO;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
@@ -68,7 +73,11 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  */
 
 @RunWith(PowerMockRunner.class)
+<<<<<<< HEAD
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class })
+=======
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, UriComponentsBuilder.class, URI.class, ApplicationContext.class, SessionContext.class })
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 public class MasterSyncServiceTest {
 //java test
 	@Rule
@@ -100,10 +109,26 @@ public class MasterSyncServiceTest {
 	@BeforeClass
 	public static void beforeClass() throws URISyntaxException {
 
+<<<<<<< HEAD
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+=======
+	@Before
+	public void beforeClass() throws Exception {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
+				Mockito.anyString(), Mockito.anyString());
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
+		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
+		centerDetailDTO.setRegistrationCenterId("mosip");
+		PowerMockito.mockStatic(SessionContext.class);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);		
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 
 	@Test
@@ -177,6 +202,11 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -200,6 +230,11 @@ public class MasterSyncServiceTest {
 		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE);
 		errorResponse.setInfoType(RegistrationConstants.ERROR);
@@ -254,8 +289,17 @@ public class MasterSyncServiceTest {
 				.thenReturn(masterSyncDto);
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
+<<<<<<< HEAD
 				.thenReturn(RegistrationConstants.SUCCESS);
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(IOException.class);
+=======
+				.thenThrow(IOException.class);
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+
+		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+		
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
@@ -300,7 +344,14 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(NullPointerException.class);
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
@@ -344,7 +395,16 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
+=======
+		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
@@ -388,7 +448,17 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(new RuntimeException().getClass());
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+
+		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenThrow(RuntimeException.class);
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
@@ -420,7 +490,16 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
+=======
+		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
 	}
 
@@ -497,6 +576,11 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -557,6 +641,11 @@ public class MasterSyncServiceTest {
 
 		String masterSyncJson = "";
 
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
@@ -640,6 +729,11 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -857,6 +951,11 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.SUCCESS);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -940,6 +1039,11 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
 				.thenReturn(RegistrationConstants.FAILURE);
+<<<<<<< HEAD
+=======
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
@@ -951,5 +1055,314 @@ public class MasterSyncServiceTest {
 		// assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 		// responseDto.getSuccessResponseDTO().getMessage());
 	}
+<<<<<<< HEAD
 
+=======
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void centerRemap() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
+
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Map<String, Object> myMap = new HashMap<>();
+		myMap.put(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.ENABLE);
+
+		SyncControl masterSyncDetails = new SyncControl();
+		masterSyncDetails.setSyncJobId("MDS_J00001");
+		masterSyncDetails.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		masterSyncDetails.setCrBy("mosip");
+		masterSyncDetails.setIsActive(true);
+		masterSyncDetails.setLangCode("eng");
+		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		LinkedHashMap<String, Object> mainMap = new LinkedHashMap<>();
+
+		Map<String, Object> masterDetailsMap = new LinkedHashMap<>();
+		masterDetailsMap.put("errorCode", "KER-SNC-303");
+		masterDetailsMap.put("message", "Registration Center has been updated for the received Machine ID");
+		List<Map<String, Object>> masterFailureList = new ArrayList<>();
+		masterFailureList.add(masterDetailsMap);
+		mainMap.put(RegistrationConstants.ERRORS, masterFailureList);
+
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+		Mockito.when(userOnboardDao.getStationID(Mockito.anyString())).thenReturn("8C-16-45-5A-5D-0D");
+		Mockito.when(userOnboardDao.getCenterID(Mockito.anyString())).thenReturn("10003");
+		Mockito.when(globalParamService.getGlobalParams()).thenReturn(myMap);
+		doNothing().when(globalParamService).update(Mockito.anyString(), Mockito.anyString());
+		doNothing().when(centerMachineReMapService).startRemapProcess();
+		Mockito.when(
+				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+				.thenReturn(mainMap);
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+
+		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001", "System");
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	public void getBiometricTypeWithFingerprintEnable() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
+		when(context.map()).thenReturn(appMap);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);	
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	public void getBiometricTypeWithIrisEnable() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
+		when(context.map()).thenReturn(appMap);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);		
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+
+	@SuppressWarnings("static-access")
+	@Test
+	public void getBiometricTypeWithFingerprintDisble() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "N");
+		when(context.map()).thenReturn(appMap);
+		biometricType.remove(RegistrationConstants.FNR);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);	
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
+	public void getBiometricTypeWithIrisDisble() {
+		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
+		Map<String, Object> appMap = new HashMap<>();
+		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "N");
+		when(context.map()).thenReturn(appMap);
+		biometricType.remove(RegistrationConstants.IRS);
+		
+		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
+		BiometricAttribute biometricAttribute = new BiometricAttribute();
+		biometricAttribute.setCode("RS");
+		biometricAttribute.setBiometricTypeCode("FNR");
+		biometricAttribute.setName("Right Slap");
+		biometricAttribute.setLangCode("eng");
+		biometricAttributes.add(biometricAttribute);
+		
+		Mockito.when(masterSyncDao.getBiometricType("eng", biometricType)).thenReturn(biometricAttributes);		
+		List<BiometricAttributeDto> biometricAttributeDtos = masterSyncServiceImpl.getBiometricType("eng");
+		assertNotNull(biometricAttributeDtos);
+		
+	}
+
+	@Test
+	public void getRequestParamsOnlyMacIdTest() {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString())).thenReturn(null);
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+
+		Map<String, String> requestParams = ReflectionTestUtils.invokeMethod(masterSyncServiceImpl, "getRequestParams",
+				"macId", null);
+
+		Assert.assertTrue(requestParams.containsKey(RegistrationConstants.MAC_ADDRESS));
+		Assert.assertEquals(1, requestParams.size());
+	}
+
+	@Test
+	public void getRequestParamsKeyIndexContextTest() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.INITIAL_SETUP, RegistrationConstants.ENABLE);
+
+		PowerMockito.doReturn(applicationContext).when(ApplicationContext.class, "map");
+		PowerMockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(null);
+
+		Map<String, String> requestParams = ReflectionTestUtils.invokeMethod(masterSyncServiceImpl, "getRequestParams",
+				"macId", "keyIndex");
+
+		Assert.assertTrue(requestParams.containsKey(RegistrationConstants.KEY_INDEX.toLowerCase()));
+		Assert.assertEquals(2, requestParams.size());
+
+	}
+
+	@Test
+	public void getRequestParamsKeyIndexServiceTest() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> applicationContext = new HashMap<>();
+		MachineMaster machineMaster = new MachineMaster();
+		machineMaster.setKeyIndex("keyIndex");
+
+		PowerMockito.doReturn(applicationContext).when(ApplicationContext.class, "map");
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+
+		Map<String, String> requestParams = ReflectionTestUtils.invokeMethod(masterSyncServiceImpl, "getRequestParams",
+				"masterSync", null);
+
+		Assert.assertTrue(requestParams.containsKey(RegistrationConstants.KEY_INDEX.toLowerCase()));
+		Assert.assertEquals(2, requestParams.size());
+
+	}
+
+	@Test
+	public void getRequestParamsUpdatedDateTest() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		Map<String, Object> applicationContext = new HashMap<>();
+		applicationContext.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.ENABLE);
+		MachineMaster machineMaster = new MachineMaster();
+		machineMaster.setKeyIndex("keyIndex");
+		SyncControl syncControl = new SyncControl();
+		syncControl.setLastSyncDtimes(Mockito.mock(Timestamp.class));
+
+		PowerMockito.doReturn(applicationContext).when(ApplicationContext.class, "map");
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+		PowerMockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(syncControl);
+
+		Map<String, String> requestParams = ReflectionTestUtils.invokeMethod(masterSyncServiceImpl, "getRequestParams",
+				null, null);
+
+		Assert.assertTrue(requestParams.containsKey(RegistrationConstants.KEY_INDEX.toLowerCase()));
+		Assert.assertTrue(requestParams.containsKey(RegistrationConstants.MASTER_DATA_LASTUPDTAE));
+		Assert.assertEquals(3, requestParams.size());
+
+	}
+
+	@Test
+	public void getMasterSyncWithKeyIndexExceptionTest() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System", "keyIndex");
+		
+	}
+
+	@Test
+	public void getMasterSyncWithoutKeyIndexExceptionTest() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
+		masterSyncServiceImpl.getMasterSync("MDS_J00001","System");
+		
+	}
+
+	@Test
+	public void testMasterSyncWithKeyIndexSucessCaseJson() throws Exception {
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		PowerMockito.mockStatic(UriComponentsBuilder.class);
+		PowerMockito.mockStatic(URI.class);
+		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
+		MasterDataResponseDto masterSyncDt = new MasterDataResponseDto();
+		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
+
+		BiometricAttributeDto biometricattributes = new BiometricAttributeDto();
+
+		BiometricAttributeDto biometricAttributeResponseDto = new BiometricAttributeDto();
+
+		biometricattributes.setBiometricTypeCode("1");
+		biometricattributes.setCode("1");
+		biometricattributes.setDescription("finerprints");
+		biometricattributes.setLangCode("eng");
+		biometricattributes.setName("littile finger");
+
+		List<BiometricAttributeDto> biometricattribute = new ArrayList<>();
+		biometricattribute.add(biometricattributes);
+
+		biometricAttributeResponseDto.setBiometricTypeCode("1");
+		biometricAttributeResponseDto.setCode("1");
+		biometricAttributeResponseDto.setDescription("finerprints");
+		biometricAttributeResponseDto.setLangCode("eng");
+		biometricAttributeResponseDto.setName("littile finger");
+
+		List<BiometricAttributeDto> biometrictypes = new ArrayList<>();
+		biometrictypes.add(biometricAttributeResponseDto);
+
+		masterSyncDto.setBiometricattributes(biometrictypes);
+
+		SyncControl masterSyncDetails = new SyncControl();
+
+		masterSyncDetails.setSyncJobId("MDS_J00001");
+		masterSyncDetails.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		masterSyncDetails.setCrBy("mosip");
+		masterSyncDetails.setIsActive(true);
+		masterSyncDetails.setLangCode("eng");
+		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		String masterSyncJson = "";
+
+		String masterJson = "{\n" + "   \"registrationCenter\": [\n" + "      {\n" + "         \"id\": \"10011\",\n"
+				+ "         \"name\": \"centre Souissi\",\n" + "         \"centerTypeCode\": \"REG\",\n"
+				+ "         \"addressLine1\": \"avenue de Mohammed VI\",\n" + "         \"addressLine2\": \"Rabat\",\n"
+				+ "         \"addressLine3\": \"Maroc\",\n" + "         \"latitude\": \"33.986608\",\n"
+				+ "         \"longitude\": \"-6.828873\",\n" + "         \"locationCode\": \"10105\",\n"
+				+ "         \"holidayLocationCode\": \"RBT\",\n" + "         \"contactPhone\": \"878691008\",\n"
+				+ "         \"numberOfStations\": null,\n" + "         \"workingHours\": \"8:00:00\",\n"
+				+ "         \"numberOfKiosks\": 1,\n" + "         \"perKioskProcessTime\": \"00:15:00\",\n"
+				+ "         \"centerStartTime\": \"09:00:00\",\n" + "         \"centerEndTime\": \"17:00:00\",\n"
+				+ "         \"timeZone\": \"GTM + 01h00) HEURE EUROPEENNE CENTRALE\",\n"
+				+ "         \"contactPerson\": \"Minnie Mum\",\n" + "         \"lunchStartTime\": \"13:00:00\",\n"
+				+ "         \"lunchEndTime\": \"14:00:00\",\n" + "         \"isDeleted\": null,\n"
+				+ "         \"langCode\": \"fra\",\n" + "         \"isActive\": true\n" + "      }\n" + "   ]\n" + "}";
+
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
+
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		Mockito.when(
+				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+				.thenReturn(masterJson);
+
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDt);
+
+		Mockito.when(masterSyncDao.save(Mockito.any(MasterDataResponseDto.class)))
+				.thenReturn(RegistrationConstants.SUCCESS);
+		Mockito.when(machineMappingDAO.getKeyIndexByMacId(Mockito.anyString()))
+		.thenReturn("keyIndex");
+
+		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
+		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+		sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
+
+		responseDTO.setSuccessResponseDTO(sucessResponse);
+
+		masterSyncServiceImpl.getMasterSync("MDS_J00001", "System", "Index");
+	}
+	
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 }

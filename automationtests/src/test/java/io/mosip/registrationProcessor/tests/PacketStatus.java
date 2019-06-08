@@ -105,7 +105,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	public Object[][] readDataForPacketStatus(ITestContext context) {
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		Object[][] readFolder= null;
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
 
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
@@ -233,13 +233,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			}else {
 				finalStatus="Fail";
 			}		
-		/*boolean setFinalStatus=false;
+		boolean setFinalStatus=false;
 	        if(finalStatus.equals("Fail"))
 	              setFinalStatus=false;
 	        else if(finalStatus.equals("Pass"))
 	              setFinalStatus=true;
 	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();*/
+	        softAssert.assertAll();
 		} catch (IOException | ParseException e) {
 			logger.error("Exception occurred in Packet Status class in packetStatus method "+e);
 		}

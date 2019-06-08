@@ -2,7 +2,8 @@ package io.mosip.registration.test.service.packet;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+
+import static org.mockito.Mockito.doThrow;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +38,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
@@ -53,7 +55,11 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
+<<<<<<< HEAD
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class, io.mosip.registration.context.ApplicationContext.class })
+=======
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, SessionContext.class })
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
@@ -93,18 +99,22 @@ public class PreRegistrationDataSyncServiceTest {
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
+<<<<<<< HEAD
 
 		SessionContext.getInstance();
 		RegistrationCenterDetailDTO registrationCenterDetailDTO=new RegistrationCenterDetailDTO();
 		registrationCenterDetailDTO.setRegistrationCenterId("10031");
 		SessionContext.userContext().setRegistrationCenterDetailDTO(registrationCenterDetailDTO);
+=======
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 
 	@Before
-	public void initiate() {
+	public void initiate() throws Exception {
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
 		applicationMap.put(RegistrationConstants.PRE_REG_DAYS_LIMIT, "5");
+<<<<<<< HEAD
 		
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
@@ -114,6 +124,23 @@ public class PreRegistrationDataSyncServiceTest {
 		//Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
 		
 		preRegistrationDataSyncServiceImpl.setBaseGlobalMap(applicationMap);
+=======
+
+		Map<String, Object> map = new HashMap<>();
+		map.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "5");
+
+		io.mosip.registration.context.ApplicationContext.setApplicationMap(applicationMap);
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
+
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
+		registrationCenterDetailDTO.setRegistrationCenterId("10031");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO())
+				.thenReturn(registrationCenterDetailDTO);
+		PowerMockito.when(SessionContext.isSessionContextAvailable()).thenReturn(true);
+		PowerMockito.when(SessionContext.userId()).thenReturn("mosip");
 
 	}
 
@@ -185,21 +212,27 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
+<<<<<<< HEAD
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(),Mockito.anyString()))
-				.thenReturn(getTestPacketData());
-		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(syncTransaction);
-		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
-		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-
-		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
-		// PreRegistrationList());
+=======
+		mockData();
 
 		mockEncryptedPacket();
 
 		ResponseDTO responseDTO = preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 		assertNotNull(responseDTO);
 
+	}
+
+	protected void mockData() throws RegBaseCheckedException, SocketTimeoutException {
+		Mockito.when(
+				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
+				.thenReturn(getTestPacketData());
+		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(syncTransaction);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 	}
 	
 	@Test
@@ -236,6 +269,20 @@ public class PreRegistrationDataSyncServiceTest {
 
 	}
 
+	@Test
+	public void getPreRegistrationExceptionTest()
+			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+
+		mockData();
+
+		mockEncryptedPacket();
+
+		doThrow(new RegBaseCheckedException()).when(preRegZipHandlingService).extractPreRegZipFile(Mockito.any());
+
+		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
+
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getPreRegistrationsTestNegative()
@@ -248,6 +295,13 @@ public class PreRegistrationDataSyncServiceTest {
 	}
 
 	private void mockEncryptedPacket() throws RegBaseCheckedException {
+		mockEncryptedData();
+
+		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(preRegPacket)).thenReturn(new RegistrationDTO());
+
+	}
+
+	protected void mockEncryptedData() throws RegBaseCheckedException {
 		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
 		preRegistrationDTO.setPacketPath("path");
 		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
@@ -259,13 +313,30 @@ public class PreRegistrationDataSyncServiceTest {
 
 		Mockito.when(preRegZipHandlingService.decryptPreRegPacket("0E8BAAEB3CED73CBC9BF4964F321824A", preRegPacket))
 				.thenReturn(preRegPacket);
-
-		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(preRegPacket)).thenReturn(new RegistrationDTO());
-
 	}
 
 	@Test
 	public void fetchAndDeleteRecordsTest() throws java.io.IOException {
+		File file = mockDeleteMethodFiles();
+		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
+
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	@Test
+	public void fetchAndDeleteRecordsRuntimeExceptionTest() throws java.io.IOException {
+		File file = mockDeleteMethodFiles();
+		doThrow(new RuntimeException()).when(preRegistrationDAO).deleteAll(Mockito.anyList());
+		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
+
+		if (file.exists()) {
+			file.delete();
+		}
+	}
+
+	protected File mockDeleteMethodFiles() throws java.io.IOException {
 		File file = new File("testDeletePacket.txt");
 		file.createNewFile();
 		List<PreRegistrationList> preRegList = new ArrayList<>();
@@ -274,11 +345,7 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
 		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
-		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
-
-		if (file.exists()) {
-			file.delete();
-		}
+		return file;
 	}
 	
 	@Test

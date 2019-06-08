@@ -35,6 +35,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
@@ -49,7 +50,11 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
 @RunWith(PowerMockRunner.class)
+<<<<<<< HEAD
 @PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, HMACUtils.class })
+=======
+@PrepareForTest({  HMACUtils.class, ApplicationContext.class, SessionContext.class })
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 public class RegPacketStatusServiceTest {
 
 	@Rule
@@ -69,16 +74,25 @@ public class RegPacketStatusServiceTest {
 	RegistrationDAO registrationDAO;
 	
 	@Before
-	public void initiate() {
+	public void initiate() throws Exception{
 		PowerMockito.mockStatic(HMACUtils.class);
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		applicationMap.put("PRIMARY_LANGUAGE", "ENG");
+<<<<<<< HEAD
 	
 		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		//when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
 		SessionContext.getInstance();
+=======
+
+		ApplicationContext.setApplicationMap(applicationMap);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	}
 

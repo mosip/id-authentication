@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.log4j.Logger;
 import org.json.JSONString;
 import org.json.simple.JSONArray;
@@ -47,8 +49,11 @@ import com.google.common.base.Verify;
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.HashSequenceUtil;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
+import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -56,8 +61,8 @@ import io.mosip.util.CommonLibrary;
 import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
-import net.lingala.zip4j.exception.ZipException;
 
 /**
  * This class is used for testing the Sync API
@@ -86,20 +91,32 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	static String outputFile = "UpdatePacketOutput.json";
 	static String requestKeyFile = "UpdatePacketRequest.json";
 	static String description="";
-	static String apiName="SyncApi";
+	static String apiName="UpdatePacketApi";
 	static String moduleName="RegProc";
-
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	//StageValidationMethods apiRequest=new StageValidationMethods();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+	}
 	CommonLibrary common=new CommonLibrary();
+
+
 	/**
 	 *This method is used for reading the test data based on the test case name passed
 	 *
 	 * @param context
 	 * @return Object[][]
 	 */
-	@DataProvider(name = "updatePacket")
+	@DataProvider(name = "updatePacketPacket")
 	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -115,7 +132,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		}catch(IOException | ParseException |NullPointerException e){
-			logger.error("Exception occurred in Sync class in readData method "+e);
+			logger.error("Exception occurred in UpdatePacket class in readData method "+e);
 		}
 		return readFolder;
 	}
@@ -129,65 +146,133 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	 * @param object
 	 * @throws java.text.ParseException 
 	 */
-	@Test(dataProvider = "updatePacket")
-	public void sync(String testSuite, Integer i, JSONObject object) throws java.text.ParseException{
+	@Test(dataProvider = "updatePacketPacket")
+	public void updatePacket(String testSuite, Integer i, JSONObject object) throws java.text.ParseException{
+		ObjectMapper mapper=new ObjectMapper();
+		List<String> outerKeys = new ArrayList<String>();
+		List<String> innerKeys = new ArrayList<String>();
+		RegProcDataRead readDataFromDb = new RegProcDataRead();
 
-		EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
-		String validUpdatedPacketsPath = System.getProperty("user.dir") + "/" + "UpdatedPackets";
-		File decryptedFile=null;
-		File file=new File(validUpdatedPacketsPath);
-		File[] listOfFiles=file.listFiles();
-		for(File packet:listOfFiles){
-			if(packet.getName().contains(".zip")) {
-				String rid = packet.getName().substring(0, packet.getName().lastIndexOf('.'));
-				LocalDateTime ldt=createTimeStamp(packet.getName().substring(0,packet.getName().lastIndexOf('.')));
-				String currentTimeStamp=ldt.atOffset(ZoneOffset.UTC).toString();
-				String centerId=packet.getName().substring(0,5);
-				String machineId=packet.getName().substring(5,10);
+		EncryptData encryptData=new EncryptData();
+		String regId = null;
+		JSONObject requestToEncrypt = null;
+		File file=ResponseRequestMapper.getPacket(testSuite, object);
+		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
+		try{
+			if(file!=null){
+				registrationPacketSyncDto=encryptData.createSyncRequest(file);
 
-				JSONObject decryptingRequest=encryptDecrypt.generateCryptographicData(packet);
-				try {
-					decryptedFile=encryptDecrypt.decryptFile(decryptingRequest, validUpdatedPacketsPath, packet.getName());
-				} catch (IOException | ZipException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+
+				requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+			}
+			else {
+				actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+				JSONArray request = (JSONArray) actualRequest.get("request");
+				for(int j = 0; j<request.size() ; j++){
+					JSONObject obj  = (JSONObject) request.get(j);
+					regId = obj.get("registrationId").toString();
+					registrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
+					requestToEncrypt = encryptData.encryptData(registrationPacketSyncDto);
 				}
-				
-				/*for(File insidePacketFiles: decryptedFile.listFiles()) {
-					if(insidePacketFiles.getName().equals("packet_meta_info.json")) {
-						FileReader metaFileReader = new FileReader(insidePacketFiles.getPath());
-						try {
-							metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
-							JSONObject identity = (JSONObject) metaInfo.get("identity");
-							JSONArray registeredDevices = (JSONArray) identity.get("capturedRegisteredDevices");
-							getDeviceIds(registeredDevices);
-						} catch (org.json.simple.parser.ParseException e) {
-							logger.error("Could not parse packetMetaInfo.json", e);
-						}
-						metaFileReader.close();
-					}
-				}*/
-
 			}
 
-		}
-	}  
+			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON,validToken);
+			String encryptedData = resp.jsonPath().get("response.data").toString();
+			LocalDateTime timeStamp = encryptData.getTime(regId);
 
-	public LocalDateTime createTimeStamp(String regID) {
-		LocalDateTime ldt = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
-		String packetCreatedDateTime = regID.substring(regID.length() - 14);
-		int n = 100 + new Random().nextInt(900);
-		String milliseconds = String.valueOf(n);
-		Date date;
-		try {
-			date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
-					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
-			ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-		} catch (java.text.ParseException e) {
-			logger.error("Could Not Parse Date",e);
+			// Actual response generation
+			logger.info("sync API url : "+prop.getProperty("syncListApi"));
+			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
+					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
+
+			String status = null;
+			List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+			for(Map<String,String> res : response){
+				status=res.get("status").toString();
+				logger.info("status is : " +status);
+			}
+			Response uploadPacketResponse  = null;
+			String uploadStatus = null;
+			if(status.equalsIgnoreCase("SUCCESS")) {
+				uploadPacketResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"), validToken);
+				boolean isError = uploadPacketResponse.asString().contains("errors");
+				logger.info("isError : "+isError);
+				if(!isError) {
+					List<Map<String,String>> uploadResponse = uploadPacketResponse.jsonPath().get("response"); 
+					for(Map<String,String> res : uploadResponse){
+						uploadStatus=res.get("status").toString();
+						if (uploadStatus.matches("\"Packet is in PACKET_RECEIVED status\"")){
+							logger.info("Packet Uploaded ...........");
+						} 
+					}
+				}else {
+					List<Map<String,String>> error = uploadPacketResponse.jsonPath().get("errors"); 
+					logger.info("error : "+error);
+					for(Map<String,String> err : error){
+						String errorCode = err.get("errorCode").toString();
+						logger.info("errorCode : "+errorCode);
+						if(errorCode.matches("RPR-PKR-005")) {
+							logger.info("Packet Already Uploaded ...........");
+						}
+					}
+				}
+				Long uin = getUINByRegId(regId);
+			}
+			
+			
+
+		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
+			logger.error("Exception occurred in UpdatePacket class in updatePacket method "+e);
+
 		}
-		return ldt;
+	}
+
+	public Long getUINByRegId(String regId) {
+		Response idRepoResponse = getIDRepoResponse(regId);
+		Long uin = null;
+		Map<String, Object> identity = null ;
+		Map<String,Map<String,Object>> idRepoResponseBody = idRepoResponse.jsonPath().get("response"); 
+		for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
+			if(entry.getKey().matches("identity")) {
+				identity = entry.getValue();
+				for(Map.Entry<String, Object> idObj : identity.entrySet()) {
+					if(idObj.getKey().matches("UIN")) {
+						uin = (Long) idObj.getValue();
+						logger.info("UIN : "+uin);
+					}
+				}
+			}
+		}
+		return uin;
+	}
+
+	private Response getIDRepoResponse(String regId) {
+		String idRepoUrl = prop.getProperty("idRepoByRid") + regId + "?type=all" ;
+		Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
+		return idRepoResponse;
+	}  
+	
+	public boolean comapreIDResponse(String regId) {
+		Response idRepoResponse = getIDRepoResponse(regId);
+		Long uin = null;
+		Map<String, Object> identity = null ;
+		Map<String,Map<String,Object>> idRepoOldResponseBody = idRepoResponse.jsonPath().get("response"); 
+		/*for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
+			if(entry.getKey().matches("identity")) {
+				identity = entry.getValue();
+				for(Map.Entry<String, Object> idObj : identity.entrySet()) {
+					if(idObj.getKey().matches("UIN")) {
+						uin = (Long) idObj.getValue();
+						logger.info("UIN : "+uin);
+					}
+				}
+			}
+		}
+		return uin;*/
+		return status;
 	}
 
 
@@ -198,7 +283,8 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+		validToken=getToken("syncTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
@@ -219,7 +305,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, UpdatePacket.testCaseName);
+			f.set(baseTestMethod, Sync.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
 		}

@@ -8,19 +8,25 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
@@ -52,6 +58,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ FileUtils.class, SessionContext.class })
 public class PreRegZipHandlingServiceTest {
 
 	@Rule
@@ -75,9 +83,13 @@ public class PreRegZipHandlingServiceTest {
 
 	static MosipSecurityMethod mosipSecurityMethod;
 
+	@Before
+	public void init() throws Exception {
+		createRegistrationDTOObject();
+	}
+	
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
-		createRegistrationDTOObject();
 		URL url = PreRegZipHandlingServiceTest.class.getResource("/preRegSample.zip");
 		File packetZipFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
@@ -123,13 +135,13 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test
-	public void encryptAndSavePreRegPacketTest() throws RegBaseCheckedException {
+	public void encryptAndSavePreRegPacketTest() throws RegBaseCheckedException, IOException {
 
 		PreRegistrationDTO preRegistrationDTO = encryptPacket();
 		assertNotNull(preRegistrationDTO);
 	}
 
-	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException {
+	private PreRegistrationDTO encryptPacket() throws RegBaseCheckedException, IOException {
 
 		mockSecretKey();
 
@@ -138,8 +150,32 @@ public class PreRegZipHandlingServiceTest {
 		return preRegistrationDTO;
 	}
 
+	@Test(expected = RegBaseCheckedException.class)
+	public void encryptAndSavePreRegPacketIoExceptionTest() throws RegBaseCheckedException, IOException {
+		mockExceptions();
+		encryptPacket();
+	}
+
+	@Test(expected = RegBaseUncheckedException.class)
+	public void encryptAndSavePreRegPacketRuntimeExceptionTest() throws RegBaseCheckedException, IOException {
+		mockRuntimeExceptions();
+		encryptPacket();
+	}
+	
+	protected void mockExceptions() throws IOException {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.doThrow(new io.mosip.kernel.core.exception.IOException("", "")).when(FileUtils.class);
+		FileUtils.copyToFile(Mockito.any(), Mockito.any());
+	}
+	
+	protected void mockRuntimeExceptions() throws IOException {
+		PowerMockito.mockStatic(FileUtils.class);
+		PowerMockito.doThrow(new RuntimeException()).when(FileUtils.class);
+		FileUtils.copyToFile(Mockito.any(), Mockito.any());
+	}
+
 	@Test
-	public void decryptPreRegPacketTest() throws RegBaseCheckedException {
+	public void decryptPreRegPacketTest() throws RegBaseCheckedException, IOException {
 
 		final byte[] decrypted = preRegZipHandlingServiceImpl.decryptPreRegPacket("0E8BAAEB3CED73CBC9BF4964F321824A",
 				encryptPacket().getEncryptedPacket());
@@ -209,8 +245,10 @@ public class PreRegZipHandlingServiceTest {
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
-		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+		PowerMockito.mockStatic(SessionContext.class);
+		Map<String,Object> regMap = new LinkedHashMap<>();
+		regMap.put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
+		PowerMockito.when(SessionContext.map()).thenReturn(regMap);
 	}
 
 	private static BiometricInfoDTO createBiometricInfoDTO() {

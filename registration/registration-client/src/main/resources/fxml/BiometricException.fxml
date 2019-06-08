@@ -271,7 +271,7 @@
                                                          <children>
                                                             <Pane fx:id="leftEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="leftEye" fitHeight="${leftEyePane.height}" fitWidth="${leftEyePane.width}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
+                                                                  <ImageView fx:id="leftEye" layoutY="8" fitHeight="${leftEyePane.height}" fitWidth="${leftEyePane.width}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>
@@ -306,7 +306,7 @@
                                                          <children>
                                                             <Pane fx:id="rightEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="rightEye" fitHeight="${rightEyePane.height}" fitWidth="${rightEyePane.width}" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="rightEye" layoutY="8" fitHeight="${rightEyePane.height}" fitWidth="${rightEyePane.width}" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>

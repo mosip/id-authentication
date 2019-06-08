@@ -84,7 +84,30 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+<<<<<<< HEAD
 	public synchronized ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+=======
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Initiating the Master Sync");
+
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.MasterSyncService#getMasterSync(java.lang.
+	 * String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex) {
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+				"Initiating the Master Sync for initial setup");
+
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
+	}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		String resoponse = RegistrationConstants.EMPTY;
@@ -249,6 +272,39 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return masterSyncResponse;
 	}
 
+<<<<<<< HEAD
+=======
+	private Map<String, String> getRequestParams(String masterSyncDtls, String keyIndex) {
+		Map<String, String> requestParamMap = new HashMap<>();
+
+		// Add Mac Address
+		String macId = RegistrationSystemPropertiesChecker.getMachineId();
+		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, macId);
+
+		// Get KeyIndex
+		if (!RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)))) {
+			keyIndex = machineMappingDAO.getKeyIndexByMacId(macId);
+		}
+
+		// Add the Key Index
+		if (null != keyIndex) {
+			requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
+		}
+
+		// getting Last Sync date from Data from sync table
+		SyncControl masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
+
+		// Add the Last Updated Date
+		if (masterSyncDetails != null) {
+			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, DateUtils.formatToISOString(
+					LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(), ZoneOffset.ofHours(0))));
+		}
+
+		return requestParamMap;
+	}
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	/*
 	 * (non-Javadoc)
 	 * 

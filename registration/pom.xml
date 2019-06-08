@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.5</version>
+		<version>0.12.7</version>
 	</parent>
 
 	<groupId>io.mosip.registration</groupId>
-	<version>0.12.5</version>
+	<version>0.12.7</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -84,8 +84,10 @@
 			src/main/java/io/mosip/registration/cipher/**/*,
 			src/main/java/io/mosip/registration/update/**/*,
 			src/main/java/io/mosip/registration/config/**/*,
-			src/main/java/io/mosip/registration/mdm/**/*,
-			src/main/java/io/mosip/registration/service/mdm/**/*
+			src/main/java/io/mosip/registration/mdm/dto/**/*,
+			src/main/java/io/mosip/registration/mdm/constants/**/*,
+			src/main/java/io/mosip/registration/mdm/util/**/*,
+			src/main/java/io/mosip/registration/mdmservice/**/*
 		</sonar.exclusions>
 	</properties>
 
@@ -311,6 +313,11 @@
 			<dependency>
 				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-idobjectvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bioapi-provider </artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 		</dependencies>

@@ -124,6 +124,26 @@ public class TemplateGenerator extends BaseService {
 
 			boolean isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 
+<<<<<<< HEAD
+=======
+			int leftSlapCount = 0;
+			int rightSlapCount = 0;
+			int thumbCount = 0;
+			int irisCount = 0;
+
+			boolean parentPhotoCaptured = false;
+
+			Map<String, Integer> exceptionCount = exceptionFingersCount(registration, leftSlapCount, rightSlapCount,
+					thumbCount, irisCount);
+			int excepCount = exceptionCount.isEmpty() ? 0 : exceptionCount.get(RegistrationConstants.EXCEPTIONCOUNT);
+
+			if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag) && excepCount == 2)
+					|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag) && excepCount == 10)
+					|| excepCount == 12) {
+				parentPhotoCaptured = true;
+			}
+
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
 				/* Set-up Registration Acknowledgement related content */
 				setUpAcknowledgementContent(registration, templateValues, response, applicationLanguageProperties,
@@ -1327,4 +1347,50 @@ public class TemplateGenerator extends BaseService {
 				"Getting values of demographic fields has been completed");
 		return value;
 	}
+<<<<<<< HEAD
+=======
+
+	/**
+	 * Exception fingers count.
+	 */
+	protected Map<String, Integer> exceptionFingersCount(RegistrationDTO registration, int leftSlapCount,
+			int rightSlapCount, int thumbCount, int irisCount) {
+
+		Map<String, Integer> exceptionCountMap = new HashMap<>();
+		List<BiometricExceptionDTO> biometricExceptionDTOs;
+		if (registration.isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+			biometricExceptionDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO();
+			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+						&& biometricExceptionDTO.isMarkedAsException())
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+					leftSlapCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+						&& biometricExceptionDTO.isMarkedAsException())
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
+					rightSlapCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)
+						&& biometricExceptionDTO.isMarkedAsException())) {
+					thumbCount++;
+				}
+				if ((biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)
+						&& biometricExceptionDTO.isMarkedAsException())) {
+					irisCount++;
+				}
+			}
+			exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
+			exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
+			exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
+			exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
+					leftSlapCount + rightSlapCount + thumbCount + irisCount);
+		}
+
+		return exceptionCountMap;
+	}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 }

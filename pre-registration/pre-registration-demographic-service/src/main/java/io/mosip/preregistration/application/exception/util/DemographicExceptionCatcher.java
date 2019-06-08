@@ -33,6 +33,7 @@ import io.mosip.preregistration.application.exception.SchemaValidationException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
+import io.mosip.preregistration.application.exception.system.SystemFileIOException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -104,7 +105,7 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DateParseException) {
 			throw new DateParseException(((DateParseException) ex).getErrorCode(),
 					((DateParseException) ex).getErrorText(), mainResponsedto);
-		}  else if (ex instanceof RecordFailedToUpdateException) {
+		} else if (ex instanceof RecordFailedToUpdateException) {
 			throw new RecordFailedToUpdateException(((RecordFailedToUpdateException) ex).getErrorCode(),
 					((RecordFailedToUpdateException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof RecordFailedToDeleteException) {
@@ -146,11 +147,16 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof PreIdInvalidForUserIdException) {
 			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);
-		}else if (ex instanceof EncryptionFailedException) {
-			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), mainResponsedto);
-		}else if(ex instanceof BeanCreationException) {
-			throw new SchemaValidationException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_016.getCode(),
+		} else if (ex instanceof EncryptionFailedException) {
+			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(),
+					mainResponsedto);
+		} else if (ex instanceof BeanCreationException) {
+			throw new SchemaValidationException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_016.getCode(),
 					ex.getLocalizedMessage(), mainResponsedto);
+		} else if (ex instanceof SystemFileIOException) {
+			throw new SystemFileIOException(((SystemFileIOException) ex).getErrorCode(),
+					((SystemFileIOException) ex).getErrorText(), mainResponsedto);
 		}
 	}
 

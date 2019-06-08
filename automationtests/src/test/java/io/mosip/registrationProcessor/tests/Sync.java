@@ -96,7 +96,7 @@ public class Sync extends BaseTestCase implements ITest {
 	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	StageValidationMethods apiRequest=new StageValidationMethods();
+	//StageValidationMethods apiRequest=new StageValidationMethods();
 	String validToken="";
 	public String getToken(String tokenType) {
 		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
@@ -116,7 +116,7 @@ public class Sync extends BaseTestCase implements ITest {
 	@DataProvider(name = "syncPacket")
 	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -181,7 +181,8 @@ public class Sync extends BaseTestCase implements ITest {
 
 
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			Response resp=applicationLibrary.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON,validToken);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			LocalDateTime timeStamp = encryptData.getTime(regId);
 
@@ -190,7 +191,8 @@ public class Sync extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = apiRequests.regProcSyncRequest(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
+			logger.info("sync API url : "+prop.getProperty("syncListApi"));
+			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
 					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
 
 			//outer and inner keys which are dynamic in the actual response

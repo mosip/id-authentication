@@ -23,18 +23,13 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.dbaccess.RegProcDBCleanUp;
-import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.registrationProcessor.util.TweakRegProcPackets;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.SetStageStatusCode;
-import io.mosip.util.TokenGeneration;
 
 public class StageValidationTests extends BaseTestCase implements ITest {
-	TokenGeneration generateToken=new TokenGeneration();
-	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	StageValidationMethods apiRequest=new StageValidationMethods();
 	protected static String testCaseName = "";
 	StageValidationMethods scenario = new StageValidationMethods();
 	SetStageStatusCode codeList = new SetStageStatusCode();
@@ -81,11 +76,11 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
-		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
 		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
 		try {
 			reader.close();
@@ -149,7 +144,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	}
 	
 	@DataProvider(name="updatePacket")
-	public File[] getValidUpdatePackets() {
+	public File[] getValidPackets() {
 		
 		File file = new File(invalidPacketPath + "/UpdatePacket");
 		File[] listOfPackets = file.listFiles();
@@ -208,9 +203,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		//cleanUp.prepareQueryList(regID);
 		regID="";
 	
-	}*/
+	}
 	
-/*	@Test(dataProvider = "osiValidatorStage")
+	@Test(dataProvider = "osiValidatorStage")
 	public void osiValidatorStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -288,13 +283,12 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 		regID="";
 	}*/
-	
 	@Test(dataProvider = "updatePacket")
 	public void updatePacket(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
 
-	/*	try {
+		/*try {
 			FileReader reader=new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties"));
 			prop.load(reader);
 			reader.close();
@@ -304,8 +298,8 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}*/
 		/*StringBuilder stageString = new StringBuilder();
 		stageString.append(prop.getProperty("StageBits").toString());
-		userList = codeList.getStatusCodesList(stageString);*/
-		String syncStatus="";
+		userList = codeList.getStatusCodesList(stageString);
+*/		String syncStatus="";
 		for (File invalidPacket : listOfInvpackets) {
 			if (invalidPacket.isDirectory()) {
 				for (File packet : invalidPacket.listFiles()) {
@@ -317,7 +311,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 				}
 			}
 		}
-	/*	dbList=scenario.getStatusCodeListFromDb(statusCodes);
+		/*dbList=scenario.getStatusCodeListFromDb(statusCodes);
 		logger.info("User list :: "+ userList);
 		logger.info("Db list :: "+ dbList);
 		softAssert.assertTrue(userList.equals(dbList));
@@ -327,9 +321,8 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";*/
-	}
 	
-
+	}
 
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {

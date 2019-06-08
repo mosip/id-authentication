@@ -29,6 +29,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -38,6 +39,7 @@ import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.service.login.LoginService;
+import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -119,9 +121,12 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Autowired
 	private RegistrationController registrationController;
+	
+	@Autowired
+	private OTPManager otpManager;
 
 	@Autowired
-	private OTPManager otpGenerator;
+	private AuthenticationService authenticationService;
 
 	@Autowired
 	private LoginService loginService;
@@ -165,16 +170,15 @@ public class AuthenticationController extends BaseController implements Initiali
 			ResponseDTO responseDTO = null;
 
 			// Service Layer interaction
-			responseDTO = otpGenerator.getOTP(otpUserId.getText());
+			responseDTO = otpManager.getOTP(otpUserId.getText());
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				// Enable submit button
 				// Generate alert to show OTP
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlertLanguageSpecific(RegistrationConstants.ALERT_INFORMATION, successResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
-				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlertLanguageSpecific(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_GENERATION_ERROR_MESSAGE);
 			}
 
 		} else {
@@ -198,8 +202,10 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
-						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())
-								.getSuccessResponseDTO() != null) {
+						AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+						authenticationValidatorDTO.setUserId(otpUserId.getText());
+						authenticationValidatorDTO.setOtp(otp.getText());
+						if (authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO)) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = otpUserId.getText();
 							if (!isEODAuthentication) {
@@ -218,7 +224,10 @@ public class AuthenticationController extends BaseController implements Initiali
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 				}
 			} else {
-				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO() != null) {
+				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+				authenticationValidatorDTO.setUserId(otpUserId.getText());
+				authenticationValidatorDTO.setOtp(otp.getText());
+				if (authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO)) {
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
 					}

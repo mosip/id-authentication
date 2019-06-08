@@ -20,6 +20,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -38,7 +40,12 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  * @since 1.0.0
  */
 @RunWith(PowerMockRunner.class)
+<<<<<<< HEAD
 @PrepareForTest({ UserOnBoardServiceImplTest.class ,RegistrationSystemPropertiesChecker.class,ApplicationContext.class})
+=======
+@PrepareForTest({ UserOnBoardServiceImplTest.class, RegistrationSystemPropertiesChecker.class, ApplicationContext.class,
+		RegistrationAppHealthCheckUtil.class, KeyGenerator.class, SecretKey.class, SessionContext.class })
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 public class UserOnBoardServiceImplTest {
 	
 	@Rule
@@ -57,13 +64,18 @@ public class UserOnBoardServiceImplTest {
 	io.mosip.registration.context.ApplicationContext context;
 	
 	@Before
-	public void init() {
+	public void init() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT, "10");		
 		appMap.put("mosip.registration.fingerprint_disable_flag", "Y");
 		appMap.put("mosip.registration.iris_disable_flag", "Y");
 		appMap.put("mosip.registration.face_disable_flag", "Y");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 	}
 	
 	@Test

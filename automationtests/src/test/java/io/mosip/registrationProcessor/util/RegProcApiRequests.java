@@ -46,12 +46,23 @@ public class RegProcApiRequests extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	}
+	public Response regProcGetIdRepo(String url, String regProcAuthToken) {
+		logger.info("REST-ASSURED: Sending a GET request to " + ApplnURI+url);
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization", regProcAuthToken);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log()
+				.all().when().get(ApplnURI+url).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
+		return getResponse;
+	}
 	public Response postRequestToDecrypt(String url, Object body, String contentHeader, String acceptHeader,String token) {
-		logger.info("REST:ASSURED:Sending a data packet to" + url);
+		logger.info("REST:ASSURED:Sending a data packet to" + ApplnURI+url);
 		logger.info("REST ASSURRED :: Request To Encrypt Is "+ body);
 		Cookie.Builder builder = new Cookie.Builder("Authorization",token);
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body).contentType(contentHeader)
-				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+				.accept(acceptHeader).log().all().when().post(ApplnURI+url).then().log().all().extract().response();
 
 		return postResponse;
 	}
@@ -61,7 +72,7 @@ public class RegProcApiRequests extends BaseTestCase {
 		Cookie.Builder builder = new Cookie.Builder("Authorization", token);
 
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(valueMap)
-				.contentType(contentHeader).log().all().when().post(url).then().log().all().extract().response();
+				.contentType(contentHeader).log().all().when().post(ApplnURI+url).then().log().all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());

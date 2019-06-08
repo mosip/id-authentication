@@ -7,6 +7,7 @@ import * as appConstants from '../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
+import { RouterExtService } from '../router/router-ext.service';
 
 export interface DialogData {
   case: number;
@@ -42,7 +43,8 @@ export class DialougComponent implements OnInit {
     private regService: RegistrationService,
     private config: ConfigService,
     private router: Router,
-    private dialogBox: MatDialog
+    private dialogBox: MatDialog,
+    private routerService: RouterExtService
   ) {}
 
   ngOnInit() {
@@ -156,6 +158,8 @@ export class DialougComponent implements OnInit {
     this.authService.onLogout();
   }
   redirectingUser() {
-    this.location.back();
+    let url = this.routerService.getPreviousUrl();
+    if (url.includes('preview')) this.router.navigate(['pre-registration/summary/preview']);
+    else this.router.navigate(['dashboard']);
   }
 }

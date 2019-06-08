@@ -1,7 +1,6 @@
 package io.mosip.registrationProcessor.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -10,6 +9,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
@@ -21,12 +23,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.annotations.Test;
 
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.registrationProcessor.tests.UpdatePacket;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
 import net.lingala.zip4j.exception.ZipException;
+
 
 /**
  * 
@@ -46,6 +49,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
+	String token="";
 
 	/**
 	 * 
@@ -256,9 +260,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
-					// f.getName());
-					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
+					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
+					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -340,14 +343,14 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 	}
 	
-	private void generateValidUpdatePacket(String testCaseName, String property, String validPacketPath,
-			String invalidPacketpath) {
+	private void generateUpdatePacket(String testCaseName, String property, String validPacketPath,
+			String invalidPacketPath) {
 		JSONObject metaInfo = null;
 		JSONObject metaInfoBio = null;
 		File decryptedPacket = null;
 		JSONObject identity = null;
 		String configPath = System.getProperty("user.dir") + "/" + validPacketPath;
-		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketpath + "UpdatePacket/"
+		String invalidPacketsPath = System.getProperty("user.dir") + "/" + invalidPacketPath + "UpdatePacket/"
 				+ testCaseName;
 		filesToBeDestroyed = configPath;
 		File file = new File(configPath);
@@ -357,13 +360,12 @@ public class TweakRegProcPackets extends BaseTestCase {
 			if (f.getName().contains(".zip")) {
 				centerId = f.getName().substring(0, 5);
 				machineId = f.getName().substring(5, 10);
-				String regId = generateRegId(centerId, machineId);
+				String regId = generateRegIdForUpdatePacket(centerId, machineId, f.getName().substring(0, f.getName().lastIndexOf(".")));
 				JSONObject requestBody = encryptDecrypt.generateCryptographicData(f);
 				try {
 
-					// decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath,
-					// f.getName());
-					decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
+					decryptedPacket = encryptDecrypt.decryptFile(requestBody, configPath, f.getName());
+					//decryptedPacket = encryptDecrypt.extractFromDecryptedPacket(configPath, f.getName());
 					for (File info : decryptedPacket.listFiles()) {
 						if (info.getName().equals("Demographic")) {
 							File[] demographic = info.listFiles();
@@ -391,7 +393,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 								}
 
 							}
-						} /*else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
+						} else if (info.getName().toLowerCase().equals("packet_meta_info.json")) {
 							try {
 
 								FileReader metaFileReader = new FileReader(info.getPath());
@@ -403,6 +405,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
+							JSONArray updateType = updateRegType(metaData, regId);
+							//JSONArray updateUIN = updateUIN(metaData,"" );
 							logger.info("updatedData : " + updatedData);
 							metaInfoBio.put("identity", identityObject);
 							logger.info("metaInfoBio : " + metaInfoBio);
@@ -419,7 +423,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 								logger.error("Could not update the packet_meta_info.json as file was not found", e1);
 							}
-						}*/
+						}
 
 					}
 					for (File info : decryptedPacket.listFiles()) {
@@ -438,12 +442,14 @@ public class TweakRegProcPackets extends BaseTestCase {
 					}
 
 				} catch (IOException | ZipException | ParseException e) {
-					logger.error("Could not create invalid demo dedupe packet", e);
+					logger.error("Could not create valid update packet packet", e);
 				}
 			}
 		}
 		
 	}
+
+
 
 	/**
 	 * 
@@ -576,7 +582,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 				logger.info("invalid" + property);
 				logger.info(prop.getProperty(property));
 
-				e.generateValidUpdatePacket(property, prop.getProperty(property), validPacketPath,
+				e.generateUpdatePacket(property, prop.getProperty(property), validPacketPath,
 						invalidPacketPath);
 			}
 			readFile.close();
@@ -599,7 +605,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 		}*/
 		
 	}
-
 
 
 	/**
@@ -655,8 +660,41 @@ public class TweakRegProcPackets extends BaseTestCase {
 		timeStamp.replaceAll(".", "");
 		int n = 10000 + new Random().nextInt(90000);
 		String randomNumber = String.valueOf(n);
+		
 		regID = centerId + machineId + randomNumber + timeStamp;
 		return regID;
+	}
+	public String generateRegIdForUpdatePacket(String centerId, String machineId, String regId) {
+		String regID = "";
+		/*String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		timeStamp.replaceAll(".", "");*/
+		String timeStamp = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(getTime(regId));
+		int n = 10000 + new Random().nextInt(90000);
+		String randomNumber = String.valueOf(n);
+		
+		
+		
+		regID = centerId + machineId + randomNumber + timeStamp;
+		return regID;
+	}
+
+	private LocalDateTime getTime(String regId) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
+		String packetCreatedDateTime = regId.substring(regId.length() - 14);
+		int n = 100 + new Random().nextInt(900);
+		String milliseconds = String.valueOf(n);
+		
+		Date date = null;
+		try {
+			date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
+					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6)+milliseconds);
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+		
+		return ldt;
 	}
 
 	/**
@@ -677,8 +715,32 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
+	
+	private JSONArray updateRegType(JSONArray metaData, String update) {
+		for (int i = 0; i < metaData.size(); i++) {
+			JSONObject labels = (JSONObject) metaData.get(i);
+			if (labels.get("label").equals("registrationType")) {
+				labels.put("value", update);
+			}
+		}
+
+		return metaData;
+	}
 
 	
+	/*private JSONArray updateUIN(JSONArray metaData, String regId) {
+		UpdatePacket updatePacket  = new UpdatePacket();
+		Long uin = updatePacket.getUINByRegId(regId);
+		for (int i = 0; i < metaData.size(); i++) {
+			JSONObject labels = (JSONObject) metaData.get(i);
+			if (labels.get("label").equals("UIN")) {
+				labels.put("value", uin);
+			}
+		}
+
+		return metaData;
+	}
+*/
 
 	
 

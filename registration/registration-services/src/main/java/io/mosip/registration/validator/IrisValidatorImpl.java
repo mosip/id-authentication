@@ -13,7 +13,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
+<<<<<<< HEAD
 import io.mosip.registration.device.iris.IrisFacade;
+=======
+import io.mosip.registration.dto.AuthTokenDTO;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
 
@@ -50,6 +54,11 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 				"validating iris details for user registration");
 		
 		return irisFacade.validateIris(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
+	}
+
+	@Override
+	public AuthTokenDTO validate(String userId, String otp) {
+		return null;
 	}
 
 }

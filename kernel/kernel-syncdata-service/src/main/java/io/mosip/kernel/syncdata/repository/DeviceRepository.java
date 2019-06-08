@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.Device;
 
 /**
@@ -18,7 +18,7 @@ import io.mosip.kernel.syncdata.entity.Device;
  */
 
 @Repository
-public interface DeviceRepository extends BaseRepository<Device, String> {
+public interface DeviceRepository extends JpaRepository<Device, String> {
 	/**
 	 * Find list of devices mapped to a machine by machine id.
 	 * 

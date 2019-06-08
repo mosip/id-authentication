@@ -1,15 +1,43 @@
 package io.mosip.registration.context;
 
+<<<<<<< HEAD
+=======
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
+import java.io.IOException;
+import java.util.ArrayList;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.context.ApplicationContext;
+
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.LoginMode;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+<<<<<<< HEAD
+=======
+import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.bio.BioService;
+import io.mosip.registration.service.login.LoginService;
+import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 /**
  * Class for SessionContext details
@@ -19,11 +47,26 @@ import io.mosip.registration.dto.RegistrationCenterDetailDTO;
  *
  */
 public class SessionContext {
-
+	
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(SessionContext.class);
+	
+	private static ApplicationContext applicationContext;
+	
+	public static void setApplicationContext(ApplicationContext applicationContext) {
+		SessionContext.applicationContext = applicationContext;
+	}
+	
 	/**
 	 * instance of sessionContext
 	 */
 	private static SessionContext sessionContext;
+	
+	private static List<String> authModes = new ArrayList<>();
+	
+	private static List<String> validAuthModes = new ArrayList<>();
 
 	/**
 	 * constructor of sessionContext
@@ -47,17 +90,267 @@ public class SessionContext {
 	 * @return sessionContext
 	 */
 	public static SessionContext getInstance() {
-		if (sessionContext == null) {
-			sessionContext = new SessionContext();
-			sessionContext.setId(UUID.randomUUID());
-			sessionContext.setMapObject(new HashMap<>());
-			userContext = sessionContext.new UserContext();
-			sessionContext.authTokenDTO = new AuthTokenDTO();
+		if(null != authModes && null != validAuthModes && authModes.containsAll(validAuthModes)) {
 			return sessionContext;
 		} else {
+			sessionContext = null;
 			return sessionContext;
 		}
 	}
+<<<<<<< HEAD
+=======
+	
+	/**
+	 * making sessionContext as singleton
+	 * 
+	 * @param userDTO - UserInfo to create session
+	 * 
+	 * @return sessionContext
+	 */
+	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Entering into creating Session Context");
+		
+		LoginService loginService = applicationContext.getBean(LoginService.class);
+		
+		Set<String> roleList = new LinkedHashSet<>();
+		if(null != userDTO) {
+			userDTO.getUserRole().forEach(roleCode -> {
+				if (roleCode.isActive()) {
+					roleList.add(String.valueOf(roleCode.getRoleCode()));
+				}
+			});
+		}
+		if(isInitialSetUp) {
+			authModes.add(RegistrationConstants.PWORD);
+		} else {
+			authModes = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
+		}
+		
+		if(null == sessionContext) {
+			if(isInitialSetUp || isUserNewToMachine) {
+				return validateInitialLogin(userDTO, loginMethod);
+			} else {	
+				 return validateAuthMethods(userDTO, loginMethod, authenticationValidatorDTO);
+			}
+		} else { 
+			return validateAuthMethods(userDTO, loginMethod, authenticationValidatorDTO);
+		}
+	}
+
+	private static boolean validateInitialLogin(UserDTO userDTO, String loginMethod) {
+		ServiceDelegateUtil serviceDelegateUtil = applicationContext.getBean(ServiceDelegateUtil.class);
+		try {
+			AuthTokenDTO authTknDTO = serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+			if(null != authTknDTO) {
+				createSessionContext();
+				sessionContext.authTokenDTO = authTknDTO;
+				validAuthModes.add(loginMethod);
+				createSecurityContext(userDTO);
+				return true;
+			} else {
+				validAuthModes.remove(loginMethod);
+				sessionContext = null;
+				return false;
+			}
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			return false;
+		} catch (RuntimeException runtimeException) {
+			sessionContext = null;
+			return false;
+		}
+	}
+	
+	private static boolean validateAuthMethods(UserDTO userDTO, String loginMethod, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		switch (loginMethod) {
+		case RegistrationConstants.PWORD:
+			return validatePword(loginMethod, userDTO, authenticationValidatorDTO);
+		case RegistrationConstants.OTP:
+			return validateOTP(loginMethod, userDTO, authenticationValidatorDTO);
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
+			return validateFingerprint(loginMethod, userDTO, authenticationValidatorDTO);
+		case RegistrationConstants.IRIS:
+			return validateIris(loginMethod, userDTO, authenticationValidatorDTO);
+		case RegistrationConstants.FACE:
+			return validateFace(loginMethod, userDTO, authenticationValidatorDTO);
+		default:
+		}
+		return false;
+	}
+
+	private static boolean validatePword(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
+		if(authenticationService.validatePassword(authenticationValidatorDTO).equalsIgnoreCase(RegistrationConstants.PWD_MATCH)) {
+			createSessionContext();
+			validAuthModes.add(loginMethod);
+			createSecurityContext(userDTO);		
+			return true;
+		} else {
+			validAuthModes.remove(loginMethod);
+			sessionContext = null;
+			return false;
+		}
+	}
+	
+	private static boolean validateOTP(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
+		AuthTokenDTO authTknDTO = authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp());
+		if(null != authTknDTO) {
+			createSessionContext();
+			sessionContext.authTokenDTO = authTknDTO;
+			validAuthModes.add(loginMethod);
+			createSecurityContext(userDTO);
+			return true;
+		} else {
+			validAuthModes.remove(loginMethod);
+			sessionContext = null;
+			return false;
+		}
+	}
+	
+	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		BioService bioService = applicationContext.getBean(BioService.class);
+		try {
+			if(bioService.validateFingerPrint(authenticationValidatorDTO.getUserId())) {				
+				createSessionContext();
+				validAuthModes.add(loginMethod);
+				createSecurityContext(userDTO);	
+				return true;
+			} else {
+				validAuthModes.remove(loginMethod);
+				sessionContext = null;
+				return false;
+			}
+		} catch (RegBaseCheckedException | IOException exception) {
+			return false;
+		} 
+	}
+	
+	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		BioService bioService = applicationContext.getBean(BioService.class);
+		try {
+			if(bioService.validateIris(authenticationValidatorDTO.getUserId())) {
+				createSessionContext();
+				validAuthModes.add(loginMethod);
+				createSecurityContext(userDTO);	
+				return true;
+			} else {
+				validAuthModes.remove(loginMethod);
+				sessionContext = null;
+				return false;
+			}
+		} catch (RegBaseCheckedException | IOException exception) {
+			return false;
+		}
+	}
+	
+	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+		BioService bioService = applicationContext.getBean(BioService.class);
+		try {
+			if(bioService.validateFace(authenticationValidatorDTO.getUserId())) {
+				createSessionContext();
+				validAuthModes.add(loginMethod);
+				createSecurityContext(userDTO);	
+				return true;
+			} else {
+				validAuthModes.remove(loginMethod);
+				sessionContext = null;
+				return false;
+			}
+		} catch (RegBaseCheckedException exception) {
+			return false;
+		}
+	}
+
+	private static void createSessionContext() {
+		if (null == sessionContext) {
+			sessionContext = new SessionContext();
+			sessionContext.setId(UUID.randomUUID());
+			sessionContext.setMapObject(new HashMap<>());
+		}
+	}
+
+	private static void createSecurityContext(UserDTO userDTO) {
+		
+		if(null != authModes && null != validAuthModes && authModes.containsAll(validAuthModes)) {
+			userContext = sessionContext.new UserContext();
+			if (userDTO != null) {
+				List<String> roleList = new ArrayList<>();
+
+				userDTO.getUserRole().forEach(roleCode -> {
+					if (roleCode.isActive()) {
+						roleList.add(String.valueOf(roleCode.getRoleCode()));
+					}
+				});
+			
+				securityContext = sessionContext.new SecurityContext();
+				securityContext.setUserId(userDTO.getId());
+				securityContext.setRoles(roleList);
+				securityContext.setSecurityAuthenticationMap(new HashMap<>());
+				
+				updateSessionContext(userDTO, roleList);
+				
+				getCenterMachineStatus(userDTO);
+				
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"Creating Session Context is completed");
+			} else {
+				securityContext = null;
+			}
+		} else {
+			securityContext = null;
+		}
+	}
+
+	/**
+	 * Setting values for Session context and User context and Initial info for
+	 * Login
+	 */
+	private static void updateSessionContext(UserDTO userDTO, List<String> roleList) {
+		
+		long refreshedLoginTime = Long
+				.parseLong(String.valueOf(io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.REFRESHED_LOGIN_TIME)));
+		long idealTime = Long.parseLong(String.valueOf(io.mosip.registration.context.ApplicationContext.map().get(RegistrationConstants.IDEAL_TIME)));
+
+		sessionContext.setLoginTime(new Date());
+		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
+		sessionContext.setIdealTime(idealTime);
+		
+		userContext.setUserId(userDTO.getId());
+		userContext.setName(userDTO.getName());
+		userContext.setRoles(roleList);
+		
+		LoginService loginService = applicationContext.getBean(LoginService.class);
+		
+		userContext.setRegistrationCenterDetailDTO(loginService.getRegistrationCenterDetails(
+				userDTO.getRegCenterUser().getRegcntrId(),
+				io.mosip.registration.context.ApplicationContext.applicationLanguage()));
+		userContext.setAuthorizationDTO(loginService.getScreenAuthorizationDetails(roleList));
+		userContext.setUserMap(new HashMap<String, Object>());
+	}
+
+	private static void getCenterMachineStatus(UserDTO userDTO) {
+		List<String> machineList = new ArrayList<>();
+		List<String> centerList = new ArrayList<>();
+
+		userDTO.getUserMachineMapping().forEach(machineMapping -> {
+			if (machineMapping.isActive()) {
+				machineList.add(machineMapping.getMachineMaster().getMacAddress());
+				centerList.add(machineMapping.getCentreID());
+			}
+		});
+
+		if (machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
+				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId())) {
+			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, false);
+			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+		} else {
+			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, true);
+			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+		}
+	}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	/**
 	 * Reading map from sessioncontext
@@ -141,7 +434,11 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
+<<<<<<< HEAD
 		sessionContext.getInstance().authTokenDTO = authTokenDTO;
+=======
+		sessionContext.authTokenDTO = authTokenDTO;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 
 	/**
@@ -159,7 +456,7 @@ public class SessionContext {
 	 * @return userId
 	 */
 	public static String userId() {
-		if (sessionContext == null || sessionContext.getUserContext().getUserId() == null) {
+		if (sessionContext == null || sessionContext.getUserContext() == null || sessionContext.getUserContext().getUserId() == null) {
 			return RegistrationConstants.AUDIT_DEFAULT_USER;
 		} else {
 			return sessionContext.getUserContext().getUserId();
@@ -172,7 +469,7 @@ public class SessionContext {
 	 * @return userName
 	 */
 	public static String userName() {
-		if (sessionContext == null || sessionContext.getUserContext().getName() == null) {
+		if (sessionContext == null || sessionContext.getUserContext() == null || sessionContext.getUserContext().getName() == null) {
 			return RegistrationConstants.AUDIT_DEFAULT_USER;
 		} else {
 			return sessionContext.getUserContext().getName();
@@ -316,6 +613,11 @@ public class SessionContext {
 	 */
 	public static void destroySession() {
 		sessionContext = null;
+		authModes.clear();
+		validAuthModes.clear();
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Leaving Session Context");
 	}
 
 	/**
