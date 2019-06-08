@@ -418,7 +418,8 @@ public class PacketValidateProcessor {
 		String jsonString = new String(bytearray);
 
 		Identity identity = packetMetaInfo.getIdentity();
-
+		Long uin = null;
+		
 		if (!schemaValidation(jsonString)) {
 			return false;
 		}
@@ -437,7 +438,7 @@ public class PacketValidateProcessor {
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.RES_UPDATE.toString())) {
-			Long uin = utility.getUIn(registrationId);
+			uin = utility.getUIn(registrationId);
 			if (uin == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage());
 			JSONObject jsonObject = utility.retrieveIdrepoJson(uin);
@@ -469,8 +470,7 @@ public class PacketValidateProcessor {
 				||RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
-			String uin = identityIteratorUtil.getFieldValue(metadataList, "uin");
-			if (!ifUinIDRepo(uin))
+			if (!ifUinIDRepo(String.valueOf(uin)))
 				return false;
 		}
 		
